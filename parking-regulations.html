@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תקנות חניה בישראל – חישוב מתקדם</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <style>
+    body { background: #f8f9fa; padding: 20px; font-family: Arial, sans-serif; }
+    .container { max-width: 1400px; }
+    .card { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    .card-header { background: #0d6efd; color: white; border-radius: 12px 12px 0 0; font-weight: 600; }
+    .result-number { font-size: 2rem; font-weight: 700; color: #0d6efd; }
+    .result-label { font-size: 0.85rem; color: #6c757d; }
+    .land-use-item { background: #fff; border: 1px solid #dee2e6; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .land-use-item .btn-close { float: left; }
+    .debug-box { background: #e9ecef; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; max-height: 120px; overflow-y: auto; margin-top: 10px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 class="display-6 fw-bold mb-3"><i class="bi bi-car-front-fill text-primary ms-2"></i>תקנות חניה בישראל (2016) – מחשבון מתקדם</h1>
+  <p class="text-muted">לחץ על <strong>חשב תקן חניה</strong> – התוצאות יופיעו בצד שמאל. ניתן להיעזר בקונסולת הדפדפן (F12) ללוגים.</p>
+
+  <div class="row">
+    <div class="col-lg-7">
+      <!-- Project & Zone -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-geo-alt ms-2"></i>פרויקט ואזור מתע"ן</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">שם הפרויקט</label>
+              <input type="text" class="form-control" id="projectName" value="פרויקט מעורב שימושים">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">אזור מתע"ן (MMS Zone)</label>
+              <select class="form-select" id="zoneType">
+                <option value="A" selected>אזור א' (עד 300 מטר)</option>
+                <option value="B">אזור ב' (300–500 מטר)</option>
+                <option value="C">אזור ג' (מעל 500 מטר)</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">מרחק למתע"ן (מטר)</label>
+              <input type="number" class="form-control" id="distanceMms" value="250" min="0">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">האם המתע"ן פעיל?</label>
+              <select class="form-select" id="mmsOperational">
+                <option value="true" selected>כן</option>
+                <option value="false">לא</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">שיתוף חניה בשימושים מעורבים</label>
+              <select class="form-select" id="mixedUseSharing">
+                <option value="true" selected>החל (הפחתה עד 25%)</option>
+                <option value="false">אל תחיל</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Land Uses -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-building ms-2"></i>רכיבי ייעודי קרקע</div>
+        <div class="card-body">
+          <div id="landUseContainer">
+            <!-- Residential -->
+            <div class="land-use-item" data-type="residential">
+              <div class="d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0"><i class="bi bi-house-door"></i> מגורים</h6>
+                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-4">
+                  <label class="form-label small">יחידות דיור</label>
+                  <input type="number" class="form-control land-use-input" data-field="units" value="24" min="0">
+                </div>
+                <div class="col-4">
+                  <label class="form-label small">דירות קטנות?</label>
+                  <select class="form-select land-use-input" data-field="smallApartments">
+                    <option value="false">לא</option>
+                    <option value="true">כן</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <label class="form-label small">מעונות סטודנטים?</label>
+                  <select class="form-select land-use-input" data-field="studentHousing">
+                    <option value="false">לא</option>
+                    <option value="true">כן</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">תקן (מקומות/יח"ד)</label>
+                  <input type="number" class="form-control land-use-input" data-field="rate" value="1.0" step="0.1" min="0.5" max="2.0">
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">דיור מוגן?</label>
+                  <select class="form-select land-use-input" data-field="elderlyHousing">
+                    <option value="false">לא</option>
+                    <option value="true">כן</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Commercial -->
+            <div class="land-use-item" data-type="commercial">
+              <div class="d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0"><i class="bi bi-shop"></i> מסחר (קמעונאות)</h6>
+                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-4">
+                  <label class="form-label small">שטח (מ"ר)</label>
+                  <input type="number" class="form-control land-use-input" data-field="area" value="1500" min="0">
+                </div>
+                <div class="col-4">
+                  <label class="form-label small">חזית רחוב?</label>
+                  <select class="form-select land-use-input" data-field="frontage">
+                    <option value="true">כן</option>
+                    <option value="false">לא</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <label class="form-label small">מסחר שכונתי?</label>
+                  <select class="form-select land-use-input" data-field="neighborhood">
+                    <option value="false">לא</option>
+                    <option value="true">כן</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">תקן (מ"ר/חניה)</label>
+                  <input type="number" class="form-control land-use-input" data-field="rate" value="50" min="10" max="150">
+                </div>
+              </div>
+            </div>
+
+            <!-- Office -->
+            <div class="land-use-item" data-type="office">
+              <div class="d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0"><i class="bi bi-briefcase"></i> משרדים / תעסוקה עתירת ידע</h6>
+                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">שטח (מ"ר)</label>
+                  <input type="number" class="form-control land-use-input" data-field="area" value="2500" min="0">
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">עתירת ידע?</label>
+                  <select class="form-select land-use-input" data-field="knowledge">
+                    <option value="true">כן</option>
+                    <option value="false">לא</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">תקן (מ"ר/חניה)</label>
+                  <input type="number" class="form-control land-use-input" data-field="rate" value="240" min="60" max="240">
+                </div>
+              </div>
+            </div>
+
+            <!-- Education -->
+            <div class="land-use-item" data-type="education">
+              <div class="d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0"><i class="bi bi-mortarboard"></i> חינוך והשכלה גבוהה</h6>
+                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">שטח (מ"ר)</label>
+                  <input type="number" class="form-control land-use-input" data-field="area" value="5000" min="0">
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">סוג</label>
+                  <select class="form-select land-use-input" data-field="eduType">
+                    <option value="university">מוסד אקדמי / אוניברסיטה</option>
+                    <option value="school">בית ספר</option>
+                    <option value="library">ספרייה / מוזיאון</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">תקן (מ"ר/חניה)</label>
+                  <input type="number" class="form-control land-use-input" data-field="rate" value="200" min="50" max="200">
+                </div>
+              </div>
+            </div>
+
+            <!-- Culture -->
+            <div class="land-use-item" data-type="culture">
+              <div class="d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0"><i class="bi bi-film"></i> תרבות ואירועים</h6>
+                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">מספר מקומות ישיבה</label>
+                  <input type="number" class="form-control land-use-input" data-field="seats" value="450" min="0">
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">סוג</label>
+                  <select class="form-select land-use-input" data-field="cultureType">
+                    <option value="theater">תיאטרון / קולנוע</option>
+                    <option value="events">אולם כנסים</option>
+                    <option value="restaurant">מסעדה / בית קפה</option>
+                    <option value="worship">בית תפילה</option>
+                    <option value="senior">מועדון קשישים</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">תקן (מקומות ישיבה/חניה)</label>
+                  <input type="number" class="form-control land-use-input" data-field="rate" value="15" min="5" max="50">
+                </div>
+              </div>
+            </div>
+
+            <!-- Health -->
+            <div class="land-use-item" data-type="health">
+              <div class="d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0"><i class="bi bi-heart-pulse"></i> בריאות ורפואה</h6>
+                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">שטח (מ"ר)</label>
+                  <input type="number" class="form-control land-use-input" data-field="area" value="800" min="0">
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">סוג</label>
+                  <select class="form-select land-use-input" data-field="healthType">
+                    <option value="clinic">מרפאה</option>
+                    <option value="hospital">בית חולים</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <label class="form-label small">תקן (מ"ר/חניה)</label>
+                  <input type="number" class="form-control land-use-input" data-field="rate" value="40" min="10" max="50">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addLandUseBtn"><i class="bi bi-plus-circle"></i> הוסף ייעוד קרקע</button>
+        </div>
+      </div>
+
+      <!-- Operational & Guest -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-truck"></i> חניה תפעולית, אורחים ואחרים</div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-3">
+              <label class="form-label small">פריקה וטעינה מסחרית</label>
+              <input type="number" class="form-control" id="opLoading" value="1" min="0">
+            </div>
+            <div class="col-3">
+              <label class="form-label small">גישת משאיות</label>
+              <input type="number" class="form-control" id="opStage" value="2" min="0">
+            </div>
+            <div class="col-3">
+              <label class="form-label small">חניית אוטובוסים (לכל 150 מושבים)</label>
+              <input type="number" class="form-control" id="opBus" value="3" min="0">
+            </div>
+            <div class="col-3">
+              <label class="form-label small">חניית אורחים (אוטומטי אם 0)</label>
+              <input type="number" class="form-control" id="guestParking" value="0" min="0">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calculate button -->
+      <button type="button" class="btn btn-primary btn-lg w-100 mt-3" id="calcBtn"><i class="bi bi-calculator"></i> חשב דרישות חניה</button>
+    </div>
+
+    <!-- Right: Results -->
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header"><i class="bi bi-table"></i> תוצאות החישוב</div>
+        <div class="card-body" id="resultsArea">
+          <div class="text-center text-muted py-5">
+            <i class="bi bi-clipboard-data fs-1"></i>
+            <p class="mt-3">לחץ על <strong>חשב תקן חניה</strong> כדי להציג תוצאות.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center text-muted small mt-4 pb-3">
+    מחשבון תקנות חניה בישראל (מבוסס רפורמת 2016)
+  </footer>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  console.log('Script loaded.');
+
+  const rates = {
+    residential: {
+      A: { min: 0.5, max: 1.5, student: { min: 0.1, max: 0.2 }, elderly: { min: 0.05, max: 0.1 } },
+      B: { min: 1.0, max: 1.5, student: { min: 0.1, max: 0.2 }, elderly: { min: 0.05, max: 0.1 } },
+      C: { min: 1.0, max: 2.0, student: { min: 0.1, max: 0.2 }, elderly: { min: 0.05, max: 0.1 } }
+    },
+    commercial: {
+      A: { under2000: 50, under2000_front: 25, 2000_10000: 100, over10000: 150, neighborhood: 50 },
+      B: { under2000: 30, under2000_front: 30, 2000_10000: 50, over10000: 150, neighborhood: 30 },
+      C: { under2000: 25, under2000_front: 25, 2000_10000: 45, over10000: 50, neighborhood: 50 }
+    },
+    office: {
+      A: { knowledge: 240, regular: 60 },
+      B: { knowledge: 120, regular: 60 },
+      C: { knowledge: 60, regular: 60 }
+    },
+    education: {
+      A: { university: 200, school: 200, library: 100 },
+      B: { university: 100, school: 60, library: 80 },
+      C: { university: 50, school: 50, library: 50 }
+    },
+    culture: {
+      A: { theater: 15, events: 15, restaurant: 10, worship: 30, senior: 50 },
+      B: { theater: 10, events: 10, restaurant: 10, worship: 30, senior: 50 },
+      C: { theater: 8, events: 8, restaurant: 10, worship: 50, senior: 50 }
+    },
+    health: {
+      A: { clinic: 40, hospital: 0.5 },
+      B: { clinic: 30, hospital: 0.5 },
+      C: { clinic: 25, hospital: 0.5 }
+    }
+  };
+
+  function getZone() {
+    return document.getElementById('zoneType').value;
+  }
+
+  function getLandUses() {
+    const items = document.querySelectorAll('.land-use-item');
+    const uses = [];
+    items.forEach(item => {
+      const type = item.dataset.type;
+      if (!type) return;
+      const fields = {};
+      const inputs = item.querySelectorAll('.land-use-input');
+      inputs.forEach(inp => {
+        const key = inp.dataset.field;
+        let val = inp.value;
+        if (inp.type === 'number') {
+          val = parseFloat(val) || 0;
+        } else if (inp.tagName === 'SELECT') {
+          if (val === 'true') val = true;
+          else if (val === 'false') val = false;
+        }
+        fields[key] = val;
+      });
+      uses.push({ type, fields });
+    });
+    return uses;
+  }
+
+  function calculateParking(data) {
+    const zone = data.zone || 'A';
+    const landUses = data.landUses || [];
+    const mixedUse = data.mixedUseSharing !== false;
+    const opLoading = parseInt(data.opLoading) || 0;
+    const opStage = parseInt(data.opStage) || 0;
+    const opBus = parseInt(data.opBus) || 0;
+    const guestInput = parseInt(data.guestParking) || 0;
+
+    let totalVehicles = 0;
+    let totalBicycle = 0;
+    let totalMotorcycle = 0;
+    let details = [];
+    let hasResidential = false;
+    const landUseTypes = [];
+
+    for (const lu of landUses) {
+      const type = lu.type;
+      const f = lu.fields || {};
+      landUseTypes.push(type);
+      let veh = 0, bike = 0, moto = 0;
+      let calcDesc = '';
+
+      switch (type) {
+        case 'residential': {
+          const units = parseInt(f.units) || 0;
+          const student = f.studentHousing === true;
+          const elderly = f.elderlyHousing === true;
+          let rate = parseFloat(f.rate) || 1.0;
+          if (student) {
+            veh = Math.round(units / 8);
+            calcDesc = `סטודנטים: ${units} יח"ד &divide; 8 = ${veh}`;
+          } else if (elderly) {
+            veh = Math.round(units / 10);
+            calcDesc = `דיור מוגן: ${units} יח"ד &divide; 10 = ${veh}`;
+          } else {
+            veh = Math.round(units * rate);
+            calcDesc = `${units} יח"ד &times; ${rate} = ${veh}`;
+          }
+          bike = units;
+          moto = Math.round(units / 8);
+          hasResidential = true;
+          break;
+        }
+        case 'commercial': {
+          const area = parseInt(f.area) || 0;
+          const front = f.frontage === true;
+          const neigh = f.neighborhood === true;
+          let rate = parseFloat(f.rate) || 0;
+          let baseRate = rate;
+          if (!rate || rate === 0) {
+            if (neigh) baseRate = rates.commercial[zone].neighborhood;
+            else if (area <= 2000) baseRate = front ? rates.commercial[zone].under2000_front : rates.commercial[zone].under2000;
+            else if (area <= 10000) baseRate = rates.commercial[zone]['2000_10000'];
+            else baseRate = rates.commercial[zone].over10000;
+          }
+          veh = Math.ceil(area / baseRate);
+          calcDesc = `${area} מ"ר &divide; ${baseRate} = ${veh}`;
+          bike = Math.ceil(veh * 0.5);
+          moto = Math.ceil(area / 200);
+          break;
+        }
+        case 'office': {
+          const area = parseInt(f.area) || 0;
+          const knowledge = f.knowledge === true;
+          let rate = parseFloat(f.rate) || 0;
+          let baseRate = rate;
+          if (!rate || rate === 0) {
+            baseRate = knowledge ? rates.office[zone].knowledge : rates.office[zone].regular;
+          }
+          veh = Math.ceil(area / baseRate);
+          calcDesc = `${area} מ"ר &divide; ${baseRate} = ${veh}`;
+          bike = Math.ceil(veh * 0.5);
+          moto = Math.ceil(area / 200);
+          break;
+        }
+        case 'education': {
+          const area = parseInt(f.area) || 0;
+          const eduType = f.eduType || 'university';
+          let rate = parseFloat(f.rate) || 0;
+          let baseRate = rate;
+          if (!rate || rate === 0) {
+            baseRate = rates.education[zone][eduType] || 200;
+          }
+          veh = Math.ceil(area / baseRate);
+          calcDesc = `${area} מ"ר &divide; ${baseRate} = ${veh}`;
+          bike = Math.ceil(veh * 0.5);
+          moto = Math.ceil(area / 100);
+          break;
+        }
+        case 'culture': {
+          const seats = parseInt(f.seats) || 0;
+          const cType = f.cultureType || 'theater';
+          let rate = parseFloat(f.rate) || 0;
+          let baseRate = rate;
+          if (!rate || rate === 0) {
+            baseRate = rates.culture[zone][cType] || 15;
+          }
+          if (cType === 'restaurant') {
+            const area = parseInt(f.area) || 0;
+            if (area > 0) {
+              veh = Math.ceil(area / baseRate);
+              calcDesc = `מסעדה: ${area} מ"ר &divide; ${baseRate} = ${veh}`;
+            } else {
+              veh = 0;
+              calcDesc = 'מסעדה: לא הוזן שטח';
+            }
+          } else {
+            if (seats > 0) {
+              veh = Math.ceil(seats / baseRate);
+              calcDesc = `${seats} מושבים &divide; ${baseRate} = ${veh}`;
+            } else {
+              veh = 0;
+              calcDesc = 'לא הוזנו מושבים';
+            }
+          }
+          bike = Math.ceil(veh * 0.5);
+          moto = Math.ceil(seats / 200) || 0;
+          break;
+        }
+        case 'health': {
+          const area = parseInt(f.area) || 0;
+          const hType = f.healthType || 'clinic';
+          let rate = parseFloat(f.rate) || 0;
+          let baseRate = rate;
+          if (!rate || rate === 0) {
+            baseRate = rates.health[zone][hType] || 40;
+          }
+          if (hType === 'hospital') {
+            const beds = parseInt(f.beds) || 0;
+            if (beds > 0) {
+              veh = Math.round(beds * baseRate);
+              calcDesc = `${beds} מיטות &times; ${baseRate} = ${veh}`;
+            } else {
+              veh = Math.ceil(area / 40);
+              calcDesc = `${area} מ"ר &divide; 40 = ${veh}`;
+            }
+          } else {
+            veh = Math.ceil(area / baseRate);
+            calcDesc = `${area} מ"ר &divide; ${baseRate} = ${veh}`;
+          }
+          bike = Math.ceil(veh * 0.5);
+          moto = Math.ceil(area / 200);
+          break;
+        }
+        default: {
+          const area = parseInt(f.area) || 0;
+          let rate = parseFloat(f.rate) || 50;
+          veh = Math.ceil(area / rate);
+          calcDesc = `מותאם אישית: ${area} מ"ר &divide; ${rate} = ${veh}`;
+          bike = Math.ceil(veh * 0.5);
+          moto = Math.ceil(area / 200);
+        }
+      }
+
+      totalVehicles += veh;
+      totalBicycle += bike;
+      totalMotorcycle += moto;
+      details.push({ type, veh, bike, moto, calcDesc });
+    }
+
+    let reduction = 0;
+    if (mixedUse && landUseTypes.length >= 2) {
+      reduction = 25;
+      totalVehicles = Math.ceil(totalVehicles * (1 - reduction / 100));
+    }
+
+    const operational = opLoading + opStage + opBus;
+    let guest = guestInput;
+    if (guest === 0 && hasResidential) {
+      const res = landUses.find(lu => lu.type === 'residential');
+      if (res) {
+        const units = parseInt(res.fields.units) || 0;
+        guest = Math.ceil(units * 0.1);
+      }
+    }
+
+    return {
+      totalVehicles,
+      totalBicycle,
+      totalMotorcycle,
+      operational,
+      guest,
+      reduction,
+      details,
+      zone,
+      mixedUse
+    };
+  }
+
+  function getHebrewTypeName(type) {
+    const names = {
+      residential: 'מגורים',
+      commercial: 'מסחר',
+      office: 'משרדים',
+      education: 'חינוך',
+      culture: 'תרבות',
+      health: 'בריאות',
+      custom: 'מותאם אישית'
+    };
+    return names[type] || type;
+  }
+
+  function renderResults(result) {
+    const area = document.getElementById('resultsArea');
+    if (!result) {
+      area.innerHTML = `<div class="alert alert-danger">אין נתוני תוצאה.</div>`;
+      return;
+    }
+
+    const detailRows = result.details.map(d => `
+      <tr>
+        <td>${getHebrewTypeName(d.type)}</td>
+        <td>${d.veh}</td>
+        <td>${d.bike}</td>
+        <td>${d.moto}</td>
+        <td><small class="text-muted">${d.calcDesc}</small></td>
+      </tr>
+    `).join('');
+
+    area.innerHTML = `
+      <div class="row g-3">
+        <div class="col-6">
+          <div class="p-3 bg-light rounded">
+            <div class="result-label">סה"כ חניות רכב</div>
+            <div class="result-number">${result.totalVehicles}</div>
+            ${result.reduction > 0 ? `<span class="badge bg-success">הפחתה של ${result.reduction}%</span>` : ''}
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-3 bg-light rounded">
+            <div class="result-label">חניות אופניים</div>
+            <div class="result-number">${result.totalBicycle}</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-3 bg-light rounded">
+            <div class="result-label">חניות אופנועים</div>
+            <div class="result-number">${result.totalMotorcycle}</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-3 bg-light rounded">
+            <div class="result-label">תפעולי + אורחים</div>
+            <div class="result-number">${result.operational + result.guest}</div>
+            <small class="text-muted">(תפעולי: ${result.operational}, אורחים: ${result.guest})</small>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <h6 class="fw-bold">פירוט חישוב לפי ייעודים</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover text-end">
+          <thead><tr><th>ייעוד</th><th>רכב</th><th>אופניים</th><th>אופנוע</th><th>חישוב</th></tr></thead>
+          <tbody>${detailRows}</tbody>
+        </table>
+      </div>
+      <div class="mt-2">
+        <span class="badge bg-secondary">אזור ${result.zone}</span>
+        ${result.mixedUse ? '<span class="badge bg-success">יושם שיתוף חניה בשימושים מעורבים</span>' : ''}
+      </div>
+    `;
+  }
+
+  function performCalculation() {
+    try {
+      const zone = getZone();
+      const mixedUse = document.getElementById('mixedUseSharing').value === 'true';
+      const landUses = getLandUses();
+      const opLoading = parseInt(document.getElementById('opLoading').value) || 0;
+      const opStage = parseInt(document.getElementById('opStage').value) || 0;
+      const opBus = parseInt(document.getElementById('opBus').value) || 0;
+      const guestParking = parseInt(document.getElementById('guestParking').value) || 0;
+
+      const data = {
+        zone,
+        mixedUseSharing: mixedUse,
+        landUses,
+        opLoading,
+        opStage,
+        opBus,
+        guestParking
+      };
+
+      const result = calculateParking(data);
+      renderResults(result);
+    } catch (err) {
+      console.error('שגיאה בחישוב:', err);
+      document.getElementById('resultsArea').innerHTML = `
+        <div class="alert alert-danger">שגיאה: ${err.message}</div>
+      `;
+    }
+  }
+
+  document.getElementById('calcBtn').addEventListener('click', performCalculation);
+
+  document.getElementById('addLandUseBtn').addEventListener('click', function() {
+    const container = document.getElementById('landUseContainer');
+    const newItem = document.createElement('div');
+    newItem.className = 'land-use-item';
+    newItem.dataset.type = 'custom';
+    newItem.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center">
+        <h6 class="fw-bold mb-0"><i class="bi bi-puzzle"></i> מותאם אישית</h6>
+        <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
+      </div>
+      <div class="row g-2 mt-1">
+        <div class="col-6">
+          <label class="form-label small">שטח (מ"ר)</label>
+          <input type="number" class="form-control land-use-input" data-field="area" value="300" min="0">
+        </div>
+        <div class="col-6">
+          <label class="form-label small">תקן (מ"ר/חניה)</label>
+          <input type="number" class="form-control land-use-input" data-field="rate" value="50" min="10">
+        </div>
+      </div>
+    `;
+    container.appendChild(newItem);
+    newItem.querySelector('.remove-landuse').addEventListener('click', function() {
+      this.closest('.land-use-item').remove();
+    });
+  });
+
+  document.querySelectorAll('.remove-landuse').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.land-use-item').remove();
+    });
+  });
+
+  window.addEventListener('load', function() {
+    setTimeout(performCalculation, 300);
+  });
+})();
+</script>
+</body>
+</html>

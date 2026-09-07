@@ -411,7 +411,7 @@ function render(cfg){
        + '<td class="val" colspan="'+twoArm.length+'">'+rnd(r.table2.totalBest)+'</td></tr></tbody></table>';
     var flips = twoArm.filter(function(a){return a.chosen==='ב';});
     h += '<p class="note">' + (flips.length
-        ? 'במקטע ' + flips.map(function(a){return a.he;}).join(' ו') + ' הפיצול יוצא זול יותר מהפאזות המשותפות.'
+        ? 'במקטח ' + flips.map(function(a){return a.he;}).join(' ו') + ' הפיצול יוצא זול יותר מהפאזות המשותפות.'
         : 'בכל המקטעים האופציה המשותפת יוצאת זולה יותר.') + '</p>';
   }
   h += '</section>';
@@ -493,9 +493,9 @@ function paintPanel(){
 
 function refresh(){
   var P = ARMS.filter(function(a){ return cfg[a].exists; });
-  document.getElementById('liveSchematic').innerHTML = schematic(P, allMoves(P), 150);
-  document.getElementById('liveCap').textContent =
-    P.length + ' זרועות · ' + allMoves(P).length + ' תנועות';
+  var moves = allMoves(P);  // Compute once
+  document.getElementById('liveSchematic').innerHTML = schematic(P, moves, 150);
+  document.getElementById('liveCap').textContent = P.length + ' זרועות · ' + moves.length + ' תנועות';
   window.__last = render(cfg);
 }
 
@@ -537,10 +537,10 @@ document.getElementById('btnClear').addEventListener('click', function(){ load({
 document.getElementById('btnJson').addEventListener('click', function(){
   var el = document.getElementById('jsonOut');
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
-  el.textContent = JSON.stringify(summary(window.__last), null, 2);
+  el.textContent = JSON.stringify(window.__last ? summary(window.__last) : {}, null, 2);
 });
 document.getElementById('btnCopy').addEventListener('click', function(){
-  var txt = JSON.stringify(summary(window.__last), null, 2);
+  var txt = JSON.stringify(window.__last ? summary(window.__last) : {}, null, 2);
   navigator.clipboard.writeText(txt).then(function(){
     var m = document.getElementById('copyMsg');
     m.textContent = 'הועתק'; setTimeout(function(){ m.textContent=''; }, 2000);

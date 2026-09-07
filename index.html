@@ -661,6 +661,75 @@
             display: none
         }
 
+        /* ---------- CONNECT YOUR CODE SECTION ---------- */
+        .connect-area {
+            padding: 20px 0;
+        }
+        .connect-area .input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .connect-area .input-group label {
+            font-weight: 600;
+            color: var(--muted);
+        }
+        .connect-area .input-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border: 1px solid var(--rule);
+            border-radius: 3px;
+            font-family: inherit;
+            background: var(--paper-2);
+            color: var(--ink);
+        }
+        .connect-area .input-group button {
+            background: var(--marking);
+            color: var(--ink);
+            border: none;
+            padding: 10px 22px;
+            border-radius: 3px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.15s ease;
+        }
+        .connect-area .input-group button:hover {
+            background: #F3C455;
+        }
+        .connect-area .hint {
+            color: var(--muted);
+            font-size: 14px;
+            margin: 8px 0 0 0;
+        }
+        .connect-area .hint a {
+            color: var(--marking);
+            text-decoration: underline;
+        }
+        .connect-area .code-sample {
+            background: var(--paper-2);
+            padding: 16px 20px;
+            border-radius: 4px;
+            border-right: 4px solid var(--marking);
+            margin-top: 12px;
+        }
+        .connect-area .code-sample p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--muted);
+        }
+        .connect-area .code-sample code {
+            background: var(--rule);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: monospace;
+            word-break: break-all;
+            direction: ltr;
+            display: inline-block;
+        }
+
         /* ---------- תחתית ---------- */
         footer {
             background: var(--asphalt);
@@ -747,6 +816,7 @@
                     <a href="#rural">בין-עירוני</a>
                     <a href="#common">משותף</a>
                     <a href="#access">גישה</a>
+                    <a href="#connect">חיבור קוד</a>
                     <a href="#coming">בפיתוח</a>
                     <a href="critical-lane-volume.html">מחשבון פאזות</a>
                     <a href="apis.html">English</a>
@@ -952,6 +1022,26 @@
                 </div>
 
                 <p class="note">המפתחות מונפקים ידנית לאחר התשלום — שלחו את כתובת המייל שממנה שילמתם ותקבלו את המפתח בחזרה. אפשר לבטל בכל עת במייל.</p>
+            </section>
+
+            <!-- ========== CONNECT YOUR CODE ========== -->
+            <section class="group" id="connect">
+                <div class="group-head">
+                    <h2>חיבור קוד – API למפתחים</h2>
+                    <p>התחברו ל‑API שלנו ושלבו את החישובים בפרויקטים שלכם. הזינו מפתח API או התחברו דרך GitHub.</p>
+                </div>
+                <div class="connect-area">
+                    <div class="input-group">
+                        <label for="api-key-input">מפתח API:</label>
+                        <input type="text" id="api-key-input" placeholder="הזן את מפתח ה-API שלך">
+                        <button id="connect-api-btn">התחבר</button>
+                    </div>
+                    <p class="hint">לקבלת מפתח API, צרו קשר דרך המייל או רכשו מנוי. ניתן גם <a href="#">להתחבר עם GitHub</a>.</p>
+                    <div class="code-sample">
+                        <p><strong>דוגמת חיבור:</strong></p>
+                        <p><code>fetch('https://api.mahalco.com/v1/calculate', { method: 'POST', headers: { 'Authorization': 'Bearer YOUR_API_KEY' }, body: JSON.stringify(data) })</code></p>
+                    </div>
+                </div>
             </section>
 
             <!-- ========== COMING WORKS / AI PROJECTS ========== -->

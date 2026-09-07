@@ -1,0 +1,103 @@
+};
+    }
+
+    // ---------- Render results function ----------
+    function renderResults(res) {
+        const area = document.getElementById('resultsArea');
+        const rating = getSafetyRating(res.relativeRisk);
+
+        let html = `
+            <div class="text-center result-section">
+                <div class="result-label">Expected Crashes (${res.analysisPeriod}-Yr Period)</div>
+                <div class="result-number">${res.expectedOverPeriod.toFixed(1)}</div>
+                <p class="text-muted mt-2 mb-0">Predicted Base SPF: <strong>${res.predictedOverPeriod.toFixed(1)} crashes</strong></p>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-shield"></i> Safety Performance Rating</h6>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="fw-bold">${rating.rating} Risk</span>
+                    <span class="badge badge-grade ${rating.grade}">Relative Risk: ${res.relativeRisk.toFixed(2)}</span>
+                </div>
+                <p class="small text-muted mt-1 mb-0">${rating.desc}</p>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-bar-chart"></i> Crash Severity Distribution</h6>
+                <div class="row text-center mt-2">
+                    <div class="col-4">
+                        <div class="metric-box">
+                            <div class="value">${(res.fatalPerYear * res.analysisPeriod).toFixed(1)}</div>
+                            <div class="label">Fatal</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="metric-box">
+                            <div class="value">${(res.injuryPerYear * res.analysisPeriod).toFixed(1)}</div>
+                            <div class="label">Injury</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="metric-box">
+                            <div class="value">${(res.pdoPerYear * res.analysisPeriod).toFixed(1)}</div>
+                            <div class="label">PDO</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-sliders"></i> Applied CMFs (Combined: ${res.combinedCMF.toFixed(3)})</h6>
+                <div class="mt-2">
+        `;
+
+        res.cmfs.forEach(c => {
+            html += `<span class="cmf-tag">${c.name}: ${c.value.toFixed(2)}</span>`;
+        });
+
+        html += `
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-lightbulb"></i> Safety Recommendations</h6>
+                <div class="mt-2">
+        `;
+
+        // Generate recommendations inline based on relative risk / parameters
+        let recs = [];
+        if (res.relativeRisk > 1.1) {
+            recs.push("Consider comprehensive corridor safety audit due to elevated crash frequency.");
+        }
+        if (res.anglePct > 35) {
+            recs.push("High angle crash concentration detected. Review signal timing and left-turn phases.");
+        }
+        if (res.pedPct > 10) {
+            recs.push("High pedestrian exposure. Evaluate crosswalk enhancements and leading pedestrian intervals.");
+        }
+        if (recs.length === 0) {
+            recs.push("Intersection performs within expected safety parameters.");
+        }
+
+        recs.forEach(r => {
+            html += `<div class="recommendation-item small">${r}</div>`;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        area.innerHTML = html;
+    }
+
+    // ---------- Event listener ----------
+    document.getElementById('calcBtn').addEventListener('click', function() {
+        const results = calculateSPF();
+        renderResults(results);
+    });
+
+})();
+</script>
+</body>
+</html>

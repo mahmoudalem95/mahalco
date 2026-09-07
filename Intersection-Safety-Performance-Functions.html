@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intersection SPF – HSM Chapter 12</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body { background: #f0f2f5; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .container { max-width: 1500px; }
+        .card { border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; border: none; }
+        .card-header { background: #1a3a5c; color: white; border-radius: 14px 14px 0 0; font-weight: 700; font-size: 1.05rem; padding: 14px 20px; }
+        .card-header i { margin-right: 8px; }
+        .result-number { font-size: 2.4rem; font-weight: 800; color: #1a3a5c; }
+        .result-label { font-size: 0.85rem; color: #6c757d; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+        .result-section { background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .result-section h6 { font-weight: 700; color: #1a3a5c; }
+        .form-label { font-weight: 600; font-size: 0.9rem; }
+        .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; }
+        .form-control:focus, .form-select:focus { border-color: #1a3a5c; box-shadow: 0 0 0 0.25rem rgba(26,58,92,0.15); }
+        .btn-primary { background: #1a3a5c; border-color: #1a3a5c; border-radius: 10px; font-weight: 700; padding: 12px; }
+        .btn-primary:hover { background: #0f2a44; border-color: #0f2a44; }
+        .scrollable-results { max-height: 750px; overflow-y: auto; padding-right: 4px; }
+        .scrollable-results::-webkit-scrollbar { width: 6px; }
+        .scrollable-results::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
+        .footer-text { font-size: 0.8rem; color: #6c757d; }
+        .metric-box { background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e9ecef; height: 100%; }
+        .metric-box .value { font-size: 1.5rem; font-weight: 700; color: #1a3a5c; }
+        .metric-box .label { font-size: 0.75rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-grade { font-size: 0.85rem; padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+        .grade-low { background: #d1e7dd; color: #0a3622; }
+        .grade-moderate { background: #fff3cd; color: #664d03; }
+        .grade-high { background: #f8d7da; color: #721c24; }
+        .grade-very_high { background: #dc3545; color: white; }
+        .cmf-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; margin: 1px; background: #e9ecef; }
+        .recommendation-item { padding: 6px 10px; border-left: 3px solid #1a3a5c; margin-bottom: 4px; background: white; border-radius: 0 6px 6px 0; }
+        .severity-bar { height: 20px; border-radius: 4px; overflow: hidden; display: flex; }
+        .severity-bar .seg { height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; font-weight: 600; }
+        .input-group-sm .form-control { font-size: 0.85rem; }
+        .section-divider { border-top: 2px dashed #dee2e6; margin: 16px 0; }
+        @media (max-width: 768px) {
+            .result-number { font-size: 2rem; }
+            .metric-box .value { font-size: 1.2rem; }
+            .severity-bar .seg { font-size: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1 class="display-5 fw-bold mb-2"><i class="bi bi-shield-exclamation text-primary me-2"></i>Intersection SPF – Urban</h1>
+    <p class="text-muted mb-4">HSM Chapter 12 — Safety Performance Functions for urban signalized and unsignalized intersections. Predict crash frequency, apply CMFs, Empirical Bayes adjustment, and prioritize improvements.</p>
+
+    <div class="row">
+
+        <!-- LEFT: INPUT FORM -->
+        <div class="col-lg-7">
+            <form id="spfForm">
+
+                <!-- Intersection Characteristics -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-info-circle"></i> Intersection Characteristics</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Intersection ID</label>
+                                <input type="text" class="form-control" id="intersectionId" value="MAIN_5TH_INTERSECTION">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Intersection Type</label>
+                                <select class="form-select" id="intersectionType">
+                                    <option value="signalized" selected>Signalized</option>
+                                    <option value="unsignalized">Unsignalized</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Number of Legs</label>
+                                <select class="form-select" id="numLegs">
+                                    <option value="3">3 (T‑intersection)</option>
+                                    <option value="4" selected>4 (Cross intersection)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Major Road AADT (vpd)</label>
+                                <input type="number" class="form-control" id="majorAadt" value="18000" min="100" step="100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Minor Road AADT (vpd)</label>
+                                <input type="number" class="form-control" id="minorAadt" value="8000" min="100" step="100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Analysis Period (years)</label>
+                                <input type="number" class="form-control" id="analysisPeriod" value="5" min="1" max="20">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Geometric Features -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-rulers"></i> Geometric &amp; Traffic Features</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Major Speed (mph)</label>
+                                <input type="number" class="form-control" id="majorSpeed" value="45" min="15" max="65">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Minor Speed (mph)</label>
+                                <input type="number" class="form-control" id="minorSpeed" value="35" min="15" max="55">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Major Lanes</label>
+                                <input type="number" class="form-control" id="majorLanes" value="4" min="2" max="8">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Minor Lanes</label>
+                                <input type="number" class="form-control" id="minorLanes" value="2" min="1" max="6">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Major Median Type</label>
+                                <select class="form-select" id="majorMedian">
+                                    <option value="none">None</option>
+                                    <option value="twltl">TWLTL</option>
+                                    <option value="raised_curb" selected>Raised Curb</option>
+                                    <option value="barrier">Barrier</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Minor Median Type</label>
+                                <select class="form-select" id="minorMedian">
+                                    <option value="none" selected>None</option>
+                                    <option value="twltl">TWLTL</option>
+                                    <option value="raised_curb">Raised Curb</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Left Turn Lanes (Major)</label>
+                                <select class="form-select" id="ltLanesMajor">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Left Turn Lanes (Minor)</label>
+                                <select class="form-select" id="ltLanesMinor">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Signal Phasing</label>
+                                <select class="form-select" id="signalPhasing">
+                                    <option value="permissive">Permissive</option>
+                                    <option value="protected" selected>Protected</option>
+                                    <option value="protected_permissive">Protected + Permissive</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Pedestrian Signals?</label>
+                                <select class="form-select" id="pedSignals">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Lighting Quality</label>
+                                <select class="form-select" id="lightingQuality">
+                                    <option value="poor">Poor</option>
+                                    <option value="fair">Fair</option>
+                                    <option value="good" selected>Good</option>
+                                    <option value="excellent">Excellent</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Skew Angle (°)</label>
+                                <input type="number" class="form-control" id="skewAngle" value="0" min="0" max="45">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Truck %</label>
+                                <input type="number" class="form-control" id="truckPct" value="6" min="0" max="100" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bicycle Facilities?</label>
+                                <select class="form-select" id="bikeFacilities">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crash History -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-clipboard-data"></i> Crash History (Last 3 Years)</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Total Crashes</label>
+                                <input type="number" class="form-control" id="totalCrashes" value="18" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Fatal Crashes</label>
+                                <input type="number" class="form-control" id="fatalCrashes" value="1" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Injury Crashes</label>
+                                <input type="number" class="form-control" id="injuryCrashes" value="8" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">PDO Crashes</label>
+                                <input type="number" class="form-control" id="pdoCrashes" value="9" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Nighttime Crashes (%)</label>
+                                <input type="number" class="form-control" id="nightPct" value="30" min="0" max="100">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Angle Crashes (%)</label>
+                                <input type="number" class="form-control" id="anglePct" value="40" min="0" max="100">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Rear-End Crashes (%)</label>
+                                <input type="number" class="form-control" id="rearPct" value="30" min="0" max="100">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Pedestrian Crashes (%)</label>
+                                <input type="number" class="form-control" id="pedPct" value="10" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calibration -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-sliders"></i> Calibration Parameters</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Calibration Factor</label>
+                                <input type="number" class="form-control" id="calibFactor" value="1.05" min="0.5" max="2.0" step="0.01">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Site-Specific Factor</label>
+                                <input type="number" class="form-control" id="siteFactor" value="1.0" min="0.5" max="2.0" step="0.01">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">EB Weight</label>
+                                <input type="number" class="form-control" id="ebWeight" value="0.7" min="0" max="1" step="0.05">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Regional Adjustment</label>
+                                <input type="number" class="form-control" id="regionalAdj" value="1.0" min="0.5" max="1.5" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-lg w-100 mt-2" id="calcBtn">
+                    <i class="bi bi-calculator me-2"></i>Run SPF Analysis
+                </button>
+
+            </form>
+        </div>
+
+        <!-- RIGHT: RESULTS -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-table"></i> SPF Results</div>
+                <div class="card-body scrollable-results" id="resultsArea">
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-clipboard-data fs-1"></i>
+                        <p class="mt-3">Click <strong>"Run SPF Analysis"</strong><br>to compute crash prediction.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="text-center footer-text mt-4 pb-3">
+        Based on Highway Safety Manual (HSM) Chapter 12 – Urban Intersections. All predictions are for guidance only.
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    // ---------- HSM SPF Coefficients (HSM Table 12-3/12-4) ----------
+    const SPF_COEFF = {
+        signalized_4leg: { a: -14.478, b: 0.604, c: 0.520 },
+        signalized_3leg: { a: -13.282, b: 0.542, c: 0.481 },
+        unsignalized_4leg: { a: -13.282, b: 0.542, c: 0.481 },
+        unsignalized_3leg: { a: -11.978, b: 0.498, c: 0.442 }
+    };
+
+    // ---------- CMF lookup ----------
+    function getCMF(name, value) {
+        const cmfs = {
+            'lt_lane_major': { true: 0.85, false: 1.0 },
+            'lt_lane_minor': { true: 0.88, false: 1.0 },
+            'rt_lane_major': { true: 0.95, false: 1.0 },
+            'rt_lane_minor': { true: 0.97, false: 1.0 },
+            'protected_left': { 'protected': 0.90, 'permissive': 1.0, 'protected_permissive': 0.95 },
+            'ped_signals': { true: 0.95, false: 1.0 },
+            'lighting': { 'excellent': 0.85, 'good': 0.90, 'fair': 0.95, 'poor': 1.0 },
+            'skew': function(deg) { return deg > 15 ? 1.15 : 1.0; },
+            'median_major': { 'none': 1.0, 'twltl': 0.97, 'raised_curb': 0.90, 'barrier': 0.85 },
+            'bike_facilities': { true: 0.95, false: 1.0 }
+        };
+        return cmfs[name] || 1.0;
+    }
+
+    // ---------- Helper: get severity distribution ----------
+    function getSeverityDist(intersectionType) {
+        if (intersectionType === 'signalized') {
+            return { fatal: 0.015, injury: 0.40, pdo: 0.585 };
+        } else {
+            return { fatal: 0.020, injury: 0.42, pdo: 0.560 };
+        }
+    }
+
+    // ---------- Helper: safety rating ----------
+    function getSafetyRating(relativeRisk) {
+        if (relativeRisk > 1.25) return { rating: 'Very High', grade: 'grade-very_high', desc: 'Highest crash risk; immediate attention needed' };
+        if (relativeRisk > 1.0) return { rating: 'High', grade: 'grade-high', desc: 'Significant crash risk; high priority' };
+        if (relativeRisk > 0.75) return { rating: 'Moderate', grade: 'grade-moderate', desc: 'Moderate crash risk; medium priority' };
+        if (relativeRisk > 0.5) return { rating: 'Low', grade: 'grade-low', desc: 'Below average crash risk; low priority' };
+        return { rating: 'Very Low', grade: 'grade-low', desc: 'Lowest crash risk; minimal priority' };
+    }
+
+    // ---------- Main calculation ----------
+    function calculateSPF() {
+        // Read inputs
+        const intersectionId = document.getElementById('intersectionId').value || 'Intersection';
+        const intersectionType = document.getElementById('intersectionType').value;
+        const numLegs = parseInt(document.getElementById('numLegs').value) || 4;
+        const majorAadt = parseFloat(document.getElementById('majorAadt').value) || 0;
+        const minorAadt = parseFloat(document.getElementById('minorAadt').value) || 0;
+        const analysisPeriod = parseInt(document.getElementById('analysisPeriod').value) || 5;
+        const majorSpeed = parseFloat(document.getElementById('majorSpeed').value) || 45;
+        const minorSpeed = parseFloat(document.getElementById('minorSpeed').value) || 35;
+        const majorLanes = parseInt(document.getElementById('majorLanes').value) || 4;
+        const minorLanes = parseInt(document.getElementById('minorLanes').value) || 2;
+        const majorMedian = document.getElementById('majorMedian').value;
+        const minorMedian = document.getElementById('minorMedian').value;
+        const ltLanesMajor = document.getElementById('ltLanesMajor').value === 'true';
+        const ltLanesMinor = document.getElementById('ltLanesMinor').value === 'true';
+        const signalPhasing = document.getElementById('signalPhasing').value;
+        const pedSignals = document.getElementById('pedSignals').value === 'true';
+        const lightingQuality = document.getElementById('lightingQuality').value;
+        const skewAngle = parseFloat(document.getElementById('skewAngle').value) || 0;
+        const truckPct = parseFloat(document.getElementById('truckPct').value) || 0;
+        const bikeFacilities = document.getElementById('bikeFacilities').value === 'true';
+        const totalCrashes = parseInt(document.getElementById('totalCrashes').value) || 0;
+        const fatalCrashes = parseInt(document.getElementById('fatalCrashes').value) || 0;
+        const injuryCrashes = parseInt(document.getElementById('injuryCrashes').value) || 0;
+        const pdoCrashes = parseInt(document.getElementById('pdoCrashes').value) || 0;
+        const nightPct = parseFloat(document.getElementById('nightPct').value) || 0;
+        const anglePct = parseFloat(document.getElementById('anglePct').value) || 0;
+        const rearPct = parseFloat(document.getElementById('rearPct').value) || 0;
+        const pedPct = parseFloat(document.getElementById('pedPct').value) || 0;
+        const calibFactor = parseFloat(document.getElementById('calibFactor').value) || 1.0;
+        const siteFactor = parseFloat(document.getElementById('siteFactor').value) || 1.0;
+        const ebWeight = parseFloat(document.getElementById('ebWeight').value) || 0.7;
+        const regionalAdj = parseFloat(document.getElementById('regionalAdj').value) || 1.0;
+
+        // ---- Step 1: Determine base SPF ----
+        let coeffKey;
+        if (intersectionType === 'signalized') {
+            coeffKey = numLegs === 4 ? 'signalized_4leg' : 'signalized_3leg';
+        } else {
+            coeffKey = numLegs === 4 ? 'unsignalized_4leg' : 'unsignalized_3leg';
+        }
+        const coeff = SPF_COEFF[coeffKey];
+        let baseSPF = Math.exp(coeff.a + coeff.b * Math.log(majorAadt) + coeff.c * Math.log(minorAadt));
+
+        // ---- Step 3: Apply CMFs ----
+        let cmfs = [];
+        let cmfValues = [];
+
+        // LT lanes major
+        let cmf_lt_major = ltLanesMajor ? 0.85 : 1.0;
+        cmfs.push({ name: 'Left Turn Lane (Major)', value: cmf_lt_major, desc: 'Reduces angle crashes by 15%' });
+        cmfValues.push(cmf_lt_major);
+
+        // LT lanes minor
+        let cmf_lt_minor = ltLanesMinor ? 0.88 : 1.0;
+        cmfs.push({ name: 'Left Turn Lane (Minor)', value: cmf_lt_minor, desc: 'Reduces angle crashes by 12%' });
+        cmfValues.push(cmf_lt_minor);
+
+        // Signal phasing
+        let cmf_phasing = signalPhasing === 'protected' ? 0.90 : (signalPhasing === 'protected_permissive' ? 0.95 : 1.0);
+        cmfs.push({ name: 'Signal Phasing', value: cmf_phasing, desc: 'Protected left reduces angle crashes by 10%' });
+        cmfValues.push(cmf_phasing);
+
+        // Pedestrian signals
+        let cmf_ped = pedSignals ? 0.95 : 1.0;
+        cmfs.push({ name: 'Pedestrian Signals', value: cmf_ped, desc: 'Reduces pedestrian crashes by 5%' });
+        cmfValues.push(cmf_ped);
+
+        // Lighting
+        let cmf_light = lightingQuality === 'excellent' ? 0.85 : (lightingQuality === 'good' ? 0.90 : (lightingQuality === 'fair' ? 0.95 : 1.0));
+        cmfs.push({ name: 'Lighting', value: cmf_light, desc: 'Good lighting reduces crashes by 10%' });
+        cmfValues.push(cmf_light);
+
+        // Skew
+        let cmf_skew = skewAngle > 15 ? 1.15 : 1.0;
+        cmfs.push({ name: 'Skew Angle', value: cmf_skew, desc: skewAngle > 15 ? 'Increases crashes by 15%' : 'No skew impact' });
+        cmfValues.push(cmf_skew);
+
+        // Median (major)
+        let cmf_median_major = majorMedian === 'raised_curb' ? 0.90 : (majorMedian === 'barrier' ? 0.85 : (majorMedian === 'twltl' ? 0.97 : 1.0));
+        cmfs.push({ name: 'Median (Major)', value: cmf_median_major, desc: 'Raised curb median reduces crashes by 10%' });
+        cmfValues.push(cmf_median_major);
+
+        // Bicycle facilities
+        let cmf_bike = bikeFacilities ? 0.95 : 1.0;
+        cmfs.push({ name: 'Bicycle Facilities', value: cmf_bike, desc: 'Reduces bicycle crashes by 5%' });
+        cmfValues.push(cmf_bike);
+
+        // Combined CMF
+        let combinedCMF = 1.0;
+        cmfValues.forEach(v => combinedCMF *= v);
+
+        // ---- Step 4: Apply calibration and site factors ----
+        let adjustedSPF = baseSPF * calibFactor * siteFactor * regionalAdj * combinedCMF;
+
+        // ---- Step 5: Calculate predicted crashes ----
+        let predictedPerYear = adjustedSPF;
+        let predictedOverPeriod = predictedPerYear * analysisPeriod;
+
+        // ---- Step 6: Severity distribution ----
+        const sevDist = getSeverityDist(intersectionType);
+        let fatalPerYear = predictedPerYear * sevDist.fatal;
+        let injuryPerYear = predictedPerYear * sevDist.injury;
+        let pdoPerYear = predictedPerYear * sevDist.pdo;
+
+        // ---- Step 7: Crash type distribution ----
+        let anglePerYear = predictedPerYear * (anglePct / 100);
+        let rearPerYear = predictedPerYear * (rearPct / 100);
+        let pedPerYear = predictedPerYear * (pedPct / 100);
+        let bikePerYear = predictedPerYear * (bikeFacilities ? 0.05 : 0.10);
+
+        // ---- Step 8: Empirical Bayes adjustment ----
+        let observedPerYear = totalCrashes / 3;
+        let ebWeightApplied = ebWeight;
+        let expectedPerYear = ebWeightApplied * predictedPerYear + (1 - ebWeightApplied) * observedPerYear;
+        let expectedOverPeriod = expectedPerYear * analysisPeriod;
+
+        // ---- Step 9: Safety rating ----
+        let relativeRisk = expectedPerYear / (predictedPerYear || 1);
+
+        // ---- Build result object ----
+        return {
+            intersectionId,
+            intersectionType,
+            numLegs,
+            analysisPeriod,
+            majorAadt,
+            minorAadt,
+            baseSPF,
+            adjustedSPF,
+            predictedPerYear,
+            predictedOverPeriod,
+            fatalPerYear,
+            injuryPerYear,
+            pdoPerYear,
+            sevDist,
+            anglePerYear,
+            rearPerYear,
+            pedPerYear,
+            bikePerYear,
+            anglePct,
+            rearPct,
+            pedPct,
+            cmfs,
+            combinedCMF,
+            calibFactor,
+            siteFactor,
+            regionalAdj,
+            observedPerYear,
+            expectedPerYear,
+            expectedOverPeriod,
+            ebWeightApplied,
+            relativeRisk
+        };
+    }
+
+    // ---------- Render results function ----------
+    function renderResults(res) {
+        const area = document.getElementById('resultsArea');
+        const rating = getSafetyRating(res.relativeRisk);
+
+        let html = `
+            <div class="text-center result-section">
+                <div class="result-label">Expected Crashes (${res.analysisPeriod}-Yr Period)</div>
+                <div class="result-number">${res.expectedOverPeriod.toFixed(1)}</div>
+                <p class="text-muted mt-2 mb-0">Predicted Base SPF: <strong>${res.predictedOverPeriod.toFixed(1)} crashes</strong></p>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-shield"></i> Safety Performance Rating</h6>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="fw-bold">${rating.rating} Risk</span>
+                    <span class="badge badge-grade ${rating.grade}">Relative Risk: ${res.relativeRisk.toFixed(2)}</span>
+                </div>
+                <p class="small text-muted mt-1 mb-0">${rating.desc}</p>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-bar-chart"></i> Crash Severity Distribution</h6>
+                <div class="row text-center mt-2">
+                    <div class="col-4">
+                        <div class="metric-box">
+                            <div class="value">${(res.fatalPerYear * res.analysisPeriod).toFixed(1)}</div>
+                            <div class="label">Fatal</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="metric-box">
+                            <div class="value">${(res.injuryPerYear * res.analysisPeriod).toFixed(1)}</div>
+                            <div class="label">Injury</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="metric-box">
+                            <div class="value">${(res.pdoPerYear * res.analysisPeriod).toFixed(1)}</div>
+                            <div class="label">PDO</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-sliders"></i> Applied CMFs (Combined: ${res.combinedCMF.toFixed(3)})</h6>
+                <div class="mt-2">
+        `;
+
+        res.cmfs.forEach(c => {
+            html += `<span class="cmf-tag">${c.name}: ${c.value.toFixed(2)}</span>`;
+        });
+
+        html += `
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-lightbulb"></i> Safety Recommendations</h6>
+                <div class="mt-2">
+        `;
+
+        let recs = [];
+        if (res.relativeRisk > 1.1) {
+            recs.push("Consider comprehensive corridor safety audit due to elevated crash frequency.");
+        }
+        if (res.anglePct > 35) {
+            recs.push("High angle crash concentration detected. Review signal timing and left-turn phases.");
+        }
+        if (res.pedPct > 10) {
+            recs.push("High pedestrian exposure. Evaluate crosswalk enhancements and leading pedestrian intervals.");
+        }
+        if (recs.length === 0) {
+            recs.push("Intersection performs within expected safety parameters.");
+        }
+
+        recs.forEach(r => {
+            html += `<div class="recommendation-item small">${r}</div>`;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        area.innerHTML = html;
+    }
+
+    // ---------- Event listener ----------
+    document.getElementById('calcBtn').addEventListener('click', function() {
+        const results = calculateSPF();
+        renderResults(results);
+    });
+
+})();
+</script>
+</body>
+</html>

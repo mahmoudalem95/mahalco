@@ -1,0 +1,113 @@
+// Collect OD data
+        const odItems = document.querySelectorAll('.od-item');
+        const ods = [];
+        odItems.forEach((item, idx) => {
+            const origin = item.querySelector('.od-origin').value;
+            const dest = item.querySelector('.od-dest').value;
+            const type = item.querySelector('.od-type').value;
+            const edtt = parseFloat(item.querySelector('.od-edtt').value) || 0.0;
+            const path = item.querySelector('.od-path').value;
+            const rampTt = parseFloat(item.querySelector('.od-ramp-tt').value) || 0.0;
+
+            ods.push({
+                id: `OD_${idx + 1}`,
+                origin,
+                dest,
+                type,
+                edtt,
+                path,
+                rampTt,
+                los: getETT_LOS(edtt)
+            });
+        });
+
+        // Compute overall interchange metrics
+        const totalInterchangeVol = terminals.reduce((sum, t) => sum + t.totalVol, 0);
+        const overallDelay = terminals.reduce((sum, t) => sum + (t.avgDelay * t.totalVol), 0) / (totalInterchangeVol || 1);
+        const overallLOS = getETT_LOS(overallDelay);
+
+        // Render results into HTML
+        renderResults({
+            interchangeType,
+            signalControl,
+            cycleLength,
+            overallDelay,
+            overallLOS,
+            terminals,
+            ods
+        });
+    }
+
+    // ---------- Render results function ----------
+    function renderResults(data) {
+        const area = document.getElementById('resultsArea');
+        
+        let gradeClass = 'grade-pass';
+        if (data.overallLOS === 'D' || data.overallLOS === 'E') gradeClass = 'grade-warn';
+        if (data.overallLOS === 'F') gradeClass = 'grade-fail';
+
+        let html = `
+            <div class="text-center result-section">
+                <div class="result-label">Interchange Level of Service</div>
+                <div class="result-number"><span class="badge badge-grade ${gradeClass} fs-2">LOS ${data.overallLOS}</span></div>
+                <p class="text-muted mt-2 mb-0">Average Interchange ETT: <strong>${data.overallDelay.toFixed(1)} sec</strong></p>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-geo-alt"></i> Terminal Performance Summaries</h6>
+        `;
+
+        data.terminals.forEach(t => {
+            let tBadge = 'grade-pass';
+            if (t.los === 'D' || t.los === 'E') tBadge = 'grade-warn';
+            if (t.los === 'F') tBadge = 'grade-fail';
+
+            html += `
+                <div class="metric-box mb-2 text-start p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-dark">${t.id} (${t.type.replace('_', ' ')})</span>
+                        <span class="badge badge-grade ${tBadge}">LOS ${t.los}</span>
+                    </div>
+                    <div class="row mt-2 text-center">
+                        <div class="col-4">
+                            <div class="label">Delay</div>
+                            <div class="value fs-6">${t.avgDelay.toFixed(1)}s</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="label">v/c Ratio</div>
+                            <div class="value fs-6">${t.vc_ratio.toFixed(2)}</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="label">95% Queue</div>
+                            <div class="value fs-6">${t.queue_95} ft</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `</div><div class="result-section"><h6><i class="bi bi-diagram-3"></i> OD Route Evaluation</h6>`;
+
+        data.ods.forEach(od => {
+            html += `
+                <div class="od-row">
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold">${od.id}: ${od.origin} $\rightarrow$ ${od.dest}</span>
+                        <span class="badge bg-secondary">LOS ${od.los}</span>
+                    </div>
+                    <div class="small text-muted">Path: ${od.path} | EDTT: ${od.edtt.toFixed(1)}s</div>
+                </div>
+            `;
+        });
+
+        html += `</div>`;
+        area.innerHTML = html;
+    }
+
+    // ---------- Attach event listener to calculate button ----------
+    document.getElementById('calcBtn').addEventListener('click', calculateIRT);
+
+})();
+</script>
+</body>
+</html>

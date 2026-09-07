@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Vehicle Swept Path Analysis – AASHTO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body { background: #f0f2f5; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .container { max-width: 1500px; }
+        .card { border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; border: none; }
+        .card-header { background: #1a3a5c; color: white; border-radius: 14px 14px 0 0; font-weight: 700; font-size: 1.1rem; padding: 14px 20px; }
+        .card-header i { margin-right: 8px; }
+        .result-number { font-size: 2.4rem; font-weight: 800; color: #1a3a5c; }
+        .result-label { font-size: 0.85rem; color: #6c757d; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+        .result-section { background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .result-section h6 { font-weight: 700; color: #1a3a5c; }
+        .form-label { font-weight: 600; font-size: 0.9rem; }
+        .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; }
+        .form-control:focus, .form-select:focus { border-color: #1a3a5c; box-shadow: 0 0 0 0.25rem rgba(26,58,92,0.15); }
+        .btn-primary { background: #1a3a5c; border-color: #1a3a5c; border-radius: 10px; font-weight: 700; padding: 12px; }
+        .btn-primary:hover { background: #0f2a44; border-color: #0f2a44; }
+        .scrollable-results { max-height: 750px; overflow-y: auto; padding-right: 4px; }
+        .scrollable-results::-webkit-scrollbar { width: 6px; }
+        .scrollable-results::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
+        .footer-text { font-size: 0.8rem; color: #6c757d; }
+        .metric-box { background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e9ecef; height: 100%; }
+        .metric-box .value { font-size: 1.6rem; font-weight: 700; color: #1a3a5c; }
+        .metric-box .label { font-size: 0.75rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-grade { font-size: 0.85rem; padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+        .grade-pass { background: #d1e7dd; color: #0a3622; }
+        .grade-fail { background: #f8d7da; color: #721c24; }
+        .grade-warn { background: #fff3cd; color: #664d03; }
+        .swept-table td { font-size: 0.85rem; padding: 4px 8px; }
+        .section-divider { border-top: 2px dashed #dee2e6; margin: 16px 0; }
+        .vehicle-dimensions { background: #e9ecef; border-radius: 6px; padding: 8px 12px; font-size: 0.85rem; }
+        @media (max-width: 768px) {
+            .result-number { font-size: 2rem; }
+            .metric-box .value { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1 class="display-5 fw-bold mb-2"><i class="bi bi-arrows-move text-primary me-2"></i>Design Vehicle Swept Path Analysis</h1>
+    <p class="text-muted mb-4">AASHTO Green Book Chapter 2 – Turning path simulation, off‑tracking, clearance checks, and geometric recommendations for intersections, roundabouts, and parking facilities.</p>
+
+    <div class="row">
+
+        <!-- LEFT: INPUT FORM -->
+        <div class="col-lg-7">
+            <form id="sweptForm">
+
+                <!-- Vehicle Selection -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-truck"></i> Vehicle &amp; Turning Parameters</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Design Vehicle</label>
+                                <select class="form-select" id="vehicleType">
+                                    <option value="P">Passenger Car (P)</option>
+                                    <option value="SU">Single-Unit Truck (SU)</option>
+                                    <option value="WB-40">WB-40 (40 ft Semi-Trailer)</option>
+                                    <option value="WB-50">WB-50 (50 ft Semi-Trailer)</option>
+                                    <option value="WB-62">WB-62 (62 ft Semi-Trailer)</option>
+                                    <option value="WB-67" selected>WB-67 (67 ft Interstate Semi-Trailer)</option>
+                                    <option value="WB-100">WB-100 (100 ft Double-Trailer)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Turning Angle (°)</label>
+                                <input type="number" class="form-control" id="turnAngle" value="90" min="0" max="360">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Path Radius (ft)</label>
+                                <input type="number" class="form-control" id="pathRadius" value="50" min="10" step="5">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Approach Speed (mph)</label>
+                                <input type="number" class="form-control" id="speed" value="5" min="0" step="1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Entry Tangent Length (ft)</label>
+                                <input type="number" class="form-control" id="entryTangent" value="20" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Exit Tangent Length (ft)</label>
+                                <input type="number" class="form-control" id="exitTangent" value="20" min="0">
+                            </div>
+                        </div>
+                        <div class="mt-2 vehicle-dimensions">
+                            <span id="vehicleDimDisplay"><strong>WB-67:</strong> Length 67 ft, Width 8.5 ft, Wheelbase 45 ft</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle characteristics (auto-filled) -->
+                <input type="hidden" id="vehicleLength" value="67">
+                <input type="hidden" id="vehicleWidth" value="8.5">
+                <input type="hidden" id="vehicleHeight" value="13.5">
+                <input type="hidden" id="frontOverhang" value="4">
+                <input type="hidden" id="rearOverhang" value="6">
+                <input type="hidden" id="wheelbase" value="45">
+                <input type="hidden" id="articulated" value="true">
+                <input type="hidden" id="trailerLength" value="28">
+
+                <!-- Intersection Geometry -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-diagram-3"></i> Intersection Geometry</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Approach Width (ft)</label>
+                                <input type="number" class="form-control" id="approachWidth" value="36" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Departure Width (ft)</label>
+                                <input type="number" class="form-control" id="departureWidth" value="36" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Curb Radius (ft)</label>
+                                <input type="number" class="form-control" id="curbRadius" value="25" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Median Present?</label>
+                                <select class="form-select" id="medianPresent">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Median Width (ft)</label>
+                                <input type="number" class="form-control" id="medianWidth" value="0" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Corner Chamfer?</label>
+                                <select class="form-select" id="cornerChamfer">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Chamfer Length (ft)</label>
+                                <input type="number" class="form-control" id="chamferLength" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roundabout Geometry (optional) -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-arrow-repeat"></i> Roundabout Geometry (optional)</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Type</label>
+                                <select class="form-select" id="roundaboutType">
+                                    <option value="single_lane">Single Lane</option>
+                                    <option value="multi_lane">Multi Lane</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Central Island Diameter (ft)</label>
+                                <input type="number" class="form-control" id="islandDiameter" value="100" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Circulatory Width (ft)</label>
+                                <input type="number" class="form-control" id="circulatoryWidth" value="16" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Entry Width (ft)</label>
+                                <input type="number" class="form-control" id="entryWidth" value="18" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Exit Width (ft)</label>
+                                <input type="number" class="form-control" id="exitWidth" value="18" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Entry Radius (ft)</label>
+                                <input type="number" class="form-control" id="entryRadius" value="20" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Truck Apron Present?</label>
+                                <select class="form-select" id="truckApron">
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Apron Width (ft)</label>
+                                <input type="number" class="form-control" id="apronWidth" value="6" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parking Geometry -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-p-square"></i> Parking Geometry (optional)</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Lot Type</label>
+                                <select class="form-select" id="parkingLotType">
+                                    <option value="perpendicular">Perpendicular (90°)</option>
+                                    <option value="angle">Angle (45° / 60°)</option>
+                                    <option value="parallel">Parallel</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Stall Width (ft)</label>
+                                <input type="number" class="form-control" id="stallWidth" value="9" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Stall Depth (ft)</label>
+                                <input type="number" class="form-control" id="stallDepth" value="20" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Aisle Width (ft)</label>
+                                <input type="number" class="form-control" id="aisleWidth" value="24" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Parking Angle (°)</label>
+                                <input type="number" class="form-control" id="parkingAngle" value="90" min="0" max="90">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">One-Way Aisle?</label>
+                                <select class="form-select" id="oneWayAisle">
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clearance Requirements -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-rulers"></i> Clearance Requirements</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Vehicle Clearance (ft)</label>
+                                <input type="number" class="form-control" id="vehicleClearance" value="1.5" min="0" step="0.1">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Curb Clearance (ft)</label>
+                                <input type="number" class="form-control" id="curbClearance" value="0.5" min="0" step="0.1">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Object Clearance (ft)</label>
+                                <input type="number" class="form-control" id="objectClearance" value="2.0" min="0" step="0.1">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Pedestrian Clearance (ft)</label>
+                                <input type="number" class="form-control" id="pedClearance" value="3.0" min="0" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-lg w-100 mt-2" id="calcBtn">
+                    <i class="bi bi-calculator me-2"></i>Run Swept Path Analysis
+                </button>
+
+            </form>
+        </div>
+
+        <!-- RIGHT: RESULTS -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-table"></i> Analysis Results</div>
+                <div class="card-body scrollable-results" id="resultsArea">
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-clipboard-data fs-1"></i>
+                        <p class="mt-3">Click <strong>"Run Swept Path Analysis"</strong><br>to compute turning path and geometry checks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="text-center footer-text mt-4 pb-3">
+        Based on AASHTO Green Book Chapter 2 – Design Vehicles and Turning Templates.
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    // ---------- Vehicle data ----------
+    const vehicleData = {
+        'P': { name: 'Passenger Car', length: 19, width: 7, height: 4.5, wheelbase: 11, frontOverhang: 3, rearOverhang: 5, articulated: false, trailerLength: 0 },
+        'SU': { name: 'Single-Unit Truck', length: 30, width: 8, height: 12.5, wheelbase: 20, frontOverhang: 4, rearOverhang: 6, articulated: false, trailerLength: 0 },
+        'WB-40': { name: 'WB-40 Semi-Trailer', length: 42, width: 8.5, height: 13.5, wheelbase: 30, frontOverhang: 4, rearOverhang: 6, articulated: true, trailerLength: 16 },
+        'WB-50': { name: 'WB-50 Semi-Trailer', length: 50, width: 8.5, height: 13.5, wheelbase: 35, frontOverhang: 4, rearOverhang: 6, articulated: true, trailerLength: 22 },
+        'WB-62': { name: 'WB-62 Semi-Trailer', length: 62, width: 8.5, height: 13.5, wheelbase: 42, frontOverhang: 4, rearOverhang: 6, articulated: true, trailerLength: 28 },
+        'WB-67': { name: 'WB-67 Semi-Trailer', length: 67, width: 8.5, height: 13.5, wheelbase: 45, frontOverhang: 4, rearOverhang: 6, articulated: true, trailerLength: 28 },
+        'WB-100': { name: 'WB-100 Double-Trailer', length: 100, width: 8.5, height: 13.5, wheelbase: 65, frontOverhang: 4, rearOverhang: 6, articulated: true, trailerLength: 48 }
+    };
+
+    // Minimum curb radii (AASHTO)
+    const minCurbRadius = {
+        'P': 20,
+        'SU': 25,
+        'WB-40': 30,
+        'WB-50': 35,
+        'WB-62': 40,
+        'WB-67': 45,
+        'WB-100': 55
+    };
+
+    // Minimum lane width for turning
+    const minTurnLaneWidth = {
+        'P': 12,
+        'SU': 14,
+        'WB-40': 16,
+        'WB-50': 18,
+        'WB-62': 18,
+        'WB-67': 20,
+        'WB-100': 22
+    };
+
+    // ---------- Update vehicle dimensions display ----------
+    function updateVehicleDisplay() {
+        const type = document.getElementById('vehicleType').value;
+        const v = vehicleData[type];
+        document.getElementById('vehicleDimDisplay').innerHTML =
+            `<strong>${v.name}:</strong> Length ${v.length} ft, Width ${v.width} ft, Wheelbase ${v.wheelbase} ft`;
+        // Update hidden fields
+        document.getElementById('vehicleLength').value = v.length;
+        document.getElementById('vehicleWidth').value = v.width;
+        document.getElementById('vehicleHeight').value = v.height;
+        document.getElementById('frontOverhang').value = v.frontOverhang;
+        document.getElementById('rearOverhang').value = v.rearOverhang;
+        document.getElementById('wheelbase').value = v.wheelbase;
+        document.getElementById('articulated').value = v.articulated ? 'true' : 'false';
+        document.getElementById('trailerLength').value = v.trailerLength;
+    }
+
+    document.getElementById('vehicleType').addEventListener('change', updateVehicleDisplay);
+    updateVehicleDisplay();
+
+    // ---------- Main calculation ----------
+    function calculateSweptPath() {
+        // Read inputs
+        const vehicleType = document.getElementById('vehicleType').value;
+        const v = vehicleData[vehicleType];
+        const turnAngle = parseFloat(document.getElementById('turnAngle').value) || 90;
+        const radius = parseFloat(document.getElementById('pathRadius').value) || 50;
+        const speed = parseFloat(document.getElementById('speed').value) || 5;
+        const entryTangent = parseFloat(document.getElementById('entryTangent').value) || 0;
+        const exitTangent = parseFloat(document.getElementById('exitTangent').value) || 0;
+        const approachWidth = parseFloat(document.getElementById('approachWidth').value) || 0;
+        const departureWidth = parseFloat(document.getElementById('departureWidth').value) || 0;
+        const curbRadius = parseFloat(document.getElementById('curbRadius').value) || 0;
+        const medianPresent = document.getElementById('medianPresent').value === 'true';
+        const medianWidth = parseFloat(document.getElementById('medianWidth').value) || 0;
+        const cornerChamfer = document.getElementById('cornerChamfer').value === 'true';
+        const chamferLength = parseFloat(document.getElementById('chamferLength').value) || 0;
+
+        // Roundabout
+        const roundaboutType = document.getElementById('roundaboutType').value;
+        const islandDiameter = parseFloat(document.getElementById('islandDiameter').value) || 0;
+        const circulatoryWidth = parseFloat(document.getElementById('circulatoryWidth').value) || 0;
+        const entryWidth = parseFloat(document.getElementById('entryWidth').value) || 0;
+        const exitWidth = parseFloat(document.getElementById('exitWidth').value) || 0;
+        const entryRadius = parseFloat(document.getElementById('entryRadius').value) || 0;
+        const truckApron = document.getElementById('truckApron').value === 'true';
+        const apronWidth = parseFloat(document.getElementById('apronWidth').value) || 0;
+
+        // Parking
+        const parkingLotType = document.getElementById('parkingLotType').value;
+        const stallWidth = parseFloat(document.getElementById('stallWidth').value) || 0;
+        const stallDepth = parseFloat(document.getElementById('stallDepth').value) || 0;
+        const aisleWidth = parseFloat(document.getElementById('aisleWidth').value) || 0;
+        const parkingAngle = parseFloat(document.getElementById('parkingAngle').value) || 90;
+        const oneWayAisle = document.getElementById('oneWayAisle').value === 'true';
+
+        // Clearances
+        const vehicleClearance = parseFloat(document.getElementById('vehicleClearance').value) || 1.5;
+        const curbClearance = parseFloat(document.getElementById('curbClearance').value) || 0.5;
+        const objectClearance = parseFloat(document.getElementById('objectClearance').value) || 2.0;
+        const pedClearance = parseFloat(document.getElementById('pedClearance').value) || 3.0;
+
+        // ----- Computations -----
+        const wheelbase = v.wheelbase;
+        const vehicleWidth = v.width;
+        const frontOverhang = v.frontOverhang;
+        const rearOverhang = v.rearOverhang;
+        const articulated = v.articulated;
+        const trailerLength = v.trailerLength;
+
+        // Off-tracking
+        const offTracking = (wheelbase * wheelbase) / (2 * radius);
+        // Swept path width (approx)
+        const sweptWidth = vehicleWidth + offTracking +
+            (frontOverhang * offTracking / wheelbase) +
+            (rearOverhang * offTracking / wheelbase);
+        // Outer radius
+        const outerRadius = radius + vehicleWidth / 2 + frontOverhang;
+        // Inner radius (approximate)
+        const innerRadius = Math.max(0, radius - vehicleWidth / 2 - rearOverhang);
+
+        // Path length
+        const arcLength = (turnAngle * Math.PI / 180) * radius;
+        const totalPathLength = entryTangent + arcLength + exitTangent;
+
+        // Minimum curb radius required
+        const minCurb = minCurbRadius[vehicleType] || 30;
+
+        // Intersection adequacy
+        const curbAdequate = curbRadius >= minCurb;
+        const laneWidthRequired = minTurnLaneWidth[vehicleType] || 16;
+        const laneAdequate = approachWidth >= laneWidthRequired;
+
+        // Roundabout checks
+        const requiredEntryWidth = vehicleWidth + 2 + (articulated ? 4 : 2);
+        const entryWidthAdequate = entryWidth >= requiredEntryWidth;
+        const circulatoryAdequate = circulatoryWidth >= requiredEntryWidth;
+        const islandAdequate = islandDiameter >= (2 * (entryRadius + vehicleWidth));
+        const apronRequired = articulated && truckApron;
+        const apronAdequate = apronRequired ? apronWidth >= 6 : true;
+
+        // Parking checks
+        let stallWidthAdequate = stallWidth >= 8;
+        let aisleWidthAdequate = aisleWidth >= (parkingAngle >= 60 ? 24 : 18);
+        if (vehicleType === 'P') {
+            stallWidthAdequate = stallWidth >= 7.5;
+            aisleWidthAdequate = aisleWidth >= 18;
+        } else if (vehicleType.startsWith('WB') || vehicleType === 'SU') {
+            stallWidthAdequate = stallWidth >= 10;
+            aisleWidthAdequate = aisleWidth >= 30;
+        }
+
+        // Turning circle diameter
+        const turningCircle = 2 * radius;
+
+        // ----- Build result -----
+        const result = {
+            vehicleType,
+            vehicleName: v.name,
+            vehicleLength: v.length,
+            vehicleWidth,
+            wheelbase,
+            turnAngle,
+            radius,
+            offTracking: offTracking.toFixed(1),
+            sweptWidth: sweptWidth.toFixed(1),
+            outerRadius: outerRadius.toFixed(1),
+            innerRadius: Math.max(0, innerRadius.toFixed(1)),
+            arcLength: arcLength.toFixed(1),
+            totalPathLength: totalPathLength.toFixed(1),
+            minCurbRadius: minCurb,
+            curbRadius,
+            curbAdequate,
+            laneWidthRequired,
+            approachWidth,
+            laneAdequate,
+            medianPresent,
+            medianWidth,
+            cornerChamfer,
+            chamferLength,
+            entryWidth,
+            exitWidth,
+            circulatoryWidth,
+            islandDiameter,
+            entryRadius,
+            truckApron,
+            apronWidth,
+            apronRequired,
+            apronAdequate,
+            entryWidthAdequate,
+            circulatoryAdequate,
+            islandAdequate,
+            parkingLotType,
+            stallWidth,
+            stallDepth,
+            aisleWidth,
+            parkingAngle,
+            oneWayAisle,
+            stallWidthAdequate,
+            aisleWidthAdequate,
+            turningCircle,
+            vehicleClearance,
+            curbClearance,
+            objectClearance,
+            pedClearance,
+            articulated,
+            trailerLength
+        };
+        return result;
+    }
+
+    // ---------- Render results ----------
+    function renderResults(r) {
+        const area = document.getElementById('resultsArea');
+
+        // Overall compatibility
+        const compatible = r.curbAdequate && r.laneAdequate && r.entryWidthAdequate && r.circulatoryAdequate;
+        const gradeClass = compatible ? 'grade-pass' : 'grade-fail';
+        const gradeText = compatible ? '✅ Compatible' : '❌ Needs Improvement';
+
+        area.innerHTML = `
+            <!-- Summary Cards -->
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="value">${r.sweptWidth}</div>
+                        <div class="label">Swept Width (ft)</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="value">${r.offTracking}</div>
+                        <div class="label">Off-Tracking (ft)</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="value">${r.outerRadius}</div>
+                        <div class="label">Outer Radius (ft)</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="value">${r.innerRadius}</div>
+                        <div class="label">Inner Radius (ft)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall Status -->
+            <div class="text-center mb-3">
+                <span class="badge-grade ${gradeClass}">${gradeText}</span>
+                <span class="badge bg-secondary ms-2">${r.vehicleName}</span>
+            </div>
+
+            <!-- Path Geometry -->
+            <div class="result-section">
+                <h6><i class="bi bi-arrows-angle-expand"></i> Path Geometry</h6>
+                <div class="row small">
+                    <div class="col-6"><span class="fw-bold">Turn Angle:</span> ${r.turnAngle}°</div>
+                    <div class="col-6"><span class="fw-bold">Radius:</span> ${r.radius} ft</div>
+                    <div class="col-6"><span class="fw-bold">Arc Length:</span> ${r.arcLength} ft</div>
+                    <div class="col-6"><span class="fw-bold">Total Path:</span> ${r.totalPathLength} ft</div>
+                    <div class="col-6"><span class="fw-bold">Turning Circle Diameter:</span> ${r.turningCircle} ft</div>
+                </div>
+            </div>
+
+            <!-- Intersection Geometry -->
+            <div class="result-section">
+                <h6><i class="bi bi-diagram-3"></i> Intersection Checks</h6>
+                <div class="row small">
+                    <div class="col-6"><span class="fw-bold">Curb Radius:</span> ${r.curbRadius} ft (min ${r.minCurbRadius})</div>
+                    <div class="col-6">${r.curbAdequate ? '✅ Adequate' : '❌ Shortfall '+(r.minCurbRadius-r.curbRadius).toFixed(1)+' ft'}</div>
+                    <div class="col-6"><span class="fw-bold">Approach Lane Width:</span> ${r.approachWidth} ft (need ${r.laneWidthRequired})</div>
+                    <div class="col-6">${r.laneAdequate ? '✅ Adequate' : '❌ Need +'+(r.laneWidthRequired-r.approachWidth).toFixed(0)+' ft'}</div>
+                    <div class="col-6"><span class="fw-bold">Median:</span> ${r.medianPresent ? 'Yes ('+r.medianWidth+' ft)' : 'No'}</div>
+                    <div class="col-6"><span class="fw-bold">Corner Chamfer:</span> ${r.cornerChamfer ? 'Yes ('+r.chamferLength+' ft)' : 'No'}</div>
+                </div>
+            </div>
+
+            <!-- Roundabout -->
+            <div class="result-section">
+                <h6><i class="bi bi-arrow-repeat"></i> Roundabout Compatibility</h6>
+                <div class="row small">
+                    <div class="col-6"><span class="fw-bold">Entry Width:</span> ${r.entryWidth} ft</div>
+                    <div class="col-6">${r.entryWidthAdequate ? '✅ Adequate' : '❌ Shortfall'}</div>
+                    <div class="col-6"><span class="fw-bold">Circulatory Width:</span> ${r.circulatoryWidth} ft</div>
+                    <div class="col-6">${r.circulatoryAdequate ? '✅ Adequate' : '❌ Shortfall'}</div>
+                    <div class="col-6"><span class="fw-bold">Truck Apron:</span> ${r.truckApron ? 'Yes ('+r.apronWidth+' ft)' : 'No'}</div>
+                    <div class="col-6">${r.apronAdequate ? '✅ Adequate' : '❌ Shortfall'}</div>
+                </div>
+            </div>
+
+            <!-- Parking Geometry -->
+            <div class="result-section">
+                <h6><i class="bi bi-p-square"></i> Parking Lot Checks</h6>
+                <div class="row small">
+                    <div class="col-6"><span class="fw-bold">Lot Type:</span> ${r.parkingLotType}</div>
+                    <div class="col-6"><span class="fw-bold">Angle:</span> ${r.parkingAngle}°</div>
+                    <div class="col-6"><span class="fw-bold">Stall Width:</span> ${r.stallWidth} ft</div>
+                    <div class="col-6">${r.stallWidthAdequate ? '✅ Adequate' : '❌ Too Narrow'}</div>
+                    <div class="col-6"><span class="fw-bold">Aisle Width:</span> ${r.aisleWidth} ft</div>
+                    <div class="col-6">${r.aisleWidthAdequate ? '✅ Adequate' : '❌ Too Narrow'}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Bind calculate button
+    document.getElementById('calcBtn').addEventListener('click', function() {
+        const res = calculateSweptPath();
+        renderResults(res);
+    });
+
+})();
+</script>
+</body>
+</html>

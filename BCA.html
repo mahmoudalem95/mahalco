@@ -1,0 +1,126 @@
+let worstBcr = bcr * 0.65;
+
+        // Render HTML output
+        const resultsArea = document.getElementById('resultsArea');
+        resultsArea.innerHTML = `
+            <div class="result-section text-center">
+                <div class="result-label">Project Name</div>
+                <h4>${escapeHtml(projectName)}</h4>
+                <span class="badge badge-grade ${gradeClass}">${grade} INVESTMENT</span>
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="value ${npv >= 0 ? 'positive' : 'negative'}">$${formatNumber(npv, 0)}</div>
+                        <div class="label">Net Present Value (NPV)</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="value ${bcr >= 1 ? 'positive' : 'negative'}">${bcr.toFixed(2)}</div>
+                        <div class="label">Benefit-Cost Ratio (BCR)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-4">
+                    <div class="metric-box">
+                        <div class="value">${irr.toFixed(1)}%</div>
+                        <div class="label">Approx. IRR</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="metric-box">
+                        <div class="value">${paybackPeriod.toFixed(1)} yrs</div>
+                        <div class="label">Payback Period</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="metric-box">
+                        <div class="value">$${formatNumber(totalAnnualBenefits, 0)}</div>
+                        <div class="label">Annual Benefits</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-pie-chart me-1"></i> Cost Breakdown (Present Value)</h6>
+                <ul class="list-unstyled small mb-0">
+                    <li class="d-flex justify-content-between py-1 border-bottom"><span>Initial Capital Cost:</span> <strong>$${formatNumber(pvCapital, 0)}</strong></li>
+                    <li class="d-flex justify-content-between py-1 border-bottom"><span>Annual Operations & Maintenance:</span> <strong>$${formatNumber(pvAnnualOps, 0)}</strong></li>
+                    <li class="d-flex justify-content-between py-1 border-bottom"><span>Rehabilitation Cost:</span> <strong>$${formatNumber(pvRehab, 0)}</strong></li>
+                    <li class="d-flex justify-content-between py-1 text-muted"><span>Salvage Value (Credit):</span> <strong>-$${formatNumber(pvSalvage, 0)}</strong></li>
+                    <li class="d-flex justify-content-between py-1 font-weight-bold border-top mt-1"><span>Total PV Costs:</span> <strong>$${formatNumber(totalPvCost, 0)}</strong></li>
+                </ul>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-graph-up me-1"></i> Benefits Breakdown (Annual)</h6>
+                <ul class="list-unstyled small mb-0">
+                    <li class="d-flex justify-content-between py-1 border-bottom"><span>Travel Time Savings:</span> <strong>$${formatNumber(annualTimeSavingsValue, 0)}</strong></li>
+                    <li class="d-flex justify-content-between py-1 border-bottom"><span>Truck Time Savings:</span> <strong>$${formatNumber(annualTruckTimeValue, 0)}</strong></li>
+                    <li class="d-flex justify-content-between py-1 border-bottom"><span>Vehicle Operating Cost (VOC):</span> <strong>$${formatNumber(annualVocSavings, 0)}</strong></li>
+                    <li class="d-flex justify-content-between py-1 border-bottom"><span>Fuel Efficiency Savings:</span> <strong>$${formatNumber(annualFuelSavings, 0)}</strong></li>
+                    ${includeSafety ? `<li class="d-flex justify-content-between py-1 border-bottom"><span>Safety Benefits:</span> <strong>$${formatNumber(annualSafetyBenefits, 0)}</strong></li>` : ''}
+                    ${includeEnv ? `<li class="d-flex justify-content-between py-1 border-bottom"><span>Environmental Benefits:</span> <strong>$${formatNumber(annualEnvBenefits, 0)}</strong></li>` : ''}
+                    ${includeEconDev ? `<li class="d-flex justify-content-between py-1"><span>Economic Dev. Benefits:</span> <strong>$${formatNumber(annualEconBenefits, 0)}</strong></li>` : ''}
+                </ul>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-sliders me-1"></i> Sensitivity Scenario Analysis</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm sensitivity-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>NPV</th>
+                                <th>BCR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Optimistic (+35%)</td>
+                                <td class="text-success">$${formatNumber(bestNpv, 0)}</td>
+                                <td class="text-success">${bestBcr.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td>Base Case</td>
+                                <td>$${formatNumber(npv, 0)}</td>
+                                <td>${bcr.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td>Conservative (-35%)</td>
+                                <td class="${worstNpv >= 0 ? '' : 'text-danger'}">$${formatNumber(worstNpv, 0)}</td>
+                                <td class="${worstBcr >= 1 ? '' : 'text-danger'}">${worstBcr.toFixed(2)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    // Utility helpers
+    function formatNumber(num, decimals) {
+        return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Attach event listener safely after DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+        const calcBtn = document.getElementById('calcBtn');
+        if (calcBtn) {
+            calcBtn.addEventListener('click', calculateBCA);
+        }
+    });
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Roadside Safety Design – AASHTO RDG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body { background: #f0f2f5; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .container { max-width: 1500px; }
+        .card { border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; border: none; }
+        .card-header { background: #1a3a5c; color: white; border-radius: 14px 14px 0 0; font-weight: 700; font-size: 1.05rem; padding: 14px 20px; }
+        .card-header i { margin-right: 8px; }
+        .result-number { font-size: 2.4rem; font-weight: 800; color: #1a3a5c; }
+        .result-label { font-size: 0.85rem; color: #6c757d; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+        .result-section { background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .result-section h6 { font-weight: 700; color: #1a3a5c; }
+        .form-label { font-weight: 600; font-size: 0.9rem; }
+        .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; }
+        .form-control:focus, .form-select:focus { border-color: #1a3a5c; box-shadow: 0 0 0 0.25rem rgba(26,58,92,0.15); }
+        .btn-primary { background: #1a3a5c; border-color: #1a3a5c; border-radius: 10px; font-weight: 700; padding: 12px; }
+        .btn-primary:hover { background: #0f2a44; border-color: #0f2a44; }
+        .scrollable-results { max-height: 750px; overflow-y: auto; padding-right: 4px; }
+        .scrollable-results::-webkit-scrollbar { width: 6px; }
+        .scrollable-results::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
+        .footer-text { font-size: 0.8rem; color: #6c757d; }
+        .metric-box { background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e9ecef; height: 100%; }
+        .metric-box .value { font-size: 1.5rem; font-weight: 700; color: #1a3a5c; }
+        .metric-box .label { font-size: 0.75rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-grade { font-size: 0.85rem; padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+        .grade-pass { background: #d1e7dd; color: #0a3622; }
+        .grade-fail { background: #f8d7da; color: #721c24; }
+        .grade-warn { background: #fff3cd; color: #664d03; }
+        .recommendation-item { padding: 6px 10px; border-left: 3px solid #1a3a5c; margin-bottom: 4px; background: white; border-radius: 0 6px 6px 0; }
+        .hazard-tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin: 2px; }
+        .hazard-high { background: #f8d7da; color: #721c24; }
+        .hazard-medium { background: #fff3cd; color: #856404; }
+        .hazard-low { background: #d1ecf1; color: #0c5460; }
+        .priority-high { background: #dc3545; color: white; }
+        .priority-medium { background: #ffc107; color: #212529; }
+        .priority-low { background: #17a2b8; color: white; }
+        .section-divider { border-top: 2px dashed #dee2e6; margin: 16px 0; }
+        .hazard-item { border-bottom: 1px solid #dee2e6; padding: 6px 0; }
+        .hazard-item:last-child { border-bottom: none; }
+        @media (max-width: 768px) {
+            .result-number { font-size: 2rem; }
+            .metric-box .value { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1 class="display-5 fw-bold mb-2"><i class="bi bi-shield-exclamation text-primary me-2"></i>Urban Roadside Safety Design</h1>
+    <p class="text-muted mb-4">AASHTO Roadside Design Guide Chapter 3 &amp; Green Book Chapter 4 — Clear zone, slope recoverability, hazard assessment, barriers, pedestrian/bicycle safety, traffic calming, lighting, and cost-benefit analysis.</p>
+
+    <div class="row">
+
+        <!-- LEFT: INPUT FORM -->
+        <div class="col-lg-7">
+            <form id="rsaForm">
+
+                <!-- Project Info -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-info-circle"></i> Project &amp; Context</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Project Name</label>
+                                <input type="text" class="form-control" id="projectName" value="Main Street Urban Roadside Safety Improvements">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Urban Context</label>
+                                <select class="form-select" id="urbanContext">
+                                    <option value="urban_center" selected>Urban Center</option>
+                                    <option value="urban_fringe">Urban Fringe</option>
+                                    <option value="suburban">Suburban</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Design Speed (mph)</label>
+                                <input type="number" class="form-control" id="designSpeed" value="35" min="15" max="55">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Functional Class</label>
+                                <select class="form-select" id="functionalClass">
+                                    <option value="local">Local Street</option>
+                                    <option value="collector">Collector</option>
+                                    <option value="arterial" selected>Arterial</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">AADT (vpd)</label>
+                                <input type="number" class="form-control" id="aadt" value="18000" min="0" step="100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Segment Length (ft)</label>
+                                <input type="number" class="form-control" id="segLength" value="5280" min="100" step="100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Pedestrian Volume (pph)</label>
+                                <input type="number" class="form-control" id="pedVol" value="200" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Bicycle Volume (vpd)</label>
+                                <input type="number" class="form-control" id="bikeVol" value="100" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roadway Characteristics -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-road"></i> Roadway Characteristics</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label"># Lanes</label>
+                                <input type="number" class="form-control" id="numLanes" value="4" min="2" max="8">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Lane Width (ft)</label>
+                                <input type="number" class="form-control" id="laneWidth" value="12" min="10" max="14" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Shoulder Width (ft)</label>
+                                <input type="number" class="form-control" id="shoulderWidth" value="4" min="0" max="10" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Shoulder Type</label>
+                                <select class="form-select" id="shoulderType">
+                                    <option value="paved" selected>Paved</option>
+                                    <option value="gravel">Gravel</option>
+                                    <option value="turf">Turf</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Curb Present?</label>
+                                <select class="form-select" id="curbPresent">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Curb Type</label>
+                                <select class="form-select" id="curbType">
+                                    <option value="vertical" selected>Vertical</option>
+                                    <option value="rounded">Rounded</option>
+                                    <option value="mountable">Mountable</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Curb Height (in)</label>
+                                <input type="number" class="form-control" id="curbHeight" value="6" min="0" max="12">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Sidewalk Present?</label>
+                                <select class="form-select" id="sidewalkPresent">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Sidewalk Width (ft)</label>
+                                <input type="number" class="form-control" id="sidewalkWidth" value="8" min="0" max="16" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bike Lane Present?</label>
+                                <select class="form-select" id="bikeLanePresent">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bike Lane Width (ft)</label>
+                                <input type="number" class="form-control" id="bikeLaneWidth" value="5" min="0" max="8" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Median Type</label>
+                                <select class="form-select" id="medianType">
+                                    <option value="raised_curb" selected>Raised Curb</option>
+                                    <option value="none">None</option>
+                                    <option value="painted">Painted</option>
+                                    <option value="barrier">Barrier</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Median Width (ft)</label>
+                                <input type="number" class="form-control" id="medianWidth" value="6" min="0" max="20" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">On-Street Parking?</label>
+                                <select class="form-select" id="parkingPresent">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Planting Strip (ft)</label>
+                                <input type="number" class="form-control" id="plantingStrip" value="6" min="0" max="12" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Street Trees?</label>
+                                <select class="form-select" id="streetTrees">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Street Lighting?</label>
+                                <select class="form-select" id="streetLighting">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slopes -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-mountain"></i> Slope Characteristics</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Foreslope Ratio</label>
+                                <select class="form-select" id="foreslopeRatio">
+                                    <option value="10:1">10:1 (Very Flat)</option>
+                                    <option value="6:1">6:1 (Flat)</option>
+                                    <option value="4:1" selected>4:1 (Recoverable)</option>
+                                    <option value="3:1">3:1 (Traversable)</option>
+                                    <option value="2:1">2:1 (Non-recoverable)</option>
+                                    <option value="1.5:1">1.5:1 (Steep)</option>
+                                    <option value="1:1">1:1 (Barrier Required)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Foreslope Type</label>
+                                <select class="form-select" id="foreslopeType">
+                                    <option value="fill" selected>Fill</option>
+                                    <option value="cut">Cut</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Foreslope Height (ft)</label>
+                                <input type="number" class="form-control" id="foreslopeHeight" value="3" min="0" step="0.5">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Backslope Present?</label>
+                                <select class="form-select" id="backslopePresent">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Backslope Ratio</label>
+                                <select class="form-select" id="backslopeRatio">
+                                    <option value="1:1">1:1</option>
+                                    <option value="1.5:1">1.5:1</option>
+                                    <option value="2:1" selected>2:1</option>
+                                    <option value="3:1">3:1</option>
+                                    <option value="4:1">4:1</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Backslope Height (ft)</label>
+                                <input type="number" class="form-control" id="backslopeHeight" value="6" min="0" step="0.5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hazards -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-exclamation-triangle"></i> Roadside Hazards</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Utility Poles</label>
+                                <input type="number" class="form-control" id="hazPoles" value="8" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Trees</label>
+                                <input type="number" class="form-control" id="hazTrees" value="12" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Sign Supports</label>
+                                <input type="number" class="form-control" id="hazSigns" value="4" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Fire Hydrants</label>
+                                <input type="number" class="form-control" id="hazHydrants" value="6" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bus Shelters</label>
+                                <input type="number" class="form-control" id="hazShelters" value="3" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Light Poles</label>
+                                <input type="number" class="form-control" id="hazLightPoles" value="4" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Hazard Distance from Curb (ft)</label>
+                                <input type="number" class="form-control" id="hazDistance" value="5" min="0" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Frangible Signs?</label>
+                                <select class="form-select" id="frangibleSigns">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pedestrian & Bicycle Safety -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-person-walking"></i> Pedestrian &amp; Bicycle Safety</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Crosswalk Present?</label>
+                                <select class="form-select" id="crosswalkPresent">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Crosswalk Type</label>
+                                <select class="form-select" id="crosswalkType">
+                                    <option value="high_visibility" selected>High Visibility</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="raised">Raised</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Pedestrian Signals?</label>
+                                <select class="form-select" id="pedSig">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Leading Pedestrian Interval?</label>
+                                <select class="form-select" id="lpi">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Pedestrian Refuge Island?</label>
+                                <select class="form-select" id="refugeIsland">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Pedestrian Lighting?</label>
+                                <select class="form-select" id="pedLighting">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bike Box Present?</label>
+                                <select class="form-select" id="bikeBox">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bicycle Detection?</label>
+                                <select class="form-select" id="bikeDetection">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Traffic Calming & Lighting -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-sliders"></i> Traffic Calming &amp; Lighting</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Speed Humps?</label>
+                                <select class="form-select" id="speedHumps">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Speed Cushions?</label>
+                                <select class="form-select" id="speedCushions">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Neckdowns?</label>
+                                <select class="form-select" id="neckdowns">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Raised Crosswalks?</label>
+                                <select class="form-select" id="raisedCrosswalks">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Lighting Level (fc)</label>
+                                <input type="number" class="form-control" id="lightingLevel" value="2.5" min="0.5" max="5.0" step="0.1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Lighting Type</label>
+                                <select class="form-select" id="lightingType">
+                                    <option value="pedestrian_scale" selected>Pedestrian Scale</option>
+                                    <option value="roadway">Roadway</option>
+                                    <option value="decorative">Decorative</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Lighting Adequacy</label>
+                                <select class="form-select" id="lightingAdequacy">
+                                    <option value="excellent">Excellent</option>
+                                    <option value="good" selected>Good</option>
+                                    <option value="fair">Fair</option>
+                                    <option value="poor">Poor</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-lg w-100 mt-2" id="calcBtn">
+                    <i class="bi bi-calculator me-2"></i>Analyze Roadside Safety
+                </button>
+
+            </form>
+        </div>
+
+        <!-- RIGHT: RESULTS -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-table"></i> Roadside Safety Results</div>
+                <div class="card-body scrollable-results" id="resultsArea">
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-clipboard-data fs-1"></i>
+                        <p class="mt-3">Click <strong>"Analyze Roadside Safety"</strong><br>to compute safety assessment and recommendations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="text-center footer-text mt-4 pb-3">
+        Based on AASHTO Roadside Design Guide Chapter 3 &amp; Green Book Chapter 4. All analyses are for guidance only.
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    // ---------- Helper: get slope recoverability ----------
+    function getSlopeRecoverability(ratio) {
+        const map = {
+            '10:1': { rec: 'recoverable', factor: 1.0, desc: 'Very flat — easily recoverable' },
+            '6:1': { rec: 'recoverable', factor: 1.0, desc: 'Flat — recoverable' },
+            '4:1': { rec: 'recoverable', factor: 1.0, desc: 'Recoverable — safe recovery' },
+            '3:1': { rec: 'traversable', factor: 1.1, desc: 'Traversable — rough but passable' },
+            '2:1': { rec: 'non_recoverable', factor: 1.25, desc: 'Non-recoverable — likely to lose control' },
+            '1.5:1': { rec: 'non_recoverable', factor: 1.5, desc: 'Steep — high rollover risk' },
+            '1:1': { rec: 'barrier_required', factor: 2.0, desc: 'Barrier required — cannot traverse' }
+        };
+        return map[ratio] || map['4:1'];
+    }
+
+    // ---------- Helper: get clear zone ----------
+    function getClearZone(speed, context, aadt) {
+        let base = 10;
+        if (context === 'urban_center') {
+            if (speed <= 30) base = 10;
+            else if (speed <= 40) base = 12;
+            else base = 14;
+        } else if (context === 'urban_fringe') {
+            if (speed <= 30) base = 12;
+            else if (speed <= 40) base = 14;
+            else base = 18;
+        } else { // suburban
+            if (speed <= 30) base = 14;
+            else if (speed <= 40) base = 18;
+            else base = 22;
+        }
+        // Volume adjustment
+        if (aadt > 15000) base += 2;
+        if (aadt > 30000) base += 4;
+        return base;
+    }
+
+    // ---------- Main calculation ----------
+    function calculateRSA() {
+        // Read inputs
+        const projectName = document.getElementById('projectName').value || 'Project';
+        const urbanContext = document.getElementById('urbanContext').value;
+        const designSpeed = parseFloat(document.getElementById('designSpeed').value) || 35;
+        const functionalClass = document.getElementById('functionalClass').value;
+        const aadt = parseFloat(document.getElementById('aadt').value) || 0;
+        const segLength = parseFloat(document.getElementById('segLength').value) || 5280;
+        const pedVol = parseFloat(document.getElementById('pedVol').value) || 0;
+        const bikeVol = parseFloat(document.getElementById('bikeVol').value) || 0;
+
+        // Roadway
+        const numLanes = parseInt(document.getElementById('numLanes').value) || 4;
+        const laneWidth = parseFloat(document.getElementById('laneWidth').value) || 12;
+        const shoulderWidth = parseFloat(document.getElementById('shoulderWidth').value) || 4;
+        const shoulderType = document.getElementById('shoulderType').value;
+        const curbPresent = document.getElementById('curbPresent').value === 'true';
+        const curbType = document.getElementById('curbType').value;
+        const curbHeight = parseFloat(document.getElementById('curbHeight').value) || 6;
+        const sidewalkPresent = document.getElementById('sidewalkPresent').value === 'true';
+        const sidewalkWidth = parseFloat(document.getElementById('sidewalkWidth').value) || 8;
+        const bikeLanePresent = document.getElementById('bikeLanePresent').value === 'true';
+        const bikeLaneWidth = parseFloat(document.getElementById('bikeLaneWidth').value) || 5;
+        const medianType = document.getElementById('medianType').value;
+        const medianWidth = parseFloat(document.getElementById('medianWidth').value) || 6;
+        const parkingPresent = document.getElementById('parkingPresent').value === 'true';
+        const plantingStrip = parseFloat(document.getElementById('plantingStrip').value) || 6;
+        const streetTrees = document.getElementById('streetTrees').value === 'true';
+        const streetLighting = document.getElementById('streetLighting').value === 'true';
+
+        // Slopes
+        const foreslopeRatio = document.getElementById('foreslopeRatio').value;
+        const foreslopeType = document.getElementById('foreslopeType').value;
+        const foreslopeHeight = parseFloat(document.getElementById('foreslopeHeight').value) || 3;
+        const backslopePresent = document.getElementById('backslopePresent').value === 'true';
+        const backslopeRatio = document.getElementById('backslopeRatio').value;
+        const backslopeHeight = parseFloat(document.getElementById('backslopeHeight').value) || 6;
+
+        // Hazards
+        const hazPoles = parseInt(document.getElementById('hazPoles').value) || 0;
+        const hazTrees = parseInt(document.getElementById('hazTrees').value) || 0;
+        const hazSigns = parseInt(document.getElementById('hazSigns').value) || 0;
+        const hazHydrants = parseInt(document.getElementById('hazHydrants').value) || 0;
+        const hazShelters = parseInt(document.getElementById('hazShelters').value) || 0;
+        const hazLightPoles = parseInt(document.getElementById('hazLightPoles').value) || 0;
+        const hazDistance = parseFloat(document.getElementById('hazDistance').value) || 5;
+        const frangibleSigns = document.getElementById('frangibleSigns').value === 'true';
+
+        // Ped / Bike & Traffic Calming
+        const crosswalkPresent = document.getElementById('crosswalkPresent').value === 'true';
+        const crosswalkType = document.getElementById('crosswalkType').value;
+        const pedSig = document.getElementById('pedSig').value === 'true';
+        const lpi = document.getElementById('lpi').value === 'true';
+        const refugeIsland = document.getElementById('refugeIsland').value === 'true';
+        const pedLighting = document.getElementById('pedLighting').value === 'true';
+        const bikeBox = document.getElementById('bikeBox').value === 'true';
+        const bikeDetection = document.getElementById('bikeDetection').value === 'true';
+        const speedHumps = document.getElementById('speedHumps').value === 'true';
+        const speedCushions = document.getElementById('speedCushions').value === 'true';
+        const neckdowns = document.getElementById('neckdowns').value === 'true';
+        const raisedCrosswalks = document.getElementById('raisedCrosswalks').value === 'true';
+        const lightingLevel = parseFloat(document.getElementById('lightingLevel').value) || 2.5;
+        const lightingType = document.getElementById('lightingType').value;
+        const lightingAdequacy = document.getElementById('lightingAdequacy').value;
+
+        // Calculations
+        const requiredClearZone = getClearZone(designSpeed, urbanContext, aadt);
+        const slopeInfo = getSlopeRecoverability(foreslopeRatio);
+        
+        let totalHazardsCount = hazPoles + hazTrees + hazSigns + hazHydrants + hazShelters + hazLightPoles;
+        
+        // Hazard score logic
+        let hazardScore = 100;
+        hazardScore -= (hazPoles * 4);
+        hazardScore -= (hazTrees * 3);
+        hazardScore -= (frangibleSigns ? (hazSigns * 1) : (hazSigns * 3));
+        hazardScore -= (hazHydrants * 2);
+        hazardScore -= (hazShelters * 3);
+        hazardScore -= (hazLightPoles * 2);
+        if (hazDistance < requiredClearZone) {
+            hazardScore -= 15;
+        }
+        if (hazardScore < 0) hazardScore = 0;
+
+        // Overall Safety Score evaluation
+        let safetyGrade = 'Pass';
+        let gradeClass = 'grade-pass';
+        if (hazardScore < 60) {
+            safetyGrade = 'Fail';
+            gradeClass = 'grade-fail';
+        } else if (hazardScore < 80) {
+            safetyGrade = 'Warning';
+            gradeClass = 'grade-warn';
+        }
+
+        // Generate recommendations
+        let recommendations = [];
+        if (hazDistance < requiredClearZone) {
+            recommendations.push({ text: `Hazards are located at ${hazDistance} ft, which is less than the recommended clear zone of ${requiredClearZone} ft. Relocate or shield hazards.`, priority: 'high' });
+        }
+        if (slopeInfo.rec === 'non_recoverable' || slopeInfo.rec === 'barrier_required') {
+            recommendations.push({ text: `Foreslope ratio (${foreslopeRatio}) is ${slopeInfo.rec}. Flatten slope to 4:1 or flatter where possible, or install a traffic barrier.`, priority: 'high' });
+        }
+        if (!frangibleSigns && hazSigns > 0) {
+            recommendations.push({ text: 'Sign supports are non-frangible. Upgrade breakaway sign supports to minimize crash severity.', priority: 'medium' });
+        }
+        if (streetTrees && plantingStrip < 4) {
+            recommendations.push({ text: 'Planting strip width is tight for mature street trees. Consider root barriers or smaller species.', priority: 'low' });
+        }
+        if (!streetLighting && !pedLighting) {
+            recommendations.push({ text: 'Inadequate night visibility. Add pedestrian-scale street lighting along the corridor.', priority: 'medium' });
+        }
+        if (pedVol > 100 && !crosswalkPresent) {
+            recommendations.push({ text: 'High pedestrian volume detected without a formal crosswalk. Install high-visibility crosswalks.', priority: 'high' });
+        }
+
+        // Render results HTML
+        let html = `
+            <div class="text-center result-section">
+                <div class="result-label">Safety Assessment Score</div>
+                <div class="result-number">${Math.round(hazardScore)}<span class="fs-4 text-muted">/100</span></div>
+                <span class="badge badge-grade ${gradeClass} mt-1">${safetyGrade.toUpperCase()}</span>
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="value">${requiredClearZone} ft</div>
+                        <div class="label">Req. Clear Zone</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="value">${hazDistance} ft</div>
+                        <div class="label">Actual Hazard Dist</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-info-circle me-1"></i> Project Summary</h6>
+                <p class="mb-1"><strong>Project:</strong> ${projectName}</p>
+                <p class="mb-1"><strong>Context:</strong> ${urbanContext.replace('_', ' ')} (${designSpeed} mph, ${functionalClass})</p>
+                <p class="mb-0"><strong>Segment Length:</strong> ${segLength} ft | <strong>AADT:</strong> ${aadt} vpd</p>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-shield-check me-1"></i> Roadside &amp; Slope Evaluation</h6>
+                <p class="mb-1"><strong>Foreslope Status:</strong> <span class="text-capitalize">${slopeInfo.rec.replace('_', ' ')}</span> (${slopeInfo.desc})</p>
+                <p class="mb-0"><strong>Total Tracked Hazards:</strong> ${totalHazardsCount} items within corridor</p>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-list-check me-1"></i> Engineering Recommendations (${recommendations.length})</h6>
+        `;
+
+        if (recommendations.length === 0) {
+            html += `<p class="text-muted small mb-0">No critical hazards or violations identified based on standard parameters.</p>`;
+        } else {
+            recommendations.forEach(rec => {
+                let badgeClass = 'priority-low';
+                if (rec.priority === 'high') badgeClass = 'priority-high';
+                else if (rec.priority === 'medium') badgeClass = 'priority-medium';
+
+                html += `
+                    <div class="recommendation-item mb-2">
+                        <span class="badge ${badgeClass} mb-1 text-uppercase" style="font-size: 0.6rem;">${rec.priority} Priority</span>
+                        <p class="small mb-0">${rec.text}</p>
+                    </div>
+                `;
+            });
+        }
+
+        html += `</div>`;
+
+        document.getElementById('resultsArea').innerHTML = html;
+    }
+
+    // Attach event listener
+    document.getElementById('calcBtn').addEventListener('click', calculateRSA);
+    
+    // Auto-calculate on load
+    window.addEventListener('DOMContentLoaded', calculateRSA);
+})();
+</script>
+</body>
+</html>

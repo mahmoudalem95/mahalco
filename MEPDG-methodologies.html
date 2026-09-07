@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadside Hardware Selection – AASHTO RDG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body { background: #f0f2f5; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .container { max-width: 1500px; }
+        .card { border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; border: none; }
+        .card-header { background: #1a3a5c; color: white; border-radius: 14px 14px 0 0; font-weight: 700; font-size: 1.05rem; padding: 14px 20px; }
+        .card-header i { margin-right: 8px; }
+        .result-number { font-size: 2.4rem; font-weight: 800; color: #1a3a5c; }
+        .result-label { font-size: 0.85rem; color: #6c757d; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+        .result-section { background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .result-section h6 { font-weight: 700; color: #1a3a5c; }
+        .form-label { font-weight: 600; font-size: 0.9rem; }
+        .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; }
+        .form-control:focus, .form-select:focus { border-color: #1a3a5c; box-shadow: 0 0 0 0.25rem rgba(26,58,92,0.15); }
+        .btn-primary { background: #1a3a5c; border-color: #1a3a5c; border-radius: 10px; font-weight: 700; padding: 12px; }
+        .btn-primary:hover { background: #0f2a44; border-color: #0f2a44; }
+        .scrollable-results { max-height: 750px; overflow-y: auto; padding-right: 4px; }
+        .scrollable-results::-webkit-scrollbar { width: 6px; }
+        .scrollable-results::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
+        .footer-text { font-size: 0.8rem; color: #6c757d; }
+        .metric-box { background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e9ecef; height: 100%; }
+        .metric-box .value { font-size: 1.5rem; font-weight: 700; color: #1a3a5c; }
+        .metric-box .label { font-size: 0.75rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-grade { font-size: 0.85rem; padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+        .grade-pass { background: #d1e7dd; color: #0a3622; }
+        .grade-fail { background: #f8d7da; color: #721c24; }
+        .grade-warn { background: #fff3cd; color: #664d03; }
+        .hardware-tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin: 2px; background: #e9ecef; }
+        .section-divider { border-top: 2px dashed #dee2e6; margin: 16px 0; }
+        .recommendation-item { padding: 6px 10px; border-left: 3px solid #1a3a5c; margin-bottom: 4px; background: white; border-radius: 0 6px 6px 0; }
+        @media (max-width: 768px) {
+            .result-number { font-size: 2rem; }
+            .metric-box .value { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1 class="display-5 fw-bold mb-2"><i class="bi bi-shield-fill-check text-primary me-2"></i>Roadside Hardware Selection</h1>
+    <p class="text-muted mb-4">AASHTO Roadside Design Guide (Chapters 4–8) — Select barriers, terminals, crash cushions, and transitions based on hazard characteristics, speed, traffic, and site conditions.</p>
+
+    <div class="row">
+
+        <!-- LEFT: INPUT FORM -->
+        <div class="col-lg-7">
+            <form id="rhsForm">
+
+                <!-- Project & Hazard -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-exclamation-triangle"></i> Project &amp; Hazard</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Project Name</label>
+                                <input type="text" class="form-control" id="projectName" value="US 101 Corridor Safety Improvements">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Design Speed (mph)</label>
+                                <input type="number" class="form-control" id="designSpeed" value="55" min="20" max="75">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Hazard Type</label>
+                                <select class="form-select" id="hazardType">
+                                    <option value="fixed_object">Fixed Object</option>
+                                    <option value="bridge_pier" selected>Bridge Pier</option>
+                                    <option value="culvert_headwall">Culvert Headwall</option>
+                                    <option value="tree">Tree</option>
+                                    <option value="utility_pole">Utility Pole</option>
+                                    <option value="sign_support">Sign Support</option>
+                                    <option value="rock_outcrop">Rock Outcrop</option>
+                                    <option value="building">Building</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Hazard Severity</label>
+                                <select class="form-select" id="hazardSeverity">
+                                    <option value="low">Low</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="high" selected>High</option>
+                                    <option value="very_high">Very High</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Hazard Offset (ft)</label>
+                                <input type="number" class="form-control" id="hazardOffset" value="12" min="0" step="0.5">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Clear Zone Width (ft)</label>
+                                <input type="number" class="form-control" id="clearZone" value="25" min="0" step="0.5">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Roadside Slope</label>
+                                <select class="form-select" id="roadsideSlope">
+                                    <option value="4:1">4:1 (Recoverable)</option>
+                                    <option value="3:1">3:1 (Traversable)</option>
+                                    <option value="2:1">2:1 (Non-recoverable)</option>
+                                    <option value="1.5:1" selected>1.5:1 (Steep)</option>
+                                    <option value="1:1">1:1 (Barrier Required)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roadway Characteristics -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-road"></i> Roadway Characteristics</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Facility Type</label>
+                                <select class="form-select" id="facilityType">
+                                    <option value="rural_highway" selected>Rural Highway</option>
+                                    <option value="urban_highway">Urban Highway</option>
+                                    <option value="freeway">Freeway</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Number of Lanes</label>
+                                <input type="number" class="form-control" id="numLanes" value="2" min="2" max="8">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Lane Width (ft)</label>
+                                <input type="number" class="form-control" id="laneWidth" value="12" min="8" max="14" step="0.5">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Shoulder Width (ft)</label>
+                                <input type="number" class="form-control" id="shoulderWidth" value="8" min="0" max="14" step="0.5">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Shoulder Type</label>
+                                <select class="form-select" id="shoulderType">
+                                    <option value="paved" selected>Paved</option>
+                                    <option value="gravel">Gravel</option>
+                                    <option value="turf">Turf</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Median Type</label>
+                                <select class="form-select" id="medianType">
+                                    <option value="none" selected>None</option>
+                                    <option value="raised_curb">Raised Curb</option>
+                                    <option value="barrier">Barrier</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Cross Section</label>
+                                <select class="form-select" id="crossSection">
+                                    <option value="cut_section" selected>Cut Section</option>
+                                    <option value="fill_section">Fill Section</option>
+                                    <option value="level">Level</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Curb Present?</label>
+                                <select class="form-select" id="curbPresent">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Traffic Characteristics -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-car-front"></i> Traffic Characteristics</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">AADT (vpd)</label>
+                                <input type="number" class="form-control" id="aadt" value="3200" min="0" step="100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Truck %</label>
+                                <input type="number" class="form-control" id="truckPct" value="12" min="0" max="100" step="0.5">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Traffic Volume Category</label>
+                                <select class="form-select" id="trafficVolCat">
+                                    <option value="low">Low (&lt; 1,000)</option>
+                                    <option value="moderate" selected>Moderate (1,000-6,000)</option>
+                                    <option value="high">High (6,000-15,000)</option>
+                                    <option value="very_high">Very High (&gt; 15,000)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Shoulder Usage</label>
+                                <select class="form-select" id="shoulderUsage">
+                                    <option value="low" selected>Low</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Environmental -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-tree"></i> Environmental Characteristics</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Soil Type</label>
+                                <select class="form-select" id="soilType">
+                                    <option value="clay" selected>Clay</option>
+                                    <option value="sandy">Sandy</option>
+                                    <option value="silty">Silty</option>
+                                    <option value="rocky">Rocky</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Frost Depth (in)</label>
+                                <input type="number" class="form-control" id="frostDepth" value="36" min="0" step="6">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Groundwater Depth (ft)</label>
+                                <input type="number" class="form-control" id="groundwaterDepth" value="8" min="0" step="0.5">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Snow Drift Zone?</label>
+                                <select class="form-select" id="snowDrift">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Flood Zone?</label>
+                                <select class="form-select" id="floodZone">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Corrosion Risk</label>
+                                <select class="form-select" id="corrosionRisk">
+                                    <option value="low">Low</option>
+                                    <option value="moderate" selected>Moderate</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barrier & Terminal Preferences -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-shield"></i> Hardware Preferences</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Barrier Type</label>
+                                <select class="form-select" id="barrierType">
+                                    <option value="w_beam" selected>W-Beam</option>
+                                    <option value="thrie_beam">Thrie-Beam</option>
+                                    <option value="concrete_jersey">Concrete (Jersey)</option>
+                                    <option value="concrete_f_shape">Concrete (F-Shape)</option>
+                                    <option value="cable">Cable Barrier</option>
+                                    <option value="box_beam">Box Beam</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Barrier Grade</label>
+                                <select class="form-select" id="barrierGrade">
+                                    <option value="strong_post" selected>Strong Post</option>
+                                    <option value="weak_post">Weak Post</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Test Level</label>
+                                <select class="form-select" id="testLevelPref">
+                                    <option value="tl_1">TL-1 (&le;31 mph)</option>
+                                    <option value="tl_2">TL-2 (&le;44 mph)</option>
+                                    <option value="tl_3" selected>TL-3 (&le;62 mph)</option>
+                                    <option value="tl_4">TL-4 (Truck)</option>
+                                    <option value="tl_5">TL-5 (Heavy Truck)</option>
+                                    <option value="tl_6">TL-6 (Tractor-Trailer)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Terminal Type</label>
+                                <select class="form-select" id="terminalType">
+                                    <option value="flared_energy_absorbing" selected>Flared Energy Absorbing</option>
+                                    <option value="tangential">Tangential</option>
+                                    <option value="crash_cushion">Crash Cushion</option>
+                                    <option value="sand_barrel">Sand Barrel</option>
+                                    <option value="impact_attenuator">Impact Attenuator</option>
+                                    <option value="breakaway">Breakaway</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Terminal Length (ft)</label>
+                                <input type="number" class="form-control" id="terminalLength" value="50" min="10" max="80" step="5">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Flare Rate (horizontal:vertical)</label>
+                                <select class="form-select" id="flareRate">
+                                    <option value="0.5:1">0.5:1</option>
+                                    <option value="1:1" selected>1:1</option>
+                                    <option value="1.5:1">1.5:1</option>
+                                    <option value="2:1">2:1</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-lg w-100 mt-2" id="calcBtn">
+                    <i class="bi bi-calculator me-2"></i>Select Roadside Hardware
+                </button>
+
+            </form>
+        </div>
+
+        <!-- RIGHT: RESULTS -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-table"></i> Hardware Selection Results</div>
+                <div class="card-body scrollable-results" id="resultsArea">
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-clipboard-data fs-1"></i>
+                        <p class="mt-3">Click <strong>"Select Roadside Hardware"</strong><br>to compute selection.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="text-center footer-text mt-4 pb-3">
+        Based on AASHTO Roadside Design Guide (2011) &amp; MASH 2016. All hardware selections are for design guidance.
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    const barrierData = {
+        'w_beam': { name: 'W-Beam', deflectionStatic: 3.5, deflectionDynamic: 4.5, workingWidth: 5.5, costPerFt: 70, capacityKip: 50, mashCompliant: true },
+        'thrie_beam': { name: 'Thrie-Beam', deflectionStatic: 2.5, deflectionDynamic: 3.5, workingWidth: 4.0, costPerFt: 95, capacityKip: 65, mashCompliant: true },
+        'concrete_jersey': { name: 'Concrete (Jersey)', deflectionStatic: 0, deflectionDynamic: 0, workingWidth: 0.5, costPerFt: 130, capacityKip: 80, mashCompliant: true },
+        'concrete_f_shape': { name: 'Concrete (F-Shape)', deflectionStatic: 0, deflectionDynamic: 0, workingWidth: 0.5, costPerFt: 130, capacityKip: 80, mashCompliant: true },
+        'cable': { name: 'Cable Barrier', deflectionStatic: 5.0, deflectionDynamic: 7.0, workingWidth: 8.0, costPerFt: 55, capacityKip: 30, mashCompliant: true },
+        'box_beam': { name: 'Box Beam', deflectionStatic: 2.0, deflectionDynamic: 3.0, workingWidth: 3.5, costPerFt: 100, capacityKip: 55, mashCompliant: true }
+    };
+
+    const terminalData = {
+        'flared_energy_absorbing': { name: 'Flared Energy Absorbing', length: 50, cost: 15000, redirective: true, reusable: true },
+        'tangential': { name: 'Tangential', length: 40, cost: 12000, redirective: true, reusable: true },
+        'crash_cushion': { name: 'Crash Cushion', length: 20, cost: 5000, redirective: false, reusable: false },
+        'sand_barrel': { name: 'Sand Barrel', length: 15, cost: 3000, redirective: false, reusable: false },
+        'impact_attenuator': { name: 'Impact Attenuator', length: 25, cost: 20000, redirective: true, reusable: true },
+        'breakaway': { name: 'Breakaway', length: 12, cost: 2500, redirective: false, reusable: false }
+    };
+
+    function calculateHardware() {
+        const projectName = document.getElementById('projectName').value || 'Project';
+        const designSpeed = parseFloat(document.getElementById('designSpeed').value) || 55;
+        const hazardType = document.getElementById('hazardType').value;
+        const hazardSeverity = document.getElementById('hazardSeverity').value;
+        const hazardOffset = parseFloat(document.getElementById('hazardOffset').value) || 12;
+        const clearZone = parseFloat(document.getElementById('clearZone').value) || 25;
+        const roadsideSlope = document.getElementById('roadsideSlope').value;
+        const aadt = parseFloat(document.getElementById('aadt').value) || 3200;
+        const truckPct = parseFloat(document.getElementById('truckPct').value) || 12;
+        const barrierTypePref = document.getElementById('barrierType').value;
+        const barrierGrade = document.getElementById('barrierGrade').value;
+        const testLevelPref = document.getElementById('testLevelPref').value;
+        const terminalTypePref = document.getElementById('terminalType').value;
+        const terminalLength = parseFloat(document.getElementById('terminalLength').value) || 50;
+        const flareRateStr = document.getElementById('flareRate').value;
+
+        let flareRate = 1.0;
+        if (flareRateStr === '0.5:1') flareRate = 0.5;
+        else if (flareRateStr === '1.5:1') flareRate = 1.5;
+        else if (flareRateStr === '2:1') flareRate = 2.0;
+
+        let hazardRisk = 'moderate';
+        if (hazardSeverity === 'very_high' || hazardType === 'bridge_pier' || hazardType === 'building') {
+            hazardRisk = 'high';
+        } else if (hazardSeverity === 'high' || hazardType === 'culvert_headwall' || hazardType === 'rock_outcrop') {
+            hazardRisk = 'high';
+        } else if (hazardSeverity === 'moderate') {
+            hazardRisk = 'moderate';
+        } else {
+            hazardRisk = 'low';
+        }
+
+        const hazardWithinCZ = hazardOffset < clearZone;
+
+        let requiredCZ = 30;
+        if (designSpeed <= 40) requiredCZ = 20;
+        else if (designSpeed <= 50) requiredCZ = 25;
+        else if (designSpeed <= 55) requiredCZ = 30;
+        else if (designSpeed <= 60) requiredCZ = 32;
+        else requiredCZ = 35;
+
+        if (aadt > 6000) requiredCZ += 2;
+        if (aadt > 15000) requiredCZ += 4;
+
+        const czShortfall = Math.max(0, requiredCZ - clearZone);
+
+        let testLevel = testLevelPref;
+        if (designSpeed <= 31) testLevel = 'tl_1';
+        else if (designSpeed <= 44) testLevel = 'tl_2';
+        else if (designSpeed <= 62) {
+            testLevel = truckPct > 15 ? 'tl_4' : 'tl_3';
+        } else {
+            testLevel = truckPct > 20 ? 'tl_5' : 'tl_3';
+        }
+
+        const tlOrder = ['tl_1', 'tl_2', 'tl_3', 'tl_4', 'tl_5', 'tl_6'];
+        if (tlOrder.indexOf(testLevelPref) > tlOrder.indexOf(testLevel)) {
+            testLevel = testLevelPref;
+        }
+
+        const barrier = barrierData[barrierTypePref] || barrierData['w_beam'];
+        const barrierName = barrier.name;
+        const deflection = barrierGrade === 'strong_post' ? barrier.deflectionStatic : barrier.deflectionStatic * 1.5;
+
+        let lon = 50;
+        if (hazardWithinCZ || czShortfall > 0) {
+            const effectiveOffset = Math.max(hazardOffset, 0);
+            const effectiveCZ = Math.max(clearZone, 10);
+            lon = Math.abs(effectiveOffset - effectiveCZ) * (1 / flareRate) * 1.5;
+            if (lon < 50) lon = 50;
+            if (lon > 400) lon = 400;
+        }
+        if (hazardRisk === 'high' && lon < 100) lon = 100;
+
+        const totalLon = Math.round(lon / 10) * 10;
+        const upstreamLon = Math.round(totalLon / 2);
+        const downstreamLon = totalLon - upstreamLon;
+
+        const terminal = terminalData[terminalTypePref] || terminalData['flared_energy_absorbing'];
+        const termCost = terminal.cost;
+
+        let crashCushionRequired = false;
+        if ((hazardType === 'bridge_pier' || hazardType === 'building') && hazardOffset < 15) {
+            crashCushionRequired = true;
+        }
+
+        let transitionRequired = (hazardType === 'bridge_pier' || hazardType === 'culvert_headwall');
+
+        // Cost estimation
+        const totalBarrierCost = totalLon * barrier.costPerFt;
+        const totalTerminalCost = termCost * 2; // Upstream & downstream endpoints where applicable
+        const grandTotalCost = totalBarrierCost + totalTerminalCost;
+
+        // Render HTML results
+        const resultsArea = document.getElementById('resultsArea');
+        resultsArea.innerHTML = `
+            <div class="result-section">
+                <h6>Project Summary: ${projectName}</h6>
+                <p class="mb-1 text-muted small">Design Speed: <strong>${designSpeed} mph</strong> | AADT: <strong>${aadt.toLocaleString()}</strong></p>
+                <p class="mb-0 text-muted small">Hazard Type: <strong>${hazardType.replace('_', ' ').toUpperCase()}</strong> (Offset: ${hazardOffset} ft)</p>
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="label">Test Level</div>
+                        <div class="value text-uppercase">${testLevel.replace('_', '-')}</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="metric-box">
+                        <div class="label">Required Clear Zone</div>
+                        <div class="value">${requiredCZ} ft</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-shield-check me-1"></i> Recommended Barrier System</h6>
+                <div class="recommendation-item">Type: <strong>${barrierName} (${barrierGrade.replace('_', ' ')})</strong></div>
+                <div class="recommendation-item">Estimated Length of Need (LON): <strong>${totalLon} ft</strong> (Upstream: ${upstreamLon} ft, Downstream: ${downstreamLon} ft)</div>
+                <div class="recommendation-item">Dynamic Deflection: <strong>${deflection.toFixed(1)} ft</strong></div>
+            </div>
+
+            <div class="result-section">
+                <h6><i class="bi bi-arrow-right-square me-1"></i> Terminals &amp; Attenuators</h6>
+                <div class="recommendation-item">Terminal Selection: <strong>${terminal.name}</strong></div>
+                <div class="recommendation-item">Crash Cushion Needed: <strong>${crashCushionRequired ? 'Yes (High Priority Hazard Shielding)' : 'No'}</strong></div>
+                <div class="recommendation-item">Bridge/Structure Transition: <strong>${transitionRequired ? 'Required (Standard Thrie-Beam Transition)' : 'Standard End Treatment'}</strong></div>
+            </div>
+
+            <div class="result-section bg-white border">
+                <h6><i class="bi bi-cash-coin me-1"></i> Cost Estimation &amp; Compliance</h6>
+                <div class="d-flex justify-content-between small mb-1">
+                    <span>Barrier Installation (${totalLon} ft):</span>
+                    <strong>$${totalBarrierCost.toLocaleString()}</strong>
+                </div>
+                <div class="d-flex justify-content-between small mb-1">
+                    <span>Terminal Hardware:</span>
+                    <strong>$${totalTerminalCost.toLocaleString()}</strong>
+                </div>
+                <hr class="my-2">
+                <div class="d-flex justify-content-between fw-bold text-primary">
+                    <span>Estimated Total Hardware Cost:</span>
+                    <span>$${grandTotalCost.toLocaleString()}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', calculateHardware);
+})();
+</script>
+</body>
+</html>

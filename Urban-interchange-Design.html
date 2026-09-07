@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Interchange Design – AASHTO / HCM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body { background: #f0f2f5; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .container { max-width: 1500px; }
+        .card { border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; border: none; }
+        .card-header { background: #1a3a5c; color: white; border-radius: 14px 14px 0 0; font-weight: 700; font-size: 1.05rem; padding: 14px 20px; }
+        .card-header i { margin-right: 8px; }
+        .result-number { font-size: 2.4rem; font-weight: 800; color: #1a3a5c; }
+        .result-label { font-size: 0.85rem; color: #6c757d; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+        .result-section { background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .result-section h6 { font-weight: 700; color: #1a3a5c; }
+        .form-label { font-weight: 600; font-size: 0.9rem; }
+        .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; }
+        .form-control:focus, .form-select:focus { border-color: #1a3a5c; box-shadow: 0 0 0 0.25rem rgba(26,58,92,0.15); }
+        .btn-primary { background: #1a3a5c; border-color: #1a3a5c; border-radius: 10px; font-weight: 700; padding: 12px; }
+        .btn-primary:hover { background: #0f2a44; border-color: #0f2a44; }
+        .scrollable-results { max-height: 750px; overflow-y: auto; padding-right: 4px; }
+        .scrollable-results::-webkit-scrollbar { width: 6px; }
+        .scrollable-results::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
+        .footer-text { font-size: 0.8rem; color: #6c757d; }
+        .metric-box { background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e9ecef; height: 100%; }
+        .metric-box .value { font-size: 1.5rem; font-weight: 700; color: #1a3a5c; }
+        .metric-box .label { font-size: 0.75rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-grade { font-size: 0.85rem; padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+        .grade-pass { background: #d1e7dd; color: #0a3622; }
+        .grade-fail { background: #f8d7da; color: #721c24; }
+        .grade-warn { background: #fff3cd; color: #664d03; }
+        .recommendation-item { padding: 6px 10px; border-left: 3px solid #1a3a5c; margin-bottom: 4px; background: white; border-radius: 0 6px 6px 0; }
+        .od-row { border-bottom: 1px solid #dee2e6; padding: 4px 0; }
+        .od-row:last-child { border-bottom: none; }
+        .ramp-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; margin: 1px; background: #e9ecef; }
+        .section-divider { border-top: 2px dashed #dee2e6; margin: 16px 0; }
+        @media (max-width: 768px) {
+            .result-number { font-size: 2rem; }
+            .metric-box .value { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1 class="display-5 fw-bold mb-2"><i class="bi bi-signpost-fill text-primary me-2"></i>Urban Interchange Design</h1>
+    <p class="text-muted mb-4">AASHTO Green Book Chapter 10 &amp; HCM Chapter 23 — Diamond, parclo, SPUI, DDI, and roundabout interchanges.</p>
+
+    <div class="row">
+        <!-- LEFT: INPUT FORM -->
+        <div class="col-lg-7">
+            <form id="interchangeForm">
+                <!-- Project & Type -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-info-circle"></i> Project &amp; Interchange Type</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Project Name</label>
+                                <input type="text" class="form-control" id="projectName" value="US 101 & Main Street Interchange">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Interchange Type</label>
+                                <select class="form-select" id="interchangeType">
+                                    <option value="diamond" selected>Diamond</option>
+                                    <option value="parclo">Partial Cloverleaf (Parclo)</option>
+                                    <option value="spui">SPUI</option>
+                                    <option value="ddi">Diverging Diamond (DDI)</option>
+                                    <option value="roundabout">Roundabout</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Design Speed (mph)</label>
+                                <input type="number" class="form-control" id="designSpeed" value="55" min="30" max="75">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Design Vehicle</label>
+                                <select class="form-select" id="designVehicle">
+                                    <option value="p">Passenger Car (P)</option>
+                                    <option value="su">Single-Unit Truck (SU)</option>
+                                    <option value="wb67" selected>WB-67</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Context Zone</label>
+                                <select class="form-select" id="contextZone">
+                                    <option value="urban_fringe" selected>Urban Fringe</option>
+                                    <option value="suburban">Suburban</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Freeway & Cross Street -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-road"></i> Freeway &amp; Cross Street</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Freeway Lanes (total)</label>
+                                <input type="number" class="form-control" id="fwLanes" value="4" min="2" max="12">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Freeway Volume (vph)</label>
+                                <input type="number" class="form-control" id="fwVol" value="4200" min="0" step="100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Cross Street Volume (vph)</label>
+                                <input type="number" class="form-control" id="csVol" value="1800" min="0" step="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OD Movements -->
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-diagram-3"></i> OD Movements (Volumes &amp; EDTT)</div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-md-3"><label class="form-label small">OD_1 (NB Off → WB CS)</label></div>
+                            <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="od1Vol" value="250" min="0"></div>
+                            <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="od1Edtt" value="5.2" step="0.1"></div>
+                            <div class="col-md-5"><span class="badge bg-secondary">LT</span></div>
+                            
+                            <div class="col-md-3"><label class="form-label small">OD_2 (NB Off → EB CS)</label></div>
+                            <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="od2Vol" value="150" min="0"></div>
+                            <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="od2Edtt" value="3.8" step="0.1"></div>
+                            <div class="col-md-5"><span class="badge bg-info">RT</span></div>
+
+                            <div class="col-md-3"><label class="form-label small">OD_3 (SB Off → EB CS)</label></div>
+                            <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="od3Vol" value="200" min="0"></div>
+                            <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="od3Edtt" value="5.2" step="0.1"></div>
+                            <div class="col-md-5"><span class="badge bg-secondary">LT</span></div>
+
+                            <div class="col-md-3"><label class="form-label small">OD_4 (SB Off → WB CS)</label></div>
+                            <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="od4Vol" value="120" min="0"></div>
+                            <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="od4Edtt" value="3.8" step="0.1"></div>
+                            <div class="col-md-5"><span class="badge bg-info">RT</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-lg w-100 mt-2" id="calcBtn">
+                    <i class="bi bi-calculator me-2"></i>Design Interchange
+                </button>
+            </form>
+        </div>
+
+        <!-- RIGHT: RESULTS -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-table"></i> Interchange Design Results</div>
+                <div class="card-body scrollable-results" id="resultsArea">
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-clipboard-data fs-1"></i>
+                        <p class="mt-3">Click <strong>"Design Interchange"</strong><br>to compute interchange layout and performance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    function getETTLOS(ett) {
+        if (ett <= 15) return 'A';
+        if (ett <= 30) return 'B';
+        if (ett <= 55) return 'C';
+        if (ett <= 85) return 'D';
+        if (ett <= 120) return 'E';
+        return 'F';
+    }
+
+    function calculateInterchange() {
+        const projectName = document.getElementById('projectName').value || 'Interchange';
+        const interchangeType = document.getElementById('interchangeType').value;
+        const fwVol = parseFloat(document.getElementById('fwVol').value) || 0;
+        const csVol = parseFloat(document.getElementById('csVol').value) || 0;
+
+        const odData = [
+            { id: 'OD_1', vol: parseFloat(document.getElementById('od1Vol').value)||0, edtt: parseFloat(document.getElementById('od1Edtt').value)||0, type: 'LT', origin: 'NB Off', dest: 'WB CS' },
+            { id: 'OD_2', vol: parseFloat(document.getElementById('od2Vol').value)||0, edtt: parseFloat(document.getElementById('od2Edtt').value)||0, type: 'RT', origin: 'NB Off', dest: 'EB CS' },
+            { id: 'OD_3', vol: parseFloat(document.getElementById('od3Vol').value)||0, edtt: parseFloat(document.getElementById('od3Edtt').value)||0, type: 'LT', origin: 'SB Off', dest: 'EB CS' },
+            { id: 'OD_4', vol: parseFloat(document.getElementById('od4Vol').value)||0, edtt: parseFloat(document.getElementById('od4Edtt').value)||0, type: 'RT', origin: 'SB Off', dest: 'WB CS' }
+        ];
+
+        let totalVol = odData.reduce((sum, item) => sum + item.vol, 0);
+        let avgEdtt = (odData.reduce((sum, item) => sum + (item.vol * item.edtt), 0) / (totalVol || 1)).toFixed(1);
+        let los = getETTLOS(avgEdtt);
+
+        // Render results to screen
+        const resultsArea = document.getElementById('resultsArea');
+        resultsArea.innerHTML = `
+            <div class="result-section">
+                <h6>Project: ${projectName}</h6>
+                <p class="text-muted small mb-2">Type: <strong>${interchangeType.toUpperCase()}</strong></p>
+                <div class="row g-2 text-center">
+                    <div class="col-6">
+                        <div class="metric-box">
+                            <div class="value">${avgEdtt}s</div>
+                            <div class="label">Avg EDTT</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="metric-box">
+                            <div class="value"><span class="badge badge-grade grade-pass">LOS ${los}</span></div>
+                            <div class="label">Level of Service</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="result-section">
+                <h6>Traffic Summaries</h6>
+                <p class="small mb-1">Total Freeway Volume: <strong>${fwVol} vph</strong></p>
+                <p class="small mb-1">Total Cross Street Volume: <strong>${csVol} vph</strong></p>
+                <p class="small mb-0">Analyzed OD Movements: <strong>${totalVol} vph</strong></p>
+            </div>
+        `;
+    }
+
+    // Attach click handler to button
+    document.getElementById('calcBtn').addEventListener('click', calculateInterchange);
+})();
+</script>
+</body>
+</html>

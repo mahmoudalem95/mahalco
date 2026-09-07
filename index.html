@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>מהאלco — ממשקי API להנדסת תחבורה</title>
-<meta name="description" content="שלושים ושישה נהלים מתוך ה-HCM, ספר AASHTO וה-HSM עבור רחובות עירוניים, כבישים בין-עירוניים ותכנון משותף — בדפדפן ודרך ה-API.">
+<meta name="description" content="שלושים ושבעה נהלים מתוך ה-HCM, ספר AASHTO וה-HSM עבור רחובות עירוניים, כבישים בין-עירוניים ותכנון משותף — בדפדפן ודרך ה-API.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;800&display=swap" rel="stylesheet">
@@ -205,7 +205,6 @@
     .std{text-align:right}
   }
 
-
   .tier{
     display:grid;grid-template-columns:minmax(0,1fr) minmax(0,11rem) minmax(0,10rem);
     gap:22px;align-items:center;
@@ -259,14 +258,14 @@
 <section class="hero" id="top">
   <div class="wrap">
     <div>
-      <h1>שלושים ושישה נהלים לדרך שלפניכם.</h1>
+      <h1>שלושים ושבעה נהלים לדרך שלפניכם.</h1>
       <p>קיבולת, בטיחות ותכנון גיאומטרי לפי ה‑Highway Capacity Manual, ספר AASHTO וה‑Highway Safety Manual. אפשר להריץ נוהל בדפדפן, או לשלוח את אותם נתונים ל‑API כשהשאלה גדלה לכדי מסדרון שלם.</p>
       <div class="hero-actions">
         <a class="btn btn-solid" href="#urban">לעיון בקטלוג</a>
         <a class="btn btn-line" href="https://junction-los-api.onrender.com/api/v1/tool">פתיחת כלי הצמתים</a>
       </div>
       <div class="tally">
-        <div><b>16</b>רחובות עירוניים</div>
+        <div><b>17</b>רחובות עירוניים</div>
         <div><b>13</b>כבישים בין-עירוניים</div>
         <div><b>7</b>תכנון משותף</div>
       </div>
@@ -319,7 +318,7 @@
       <button class="chip" data-cat="rural" aria-pressed="false">בין-עירוני</button>
       <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
     </div>
-    <p class="count" id="count" aria-live="polite">36 נהלים</p>
+    <p class="count" id="count" aria-live="polite">37 נהלים</p>
   </div>
 </div>
 
@@ -329,9 +328,10 @@
     <div class="group-head">
       <h2>רחובות עירוניים</h2>
       <p>רמזורים, צמתים, איכות רב-אמצעית וגיאומטריית חתך.</p>
-      <span class="n" data-groupcount>16</span>
+      <span class="n" data-groupcount>17</span>
     </div>
 
+    <a class="row" href="critical-lane-volume.html"><h3>נפח נתיב קריטי</h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
     <a class="row" target="_blank" rel="noopener" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
     <a class="row" target="_blank" rel="noopener" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
     <a class="row" target="_blank" rel="noopener" href="https://junction-los-api.onrender.com/api/v1/pages/roundabout"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>

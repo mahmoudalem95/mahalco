@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mahalco — API catalogue</title>
+<meta name="description" content="HCM, AASHTO and HSM procedures for urban streets, rural highways and shared design work — in the browser and over the API.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#23272C;
+    --ink:#141A1F;
+    --paper:#E7E8E3;
+    --paper-2:#F1F2EE;
+    --marking:#E9B12F;
+    --rule:#C6C9C1;
+    --rule-dark:#39404A;
+    --muted:#5C6570;
+    --muted-dark:#9BA4AE;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{transition:none !important}
+  }
+
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+    font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--marking);outline-offset:3px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+
+  .masthead{position:sticky;top:0;z-index:20;background:var(--asphalt);border-bottom:1px solid var(--rule-dark)}
+  .masthead .wrap{display:flex;align-items:center;gap:28px;height:62px}
+  .mark{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.02em;font-size:19px;color:var(--paper);text-decoration:none}
+  .mark span{width:22px;height:10px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--marking) 0 7px,transparent 7px 12px)}
+  .masthead nav{margin-left:auto;display:flex;gap:24px;font-size:15px}
+  .masthead nav a{color:var(--muted-dark);text-decoration:none;padding:4px 0}
+  .masthead nav a:hover{color:var(--paper)}
+  @media (max-width:720px){.masthead nav{display:none}}
+
+  .hero{background:var(--asphalt);color:var(--paper);padding:76px 0 84px}
+  .hero .wrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center}
+  .hero h1{margin:0 0 22px;font-size:clamp(2.5rem,5.4vw,4.05rem);line-height:1.02;letter-spacing:-.035em;font-weight:800}
+  .hero p{margin:0 0 30px;max-width:46ch;color:var(--muted-dark);font-size:1.06rem}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-block;padding:13px 22px;border-radius:3px;font-weight:600;font-size:15px;text-decoration:none;transition:background .15s ease}
+  .btn-solid{background:var(--marking);color:var(--ink)}
+  .btn-solid:hover{background:#F3C455}
+  .btn-line{border:1px solid var(--rule-dark);color:var(--paper)}
+  .btn-line:hover{background:#2C3239}
+  .plan{width:100%;height:auto;display:block}
+  .tally{display:flex;gap:38px;margin-top:44px;padding-top:22px;border-top:1px solid var(--rule-dark)}
+  .tally div{font-size:14px;color:var(--muted-dark)}
+  .tally b{display:block;font-size:1.6rem;font-weight:800;color:var(--paper);letter-spacing:-.02em;line-height:1.2}
+  @media (max-width:860px){
+    .hero{padding:52px 0 56px}
+    .hero .wrap{grid-template-columns:1fr;gap:40px}
+    .plan{max-width:340px;margin:0 auto}
+  }
+
+  .controls{position:sticky;top:62px;z-index:15;background:var(--paper);border-bottom:1px solid var(--rule);padding:18px 0}
+  .controls .wrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .search{flex:1 1 260px;min-width:0;display:flex;align-items:center;gap:10px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;padding:10px 14px}
+  .search svg{flex:none;opacity:.5}
+  .search input{border:0;background:none;outline:none;width:100%;font:inherit;font-size:15px;color:var(--ink)}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--rule);background:transparent;border-radius:3px;padding:9px 15px;font:inherit;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;transition:border-color .15s ease,color .15s ease}
+  .chip:hover{border-color:var(--muted);color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .count{font-size:14px;color:var(--muted);margin-left:auto;flex:none}
+  @media (max-width:640px){.count{margin-left:0;width:100%}}
+
+  main{padding:0 0 90px}
+  .group{padding-top:62px}
+  .group-head{display:flex;align-items:baseline;gap:14px;padding-bottom:14px;margin-bottom:6px;border-bottom:2px solid var(--ink)}
+  .group-head h2{margin:0;font-size:1.55rem;font-weight:800;letter-spacing:-.02em}
+  .group-head p{margin:0;color:var(--muted);font-size:15px;max-width:52ch}
+  .group-head .n{margin-left:auto;font-size:14px;color:var(--muted);flex:none}
+  @media (max-width:720px){.group-head{flex-wrap:wrap;gap:6px}.group-head .n{margin-left:0;width:100%}}
+
+  .row{
+    display:grid;grid-template-columns:minmax(0,16rem) minmax(0,1fr) minmax(0,12rem);
+    gap:22px;align-items:baseline;
+    padding:19px 0 19px 16px;
+    border-bottom:1px solid var(--rule);
+    position:relative;text-decoration:none;color:inherit;
+  }
+  .row::before{
+    content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;
+    background:var(--marking);transform:scaleY(0);transform-origin:top;
+    transition:transform .18s ease;
+  }
+  a.row:hover::before,a.row:focus-visible::before{transform:scaleY(1)}
+  .row h3{margin:0;font-size:1.02rem;font-weight:600;letter-spacing:-.01em}
+  a.row:hover h3{text-decoration:underline;text-underline-offset:3px}
+  .row p{margin:0;color:var(--muted);font-size:15px;max-width:66ch}
+  .std{font-size:13px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+  span.row{opacity:.72}
+  @media (max-width:820px){
+    .row{grid-template-columns:1fr;gap:5px;padding-left:14px}
+    .std{text-align:left}
+  }
+
+
+  .tier{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,11rem) minmax(0,10rem);
+    gap:22px;align-items:center;
+    padding:24px 0 24px 16px;border-bottom:1px solid var(--rule);
+  }
+  .tier h3{margin:0 0 4px;font-size:1.06rem;font-weight:600}
+  .tier p{margin:0;color:var(--muted);font-size:15px;max-width:52ch}
+  .rate{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .price{font-size:1.02rem;font-weight:600;justify-self:end;text-align:right}
+  a.buy{
+    background:var(--marking);color:var(--ink);text-decoration:none;
+    padding:11px 20px;border-radius:3px;transition:background .15s ease;
+  }
+  a.buy:hover{background:#F3C455}
+  .note{margin:22px 0 0;color:var(--muted);font-size:14px;max-width:62ch}
+  @media (max-width:820px){
+    .tier{grid-template-columns:1fr;gap:10px;padding-left:14px}
+    .price{justify-self:start;text-align:left}
+  }
+
+  .empty{padding:56px 0;color:var(--muted);font-size:16px}
+  .empty[hidden]{display:none}
+
+  footer{background:var(--asphalt);color:var(--muted-dark);padding:46px 0;font-size:14px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+  footer p{margin:0;max-width:62ch;line-height:1.6}
+  footer .who{color:var(--paper);font-weight:600;margin-left:auto}
+  @media (max-width:720px){footer .who{margin-left:0}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="mark" href="./"><span aria-hidden="true"></span>Mahalco</a>
+    <nav>
+      <a href="#urban">Urban</a>
+      <a href="#rural">Rural</a>
+      <a href="#common">Common</a>
+      <a href="#access">Access</a>
+      <a href="tool.html">Junction tool</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <h1>Thirty-six procedures for the road in front of you.</h1>
+      <p>Capacity, safety and geometric design from the Highway Capacity Manual, the AASHTO Green Book and the Highway Safety Manual. Open a procedure to run it, or post the same inputs to the API when the question becomes a corridor.</p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="#urban">Browse the catalogue</a>
+        <a class="btn btn-line" href="tool.html">Open the junction tool</a>
+      </div>
+      <div class="tally">
+        <div><b>16</b>Urban streets</div>
+        <div><b>13</b>Rural highways</div>
+        <div><b>7</b>Shared design</div>
+      </div>
+    </div>
+
+    <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="Plan view of a four-leg junction with lane markings">
+      <rect width="380" height="380" fill="#1B1F24"/>
+      <rect x="0" y="130" width="380" height="120" fill="#2C3138"/>
+      <rect x="130" y="0" width="120" height="380" fill="#2C3138"/>
+      <rect x="130" y="130" width="120" height="120" fill="#31373F"/>
+      <g stroke="#E9B12F" stroke-width="2.5" stroke-dasharray="14 11">
+        <line x1="0" y1="190" x2="122" y2="190"/><line x1="258" y1="190" x2="380" y2="190"/>
+        <line x1="190" y1="0" x2="190" y2="122"/><line x1="190" y1="258" x2="190" y2="380"/>
+      </g>
+      <g stroke="#8C949E" stroke-width="1.5" stroke-dasharray="9 9" opacity=".55">
+        <line x1="0" y1="160" x2="122" y2="160"/><line x1="258" y1="220" x2="380" y2="220"/>
+        <line x1="160" y1="258" x2="160" y2="380"/><line x1="220" y1="0" x2="220" y2="122"/>
+      </g>
+      <g fill="#E7E8E3">
+        <rect x="130" y="123" width="60" height="5"/><rect x="190" y="252" width="60" height="5"/>
+        <rect x="123" y="190" width="5" height="60"/><rect x="252" y="130" width="5" height="60"/>
+      </g>
+      <g stroke="#4A525C" stroke-width="1.5">
+        <line x1="0" y1="130" x2="130" y2="130"/><line x1="250" y1="130" x2="380" y2="130"/>
+        <line x1="0" y1="250" x2="130" y2="250"/><line x1="250" y1="250" x2="380" y2="250"/>
+        <line x1="130" y1="0" x2="130" y2="130"/><line x1="130" y1="250" x2="130" y2="380"/>
+        <line x1="250" y1="0" x2="250" y2="130"/><line x1="250" y1="250" x2="250" y2="380"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<div class="controls">
+  <div class="wrap">
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
+      </svg>
+      <input id="q" type="search" placeholder="Search by name or standard" aria-label="Search the API catalogue">
+    </label>
+    <div class="filters" role="group" aria-label="Filter by category">
+      <button class="chip" data-cat="all" aria-pressed="true">All</button>
+      <button class="chip" data-cat="urban" aria-pressed="false">Urban</button>
+      <button class="chip" data-cat="rural" aria-pressed="false">Rural</button>
+      <button class="chip" data-cat="common" aria-pressed="false">Common</button>
+    </div>
+    <p class="count" id="count" aria-live="polite">36 procedures</p>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="group" id="urban" data-group="urban">
+    <div class="group-head">
+      <h2>Urban streets</h2>
+      <p>Signals, junctions, multimodal quality and cross-section geometry.</p>
+      <span class="n" data-groupcount>16</span>
+    </div>
+
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>Signalized intersection analysis</h3><p>Control delay, queue length, v/c ratio and level of service by approach and for the whole junction.</p><span class="std">HCM Ch. 19</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>Unsignalized intersection analysis</h3><p>Two-way and all-way stop control, with gap acceptance by movement.</p><span class="std">HCM Ch. 20</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/roundabout"><h3>Roundabout analysis</h3><p>Entry capacity, v/c, control delay and 95th-percentile queues per leg.</p><span class="std">HCM Ch. 22</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis"><h3>Lane and queue analysis</h3><p>Per-lane v/c, delay and 95th-percentile queue in metres, checked against turn-bay storage.</p><span class="std">HCM Ch. 19 / 31</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/signal-timing"><h3>Signal coordination and timing</h3><p>Offsets, splits and cycle length across a coordinated group of signals.</p><span class="std">HCM Ch. 19 / 31</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-segment"><h3>Urban street segment analysis</h3><p>Running speed and level of service on a segment between two signals.</p><span class="std">HCM Ch. 17</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility"><h3>Urban street facility analysis</h3><p>Whole-corridor travel speed and level of service across consecutive segments.</p><span class="std">HCM Ch. 17 / 18</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los"><h3>Pedestrian level of service</h3><p>Walkability from footway width, separation from traffic and crossing conditions.</p><span class="std">HCM Ch. 16</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/bicycle-los"><h3>Bicycle level of service</h3><p>Cycling comfort from pavement condition, traffic volume and heavy-vehicle share.</p><span class="std">HCM Ch. 16</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/transit-los"><h3>Transit level of service</h3><p>Service frequency, stop amenity and reliability along a route.</p><span class="std">HCM Ch. 16</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/multimodal-los"><h3>Multimodal level of service</h3><p>Pedestrian, bicycle and transit scores combined into one corridor result.</p><span class="std">HCM Ch. 16</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/typical-section"><h3>Urban cross-section design</h3><p>Lane, kerb, footway and shoulder widths for local, collector and arterial streets.</p><span class="std">AASHTO Green Book</span></a>
+    <span class="row"><h3>Intersection safety performance functions</h3><p>Expected crash frequency at urban intersections by control type and volume.</p><span class="std">HSM</span></span>
+    <span class="row"><h3>Urban intersection design</h3><p>Geometric layout, corner radii and sight triangles.</p><span class="std">AASHTO Green Book</span></span>
+    <span class="row"><h3>Frontage road design</h3><p>Service roads running parallel to a major arterial, and their connections.</p><span class="std">AASHTO Green Book</span></span>
+    <span class="row"><h3>Roadside safety design</h3><p>Clear zones, barrier placement and treatment selection in an urban context.</p><span class="std">AASHTO Roadside Design Guide</span></span>
+  </section>
+
+  <section class="group" id="rural" data-group="rural">
+    <div class="group-head">
+      <h2>Rural highways</h2>
+      <p>Freeway and two-lane operations, alignment and roadside geometry.</p>
+      <span class="n" data-groupcount>13</span>
+    </div>
+
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/basic-freeway"><h3>Basic freeway segment analysis</h3><p>Density, average speed and level of service on uninterrupted segments.</p><span class="std">HCM Ch. 21 / 23</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/freeway-facility"><h3>Freeway facility analysis</h3><p>Facility level of service across basic, weaving and ramp segments in sequence.</p><span class="std">HCM Ch. 21</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/ramp-merge-diverge"><h3>Ramp merge and diverge analysis</h3><p>Density and level of service within on-ramp and off-ramp influence areas.</p><span class="std">HCM Ch. 25</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/weaving-segment"><h3>Weaving segment analysis</h3><p>Weaving ratio, demand in passenger-car equivalents, capacity, speed and ramp-spacing warrants.</p><span class="std">HCM Ch. 24</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/interchange-los"><h3>Interchange level of service</h3><p>Ramp terminal capacity, internal link queuing and the interaction between two intersections.</p><span class="std">HCM Ch. 23</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/two-lane-highway"><h3>Two-lane highway analysis</h3><p>Follower density, percent time spent following, average travel speed and level of service.</p><span class="std">HCM Ch. 15</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/freeway-reliability"><h3>Freeway travel time reliability</h3><p>Planning Time Index, Buffer Index and the reliability distribution across a year.</p><span class="std">HCM Ch. 10</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/climbing-lane-justification"><h3>Climbing lane justification</h3><p>Grade, length, truck performance and speed reduction, producing a defensible warrant.</p><span class="std">AASHTO Green Book</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/horizontal-curve"><h3>Horizontal curve design</h3><p>Minimum radius from design speed, superelevation and side friction.</p><span class="std">AASHTO Green Book</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/vertical-curve"><h3>Vertical curve design</h3><p>Crest and sag curve lengths from sight distance and rider comfort.</p><span class="std">AASHTO Green Book</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance"><h3>Sight distance calculation</h3><p>Stopping, passing and decision sight distance for a given alignment.</p><span class="std">AASHTO Green Book</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/rural-cross-section"><h3>Rural cross-section design</h3><p>Lane and shoulder widths with cross-slope by highway class.</p><span class="std">AASHTO Green Book</span></a>
+    <a class="row" href="https://junction-los-api.onrender.com/api/v1/pages/typical-sections-interurban"><h3>Interurban typical sections</h3><p>Highway corridor sections with travel lanes, shoulders, medians and roadside clear zones.</p><span class="std">AASHTO Green Book</span></a>
+  </section>
+
+  <section class="group" id="common" data-group="common">
+    <div class="group-head">
+      <h2>Shared design</h2>
+      <p>Procedures that apply wherever the project sits.</p>
+      <span class="n" data-groupcount>7</span>
+    </div>
+
+    <span class="row"><h3>Traffic impact study</h3><p>Development trip generation through to a complete assessment, assembled in one workflow.</p><span class="std">HCM &amp; AASHTO</span></span>
+    <span class="row"><h3>Capacity and adjustment factor library</h3><p>Base capacities with heavy-vehicle, grade and driver-population adjustments.</p><span class="std">HCM</span></span>
+    <span class="row"><h3>Design vehicle swept path</h3><p>Turning and swept paths for standard design vehicles at a given radius.</p><span class="std">AASHTO Green Book</span></span>
+    <span class="row"><h3>Pavement design</h3><p>Structural thickness by the 1993 method and by mechanistic-empirical analysis.</p><span class="std">AASHTO Pavement Structures</span></span>
+    <span class="row"><h3>Roadside safety hardware selection</h3><p>Barriers, crash cushions and terminals matched to the hazard and the speed.</p><span class="std">AASHTO Roadside Design Guide</span></span>
+    <span class="row"><h3>Bridge scour analysis</h3><p>Contraction, pier and abutment scour potential at a crossing.</p><span class="std">HEC-18 / AASHTO LRFD</span></span>
+    <span class="row"><h3>Economic and benefit-cost analysis</h3><p>User costs, benefits, net present value and project ranking.</p><span class="std">AASHTO Red Book</span></span>
+    <span class="row"><h3>Clear zone design</h3><p>Lateral clearance from design speed, volume and side slope.</p><span class="std">AASHTO Roadside Design Guide</span></span>
+    <span class="row"><h3>Roadway segment safety performance functions</h3><p>Expected crash frequency along rural highway segments.</p><span class="std">HSM</span></span>
+  </section>
+
+
+  <section class="group" id="access">
+    <div class="group-head">
+      <h2>Access</h2>
+      <p>Every procedure is available in the browser. A key raises your rate limit and lets you post to the API directly.</p>
+    </div>
+
+    <div class="tier">
+      <div>
+        <h3>Anonymous</h3>
+        <p>Run any procedure in the browser. No key, no account.</p>
+      </div>
+      <span class="rate">10 requests / hour</span>
+      <span class="price">Free</span>
+    </div>
+
+    <div class="tier">
+      <div>
+        <h3>Developer</h3>
+        <p>An API key for prototyping and single-junction work.</p>
+      </div>
+      <span class="rate">120 requests / hour</span>
+      <a class="price buy" href="https://paypal.me/MahmoudAlem" target="_blank" rel="noopener">$19 / month</a>
+    </div>
+
+    <div class="tier">
+      <div>
+        <h3>Practice</h3>
+        <p>For corridor studies and scenario runs across a network.</p>
+      </div>
+      <span class="rate">600 requests / hour</span>
+      <a class="price buy" href="https://paypal.me/MahmoudAlem" target="_blank" rel="noopener">$79 / month</a>
+    </div>
+
+    <div class="tier">
+      <div>
+        <h3>Enterprise</h3>
+        <p>Unlimited requests, with a named contact for methodology questions.</p>
+      </div>
+      <span class="rate">No limit</span>
+      <a class="price" href="mailto:Mahmoudalem95@icloud.com">Get in touch</a>
+    </div>
+
+    <p class="note">Keys are issued by hand after payment — send the email address you paid with and I will reply with your key. Cancel any time by email.</p>
+  </section>
+
+  <p class="empty" id="empty" hidden>No procedure matches that search. Try a standard instead — HCM, AASHTO or HSM.</p>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>HCM is the Highway Capacity Manual, 7th edition. The AASHTO Green Book is A Policy on Geometric Design of Highways and Streets. HSM is the Highway Safety Manual. Every simplified procedure is named in the response, so assumptions travel with the number.</p>
+    <p class="who">Mahalco</p>
+  </div>
+</footer>
+
+<script>
+  const q = document.getElementById('q');
+  const count = document.getElementById('count');
+  const empty = document.getElementById('empty');
+  const chips = [...document.querySelectorAll('.chip')];
+  const groups = [...document.querySelectorAll('.group')];
+  const rows = [...document.querySelectorAll('.row')];
+  let cat = 'all';
+
+  rows.forEach(r => {
+    r.dataset.text = r.textContent.toLowerCase();
+    r.dataset.cat = r.closest('.group').dataset.group;
+  });
+
+  function apply(){
+    const term = q.value.trim().toLowerCase();
+    let total = 0;
+
+    groups.forEach(g => {
+      let shown = 0;
+      g.querySelectorAll('.row').forEach(r => {
+        const ok = (cat === 'all' || r.dataset.cat === cat) &&
+                   (term === '' || r.dataset.text.includes(term));
+        r.hidden = !ok;
+        if (ok) shown++;
+      });
+      g.hidden = shown === 0;
+      g.querySelector('[data-groupcount]').textContent = shown;
+      total += shown;
+    });
+
+    count.textContent = total === 1 ? '1 procedure' : total + ' procedures';
+    empty.hidden = total !== 0;
+  }
+
+  q.addEventListener('input', apply);
+  chips.forEach(c => c.addEventListener('click', () => {
+    cat = c.dataset.cat;
+    chips.forEach(o => o.setAttribute('aria-pressed', String(o === c)));
+    apply();
+  }));
+
+  apply();
+</script>
+
+</body>
+</html>

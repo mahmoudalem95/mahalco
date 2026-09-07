@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Multimodal LOS (MMLOS) - Mahalco</title>
+<style>
+:root{--bg:#08070c;--card:#11101a;--field:#0a0910;--line:#292536;--ink:#f1eff8;--muted:#aaa4ba;--purple:#8b5cf6;--green:#34d399;--red:#f35b5b;--blue:#60a5fa}
+*{box-sizing:border-box}body{margin:0;padding:22px;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,sans-serif}main{max-width:1200px;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px}h1{margin:0;font-size:28px}h2{font-size:17px;margin:28px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:14px;margin:0 0 10px;color:#ddd6fe}.lede,.note{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid.three{grid-template-columns:repeat(3,1fr)}.grid.two{grid-template-columns:repeat(2,1fr)}.mode{border:1px solid var(--line);border-radius:10px;padding:14px;background:#0d0c14}.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}input,select{width:100%;background:var(--field);border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:9px;font:inherit}input:focus,select:focus{outline:2px solid rgba(139,92,246,.45);border-color:var(--purple)}button{border:0;border-radius:8px;background:var(--purple);color:#fff;padding:11px 18px;font-weight:700;cursor:pointer}.action{display:flex;align-items:end;gap:12px;margin-top:18px}.status{color:var(--muted);min-height:22px}.error{color:var(--red)}.success{color:var(--green)}#results{display:none}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.metric{border:1px solid var(--line);border-radius:9px;padding:13px}.metric small{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:21px;margin-top:3px}.los{display:inline-block;border-radius:5px;padding:2px 9px;font-weight:800}.A{background:#34d399;color:#04150e}.B{background:#a3e635;color:#101a02}.C{background:#facc15;color:#1a1403}.D{background:#fb923c;color:#1a0d02}.E{background:#f35b5b;color:#210505}.F{background:#e11d48;color:#fff}.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.result{border:1px solid var(--line);border-radius:9px;padding:12px}.result small{display:block;color:var(--muted)}.result strong{font-size:19px}.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.check{padding:10px;border:1px solid var(--line);border-radius:8px}.check.pass{border-color:#166534;background:rgba(22,101,52,.16)}.check.fail{border-color:#9f1239;background:rgba(159,18,57,.13)}.check b{display:block}.json{background:#08070c;border:1px solid var(--line);border-radius:8px;padding:15px;overflow:auto;font:12px/1.5 ui-monospace,monospace;color:#cbd5e1;max-height:560px}.home{color:#c4b5fd;text-decoration:none;display:inline-block;margin-bottom:15px}.hint{color:var(--muted);font-size:12px;margin:6px 0 0}.list{margin:8px 0 0;padding-left:20px}.list li{margin:5px 0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:850px){main{padding:18px}.grid,.grid.three,.grid.two,.cards,.result-grid,.checks{grid-template-columns:1fr 1fr}.mode-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.grid,.grid.three,.grid.two,.cards,.result-grid,.checks,.mode-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<a class="home" href="../">← Mahalco main page</a>
+<h1>Multimodal Level of Service (MMLOS)</h1>
+<p class="lede">A planning-level corridor calculator that combines motorized, pedestrian, bicycle, and transit experience into one transparent, higher-is-better score. Enter a published 1–5 mode score/LOS when available, or derive each score from the inputs below.</p>
+
+<h2>Analysis and segment geometry</h2>
+<div class="grid">
+  <div><label for="analysis_id">Analysis ID</label><input id="analysis_id" value="MMLOS_MAIN_ST_001"></div>
+  <div><label for="analysis_period">Analysis period</label><input id="analysis_period" value="PM_PEAK"></div>
+  <div><label for="facility">Facility / corridor name</label><input id="facility" value="Main Street"></div>
+  <div><label for="direction">Analysis direction</label><select id="direction"><option>both directions</option><option>northbound</option><option>southbound</option><option>eastbound</option><option>westbound</option></select></div>
+  <div><label for="segment_length">Segment length (ft)</label><input id="segment_length" type="number" min="1" value="2640"></div>
+  <div><label for="segment_width">Typical paved width (ft)</label><input id="segment_width" type="number" min="1" value="48"></div>
+  <div><label for="row_width">Right-of-way width (ft)</label><input id="row_width" type="number" min="1" value="80"></div>
+  <div><label for="intersections">Signalized intersections / mi</label><input id="intersections" type="number" min="0" step=".1" value="4"></div>
+  <div><label for="crossings">Marked crossings / mi</label><input id="crossings" type="number" min="0" step=".1" value="5"></div>
+  <div><label for="land_use">Adjacent land use</label><select id="land_use"><option>mixed use</option><option>commercial</option><option>residential</option><option>employment</option><option>school</option><option>industrial</option></select></div>
+  <div><label for="topography">Topography</label><select id="topography"><option>level</option><option>rolling</option><option>steep</option></select></div>
+  <div><label for="phf">Peak-hour factor</label><input id="phf" type="number" min=".5" max="1" step=".01" value=".92"></div>
+</div>
+
+<h2>Mode inputs and scoring</h2>
+<p class="note">A supplied LOS overrides derivation. Leave the source as “Derive from inputs” to calculate a 1–5 score. A is the best LOS and F is the worst; the numeric scale is reversed so higher is better.</p>
+<div class="mode-grid">
+  <section class="mode">
+    <h3>Motorized</h3>
+    <div><label for="motor_source">Score source</label><select id="motor_source"><option value="derive">Derive from inputs</option><option value="A">A (5)</option><option value="B">B (4)</option><option value="C">C (3)</option><option value="D">D (2)</option><option value="E">E (1.5)</option><option value="F">F (1)</option></select></div>
+    <div><label for="motor_volume">Motorized volume (vph)</label><input id="motor_volume" type="number" min="0" value="1800"></div>
+    <div><label for="motor_speed">Operating speed (mph)</label><input id="motor_speed" type="number" min="0" value="32"></div>
+    <div><label for="motor_lanes">Through lanes (both directions)</label><input id="motor_lanes" type="number" min="1" value="4"></div>
+    <div><label for="motor_delay">Average control delay (sec/veh)</label><input id="motor_delay" type="number" min="0" value="25"></div>
+    <div><label for="motor_queue">95th percentile queue (ft)</label><input id="motor_queue" type="number" min="0" value="180"></div>
+  </section>
+  <section class="mode">
+    <h3>Pedestrian</h3>
+    <div><label for="ped_source">Score source</label><select id="ped_source"><option value="derive">Derive from inputs</option><option value="A">A (5)</option><option value="B">B (4)</option><option value="C">C (3)</option><option value="D">D (2)</option><option value="E">E (1.5)</option><option value="F">F (1)</option></select></div>
+    <div><label for="sidewalk_width">Sidewalk width (ft)</label><input id="sidewalk_width" type="number" min="0" value="8"></div>
+    <div><label for="ped_buffer">Buffer / separation (ft)</label><input id="ped_buffer" type="number" min="0" value="4"></div>
+    <div><label for="ped_volume">Pedestrian volume (vph)</label><input id="ped_volume" type="number" min="0" value="120"></div>
+    <div><label for="ped_delay">Average crossing delay (sec)</label><input id="ped_delay" type="number" min="0" value="20"></div>
+    <div><label for="ped_ada">Accessible route present</label><select id="ped_ada"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  </section>
+  <section class="mode">
+    <h3>Bicycle</h3>
+    <div><label for="bike_source">Score source</label><select id="bike_source"><option value="derive">Derive from inputs</option><option value="A">A (5)</option><option value="B">B (4)</option><option value="C">C (3)</option><option value="D">D (2)</option><option value="E">E (1.5)</option><option value="F">F (1)</option></select></div>
+    <div><label for="bike_facility">Facility type</label><select id="bike_facility"><option value="protected">Protected lane</option><option value="buffered">Buffered lane</option><option value="bike lane">Bike lane</option><option value="shared">Shared roadway</option><option value="none">No facility</option></select></div>
+    <div><label for="bike_width">Usable bicycle width (ft)</label><input id="bike_width" type="number" min="0" value="6"></div>
+    <div><label for="bike_volume">Bicycle volume (bicycles/hr)</label><input id="bike_volume" type="number" min="0" value="35"></div>
+    <div><label for="bike_speed">Motorized speed beside facility (mph)</label><input id="bike_speed" type="number" min="0" value="32"></div>
+    <div><label for="bike_trucks">Heavy vehicles (%)</label><input id="bike_trucks" type="number" min="0" max="100" value="6"></div>
+  </section>
+  <section class="mode">
+    <h3>Transit</h3>
+    <div><label for="transit_source">Score source</label><select id="transit_source"><option value="derive">Derive from inputs</option><option value="A">A (5)</option><option value="B">B (4)</option><option value="C">C (3)</option><option value="D">D (2)</option><option value="E">E (1.5)</option><option value="F">F (1)</option></select></div>
+    <div><label for="transit_headway">Peak headway (min)</label><input id="transit_headway" type="number" min="0" value="15"></div>
+    <div><label for="transit_speed">Transit operating speed (mph)</label><input id="transit_speed" type="number" min="0" value="14"></div>
+    <div><label for="transit_reliability">On-time performance (%)</label><input id="transit_reliability" type="number" min="0" max="100" value="82"></div>
+    <div><label for="transit_stops">Stops per mile</label><input id="transit_stops" type="number" min="0" step=".1" value="3"></div>
+    <div><label for="transit_amenities">Stops with shelter / seating (%)</label><input id="transit_amenities" type="number" min="0" max="100" value="65"></div>
+  </section>
+</div>
+
+<h2>Weights, calibration, and equity</h2>
+<div class="grid">
+  <div><label for="w_motor">Motorized weight</label><input id="w_motor" type="number" min="0" step=".01" value=".25"></div>
+  <div><label for="w_ped">Pedestrian weight</label><input id="w_ped" type="number" min="0" step=".01" value=".30"></div>
+  <div><label for="w_bike">Bicycle weight</label><input id="w_bike" type="number" min="0" step=".01" value=".20"></div>
+  <div><label for="w_transit">Transit weight</label><input id="w_transit" type="number" min="0" step=".01" value=".25"></div>
+  <div><label for="cal_motor">Motorized calibration factor</label><input id="cal_motor" type="number" min="0" step=".01" value="1"></div>
+  <div><label for="cal_ped">Pedestrian calibration factor</label><input id="cal_ped" type="number" min="0" step=".01" value="1"></div>
+  <div><label for="cal_bike">Bicycle calibration factor</label><input id="cal_bike" type="number" min="0" step=".01" value="1"></div>
+  <div><label for="cal_transit">Transit calibration factor</label><input id="cal_transit" type="number" min="0" step=".01" value="1"></div>
+  <div><label for="equity_priority">Priority population present</label><select id="equity_priority"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div><label for="low_income">Low-income households (%)</label><input id="low_income" type="number" min="0" max="100" value="28"></div>
+  <div><label for="limited_english">Limited English proficiency (%)</label><input id="limited_english" type="number" min="0" max="100" value="12"></div>
+  <div><label for="older_adults">Older adults / disabilities (%)</label><input id="older_adults" type="number" min="0" max="100" value="18"></div>
+  <div><label for="title_vi">Title VI engagement completed</label><select id="title_vi"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div><label for="language_access">Language access plan available</label><select id="language_access"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div><label for="ada_audit">ADA field audit completed</label><select id="ada_audit"><option value="yes">Yes</option><option value="no">No</option></select></div>
+</div>
+
+<h2>Corridor performance and standards</h2>
+<div class="grid">
+  <div><label for="corridor_vmt">Daily motorized person trips</label><input id="corridor_vmt" type="number" min="0" value="12000"></div>
+  <div><label for="ped_trips">Daily pedestrian trips</label><input id="ped_trips" type="number" min="0" value="680"></div>
+  <div><label for="bike_trips">Daily bicycle trips</label><input id="bike_trips" type="number" min="0" value="260"></div>
+  <div><label for="transit_trips">Daily transit boardings</label><input id="transit_trips" type="number" min="0" value="420"></div>
+  <div><label for="target_los">Target MMLOS</label><select id="target_los"><option>C</option><option>A</option><option>B</option><option>D</option></select></div>
+  <div><label for="target_sidewalk">Minimum target sidewalk width (ft)</label><input id="target_sidewalk" type="number" min="0" value="5"></div>
+  <div><label for="target_bike">Minimum target bicycle width (ft)</label><input id="target_bike" type="number" min="0" value="5"></div>
+  <div><label for="target_headway">Maximum target transit headway (min)</label><input id="target_headway" type="number" min="0" value="20"></div>
+</div>
+<div class="action"><button id="analyze" type="button">Calculate MMLOS</button><span id="status" class="status" role="status"></span></div>
+
+<section id="results" aria-live="polite">
+  <h2>MMLOS summary</h2>
+  <div class="cards">
+    <div class="metric"><small>WEIGHTED MMLOS SCORE</small><strong id="score">-</strong></div>
+    <div class="metric"><small>OVERALL MMLOS</small><strong id="overall">-</strong></div>
+    <div class="metric"><small>MODAL BALANCE INDEX</small><strong id="balance">-</strong></div>
+    <div class="metric"><small>BALANCE RATING</small><strong id="balance_rating">-</strong></div>
+    <div class="metric"><small>EQUITY SCREEN</small><strong id="equity_rating">-</strong></div>
+  </div>
+  <h2>Mode-specific results</h2><div id="mode_results" class="result-grid"></div>
+  <h2>Equity analysis</h2><div id="equity_results" class="result-grid"></div>
+  <h2>Corridor performance</h2><div id="corridor_results" class="result-grid"></div>
+  <h2>Standards checks</h2><div id="standards" class="checks"></div>
+  <h2>Improvement opportunities and recommendations</h2><ul id="recommendations" class="list"></ul>
+  <h2>Generated request / response JSON</h2><pre id="json" class="json"></pre>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>Math.max(0,Number($(id).value)||0);
+const val=id=>$(id).value;
+const yes=id=>val(id)==="yes";
+const scoreForLos={A:5,B:4,C:3,D:2,E:1.5,F:1};
+function los(score){return score>4?"A":score>3?"B":score>2?"C":score>1.5?"D":score>1?"E":"F"}
+function rating(score){return {A:"Excellent",B:"Good",C:"Acceptable",D:"Fair",E:"Poor",F:"Very poor"}[los(score)]}
+function clamp(x,min=1,max=5){return Math.min(max,Math.max(min,x))}
+function suppliedOrDerived(source,derived){return source==="derive"?clamp(derived):scoreForLos[source]}
+function esc(text){return String(text).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function check(label,pass,detail){return `<div class="check ${pass?"pass":"fail"}"><b>${pass?"✓":"!"} ${esc(label)}</b><span>${esc(detail)}</span></div>`}
+function buildRequest(){return{analysis_id:val("analysis_id"),analysis_period:val("analysis_period"),facility:val("facility"),direction:val("direction"),segment_geometry:{length_feet:num("segment_length"),paved_width_feet:num("segment_width"),right_of_way_feet:num("row_width"),signalized_intersections_per_mile:num("intersections"),marked_crossings_per_mile:num("crossings"),land_use:val("land_use"),topography:val("topography"),peak_hour_factor:num("phf")},modes:{motorized:{los_source:val("motor_source"),volume_vph:num("motor_volume"),operating_speed_mph:num("motor_speed"),through_lanes:num("motor_lanes"),average_delay_seconds:num("motor_delay"),queue_95th_feet:num("motor_queue")},pedestrian:{los_source:val("ped_source"),sidewalk_width_feet:num("sidewalk_width"),buffer_feet:num("ped_buffer"),volume_vph:num("ped_volume"),crossing_delay_seconds:num("ped_delay"),accessible_route:yes("ped_ada")},bicycle:{los_source:val("bike_source"),facility_type:val("bike_facility"),usable_width_feet:num("bike_width"),volume_per_hour:num("bike_volume"),adjacent_speed_mph:num("bike_speed"),heavy_vehicle_percent:num("bike_trucks")},transit:{los_source:val("transit_source"),peak_headway_minutes:num("transit_headway"),operating_speed_mph:num("transit_speed"),on_time_percent:num("transit_reliability"),stops_per_mile:num("transit_stops"),shelter_seating_percent:num("transit_amenities")}},weights:{motorized:num("w_motor"),pedestrian:num("w_ped"),bicycle:num("w_bike"),transit:num("w_transit")},calibration:{motorized:num("cal_motor"),pedestrian:num("cal_ped"),bicycle:num("cal_bike"),transit:num("cal_transit")},equity:{priority_population_present:yes("equity_priority"),low_income_percent:num("low_income"),limited_english_percent:num("limited_english"),older_adults_disabilities_percent:num("older_adults"),title_vi_engagement:yes("title_vi"),language_access_plan:yes("language_access"),ada_field_audit:yes("ada_audit")},corridor_performance:{daily_motorized_person_trips:num("corridor_vmt"),daily_pedestrian_trips:num("ped_trips"),daily_bicycle_trips:num("bike_trips"),daily_transit_boardings:num("transit_trips")},standards_targets:{target_los:val("target_los"),minimum_sidewalk_width_feet:num("target_sidewalk"),minimum_bicycle_width_feet:num("target_bike"),maximum_transit_headway_minutes:num("target_headway")}}}
+function analyze(){
+  const request=buildRequest(), source=request.modes, rawWeights=request.weights, weightTotal=Object.values(rawWeights).reduce((a,b)=>a+b,0);
+  if(!weightTotal){$("status").textContent="At least one mode weight must be greater than zero.";$("status").className="status error";return}
+  const weights=Object.fromEntries(Object.entries(rawWeights).map(([k,v])=>[k,v/weightTotal]));
+  const motorDerived=5-2.6*(source.motorized.volume_vph/Math.max(1,source.motorized.through_lanes*1800))-1.1*(source.motorized.average_delay_seconds/90)-.35*(source.motorized.operating_speed_mph>45?1:0),
+    pedDerived=2.4+.22*source.pedestrian.sidewalk_width_feet+.12*source.pedestrian.buffer_feet-.0008*source.pedestrian.volume_vph-.012*source.pedestrian.crossing_delay_seconds+(source.pedestrian.accessible_route?.35:0),
+    facilityBonus={protected:1.15,buffered:.75,"bike lane":.4,shared:-.2,none:-.8}[source.bicycle.facility_type],
+    bikeDerived=2.35+facilityBonus+.18*source.bicycle.usable_width_feet-.018*Math.max(0,source.bicycle.adjacent_speed_mph-25)-.012*source.bicycle.heavy_vehicle_percent-.001*source.bicycle.volume_per_hour,
+    transitDerived=2.1+Math.min(1.5,30/Math.max(1,source.transit.peak_headway_minutes))+.06*source.transit.operating_speed_mph+.018*(source.transit.on_time_percent-70)+.12*source.transit.stops_per_mile+.008*source.transit.shelter_seating_percent;
+  const scores={motorized:suppliedOrDerived(val("motor_source"),motorDerived)*num("cal_motor"),pedestrian:suppliedOrDerived(val("ped_source"),pedDerived)*num("cal_ped"),bicycle:suppliedOrDerived(val("bike_source"),bikeDerived)*num("cal_bike"),transit:suppliedOrDerived(val("transit_source"),transitDerived)*num("cal_transit")};
+  Object.keys(scores).forEach(k=>scores[k]=clamp(scores[k]));
+  const mmScore=Object.entries(scores).reduce((sum,[k,v])=>sum+v*weights[k],0), overall=los(mmScore), values=Object.values(scores), spread=Math.max(...values)-Math.min(...values), balance=Math.max(0,1-spread/4)*100, balanceRating=balance>=80?"Balanced":balance>=60?"Moderately balanced":"Imbalanced";
+  const priority=yes("equity_priority"), equityGaps=[!yes("title_vi"),!yes("language_access"),!yes("ada_audit"),priority&&scores.pedestrian<3,priority&&scores.bicycle<3].filter(Boolean).length, equityRating=equityGaps===0?"Ready":equityGaps<=2?"Needs attention":"Priority action";
+  const standards=[["MMLOS target",mmScore>=scoreForLos[val("target_los")],`Score ${mmScore.toFixed(2)} vs ${val("target_los")} target`],["Sidewalk width",source.pedestrian.sidewalk_width_feet>=num("target_sidewalk"),`${source.pedestrian.sidewalk_width_feet.toFixed(1)} ft vs ${num("target_sidewalk").toFixed(1)} ft target`],["Bicycle width",source.bicycle.usable_width_feet>=num("target_bike"),`${source.bicycle.usable_width_feet.toFixed(1)} ft vs ${num("target_bike").toFixed(1)} ft target`],["Transit headway",source.transit.peak_headway_minutes<=num("target_headway"),`${source.transit.peak_headway_minutes.toFixed(1)} min vs ${num("target_headway").toFixed(1)} min maximum`],["ADA route",source.pedestrian.accessible_route&&yes("ada_audit"),source.pedestrian.accessible_route&&yes("ada_audit")?"Route and audit indicated":"Route or audit missing"],["Title VI / language access",yes("title_vi")&&yes("language_access"),yes("title_vi")&&yes("language_access")?"Engagement and plan indicated":"Engagement or plan missing"]];
+  const recommendations=[];if(scores.motorized<3)recommendations.push("Retune signal progression, manage access, or add turn/queue storage to address motorized delay.");if(scores.pedestrian<3)recommendations.push("Widen the sidewalk and increase separation; shorten crossing delay with high-visibility crossings and accessible signal timing.");if(scores.bicycle<3)recommendations.push("Provide a protected or buffered bicycle facility with at least the target usable width.");if(scores.transit<3)recommendations.push("Reduce peak headway and improve stop shelter, seating, lighting, and real-time information.");if(balance<60)recommendations.push("Rebalance the corridor: the lowest-scoring mode is "+Object.entries(scores).sort((a,b)=>a[1]-b[1])[0][0]+" and limits multimodal performance.");if(equityGaps)recommendations.push("Complete Title VI/language-access and ADA field-audit actions before selecting improvements for priority populations.");if(!recommendations.length)recommendations.push("Maintain current multimodal treatments and monitor mode scores during the next peak-period count.");
+  $("score").textContent=mmScore.toFixed(2);$("overall").innerHTML=`<span class="los ${overall}">${overall}</span>`;$("balance").textContent=balance.toFixed(0)+" / 100";$("balance_rating").textContent=balanceRating;$("equity_rating").textContent=equityRating;
+  const labels={motorized:"Motorized",pedestrian:"Pedestrian",bicycle:"Bicycle",transit:"Transit"};$("mode_results").innerHTML=Object.entries(scores).map(([k,v])=>`<div class="result"><small>${labels[k].toUpperCase()}</small><strong><span class="los ${los(v)}">${los(v)}</span> ${v.toFixed(2)} / 5</strong><div class="hint">Normalized weight: ${(weights[k]*100).toFixed(1)}% · ${source[k].los_source==="derive"?"Derived from inputs":"Supplied LOS"}</div></div>`).join("");
+  $("equity_results").innerHTML=`<div class="result"><small>PRIORITY POPULATION</small><strong>${priority?"Present":"Not indicated"}</strong><div class="hint">Low income ${num("low_income").toFixed(0)}% · older adults/disabilities ${num("older_adults").toFixed(0)}%</div></div><div class="result"><small>TITLE VI</small><strong>${yes("title_vi")?"Complete":"Action needed"}</strong><div class="hint">Document meaningful engagement and disparate-impact review.</div></div><div class="result"><small>ADA</small><strong>${yes("ada_audit")&&source.pedestrian.accessible_route?"Complete":"Action needed"}</strong><div class="hint">Accessible route: ${source.pedestrian.accessible_route?"yes":"no"} · audit: ${yes("ada_audit")?"yes":"no"}</div></div><div class="result"><small>LANGUAGE ACCESS</small><strong>${yes("language_access")?"Available":"Action needed"}</strong><div class="hint">${num("limited_english").toFixed(0)}% limited English proficiency</div></div>`;
+  $("corridor_results").innerHTML=`<div class="result"><small>DAILY PERSON TRIPS</small><strong>${(num("corridor_vmt")+num("ped_trips")+num("bike_trips")+num("transit_trips")).toLocaleString()}</strong><div class="hint">All reported modes</div></div><div class="result"><small>ACTIVE-MODE SHARE</small><strong>${((num("ped_trips")+num("bike_trips")+num("transit_trips"))/Math.max(1,num("corridor_vmt")+num("ped_trips")+num("bike_trips")+num("transit_trips"))*100).toFixed(1)}%</strong><div class="hint">Pedestrian, bicycle, and transit trips</div></div><div class="result"><small>SEGMENT</small><strong>${(num("segment_length")/5280).toFixed(2)} mi</strong><div class="hint">${esc(val("facility"))} · ${esc(val("direction"))}</div></div><div class="result"><small>WEIGHT NORMALIZATION</small><strong>${weightTotal.toFixed(2)} → 1.00</strong><div class="hint">Weights are normalized before combining scores.</div></div>`;
+  $("standards").innerHTML=standards.map(x=>check(x[0],x[1],x[2])).join("");$("recommendations").innerHTML=recommendations.map(x=>`<li>${esc(x)}</li>`).join("");
+  const response={status:"success",analysis_id:val("analysis_id"),mm_los_score:+mmScore.toFixed(2),mm_los:overall,mm_los_rating:rating(mmScore),normalized_weights:weights,mode_results:Object.fromEntries(Object.entries(scores).map(([k,v])=>[k,{score:+v.toFixed(2),los:los(v),source:source[k].los_source}])),modal_balance_index:+balance.toFixed(1),modal_balance_rating:balanceRating,equity_analysis:{rating:equityRating,gaps:equityGaps,title_vi:yes("title_vi"),ada:yes("ada_audit")&&source.pedestrian.accessible_route,language_access:yes("language_access")},corridor_performance:{daily_person_trips:num("corridor_vmt")+num("ped_trips")+num("bike_trips")+num("transit_trips"),active_mode_share_percent:+((num("ped_trips")+num("bike_trips")+num("transit_trips"))/Math.max(1,num("corridor_vmt")+num("ped_trips")+num("bike_trips")+num("transit_trips"))*100).toFixed(1)},standards_checks:standards.map(x=>({name:x[0],pass:x[1],detail:x[2]})),improvement_opportunities:recommendations,request};
+  $("json").textContent=JSON.stringify(response,null,2);$("results").style.display="block";$("status").textContent="MMLOS calculation complete."; $("status").className="status success";
+}
+$("analyze").addEventListener("click",analyze);
+</script>
+</body>
+</html>

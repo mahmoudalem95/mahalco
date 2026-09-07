@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Freeway Facility Analysis — Mahalco</title>
+<style>
+:root{--bg:#08070c;--card:#11101a;--card2:#171522;--field:#0b0a11;--line:#2a2638;--ink:#f1eff8;--muted:#aaa4ba;--dim:#77718b;--purple:#8b5cf6;--green:#4ade80;--orange:#fb923c;--red:#f35b5b}
+*{box-sizing:border-box}body{margin:0;padding:22px;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,sans-serif}main{max-width:1400px;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(18px,3vw,30px)}h1{margin:0;font-size:clamp(25px,3vw,34px);letter-spacing:-.04em}h2{font-size:18px;margin:28px 0 13px;border-bottom:1px solid var(--line);padding-bottom:8px}.lede,.note{color:var(--muted)}.home{display:inline-block;color:#c4b5fd;text-decoration:none;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid.three{grid-template-columns:repeat(3,1fr)}label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}input,select{width:100%;background:var(--field);border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:9px;font:inherit}input:focus,select:focus{outline:2px solid var(--purple);outline-offset:-1px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;min-width:1550px}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}td input,td select{min-width:78px;padding:7px}.actions{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}button{border:0;border-radius:8px;background:var(--purple);color:#fff;padding:11px 18px;font-weight:700;cursor:pointer}button.alt{background:transparent;border:1px solid var(--line);color:var(--ink)}button.small{padding:7px 10px;font-size:12px}.status{color:var(--muted);min-height:22px}.error{color:var(--red)}.success{color:var(--green)}#results{display:none}.cards{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}.metric{border:1px solid var(--line);border-radius:9px;padding:13px;background:var(--card2)}.metric small{display:block;color:var(--muted);font-size:10px;letter-spacing:.06em}.metric strong{display:block;font-size:20px;margin-top:3px}.panel{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:14px}.panel h3{font-size:14px;margin:0 0 10px}.result-table{min-width:950px}.los{display:inline-block;border-radius:5px;padding:2px 8px;font-weight:800}.A{background:#34d399;color:#04150e}.B{background:#a3e635;color:#101a02}.C{background:#facc15;color:#1a1403}.D{background:#fb923c;color:#1a0d02}.E{background:#f35b5b;color:#210505}.F{background:#e11d48;color:#fff}.good{color:var(--green)}.warn{color:var(--orange)}.bad{color:var(--red)}.json{background:var(--field);border:1px solid var(--line);border-radius:8px;padding:15px;overflow:auto;font:11px/1.5 ui-monospace,monospace;color:#cbd5e1;max-height:600px}.formula{color:var(--dim);font:11px ui-monospace,monospace}@media(max-width:1000px){.grid,.grid.three{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(4,1fr)}}@media(max-width:600px){main{padding:18px}.grid,.grid.three,.cards{grid-template-columns:1fr 1fr}.cards .metric{padding:10px}.metric strong{font-size:17px}}
+</style>
+</head>
+<body>
+<main>
+<a class="home" href="../">← Mahalco main page</a>
+<h1>Freeway Facility Analysis</h1>
+<p class="lede">Planning-level HCM-style analysis of a freeway facility made up of basic, ramp merge, ramp diverge, and weaving segments. Edit the segment sequence, test operating conditions, and review bottlenecks, queue propagation, reliability, and improvement opportunities.</p>
+
+<h2>Facility, boundary, reliability, and calibration inputs</h2>
+<div class="grid">
+<div><label>Facility ID</label><input id="facility_id" value="I80_FACILITY"></div>
+<div><label>Analysis period</label><input id="period" value="PM_PEAK"></div>
+<div><label>Facility length (mi)</label><input id="facility_length" type="number" min=".1" step=".1" value="6"></div>
+<div><label>Peak-hour factor</label><input id="phf" type="number" min=".5" max="1" step=".01" value=".92"></div>
+<div><label>Posted speed (mph)</label><input id="posted_speed" type="number" min="25" max="85" value="65"></div>
+<div><label>Base freeway capacity (pc/h/ln)</label><input id="base_capacity" type="number" min="1200" max="2600" value="2400"></div>
+<div><label>Driver population factor</label><input id="driver_factor" type="number" min=".7" max="1.2" step=".01" value="1"></div>
+<div><label>Capacity calibration factor</label><input id="capacity_factor" type="number" min=".5" max="1.2" step=".01" value="1"></div>
+<div><label>Speed calibration (mph)</label><input id="speed_calibration" type="number" min="-10" max="10" step=".5" value="0"></div>
+<div><label>Upstream volume (veh/h)</label><input id="upstream_volume" type="number" min="0" value="5700"></div>
+<div><label>Upstream speed (mph)</label><input id="upstream_speed" type="number" min="0" value="64"></div>
+<div><label>Upstream queue (veh)</label><input id="upstream_queue" type="number" min="0" value="0"></div>
+<div><label>Downstream capacity (veh/h)</label><input id="downstream_capacity" type="number" min="0" value="6000"></div>
+<div><label>Downstream speed (mph)</label><input id="downstream_speed" type="number" min="0" value="62"></div>
+<div><label>Downstream queue (veh)</label><input id="downstream_queue" type="number" min="0" value="0"></div>
+<div><label>Queue propagation period (h)</label><input id="duration" type="number" min=".05" max="4" step=".05" value=".25"></div>
+<div><label>Weather condition</label><select id="weather"><option value="clear">Clear / dry</option><option value="rain">Rain</option><option value="snow">Snow / ice</option><option value="fog">Fog / reduced visibility</option></select></div>
+<div><label>Weather demand factor</label><input id="weather_demand" type="number" min=".5" max="1.1" step=".01" value="1"></div>
+<div><label>Weather speed factor</label><input id="weather_speed" type="number" min=".5" max="1.05" step=".01" value="1"></div>
+<div><label>Incident frequency (per year)</label><input id="incident_frequency" type="number" min="0" value="12"></div>
+<div><label>Incident capacity factor</label><input id="incident_factor" type="number" min=".3" max="1" step=".01" value="1"></div>
+<div><label>Incident duration (h)</label><input id="incident_duration" type="number" min="0" step=".1" value="1.5"></div>
+<div><label>Reliability high percentile</label><input id="reliability_percentile" type="number" min="80" max="99" value="95"></div>
+<div><label>Seasonal variability (%)</label><input id="variability" type="number" min="0" max="100" value="12"></div>
+</div>
+<p class="formula">Weather and incidents reduce effective speed/capacity. Reliability uses a screening percentile multiplier, PTI = high-percentile time / free-flow time, BI = (high-percentile − typical) / typical, and TTI = typical / free-flow.</p>
+
+<h2>Facility segments</h2>
+<p class="note">Rows are evaluated in order. Required fields include length, lanes, volume, speed, grade, trucks, and ramp fields; use Add segment to extend the facility.</p>
+<div class="table-wrap"><table id="segment_input_table"><thead><tr><th>ID</th><th>Type</th><th>Length mi</th><th>Lanes</th><th>Volume vph</th><th>FFS mph</th><th>Grade %</th><th>Trucks %</th><th>Ramp in vph</th><th>Ramp out vph</th><th>Weaving vph</th><th>Ramp lanes</th><th>Shoulder / merge</th><th>Remove</th></tr></thead><tbody id="segmentRows"></tbody></table></div>
+<div class="actions"><button class="small alt" id="addSegment" type="button">+ Add segment</button><button class="small alt" id="resetSegments" type="button">Reset segments</button></div>
+<div class="actions"><button id="analyze" type="button">Analyze facility</button><button class="alt" id="resetAll" type="button">Reset all inputs</button><span id="status" class="status">Ready to analyse.</span></div>
+
+<section id="results">
+<h2>Facility summary</h2>
+<div class="cards">
+<div class="metric"><small>FACILITY LOS</small><strong id="facilityLos">—</strong></div>
+<div class="metric"><small>WEIGHTED SPEED</small><strong id="weightedSpeed">—</strong></div>
+<div class="metric"><small>WEIGHTED DENSITY</small><strong id="weightedDensity">—</strong></div>
+<div class="metric"><small>WEIGHTED V/C</small><strong id="weightedVc">—</strong></div>
+<div class="metric"><small>TRAVEL TIME</small><strong id="travelTime">—</strong></div>
+<div class="metric"><small>PTI / BI</small><strong id="reliability">—</strong></div>
+<div class="metric"><small>BOTTLENECK</small><strong id="bottleneck">—</strong></div>
+</div>
+<div class="panel"><h3>Segment performance</h3><div class="table-wrap"><table class="result-table"><thead><tr><th>Rank</th><th>ID</th><th>Type</th><th>Density pc/mi/ln</th><th>Speed mph</th><th>v/c</th><th>LOS</th><th>Travel time min</th><th>Capacity vph</th><th>Demand pc/h</th><th>Queue in/out veh</th><th>Heavy-vehicle factor</th></tr></thead><tbody id="segmentResults"></tbody></table></div></div>
+<div class="grid three">
+<div class="panel"><h3>Queue propagation</h3><div class="table-wrap"><table class="result-table"><thead><tr><th>Segment</th><th>Arrivals vph</th><th>Capacity vph</th><th>Queue change veh</th><th>Downstream queue veh</th></tr></thead><tbody id="queueResults"></tbody></table></div></div>
+<div class="panel"><h3>Reliability and impacts</h3><div class="table-wrap"><table class="result-table"><tbody id="reliabilityResults"></tbody></table></div></div>
+<div class="panel"><h3>Improvement opportunities</h3><div id="recommendations" class="note"></div></div>
+</div>
+<div class="panel"><h3>Standards comparison</h3><div class="table-wrap"><table class="result-table"><thead><tr><th>Reference</th><th>Screening comparison</th><th>Finding</th></tr></thead><tbody id="standards"></tbody></table></div><p class="note">Planning-level approximations informed by HCM 7th Edition Chapters 10, 21, 22, 24, and 25. Confirm local agency defaults, field data, and project-specific HCM procedures before design decisions.</p></div>
+<div class="panel"><h3>Request / response JSON</h3><pre id="json" class="json"></pre></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const number=(id,min=0)=>Math.max(min,Number($(id).value)||0);
+const fmt=(v,d=1)=>Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+const losFrom=d=>d<=11?'A':d<=18?'B':d<=26?'C':d<=35?'D':d<=45?'E':'F';
+const losClass=l=>`<span class="los ${l}">${l}</span>`;
+const typeNames={basic:'Basic',ramp_merge:'Ramp merge',ramp_diverge:'Ramp diverge',weaving:'Weaving'};
+const defaults=[
+  {id:'BASIC_1',type:'basic',length:1.8,lanes:3,volume:5600,ffs:68,grade:1,trucks:8,rampIn:0,rampOut:0,weaving:0,rampLanes:0,shoulder:'full'},
+  {id:'MERGE_1',type:'ramp_merge',length:.7,lanes:3,volume:6100,ffs:65,grade:1,trucks:8,rampIn:900,rampOut:0,weaving:700,rampLanes:1,shoulder:'full'},
+  {id:'WEAVE_1',type:'weaving',length:.6,lanes:3,volume:6200,ffs:63,grade:0,trucks:7,rampIn:700,rampOut:600,weaving:1100,rampLanes:1,shoulder:'restricted'},
+  {id:'DIVERGE_1',type:'ramp_diverge',length:.7,lanes:3,volume:5700,ffs:65,grade:0,trucks:7,rampIn:0,rampOut:850,weaving:0,rampLanes:1,shoulder:'full'},
+  {id:'BASIC_2',type:'basic',length:2.2,lanes:3,volume:5200,ffs:68,grade:-1,trucks:7,rampIn:0,rampOut:0,weaving:0,rampLanes:0,shoulder:'full'}
+];
+const keys=['length','lanes','volume','ffs','grade','trucks','rampIn','rampOut','weaving','rampLanes','shoulder'];
+let segments=[];
+function esc(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderSegments(rows=segments){
+  segments=rows.map((x,i)=>Object.assign({id:`SEG_${i+1}`,type:'basic',length:1,lanes:2,volume:4000,ffs:65,grade:0,trucks:6,rampIn:0,rampOut:0,weaving:0,rampLanes:0,shoulder:'full'},x));
+  $('segmentRows').innerHTML=segments.map((s,i)=>`<tr data-index="${i}"><td><input data-key="id" type="text" value="${esc(s.id)}"></td><td><select data-key="type">${Object.keys(typeNames).map(t=>`<option value="${t}"${s.type===t?' selected':''}>${typeNames[t]}</option>`).join('')}</select></td>${keys.map(k=>`<td>${k==='shoulder'?`<select data-key="${k}"><option value="full"${s[k]==='full'?' selected':''}>Full</option><option value="restricted"${s[k]==='restricted'?' selected':''}>Restricted</option>`:`<input data-key="${k}" type="number" min="${k==='lanes'||k==='rampLanes'?1:0}" step="${k==='length'||k==='grade'||k==='trucks'?'.1':'1'}" value="${s[k]}">`}</td>`).join('')}<td><button class="small alt remove-segment" type="button">Remove</button></td></tr>`).join('');
+  $('segmentRows').querySelectorAll('.remove-segment').forEach((b)=>b.addEventListener('click',()=>{if($('segmentRows').children.length>1){b.closest('tr').remove();syncSegments();}}));
+}
+function readRows(){
+  return [...$('segmentRows').querySelectorAll('tr')].map((tr,i)=>{
+    const get=k=>{const e=tr.querySelector(`[data-key="${k}"]`);return e.type==='text'||e.tagName==='SELECT'?e.value:Number(e.value)||0;};
+    return {id:get('id')||`SEG_${i+1}`,type:get('type'),length:Math.max(.01,get('length')),lanes:Math.max(1,get('lanes')),volume:Math.max(0,get('volume')),ffs:Math.max(25,get('ffs')),grade:get('grade'),trucks:Math.min(60,Math.max(0,get('trucks'))),rampIn:get('rampIn'),rampOut:get('rampOut'),weaving:get('weaving'),rampLanes:get('rampLanes'),shoulder:get('shoulder')};
+  });
+}
+function syncSegments(){segments=readRows();}
+function buildRequest(){
+  syncSegments();
+  return {facility_id:$('facility_id').value,analysis_period:$('period').value,facility_length_miles:number('facility_length'),peak_hour_factor:number('phf',.5),posted_speed_mph:number('posted_speed'),calibration:{driver_population_factor:number('driver_factor'),capacity_factor:number('capacity_factor'),speed_calibration_mph:Number($('speed_calibration').value)||0},boundaries:{upstream_volume_vph:number('upstream_volume'),upstream_speed_mph:number('upstream_speed'),upstream_queue_vehicles:number('upstream_queue'),downstream_capacity_vph:number('downstream_capacity'),downstream_speed_mph:number('downstream_speed'),downstream_queue_vehicles:number('downstream_queue'),propagation_hours:number('duration')},reliability:{high_percentile:number('reliability_percentile'),seasonal_variability_percent:number('variability')},impacts:{weather:$('weather').value,weather_demand_factor:number('weather_demand'),weather_speed_factor:number('weather_speed'),incident_frequency_per_year:number('incident_frequency'),incident_capacity_factor:number('incident_factor'),incident_duration_hours:number('incident_duration')},segments};
+}
+function analyze(){
+  const request=buildRequest(), phf=Math.min(1,Math.max(.5,request.peak_hour_factor)), weatherDemand=request.impacts.weather_demand_factor||1, weatherSpeed=request.impacts.weather_speed_factor||1;
+  if(!request.segments.length||!request.segments.every(s=>s.volume>=0&&s.length>0)){ $('status').textContent='At least one valid segment is required.';$('status').className='status error';return; }
+  let queue=request.boundaries.upstream_queue_vehicles, arrivals=request.boundaries.upstream_volume_vph, totalLength=0,totalTime=0,weightedDensity=0,weightedSpeed=0,weightedVc=0;
+  const calculated=request.segments.map((s,index)=>{
+    const type=s.type, truckPce=type==='weaving'?2.7:type==='ramp_merge'||type==='ramp_diverge'?2.6:2.5, gradeAdj=s.grade>2?Math.min(1.5,(s.grade-2)*.12):0, fHv=1/(1+(s.trucks/100)*(truckPce-1)), demand=(s.volume+s.rampIn+s.weaving*.35)*weatherDemand/(phf*fHv), laneFactor=Math.max(1,s.lanes), shoulderFactor=s.shoulder==='restricted'?.94:1, typeFactor=type==='basic'?1:type==='ramp_merge'?.92:type==='ramp_diverge'?.95:.88, baseCapacity=number('base_capacity')*laneFactor*typeFactor*shoulderFactor*number('capacity_factor')*number('incident_factor')*Math.max(.5,1-gradeAdj)*number('driver_factor'), mergeDemand=type==='ramp_merge'?s.rampIn:0, divergeRelief=type==='ramp_diverge'?s.rampOut*.35:0, capacity=Math.max(1,baseCapacity), vc=Math.min(2,demand/Math.max(1,capacity)), ffs=Math.max(25,(s.ffs+Number($('speed_calibration').value||0))*weatherSpeed*(type==='weaving'?.96:1)), speed=Math.max(10,Math.min(ffs,ffs-(Math.max(0,vc-.35)*Math.max(5,ffs*.55))-gradeAdj*2)), density=demand/Math.max(10,speed)/laneFactor, los=losFrom(density), travelTime=s.length/Math.max(10,speed)*60, queueChange=Math.max(0,(arrivals+mergeDemand-divergeRelief-capacity)*number('duration')), queueOut=Math.max(0,queue+queueChange), incidentDelay=(1-number('incident_factor'))*s.length/Math.max(10,speed)*60, result={rank:0,id:s.id,type,type_label:typeNames[type],length_miles:s.length,lanes:s.lanes,volume_vph:s.volume,demand_pcph:demand,capacity_vph:capacity,heavy_vehicle_factor:fHv,density_pc_mi_ln:density,speed_mph:speed,v_c_ratio:vc,los,travel_time_minutes:travelTime+incidentDelay,queue_in_vehicles:queue,queue_change_vehicles:queueChange,queue_out_vehicles:queueOut,grade_percent:s.grade,ramp_in_vph:s.rampIn,ramp_out_vph:s.rampOut,weaving_vph:s.weaving,weather_factor:weatherDemand,incident_factor:number('incident_factor')};
+    queue=queueOut; arrivals=Math.max(s.volume+s.rampIn-s.rampOut,0); totalLength+=s.length; totalTime+=result.travel_time_minutes;weightedDensity+=density*s.length;weightedSpeed+=speed*s.length;weightedVc+=vc*s.length;return result;
+  });
+  const bottlenecks=calculated.slice().sort((a,b)=>b.v_c_ratio-a.v_c_ratio||b.density_pc_mi_ln-a.density_pc_mi_ln);bottlenecks.forEach((x,i)=>x.rank=i+1);
+  const facilityLength=Math.max(.01,request.facility_length_miles||totalLength), facilitySpeed=totalLength/(totalTime/60), avgDensity=weightedDensity/Math.max(.01,totalLength), avgVc=weightedVc/Math.max(.01,totalLength), freeFlowTime=facilityLength/Math.max(1,request.posted_speed_mph)*60, typicalTime=totalTime*facilityLength/Math.max(.01,totalLength), variability=request.reliability.seasonal_variability_percent/100, incidentExposure=Math.min(1,request.impacts.incident_frequency_per_year*request.impacts.incident_duration_hours/8760), highTime=typicalTime*(1+variability*.7+incidentExposure*.8+Math.max(0,avgVc-.75)*.65+(1-weatherSpeed)*.8), pti=highTime/Math.max(.01,freeFlowTime), bi=(highTime-typicalTime)/Math.max(.01,typicalTime), tti=typicalTime/Math.max(.01,freeFlowTime), facilityLos=losFrom(avgDensity), queueTotal=queue+Math.max(0,(arrivals-request.boundaries.downstream_capacity)*request.boundaries.propagation_hours), reliabilityLos=pti<=1.1?'A':pti<=1.2?'B':pti<=1.35?'C':pti<=1.5?'D':pti<=1.7?'E':'F';
+  const recommendations=[];if(bottlenecks[0].v_c_ratio>=.85||bottlenecks[0].los>='E')recommendations.push(`Prioritise ${bottlenecks[0].id} (${bottlenecks[0].type_label}): v/c ${bottlenecks[0].v_c_ratio.toFixed(2)} and LOS ${bottlenecks[0].los}. Evaluate auxiliary lanes, ramp metering, demand management, or managed lanes.`);calculated.filter(x=>x.type==='ramp_merge'&&x.v_c_ratio>=.8).forEach(x=>recommendations.push(`At ${x.id}, meter or stage entering ramp demand and review acceleration/merge length; the merge segment ranks ${x.rank}.`));calculated.filter(x=>x.type==='ramp_diverge'&&x.v_c_ratio>=.8).forEach(x=>recommendations.push(`At ${x.id}, verify exit signing, lane balance, and deceleration/auxiliary lane storage.`));calculated.filter(x=>x.type==='weaving'&&x.v_c_ratio>=.8).forEach(x=>recommendations.push(`At ${x.id}, study ramp separation, collector-distributor treatment, or revised ramp spacing to reduce weaving.`));if(queueTotal>25)recommendations.push(`Queue propagation is ${fmt(queueTotal)} vehicles at the downstream boundary; coordinate incident response and confirm available storage.`);if(request.impacts.weather!=='clear')recommendations.push(`Apply weather-responsive speed management and traveler information; calibrate ${request.impacts.weather} factors with local observations.`);if(!recommendations.length)recommendations.push('No immediate screening trigger. Preserve shoulders, monitor growth and incidents, and recheck with field speed and volume data.');
+  const standards=[['HCM 7 Ch. 21','Basic freeway density thresholds (A ≤ 11, B ≤ 18, C ≤ 26, D ≤ 35, E ≤ 45 pc/mi/ln)',`Facility density ${avgDensity.toFixed(1)} → LOS ${facilityLos}`],['HCM 7 Ch. 24/25','Weaving and ramp influence areas require type-specific capacity and lane-use checks',`${calculated.filter(x=>x.type!=='basic').length} ramp/weaving segment(s) screened`],['HCM 7 Ch. 10','Reliability measures use free-flow and high-percentile travel time',`PTI ${pti.toFixed(2)}, BI ${(bi*100).toFixed(1)}%, TTI ${tti.toFixed(2)}`],['AASHTO / agency practice','Confirm geometric, signing, shoulder, queue-storage, and emergency-response criteria',request.impacts.weather!=='clear'||queueTotal>25?'Follow-up field and design review recommended':'No additional screening flag']]; 
+  const response={status:'success',analysis_id:`FFA-${new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,12)}-001`,facility_summary:{facility_id:request.facility_id,facility_los:facilityLos,weighted_density_pc_mi_ln:+avgDensity.toFixed(1),weighted_speed_mph:+facilitySpeed.toFixed(1),weighted_v_c_ratio:+avgVc.toFixed(2),travel_time_minutes:+typicalTime.toFixed(1),queue_at_downstream_boundary:+queueTotal.toFixed(1),bottleneck_id:bottlenecks[0].id},segment_results:calculated,reliability_results:{planning_time_index:+pti.toFixed(2),buffer_index_percent:+(bi*100).toFixed(1),travel_time_index:+tti.toFixed(2),high_percentile_travel_time_minutes:+highTime.toFixed(1),reliability_los:reliabilityLos},bottleneck_ranking:bottlenecks.map(x=>({rank:x.rank,id:x.id,type:x.type,v_c_ratio:+x.v_c_ratio.toFixed(2),los:x.los,queue_out_vehicles:+x.queue_out_vehicles.toFixed(1)})),recommendations,standards_comparison:standards,request};
+  $('facilityLos').innerHTML=losClass(facilityLos);$('weightedSpeed').textContent=facilitySpeed.toFixed(1)+' mph';$('weightedDensity').textContent=avgDensity.toFixed(1);$('weightedVc').textContent=avgVc.toFixed(2);$('travelTime').textContent=typicalTime.toFixed(1)+' min';$('reliability').textContent=`${pti.toFixed(2)} / ${(bi*100).toFixed(1)}%`;$('bottleneck').textContent=bottlenecks[0].id;
+  $('segmentResults').innerHTML=calculated.map(x=>`<tr><td>${x.rank}</td><td>${esc(x.id)}</td><td>${x.type_label}</td><td>${x.density_pc_mi_ln.toFixed(1)}</td><td>${x.speed_mph.toFixed(1)}</td><td>${x.v_c_ratio.toFixed(2)}</td><td>${losClass(x.los)}</td><td>${x.travel_time_minutes.toFixed(1)}</td><td>${fmt(x.capacity_vph,0)}</td><td>${fmt(x.demand_pcph,0)}</td><td>${x.queue_in_vehicles.toFixed(1)} / ${x.queue_out_vehicles.toFixed(1)}</td><td>${x.heavy_vehicle_factor.toFixed(3)}</td></tr>`).join('');
+  $('queueResults').innerHTML=calculated.map(x=>`<tr><td>${esc(x.id)}</td><td>${fmt(x.demand_pcph,0)}</td><td>${fmt(x.capacity_vph,0)}</td><td>${x.queue_change_vehicles.toFixed(1)}</td><td>${x.queue_out_vehicles.toFixed(1)}</td></tr>`).join('');
+  $('reliabilityResults').innerHTML=[['PTI (high percentile / free-flow)',pti.toFixed(2)],['BI',`${(bi*100).toFixed(1)}%`],['TTI (typical / free-flow)',tti.toFixed(2)],['High-percentile travel time',`${highTime.toFixed(1)} min`],['Reliability LOS',losClass(reliabilityLos)],['Weather / incident adjustment',`${request.impacts.weather} / ${(number('incident_factor')*100).toFixed(0)}% capacity`]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  $('recommendations').innerHTML=recommendations.map((r,i)=>`<p><strong>${i+1}.</strong> ${esc(r)}</p>`).join('');
+  $('standards').innerHTML=standards.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+  $('json').textContent=JSON.stringify(response,null,2);$('results').style.display='block';$('status').textContent='Analysis complete.';$('status').className='status success';
+}
+function resetAll(){ $('facility_id').value='I80_FACILITY';$('period').value='PM_PEAK';$('facility_length').value=6;$('phf').value='.92';$('posted_speed').value=65;$('base_capacity').value=2400;$('driver_factor').value=1;$('capacity_factor').value=1;$('speed_calibration').value=0;$('upstream_volume').value=5700;$('upstream_speed').value=64;$('upstream_queue').value=0;$('downstream_capacity').value=6000;$('downstream_speed').value=62;$('downstream_queue').value=0;$('duration').value='.25';$('weather').value='clear';$('weather_demand').value=1;$('weather_speed').value=1;$('incident_frequency').value=12;$('incident_factor').value=1;$('incident_duration').value=1.5;$('reliability_percentile').value=95;$('variability').value=12;renderSegments(defaults);$('results').style.display='none';$('status').textContent='Ready to analyse.';$('status').className='status';}
+$('addSegment').addEventListener('click',()=>{syncSegments();segments.push({id:`SEG_${segments.length+1}`,type:'basic',length:1,lanes:2,volume:4000,ffs:65,grade:0,trucks:6,rampIn:0,rampOut:0,weaving:0,rampLanes:0,shoulder:'full'});renderSegments(segments);});
+$('resetSegments').addEventListener('click',()=>renderSegments(defaults));
+$('resetAll').addEventListener('click',resetAll);
+$('analyze').addEventListener('click',analyze);
+renderSegments(defaults);
+</script>
+</body>
+</html>

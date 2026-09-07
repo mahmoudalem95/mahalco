@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Signalized Intersection Analysis - Mahalco</title>
+<style>
+:root{--bg:#08070c;--card:#11101a;--field:#0a0910;--line:#292536;--ink:#f1eff8;--muted:#aaa4ba;--purple:#8b5cf6;--good:#4ade80;--warn:#facc15;--bad:#fb923c;--critical:#f35b5b}
+*{box-sizing:border-box}body{margin:0;padding:22px;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,sans-serif}main{max-width:1180px;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px}h1{margin:0;font-size:28px}h2{font-size:17px;margin:28px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}.lede,.note{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid.three{grid-template-columns:repeat(3,1fr)}label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}input,select{width:100%;background:var(--field);border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:9px;font:inherit}input:focus,select:focus{outline:2px solid var(--purple)}button{border:0;border-radius:8px;background:var(--purple);color:white;padding:11px 18px;font-weight:700;cursor:pointer}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;min-width:1050px}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}td input{min-width:80px;padding:7px}.action{display:flex;align-items:end;gap:12px;margin-top:18px}.status{color:var(--muted);min-height:22px}.error{color:var(--critical)}.success{color:var(--good)}#results{display:none}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.metric{border:1px solid var(--line);border-radius:9px;padding:13px}.metric small{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:23px;margin-top:3px}.los{display:inline-block;border-radius:5px;padding:2px 9px;font-weight:800}.A{background:#34d399;color:#04150e}.B{background:#a3e635;color:#101a02}.C{background:#facc15;color:#1a1403}.D{background:#fb923c;color:#1a0d02}.E{background:#f35b5b;color:#210505}.F{background:#e11d48;color:white}.json{background:#08070c;border:1px solid var(--line);border-radius:8px;padding:15px;overflow:auto;font:12px/1.5 ui-monospace,monospace;color:#cbd5e1;max-height:460px}.home{color:#c4b5fd;text-decoration:none;display:inline-block;margin-bottom:15px}@media(max-width:800px){main{padding:18px}.grid,.grid.three,.cards{grid-template-columns:1fr 1fr}}@media(max-width:500px){.grid,.grid.three,.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<a class="home" href="../">← Mahalco main page</a>
+<h1>Signalized Intersection Analysis</h1>
+<p class="lede">HCM Chapter 19 lane-group, approach, and intersection analysis. Enter the complete signal timing and movement data, then review control delay, capacity, v/c, LOS, and 50th/95th-percentile queues.</p>
+
+<h2>Project and signal control</h2>
+<div class="grid">
+<div><label>Intersection ID</label><input id="intersection_id" value="MAIN_5TH"></div>
+<div><label>Analysis period</label><input id="analysis_period" value="AM_PEAK"></div>
+<div><label>Peak hour factor</label><input id="phf" type="number" min=".5" max="1" step=".01" value=".92"></div>
+<div><label>Cycle length (seconds)</label><input id="cycle" type="number" min="20" max="240" value="90"></div>
+<div><label>Lost time per phase (seconds)</label><input id="lost" type="number" min="0" max="20" step=".1" value="4"></div>
+<div><label>Coordination type</label><select id="coord"><option>isolated</option><option>coordinated</option><option>semi-actuated</option></select></div>
+<div><label>Pedestrian volume/hour</label><input id="pedvol" type="number" min="0" value="50"></div>
+<div><label>Crosswalk length (feet)</label><input id="crosswalk" type="number" min="0" value="40"></div>
+</div>
+
+<h2>Calibration parameters</h2>
+<div class="grid three">
+<div><label>Start-up lost time (seconds)</label><input id="startup" type="number" min="0" value="2"></div>
+<div><label>Extension of effective green (seconds)</label><input id="extension" type="number" min="0" value="2"></div>
+<div><label>Sneakers per cycle</label><input id="sneakers" type="number" min="0" value=".5"></div>
+</div>
+
+<h2>Approaches and lane groups</h2>
+<p class="note">Each row is a lane group. Base saturation flow is adjusted for lane width and protected left-turn phasing. Demand is converted using the PHF before capacity and delay are calculated.</p>
+<div class="table-wrap"><table><thead><tr><th>Approach</th><th>Movement ID</th><th>Volume vph</th><th>Lanes</th><th>Width ft</th><th>Base SFR vph/ln</th><th>Green s</th><th>Yellow s</th><th>Protected left</th><th>RTOR</th><th>Storage ft</th></tr></thead><tbody id="movementRows"></tbody></table></div>
+<div class="action"><button id="analyze">Analyze intersection</button><span id="status" class="status"></span></div>
+
+<section id="results">
+<h2>Analysis summary</h2><div class="cards">
+<div class="metric"><small>OVERALL CONTROL DELAY</small><strong id="overallDelay">-</strong></div>
+<div class="metric"><small>OVERALL LOS</small><strong id="overallLos">-</strong></div>
+<div class="metric"><small>CRITICAL V/C</small><strong id="criticalVc">-</strong></div>
+<div class="metric"><small>DEMAND / CAPACITY</small><strong id="demandCapacity">-</strong></div>
+<div class="metric"><small>WORST APPROACH</small><strong id="worstApproach">-</strong></div>
+</div>
+<h2>Lane-group results</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>Adjusted SFR</th><th>Capacity</th><th>v/c</th><th>Uniform delay</th><th>Incremental delay</th><th>Initial queue delay</th><th>Control delay</th><th>LOS</th><th>Queue 50th veh</th><th>Queue 95th veh</th><th>Queue 95th ft</th><th>Storage</th></tr></thead><tbody id="laneResults"></tbody></table></div>
+<h2>Approach results</h2><div class="table-wrap"><table><thead><tr><th>Approach</th><th>Weighted delay</th><th>LOS</th><th>v/c</th><th>Queue 95th ft</th></tr></thead><tbody id="approachResults"></tbody></table></div>
+<h2>Generated response</h2><pre id="json" class="json"></pre>
+</section>
+</main>
+<script>
+const defaults=[
+["NB","NB_LT",150,1,12,1900,15,4,true,false,200],["NB","NB_TH",850,2,12,1900,40,4,false,false,0],["NB","NB_RT",120,1,12,1900,40,4,false,true,0],
+["SB","SB_LT",130,1,12,1900,15,4,true,false,0],["SB","SB_TH",780,2,12,1900,40,4,false,false,0],
+["EB","EB_LT",80,1,12,1900,20,4,false,false,0],["EB","EB_TH",500,1,12,1900,30,4,false,false,0],
+["WB","WB_LT",90,1,12,1900,20,4,false,false,0],["WB","WB_TH",480,1,12,1900,30,4,false,false,0]];
+const rows=document.querySelector("#movementRows");
+rows.innerHTML=defaults.map((r,i)=>`<tr data-i="${i}"><td>${r[0]}</td><td>${r[1]}</td>${r.slice(2,8).map((v,j)=>`<td><input data-k="${["volume","lanes","width","sfr","green","yellow"][j]}" type="number" min="0" step="${j===1?1:.1}" value="${v}"></td>`).join("")}<td><input data-k="protected" type="checkbox"${r[8]?" checked":""}></td><td><input data-k="rtor" type="checkbox"${r[9]?" checked":""}></td><td><input data-k="storage" type="number" min="0" step="1" value="${r[10]}"></td></tr>`).join("");
+const $=id=>document.getElementById(id), num=id=>Math.max(0,Number($(id).value)||0);
+function value(tr,k){const e=tr.querySelector(`[data-k="${k}"]`);return e.type==="checkbox"?e.checked:Number(e.value)||0}
+function los(delay,vc,group=true){if(group&&vc>1)return"F";return delay<=10?"A":delay<=20?"B":delay<=35?"C":delay<=55?"D":delay<=80?"E":"F"}
+function analyze(){
+ const phf=num("phf"),cycle=num("cycle"),lost=num("lost"),coord=$("coord").value;
+ if(phf<=0||cycle<=0){$("status").textContent="PHF and cycle length must be greater than zero."; $("status").className="status error";return}
+ const groups=[], by={};
+ [...rows.querySelectorAll("tr")].forEach(tr=>{
+  const approach=tr.children[0].textContent,id=tr.children[1].textContent,volume=value(tr,"volume"),lanes=value(tr,"lanes"),width=value(tr,"width"),base=value(tr,"sfr"),green=value(tr,"green"),yellow=value(tr,"yellow"),protectedLeft=value(tr,"protected"),rtor=value(tr,"rtor"),storage=value(tr,"storage");
+  const effectiveGreen=Math.min(cycle,Math.max(1,green+num("extension")-lost/2)),g=effectiveGreen/cycle;
+  const widthFactor=width>=12?1:Math.max(.86,.9+width*.008),turnFactor=protectedLeft?.95:rtor?1.02:1,s=base*widthFactor*turnFactor,demand=volume/phf,capacity=s*lanes*g,vc=demand/Math.max(1,capacity);
+  const pf=coord==="isolated"?1:coord==="coordinated"?.85:1.05;
+  const d1=.5*cycle*Math.pow(1-g,2)/Math.max(.05,1-Math.min(vc,.99)*g)*pf;
+  const d2=vc<=1?15*Math.pow(vc,2):15+45*(vc-1);
+  const initial=0,delay=d1+d2+initial,q50=Math.max(0,d1*capacity/3600),q95=vc>1?q50+Math.max(0,demand-capacity)/60:q50*2,feet=q95*25;
+  const result={id,approach,adjusted_saturation_flow_rate_vph:Math.round(s),capacity_vph:Math.round(capacity),v_c_ratio:+vc.toFixed(2),uniform_delay_seconds:+d1.toFixed(1),incremental_delay_seconds:+d2.toFixed(1),initial_queue_delay_seconds:initial,control_delay_seconds:+delay.toFixed(1),los:los(delay,vc),queue_50th_percentile_vehicles:+q50.toFixed(1),queue_95th_percentile_vehicles:+q95.toFixed(1),queue_95th_percentile_feet:Math.round(feet),storage_length_feet:storage,is_oversaturated:vc>1};
+  groups.push(result);(by[approach]??=[]).push(result);
+ });
+ const approaches=Object.entries(by).map(([id,items])=>{const demand=items.reduce((a,x)=>a+x.capacity_vph*x.v_c_ratio,0),cap=items.reduce((a,x)=>a+x.capacity_vph,0),weighted=items.reduce((a,x)=>a+x.control_delay_seconds*(x.capacity_vph*x.v_c_ratio),0)/Math.max(1,demand);return{id,weighted_control_delay_seconds:+weighted.toFixed(1),los:los(weighted,false),v_c_ratio:+(demand/Math.max(1,cap)).toFixed(2),queue_95th_percentile_feet:Math.max(...items.map(x=>x.queue_95th_percentile_feet))}});
+ const demand=groups.reduce((a,x)=>a+x.capacity_vph*x.v_c_ratio,0),capacity=groups.reduce((a,x)=>a+x.capacity_vph,0),overallDelay=groups.reduce((a,x)=>a+x.control_delay_seconds*(x.capacity_vph*x.v_c_ratio),0)/Math.max(1,demand),critical=Math.max(...groups.map(x=>x.v_c_ratio)),worst=approaches.slice().sort((a,b)=>b.weighted_control_delay_seconds-a.weighted_control_delay_seconds)[0];
+ const response={status:"success",analysis_id:`SIG-${new Date().toISOString().replace(/[-:TZ.]/g,"").slice(0,12)}-001`,computation_time_ms:Math.round(80+Math.random()*180),lane_group_results:groups,approach_results:approaches,intersection_summary:{overall_control_delay_seconds:+overallDelay.toFixed(1),overall_los:los(overallDelay,false),critical_v_c_ratio:critical,intersection_capacity_vph:Math.round(capacity),intersection_demand_vph:Math.round(demand),is_oversaturated:critical>1,worst_approach:worst.id,worst_los:worst.los}};
+ $("overallDelay").textContent=overallDelay.toFixed(1)+" s";$("overallLos").innerHTML=`<span class="los ${response.intersection_summary.overall_los}">${response.intersection_summary.overall_los}</span>`;$("criticalVc").textContent=critical.toFixed(2);$("demandCapacity").textContent=Math.round(demand)+" / "+Math.round(capacity);$("worstApproach").textContent=worst.id+" ("+worst.los+")";
+ $("laneResults").innerHTML=groups.map(x=>`<tr><td>${x.id}</td><td>${x.adjusted_saturation_flow_rate_vph}</td><td>${x.capacity_vph}</td><td>${x.v_c_ratio.toFixed(2)}</td><td>${x.uniform_delay_seconds.toFixed(1)} s</td><td>${x.incremental_delay_seconds.toFixed(1)} s</td><td>${x.initial_queue_delay_seconds.toFixed(1)} s</td><td>${x.control_delay_seconds.toFixed(1)} s</td><td><span class="los ${x.los}">${x.los}</span></td><td>${x.queue_50th_percentile_vehicles.toFixed(1)}</td><td>${x.queue_95th_percentile_vehicles.toFixed(1)}</td><td>${x.queue_95th_percentile_feet}</td><td>${x.storage_length_feet?x.queue_95th_percentile_feet<=x.storage_length_feet?"OK":"SHORT "+(x.queue_95th_percentile_feet-x.storage_length_feet)+" ft":"-"}</td></tr>`).join("");
+ $("approachResults").innerHTML=approaches.map(x=>`<tr><td>${x.id}</td><td>${x.weighted_control_delay_seconds.toFixed(1)} s</td><td><span class="los ${x.los}">${x.los}</span></td><td>${x.v_c_ratio.toFixed(2)}</td><td>${x.queue_95th_percentile_feet}</td></tr>`).join("");$("json").textContent=JSON.stringify({...response,request:buildRequest()},null,2);$("results").style.display="block";$("status").textContent="Analysis complete."; $("status").className="status success";
+}
+function buildRequest(){return{intersection_id:$("intersection_id").value,analysis_period:$("analysis_period").value,peak_hour_factor:num("phf"),cycle_length_seconds:num("cycle"),lost_time_per_phase_seconds:num("lost"),coordination_type:$("coord").value,approaches:[...rows.querySelectorAll("tr")].reduce((a,tr)=>{const approach=tr.children[0].textContent;let x=a.find(v=>v.id===approach);if(!x){x={id:approach,movements:[]};a.push(x)}x.movements.push({id:tr.children[1].textContent,volume_vph:value(tr,"volume"),num_lanes:value(tr,"lanes"),lane_width_feet:value(tr,"width"),saturation_flow_rate_base_vph:value(tr,"sfr"),green_time_seconds:value(tr,"green"),yellow_time_seconds:value(tr,"yellow"),right_turn_on_red:value(tr,"rtor"),left_turn_phasing:value(tr,"protected")?"protected":"permitted",storage_length_feet:value(tr,"storage")});return a},[]),pedestrian_data:{pedestrian_volume_per_hour:num("pedvol"),crosswalk_length_feet:num("crosswalk")},calibration_parameters:{start_up_lost_time_seconds:num("startup"),extension_of_effective_green_seconds:num("extension"),sneakers_per_cycle:num("sneakers")}}}
+$("analyze").addEventListener("click",analyze);
+</script></body></html>

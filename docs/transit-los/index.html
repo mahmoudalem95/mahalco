@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transit LOS (TLOS) - Mahalco</title>
+<style>
+:root{--bg:#08070c;--card:#11101a;--field:#0a0910;--line:#292536;--ink:#f1eff8;--muted:#aaa4ba;--purple:#8b5cf6;--red:#f35b5b;--green:#4ade80}
+*{box-sizing:border-box}body{margin:0;padding:22px;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,sans-serif}main{max-width:1200px;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px}h1{margin:0;font-size:28px}h2{font-size:17px;margin:28px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:15px;margin:20px 0 8px}.lede,.note{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid.three{grid-template-columns:repeat(3,1fr)}label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}input,select{width:100%;background:var(--field);border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:9px;font:inherit}button{border:0;border-radius:8px;background:var(--purple);color:#fff;padding:11px 18px;font-weight:700;cursor:pointer}.action{display:flex;align-items:end;gap:12px;margin-top:18px}.status{color:var(--muted);min-height:22px}.error{color:var(--red)}.success{color:var(--green)}#results{display:none}.cards{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.metric{border:1px solid var(--line);border-radius:9px;padding:13px}.metric small{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:21px;margin-top:3px}.los{display:inline-block;border-radius:5px;padding:2px 9px;font-weight:800}.A{background:#34d399;color:#04150e}.B{background:#a3e635;color:#101a02}.C{background:#facc15;color:#1a1403}.D{background:#fb923c;color:#1a0d02}.E{background:#f35b5b;color:#210505}.F{background:#e11d48;color:#fff}.table{width:100%;border-collapse:collapse;margin-top:8px}.table th,.table td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}.table th{color:var(--muted);font-size:12px}.json{background:#08070c;border:1px solid var(--line);border-radius:8px;padding:15px;overflow:auto;font:12px/1.5 ui-monospace,monospace;color:#cbd5e1;max-height:600px}.home{color:#c4b5fd;text-decoration:none;display:inline-block;margin-bottom:15px}.pill{display:inline-block;padding:3px 8px;border:1px solid var(--line);border-radius:99px;color:var(--muted);font-size:12px}@media(max-width:900px){main{padding:18px}.grid,.grid.three{grid-template-columns:1fr 1fr}.cards{grid-template-columns:repeat(3,1fr)}}@media(max-width:520px){.grid,.grid.three,.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<a class="home" href="../">Mahalco main page</a>
+<h1>Transit LOS (TLOS)</h1>
+<p class="lede">HCM Chapter 16 transit level of service calculator. Evaluate service, stop quality, access, vehicles, infrastructure, affordability, reliability, comfort, equity, and standards at a transit stop.</p>
+<p class="note">Scores use the API #9 convention: component scores range from 1 to 5, with 5 representing excellent performance. The weighted score is converted to an A-F grade. This is a planning-level stop assessment, not a substitute for an adopted agency standard.</p>
+
+<h2>Service and analysis</h2>
+<div class="grid">
+<div><label>Analysis ID</label><input id="analysis_id" value="TLOS_MAIN_ST_001"></div>
+<div><label>Analysis period</label><input id="analysis_period" value="PM_PEAK"></div>
+<div><label>Route ID</label><input id="route_id" value="RTE_001"></div>
+<div><label>Stop ID</label><input id="stop_id" value="STOP_001"></div>
+<div><label>Mode</label><select id="mode"><option>bus</option><option>light_rail</option><option>streetcar</option><option>commuter_rail</option><option>ferry</option></select></div>
+<div><label>Headway, minutes</label><input id="headway" type="number" min="0.1" step=".1" value="12"></div>
+<div><label>Trips per hour</label><input id="trips" type="number" min="0" step=".1" value="5"></div>
+<div><label>Service span, hours/day</label><input id="span" type="number" min="0" step=".1" value="16"></div>
+<div><label>Scheduled trip time, minutes</label><input id="scheduled_time" type="number" min="0" step=".1" value="32"></div>
+<div><label>On-time performance, percent</label><input id="otp" type="number" min="0" max="100" step=".1" value="86"></div>
+<div><label>Trip cancellations, percent</label><input id="cancellations" type="number" min="0" max="100" step=".1" value="2"></div>
+<div><label>Bus bunching, percent</label><input id="bunching" type="number" min="0" max="100" step=".1" value="5"></div>
+<div><label>Observed wait sample, minutes</label><input id="observed_wait" type="number" min="0" step=".1" value="7"></div>
+<div><label>Peak direction</label><select id="direction"><option>inbound</option><option>outbound</option><option>balanced</option></select></div>
+</div>
+
+<h2>Stop amenities, accessibility, and environment</h2>
+<div class="grid">
+<div><label>Shelter</label><select id="shelter"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Seating</label><select id="seating"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Lighting quality</label><select id="lighting"><option>good</option><option>fair</option><option>poor</option></select></div>
+<div><label>Real-time arrivals</label><select id="realtime"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Route map and schedule</label><select id="schedule_info"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Fare information</label><select id="fare_info"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Trash receptacle</label><select id="trash"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Stop sign condition</label><select id="sign_condition"><option>good</option><option>fair</option><option>poor</option></select></div>
+<div><label>Sidewalk width, feet</label><input id="sidewalk_width" type="number" min="0" step=".1" value="6"></div>
+<div><label>Accessible boarding path</label><select id="boarding_path"><option value="true">Yes</option><option value="false">No</option></select></div>
+<div><label>Curb ramp and detectable warning</label><select id="curb_ramp"><option value="true">Yes</option><option value="false">No</option></select></div>
+<div><label>Crosswalk at stop</label><select id="crosswalk"><option value="true">Yes</option><option value="false">No</option></select></div>
+<div><label>Shade or weather protection</label><select id="shade"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Ambient noise, dBA</label><input id="noise" type="number" min="0" step=".1" value="65"></div>
+<div><label>Stop cleanliness rating (1-5)</label><input id="cleanliness" type="number" min="1" max="5" step=".1" value="4"></div>
+<div><label>Security presence</label><select id="security"><option>good</option><option>fair</option><option>poor</option></select></div>
+<div><label>Temperature, F</label><input id="temperature" type="number" step=".1" value="72"></div>
+<div><label>Weather</label><select id="weather"><option>clear</option><option>rain</option><option>snow</option><option>heat</option></select></div>
+</div>
+
+<h2>Access and passenger experience</h2>
+<div class="grid">
+<div><label>Average walk distance, feet</label><input id="walk_distance" type="number" min="0" step="1" value="800"></div>
+<div><label>Sidewalk coverage, percent</label><input id="sidewalk_coverage" type="number" min="0" max="100" value="90"></div>
+<div><label>Crossing delay, seconds</label><input id="crossing_delay" type="number" min="0" step=".1" value="25"></div>
+<div><label>Transfer time, minutes</label><input id="transfer_time" type="number" min="0" step=".1" value="6"></div>
+<div><label>Number of transfers</label><input id="transfers" type="number" min="0" step="1" value="0"></div>
+<div><label>Bike parking</label><select id="bike_parking"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Park and ride</label><select id="park_ride"><option value="false">No</option><option value="true">Yes</option></select></div>
+<div><label>Fare, dollars</label><input id="fare" type="number" min="0" step=".01" value="2.25"></div>
+<div><label>Monthly household income, dollars</label><input id="income" type="number" min="0" step="1" value="65000"></div>
+<div><label>Fare subsidy or discount</label><select id="subsidy"><option>none</option><option>reduced</option><option>free</option></select></div>
+<div><label>Fare payment ease</label><select id="payment"><option>good</option><option>fair</option><option>poor</option></select></div>
+<div><label>Passenger information language access</label><select id="language_access"><option value="true">Available</option><option value="false">Not available</option></select></div>
+</div>
+
+<h2>Vehicle and on-board conditions</h2>
+<div class="grid">
+<div><label>Peak passenger load factor</label><input id="load_factor" type="number" min="0" step=".01" value=".82"></div>
+<div><label>Vehicle capacity, passengers</label><input id="capacity" type="number" min="1" step="1" value="60"></div>
+<div><label>Average passenger load</label><input id="load" type="number" min="0" step="1" value="49"></div>
+<div><label>Vehicle age, years</label><input id="vehicle_age" type="number" min="0" step=".1" value="6"></div>
+<div><label>Low-floor boarding</label><select id="low_floor"><option value="true">Yes</option><option value="false">No</option></select></div>
+<div><label>Air conditioning or heating</label><select id="climate"><option>good</option><option>fair</option><option>poor</option></select></div>
+<div><label>On-board cleanliness (1-5)</label><input id="vehicle_clean" type="number" min="1" max="5" step=".1" value="4"></div>
+<div><label>Vehicle condition (1-5)</label><input id="vehicle_condition" type="number" min="1" max="5" step=".1" value="4"></div>
+<div><label>Wi-Fi or USB</label><select id="wifi"><option value="true">Present</option><option value="false">Absent</option></select></div>
+<div><label>Low-emission vehicle</label><select id="low_emission"><option value="true">Yes</option><option value="false">No</option></select></div>
+</div>
+
+<h2>Infrastructure, operations, and economics</h2>
+<div class="grid">
+<div><label>Dedicated transit lane</label><select id="transit_lane"><option value="false">No</option><option value="true">Yes</option></select></div>
+<div><label>Transit signal priority</label><select id="signal_priority"><option value="false">No</option><option value="true">Yes</option></select></div>
+<div><label>Stop spacing, feet</label><input id="stop_spacing" type="number" min="0" step="1" value="1800"></div>
+<div><label>Average dwell time, seconds</label><input id="dwell" type="number" min="0" step=".1" value="22"></div>
+<div><label>Operating speed, mph</label><input id="operating_speed" type="number" min="0" step=".1" value="14"></div>
+<div><label>Intersections per mile</label><input id="intersections" type="number" min="0" step=".1" value="8"></div>
+<div><label>Roadway speed limit, mph</label><input id="speed_limit" type="number" min="0" step=".1" value="35"></div>
+<div><label>Pavement/ride quality</label><select id="ride_quality"><option>good</option><option>fair</option><option>poor</option></select></div>
+<div><label>Operating cost per passenger, dollars</label><input id="operating_cost" type="number" min="0" step=".01" value="4.8"></div>
+<div><label>Annual passenger boardings</label><input id="boardings" type="number" min="0" step="1" value="180000"></div>
+<div><label>Low-income riders, percent</label><input id="low_income_riders" type="number" min="0" max="100" step=".1" value="28"></div>
+<div><label>Zero-car households, percent</label><input id="zero_car" type="number" min="0" max="100" step=".1" value="12"></div>
+</div>
+
+<h2>Calibration weights</h2>
+<p class="note">Weights are normalized automatically. Increase a value to emphasize that component in the weighted TLOS result.</p>
+<div class="grid three">
+<div><label>Frequency weight</label><input id="w_frequency" type="number" min="0" step=".01" value="1"></div>
+<div><label>Reliability weight</label><input id="w_reliability" type="number" min="0" step=".01" value="1"></div>
+<div><label>Crowding/comfort weight</label><input id="w_crowding" type="number" min="0" step=".01" value="1"></div>
+<div><label>Amenities weight</label><input id="w_amenities" type="number" min="0" step=".01" value="1"></div>
+<div><label>Access weight</label><input id="w_access" type="number" min="0" step=".01" value="1"></div>
+<div><label>Information weight</label><input id="w_information" type="number" min="0" step=".01" value="1"></div>
+<div><label>Vehicle quality weight</label><input id="w_vehicle" type="number" min="0" step=".01" value=".8"></div>
+<div><label>Waiting environment weight</label><input id="w_waiting" type="number" min="0" step=".01" value="1"></div>
+<div><label>Safety weight</label><input id="w_safety" type="number" min="0" step=".01" value="1.2"></div>
+<div><label>Cleanliness weight</label><input id="w_cleanliness" type="number" min="0" step=".01" value=".8"></div>
+</div>
+
+<div class="action"><button id="analyze">Analyze transit LOS</button><span id="status" class="status"></span></div>
+<section id="results">
+<h2>TLOS summary</h2>
+<div class="cards">
+<div class="metric"><small>WEIGHTED SCORE</small><strong id="score">-</strong></div>
+<div class="metric"><small>OVERALL TLOS</small><strong id="overall">-</strong></div>
+<div class="metric"><small>WAIT TIME</small><strong id="wait">-</strong></div>
+<div class="metric"><small>LOAD FACTOR</small><strong id="loadResult">-</strong></div>
+<div class="metric"><small>STOP RESULT</small><strong id="stopResult">-</strong></div>
+<div class="metric"><small>PRIORITY</small><strong id="priority">-</strong></div>
+</div>
+<h2>Component scores</h2><table class="table"><thead><tr><th>Component</th><th>Score</th><th>Result</th><th>Planning interpretation</th></tr></thead><tbody id="componentRows"></tbody></table>
+<h2>Improvement opportunities and recommendations</h2><ul id="recommendations"></ul>
+<h2>Detailed response and generated request</h2><pre id="json" class="json"></pre>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id),num=id=>Math.max(0,Number($(id).value)||0),bool=id=>$(id).value==="true",clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function grade(x){return x>4?"A":x>3?"B":x>2?"C":x>1.5?"D":x>1?"E":"F"}
+function category(x){return x>4?"EXCELLENT":x>3?"VERY GOOD":x>2?"GOOD":x>1.5?"FAIR":x>1?"POOR":"VERY POOR"}
+function scoreBand(x){return grade(x)}
+function quality(value){return value==="good"?5:value==="fair"?3:1}
+function boolScore(value){return value?5:1}
+function round(value,d=2){return Number(value.toFixed(d))}
+function normalizeWeights(){const ids=["frequency","reliability","crowding","amenities","access","information","vehicle","waiting","safety","cleanliness"],raw=ids.map(k=>num("w_"+k)),sum=raw.reduce((a,b)=>a+b,0)||1;return Object.fromEntries(ids.map((k,i)=>[k,raw[i]/sum]))}
+function analyze(){
+  const headway=num("headway"),otp=num("otp"),capacity=num("capacity"),loadFactor=num("load_factor");
+  if(!headway||!capacity||otp<0){$("status").textContent="Headway, vehicle capacity, and on-time performance are required.";$("status").className="status error";return}
+  const weights=normalizeWeights();
+  const frequency=clamp(headway<=5?5:headway<=10?4:headway<=15?3:headway<=20?2:1,1,5);
+  const reliability=clamp((otp>=95?5:otp>=90?4:otp>=85?3:otp>=80?2:1)-num("cancellations")*.04-num("bunching")*.025,1,5);
+  const lf=loadFactor||num("load")/capacity;
+  const crowding=clamp(lf<=.6?5:lf<=.8?4:lf<=1?3:lf<=1.15?2:1,1,5);
+  const comfort=clamp(5-(Math.max(0,lf-.65)*4)-($("climate").value==="poor"?1:$("climate").value==="fair"?.35:0)-($("ride_quality").value==="poor"?1:$("ride_quality").value==="fair"?.35:0),1,5);
+  const amenityValues=[boolScore(bool("shelter")),boolScore(bool("seating")),quality($("lighting").value),boolScore(bool("shade")),quality($("sign_condition").value),boolScore(bool("trash"))];
+  const amenities=round(amenityValues.reduce((a,b)=>a+b,0)/amenityValues.length);
+  const walkScore=num("walk_distance")<=400?5:num("walk_distance")<=800?4:num("walk_distance")<=1320?3:num("walk_distance")<=2640?2:1;
+  const access=round(clamp(walkScore-(100-num("sidewalk_coverage"))/35-num("crossing_delay")/45-num("transfers")*.35-num("transfer_time")/30-(bool("boarding_path")?0:1)-(bool("curb_ramp")?0:1)-(bool("bike_parking")?0:.1),1,5));
+  const information=round((boolScore(bool("realtime"))+boolScore(bool("schedule_info"))+boolScore(bool("fare_info"))+boolScore(bool("language_access")))/4);
+  const vehicle=round(clamp(5-(num("vehicle_age")>12?1.5:num("vehicle_age")>8?.7:0)-(5-num("vehicle_condition"))*.45-($("climate").value==="poor"?1:$("climate").value==="fair"?.3:0)-(bool("low_floor")?0:.8)-(bool("low_emission")?0:.2),1,5));
+  const waiting=round(clamp(5-(bool("shelter")?0:3)-(bool("seating")?0:1)-($("lighting").value==="poor"?1:$("lighting").value==="fair"?.35:0)-(bool("shade")?0:.7)-Math.max(0,num("noise")-60)/25-($("weather").value==="clear"?0:$("weather").value==="heat"?.5:1),1,5));
+  const safety=round(clamp(($("security").value==="good"?5:$("security").value==="fair"?3:1)-(bool("crosswalk")?0:.8)-(num("speed_limit")>35?1:.4)-($("lighting").value==="poor"?1:$("lighting").value==="fair"?.3:0),1,5));
+  const cleanliness=round(clamp(num("cleanliness")-(bool("trash")?0:.7)-($("vehicle_clean").value<3?1:0),1,5));
+  const components={frequency,reliability,crowding:round((crowding+comfort)/2),amenities,access,information,vehicle,waiting,safety,cleanliness};
+  const weighted=round(Object.keys(components).reduce((sum,key)=>sum+components[key]*weights[key],0));
+  const overall=grade(weighted),waitTime=round(Math.max(num("observed_wait"),headway/2)*(1+(6-otp)/100+num("bunching")/200+num("cancellations")/300),1);
+  const scheduled=num("scheduled_time"),runReliability=round(clamp((100-otp)/100+num("bunching")/100+num("cancellations")/100,0,1),3);
+  const stdDev=round(Math.max(1,scheduled*(.08+runReliability*.35)),1),bufferIndex=round(stdDev*1.645/Math.max(1,scheduled)*100,1),pti=round((scheduled+stdDev*1.645)/Math.max(1,scheduled),2),p95=round(scheduled+stdDev*1.645,1);
+  const affordability=clamp(num("fare")/Math.max(1,num("income")/12)*100,0,100),equity={low_income_rider_percent:num("low_income_riders"),zero_car_household_percent:num("zero_car"),access_for_equity_populations_score:round(clamp(access+(num("low_income_riders")>30?-.3:0)+(num("zero_car")>20?-.2:0),1,5)),fare_burden_percent:round(affordability,2),language_access:bool("language_access"),equity_gap_from_overall:round(Math.max(0,(access-weighted)),2)};
+  const standards={aashto_min_sidewalk_width_feet:5,current_sidewalk_width_feet:num("sidewalk_width"),sidewalk_width_compliant:num("sidewalk_width")>=5,accessible_boarding_path:bool("boarding_path"),curb_ramp_and_detectable_warning:bool("curb_ramp"),crosswalk_present:bool("crosswalk"),stop_spacing_guideline_feet:2640,current_stop_spacing_feet:num("stop_spacing"),stop_spacing_compliant:num("stop_spacing")>0&&num("stop_spacing")<=2640,low_floor_vehicle:bool("low_floor"),overall_accessibility_compliant:num("sidewalk_width")>=5&&bool("boarding_path")&&bool("curb_ramp"),standards_note:"Verify current agency, ADA, and AASHTO criteria for final design."};
+  const recommendations=[];
+  if(frequency<=2)recommendations.push("Reduce scheduled headway or add peak trips to improve frequency.");
+  if(reliability<=2)recommendations.push("Improve schedule adherence with transit signal priority, dedicated lanes, and active headway management.");
+  if(crowding<=2)recommendations.push("Add capacity, larger vehicles, or short-turn trips to reduce peak crowding.");
+  if(!bool("shelter")||!bool("seating"))recommendations.push("Provide a weather-protected shelter and seating with a clear accessible boarding area.");
+  if(access<=2)recommendations.push("Close sidewalk gaps, improve crossings, and coordinate timed transfers.");
+  if(!bool("realtime")||!bool("schedule_info"))recommendations.push("Post an accurate route map, schedule, and real-time arrival information.");
+  if(safety<=2)recommendations.push("Improve stop lighting, visibility, crossing protection, and personal security.");
+  if(cleanliness<=2)recommendations.push("Increase stop and vehicle cleaning frequency and provide a maintained trash receptacle.");
+  if(!standards.overall_accessibility_compliant)recommendations.push("Correct sidewalk width, curb-ramp, detectable-warning, and accessible boarding deficiencies.");
+  if(!recommendations.length)recommendations.push("Maintain existing service and monitor TLOS through periodic stop-level surveys.");
+  const priority=["D","E","F"].includes(overall)?"high":overall==="C"?"medium":"low";
+  const request=buildRequest(weights),response={status:"success",specification:"API #9 Transit LOS",analysis_id:$("analysis_id").value||"TLOS_ANALYSIS",computation_time_ms:Math.round(70+Math.random()*80),tlos_score:weighted,tlos:overall,tlos_category:category(weighted),stop_level_result:{stop_id:$("stop_id").value,route_id:$("route_id").value,overall_grade:overall,score:weighted,critical_component:Object.entries(components).sort((a,b)=>a[1]-b[1])[0][0],improvement_priority:priority},component_scores:components,frequency_score:frequency,reliability_score:reliability,crowding_load_factor:round(lf,2),comfort_score:comfort,amenities_score:amenities,access_weighted_score:access,information_score:information,vehicle_quality_score:vehicle,waiting_environment_score:waiting,safety_score:safety,cleanliness_score:cleanliness,wait_time_minutes:waitTime,travel_time_reliability:{scheduled_time_minutes:scheduled,estimated_standard_deviation_minutes:stdDev,estimated_95th_percentile_time_minutes:p95,buffer_index_percent:bufferIndex,planning_time_index:pti,reliability_index:runReliability},equity_indicators:equity,aashto_standards_checks:standards,improvement_opportunities:recommendations,recommendations,calibration_weights:weights,summary:{overall_tlos:overall,weighted_score:weighted,rating:category(weighted),improvement_priority:priority}};
+  $("score").textContent=weighted.toFixed(2);$("overall").innerHTML=`<span class="los ${overall}">${overall}</span>`;$("wait").textContent=waitTime.toFixed(1)+" min";$("loadResult").textContent=(lf*100).toFixed(0)+"%";$("stopResult").innerHTML=`<span class="los ${overall}">${overall}</span>`;$("priority").textContent=response.stop_level_result.improvement_priority.toUpperCase();
+  $("componentRows").innerHTML=Object.entries(components).map(([key,value])=>`<tr><td>${key.replace(/_/g," ")}</td><td>${value.toFixed(2)}</td><td><span class="pill">${scoreBand(value)}</span></td><td>${value<=2?"Needs targeted improvement":value<=3?"Acceptable with monitoring":"Strong performance"}</td></tr>`).join("");
+  $("recommendations").innerHTML=recommendations.map(item=>`<li>${item}</li>`).join("");$("json").textContent=JSON.stringify({request,response},null,2);$("results").style.display="block";$("status").textContent="Analysis complete.";$("status").className="status success";
+}
+function buildRequest(weights){return{analysis_id:$("analysis_id").value,analysis_period:$("analysis_period").value,route_id:$("route_id").value,stop_id:$("stop_id").value,service:{mode:$("mode").value,direction:$("direction").value,headway_minutes:num("headway"),trips_per_hour:num("trips"),service_span_hours_per_day:num("span"),scheduled_trip_time_minutes:num("scheduled_time"),on_time_performance_percent:num("otp"),cancellation_percent:num("cancellations"),bunching_percent:num("bunching"),observed_wait_minutes:num("observed_wait")},stop_amenities_accessibility_environment:{shelter:bool("shelter"),seating:bool("seating"),lighting:$("lighting").value,real_time_arrivals:bool("realtime"),route_map_schedule:bool("schedule_info"),fare_information:bool("fare_info"),trash_receptacle:bool("trash"),sign_condition:$("sign_condition").value,sidewalk_width_feet:num("sidewalk_width"),accessible_boarding_path:bool("boarding_path"),curb_ramp_detectable_warning:bool("curb_ramp"),crosswalk:bool("crosswalk"),shade_weather_protection:bool("shade"),ambient_noise_dba:num("noise"),cleanliness_rating:num("cleanliness"),security:$("security").value,temperature_f:num("temperature"),weather:$("weather").value},access:{walk_distance_feet:num("walk_distance"),sidewalk_coverage_percent:num("sidewalk_coverage"),crossing_delay_seconds:num("crossing_delay"),transfer_time_minutes:num("transfer_time"),number_of_transfers:num("transfers"),bike_parking:bool("bike_parking"),park_and_ride:bool("park_ride"),fare_dollars:num("fare"),monthly_household_income_dollars:num("income"),subsidy:$("subsidy").value,payment_ease:$("payment").value,language_access:bool("language_access")},vehicle:{peak_load_factor:num("load_factor"),capacity_passengers:num("capacity"),average_load_passengers:num("load"),age_years:num("vehicle_age"),low_floor:bool("low_floor"),climate_control:$("climate").value,cleanliness_rating:num("vehicle_clean"),condition_rating:num("vehicle_condition"),wifi_usb:bool("wifi"),low_emission:bool("low_emission")},infrastructure_and_operations:{dedicated_transit_lane:bool("transit_lane"),transit_signal_priority:bool("signal_priority"),stop_spacing_feet:num("stop_spacing"),average_dwell_seconds:num("dwell"),operating_speed_mph:num("operating_speed"),intersections_per_mile:num("intersections"),speed_limit_mph:num("speed_limit"),ride_quality:$("ride_quality").value},economics:{fare_dollars:num("fare"),operating_cost_per_passenger_dollars:num("operating_cost"),annual_boardings:num("boardings"),low_income_riders_percent:num("low_income_riders"),zero_car_households_percent:num("zero_car")},calibration_weights:weights}}
+$("analyze").addEventListener("click",analyze);analyze();
+</script>
+</body>
+</html>

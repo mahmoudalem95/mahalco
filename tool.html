@@ -1,0 +1,699 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Junction analysis — Mahalco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08070C;--card:#0E0C14;--card-2:#141220;--field:#0A0910;
+  --line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.05);
+  --purple:#8B5CF6;--purple-dim:rgba(139,92,246,.16);--cyan:#22D3EE;--green:#4ADE80;
+  --ink:#EDEBF2;--ink-2:#9A96AB;--ink-3:#6B6780;
+  --A:#34D399;--B:#A3E635;--C:#FACC15;--D:#FB923C;--E:#F35B5B;--F:#E11D48;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.55 Inter,system-ui,sans-serif;
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;padding:clamp(14px,3vw,26px)}
+.card{max-width:1080px;margin:0 auto;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:clamp(18px,3vw,30px)}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+h1{font-size:clamp(21px,2.6vw,28px);font-weight:600;letter-spacing:-.022em;line-height:1.16}
+.lede{color:var(--ink-2);max-width:64ch;margin-top:8px}
+.hd{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:22px}
+.h{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.11em;color:var(--ink-3);
+  padding-bottom:9px;margin:26px 0 14px;border-bottom:1px solid var(--line-2);display:block}
+.h:first-of-type{margin-top:0}
+
+label{display:block;font-size:12.5px;color:var(--ink-2);margin-bottom:5px}
+input,select{width:100%;background:var(--field);border:1px solid var(--line);border-radius:8px;
+  color:var(--ink);padding:9px 11px;font:inherit;font-size:14px}
+input:focus,select:focus{outline:2px solid var(--purple);outline-offset:-1px;border-color:transparent}
+input[type=number]{font-family:'JetBrains Mono',monospace}
+.row{display:grid;gap:14px;margin-bottom:16px}
+.r4{grid-template-columns:repeat(4,1fr)}
+.r3{grid-template-columns:repeat(3,1fr)}
+.r2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:720px){.r4,.r3,.r2{grid-template-columns:1fr 1fr}}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:'JetBrains Mono',monospace;font-weight:400;font-size:10.5px;
+  letter-spacing:.09em;color:var(--ink-3);padding:0 8px 8px 0;border-bottom:1px solid var(--line)}
+td{padding:6px 8px 6px 0;border-bottom:1px solid var(--line-2);color:var(--ink-2)}
+td:first-child{color:var(--ink);font-weight:600}
+td.n,th.n{text-align:right;padding-right:0}
+tbody tr:last-child td{border-bottom:0}
+table input{padding:6px 8px;font-size:13px}
+
+.lanes{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.lane-storage{width:104px!important;padding:6px 8px!important;font-size:12px!important}
+.lane{display:flex;gap:2px;background:var(--card-2);border:1px solid var(--line);
+  border-radius:7px;padding:3px}
+.lane button{background:none;border:0;color:var(--ink-3);font:inherit;font-size:11px;
+  font-family:'JetBrains Mono',monospace;padding:4px 6px;border-radius:4px;cursor:pointer}
+.lane button[aria-pressed=true]{background:var(--purple);color:#fff}
+.lane .x{color:var(--ink-3);padding:4px 5px;cursor:pointer;background:none;border:0;font-size:13px}
+.addlane{background:none;border:1px dashed var(--line);border-radius:7px;color:var(--ink-3);
+  font:inherit;font-size:12px;padding:6px 10px;cursor:pointer}
+.addlane:hover{color:var(--ink-2);border-color:var(--ink-3)}
+.lanerr{color:var(--F);font-size:11.5px;margin-left:4px}
+.addlane.free[aria-pressed=true]{background:rgba(74,222,128,.14);border-color:var(--green);
+  border-style:dashed;color:var(--green)}
+
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{flex:1;background:none;border:0;border-right:1px solid var(--line);padding:9px 4px;
+  cursor:pointer;font:inherit;font-size:13px;color:var(--ink-2)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--purple);color:#fff;font-weight:600}
+
+.go{background:var(--purple);color:#fff;border:0;border-radius:10px;padding:13px 26px;
+  font:inherit;font-weight:600;font-size:15px;cursor:pointer;margin-top:24px}
+.go:disabled{opacity:.55;cursor:default}
+.status{margin-top:12px;font-size:13px;color:var(--ink-3);min-height:20px}
+.status.err{color:var(--F)}
+.status.ok{color:var(--green)}
+.sn{display:inline-block;margin-left:6px;font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--cyan);vertical-align:middle}
+td .sn{margin-left:4px}
+
+.res{display:flex;border:1px solid var(--line);border-radius:12px;margin:22px 0;flex-wrap:wrap;
+  background:var(--card-2)}
+.res div{flex:1 1 130px;padding:14px 16px;border-right:1px solid var(--line-2)}
+.res div:last-child{border-right:0}
+.res span{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  letter-spacing:.1em;color:var(--ink-3)}
+.res strong{display:block;font-size:25px;font-weight:600;line-height:1.3;margin-top:3px}
+.chip{display:inline-block;min-width:1.8em;text-align:center;padding:0 .3em;font-weight:700;border-radius:5px}
+.fc{border-collapse:separate;border-spacing:4px;width:100%}
+.fc th{padding:0 0 6px;text-align:center;border:0}
+.fc th:first-child{text-align:left}
+.fc td{padding:0;border:0}
+.fc td:first-child{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-2);padding-right:6px}
+.fc i{display:block;padding:8px 0;font-weight:700;font-style:normal;text-align:center;border-radius:7px}
+.warn{border-left:2px solid var(--D);padding:9px 0 9px 12px;margin:8px 0;font-size:12.5px;
+  color:var(--ink-3);line-height:1.55}
+.cols{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:26px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+#out{display:none}
+.scheme{border:1px solid var(--line);border-radius:12px;background:var(--card-2);
+  padding:6px;max-width:560px;margin:0 auto 4px}
+.scheme svg{display:block;width:100%;height:auto}
+</style>
+
+<div class="card">
+<div class="hd">
+  <h1>Junction analysis</h1>
+  <p class="lede">Enter a turning movement count and lane layout. Returns HCM level of
+    service, per-lane volume-to-capacity, delay, 95th-percentile queue in metres,
+    turn-bay storage checks, and future-year forecasts.</p>
+</div>
+
+<span class="h">JUNCTION SCHEME — RiLSA STREAM NUMBERING</span>
+<div class="scheme"><svg id="scheme" viewBox="0 0 620 620" role="img"
+  aria-label="Junction schematic with numbered vehicle streams, pedestrian crossings and cycle tracks"></svg></div>
+<p class="sub"><b style="color:var(--ink-2)">1–12</b> vehicle streams ·
+  <b style="color:var(--cyan)">F1–F8</b> pedestrian crossings ·
+  <b style="color:var(--green)">R</b> cycle tracks. Arrows take the level-of-service
+  colour once analysed.</p>
+
+<span class="h">TURNING MOVEMENT COUNT — VEH/H</span>
+<table>
+  <thead><tr><th>Approach</th><th class="n">Left</th><th class="n">Through</th>
+    <th class="n">Right</th><th class="n">Total</th></tr></thead>
+  <tbody id="counts"></tbody>
+</table>
+
+<span class="h">LANE LAYOUT — KERB LANE FIRST</span>
+<div id="lanes"></div>
+
+<span class="h">TURN-BAY STORAGE — METRES</span>
+<p class="sub">Set the available storage for each approach. Every analysis compares
+  the returned 95th-percentile queue against this turn-bay length.</p>
+
+<span class="h">PEDESTRIAN CROSSINGS — PED/H  (RiLSA GROUPS F1–F8)</span>
+<div class="row r4" id="peds"></div>
+<p class="sub">Crossing volumes reduce turning capacity through the HCM
+  pedestrian–bicycle adjustment. Leave at zero to ignore.</p>
+
+<span class="h">CONTROL</span>
+<div class="row r3">
+  <div><label>Control type</label>
+    <select id="control">
+      <option value="SIGNALIZED">Signalised</option>
+      <option value="TWSC">Unsignalised (stop / give-way)</option>
+      <option value="ROUNDABOUT">Roundabout</option>
+    </select></div>
+  <div><label>Drive side</label>
+    <select id="side"><option value="RIGHT">Drive on right</option>
+      <option value="LEFT">Drive on left</option></select></div>
+  <div><label>Peak hour factor</label>
+    <input type="number" id="phf" value="0.92" min="0.5" max="1" step="0.01"></div>
+</div>
+<div class="row r3">
+  <div><label>Heavy vehicles (%)</label>
+    <input type="number" id="hv" value="3" min="0" max="50" step="0.5"></div>
+  <div><label>Cycle length (s) — blank to optimise</label>
+    <input type="number" id="cycle" placeholder="Webster" min="30" max="240"></div>
+  <div><label>Base year</label><input type="number" id="year" value="2025"></div>
+</div>
+
+<span class="h">FORECAST</span>
+<div class="row r2">
+  <div><label>Growth rates (%/yr, comma separated)</label>
+    <input id="rates" value="2, 3, 5"></div>
+  <div><label>Horizon years</label><input id="years" value="2030, 2035, 2040"></div>
+</div>
+
+<button class="go" id="go">Analyse junction</button>
+<p class="status" id="status"></p>
+
+<div id="out">
+  <div class="res">
+    <div><span>CONTROL DELAY</span><strong id="o-delay">—</strong></div>
+    <div><span>LEVEL OF SERVICE</span><strong><i class="chip" id="o-los">—</i></strong></div>
+    <div><span>CYCLE</span><strong id="o-cycle">—</strong></div>
+    <div><span>WORST V/C</span><strong id="o-vc">—</strong></div>
+  </div>
+  <div class="cols">
+    <div>
+      <span class="h">MOVEMENT ANALYSIS</span>
+      <table><thead><tr><th>Leg</th><th>Movement</th><th class="n">Demand/lane</th>
+        <th class="n">Cap./lane</th><th class="n">v/c/lane</th><th class="n">Delay</th>
+        <th class="n">LOS</th><th class="n">95th queue</th><th class="n">Storage</th></tr></thead>
+        <tbody id="o-rows"></tbody></table>
+    </div>
+    <div>
+      <span class="h">FORECAST</span>
+      <table class="fc"><thead><tr id="o-fchead"></tr></thead><tbody id="o-fc"></tbody></table>
+      <span class="h">NOTES</span>
+      <div id="o-warn"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// Works both ways: same-origin when the API serves this page, absolute when the
+// markup is pasted into another site. A relative path alone breaks the second
+// case, because it resolves against the host site rather than the API.
+const API_HOST = "https://junction-los-api.onrender.com";
+const SAME_ORIGIN = location.origin === API_HOST
+                 || location.hostname.endsWith("onrender.com");
+const API = (SAME_ORIGIN ? "" : API_HOST) + "/api/v1/junction-los/analyze";
+const LEGS = ["N","E","S","W"];
+const NAMES = {N:"North",E:"East",S:"South",W:"West"};
+const COL = {A:'#34D399',B:'#A3E635',C:'#FACC15',D:'#FB923C',E:'#F35B5B',F:'#E11D48'};
+const TXT = {A:'#04150E',B:'#101A02',C:'#1A1403',D:'#1A0D02',E:'#210505',F:'#fff'};
+// Where each movement lands, from junction geometry. A left from the north
+// approach (travelling south) exits east; a right exits west.
+const DEST = {N:{L:"E",T:"S",R:"W"}, E:{L:"S",T:"W",R:"N"},
+              S:{L:"W",T:"N",R:"E"}, W:{L:"N",T:"E",R:"S"}};
+const LAT = 51.51, LON = -0.10;
+// RiLSA (FGSV) stream numbering: twelve vehicle streams anticlockwise, three
+// per approach, starting from the westbound-facing arm. Pedestrian signal
+// groups F run two per arm. Engineers working to German or Austrian practice
+// read these numbers, not leg names.
+const RILSA = {W:{L:1,T:2,R:3}, S:{L:4,T:5,R:6}, E:{L:7,T:8,R:9}, N:{L:10,T:11,R:12}};
+const FGROUP = {W:["F1","F2"], S:["F3","F4"], E:["F5","F6"], N:["F7","F8"]};
+const peds = {N:0, E:0, S:0, W:0};
+// Channelised kerb-side turn per approach. Sent as the FREE turn treatment,
+// which removes the movement from the signal timing entirely.
+const freeTurn = {N:false, E:false, S:false, W:false};
+const turnBayStorageM = {N:50, E:50, S:50, W:50};
+
+// Across an approach, movements must run kerb -> centreline in the order
+// curb-turn, through, opposed-turn. A through lane inboard of a turn lane would
+// force traffic to cross, so the layout is rejected rather than analysed.
+function laneRank(side){
+  return side === "RIGHT" ? {R:0, T:1, L:2} : {L:0, T:1, R:2};
+}
+function validateLanes(leg, side){
+  const rank = laneRank(side), lay = lanes[leg];
+  let prevMin = -1, prevMax = -1;
+  for(let i = 0; i < lay.length; i++){
+    const rs = lay[i].map(m => rank[m]).sort((a,b) => a-b);
+    if(!rs.length) return `lane ${i+1} serves no movement`;
+    for(let k = 1; k < rs.length; k++)
+      if(rs[k] - rs[k-1] > 1)
+        return `lane ${i+1} skips a movement — a lane cannot serve a turn and the far turn without the through`;
+    if(rs[0] < prevMin || rs[rs.length-1] < prevMax)
+      return `lane ${i+1} sits inboard of a turn lane but serves an outer movement`;
+    prevMin = rs[0]; prevMax = rs[rs.length-1];
+  }
+  return null;
+}
+
+const counts = {N:{L:80,T:450,R:120}, E:{L:60,T:280,R:80},
+                S:{L:170,T:440,R:110}, W:{L:100,T:380,R:100}};
+const lanes = {};
+LEGS.forEach(l => lanes[l] = [["T","R"],["T"],["L"]]);
+
+const $ = id => document.getElementById(id);
+
+// -- inputs ---------------------------------------------------------------
+$("counts").innerHTML = LEGS.map(l => `<tr><td>${NAMES[l]}</td>` +
+  ["L","T","R"].map(m =>
+    `<td class="n"><input type="number" min="0" step="10" value="${counts[l][m]}"
+      data-leg="${l}" data-mv="${m}" aria-label="${NAMES[l]} ${m}, stream ${RILSA[l][m]}">
+      <span class="sn">${RILSA[l][m]}</span></td>`).join("") +
+  `<td class="n mono" id="tot-${l}">0</td></tr>`).join("");
+
+$("peds").innerHTML = LEGS.map(l => `
+  <div><label>${NAMES[l]} arm — ${FGROUP[l].join(" / ")}</label>
+    <input type="number" min="0" step="10" value="0" data-ped="${l}"
+      aria-label="${NAMES[l]} pedestrian crossing volume"></div>`).join("");
+$("peds").addEventListener("input", e => {
+  peds[e.target.dataset.ped] = Math.max(0, +e.target.value || 0);
+  drawScheme();
+});
+
+function totals(){
+  LEGS.forEach(l => $("tot-"+l).textContent =
+    (counts[l].L + counts[l].T + counts[l].R).toFixed(0));
+}
+$("counts").addEventListener("input", e => {
+  const t = e.target;
+  counts[t.dataset.leg][t.dataset.mv] = Math.max(0, +t.value || 0);
+  totals(); drawScheme();
+});
+$("side").addEventListener("change", () => { drawLanes(); drawScheme(); });
+$("control").addEventListener("change", () => { drawLanes(); drawScheme(); });
+$("counts").addEventListener("focusin", e => {
+  const t = e.target;
+  if(!t.dataset.leg) return;
+  sel = t.dataset.leg + t.dataset.mv;
+  drawScheme();
+});
+totals();
+
+function drawLanes(){
+  $("lanes").innerHTML = LEGS.map(l => `
+    <div class="row r2" style="grid-template-columns:110px 1fr;align-items:center;margin-bottom:10px">
+      <label style="margin:0">${NAMES[l]}</label>
+      <div class="lanes" data-leg="${l}">
+        ${lanes[l].map((mv,i) => `<div class="lane">
+          ${["L","T","R"].map(m =>
+            `<button data-i="${i}" data-m="${m}" aria-pressed="${mv.includes(m)}">${m}</button>`).join("")}
+          <button class="x" data-del="${i}" title="Remove lane">&times;</button>
+        </div>`).join("")}
+        <button class="addlane" data-add="1">+ lane</button>
+        <button class="addlane free" data-free="1" aria-pressed="${freeTurn[l]}"
+          title="Channelised slip lane, bypasses the signal">free turn</button>
+        <label style="margin:0 0 0 4px">turn-bay m
+          <input class="lane-storage" type="number" min="0" step="1" value="${turnBayStorageM[l]}"
+            data-storage="${l}" aria-label="${NAMES[l]} turn-bay storage in metres">
+        </label>
+        ${validateLanes(l, $("side").value)
+          ? `<span class="lanerr">${validateLanes(l, $("side").value)}</span>` : ""}
+      </div>
+    </div>`).join("");
+}
+$("lanes").addEventListener("click", e => {
+  const b = e.target.closest("button"); if(!b) return;
+  const leg = b.closest(".lanes").dataset.leg;
+  if(b.dataset.free) freeTurn[leg] = !freeTurn[leg];
+  else if(b.dataset.add) lanes[leg].push(["T"]);
+  else if(b.dataset.del !== undefined){
+    if(lanes[leg].length > 1) lanes[leg].splice(+b.dataset.del, 1);
+  } else {
+    const set = lanes[leg][+b.dataset.i], m = b.dataset.m, at = set.indexOf(m);
+    if(at >= 0){ if(set.length > 1) set.splice(at,1); } else set.push(m);
+  }
+  drawLanes(); drawScheme();
+});
+$("lanes").addEventListener("input", e => {
+  const leg = e.target.dataset.storage;
+  if(leg) turnBayStorageM[leg] = Math.max(0, +e.target.value || 0);
+});
+drawLanes();
+
+// -- schematic ------------------------------------------------------------
+// One arm is drawn in a canonical orientation (west arm, traffic approaching
+// eastbound) and rotated into the other three positions. Labels carry an equal
+// and opposite rotation so they stay upright.
+const ARMS = [{leg:"W",rot:0},{leg:"N",rot:90},{leg:"E",rot:180},{leg:"S",rot:270}];
+let losByLeg = {};
+let sel = null;   // selected stream, e.g. "NT"
+
+function drawScheme(){
+  const C = 310, AW = 66;
+  const STOP = C - AW, EDGE = C + AW, ARM = 20;
+  const KERB = $("control").value === "ROUNDABOUT" ? 40 : 24;
+  const side = $("side").value, mode = $("control").value;
+  const curb = side === "RIGHT" ? "R" : "L";
+  const ccw  = side === "RIGHT";          // circulation direction
+  let g = "", labels = "";
+
+  // Unsignalised control needs a priority street. Infer it the same way the
+  // API does — the busiest opposing pair — so drawing and analysis agree.
+  let major = [];
+  if(mode === "TWSC"){
+    const tot = l => counts[l].L + counts[l].T + counts[l].R;
+    const anchor = LEGS.reduce((a,b) => tot(a) >= tot(b) ? a : b);
+    const opp = {N:"S", S:"N", E:"W", W:"E"}[anchor];
+    major = [anchor, opp];
+  }
+
+  // Yield line: a row of small triangles pointing at the driver, sized to read
+  // as road marking rather than as arrowheads.
+  const giveWay = (x, y0, y1, col) => {
+    let out = "", n = Math.max(3, Math.round((y1 - y0) / 11)), step = (y1 - y0) / n;
+    for(let i = 0; i < n; i++){
+      const y = y0 + step * (i + 0.5);
+      out += `<path d="M ${x} ${y-3} L ${x} ${y+3} L ${x-5.5} ${y} Z"
+               fill="${col}" opacity=".6"/>`;
+    }
+    return out;
+  };
+
+  ARMS.forEach(({leg, rot}) => {
+    const num = RILSA[leg], F = FGROUP[leg], lay = lanes[leg];
+    const col = losByLeg[leg] ? COL[losByLeg[leg]] : "var(--ink-2)";
+    const rp = (x, y) => {
+      const r = rot * Math.PI / 180, dx = x - C, dy = y - C;
+      return [C + dx*Math.cos(r) - dy*Math.sin(r), C + dx*Math.sin(r) + dy*Math.cos(r)];
+    };
+    const t = (x,y,txt,fill,size,weight) => {
+      const [sx, sy] = rp(x, y);
+      labels += `<text x="${sx.toFixed(1)}" y="${sy.toFixed(1)}" fill="${fill}"
+        font-size="${size||13}" font-weight="${weight||400}" text-anchor="middle"
+        font-family="JetBrains Mono, monospace">${txt}</text>`;
+      return "";
+    };
+
+    let a = `<g transform="rotate(${rot} ${C} ${C})">`;
+    a += `<rect x="${ARM}" y="${C-AW}" width="${STOP-ARM}" height="${AW*2}"
+           fill="rgba(255,255,255,.05)"/>`;
+    a += `<path d="M ${STOP-KERB} ${EDGE} Q ${STOP} ${EDGE} ${STOP} ${EDGE+KERB}"
+           fill="none" stroke="var(--line)" stroke-width="1.5" stroke-linecap="round"/>`;
+    a += `<line x1="${ARM}" y1="${C}" x2="${STOP}" y2="${C}" stroke="var(--line)"
+           stroke-width="1.5"/>`;
+
+    const n = Math.max(1, lay.length), h = AW / n;
+    for(let i = 1; i < n; i++){
+      const y = EDGE - i * h;
+      a += `<line x1="${STOP-92}" y1="${y}" x2="${STOP}" y2="${y}"
+             stroke="rgba(255,255,255,.14)" stroke-width="1" stroke-dasharray="6 5"/>`;
+    }
+
+    // Control marking at the stop line differs by junction type.
+    if(mode === "SIGNALIZED"){
+      a += `<line x1="${STOP}" y1="${C+2}" x2="${STOP}" y2="${EDGE}" stroke="${col}"
+             stroke-width="5" stroke-linecap="round"/>`;
+    }else if(mode === "ROUNDABOUT"){
+      a += giveWay(STOP + 1, C + 5, EDGE - 3, col);
+      // Splitter island: narrow at the outer end, widening toward the
+      // circulatory roadway, separating entry from exit on the centreline.
+      a += `<path d="M ${STOP-86} ${C-2.5} L ${STOP-14} ${C-13} L ${STOP-14} ${C+13}
+             L ${STOP-86} ${C+2.5} Z" fill="rgba(255,255,255,.11)"
+             stroke="var(--line)" stroke-width="1" stroke-linejoin="round"/>`;
+    }else{
+      const isMajor = major.includes(leg);
+      if(isMajor){
+        t(STOP - 46, C + AW/2 + 4, "PRIORITY", "var(--ink-3)", 8, 600);
+      }else{
+        a += giveWay(STOP + 2, C + 4, EDGE - 2, col);
+        t(STOP - 46, C + AW/2 + 4, "GIVE WAY", col, 8, 600);
+      }
+    }
+
+    const served = {L:false, T:false, R:false};
+    const free = freeTurn[leg];
+    const x0 = STOP - 88, x1 = STOP - 42, x2 = STOP - 16;
+    lay.forEach((mvs, i) => {
+      const ly = EDGE - (i + 0.5) * h;
+      const off = Math.min(15, h * 0.4);
+      mvs.forEach(m => {
+        served[m] = true;
+        if(free && m === curb) return;
+        const on = sel === leg + m;
+        const c = on ? "var(--purple)" : col;
+        const w = on ? 3 : 2.2;
+        let d;
+        if(mode === "ROUNDABOUT"){
+          // Every entry curves into the circulatory roadway; the movement is
+          // resolved by which exit is taken, not by a lane arrow at the entry.
+          // Entries sweep toward the circulatory roadway; the exit taken, not a
+          // lane arrow, decides the movement at a roundabout.
+          d = `M ${x0-14} ${ly} L ${x1+4} ${ly} Q ${x2+2} ${ly} ${x2+6} ${ly-off*0.7}`;
+        }else{
+          d = m === "T" ? `M ${x0} ${ly} L ${x2+8} ${ly}`
+            : `M ${x0} ${ly} L ${x1} ${ly} L ${x2} ${m === "L" ? ly-off : ly+off}`;
+        }
+        a += `<g class="stream" data-leg="${leg}" data-mv="${m}" style="cursor:pointer">
+          <path d="${d}" stroke="${c}" stroke-width="${w}" fill="none"
+            stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah)"/></g>`;
+      });
+    });
+
+    if(free){
+      served[curb] = true;
+      const on = sel === leg + curb;
+      const c = on ? "var(--purple)" : "var(--green)";
+      a += `<g class="stream" data-leg="${leg}" data-mv="${curb}" style="cursor:pointer">
+        <path d="M ${STOP-96} ${EDGE-8} Q ${STOP+14} ${EDGE-2} ${STOP+34} ${EDGE+62}"
+          stroke="${c}" stroke-width="${on?3:2.4}" fill="none" stroke-linecap="round"
+          stroke-dasharray="7 6" marker-end="url(#af)"/>
+        ${t(STOP+70, EDGE+54, "BYPASS", c, 9, 700)}</g>`;
+    }
+
+    const LX = [70, 140, 210], LY = 442;
+    ["L","T","R"].forEach((m, i) => {
+      const on = sel === leg + m;
+      const isFree = free && m === curb;
+      const c = !served[m] ? "var(--ink-3)"
+              : on ? "var(--purple)" : (isFree ? "var(--green)" : col);
+      a += `<g class="stream" data-leg="${leg}" data-mv="${m}" style="cursor:pointer">
+        ${t(LX[i], LY, num[m], c, on ? 16 : 14, 600)}</g>`;
+      const [bx, by] = rp(LX[i], LY);
+      labels += `<text x="${bx.toFixed(1)}" y="${(by+15).toFixed(1)}" text-anchor="middle"
+        fill="${served[m] ? "var(--ink-3)" : "var(--F)"}" font-size="10"
+        font-family="JetBrains Mono, monospace">${served[m] ? counts[leg][m] : "no lane"}</text>`;
+    });
+
+    const pv = peds[leg] || 0;
+    const pc = pv > 0 ? "var(--cyan)" : "rgba(255,255,255,.10)";
+    a += `<line x1="140" y1="${C-AW+4}" x2="140" y2="${C-5}" stroke="${pc}"
+           stroke-width="3" stroke-dasharray="6 5" stroke-linecap="round"/>`
+       + t(140, C-AW-12, F[0], pc, 10);
+    a += `<line x1="140" y1="${C+5}" x2="140" y2="${EDGE-4}" stroke="${pc}"
+           stroke-width="3" stroke-dasharray="6 5" stroke-linecap="round"/>`
+       + t(140, EDGE+18, F[1] + (pv > 0 ? "  " + pv : ""), pc, 10);
+
+    a += `<line x1="104" y1="${EDGE-6}" x2="104" y2="${C-AW+10}" stroke="var(--green)"
+           stroke-width="2.4" stroke-dasharray="8 6" stroke-linecap="round"
+           marker-end="url(#ag)"/>` + t(104, C-AW-12, "R"+num.T, "var(--green)", 10);
+
+    g += a + "</g>";
+  });
+
+  // Junction centre: an island for a roundabout, open carriageway otherwise.
+  if(mode === "ROUNDABOUT"){
+    g += `<circle cx="${C}" cy="${C}" r="${AW}" fill="rgba(255,255,255,.05)"/>`;
+    g += `<circle cx="${C}" cy="${C}" r="40" fill="rgba(255,255,255,.10)"
+           stroke="var(--line)" stroke-width="1.5"/>`;
+    g += `<circle cx="${C}" cy="${C}" r="${AW}" fill="none" stroke="var(--line)"
+           stroke-width="1.5" stroke-dasharray="4 6"/>`;
+    // circulation direction
+    const r = 53, sweep = ccw ? 0 : 1;
+    for(let k = 0; k < 4; k++){
+      const a0 = (k * 90 + 24) * Math.PI/180, a1 = (k * 90 + 62) * Math.PI/180;
+      const dir = ccw ? [a1, a0] : [a0, a1];
+      const p = dir.map(t => [C + r*Math.cos(t), C + r*Math.sin(t)]);
+      g += `<path d="M ${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}
+             A ${r} ${r} 0 0 ${sweep} ${p[1][0].toFixed(1)} ${p[1][1].toFixed(1)}"
+             fill="none" stroke="var(--ink-3)" stroke-width="1.8"
+             stroke-linecap="round" marker-end="url(#ah)"/>`;
+    }
+  }
+
+  const isx = losByLeg.__isx;
+  if(isx){
+    const ry = mode === "ROUNDABOUT" ? C - AW - 34 : C;
+    g += `<circle cx="${C}" cy="${ry}" r="30" fill="${COL[isx]}" opacity=".14"/>`;
+    labels += `<text x="${C}" y="${ry+11}" text-anchor="middle" font-size="30"
+      font-weight="700" fill="${COL[isx]}" font-family="Inter,sans-serif">${isx}</text>`;
+  }
+
+  $("scheme").innerHTML = `<defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.4"
+      markerHeight="3.4" orient="auto"><path d="M0 1.5 9 5 0 8.5z" fill="context-stroke"/></marker>
+    <marker id="af" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4"
+      markerHeight="4" orient="auto"><path d="M0 1 9 5 0 9z" fill="context-stroke"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.2"
+      markerHeight="3.2" orient="auto"><path d="M0 1 9 5 0 9z" fill="#4ADE80"/></marker>
+  </defs>` + g + labels;
+}
+drawScheme();
+
+$("scheme").addEventListener("click", e => {
+  const g = e.target.closest(".stream"); if(!g) return;
+  const {leg, mv} = g.dataset;
+  sel = leg + mv;
+  drawScheme();
+  const input = document.querySelector(`input[data-leg="${leg}"][data-mv="${mv}"]`);
+  if(input){ input.focus(); input.select(); }
+});
+
+// -- payload --------------------------------------------------------------
+// The API consumes Traffic Volume GeoJSON, so the counts are wrapped in that
+// shape here. Using a single one-hour weekday window makes the active-hour
+// divisor exactly 1, so the volumes carried in the payload are already veh/h.
+function offset(bearing, m){
+  const dlat = m*Math.cos(bearing*Math.PI/180)/111320;
+  const dlon = m*Math.sin(bearing*Math.PI/180)/(111320*Math.cos(LAT*Math.PI/180));
+  return [LON+dlon, LAT+dlat];
+}
+const BRG = {N:0,E:90,S:180,W:270};
+
+function buildGeoJson(){
+  const approach = {}, exit = {};
+  LEGS.forEach(l => { approach[l] = counts[l].L + counts[l].T + counts[l].R; exit[l] = 0; });
+  LEGS.forEach(a => ["L","T","R"].forEach(m => exit[DEST[a][m]] += counts[a][m]));
+
+  const features = [{type:"Feature", geometry:null, properties:{
+    jobName:"mahalco-ui", userPreference:{distanceUnit:"KILOMETERS"},
+    dateRanges:[{"@id":1,name:"weekday",from:"2025-01-06",to:"2025-01-06",
+                 exclusions:[],excludedDaysOfWeek:[]}],
+    timeSets:[{"@id":1,name:"Peak hour",
+               dayToTimeRanges:[{dayOfWeek:"MONDAY",timeRanges:["08:00-09:00"]}]}],
+    networkName:"mahalco", zoneId:"Europe/London", mapsVersions:["ui-1.0"]}}];
+
+  let id = 1000;
+  LEGS.forEach(l => {
+    const far = offset(BRG[l],150), mid = offset(BRG[l],75), node=[LON,LAT];
+    const seg = (coords, vol) => ({type:"Feature",
+      geometry:{type:"LineString",coordinates:coords},
+      properties:{segmentId:++id, newSegmentId:String(id), frc:3, speedLimit:50,
+        streetName:NAMES[l]+" arm", distance:150,
+        segmentVolumes:[{timeSet:1,dateRange:1,volume:Math.round(vol)}]}});
+    features.push(seg([far,mid,node], approach[l]));
+    features.push(seg([node,mid,far], exit[l]));
+  });
+  return {type:"FeatureCollection", features};
+}
+
+function buildBody(){
+  const nums = s => s.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+  const rates = nums($("rates").value), years = nums($("years").value);
+  const scenarios = [];
+  rates.forEach(r => years.forEach(y => scenarios.push(
+    {name:`${r}%-${y}`, targetYear:Math.round(y), annualGrowthRate:r/100})));
+
+  const MV = {L:"LEFT",T:"THROUGH",R:"RIGHT"};
+  return {
+    junction:{
+      junctionId:"J-UI", lat:LAT, lon:LON,
+      controlType:$("control").value, driveSide:$("side").value, searchRadiusM:60,
+      approaches: LEGS.map(l => ({
+        legId:l, heavyVehiclePct:+$("hv").value, pedestriansPerH:peds[l],
+        turnTreatments: freeTurn[l]
+          ? {[$("side").value === "RIGHT" ? "RIGHT" : "LEFT"]: "FREE"} : {},
+        lanes: lanes[l].map((mv,i) => ({laneNumber:i+1, movements:mv.map(m=>MV[m])}))
+      }))
+    },
+    volumeGeoJson: buildGeoJson(),
+    analysis:{peakHourFactor:+$("phf").value},
+    signal: $("cycle").value ? {cycleLengthS:+$("cycle").value} : {},
+    forecast:{baseYear:+$("year").value, scenarios}
+  };
+}
+
+// -- call -----------------------------------------------------------------
+$("go").addEventListener("click", async () => {
+  const bad = LEGS.map(l => [l, validateLanes(l, $("side").value)]).filter(x => x[1]);
+  if(bad.length){
+    const st0 = $("status"); st0.className = "status err";
+    st0.textContent = `Lane layout is not buildable — ${NAMES[bad[0][0]]}: ${bad[0][1]}.`;
+    return;
+  }
+  const btn = $("go"), st = $("status");
+  btn.disabled = true; st.className = "status"; st.textContent = "Analysing…";
+  // The API sleeps when idle on the free plan, so the first call of the day
+  // can take up to a minute. Say so rather than looking broken.
+  const slow = setTimeout(() => st.textContent =
+    "Waking the analysis server — this can take up to a minute on first use…", 4000);
+  try{
+    const res = await fetch(API, {method:"POST",
+      headers:{"Content-Type":"application/json"}, body:JSON.stringify(buildBody())});
+    clearTimeout(slow);
+    if(!res.ok){
+      const detail = await res.text();
+      throw new Error(res.status === 422
+        ? "The junction description was rejected: " + detail.slice(0,200)
+        : `Server returned ${res.status}.`);
+    }
+    render(await res.json());
+    st.className = "status ok";
+    st.textContent = "Analysis complete — results below.";
+  }catch(err){
+    clearTimeout(slow);
+    st.className = "status err";
+    st.textContent = err.message.includes("Failed to fetch")
+      ? "Could not reach the analysis server. Check your connection and try again."
+      : err.message;
+  }finally{ btn.disabled = false; }
+});
+
+function render(d){
+  const b = d.base;
+  $("out").style.display = "block";
+  $("o-delay").textContent = b.control_delay_s.toFixed(1) + " s";
+  $("o-los").textContent = b.los;
+  $("o-los").style.background = COL[b.los];
+  $("o-los").style.color = TXT[b.los];
+  $("o-cycle").textContent = b.timing ? b.timing.cycle_length_s.toFixed(0)+" s" : "n/a";
+  $("o-vc").textContent = b.max_volume_capacity_ratio.toFixed(2);
+
+  const rows = [];
+  b.approaches.forEach(a => a.lane_groups.forEach(g => rows.push(g)));
+  function movementCode(m){
+    return m === "LEFT" ? "L" : m === "RIGHT" ? "R" : "T";
+  }
+  function laneCountForGroup(g){
+    const wanted = new Set(g.movements.map(movementCode));
+    const lay = lanes[g.leg_id] || [];
+    const matching = lay.filter(mvs => mvs.some(m => wanted.has(m)));
+    return Math.max(1, matching.length);
+  }
+  $("o-rows").innerHTML = rows.map(g => {
+    const laneCount = laneCountForGroup(g);
+    const demandPerLane = g.demand_vph / laneCount;
+    const capacityPerLane = g.capacity_vph ? g.capacity_vph / laneCount : null;
+    const queue95 = Number.isFinite(g.queue_95_m) ? g.queue_95_m : null;
+    const storage = turnBayStorageM[g.leg_id];
+    const storageState = queue95 === null ? "—"
+      : queue95 <= storage ? `<span style="color:var(--green)">OK</span>`
+      : `<span style="color:var(--F)">SHORT ${Math.ceil(queue95 - storage)} m</span>`;
+    return `<tr>
+    <td>${g.leg_id}<span class="sn">${g.movements.map(m=>
+      RILSA[g.leg_id]?RILSA[g.leg_id][m[0]]:"").filter(Boolean).join("/")}</span></td>
+    <td>${g.movements.join("+")}</td>
+    <td class="n">${demandPerLane.toFixed(0)}</td>
+    <td class="n">${capacityPerLane ? capacityPerLane.toFixed(0) : "—"}</td>
+    <td class="n">${g.volume_capacity_ratio.toFixed(2)}</td>
+    <td class="n">${g.control_delay_s.toFixed(1)}</td>
+    <td class="n"><i class="chip" style="background:${COL[g.los]};color:${TXT[g.los]}">${g.los}</i></td>
+    <td class="n">${queue95 === null ? "—" : queue95.toFixed(0)+" m"}</td>
+    <td class="n">${storageState}</td></tr>`;
+  }).join("");
+
+  const grid = d.scenarioMatrix.grid, rates = Object.keys(grid);
+  const years = rates.length ? Object.keys(grid[rates[0]]).sort() : [];
+  $("o-fchead").innerHTML = "<th>GROWTH</th>" + years.map(y=>`<th>${y}</th>`).join("");
+  $("o-fc").innerHTML = rates.map(r => `<tr><td>${r}</td>` + years.map(y => {
+    const g = grid[r][y];
+    return `<td><i style="background:${COL[g]};color:${TXT[g]}">${g}</i></td>`;
+  }).join("") + "</tr>").join("");
+
+  const notes = (d.warnings||[]).concat(d.flows.estimation.warnings||[]);
+  $("o-warn").innerHTML = notes.length
+    ? notes.map(w => `<p class="warn">${w}</p>`).join("")
+    : `<p class="warn">No assumptions flagged. Lane layouts were supplied, so the
+       analysis does not rest on inferred geometry.</p>`;
+  losByLeg = {__isx: b.los};
+  b.approaches.forEach(a => losByLeg[a.leg_id] = a.los);
+  drawScheme();
+  $("out").scrollIntoView({behavior:"smooth", block:"start"});
+}
+</script>

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Climbing Lane Justification — Mahalco</title>
+<meta name="description" content="AASHTO climbing-lane warrant, operations, geometric, safety, environmental, and economic screening.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08070c;--card:#0e0c14;--card2:#141220;--field:#0a0910;--line:rgba(255,255,255,.1);--ink:#edebf2;--muted:#aaa5b9;--dim:#777186;--purple:#8b5cf6;--cyan:#22d3ee;--green:#4ade80;--orange:#fb923c;--red:#f35b5b}
+*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,sans-serif;padding:clamp(12px,3vw,30px)}.card{max-width:1240px;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(17px,3vw,30px)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:22px}.brand{font:700 12px 'JetBrains Mono';letter-spacing:.1em;color:var(--muted)}nav{display:flex;gap:8px;flex-wrap:wrap}nav a{color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px}nav a:hover{color:var(--ink);border-color:var(--purple)}
+h1{font-size:clamp(24px,3vw,36px);letter-spacing:-.04em}h2{font-size:18px;margin-bottom:12px}h3{font-size:14px;margin-bottom:9px}.lede{color:var(--muted);max-width:82ch;margin-top:7px}.section{border-top:1px solid var(--line);margin-top:25px;padding-top:22px}.kicker{display:block;color:var(--dim);font:11px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;margin-bottom:13px}
+.grid{display:grid;gap:13px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.four{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:850px){.four,.three{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.two,.three,.four{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}input,select{width:100%;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 9px;font:inherit;font-size:13px}input:focus,select:focus{outline:2px solid var(--purple);outline-offset:-1px}.hint{display:block;color:var(--dim);font-size:11px;margin-top:3px}.check{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px;padding-top:25px}.check input{width:auto;accent-color:var(--purple)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:19px}.btn{border:0;border-radius:9px;padding:11px 18px;background:var(--purple);color:#fff;font-weight:600;cursor:pointer}.btn.alt{background:transparent;border:1px solid var(--line);color:var(--ink)}.status{min-height:20px;color:var(--dim);font-size:13px;margin-top:10px}.status.ok{color:var(--green)}
+#output{display:none}.summary{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px}.metric{flex:1 1 175px;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:13px}.metric span{display:block;color:var(--dim);font:10px 'JetBrains Mono';letter-spacing:.09em}.metric strong{display:block;font-size:21px;margin-top:5px}.panel{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:15px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12.5px}th{text-align:left;color:var(--dim);font:10px 'JetBrains Mono';letter-spacing:.06em;border-bottom:1px solid var(--line);padding:7px;white-space:nowrap}td{color:var(--muted);border-bottom:1px solid var(--line);padding:7px;vertical-align:top}td:first-child{color:var(--ink)}tr:last-child td{border-bottom:0}.good{color:var(--green)!important}.warn{color:var(--orange)!important}.bad{color:var(--red)!important}.neutral{color:var(--cyan)!important}.api{background:var(--field);border:1px solid var(--line);border-radius:8px;padding:12px;font:11px/1.5 'JetBrains Mono';color:#c9c1dc;overflow:auto;max-height:420px;white-space:pre-wrap}.note{color:var(--dim);font-size:12px;margin-top:9px}.formula{color:var(--dim);font-size:12px;margin-top:10px}.list{padding-left:20px;color:var(--muted);font-size:13px}.list li{margin:5px 0}.badge{display:inline-block;border-radius:999px;padding:3px 8px;font:700 11px 'JetBrains Mono';background:rgba(139,92,246,.17);color:#c4b5fd}.copy{float:right;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:4px 7px;cursor:pointer;font-size:11px}
+</style>
+</head>
+<body>
+<main class="card">
+<header class="top"><div class="brand">MAHALCO / CLIMBING LANE</div><nav><a href="../">Home</a><a href="../two-lane-highway/">Two-Lane Highway</a><a href="../tool.html">Junction LOS</a><a href="../lane-queue-analysis.html">Lane &amp; Queue</a></nav></header>
+<h1>Climbing lane justification</h1>
+<p class="lede">Screen an upgrade for a climbing lane using the three AASHTO warrant tests, a distance-based truck speed profile, HCM-style operations, geometric checks, safety and environmental considerations, and life-cycle economics.</p>
+
+<form id="form" novalidate>
+<section class="section"><span class="kicker">PROJECT / GRADE</span>
+<div class="grid four">
+<div><label for="projectId">Project ID</label><input id="projectId" value="CL-001"></div>
+<div><label for="route">Route / direction</label><input id="route" value="US 50 EB"></div>
+<div><label for="analysisYear">Analysis year</label><input id="analysisYear" type="number" value="2026" min="1900"></div>
+<div><label for="facility">Facility type</label><select id="facility"><option value="two_lane_highway">Two-lane highway</option><option value="multilane_highway">Multilane highway</option></select></div>
+</div>
+<div class="grid four" style="margin-top:13px">
+<div><label for="direction">Upgrade direction</label><select id="direction"><option>eastbound</option><option>westbound</option><option>northbound</option><option>southbound</option></select></div>
+<div><label for="terrain">Terrain</label><select id="terrain"><option>level</option><option>rolling</option><option selected>mountainous</option></select></div>
+<div><label for="designSpeed">Design speed (mph)</label><input id="designSpeed" type="number" value="55" min="15" max="85"></div>
+<div><label for="grade">Sustained upgrade (%)</label><input id="grade" type="number" value="5.5" min="0" max="15" step=".1"></div>
+</div>
+<div class="grid three" style="margin-top:13px">
+<div><label for="length">Grade length (ft)</label><input id="length" type="number" value="2800" min="1"><span class="hint">Measured from start of sustained upgrade</span></div>
+<div><label for="verticalCurve">Vertical curve / crest (ft)</label><input id="verticalCurve" type="number" value="0" min="0"></div>
+<div><label for="entry">Truck entry speed (mph)</label><input id="entry" type="number" value="55" min="10" max="85"></div>
+</div></section>
+
+<section class="section"><span class="kicker">TRAFFIC / DEMAND</span>
+<div class="grid four">
+<div><label for="dhv">Design hourly volume (veh/h)</label><input id="dhv" type="number" value="850" min="0"></div>
+<div><label for="ddf">Directional distribution</label><input id="ddf" type="number" value=".55" min=".1" max="1" step=".01"></div>
+<div><label for="phf">Peak-hour factor</label><input id="phf" type="number" value=".92" min=".5" max="1" step=".01"></div>
+<div><label for="adt">ADT (veh/day)</label><input id="adt" type="number" value="3200" min="0"></div>
+</div>
+<div class="grid four" style="margin-top:13px">
+<div><label for="truck">Trucks (%)</label><input id="truck" type="number" value="12" min="0" max="100" step=".5"></div>
+<div><label for="rv">RVs (%)</label><input id="rv" type="number" value="3" min="0" max="100" step=".5"></div>
+<div><label for="truckFlow">Truck flow (veh/h, optional)</label><input id="truckFlow" type="number" value="56" min="0"><span class="hint">Zero derives flow from directional demand</span></div>
+<div><label for="growth">Annual demand growth (%)</label><input id="growth" type="number" value="1.5" min="-10" max="20" step=".1"></div>
+</div></section>
+
+<section class="section"><span class="kicker">TRUCK SPEED PROFILE / CALIBRATION</span>
+<div class="grid four">
+<div><label for="threshold">Warrant 3 speed reduction (mph)</label><input id="threshold" type="number" value="10" min="10" max="10" readonly><span class="hint">AASHTO screen: ≥ 10 mph</span></div>
+<div><label for="speedLossCoeff">Speed loss coefficient</label><input id="speedLossCoeff" type="number" value="4.7" min=".1" step=".1"><span class="hint">mph / (% grade · mile)</span></div>
+<div><label for="speedCalibration">Speed calibration factor</label><input id="speedCalibration" type="number" value="1" min=".5" max="1.5" step=".01"></div>
+<div><label for="truckPce">Truck PCE</label><input id="truckPce" type="number" value="2.5" min="1" step=".1"></div>
+</div>
+<div class="grid four" style="margin-top:13px">
+<div><label for="rvPce">RV PCE</label><input id="rvPce" type="number" value="3" min="1" step=".1"></div>
+<div><label for="speedFloor">Minimum truck speed (mph)</label><input id="speedFloor" type="number" value="20" min="5" max="50"></div>
+<div><label for="profileInterval">Profile interval (ft)</label><input id="profileInterval" type="number" value="500" min="100" max="2000"></div>
+<div><label for="heavyVehicleFactor">Heavy-vehicle calibration</label><input id="heavyVehicleFactor" type="number" value="1" min=".5" max="2" step=".01"></div>
+</div>
+<p class="formula">Truck speed at distance x = entry speed − (grade × x in miles × loss coefficient × speed calibration), bounded by the minimum speed. The profile is recalculated at each distance.</p></section>
+
+<section class="section"><span class="kicker">OPERATIONAL / LOS INPUTS</span>
+<div class="grid four">
+<div><label for="capacityBase">Base directional capacity (veh/h)</label><input id="capacityBase" type="number" value="1700" min="100"></div>
+<div><label for="laneCapacity">Added climbing-lane capacity (veh/h)</label><input id="laneCapacity" type="number" value="700" min="100"></div>
+<div><label for="capacityCalibration">Capacity calibration factor</label><input id="capacityCalibration" type="number" value="1" min=".5" max="1.5" step=".01"></div>
+<div><label for="losCalibration">LOS calibration factor</label><input id="losCalibration" type="number" value="1" min=".5" max="1.5" step=".01"></div>
+</div>
+<div class="grid three" style="margin-top:13px">
+<div><label for="gradeLos">Existing grade LOS</label><select id="gradeLos"><option>A</option><option>B</option><option>C</option><option selected>D</option><option>E</option><option>F</option></select></div>
+<div><label for="approachLos">Approach LOS</label><select id="approachLos"><option>A</option><option>B</option><option selected>C</option><option>D</option><option>E</option><option>F</option></select></div>
+<div><label for="platooning">Platooning / following factor</label><input id="platooning" type="number" value="1" min=".5" max="1.5" step=".01"></div>
+</div>
+<p class="formula">The two-lane comparison reports equivalent demand, v/c, directional speed, LOS, and estimated truck delay with and without a climbing lane; it is a planning screen, not a substitute for a project-level HCM analysis.</p></section>
+
+<section class="section"><span class="kicker">ECONOMIC / SAFETY / ENVIRONMENTAL INPUTS</span>
+<div class="grid four">
+<div><label for="cost">Construction cost ($/mile)</label><input id="cost" type="number" value="2500000" min="0"></div>
+<div><label for="rowCost">Right-of-way cost ($)</label><input id="rowCost" type="number" value="500000" min="0"></div>
+<div><label for="maintenance">Maintenance ($/year)</label><input id="maintenance" type="number" value="15000" min="0"></div>
+<div><label for="period">Analysis period (years)</label><input id="period" type="number" value="20" min="1" max="100"></div>
+</div>
+<div class="grid four" style="margin-top:13px">
+<div><label for="discount">Discount rate (%)</label><input id="discount" type="number" value="4.5" min="0" max="30" step=".1"></div>
+<div><label for="vot">Value of time ($/person-hour)</label><input id="vot" type="number" value="25" min="0"></div>
+<div><label for="operatingSavings">Vehicle operating benefit ($/vehicle-hour)</label><input id="operatingSavings" type="number" value="8" min="0"></div>
+<div><label for="crashCost">Crash cost avoided ($/year)</label><input id="crashCost" type="number" value="25000" min="0"></div>
+</div>
+<div class="grid four" style="margin-top:13px">
+<div><label for="accidents">Crash history</label><select id="accidents"><option value="false">No adverse history</option><option value="true">Adverse history</option></select></div>
+<div><label for="crashRate">Observed crash rate (crashes/MVMT)</label><input id="crashRate" type="number" value="1.2" min="0" step=".1"></div>
+<div class="check"><input id="safetyOverride" type="checkbox" checked><label for="safetyOverride">Allow safety override when adverse history is present</label></div>
+<div><label for="environmentalConstraint">Environmental constraint</label><select id="environmentalConstraint"><option>none identified</option><option>wetland / stream</option><option>habitat / protected area</option><option>historic / cultural resource</option></select></div>
+</div>
+<div class="grid three" style="margin-top:13px">
+<div><label for="constructionEmissions">Construction emissions (metric tons CO₂e)</label><input id="constructionEmissions" type="number" value="180" min="0"></div>
+<div><label for="annualEmissions">Annual operating emissions change (t CO₂e)</label><input id="annualEmissions" type="number" value="-12" step=".1"></div>
+<div><label for="mitigationCost">Environmental mitigation ($)</label><input id="mitigationCost" type="number" value="75000" min="0"></div>
+</div></section>
+
+<section class="section"><span class="kicker">GEOMETRIC / DESIGN PARAMETERS</span>
+<div class="grid four">
+<div><label for="laneWidth">Lane width (ft)</label><input id="laneWidth" type="number" value="12" min="9" max="14" step=".5"></div>
+<div><label for="shoulder">Outside shoulder (ft)</label><input id="shoulder" type="number" value="4" min="0" step=".5"></div>
+<div><label for="clearZone">Clear zone (ft)</label><input id="clearZone" type="number" value="30" min="0" step=".5"></div>
+<div><label for="maxGrade">Maximum design grade (%)</label><input id="maxGrade" type="number" value="6" min="0" max="15" step=".1"></div>
+</div>
+<div class="grid four" style="margin-top:13px">
+<div><label for="taper">Entry / exit taper (ft)</label><input id="taper" type="number" value="300" min="0"></div>
+<div><label for="merge">Merge / termination length (ft)</label><input id="merge" type="number" value="500" min="0"></div>
+<div><label for="passingSightDistance">Passing sight distance (ft)</label><input id="passingSightDistance" type="number" value="1800" min="0"></div>
+<div><label for="pavementWidth">Available pavement width (ft)</label><input id="pavementWidth" type="number" value="28" min="0" step=".5"></div>
+</div></section>
+
+<section class="section"><span class="kicker">STANDARDS / CALIBRATION CONTEXT</span>
+<div class="grid four">
+<div><label for="aashtoEdition">AASHTO reference</label><select id="aashtoEdition"><option>AASHTO Green Book 7th Ed.</option><option>AASHTO Green Book 6th Ed.</option></select></div>
+<div><label for="hcmEdition">Operations reference</label><select id="hcmEdition"><option>HCM 7th Edition</option><option>HCM 6th Edition</option></select></div>
+<div><label for="agencyThreshold">Agency speed threshold (mph)</label><input id="agencyThreshold" type="number" value="10" min="0" max="30"></div>
+<div><label for="stateWarrant">State / agency warrant</label><select id="stateWarrant"><option>Use AASHTO screen</option><option>More stringent local policy</option><option>Local policy review required</option></select></div>
+</div>
+<div class="actions"><button class="btn" type="submit">Run justification</button><button class="btn alt" type="reset">Reset</button></div><p id="status" class="status">Ready to analyse.</p>
+</section>
+</form>
+
+<section id="output" class="section"><span class="kicker">ANALYSIS OUTPUT</span>
+<div class="summary"><div class="metric"><span>FINAL RECOMMENDATION</span><strong id="recommendation">—</strong></div><div class="metric"><span>AASHTO WARRANTS</span><strong id="warrant">—</strong></div><div class="metric"><span>SPEED REDUCTION</span><strong id="speedReduction">—</strong></div><div class="metric"><span>CRITICAL LENGTH</span><strong id="criticalLength">—</strong></div><div class="metric"><span>NPV / BCR</span><strong id="bc">—</strong></div></div>
+<div class="grid two">
+<div class="panel"><h3>Three AASHTO warrant tests</h3><div class="table-wrap"><table><thead><tr><th>Test</th><th>Actual</th><th>Threshold</th><th>Result</th></tr></thead><tbody id="warrants"></tbody></table></div><p id="warrantNote" class="note"></p></div>
+<div class="panel"><h3>Truck speed profile by distance</h3><div class="table-wrap"><table><thead><tr><th>Distance (ft)</th><th>Truck speed</th><th>Reduction</th></tr></thead><tbody id="profile"></tbody></table></div></div>
+</div>
+<div class="grid two" style="margin-top:14px">
+<div class="panel"><h3>Critical length and point of need</h3><div class="table-wrap"><table><tbody id="lengthOut"></tbody></table></div></div>
+<div class="panel"><h3>Operation with / without climbing lane</h3><div class="table-wrap"><table><thead><tr><th>Measure</th><th>Without lane</th><th>With lane</th></tr></thead><tbody id="operations"></tbody></table></div></div>
+</div>
+<div class="grid two" style="margin-top:14px">
+<div class="panel"><h3>Economic justification</h3><div class="table-wrap"><table><tbody id="economics"></tbody></table></div></div>
+<div class="panel"><h3>Safety override and environmental impacts</h3><div class="table-wrap"><table><tbody id="safetyEnvironment"></tbody></table></div></div>
+</div>
+<div class="grid two" style="margin-top:14px">
+<div class="panel"><h3>Geometric design parameters</h3><div class="table-wrap"><table><tbody id="designOut"></tbody></table></div></div>
+<div class="panel"><h3>Standards comparison</h3><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Screen / input</th><th>Finding</th></tr></thead><tbody id="standards"></tbody></table></div></div>
+</div>
+<div class="panel" style="margin-top:14px"><h3>Recommendations</h3><ul id="recommendations" class="list"></ul><p id="notes" class="note"></p></div>
+<div class="panel" style="margin-top:14px"><h3>API request JSON <span class="badge">POST /api/v1/climbing-lane/justify</span> <button class="copy" type="button" data-copy="requestJson">Copy</button></h3><pre id="requestJson" class="api"></pre></div>
+<div class="panel" style="margin-top:14px"><h3>API response JSON <button class="copy" type="button" data-copy="responseJson">Copy</button></h3><pre id="responseJson" class="api"></pre></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>{const v=Number($(id).value);return Number.isFinite(v)?v:0};
+const text=id=>$(id).value;
+const fmt=(v,d=1)=>Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+const money=(v,d=0)=>'$'+fmt(v,d);
+const ranks={A:0,B:1,C:2,D:3,E:4,F:5};
+const los=v=>v<.60?'A':v<.70?'B':v<.80?'C':v<.90?'D':v<1?'E':'F';
+const tone=v=>['A','B'].includes(v)?'good':['C','D'].includes(v)?'warn':'bad';
+const row=(a,b,c='')=>`<tr><td>${a}</td><td class="${c}">${b}</td></tr>`;
+const triple=(a,b,c,d='')=>`<tr><td>${a}</td><td>${b}</td><td class="${d}">${c}</td></tr>`;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function analyze(){
+  const dhv=num('dhv'), phf=Math.max(.5,num('phf')), ddf=Math.min(1,Math.max(.1,num('ddf')));
+  const upgradeFlow=dhv*ddf/phf, truckFlow=num('truckFlow')>0?num('truckFlow'):upgradeFlow*num('truck')/100;
+  const rvFlow=upgradeFlow*num('rv')/100, truckPce=Math.max(1,num('truckPce')), rvPce=Math.max(1,num('rvPce'));
+  const equivalentDemand=Math.max(0,(upgradeFlow-truckFlow-rvFlow)+truckFlow*truckPce+rvFlow*rvPce);
+  const grade=num('grade'), gradeLength=num('length'), entry=num('entry'), coeff=num('speedLossCoeff'), speedCal=num('speedCalibration'), floor=num('speedFloor');
+  const lossPerMile=grade*coeff*speedCal, speedAt=dist=>Math.max(floor,entry-lossPerMile*dist/5280);
+  const reduction=Math.max(0,entry-speedAt(gradeLength));
+  const criticalLength=lossPerMile>0?num('threshold')/lossPerMile*5280:Infinity;
+  const pointNeed=Math.min(gradeLength,Math.max(0,criticalLength));
+  const laneLength=Math.max(0,gradeLength-pointNeed)+num('taper')+num('merge');
+  const speedWarrant=reduction>=10, flowWarrant=upgradeFlow>200, truckWarrant=truckFlow>20;
+  const losWarrant=text('gradeLos')==='E'||text('gradeLos')==='F';
+  const dropWarrant=ranks[text('gradeLos')]-ranks[text('approachLos')]>=2;
+  const thirdWarrant=speedWarrant||losWarrant||dropWarrant, warrants=flowWarrant&&truckWarrant&&thirdWarrant;
+  const baseCapacity=Math.max(1,num('capacityBase')*num('capacityCalibration')/Math.max(.5,num('heavyVehicleFactor')));
+  const addedCapacity=Math.max(0,num('laneCapacity')*num('capacityCalibration'));
+  const vcWithout=equivalentDemand/baseCapacity,vcWith=equivalentDemand/(baseCapacity+addedCapacity);
+  const losWithout=los(vcWithout*num('losCalibration')),losWith=los(vcWith*num('losCalibration'));
+  const speedWithout=Math.max(floor,entry-lossPerMile*gradeLength/5280),speedWith=Math.min(entry, speedWithout+Math.max(2,reduction*.35));
+  const delayHours=Math.max(0,num('adt')*365*gradeLength/5280*(1/speedWithout-1/speedWith));
+  const annualTimeBenefit=delayHours*num('vot'),annualOperatingBenefit=num('adt')*365*gradeLength/5280*(speedWith-speedWithout)/Math.max(1,speedWithout)*num('operatingSavings');
+  const safetyOverride=text('accidents')==='true'&&$('safetyOverride').checked;
+  const annualSafetyBenefit=safetyOverride?num('crashCost'):0, annualBenefit=Math.max(0,annualTimeBenefit+annualOperatingBenefit+annualSafetyBenefit);
+  const years=Math.max(1,Math.round(num('period'))), rate=Math.max(0,num('discount'))/100, growth=num('growth')/100;
+  const laneMiles=laneLength/5280, construction=num('cost')*laneMiles+num('rowCost')+num('mitigationCost');
+  let pvBenefits=0,pvMaintenance=0;
+  for(let y=1;y<=years;y++){const df=Math.pow(1+rate,y);pvBenefits+=annualBenefit*Math.pow(1+growth,y-1)/df;pvMaintenance+=num('maintenance')/df}
+  const pvCosts=construction+pvMaintenance, npv=pvBenefits-pvCosts, bcr=pvCosts?pvBenefits/pvCosts:0, payback=annualBenefit>0?construction/annualBenefit:Infinity;
+  const safetyText=safetyOverride?'OVERRIDE APPLIES':'No override';
+  const gradeCheck=grade<=num('maxGrade'), widthCheck=num('pavementWidth')>=num('laneWidth')*2+num('shoulder');
+  const finalProceed=warrants||safetyOverride, finalText=finalProceed?'PROCEED WITH CLIMBING LANE':'DO NOT PROCEED';
+  const rec=[];
+  if(!flowWarrant)rec.push('Collect peak-direction counts and revisit when upgrade flow exceeds 200 veh/h.');
+  if(!truckWarrant)rec.push('Confirm truck counts; warrant 2 requires more than 20 trucks per hour.');
+  if(!thirdWarrant)rec.push('Warrant 3 is not met: verify grade speed profile, LOS, and LOS change with field data.');
+  if(safetyOverride)rec.push('Use the safety history as an override, then complete a crash diagnosis and roadside safety review.');
+  if(bcr<1)rec.push('The economic screen is below a 1.00 benefit-cost ratio; compare lower-cost operational treatments.');
+  if(!gradeCheck)rec.push('Sustained grade exceeds the entered design maximum; check vertical alignment alternatives.');
+  if(!widthCheck)rec.push('Available pavement is insufficient for the entered lane and shoulder widths without widening.');
+  if(finalProceed&&rec.length===0)rec.push('Advance preliminary design, verify sight distance and drainage, and confirm local agency policy.');
+  const distances=[];for(let d=0;d<gradeLength;d+=Math.max(100,num('profileInterval')))distances.push(d);if(!distances.includes(gradeLength))distances.push(gradeLength);
+  const profile=distances.map(distance=>({distance_ft:distance,speed_mph:+speedAt(distance).toFixed(1),reduction_mph:+(entry-speedAt(distance)).toFixed(1)}));
+  const request={api:'climbing-lane-justification',version:'1.0',project:{project_id:text('projectId'),route:text('route'),direction:text('direction'),analysis_year:num('analysisYear'),facility_type:text('facility'),terrain:text('terrain')},grade:{percent:grade,length_ft:gradeLength,design_speed_mph:num('designSpeed'),entry_speed_mph:entry,vertical_curve_ft:num('verticalCurve')},traffic:{dhv_vph:dhv,directional_distribution:ddf,peak_hour_factor:phf,adt_vpd:num('adt'),truck_percent:num('truck'),rv_percent:num('rv'),truck_flow_vph:truckFlow,growth_percent:num('growth')},calibration:{speed_loss_coefficient:coeff,speed_factor:speedCal,truck_pce:truckPce,rv_pce:rvPce,heavy_vehicle_factor:num('heavyVehicleFactor'),capacity_factor:num('capacityCalibration'),los_factor:num('losCalibration')},operational_inputs:{base_capacity_vph:num('capacityBase'),added_lane_capacity_vph:num('laneCapacity'),existing_grade_los:text('gradeLos'),approach_los:text('approachLos')},economic_inputs:{construction_cost_per_mile:num('cost'),right_of_way_cost:num('rowCost'),maintenance_per_year:num('maintenance'),analysis_period_years:years,discount_rate_percent:num('discount'),value_of_time:num('vot')},geometric_inputs:{lane_width_ft:num('laneWidth'),shoulder_width_ft:num('shoulder'),clear_zone_ft:num('clearZone'),taper_ft:num('taper'),merge_ft:num('merge')},safety_inputs:{adverse_history:safetyOverride,crash_rate:num('crashRate')},environmental_inputs:{constraint:text('environmentalConstraint'),construction_emissions_tco2e:num('constructionEmissions'),annual_emissions_change_tco2e:num('annualEmissions')}};
+  const response={status:'success',analysis_id:`CL-${Date.now()}`,warrant_analysis:{upgrade_flow_vph:+upgradeFlow.toFixed(1),truck_flow_vph:+truckFlow.toFixed(1),warrant_1_upgrade_flow:flowWarrant,warrant_2_truck_flow:truckWarrant,warrant_3_speed_reduction:speedWarrant,warrant_3_los_e_or_f:losWarrant,warrant_3_los_drop_2_or_more:dropWarrant,warrant_3_any:thirdWarrant,all_warrants:warrants},truck_speed_profile:profile,critical_length:{critical_length_ft:Number.isFinite(criticalLength)?+criticalLength.toFixed(1):null,point_of_need_ft:+pointNeed.toFixed(1),recommended_lane_length_ft:+laneLength.toFixed(1)},operational_analysis:{without_lane:{equivalent_demand_vph:+equivalentDemand.toFixed(1),capacity_vph:+baseCapacity.toFixed(1),vc_ratio:+vcWithout.toFixed(3),los:losWithout,speed_mph:+speedWithout.toFixed(1)},with_lane:{equivalent_demand_vph:+equivalentDemand.toFixed(1),capacity_vph:+(baseCapacity+addedCapacity).toFixed(1),vc_ratio:+vcWith.toFixed(3),los:losWith,speed_mph:+speedWith.toFixed(1)}},economic_justification:{construction_cost:construction,present_value_benefits:+pvBenefits.toFixed(0),present_value_costs:+pvCosts.toFixed(0),npv:+npv.toFixed(0),benefit_cost_ratio:+bcr.toFixed(2),payback_years:Number.isFinite(payback)?+payback.toFixed(1):null},safety_considerations:{adverse_history:safetyOverride,override_applied:safetyOverride,crash_rate_per_mvmt:num('crashRate')},environmental_impacts:{constraint:text('environmentalConstraint'),construction_emissions_tco2e:num('constructionEmissions'),annual_emissions_change_tco2e:num('annualEmissions'),mitigation_cost:num('mitigationCost')},design_parameters:{lane_width_ft:num('laneWidth'),shoulder_width_ft:num('shoulder'),clear_zone_ft:num('clearZone'),grade_within_maximum:gradeCheck,pavement_width_adequate:widthCheck},recommendations:rec,final_recommendation:finalText};
+  return {request,response,profile,upgradeFlow,truckFlow,reduction,criticalLength,pointNeed,laneLength,warrants,flowWarrant,truckWarrant,speedWarrant,losWarrant,dropWarrant,thirdWarrant,equivalentDemand,baseCapacity,addedCapacity,vcWithout,vcWith,losWithout,losWith,speedWithout,speedWith,pvBenefits,pvCosts,npv,bcr,payback,safetyOverride,safetyText,gradeCheck,widthCheck,finalProceed,finalText,rec};
+}
+
+$('form').addEventListener('submit',e=>{e.preventDefault();const a=analyze();
+  $('recommendation').textContent=a.finalText;$('recommendation').className=a.finalProceed?'good':'bad';$('warrant').textContent=a.warrants?'JUSTIFIED':'NOT JUSTIFIED';$('warrant').className=a.warrants?'good':'bad';$('speedReduction').textContent=fmt(a.reduction,1)+' mph';$('criticalLength').textContent=Number.isFinite(a.criticalLength)?fmt(a.criticalLength,0)+' ft':'N/A';$('bc').textContent=money(a.npv,0)+' / '+fmt(a.bcr,2);$('bc').className=a.bcr>=1?'good':'warn';
+  const wr=[['Upgrade flow',fmt(a.upgradeFlow,0)+' vph','> 200 vph',a.flowWarrant],['Truck flow',fmt(a.truckFlow,0)+' vph','> 20 vph',a.truckWarrant],['Speed reduction',fmt(a.reduction,1)+' mph','≥ 10 mph',a.speedWarrant],['Grade LOS',text('gradeLos'),'E or F',a.losWarrant],['LOS change',text('approachLos')+' → '+text('gradeLos'),'drop ≥ 2 levels',a.dropWarrant]];
+  $('warrants').innerHTML=wr.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td class="${x[3]?'good':'bad'}">${x[3]?'MET':'NOT MET'}</td></tr>`).join('');$('warrantNote').textContent=`Warrant 3 = speed reduction ≥ 10 mph OR LOS E/F OR LOS drop ≥ 2. All three warrant tests require tests 1 and 2 plus warrant 3.`;
+  $('profile').innerHTML=a.profile.map(x=>`<tr><td>${fmt(x.distance_ft,0)}</td><td>${fmt(x.speed_mph,1)} mph</td><td>${fmt(x.reduction_mph,1)} mph</td></tr>`).join('');
+  $('lengthOut').innerHTML=[['Critical length of grade',Number.isFinite(a.criticalLength)?fmt(a.criticalLength,0)+' ft':'Not reached'],['Point of need',fmt(a.pointNeed,0)+' ft from grade start'],['Recommended lane length',fmt(a.laneLength,0)+' ft'],['Actual grade length',fmt(num('length'),0)+' ft']].map(x=>row(x[0],x[1])).join('');
+  $('operations').innerHTML=[['Equivalent demand',fmt(a.equivalentDemand,0)+' vph',fmt(a.equivalentDemand,0)+' vph'],['Capacity',fmt(a.baseCapacity,0)+' vph',fmt(a.baseCapacity+a.addedCapacity,0)+' vph'],['v/c ratio',fmt(a.vcWithout,2),fmt(a.vcWith,2)],['LOS',a.losWithout,a.losWith],['Directional speed',fmt(a.speedWithout,1)+' mph',fmt(a.speedWith,1)+' mph']].map(x=>triple(x[0],x[1],x[2],x[0]==='LOS'?tone(x[2]):'')).join('');
+  $('economics').innerHTML=[['Construction + ROW + mitigation',money(a.request.economic_inputs.construction_cost_per_mile*(a.laneLength/5280)+a.request.economic_inputs.right_of_way_cost+num('mitigationCost'),0)],['PV benefits',money(a.pvBenefits,0)],['PV costs',money(a.pvCosts,0)],['NPV',money(a.npv,0),a.npv>=0?'good':'bad'],['Benefit-cost ratio',fmt(a.bcr,2),a.bcr>=1?'good':'warn'],['Simple payback',Number.isFinite(a.payback)?fmt(a.payback,1)+' years':'Not reached']].map(x=>row(x[0],x[1],x[2]||'')).join('');
+  $('safetyEnvironment').innerHTML=[['Safety override',a.safetyText,a.safetyOverride?'good':''],['Crash rate',fmt(num('crashRate'),1)+' crashes/MVMT'],['Environmental constraint',esc(text('environmentalConstraint'))],['Construction emissions',fmt(num('constructionEmissions'),0)+' t CO₂e'],['Annual emissions change',fmt(num('annualEmissions'),1)+' t CO₂e/year']].map(x=>row(x[0],x[1],x[2]||'')).join('');
+  $('designOut').innerHTML=[['Lane / shoulder',fmt(num('laneWidth'),1)+' ft / '+fmt(num('shoulder'),1)+' ft'],['Clear zone',fmt(num('clearZone'),1)+' ft'],['Taper + merge',fmt(num('taper'),0)+' ft + '+fmt(num('merge'),0)+' ft'],['Grade against maximum',a.gradeCheck?'PASS':'CHECK',a.gradeCheck?'good':'bad'],['Pavement width',a.widthCheck?'ADEQUATE':'CHECK',a.widthCheck?'good':'bad']].map(x=>row(x[0],x[1],x[2]||'')).join('');
+  $('standards').innerHTML=[['AASHTO Green Book', 'Upgrade >200; trucks >20; Warrant 3 ≥10 mph / LOS E-F / drop ≥2', a.warrants?'All screen tests pass':'One or more tests fail'],[text('hcmEdition'),'Capacity, equivalent demand, v/c and LOS comparison','Planning-level screen'],['Agency / state policy',text('stateWarrant')+'; speed threshold '+fmt(num('agencyThreshold'),0)+' mph',num('agencyThreshold')<=10?'Consistent with AASHTO screen':'Confirm local threshold']].map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td></tr>`).join('');
+  $('recommendations').innerHTML=a.rec.map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Advance preliminary design and confirm local agency policy before final design.</li>';$('notes').textContent=a.finalProceed?'Final recommendation is driven by the AASHTO warrants and/or a documented safety override. Confirm field speed data, crash diagnosis, drainage, and right-of-way before design approval.':'The screen does not support a climbing lane on the entered data; preserve the route and monitor demand, truck speeds, LOS, and crashes.';
+  $('requestJson').textContent=JSON.stringify(a.request,null,2);$('responseJson').textContent=JSON.stringify(a.response,null,2);$('output').style.display='block';$('status').textContent='Analysis complete.';$('status').className='status ok';$('output').scrollIntoView({behavior:'smooth',block:'start'});
+});
+$('form').addEventListener('reset',()=>setTimeout(()=>{$('output').style.display='none';$('status').textContent='Ready to analyse.';$('status').className='status'},0));
+document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',()=>{const target=$(button.dataset.copy);navigator.clipboard?.writeText(target.textContent);button.textContent='Copied';setTimeout(()=>button.textContent='Copy',1200)}));
+</script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>Lane and queue analysis — Mahalco</title>
+    <meta name="description" content="Mahalco lane and queue analysis tool for storage length, capacity, and LOS estimates." />
+    <meta name="robots" content="index, follow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #08070C;
+        --card: #0E0C14;
+        --card-2: #141220;
+        --field: #0A0910;
+        --line: rgba(255,255,255,.09);
+        --line-2: rgba(255,255,255,.05);
+        --purple: #8B5CF6;
+        --cyan: #22D3EE;
+        --green: #4ADE80;
+        --ink: #EDEBF2;
+        --ink-2: #9A96AB;
+        --ink-3: #6B6780;
+        --A: #34D399;
+        --B: #A3E635;
+        --C: #FACC15;
+        --D: #FB923C;
+        --E: #F35B5B;
+        --F: #E11D48;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font: 400 15px/1.55 Inter, system-ui, sans-serif;
+        font-variant-numeric: tabular-nums;
+        -webkit-font-smoothing: antialiased;
+        padding: clamp(14px, 3vw, 30px);
+      }
+      .card {
+        max-width: 1180px;
+        margin: 0 auto;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: clamp(18px, 3vw, 32px);
+      }
+      .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 24px;
+      }
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .nav a {
+        color: var(--ink-2);
+        text-decoration: none;
+        font-size: 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 12px;
+      }
+      .nav a:hover { color: var(--ink); border-color: var(--line-2); }
+      h1 { font-size: clamp(24px, 3vw, 34px); letter-spacing: -0.04em; margin-bottom: 8px; }
+      .lede { color: var(--ink-2); max-width: 72ch; }
+      .h {
+        display: block;
+        margin: 26px 0 14px;
+        padding-bottom: 9px;
+        border-bottom: 1px solid var(--line-2);
+        color: var(--ink-3);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      .r4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .r3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .r2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      @media (max-width: 760px) {
+        .r4, .r3, .r2 { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 520px) {
+        .r4, .r3, .r2 { grid-template-columns: 1fr; }
+      }
+      label { display: block; margin-bottom: 6px; color: var(--ink-2); font-size: 12.5px; }
+      input, select {
+        width: 100%;
+        background: var(--field);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        padding: 10px 12px;
+        font: inherit;
+        font-size: 14px;
+      }
+      input:focus, select:focus { outline: 2px solid var(--purple); outline-offset: -1px; }
+      .seg {
+        display: flex;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .seg button {
+        flex: 1;
+        background: transparent;
+        border: 0;
+        border-right: 1px solid var(--line);
+        color: var(--ink-2);
+        padding: 9px 6px;
+        cursor: pointer;
+        font: inherit;
+      }
+      .seg button:last-child { border-right: 0; }
+      .seg button[aria-pressed="true"] { background: var(--purple); color: white; font-weight: 600; }
+      .button-row { display: flex; gap: 12px; margin-top: 18px; }
+      .go {
+        background: var(--purple);
+        border: 0;
+        color: white;
+        border-radius: 10px;
+        font: inherit;
+        font-weight: 600;
+        padding: 13px 22px;
+        cursor: pointer;
+      }
+      .go.secondary {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+      .status {
+        min-height: 18px;
+        margin-top: 12px;
+        color: var(--ink-3);
+        font-size: 13px;
+      }
+      .status.error { color: #FF6B6B; }
+      .status.ok { color: var(--green); }
+      .res {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+      }
+      .res-box {
+        flex: 1 1 150px;
+        background: var(--card-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .res-box span {
+        display: block;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: .12em;
+        color: var(--ink-3);
+        text-transform: uppercase;
+      }
+      .res-box strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 28px;
+        letter-spacing: -0.04em;
+      }
+      table.result {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      .result th, .result td {
+        text-align: left;
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--line-2);
+      }
+      .result th {
+        color: var(--ink-3);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .result td { color: var(--ink-2); }
+      .result td:first-child { color: var(--ink); }
+      .los-badge {
+        display: inline-block;
+        min-width: 42px;
+        text-align: center;
+        border-radius: 999px;
+        padding: 5px 8px;
+        font-weight: 700;
+        color: #0d1117;
+      }
+      .a { background: var(--A); }
+      .b { background: var(--B); }
+      .c { background: var(--C); }
+      .d { background: var(--D); }
+      .e { background: var(--E); color: white; }
+      .f { background: var(--F); color: white; }
+      .note { color: var(--ink-2); margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="topbar">
+        <div class="brand">MAHALCO</div>
+        <div class="nav">
+          <a href="index.html">Home</a>
+          <a href="tool.html">Junction LOS</a>
+          <a href="lane-queue-analysis.html">Lane &amp; Queue</a>
+        </div>
+      </div>
+
+      <h1>Lane and queue analysis</h1>
+      <p class="lede">A quick operational tool to estimate queue lengths, lane group capacity and LOS with AASHTO and HCM-informed logic for signalised intersections and lane-based facilities.</p>
+
+      <span class="h">Inputs</span>
+      <form id="queueForm">
+        <div class="grid r4">
+          <div>
+            <label>Method</label>
+            <div class="seg" id="methodSeg">
+              <button type="button" value="aashto" aria-pressed="true">AASHTO</button>
+              <button type="button" value="hcm" aria-pressed="false">HCM</button>
+            </div>
+            <input type="hidden" id="method" value="aashto" />
+          </div>
+          <div>
+            <label>Facility type</label>
+            <select id="facility_type">
+              <option value="signalized_intersection">Signalised intersection</option>
+              <option value="twolane_highway">Two-lane highway</option>
+            </select>
+          </div>
+          <div>
+            <label>Volume (veh/h)</label>
+            <input id="volume_vph" type="number" value="600" min="0" step="10" />
+          </div>
+          <div>
+            <label>Number of lanes</label>
+            <input id="num_lanes" type="number" value="2" min="1" max="6" step="1" />
+          </div>
+        </div>
+
+        <div class="grid r4">
+          <div>
+            <label>Cycle length (s)</label>
+            <input id="cycle_length" type="number" value="90" min="30" max="240" step="5" />
+          </div>
+          <div>
+            <label>Green time (s)</label>
+            <input id="green_time" type="number" value="45" min="0" max="180" step="1" />
+          </div>
+          <div>
+            <label>Truck %</label>
+            <input id="truck_percent" type="number" value="5" min="0" max="50" step="0.5" />
+          </div>
+          <div>
+            <label>Surge factor</label>
+            <input id="surge_factor" type="number" value="1.5" min="1" max="3" step="0.1" />
+          </div>
+        </div>
+
+        <div class="grid r3">
+          <div>
+            <label>Lane width (ft)</label>
+            <input id="lane_width" type="number" value="12" min="9" max="14" step="0.5" />
+          </div>
+          <div>
+            <label>Shoulder width (ft)</label>
+            <input id="shoulder_width" type="number" value="6" min="0" max="12" step="0.5" />
+          </div>
+          <div>
+            <label>Grade (%)</label>
+            <input id="grade_percent" type="number" value="2" min="-8" max="8" step="0.5" />
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button class="go" type="submit">Analyse queue</button>
+          <button class="go secondary" type="reset">Reset</button>
+        </div>
+        <p id="status" class="status">Ready to analyse.</p>
+      </form>
+
+      <span class="h">Output</span>
+      <div class="res">
+        <div class="res-box"><span>Queue length</span><strong id="queue_vehicles">0.0</strong><div class="note" id="queue_note">veh</div></div>
+        <div class="res-box"><span>Queue feet</span><strong id="queue_feet">0</strong><div class="note">approx ft</div></div>
+        <div class="res-box"><span>v/c ratio</span><strong id="vc_ratio">0.00</strong><div class="note">demand / capacity</div></div>
+        <div class="res-box"><span>LOS</span><strong id="los_letter">A</strong><div class="note" id="los_note">Very good</div></div>
+      </div>
+
+      <table class="result">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Value</th>
+            <th>Interpretation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Capacity</td><td id="capacity_value">0 veh/h</td><td id="capacity_note">Estimate</td></tr>
+          <tr><td>95th percentile queue</td><td id="queue_95_value">0 veh</td><td id="queue_95_note">Storage guidance</td></tr>
+          <tr><td>Queue storage</td><td id="storage_value">0 ft</td><td id="storage_note">Design length</td></tr>
+          <tr><td>Method</td><td id="method_value">AASHTO</td><td id="method_note">Applied method</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      const methodSeg = document.getElementById('methodSeg');
+      const methodInput = document.getElementById('method');
+      const statusEl = document.getElementById('status');
+
+      methodSeg.addEventListener('click', (event) => {
+        const button = event.target.closest('button');
+        if (!button) return;
+        const value = button.value;
+        methodInput.value = value;
+        Array.from(methodSeg.querySelectorAll('button')).forEach((btn) => {
+          const active = btn.value === value;
+          btn.setAttribute('aria-pressed', String(active));
+        });
+      });
+
+      function losFromVC(vc) {
+        if (vc < 0.6) return { letter: 'A', note: 'Very good' };
+        if (vc < 0.7) return { letter: 'B', note: 'Good' };
+        if (vc < 0.8) return { letter: 'C', note: 'Acceptable' };
+        if (vc < 0.9) return { letter: 'D', note: 'Moderate delay' };
+        if (vc < 1.0) return { letter: 'E', note: 'Near capacity' };
+        return { letter: 'F', note: 'Over capacity' };
+      }
+
+      function formatNumber(num, decimals = 1) {
+        return Number(num).toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: decimals });
+      }
+
+      function setLosBadge(letter) {
+        const target = document.getElementById('los_letter');
+        target.textContent = letter;
+        target.className = 'los-badge ' + letter.toLowerCase();
+      }
+
+      document.getElementById('queueForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const method = document.getElementById('method').value;
+        const facilityType = document.getElementById('facility_type').value;
+        const volume = Number(document.getElementById('volume_vph').value) || 0;
+        const lanes = Number(document.getElementById('num_lanes').value) || 1;
+        const cycle = Number(document.getElementById('cycle_length').value) || 90;
+        const green = Number(document.getElementById('green_time').value) || 0;
+        const truckPct = Number(document.getElementById('truck_percent').value) || 0;
+        const surge = Number(document.getElementById('surge_factor').value) || 1.5;
+        const laneWidth = Number(document.getElementById('lane_width').value) || 12;
+        const shoulderWidth = Number(document.getElementById('shoulder_width').value) || 6;
+        const grade = Number(document.getElementById('grade_percent').value) || 0;
+
+        const gC = Math.min(Math.max(green / cycle, 0), 1);
+        const truckFactor = truckPct / 100;
+        const baseQueueVeh = (method === 'aashto')
+          ? surge * 25 * volume * (1 + truckFactor) * (1 - gC) * (3600 / cycle) / lanes
+          : (volume * (1 - gC) * 1.2) / Math.max(1, lanes);
+
+        const queueFeet = Math.max(0, baseQueueVeh * 25);
+        const queue95 = Math.max(0, baseQueueVeh * 1.8);
+        const storageFt = queueFeet * 1.5;
+        const cap = Math.max(0, 1900 * lanes * Math.max(0.2, gC) * (1 - Math.min(0.25, truckFactor)));
+        const vc = volume / cap;
+        const los = losFromVC(vc);
+
+        const displayQueueVeh = Math.max(0, baseQueueVeh);
+        document.getElementById('queue_vehicles').textContent = formatNumber(displayQueueVeh, 1);
+        document.getElementById('queue_note').textContent = 'veh';
+        document.getElementById('queue_feet').textContent = formatNumber(queueFeet, 0);
+        document.getElementById('vc_ratio').textContent = formatNumber(vc, 2);
+        document.getElementById('los_letter').textContent = los.letter;
+        document.getElementById('los_note').textContent = los.note;
+        setLosBadge(los.letter);
+
+        document.getElementById('capacity_value').textContent = formatNumber(cap, 0) + ' veh/h';
+        document.getElementById('capacity_note').textContent = facilityType === 'twolane_highway' ? 'two-lane capacity surrogate' : 'lane-group capacity estimate';
+        document.getElementById('queue_95_value').textContent = formatNumber(queue95, 1) + ' veh';
+        document.getElementById('queue_95_note').textContent = '95th percentile design queue';
+        document.getElementById('storage_value').textContent = formatNumber(storageFt, 0) + ' ft';
+        document.getElementById('storage_note').textContent = method === 'aashto' ? 'AASHTO design storage' : 'HCM storage guidance';
+        document.getElementById('method_value').textContent = method.toUpperCase();
+        document.getElementById('method_note').textContent = facilityType === 'twolane_highway' ? 'Highway segment assessment' : 'Intersection lane-group method';
+
+        statusEl.textContent = 'Analysis complete.';
+        statusEl.className = 'status ok';
+      });
+
+      document.getElementById('queueForm').addEventListener('reset', () => {
+        setTimeout(() => {
+          methodInput.value = 'aashto';
+          Array.from(methodSeg.querySelectorAll('button')).forEach((btn) => {
+            btn.setAttribute('aria-pressed', btn.value === 'aashto' ? 'true' : 'false');
+          });
+          statusEl.textContent = 'Ready to analyse.';
+          statusEl.className = 'status';
+          document.getElementById('los_letter').textContent = 'A';
+          document.getElementById('los_note').textContent = 'Very good';
+          setLosBadge('A');
+          document.getElementById('queue_vehicles').textContent = '0.0';
+          document.getElementById('queue_feet').textContent = '0';
+          document.getElementById('vc_ratio').textContent = '0.00';
+        }, 0);
+      });
+
+      setLosBadge('A');
+      document.getElementById('queueForm').dispatchEvent(new Event('submit'));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MAHALCO — Standard Urban Cross Section</title>
+<style>
+  :root{
+    --bg:#ecebe7;--panel:#ffffff;--ink:#1c1c1b;--muted:#6f6e68;--line:#c9c8c1;
+    --road:#e8e7e2;--sidewalk:#f5f4ef;--bike:#e9f1ec;--park:#efeee9;--median:#dfe8dc;
+    --blue:#315f8f;--ok:#216845;--warn:#8b691f;--bad:#9a3535;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+  .topbar{
+    position:sticky;top:0;z-index:20;background:#20201f;color:#fff;padding:11px 16px;
+    display:flex;align-items:center;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.15)
+  }
+  .brand{font-weight:800;font-size:14px;letter-spacing:.04em;margin-right:auto}
+  .topbar button{border:1px solid #aaa;border-radius:7px;padding:8px 11px;background:#fff;color:#111;font-weight:700;cursor:pointer}
+  .wrap{max-width:1500px;margin:0 auto;padding:24px}
+  .card{background:var(--panel);border:1px solid #d0cfc8;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+  .controls{padding:16px}
+  .controls-grid{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px}
+  .field{background:#fafaf7;border:1px solid #dbdad3;border-radius:8px;padding:9px}
+  .field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:var(--muted);margin-bottom:5px}
+  .field input,.field select{width:100%;border:1px solid #d0cfc8;border-radius:6px;padding:7px;background:#fff;font:inherit}
+  .main{margin-top:16px}
+  .sheet{padding:18px;overflow:auto}
+  #drawing{min-width:1180px}
+  svg{display:block;width:100%;height:auto}
+  .under{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px}
+  .panel{padding:16px}
+  .panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 12px}
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .metric{border:1px solid #e0dfd7;border-radius:9px;padding:10px}
+  .metric small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+  .metric strong{font-size:18px}
+  .check{border-left:4px solid var(--ok);background:#f4faf6;padding:9px 10px;border-radius:6px;margin-top:8px;font-size:12px}
+  .check.warn{border-color:var(--warn);background:#fff9ec}
+  .check.bad{border-color:var(--bad);background:#fff5f5}
+  .notes{font-size:11px;line-height:1.55;color:#5d5c56}
+  @media(max-width:1050px){.controls-grid{grid-template-columns:repeat(3,1fr)}.under{grid-template-columns:1fr}}
+  @media(max-width:600px){.controls-grid{grid-template-columns:1fr 1fr}.wrap{padding:12px}}
+  @media print{
+    body{background:#fff}.topbar,.controls,.under{display:none}.wrap{padding:0}.card{box-shadow:none;border:0}.sheet{padding:0;overflow:visible}#drawing{min-width:0}
+  }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">MAHALCO · STANDARD URBAN CROSS SECTION</div>
+  <button id="update">Update Drawing</button>
+  <button id="svg">Download SVG</button>
+  <button id="json">Download JSON</button>
+  <button onclick="window.print()">Print / PDF</button>
+</div>
+
+<div class="wrap">
+  <div class="card controls">
+    <div class="controls-grid">
+      <div class="field"><label>Functional class</label><select id="class">
+        <option value="local">Local</option><option value="collector" selected>Collector</option><option value="arterial">Urban Arterial</option>
+      </select></div>
+      <div class="field"><label>Context</label><select id="context">
+        <option>Urban</option><option>Suburban</option><option>Mixed-use / Main Street</option>
+      </select></div>
+      <div class="field"><label>Lanes / direction</label><input id="lanes" value="1" type="number" min="1" max="5"></div>
+      <div class="field"><label>Lane width (m)</label><input id="lane" value="3.30" type="number" step=".05"></div>
+      <div class="field"><label>Parking (m)</label><input id="parking" value="2.40" type="number" step=".05"></div>
+      <div class="field"><label>Bike lane (m)</label><input id="bike" value="1.80" type="number" step=".05"></div>
+      <div class="field"><label>PAR clear (m)</label><input id="par" value="1.80" type="number" step=".05"></div>
+      <div class="field"><label>Furnishing (m)</label><input id="furn" value="0.60" type="number" step=".05"></div>
+      <div class="field"><label>Frontage (m)</label><input id="front" value="0.30" type="number" step=".05"></div>
+      <div class="field"><label>Median (m)</label><input id="median" value="2.40" type="number" step=".05"></div>
+      <div class="field"><label>Curb (m)</label><input id="curb" value="0.15" type="number" step=".01"></div>
+      <div class="field"><label>Crossfall (%)</label><input id="cross" value="2.0" type="number" step=".1" min="0" max="8"></div>
+    </div>
+  </div>
+
+  <div class="card main sheet">
+    <div id="drawing"></div>
+  </div>
+
+  <div class="under">
+    <div class="card panel">
+      <h2>Calculated dimensions</h2>
+      <div id="metrics" class="metrics"></div>
+    </div>
+    <div class="card panel">
+      <h2>Screening checks</h2>
+      <div id="checks"></div>
+    </div>
+  </div>
+
+  <div class="card panel" style="margin-top:16px">
+    <h2>Engineering notes</h2>
+    <div class="notes">
+      <ol>
+        <li>Generated dimensions are project-development parameters, not a universal agency standard.</li>
+        <li>Accessibility screening uses a 1.22 m continuous clear pedestrian-route check. Passing-space arrangements must be confirmed for the governing standard and project conditions.</li>
+        <li>The geometric framework is intended to be checked against the current adopted AASHTO Green Book edition, agency criteria, and project context. AASHTO does not impose one universal urban typical section.</li>
+        <li>Confirm drainage, curb and gutter, pavement structure, utilities, ROW, bike treatment, parking, transit, landscaping and local standards before issuing drawings.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<script>
+const presets = {
+  local:{lanes:1,lane:3.00,parking:0.00,bike:1.50,par:1.80,furn:.45,front:.30,median:0,curb:.15,cross:2.0},
+  collector:{lanes:1,lane:3.30,parking:2.40,bike:1.80,par:1.80,furn:.60,front:.30,median:2.40,curb:.15,cross:2.0},
+  arterial:{lanes:2,lane:3.30,parking:2.40,bike:1.80,par:1.83,furn:.60,front:.30,median:3.00,curb:.15,cross:2.0}
+};
+const $=id=>document.getElementById(id);
+const n=id=>Math.max(0,parseFloat($(id).value)||0);
+function setPreset(){
+  const p=presets[$("class").value];
+  $("lanes").value=p.lanes;$("lane").value=p.lane.toFixed(2);$("parking").value=p.parking.toFixed(2);
+  $("bike").value=p.bike.toFixed(2);$("par").value=p.par.toFixed(2);$("furn").value=p.furn.toFixed(2);
+  $("front").value=p.front.toFixed(2);$("median").value=p.median.toFixed(2);$("curb").value=p.curb.toFixed(2);$("cross").value=p.cross.toFixed(1);
+  draw();
+}
+$("class").addEventListener("change",setPreset);
+$("update").onclick=draw;
+
+function dims(){
+  const lanes=Math.max(1,Math.round(n("lanes"))), lane=n("lane"), park=n("parking"), bike=n("bike"),
+        par=n("par"), furn=n("furn"), front=n("front"), median=n("median"), curb=n("curb");
+  const sidewalk=par+furn+front;
+  // one side of roadway: parking + bike + travel lanes + curb
+  const side=park+bike+lanes*lane+curb;
+  const roadway=2*side+median;
+  return {lanes,lane,park,bike,par,furn,front,median,curb,side,roadway,sidewalk,total:roadway+2*sidewalk};
+}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function dim(x1,x2,y,text){
+  const m=(x1+x2)/2;
+  return `<g>
+    <line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#5a5a55" stroke-width="1"/>
+    <line x1="${x1}" y1="${y-5}" x2="${x1}" y2="${y+5}" stroke="#5a5a55"/>
+    <line x1="${x2}" y1="${y-5}" x2="${x2}" y2="${y+5}" stroke="#5a5a55"/>
+    <polygon points="${x1},${y} ${x1+7},${y-3} ${x1+7},${y+3}" fill="#5a5a55"/>
+    <polygon points="${x2},${y} ${x2-7},${y-3} ${x2-7},${y+3}" fill="#5a5a55"/>
+    <rect x="${m-31}" y="${y-9}" width="62" height="17" fill="#fff"/>
+    <text x="${m}" y="${y+4}" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">${esc(text)}</text>
+  </g>`;
+}
+function rectZone(x,y,w,h,fill,label,sub){
+  const cx=x+w/2;
+  let t="";
+  if(w>42){
+    t+=`<text x="${cx}" y="${y+h/2-2}" text-anchor="middle" font-family="Arial" font-size="${w>75?10:8}" font-weight="700" fill="#444">${esc(label)}</text>`;
+    if(sub)t+=`<text x="${cx}" y="${y+h/2+12}" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">${esc(sub)}</text>`;
+  }
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" stroke="#64645f" stroke-width="1"/>${t}`;
+}
+function draw(){
+  const d=dims(), W=1500,H=650,pad=105,usable=W-2*pad,scale=usable/d.total;
+  const base=365, zoneTop=275, zoneH=88, dim1=475, dim2=520, dim3=565;
+  const x0=pad,x1=x0+d.total*scale;
+  const roadL=x0+d.sidewalk*scale;
+  const roadR=x1-d.sidewalk*scale;
+  const leftRoadEnd=roadL+d.side*scale;
+  const medL=leftRoadEnd,medR=medL+d.median*scale;
+  const rightRoadStart=medR;
+  const center=d.median>0?(medL+medR)/2:(roadL+roadR)/2;
+
+  let s=`<svg id="sectionSVG" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${W}" height="${H}" fill="#fff"/>
+    <text x="${pad}" y="42" font-family="Arial" font-size="20" font-weight="800" fill="#222">MAHALCO — STANDARD URBAN CROSS SECTION</text>
+    <text x="${pad}" y="62" font-family="Arial" font-size="11" fill="#666">${esc($("context").value)} · ${esc(presets[$("class").value] ? ($("class").options[$("class").selectedIndex].text) : $("class").value)} · TYPICAL SECTION · UNITS: m</text>
+    <text x="${W-pad}" y="42" text-anchor="end" font-family="Arial" font-size="10" fill="#666">TOOL 01 · PRELIMINARY DESIGN</text>
+
+    ${dim(x0,x1,92,"TOTAL ROW / CORRIDOR  "+d.total.toFixed(2)+" m")}
+    <line x1="${x0}" y1="105" x2="${x0}" y2="602" stroke="#8a8a84" stroke-dasharray="5 5"/>
+    <line x1="${x1}" y1="105" x2="${x1}" y2="602" stroke="#8a8a84" stroke-dasharray="5 5"/>
+    <text x="${x0}" y="617" font-family="Arial" font-size="9" fill="#666">EXIST./PROPOSED ROW</text>
+    <text x="${x1}" y="617" text-anchor="end" font-family="Arial" font-size="9" fill="#666">EXIST./PROPOSED ROW</text>
+
+    <text x="${(x0+roadL)/2}" y="164" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700">SIDEWALK / PEDESTRIAN REALM</text>
+    <text x="${(roadR+x1)/2}" y="164" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700">SIDEWALK / PEDESTRIAN REALM</text>
+    ${dim(x0,roadL,190,d.sidewalk.toFixed(2)+" m")}
+    ${dim(roadR,x1,190,d.sidewalk.toFixed(2)+" m")}
+  `;
+
+  // Left pedestrian realm zones
+  let x=x0;
+  s+=rectZone(x,zoneTop,d.front*scale,zoneH,"#efeee9","FRONTAGE","zone"); x+=d.front*scale;
+  s+=rectZone(x,zoneTop,d.furn*scale,zoneH,"#dcdad2","FURNISHING","zone"); x+=d.furn*scale;
+  s+=rectZone(x,zoneTop,d.par*scale,zoneH,"#f5f4ef","PAR / CLEAR","pedestrian"); x+=d.par*scale;
+  // curb
+  s+=rectZone(x,zoneTop,d.curb*scale,zoneH,"#c6c5bf","CURB",""); x+=d.curb*scale;
+
+  // Left roadway from curb toward median: parking, bike, lanes
+  if(d.park>0){s+=rectZone(x,zoneTop,d.park*scale,zoneH,"#efeee9","PARKING","");x+=d.park*scale;}
+  if(d.bike>0){s+=rectZone(x,zoneTop,d.bike*scale,zoneH,"#e7f0ea","BIKE LANE","");x+=d.bike*scale;}
+  for(let i=0;i<d.lanes;i++){s+=rectZone(x,zoneTop,d.lane*scale,zoneH,"#e8e7e2","TRAVEL LANE",i===0?"":"");x+=d.lane*scale;}
+
+  // Median
+  if(d.median>0){
+    s+=`<rect x="${x}" y="${zoneTop-4}" width="${d.median*scale}" height="${zoneH+8}" fill="#dfe8dc" stroke="#596455" stroke-width="1"/>
+         <text x="${x+d.median*scale/2}" y="${zoneTop+40}" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#496048">MEDIAN</text>
+         <text x="${x+d.median*scale/2}" y="${zoneTop+56}" text-anchor="middle" font-family="Arial" font-size="8" fill="#586057">landscape / refuge / buffer</text>`;
+    x+=d.median*scale;
+  }
+
+  // Right roadway: lanes, bike, parking, curb
+  for(let i=0;i<d.lanes;i++){s+=rectZone(x,zoneTop,d.lane*scale,zoneH,"#e8e7e2","TRAVEL LANE","");x+=d.lane*scale;}
+  if(d.bike>0){s+=rectZone(x,zoneTop,d.bike*scale,zoneH,"#e7f0ea","BIKE LANE","");x+=d.bike*scale;}
+  if(d.park>0){s+=rectZone(x,zoneTop,d.park*scale,zoneH,"#efeee9","PARKING","");x+=d.park*scale;}
+  s+=rectZone(x,zoneTop,d.curb*scale,zoneH,"#c6c5bf","CURB",""); x+=d.curb*scale;
+
+  // Right pedestrian zones
+  s+=rectZone(x,zoneTop,d.par*scale,zoneH,"#f5f4ef","PAR / CLEAR","pedestrian"); x+=d.par*scale;
+  s+=rectZone(x,zoneTop,d.furn*scale,zoneH,"#dcdad2","FURNISHING","zone"); x+=d.furn*scale;
+  s+=rectZone(x,zoneTop,d.front*scale,zoneH,"#efeee9","FRONTAGE","zone"); x+=d.front*scale;
+
+  // Pavement ground line and crown
+  const roadY=base;
+  const crownY=d.median>0?roadY-15:roadY-12;
+  s+=`<polyline points="${roadL},${roadY} ${center},${crownY} ${roadR},${roadY}" fill="none" stroke="#222" stroke-width="3"/>
+      <line x1="${roadL}" y1="${roadY}" x2="${roadR}" y2="${roadY}" stroke="#111" stroke-width="1"/>
+      <circle cx="${center}" cy="${crownY}" r="3" fill="#333"/>
+      <text x="${center}" y="${crownY-12}" text-anchor="middle" font-family="Arial" font-size="9" font-weight="700" fill="#444">CROWN / CENTERLINE</text>
+      <text x="${(roadL+center)/2}" y="${crownY+8}" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#315f8f">TYP. CROSS FALL ${n("cross").toFixed(1)}%</text>
+      <text x="${(center+roadR)/2}" y="${crownY+8}" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#315f8f">TYP. CROSS FALL ${n("cross").toFixed(1)}%</text>`;
+
+  // roadway dimension
+  s+=dim(roadL,roadR,438,"ROADWAY "+d.roadway.toFixed(2)+" m");
+
+  // individual zone dimensions: sidewalk components and roadway components
+  const leftZones=[
+    [x0,x0+d.front*scale,d.front,"FRONTAGE"],
+    [x0+d.front*scale,x0+(d.front+d.furn)*scale,d.furn,"FURNISHING"],
+    [x0+(d.front+d.furn)*scale,x0+(d.front+d.furn+d.par)*scale,d.par,"PAR"],
+    [roadR,x1-d.front*scale,d.front,"FRONTAGE"] // only representative on right, rest shown below
+  ];
+  // Detailed left sidewalk dimension row
+  let q=x0;
+  for(const z of [
+    [d.front,"FRONTAGE"],[d.furn,"FURNISHING"],[d.par,"PAR"]
+  ]){ const nx=q+z[0]*scale; if(nx-q>28) s+=dim(q,nx,dim1,z[0].toFixed(2)+" m"); q=nx; }
+  // Left roadway detail
+  q=roadL;
+  if(d.curb>0){s+=dim(q,q+d.curb*scale,dim2,d.curb.toFixed(2)+" m");q+=d.curb*scale;}
+  if(d.park>0){s+=dim(q,q+d.park*scale,dim2,d.park.toFixed(2)+" m");q+=d.park*scale;}
+  if(d.bike>0){s+=dim(q,q+d.bike*scale,dim2,d.bike.toFixed(2)+" m");q+=d.bike*scale;}
+  for(let i=0;i<d.lanes;i++){s+=dim(q,q+d.lane*scale,dim2,d.lane.toFixed(2)+" m");q+=d.lane*scale;}
+  if(d.median>0){s+=dim(q,q+d.median*scale,dim3,d.median.toFixed(2)+" m");q+=d.median*scale;}
+  // Right side simplified individual labels under the section
+  s+=`<text x="${roadL}" y="605" font-family="Arial" font-size="9" fill="#555">CURB → TRAVEL LANES → BIKE → PARKING</text>
+      <text x="${roadR}" y="605" text-anchor="end" font-family="Arial" font-size="9" fill="#555">PARKING ← BIKE ← TRAVEL LANES ← CURB</text>
+      <line x1="${x0}" y1="628" x2="${x1}" y2="628" stroke="#bcbab2"/>
+      <text x="${x0}" y="643" font-family="Arial" font-size="8" fill="#666">TYPICAL SECTION — NOT FOR CONSTRUCTION</text>
+      <text x="${x1}" y="643" text-anchor="end" font-family="Arial" font-size="8" fill="#666">PARAMETRIC / VERIFY AGAINST GOVERNING CRITERIA</text>
+  </svg>`;
+  $("drawing").innerHTML=s;
+
+  const par=n("par"),cf=n("cross");
+  $("metrics").innerHTML=[
+    ["Total ROW / corridor",d.total.toFixed(2)+" m"],
+    ["Roadway",d.roadway.toFixed(2)+" m"],
+    ["Pedestrian realm / side",d.sidewalk.toFixed(2)+" m"],
+    ["Travel lanes / direction",d.lanes],
+    ["Lane width",d.lane.toFixed(2)+" m"],
+    ["Median",d.median.toFixed(2)+" m"]
+  ].map(x=>`<div class="metric"><small>${x[0]}</small><strong>${x[1]}</strong></div>`).join("");
+
+  $("checks").innerHTML=`
+    <div class="check ${par>=1.22?"":"bad"}"><b>${par>=1.22?"PASS":"FAIL"}</b> — PAR clear width ${par.toFixed(2)} m; screening threshold 1.22 m.</div>
+    <div class="check ${par>=1.525?"":"warn"}"><b>${par>=1.525?"PASS":"CHECK"}</b> — Passing-space screening: ${par>=1.525?"width is at or above 1.525 m":"project may require a passing-space arrangement"}.</div>
+    <div class="check ${cf>=1 && cf<=3?"":"warn"}"><b>${cf>=1&&cf<=3?"SCREENED":"CHECK"}</b> — Crossfall ${cf.toFixed(1)}%; verify drainage/accessibility criteria for the actual project.</div>
+    <div class="check"><b>NOTE</b> — Dimensions are editable project parameters, not automatically approved design values.</div>`;
+
+  window.current={className:$("class").value,context:$("context").value,dimensions:d,crossfall:cf};
+}
+function dl(blob,name){
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+$("svg").onclick=()=>{dl(new Blob([document.getElementById("sectionSVG").outerHTML],{type:"image/svg+xml;charset=utf-8"}),"MAHALCO_Tool01_Cross_Section.svg")};
+$("json").onclick=()=>{dl(new Blob([JSON.stringify(window.current,null,2)],{type:"application/json"}),"MAHALCO_Tool01_Cross_Section.json")};
+draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ramp Merge/Diverge Analysis — Mahalco</title>
+  <meta name="description" content="Dependency-free HCM ramp junction merge and diverge analysis calculator.">
+  <style>
+    :root{--bg:#08070c;--card:#0e0c14;--card2:#151220;--field:#0a0910;--line:rgba(255,255,255,.1);--ink:#efedf5;--muted:#aaa5b8;--dim:#777187;--purple:#8b5cf6;--cyan:#22d3ee;--green:#4ade80;--orange:#fb923c;--red:#f87171}
+    *{box-sizing:border-box}body{margin:0;padding:18px;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif}
+    main{max-width:1220px;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:17px;padding:clamp(18px,3vw,32px)}
+    header{display:flex;justify-content:space-between;gap:14px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:24px}.brand{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--muted)}nav{display:flex;gap:8px;flex-wrap:wrap}nav a{color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:6px 10px;font-size:12px}
+    h1{font-size:clamp(24px,3.5vw,38px);letter-spacing:-.045em;margin:0}h2{font-size:19px;margin:0 0 12px}h3{font-size:14px;margin:0 0 10px}.lede{color:var(--muted);max-width:82ch;margin:8px 0 0}.section{border-top:1px solid var(--line);margin-top:25px;padding-top:21px}.tag{display:block;color:var(--dim);font:11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase;margin-bottom:14px}
+    .grid{display:grid;gap:13px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.four{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:820px){.four,.three{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){body{padding:8px}.two,.four,.three{grid-template-columns:1fr}}
+    label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}input,select{display:block;width:100%;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);padding:9px 10px;font:inherit;font-size:13px}input:focus,select:focus{outline:2px solid var(--purple);outline-offset:-1px}.hint{color:var(--dim);font-size:11px;margin-top:5px}.readonly{color:var(--cyan);font-family:ui-monospace,monospace}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:21px}.button{border:0;border-radius:9px;background:var(--purple);color:white;padding:11px 18px;font-weight:700;cursor:pointer}.button.alt{background:transparent;border:1px solid var(--line);color:var(--ink)}.status{color:var(--dim);min-height:20px;margin:10px 0 0}.status.ok{color:var(--green)}.status.err{color:var(--red)}
+    #output{display:none}.summary{display:flex;flex-wrap:wrap;gap:10px}.metric{flex:1 1 145px;border:1px solid var(--line);border-radius:11px;background:var(--card2);padding:13px}.metric span{display:block;color:var(--dim);font:10px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase}.metric strong{display:block;margin-top:4px;font-size:25px}.los{display:inline-block;border-radius:6px;background:var(--green);color:#03140b;padding:1px 8px}.good{color:var(--green)}.warn{color:var(--orange)}.bad{color:var(--red)}
+    .panel{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:15px}.panel p{color:var(--muted);margin:8px 0}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:500px}th{text-align:left;color:var(--dim);border-bottom:1px solid var(--line);padding:7px 8px;font:10px ui-monospace,monospace;text-transform:uppercase;letter-spacing:.07em}td{padding:8px;border-bottom:1px solid var(--line);color:var(--muted)}td:first-child{color:var(--ink)}.pill{display:inline-block;padding:2px 7px;border-radius:5px;font-weight:700}.formula,.json{background:#090810;border:1px solid var(--line);border-radius:8px;padding:11px;color:#c8bfdc;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto;white-space:pre-wrap}.formula{color:var(--cyan);margin-top:10px}.list{padding-left:20px;color:var(--muted);margin:7px 0}.list li{margin:5px 0}.small{font-size:11px;color:var(--dim)}
+  </style>
+</head>
+<body>
+<main>
+  <header><div class="brand">MAHALCO / API #13</div><nav><a href="../">Home</a><a href="../basic-freeway/">Basic freeway</a><a href="../interchange-los/">Interchange LOS</a></nav></header>
+  <h1>Ramp merge/diverge analysis</h1>
+  <p class="small">API contract: <span class="readonly">POST /api/v1/ramp-merge-diverge</span></p>
+  <p class="lede">A transparent, dependency-free screening calculator for a freeway ramp junction. It evaluates the fixed 1,500-ft influence area, adjusted demand, capacity, speed, density, ramp LOS, queues, geometry, weaving, heavy vehicles, and safety indicators.</p>
+  <form id="form">
+    <section class="section"><span class="tag">PROJECT AND JUNCTION</span>
+      <div class="grid four">
+        <div><label>Analysis date</label><input id="analysisDate" type="date" value="2026-09-06"></div>
+        <div><label>Ramp type</label><select id="rampType"><option value="on">On-ramp (merge)</option><option value="off">Off-ramp (diverge)</option></select></div>
+        <div><label>Junction</label><select id="junction"><option value="merge">Merge</option><option value="diverge">Diverge</option></select></div>
+        <div><label>Facility / area</label><select id="facility"><option>Freeway mainline</option><option>Expressway</option><option>Urban freeway</option><option>Rural freeway</option></select></div>
+      </div>
+      <div class="grid four">
+        <div><label>Analysis period</label><select id="period"><option>AM peak</option><option>PM peak</option><option>Midday</option><option>Weekend</option></select></div>
+        <div><label>Influence area (ft)</label><input id="influence" class="readonly" value="1500" readonly></div>
+        <div><label>Direction</label><select id="direction"><option>NB</option><option>SB</option><option>EB</option><option>WB</option></select></div>
+        <div><label>Calibration factor</label><input id="calibration" type="number" value="1" min=".5" max="1.2" step=".01"><div class="hint">Applied to capacity</div></div>
+      </div>
+    </section>
+    <section class="section"><span class="tag">FREEWAY AND RAMP DEMAND</span>
+      <div class="grid four">
+        <div><label>Freeway flow upstream (veh/h)</label><input id="freewayUp" type="number" value="3600" min="0"></div>
+        <div><label>Freeway flow downstream (veh/h)</label><input id="freewayDown" type="number" value="4450" min="0"></div>
+        <div><label>Freeway lanes in influence area</label><input id="freewayLanes" type="number" value="3" min="1" max="8"></div>
+        <div><label>Freeway FFS (mph)</label><input id="freewayFfs" type="number" value="65" min="20" max="100"></div>
+      </div>
+      <div class="grid four">
+        <div><label>Ramp flow (veh/h)</label><input id="rampFlow" type="number" value="850" min="0"></div>
+        <div><label>Ramp lanes</label><input id="rampLanes" type="number" value="1" min="1" max="4"></div>
+        <div><label>Ramp FFS (mph)</label><input id="rampFfs" type="number" value="45" min="15" max="80"></div>
+        <div><label>Ramp storage / length (ft)</label><input id="rampLength" type="number" value="1200" min="1"></div>
+      </div>
+      <div class="grid four">
+        <div><label>Lane distribution to ramp (%)</label><input id="laneDistribution" type="number" value="100" min="1" max="100"><div class="hint">Ramp demand entering the critical lane</div></div>
+        <div><label>Ramp grade (%)</label><input id="rampGrade" type="number" value="0" min="-10" max="10" step=".1"></div>
+        <div><label>Auxiliary lane present</label><select id="auxLane"><option value="no">No</option><option value="yes">Yes</option></select></div>
+        <div><label>Ramp metering</label><select id="metering"><option value="none">None</option><option value="active">Active</option><option value="planned">Planned</option></select></div>
+      </div>
+    </section>
+    <section class="section"><span class="tag">TRAFFIC, PCE, AND CALIBRATION</span>
+      <div class="grid four">
+        <div><label>Peak-hour factor (PHF)</label><input id="phf" type="number" value=".92" min=".5" max="1" step=".01"></div>
+        <div><label>Heavy vehicles (%)</label><input id="heavy" type="number" value="6" min="0" max="100" step=".1"></div>
+        <div><label>Trucks / buses (%)</label><input id="trucks" type="number" value="5" min="0" max="100" step=".1"></div>
+        <div><label>Recreational vehicles (%)</label><input id="rvs" type="number" value="1" min="0" max="100" step=".1"></div>
+      </div>
+      <div class="grid four">
+        <div><label>Truck PCE (ET)</label><input id="et" type="number" value="2.5" min="1" max="8" step=".1"></div>
+        <div><label>RV / bus PCE (ER)</label><input id="er" type="number" value="3" min="1" max="10" step=".1"></div>
+        <div><label>Speed calibration factor</label><input id="speedCal" type="number" value="1" min=".7" max="1.2" step=".01"></div>
+        <div><label>Density calibration factor</label><input id="densityCal" type="number" value="1" min=".7" max="1.3" step=".01"></div>
+      </div>
+      <div class="hint">PCE demand = (cars + trucks × ET + RVs × ER) ÷ PHF. Heavy-vehicle shares are checked for consistency.</div>
+    </section>
+    <section class="section"><span class="tag">WEATHER AND WORK ZONE</span>
+      <div class="grid four">
+        <div><label>Weather</label><select id="weather"><option value="clear">Clear / dry</option><option value="rain">Rain</option><option value="snow">Snow / ice</option><option value="fog">Fog</option></select></div>
+        <div><label>Work zone</label><select id="workZone"><option value="none">None</option><option value="shoulder">Shoulder activity</option><option value="lane">Lane closure</option><option value="ramp">Ramp closure / shift</option></select></div>
+        <div><label>Closed freeway lanes</label><input id="closedLanes" type="number" value="0" min="0" max="7"></div>
+        <div><label>Work-zone / incident factor</label><input id="incidentFactor" type="number" value="1" min=".4" max="1" step=".01"><div class="hint">1.00 = no reduction</div></div>
+      </div>
+    </section>
+    <section class="section"><span class="tag">SAFETY AND GEOMETRY</span>
+      <div class="grid four">
+        <div><label>Observed crashes (last 3 years)</label><input id="crashes" type="number" value="3" min="0"></div>
+        <div><label>Posted speed (mph)</label><input id="postedSpeed" type="number" value="65" min="15" max="100"></div>
+        <div><label>Available sight distance (ft)</label><input id="sightDistance" type="number" value="900" min="0"></div>
+        <div><label>Lighting / delineation</label><select id="lighting"><option value="good">Good</option><option value="fair">Fair</option><option value="poor">Poor</option></select></div>
+      </div>
+      <div class="grid four">
+        <div><label>Deceleration lane length (ft)</label><input id="decelLength" type="number" value="850" min="0"></div>
+        <div><label>Merge / diverge nose speed (mph)</label><input id="noseSpeed" type="number" value="35" min="10" max="70"></div>
+        <div><label>Barrier / roadside condition</label><select id="barrier"><option value="good">Good</option><option value="fair">Fair</option><option value="poor">Poor</option></select></div>
+        <div><label>Speed differential concern</label><select id="speedDiff"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      </div>
+    </section>
+    <div class="actions"><button class="button" type="submit">Run ramp analysis</button><button class="button alt" type="reset">Reset</button></div>
+    <p id="status" class="status">Ready to analyse.</p>
+  </form>
+
+  <section id="output" class="section"><span class="tag">ANALYSIS OUTPUT</span>
+    <div class="summary">
+      <div class="metric"><span>RAMP LOS</span><strong id="rampLos" class="los">—</strong></div>
+      <div class="metric"><span>RAMP V/C</span><strong id="rampVc">—</strong></div>
+      <div class="metric"><span>DENSITY</span><strong id="density">—</strong></div>
+      <div class="metric"><span>RAMP CAPACITY</span><strong id="capacity">—</strong></div>
+      <div class="metric"><span>QUEUE / STORAGE</span><strong id="queue">—</strong></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="panel"><h3>Influence-area performance</h3><div class="table-wrap"><table><thead><tr><th>Measure</th><th>Freeway / junction</th><th>Ramp</th><th>Units</th></tr></thead><tbody id="performance"></tbody></table></div><pre id="formula" class="formula"></pre></div>
+      <div class="panel"><h3>Lane distribution and heavy vehicles</h3><div class="table-wrap"><table><thead><tr><th>Measure</th><th>Result</th><th>Check</th></tr></thead><tbody id="trafficOut"></tbody></table></div></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="panel"><h3>Deceleration and adjacent weaving check</h3><div class="table-wrap"><table><thead><tr><th>Check</th><th>Result</th><th>Status</th></tr></thead><tbody id="geometryOut"></tbody></table></div></div>
+      <div class="panel"><h3>Safety indicators</h3><div class="table-wrap"><table><thead><tr><th>Indicator</th><th>Result</th><th>Screen</th></tr></thead><tbody id="safetyOut"></tbody></table></div></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="panel"><h3>Recommendations</h3><ul id="recommendations" class="list"></ul></div>
+      <div class="panel"><h3>Standards comparison</h3><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Criterion</th><th>Comparison</th></tr></thead><tbody id="standards"></tbody></table></div></div>
+    </div>
+    <div class="panel" style="margin-top:14px"><h3>Request JSON</h3><pre id="requestJson" class="json"></pre><h3 style="margin-top:14px">Response JSON</h3><pre id="responseJson" class="json"></pre></div>
+  </section>
+</main>
+<script>
+  const $=id=>document.getElementById(id), n=id=>Number($(id).value)||0, esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt=(v,d=1)=>Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+  const rampLos=d=>d<=10?'A':d<=20?'B':d<=28?'C':d<=35?'D':d<=43?'E':'F';
+  const cls=l=>l==='A'||l==='B'?'good':l==='C'||l==='D'?'warn':'bad';
+  const status=(ok,good='OK',bad='Review')=>`<span class="${ok?'good':'bad'}">${ok?good:bad}</span>`;
+  function values(){
+    const ids=['analysisDate','rampType','junction','facility','period','influence','direction','calibration','freewayUp','freewayDown','freewayLanes','freewayFfs','rampFlow','rampLanes','rampFfs','rampLength','laneDistribution','rampGrade','auxLane','metering','phf','heavy','trucks','rvs','et','er','speedCal','densityCal','weather','workZone','closedLanes','incidentFactor','crashes','postedSpeed','sightDistance','lighting','decelLength','noseSpeed','barrier','speedDiff'];
+    return Object.fromEntries(ids.map(id=>[id,$ (id).type==='number'?n(id):$(id).value]));
+  }
+  function run(){
+    const x=values(), f=x.freewayLanes, rl=x.rampLanes, phf=Math.max(.5,x.phf);
+    const truck=x.trucks/100, rv=x.rvs/100, cars=Math.max(0,1-truck-rv), pce=cars+truck*x.et+rv*x.er;
+    const qFu=x.freewayUp*pce/phf, qFd=x.freewayDown*pce/phf, qR=x.rampFlow*pce/phf;
+    const weather={clear:1,rain:.9,snow:.7,fog:.82}[x.weather], work={none:1,shoulder:.96,lane:.72,ramp:.6}[x.workZone];
+    const laneFactor=Math.max(.15,(f-x.closedLanes)/Math.max(1,f)), env=weather*work*x.incidentFactor*laneFactor;
+    const cal=x.calibration*env, aux=x.auxLane==='yes'?1.08:1;
+    /* HCM 7 screening equations: V_F and V_R are PHF- and PCE-adjusted pc/h. */
+    const mergeRamp=Math.max(800,(2000*rl-.25*qFu)*cal*aux), divergeRamp=Math.max(800,(2100*rl-.20*qFd)*cal*aux);
+    const mergeFreeway=Math.max(800,(2400*f-.20*qR)*cal*aux), divergeFreeway=Math.max(800,(2400*Math.max(1,f-1)-.10*qR)*cal*aux);
+    const isMerge=x.junction==='merge', rampCap=isMerge?mergeRamp:divergeRamp, freewayCap=isMerge?mergeFreeway:divergeFreeway;
+    const rampCritical=qR*(x.laneDistribution/100), vc=rampCritical/rampCap, freewayVc=(isMerge?qFd:qFu)/freewayCap;
+    const speedBase=isMerge?x.freewayFfs-4*(qFu/1000)-8*(qR/1000):x.freewayFfs-2*(qFd/1000)-4*(qR/1000);
+    const speed=Math.max(15,speedBase*x.speedCal), rampSpeed=Math.max(12,x.rampFfs*x.speedCal-2*(qR/1000));
+    const dens=rampCritical/Math.max(1,rampSpeed)*x.densityCal/rl, los=rampLos(dens);
+    const queueVeh=Math.max(0,(vc-.85)*qR*15/60), queue95Veh=queueVeh*1.5, queue95Ft=queue95Veh*25, storage=x.rampLength, queueCheck=queue95Ft<=storage;
+    const standardDecel=x.noseSpeed>=55?1000:x.noseSpeed>=45?800:600, decelOk=x.decelLength>=standardDecel;
+    const adjacentDemand=(isMerge?qFu:qFd)+qR, adjacentCap=(isMerge?mergeFreeway:divergeFreeway), adjacentVc=adjacentDemand/Math.max(1,adjacentCap), adjacentOk=adjacentVc<=.85;
+    const stopping=1.47*x.postedSpeed*2.5+(x.postedSpeed*x.postedSpeed)/(30*(.35+(x.postedSpeed>50?.01:0))), sightOk=x.sightDistance>=stopping;
+    const heavyImpact=(pce-1)*100, speedDiff=(x.freewayFfs-speed), crashRate=x.crashes/3;
+    const req={api:'API #13 Ramp Merge/Diverge Analysis',analysisDate:x.analysisDate,configuration:x,constants:{influenceAreaFt:1500,rampLosDensityThresholds:{A:'<=10',B:'<=20',C:'<=28',D:'<=35',E:'<=43',F:'>43'}},inputs:{freewayPceDemand:{upstream:qFu,downstream:qFd},rampPceDemand:qR}};
+    const response={status:'complete',junction:x.junction,influenceAreaFt:1500,capacity:{selectedRampPcph:rampCap,selectedFreewayPcph:freewayCap,mergeRampPcph:mergeRamp,mergeFreewayPcph:mergeFreeway,divergeRampPcph:divergeRamp,divergeFreewayPcph:divergeFreeway},demand:{rampPcph:rampCritical,freewayPcph:isMerge?qFd:qFu},performance:{rampVc:vc,freewayVc,densityPcMiLn:dens,rampSpeedMph:rampSpeed,freewaySpeedMph:speed,los,queue95Vehicles:queue95Veh,queue95Ft},checks:{decelerationLength:{requiredFt:standardDecel,providedFt:x.decelLength,pass:decelOk},adjacentWeaving:{vc:adjacentVc,pass:adjacentOk},sightDistance:{requiredFt:stopping,providedFt:x.sightDistance,pass:sightOk}},heavyVehicleImpactPct:heavyImpact};
+    $('rampLos').textContent=los;$('rampLos').className='los '+cls(los);$('rampVc').textContent=fmt(vc,2);$('density').textContent=fmt(dens,1)+' pc/mi/ln';$('capacity').textContent=fmt(rampCap,0)+' pc/h';$('queue').textContent=fmt(queue95Ft,0)+' / '+fmt(storage,0)+' ft';
+    const caplabel=isMerge?'Merge':'Diverge';
+    $('performance').innerHTML=[['Adjusted demand',fmt(isMerge?qFd:qFu,0),fmt(rampCritical,0),'pc/h'],['Capacity',fmt(freewayCap,0),fmt(rampCap,0),'pc/h'],['v/c',fmt(freewayVc,2),fmt(vc,2),'ratio'],['Speed',fmt(speed,1),fmt(rampSpeed,1),'mph'],['Density','—',fmt(dens,1),'pc/mi/ln'],['95th-percentile queue','—',fmt(queue95Ft,0),'ft']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+    $('formula').textContent=`${caplabel} capacity\n${isMerge?'cᵣ = max(800, [2,000 × ramp lanes − 0.25 × V_F] × calibration × environment)':'cᵣ = max(800, [2,100 × ramp lanes − 0.20 × V_F] × calibration × environment)'}\nInfluence area = 1,500 ft (fixed)\nRamp speed = max(12, FFSᵣ − 2 × Vᵣ/1,000)\nDensity = Vᵣ / (Sᵣ × ramp lanes); LOS thresholds: A ≤ 10, B ≤ 20, C ≤ 28, D ≤ 35, E ≤ 43, F > 43.`;
+    $('trafficOut').innerHTML=[['PCE factor',fmt(pce,2),''],['PCE-adjusted ramp demand',fmt(qR,0)+' pc/h',qR<=rampCap?'':'Over capacity'],['Truck / RV share',fmt(x.trucks,1)+'% / '+fmt(x.rvs,1),''],['Heavy-vehicle demand impact',fmt(heavyImpact,1)+'%',heavyImpact<=15?'':'Elevated'],['Critical lane distribution',fmt(x.laneDistribution,0)+'%',x.laneDistribution<=100?'':'Review']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="${r[2].includes('Over')||r[2]==='Elevated'?'bad':'good'}">${r[2]||'OK'}</td></tr>`).join('');
+    $('geometryOut').innerHTML=[['Deceleration length',fmt(x.decelLength,0)+' ft; required '+fmt(standardDecel,0)+' ft',status(decelOk)],['Queue storage',fmt(queue95Veh,0)+' veh / '+fmt(queue95Ft,0)+' ft; storage '+fmt(storage,0)+' ft',status(queueCheck)],['Adjacent influence area v/c',fmt(adjacentVc,2),status(adjacentOk,'Within 0.85','Check adjacent lane')],['Lane distribution',fmt(x.laneDistribution,0)+'%',status(x.laneDistribution>=80&&x.laneDistribution<=100,'Concentrated','Review')],['Ramp grade',fmt(x.rampGrade,1)+'%',status(Math.abs(x.rampGrade)<=6)]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+    $('safetyOut').innerHTML=[['Stopping sight distance',fmt(x.sightDistance,0)+' / '+fmt(stopping,0)+' ft',status(sightOk,'Meets','Below standard')],['Speed differential',fmt(speedDiff,1)+' mph',status(speedDiff<=15,'Low','High')],['Crash history',fmt(crashRate,1)+' crashes/year',status(crashRate<=2,'Typical','Elevated')],['Lighting / delineation',x.lighting,status(x.lighting==='good','Adequate','Improve')],['Barrier / roadside',x.barrier,status(x.barrier==='good','Adequate','Improve')],['Weather / work-zone factor',fmt(env,2),status(env>=.85,'Limited effect','Capacity reduced')]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+    const rec=[];if(los==='E'||los==='F'||vc>.85)rec.push(`Reduce ramp demand, meter the ramp, or provide additional merge/diverge capacity; v/c is ${fmt(vc,2)}.`);if(!decelOk)rec.push(`Lengthen the deceleration lane to at least ${fmt(standardDecel,0)} ft for the selected nose speed.`);if(!queueCheck)rec.push('Provide additional ramp storage or manage upstream queues.');if(!adjacentOk)rec.push('Check the adjacent freeway lane and consider an auxiliary lane or lane-balance treatment.');if(!sightOk)rec.push('Improve decision/stopping sight distance, signing, lighting, or delineation.');if(heavyImpact>15)rec.push('Verify heavy-vehicle PCEs and consider truck operating restrictions or a field speed study.');if(!rec.length)rec.push('No screening trigger exceeded; confirm geometry, field counts, and HCM procedures for design approval.');
+    $('recommendations').innerHTML=rec.map(x=>`<li>${esc(x)}</li>`).join('');
+    $('standards').innerHTML=[['HCM 7, ramp junctions','Fixed influence area','1,500 ft used for this analysis'],['HCM 7, ramp LOS','Density thresholds','A ≤ 10; B ≤ 20; C ≤ 28; D ≤ 35; E ≤ 43; F > 43 pc/mi/ln'],['HCM 7, demand','PHF and PCE',`${fmt(qR,0)} pc/h ramp demand after PHF/PCE`],['AASHTO Green Book','Deceleration lane screening',`${fmt(x.decelLength,0)} ft provided vs ${fmt(standardDecel,0)} ft required`],['AASHTO Green Book','Stopping sight distance',`${fmt(x.sightDistance,0)} ft provided vs ${fmt(stopping,0)} ft required`],['HCM 7 / field review','Adjacent lane check',`${fmt(adjacentVc,2)} v/c; target ≤ 0.85`]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+    $('requestJson').textContent=JSON.stringify(req,null,2);$('responseJson').textContent=JSON.stringify(response,null,2);$('output').style.display='block';$('status').textContent=`Analysis complete — ${caplabel.toLowerCase()} influence area evaluated.`;$('status').className='status ok';$('output').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  $('rampType').addEventListener('change',e=>{$('junction').value=e.target.value==='on'?'merge':'diverge'});
+  $('junction').addEventListener('change',e=>{$('rampType').value=e.target.value==='merge'?'on':'off'});
+  $('form').addEventListener('submit',e=>{e.preventDefault();try{run()}catch(err){$('status').textContent='Unable to calculate: '+err.message;$('status').className='status err'}});
+  $('form').addEventListener('reset',()=>setTimeout(()=>{$('output').style.display='none';$('status').textContent='Ready to analyse.';$('status').className='status'},0));
+</script>
+</body>
+</html>

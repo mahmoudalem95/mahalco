@@ -109,6 +109,70 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* ---------- VISIT BLOCKER OVERLAY ---------- */
+        #blocker-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--asphalt);
+            color: var(--paper);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            direction: rtl;
+        }
+        #blocker-overlay.visible {
+            display: flex;
+        }
+        #blocker-overlay h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--marking);
+        }
+        #blocker-overlay p {
+            max-width: 500px;
+            font-size: 1.2rem;
+            color: var(--muted-dark);
+            margin-bottom: 2rem;
+        }
+        #blocker-overlay .contact-details {
+            background: #1b1f24;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--rule-dark);
+        }
+        #blocker-overlay .contact-details a {
+            display: inline-block;
+            margin: 0.5rem 1rem;
+            color: var(--paper);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid var(--marking);
+            padding-bottom: 4px;
+        }
+        #blocker-overlay .contact-details a:hover {
+            color: var(--marking);
+        }
+        #blocker-overlay .note {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        /* Hide main content initially until JS decides */
+        #main-content {
+            display: none;
+        }
+        #main-content.visible {
+            display: block;
+        }
+
         a {
             color: inherit
         }
@@ -660,375 +724,441 @@
 </head>
 <body>
 
-    <header class="masthead">
-        <div class="wrap">
-            <a class="mark" href="#top"><span aria-hidden="true"></span>Mahalco</a>
-            <nav>
-                <a href="#urban">עירוני</a>
-                <a href="#rural">בין-עירוני</a>
-                <a href="#common">משותף</a>
-                <a href="#access">גישה</a>
-                <a href="#coming">בפיתוח</a>
-                <a href="critical-lane-volume.html">מחשבון פאזות</a>
-                <a href="apis.html">English</a>
-            </nav>
+    <!-- ========== VISIT LIMIT OVERLAY ========== -->
+    <div id="blocker-overlay">
+        <h1>🔒 הגעת למגבלת הצפייה</h1>
+        <p>הגעת ל-5 צפיות בעמוד זה. לקבלת גישה מלאה לקטלוג ולכלים המתקדמים, אנא צרו קשר ישירות.</p>
+        <div class="contact-details">
+            <div>📧 <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a></div>
+            <div>📞 <a href="tel:+972546528572">+972-546-528572</a></div>
+            <div>🐙 <a href="https://github.com/mahmoudalem95/mahalco" target="_blank" rel="noopener">GitHub</a></div>
         </div>
-    </header>
-
-    <section class="hero" id="top">
-        <div class="wrap">
-            <div>
-                <h1>חמישים ואחד נהלים לדרך שלפניכם.</h1>
-                <p>קיבולת, בטיחות ותכנון גיאומטרי לפי ה‑Highway Capacity Manual, ספר AASHTO וה‑Highway Safety Manual. אפשר להריץ נוהל בדפדפן, או לשלוח את אותם נתונים ל‑API כשהשאלה גדלה לכדי מסדרון שלם.</p>
-                <div class="hero-actions">
-                    <a class="btn btn-solid" href="#urban">לעיון בקטלוג</a>
-                    <a class="btn btn-line" href="critical-lane-volume.html">פתיחת מחשבון פאזות</a>
-                    <!-- Added shortcuts -->
-                    <a class="btn btn-line" href="parking-regulations.html">תקנות והנחיות חניה</a>
-                    <a class="btn btn-line" href="critical-lane-volume.html">נפח נתיב קריטי</a>
-                </div>
-                <div class="tally">
-                    <div><b>23</b>רחובות עירוניים</div>
-                    <div><b>14</b>כבישים בין-עירוניים</div>
-                    <div><b>14</b>תכנון משותף</div>
-                </div>
-            </div>
-
-            <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="מבט על של צומת בעל ארבע זרועות עם סימוני דרך">
-                <rect width="380" height="380" fill="#1B1F24"/>
-                <rect x="0" y="130" width="380" height="120" fill="#2C3138"/>
-                <rect x="130" y="0" width="120" height="380" fill="#2C3138"/>
-                <rect x="130" y="130" width="120" height="120" fill="#2C3138"/>
-                <g stroke="#E9B12F" stroke-width="2.5" stroke-dasharray="14 11">
-                    <line x1="0" y1="190" x2="122" y2="190"/>
-                    <line x1="258" y1="190" x2="380" y2="190"/>
-                    <line x1="190" y1="0" x2="190" y2="122"/>
-                    <line x1="190" y1="258" x2="190" y2="380"/>
-                </g>
-                <g stroke="#8C949E" stroke-width="1.5" stroke-dasharray="9 9" opacity=".55">
-                    <line x1="0" y1="160" x2="122" y2="160"/>
-                    <line x1="258" y1="220" x2="380" y2="220"/>
-                    <line x1="160" y1="258" x2="160" y2="380"/>
-                    <line x1="220" y1="0" x2="220" y2="122"/>
-                </g>
-                <g fill="#E7E8E3">
-                    <rect x="130" y="123" width="60" height="5"/>
-                    <rect x="190" y="252" width="60" height="5"/>
-                    <rect x="123" y="190" width="5" height="60"/>
-                    <rect x="252" y="130" width="5" height="60"/>
-                </g>
-                <g stroke="#4A525C" stroke-width="1.5">
-                    <line x1="0" y1="130" x2="130" y2="130"/><line x1="250" y1="130" x2="380" y2="130"/>
-                    <line x1="0" y1="250" x2="130" y2="250"/><line x1="250" y1="250" x2="380" y2="250"/>
-                    <line x1="130" y1="0" x2="130" y2="130"/><line x1="130" y1="250" x2="130" y2="380"/>
-                    <line x1="250" y1="0" x2="250" y2="130"/><line x1="250" y1="250" x2="250" y2="380"/>
-                </g>
-            </svg>
-        </div>
-    </section>
-
-    <div class="controls">
-        <div class="wrap">
-            <label class="search">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-                    <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
-                </svg>
-                <input id="q" type="search" placeholder="חיפוש לפי שם או תקן" aria-label="חיפוש בקטלוג הנהלים">
-            </label>
-            <div class="filters" role="group" aria-label="סינון לפי קטגוריה">
-                <button class="chip" data-cat="all" aria-pressed="true">הכול</button>
-                <button class="chip" data-cat="urban" aria-pressed="false">עירוני</button>
-                <button class="chip" data-cat="rural" aria-pressed="false">בין-עירוני</button>
-                <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
-            </div>
-            <p class="count" id="count" aria-live="polite">51 נהלים</p>
-        </div>
+        <p class="note">נשמח לשמוע מכם! צרו קשר לקבלת הצעת מחיר או גישה מותאמת.</p>
     </div>
 
-    <main class="wrap">
+    <!-- ========== MAIN CONTENT WRAPPER ========== -->
+    <div id="main-content">
 
-        <!-- ========== URBAN GROUP ========== -->
-        <section class="group" id="urban" data-group="urban">
-            <div class="group-head">
-                <h2>רחובות עירוניים</h2>
-                <p>רמזורים, צמתים, איכות רב-אמצעית וגיאומטריית חתך.</p>
-                <span class="n" data-groupcount>23</span>
+        <header class="masthead">
+            <div class="wrap">
+                <a class="mark" href="#top"><span aria-hidden="true"></span>Mahalco</a>
+                <nav>
+                    <a href="#urban">עירוני</a>
+                    <a href="#rural">בין-עירוני</a>
+                    <a href="#common">משותף</a>
+                    <a href="#access">גישה</a>
+                    <a href="#coming">בפיתוח</a>
+                    <a href="critical-lane-volume.html">מחשבון פאזות</a>
+                    <a href="apis.html">English</a>
+                </nav>
             </div>
+        </header>
 
-            <a class="row" href="parking-regulations.html"><h3>תקנות והנחיות חניה</h3><p>חישוב תקני חניה לפרויקטים מגורים, מסחר ותעסוקה, כולל דרישות לפריקה וטעינה וחניות נכים.</p><span class="std">הנחיות משרד התחבורה / תב"ע</span></a>
-            <a class="row" href="critical-lane-volume.html"><h3>נפח נתיב קריטי</h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-            <!-- UPDATED: removed "(Tool)" from the heading -->
-            <a class="row" href="tool.html"><h3>כלי ניתוח צמתים</h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
-            <a class="row" href="signalized.html"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
-            <a class="row" href="unsignalized.html"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
-            <a class="row" href="roundabout.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
-            <a class="row" href="signal-timing.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
-            <a class="row" href="lane-queue.html"><h3>ניתוח נתיבים ותורים</h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-            <a class="row" href="urban-segment.html"><h3>ניתוח מקטע רחוב עירוני</h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
-            <a class="row" href="urban-facility.html"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></a>
-            <a class="row" href="pedestrian-los.html"><h3>רמת שירות להולכי רגל</h3><p>הליכות לפי רוחב מדרכה, הפרדה מהתנועה ותנאי החצייה.</p><span class="std">HCM Ch. 16</span></a>
-            <a class="row" href="bicycle-los.html"><h3>רמת שירות לרוכבי אופניים</h3><p>נוחות רכיבה לפי מצב המיסעה, נפח התנועה ושיעור הרכב הכבד.</p><span class="std">HCM Ch. 16</span></a>
-            <a class="row" href="transit-los.html"><h3>רמת שירות לתחבורה ציבורית</h3><p>תדירות שירות, מתקני תחנה ואמינות לאורך הקו.</p><span class="std">HCM Ch. 16</span></a>
-            <a class="row" href="multimodal-los.html"><h3>רמת שירות רב-אמצעית</h3><p>שילוב ציוני הולכי רגל, אופניים ותחבורה ציבורית לתוצאה אחת למסדרון.</p><span class="std">HCM Ch. 16</span></a>
-            <a class="row" href="intersection-spf.html"><h3>פונקציות ביצועי בטיחות בצמתים</h3><p>תדירות תאונות צפויה בצמתים עירוניים לפי סוג בקרה ונפח תנועה.</p><span class="std">HSM</span></a>
-            <a class="row" href="Intersection-Safety-Performance-Functions.html"><h3>פונקציות ביצועי בטיחות בצמתים (כללי)</h3><p>חיזוי תדירות תאונות בצמתים לפי נפח וסוג בקרה – נוסחאות כלליות.</p><span class="std">HSM</span></a>
-            <a class="row" href="Intersection%20Safety%20Performance%20Functions%20(Urban)%20.html"><h3>פונקציות ביצועי בטיחות בצמתים עירוניים</h3><p>חיזוי תדירות תאונות בצמתים עירוניים ספציפית, תוך התחשבות במאפייני הסביבה.</p><span class="std">HSM</span></a>
-            <a class="row" href="urban-intersection-design.html"><h3>תכנון גיאומטרי של צומת עירוני</h3><p>פריסה גיאומטרית, רדיוסי פינה ומשולשי ראייה.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="typical-section.html"><h3>חתך רוחב עירוני</h3><p>רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="interchange-design.html"><h3>תכנון מחלפים</h3><p>מחלף יהלום, פארקלו, SPUI וצורות מחלף עירוניות נוספות.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="Urban-interchange-Design.html"><h3>תכנון מחלף עירוני</h3><p>פריסה גיאומטרית של מחלף בסביבה עירונית, כולל רמפות, איי הפרדה וגישות.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="frontage-road-design.html"><h3>תכנון דרכי שירות</h3><p>דרכי שירות מקבילות לעורק ראשי והחיבורים אליו.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="Urban-Roadside-Safety.html"><h3>בטיחות שולי דרך עירוניים</h3><p>בחירת מעקות, כריות בלימה והפרדה בהתאמה למהירות ולסביבה עירונית.</p><span class="std">AASHTO Roadside Design Guide</span></a>
-        </section>
-
-        <!-- ========== RURAL GROUP ========== -->
-        <section class="group" id="rural" data-group="rural">
-            <div class="group-head">
-                <h2>כבישים בין-עירוניים</h2>
-                <p>תפעול כבישים מהירים ודו-נתיביים, תוואי וגיאומטריית שוליים.</p>
-                <span class="n" data-groupcount>14</span>
-            </div>
-
-            <a class="row" href="basic-freeway.html"><h3>ניתוח מקטע בסיסי בכביש מהיר</h3><p>צפיפות, מהירות ממוצעת ורמת שירות במקטעים ללא הפרעה.</p><span class="std">HCM Ch. 21 / 23</span></a>
-            <a class="row" href="freeway-facility.html"><h3>ניתוח מתקן כביש מהיר</h3><p>רמת שירות לכלל המתקן על פני מקטעים בסיסיים, מקטעי שזירה ורמפות ברצף.</p><span class="std">HCM Ch. 21</span></a>
-            <a class="row" href="ramp-merge-diverge.html"><h3>ניתוח מיזוג והתפצלות ברמפות</h3><p>צפיפות ורמת שירות באזורי ההשפעה של רמפת כניסה ורמפת יציאה.</p><span class="std">HCM Ch. 25</span></a>
-            <a class="row" href="weaving-segment.html"><h3>ניתוח מקטע שזירה</h3><p>יחס שזירה, ביקוש ביחידות רכב נוסעים, קיבולת, מהירות ותנאי מרווח בין רמפות.</p><span class="std">HCM Ch. 24</span></a>
-            <a class="row" href="interchange-los.html"><h3>רמת שירות במחלף</h3><p>קיבולת מסופי הרמפות, תורים בקטע הפנימי והשפעה הדדית בין שני הצמתים.</p><span class="std">HCM Ch. 23</span></a>
-            <a class="row" href="Interchange-Ramp-Terminal%20Analysis.html"><h3>ניתוח מסופי רמפות במחלף</h3><p>קיבולת ועיכובים במסופי רמפות, כולל מיזוג והתפצלות בפירוט.</p><span class="std">HCM Ch. 25</span></a>
-            <a class="row" href="two-lane-highway.html"><h3>ניתוח כביש דו-נתיבי</h3><p>צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ורמת שירות.</p><span class="std">HCM Ch. 15</span></a>
-            <a class="row" href="freeway-reliability.html"><h3>אמינות זמני נסיעה בכביש מהיר</h3><p>מדד זמן תכנון, מדד מרווח ביטחון והתפלגות האמינות על פני שנה.</p><span class="std">HCM Ch. 10</span></a>
-            <a class="row" href="climbing-lane.html"><h3>הצדקה לנתיב טיפוס</h3><p>שיפוע, אורך, ביצועי משאיות וירידת מהירות, לכדי הצדקה שניתן להגן עליה.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="horizontal-curve.html"><h3>תכנון עקומה אופקית</h3><p>רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="vertical-curve.html"><h3>תכנון עקומה אנכית</h3><p>אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="sight-distance.html"><h3>חישוב מרחק ראייה</h3><p>מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="rural-cross-section.html"><h3>חתך רוחב בין-עירוני</h3><p>רוחבי נתיב ושוליים עם שיפוע רוחבי לפי סוג הכביש.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="typical-sections-interurban.html"><h3>חתכים טיפוסיים בין-עירוניים</h3><p>חתכי מסדרון עם נתיבי נסיעה, שוליים, איי הפרדה ורצועות ביטחון.</p><span class="std">AASHTO Green Book</span></a>
-        </section>
-
-        <!-- ========== SHARED GROUP ========== -->
-        <section class="group" id="common" data-group="common">
-            <div class="group-head">
-                <h2>תכנון משותף</h2>
-                <p>נהלים שרלוונטיים בכל מקום שבו הפרויקט יושב.</p>
-                <span class="n" data-groupcount>14</span>
-            </div>
-
-            <a class="row" href="tia.html"><h3>תסקיר השפעה תחבורתית</h3><p>מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.</p><span class="std">HCM &amp; AASHTO</span></a>
-            <a class="row" href="TRAFFIC-IMPACT.html"><h3>תסקיר השפעה תחבורתי</h3><p>הערכת השפעת פיתוח על רשת התנועה, כולל מייצור נסיעות והקצאה לנתיבים.</p><span class="std">HCM &amp; AASHTO</span></a>
-            <a class="row" href="capacity-library.html"><h3>ספריית קיבולת ומקדמי תיקון</h3><p>קיבולות בסיס עם תיקונים לרכב כבד, שיפוע ואוכלוסיית נהגים.</p><span class="std">HCM</span></a>
-            <a class="row" href="Capacity-Factor-Library.html"><h3>ספריית מקדמי קיבולת</h3><p>אוסף מקדמי תיקון לקיבולת בסיסית, כולל רכב כבד ושיפוע.</p><span class="std">HCM</span></a>
-            <a class="row" href="vehicle-swept-path.html"><h3>מסלול סחיפה של רכב תכן</h3><p>מסלולי פנייה וסחיפה של רכבי תכן סטנדרטיים ברדיוס נתון.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="Design-Vehicle-Swept-Path%20Analysis.html"><h3>ניתוח מסלול סחיפה של רכב תכן</h3><p>סימולציית מסלולי פנייה ורוחבי נתיבים לרכבי תכן.</p><span class="std">AASHTO Green Book</span></a>
-            <a class="row" href="pavement-design.html"><h3>תכנון מבנה מיסעה</h3><p>עובי מבנה לפי שיטת 1993 ולפי ניתוח מכני-אמפירי.</p><span class="std">AASHTO Pavement Structures</span></a>
-            <a class="row" href="MEPDG-methodologies.html"><h3>מתודולוגיות MEPDG לתכנון מיסעה</h3><p>ניתוח מבני מכני-אמפירי לתכנון מיסעות גמישות וקשיחות.</p><span class="std">AASHTO MEPDG</span></a>
-            <a class="row" href="roadside-safety.html"><h3>בחירת אמצעי בטיחות בשולי הדרך</h3><p>מעקות, כריות בלימה וקצוות, בהתאמה למפגע ולמהירות.</p><span class="std">AASHTO Roadside Design Guide</span></a>
-            <a class="row" href="Roadside-Design-Guide.html"><h3>מדריך תכנון שולי דרך</h3><p>תכנון אזורי בטיחות, מעקות וקצוות לפי המדריך האמריקאי.</p><span class="std">AASHTO Roadside Design Guide</span></a>
-            <a class="row" href="Clear-Zone-Design.html"><h3>תכנון אזור ביטחון צדדי</h3><p>קביעת רוחבי אזור ביטחון (Clear Zone) בשולי הכביש.</p><span class="std">AASHTO Roadside Design Guide</span></a>
-            <a class="row" href="bridge-scour.html"><h3>ניתוח סחיפה בגשרים</h3><p>פוטנציאל סחיפה כללית, סביב עמודים וסביב כתפיים במעבר נחל.</p><span class="std">HEC-18 / AASHTO LRFD</span></a>
-            <a class="row" href="bca.html"><h3>ניתוח כלכלי ותועלת-עלות</h3><p>עלויות משתמש, תועלות, ערך נוכחי נקי ודירוג פרויקטים.</p><span class="std">AASHTO Red Book</span></a>
-            <a class="row" href="BCA.html"><h3>ניתוח תועלת-עלות (BCA)</h3><p>הערכה כלכלית של פרויקטים תחבורתיים לפי ערך נוכחי נקי.</p><span class="std">AASHTO Red Book</span></a>
-        </section>
-
-        <!-- ========== ACCESS (API pricing) ========== -->
-        <section class="group" id="access">
-            <div class="group-head">
-                <h2>גישה</h2>
-                <p>כל נוהל זמין להרצה בדפדפן. מפתח מעלה את מגבלת הקצב ומאפשר לשלוח בקשות ישירות ל‑API.</p>
-            </div>
-
-            <div class="tier">
+        <section class="hero" id="top">
+            <div class="wrap">
                 <div>
-                    <h3>התנסות</h3>
-                    <p>מפתח התנסות לשבועיים, בלי תשלום ובלי כרטיס אשראי. שלחו מייל ותקבלו מפתח.</p>
+                    <h1>חמישים ואחד נהלים לדרך שלפניכם.</h1>
+                    <p>קיבולת, בטיחות ותכנון גיאומטרי לפי ה‑Highway Capacity Manual, ספר AASHTO וה‑Highway Safety Manual. אפשר להריץ נוהל בדפדפן, או לשלוח את אותם נתונים ל‑API כשהשאלה גדלה לכדי מסדרון שלם.</p>
+                    <div class="hero-actions">
+                        <a class="btn btn-solid" href="#urban">לעיון בקטלוג</a>
+                        <a class="btn btn-line" href="critical-lane-volume.html">פתיחת מחשבון פאזות</a>
+                        <!-- Added shortcuts -->
+                        <a class="btn btn-line" href="parking-regulations.html">תקנות והנחיות חניה</a>
+                        <a class="btn btn-line" href="critical-lane-volume.html">נפח נתיב קריטי</a>
+                    </div>
+                    <div class="tally">
+                        <div><b>23</b>רחובות עירוניים</div>
+                        <div><b>14</b>כבישים בין-עירוניים</div>
+                        <div><b>14</b>תכנון משותף</div>
+                    </div>
                 </div>
-                <span class="rate">30 בקשות בשעה</span>
-                <a class="price" href="mailto:Mahmoudalem95@icloud.com?subject=%D7%91%D7%A7%D7%A9%D7%AA%20%D7%9E%D7%A4%D7%AA%D7%97%20%D7%94%D7%AA%D7%A0%D7%A1%D7%95%D7%אות">בקשת מפתח</a>
-            </div>
 
-            <div class="tier">
-                <div>
-                    <h3>מפתחים</h3>
-                    <p>מפתח API לעבודת אב-טיפוס ולצומת בודד.</p>
-                </div>
-                <span class="rate">120 בקשות בשעה</span>
-                <a class="price buy" href="https://paypal.me/MahmoudAlem" target="_blank" rel="noopener">‏$19 לחודש</a>
+                <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="מבט על של צומת בעל ארבע זרועות עם סימוני דרך">
+                    <rect width="380" height="380" fill="#1B1F24"/>
+                    <rect x="0" y="130" width="380" height="120" fill="#2C3138"/>
+                    <rect x="130" y="0" width="120" height="380" fill="#2C3138"/>
+                    <rect x="130" y="130" width="120" height="120" fill="#2C3138"/>
+                    <g stroke="#E9B12F" stroke-width="2.5" stroke-dasharray="14 11">
+                        <line x1="0" y1="190" x2="122" y2="190"/>
+                        <line x1="258" y1="190" x2="380" y2="190"/>
+                        <line x1="190" y1="0" x2="190" y2="122"/>
+                        <line x1="190" y1="258" x2="190" y2="380"/>
+                    </g>
+                    <g stroke="#8C949E" stroke-width="1.5" stroke-dasharray="9 9" opacity=".55">
+                        <line x1="0" y1="160" x2="122" y2="160"/>
+                        <line x1="258" y1="220" x2="380" y2="220"/>
+                        <line x1="160" y1="258" x2="160" y2="380"/>
+                        <line x1="220" y1="0" x2="220" y2="122"/>
+                    </g>
+                    <g fill="#E7E8E3">
+                        <rect x="130" y="123" width="60" height="5"/>
+                        <rect x="190" y="252" width="60" height="5"/>
+                        <rect x="123" y="190" width="5" height="60"/>
+                        <rect x="252" y="130" width="5" height="60"/>
+                    </g>
+                    <g stroke="#4A525C" stroke-width="1.5">
+                        <line x1="0" y1="130" x2="130" y2="130"/><line x1="250" y1="130" x2="380" y2="130"/>
+                        <line x1="0" y1="250" x2="130" y2="250"/><line x1="250" y1="250" x2="380" y2="250"/>
+                        <line x1="130" y1="0" x2="130" y2="130"/><line x1="130" y1="250" x2="130" y2="380"/>
+                        <line x1="250" y1="0" x2="250" y2="130"/><line x1="250" y1="250" x2="250" y2="380"/>
+                    </g>
+                </svg>
             </div>
-
-            <div class="tier">
-                <div>
-                    <h3>משרד</h3>
-                    <p>לבדיקות מסדרון ולתרחישים על פני רשת שלמה.</p>
-                </div>
-                <span class="rate">600 בקשות בשעה</span>
-                <a class="price buy" href="https://paypal.me/MahmoudAlem" target="_blank" rel="noopener">‏$79 לחודש</a>
-            </div>
-
-            <div class="tier">
-                <div>
-                    <h3>ארגוני</h3>
-                    <p>ללא מגבלת בקשות, עם איש קשר לשאלות מתודולוגיה.</p>
-                </div>
-                <span class="rate">ללא מגבלה</span>
-                <a class="price" href="mailto:Mahmoudalem95@icloud.com">דברו איתנו</a>
-            </div>
-
-            <p class="note">המפתחות מונפקים ידנית לאחר התשלום — שלחו את כתובת המייל שממנה שילמתם ותקבלו את המפתח בחזרה. אפשר לבטל בכל עת במייל.</p>
         </section>
 
-        <!-- ========== COMING WORKS / AI PROJECTS ========== -->
-        <section class="group" id="coming">
-            <div class="group-head">
-                <h2>בפיתוח – חידושים מבוססי בינה מלאכותית</h2>
-                <p>יישומים מבוססי AI שיחוללו מהפכה בתכנון התחבורה. הבעת עניין מוקדם מזכה בגישה מוקדמת למוצר.</p>
-                <span class="n">3 בפתח</span>
-            </div>
-
-            <!-- UPDATED: changed רמזורים to תמרורים -->
-            <div class="row">
-                <h3>תכנון תמרורים אוטומטי מבוסס AI</h3>
-                <p>הפקת תכנית DWG מלאה של תמרורים מתוך תצלום אוויר בלבד. דיוק גבוה עם דוגמאות קבצי DWG.</p>
-                <span class="std">Early Demand – פנו אלינו</span>
-            </div>
-
-            <div class="row">
-                <h3>מחולל מרחקי ראייה אוטומטי</h3>
-                <p>יצירת תכנית מרחקי ראייה (Sight Distance) מתוך תצלום אוויר – מתאים לכיכרות עירוניות ובין-עירוניות.</p>
-                <span class="std">Early Demand – פנו אלינו</span>
-            </div>
-
-            <div class="row">
-                <h3>מחולל חתכים טיפוסיים מבוסס AI</h3>
-                <p>יצירת חתכים טיפוסיים חכמים תוך דקות מתוך נתוני קווי תכנון.</p>
-                <span class="std">בשלבי פיתוח (Underwork)</span>
-            </div>
-            <p style="margin-top: 16px; color: var(--muted); font-size: 14px;">להבעת עניין מוקדם, צרו קשר באמצעות המייל או הטלפון שבתחתית העמוד.</p>
-        </section>
-
-        <!-- ========== UPDATED: CATEGORIZED KEYWORD SECTION (MOVED TO BOTTOM) ========== -->
-        <div class="keyword-section">
-            <h2>🔍 כל מה שמהנדסי תנועה, מתכנני כבישים ומנהלי פרויקטים מחפשים</h2>
-            <p>אנו נותנים מענה מקצועי לכל תחומי ההנדסה – בדפדפן, דרך ה‑API, או בשילוב עם מערכות החברה שלכם.</p>
-
-            <!-- Category 1: Software & Simulations -->
-            <span class="keyword-cat">📊 תוכנות ניתוח תנועה וסימולציות</span>
-            <div>
-                <span class="tag tag-soft">PTV Vissim</span>
-                <span class="tag tag-soft">PTV Visum</span>
-                <span class="tag tag-soft">Synchro</span>
-                <span class="tag tag-soft">SimTraffic</span>
-                <span class="tag tag-soft">TransModeler</span>
-                <span class="tag tag-soft">Aimsun</span>
-                <span class="tag tag-soft">SIDRA Intersection</span>
-                <span class="tag tag-soft">Civil 3D</span>
-                <span class="tag tag-soft">InRoads</span>
-                <span class="tag tag-soft">MX</span>
-                <span class="tag tag-soft">GIS / מיפוי</span>
-                <span class="tag tag-soft">סימולציות תנועה</span>
-                <span class="tag tag-soft">מודל תחבורה</span>
-            </div>
-
-            <!-- Category 2: National Agencies & Companies -->
-            <span class="keyword-cat">🏛️ גופים לאומיים, עירוניים וחברות תשתית</span>
-            <div>
-                <span class="tag tag-agency">משרד התחבורה</span>
-                <span class="tag tag-agency">נתיבי ישראל</span>
-                <span class="tag tag-agency">חוצה ישראל</span>
-                <span class="tag tag-agency">כביש 6</span>
-                <span class="tag tag-agency">רכבת ישראל</span>
-                <span class="tag tag-agency">נת"ע (רכבת קלה)</span>
-                <span class="tag tag-agency">כרמלית</span>
-                <span class="tag tag-agency">יפה נוף (חיפה)</span>
-                <span class="tag tag-agency">מוריה (ירושלים)</span>
-                <span class="tag tag-agency">נתיבי איילון</span>
-                <span class="tag tag-agency">ות"ל</span>
-                <span class="tag tag-agency">ועדות מחוזיות</span>
-                <span class="tag tag-agency">רשויות מקומיות</span>
-            </div>
-
-            <!-- Category 3: Guidelines, Standards & Professional Literature -->
-            <span class="keyword-cat">📚 הנחיות, תקינה וספרות מקצועית</span>
-            <div>
-                <span class="tag tag-guideline">HCM (Highway Capacity Manual)</span>
-                <span class="tag tag-guideline">AASHTO Green Book</span>
-                <span class="tag tag-guideline">HSM (Highway Safety Manual)</span>
-                <span class="tag tag-guideline">MUTCD</span>
-                <span class="tag tag-guideline">ספר אדום (עורקי תנועה)</span>
-                <span class="tag tag-guideline">אדם רחוב (הנחיות רחובות)</span>
-                <span class="tag tag-guideline">מפרט 3 (סלילה)</span>
-                <span class="tag tag-guideline">מפרט 35 (תמרור)</span>
-                <span class="tag tag-guideline">הנחיות ניקוז</span>
-                <span class="tag tag-guideline">הסדרה הירוקה</span>
-                <span class="tag tag-guideline">הנחיות הצבת מעקות</span>
-                <span class="tag tag-guideline">הנחיות רמזורים</span>
-            </div>
-
-            <!-- Category 4: Geometric Design, Cross-Sections & Infrastructure -->
-            <span class="keyword-cat">📐 תכנון גיאומטרי, חתכים ותשתיות (כבישים, אופניים, תח"צ)</span>
-            <div>
-                <span class="tag tag-geo">תכנון אופקי ואנכי</span>
-                <span class="tag tag-geo">עקומות מעבר (קלואיד/ספירלה)</span>
-                <span class="tag tag-geo">סופר-אלוויישן (שיפוע רוחבי)</span>
-                <span class="tag tag-geo">שיפוע אורך</span>
-                <span class="tag tag-geo">כיכרות תנועה (מעגלי תנועה)</span>
-                <span class="tag tag-geo">שדה ראייה</span>
-                <span class="tag tag-geo">חתכים טיפוסיים</span>
-                <span class="tag tag-geo">שוליים ומפרצי עצירה</span>
-                <span class="tag tag-geo">תעלות ניקוז</span>
-                <span class="tag tag-geo">איים מפרידים</span>
-                <span class="tag tag-geo">נת"צ (נתיבי תחבורה ציבורית)</span>
-                <span class="tag tag-geo">שבילי אופניים</span>
-                <span class="tag tag-geo">תחנות אוטובוס</span>
-            </div>
-
-            <!-- Category 5: Projects, Tenders & Careers -->
-            <span class="keyword-cat">💼 פרויקטים, מכרזים, משרות וניהול</span>
-            <div>
-                <span class="tag tag-project">מכרזי תשתית ופיתוח</span>
-                <span class="tag tag-project">מכרזי סלילה (נתיבי ישראל)</span>
-                <span class="tag tag-project">מכרזי מסגרת ליועצי תנועה</span>
-                <span class="tag tag-project">מכרזי פיתוח עירוני</span>
-                <span class="tag tag-project">דרושים מהנדס תנועה בכיר</span>
-                <span class="tag tag-project">מתכנן תחבורה עירונית</span>
-                <span class="tag tag-project">מהנדס כבישים ותשתיות</span>
-                <span class="tag tag-project">מנהל פרויקט תשתיות (PMCM)</span>
-                <span class="tag tag-project">יועץ בטיחות בדרכים (סב"ד)</span>
-                <span class="tag tag-project">מהנדס רשות מקומית</span>
-                <span class="tag tag-project">חברות ניהול פרויקטים</span>
-                <span class="tag tag-project">סקרי שדה (נפחים, מהירויות, חניה)</span>
-            </div>
-
-            <!-- Category 6: Planning Documents, Permits & Topography -->
-            <span class="keyword-cat">📋 תכניות הנדסיות, מסמכי רישוי וטופוגרפיה</span>
-            <div>
-                <span class="tag tag-plan">תב"ע (תכנית בניין עיר)</span>
-                <span class="tag tag-plan">תמ"א / תמ"מ (מתאר ארצית/מחוזית)</span>
-                <span class="tag tag-plan">תכנית מפורטת לתשתיות</span>
-                <span class="tag tag-plan">הס"פ (הסדרי תנועה ופיתוח)</span>
-                <span class="tag tag-plan">תכנית ניקוז ופיתוח</span>
-                <span class="tag tag-plan">כתב כמויות (כק)</span>
-                <span class="tag tag-plan">מט"מ (מפרט טכני מיוחד)</span>
-                <span class="tag tag-plan">אומדן תקציבי</span>
-                <span class="tag tag-plan">מפת מדידה (מצבית וגבוהה)</span>
-                <span class="tag tag-plan">חתכי אורך ורוחב דיגיטליים</span>
-                <span class="tag tag-plan">מודל תלת-ממדי (Civil 3D)</span>
+        <div class="controls">
+            <div class="wrap">
+                <label class="search">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
+                    </svg>
+                    <input id="q" type="search" placeholder="חיפוש לפי שם או תקן" aria-label="חיפוש בקטלוג הנהלים">
+                </label>
+                <div class="filters" role="group" aria-label="סינון לפי קטגוריה">
+                    <button class="chip" data-cat="all" aria-pressed="true">הכול</button>
+                    <button class="chip" data-cat="urban" aria-pressed="false">עירוני</button>
+                    <button class="chip" data-cat="rural" aria-pressed="false">בין-עירוני</button>
+                    <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
+                </div>
+                <p class="count" id="count" aria-live="polite">51 נהלים</p>
             </div>
         </div>
 
-        <p class="empty" id="empty" hidden>אין נוהל שתואם את החיפוש. אפשר לחפש </p>
-    </main>
+        <main class="wrap">
 
-    <footer>
-        <div class="wrap">
-            <p>מהאלco מספקת כלי חישוב וניתוח הנדסיים מבוססי תקנים בינלאומיים וישראליים. כל התוצאות כפופות לבדיקה מקצועית של מהנדס מוסמך.</p>
-            <div class="contact">
-                <span>📧 <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a></span>
-                <span>📞 <a href="tel:+972546528572">+972-546-528572</a></span>
-                <a href="#" class="policy">מדיניות פרטיות</a>
-                <a href="https://github.com/mahmoudalem95/mahalco" class="github" target="_blank" rel="noopener">🐙 GitHub</a>
+            <!-- ========== URBAN GROUP ========== -->
+            <section class="group" id="urban" data-group="urban">
+                <div class="group-head">
+                    <h2>רחובות עירוניים</h2>
+                    <p>רמזורים, צמתים, איכות רב-אמצעית וגיאומטריית חתך.</p>
+                    <span class="n" data-groupcount>23</span>
+                </div>
+
+                <a class="row" href="parking-regulations.html"><h3>תקנות והנחיות חניה</h3><p>חישוב תקני חניה לפרויקטים מגורים, מסחר ותעסוקה, כולל דרישות לפריקה וטעינה וחניות נכים.</p><span class="std">הנחיות משרד התחבורה / תב"ע</span></a>
+                <a class="row" href="critical-lane-volume.html"><h3>נפח נתיב קריטי</h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                <!-- UPDATED: removed "(Tool)" from the heading -->
+                <a class="row" href="tool.html"><h3>כלי ניתוח צמתים</h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
+                <a class="row" href="signalized.html"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
+                <a class="row" href="unsignalized.html"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
+                <a class="row" href="roundabout.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
+                <a class="row" href="signal-timing.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                <a class="row" href="lane-queue.html"><h3>ניתוח נתיבים ותורים</h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                <a class="row" href="urban-segment.html"><h3>ניתוח מקטע רחוב עירוני</h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
+                <a class="row" href="urban-facility.html"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></a>
+                <a class="row" href="pedestrian-los.html"><h3>רמת שירות להולכי רגל</h3><p>הליכות לפי רוחב מדרכה, הפרדה מהתנועה ותנאי החצייה.</p><span class="std">HCM Ch. 16</span></a>
+                <a class="row" href="bicycle-los.html"><h3>רמת שירות לרוכבי אופניים</h3><p>נוחות רכיבה לפי מצב המיסעה, נפח התנועה ושיעור הרכב הכבד.</p><span class="std">HCM Ch. 16</span></a>
+                <a class="row" href="transit-los.html"><h3>רמת שירות לתחבורה ציבורית</h3><p>תדירות שירות, מתקני תחנה ואמינות לאורך הקו.</p><span class="std">HCM Ch. 16</span></a>
+                <a class="row" href="multimodal-los.html"><h3>רמת שירות רב-אמצעית</h3><p>שילוב ציוני הולכי רגל, אופניים ותחבורה ציבורית לתוצאה אחת למסדרון.</p><span class="std">HCM Ch. 16</span></a>
+                <a class="row" href="intersection-spf.html"><h3>פונקציות ביצועי בטיחות בצמתים</h3><p>תדירות תאונות צפויה בצמתים עירוניים לפי סוג בקרה ונפח תנועה.</p><span class="std">HSM</span></a>
+                <a class="row" href="Intersection-Safety-Performance-Functions.html"><h3>פונקציות ביצועי בטיחות בצמתים (כללי)</h3><p>חיזוי תדירות תאונות בצמתים לפי נפח וסוג בקרה – נוסחאות כלליות.</p><span class="std">HSM</span></a>
+                <a class="row" href="Intersection%20Safety%20Performance%20Functions%20(Urban)%20.html"><h3>פונקציות ביצועי בטיחות בצמתים עירוניים</h3><p>חיזוי תדירות תאונות בצמתים עירוניים ספציפית, תוך התחשבות במאפייני הסביבה.</p><span class="std">HSM</span></a>
+                <a class="row" href="urban-intersection-design.html"><h3>תכנון גיאומטרי של צומת עירוני</h3><p>פריסה גיאומטרית, רדיוסי פינה ומשולשי ראייה.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="typical-section.html"><h3>חתך רוחב עירוני</h3><p>רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="interchange-design.html"><h3>תכנון מחלפים</h3><p>מחלף יהלום, פארקלו, SPUI וצורות מחלף עירוניות נוספות.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="Urban-interchange-Design.html"><h3>תכנון מחלף עירוני</h3><p>פריסה גיאומטרית של מחלף בסביבה עירונית, כולל רמפות, איי הפרדה וגישות.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="frontage-road-design.html"><h3>תכנון דרכי שירות</h3><p>דרכי שירות מקבילות לעורק ראשי והחיבורים אליו.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="Urban-Roadside-Safety.html"><h3>בטיחות שולי דרך עירוניים</h3><p>בחירת מעקות, כריות בלימה והפרדה בהתאמה למהירות ולסביבה עירונית.</p><span class="std">AASHTO Roadside Design Guide</span></a>
+            </section>
+
+            <!-- ========== RURAL GROUP ========== -->
+            <section class="group" id="rural" data-group="rural">
+                <div class="group-head">
+                    <h2>כבישים בין-עירוניים</h2>
+                    <p>תפעול כבישים מהירים ודו-נתיביים, תוואי וגיאומטריית שוליים.</p>
+                    <span class="n" data-groupcount>14</span>
+                </div>
+
+                <a class="row" href="basic-freeway.html"><h3>ניתוח מקטע בסיסי בכביש מהיר</h3><p>צפיפות, מהירות ממוצעת ורמת שירות במקטעים ללא הפרעה.</p><span class="std">HCM Ch. 21 / 23</span></a>
+                <a class="row" href="freeway-facility.html"><h3>ניתוח מתקן כביש מהיר</h3><p>רמת שירות לכלל המתקן על פני מקטעים בסיסיים, מקטעי שזירה ורמפות ברצף.</p><span class="std">HCM Ch. 21</span></a>
+                <a class="row" href="ramp-merge-diverge.html"><h3>ניתוח מיזוג והתפצלות ברמפות</h3><p>צפיפות ורמת שירות באזורי ההשפעה של רמפת כניסה ורמפת יציאה.</p><span class="std">HCM Ch. 25</span></a>
+                <a class="row" href="weaving-segment.html"><h3>ניתוח מקטע שזירה</h3><p>יחס שזירה, ביקוש ביחידות רכב נוסעים, קיבולת, מהירות ותנאי מרווח בין רמפות.</p><span class="std">HCM Ch. 24</span></a>
+                <a class="row" href="interchange-los.html"><h3>רמת שירות במחלף</h3><p>קיבולת מסופי הרמפות, תורים בקטע הפנימי והשפעה הדדית בין שני הצמתים.</p><span class="std">HCM Ch. 23</span></a>
+                <a class="row" href="Interchange-Ramp-Terminal%20Analysis.html"><h3>ניתוח מסופי רמפות במחלף</h3><p>קיבולת ועיכובים במסופי רמפות, כולל מיזוג והתפצלות בפירוט.</p><span class="std">HCM Ch. 25</span></a>
+                <a class="row" href="two-lane-highway.html"><h3>ניתוח כביש דו-נתיבי</h3><p>צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ורמת שירות.</p><span class="std">HCM Ch. 15</span></a>
+                <a class="row" href="freeway-reliability.html"><h3>אמינות זמני נסיעה בכביש מהיר</h3><p>מדד זמן תכנון, מדד מרווח ביטחון והתפלגות האמינות על פני שנה.</p><span class="std">HCM Ch. 10</span></a>
+                <a class="row" href="climbing-lane.html"><h3>הצדקה לנתיב טיפוס</h3><p>שיפוע, אורך, ביצועי משאיות וירידת מהירות, לכדי הצדקה שניתן להגן עליה.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="horizontal-curve.html"><h3>תכנון עקומה אופקית</h3><p>רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="vertical-curve.html"><h3>תכנון עקומה אנכית</h3><p>אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="sight-distance.html"><h3>חישוב מרחק ראייה</h3><p>מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="rural-cross-section.html"><h3>חתך רוחב בין-עירוני</h3><p>רוחבי נתיב ושוליים עם שיפוע רוחבי לפי סוג הכביש.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="typical-sections-interurban.html"><h3>חתכים טיפוסיים בין-עירוניים</h3><p>חתכי מסדרון עם נתיבי נסיעה, שוליים, איי הפרדה ורצועות ביטחון.</p><span class="std">AASHTO Green Book</span></a>
+            </section>
+
+            <!-- ========== SHARED GROUP ========== -->
+            <section class="group" id="common" data-group="common">
+                <div class="group-head">
+                    <h2>תכנון משותף</h2>
+                    <p>נהלים שרלוונטיים בכל מקום שבו הפרויקט יושב.</p>
+                    <span class="n" data-groupcount>14</span>
+                </div>
+
+                <a class="row" href="tia.html"><h3>תסקיר השפעה תחבורתית</h3><p>מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.</p><span class="std">HCM &amp; AASHTO</span></a>
+                <a class="row" href="TRAFFIC-IMPACT.html"><h3>תסקיר השפעה תחבורתי</h3><p>הערכת השפעת פיתוח על רשת התנועה, כולל מייצור נסיעות והקצאה לנתיבים.</p><span class="std">HCM &amp; AASHTO</span></a>
+                <a class="row" href="capacity-library.html"><h3>ספריית קיבולת ומקדמי תיקון</h3><p>קיבולות בסיס עם תיקונים לרכב כבד, שיפוע ואוכלוסיית נהגים.</p><span class="std">HCM</span></a>
+                <a class="row" href="Capacity-Factor-Library.html"><h3>ספריית מקדמי קיבולת</h3><p>אוסף מקדמי תיקון לקיבולת בסיסית, כולל רכב כבד ושיפוע.</p><span class="std">HCM</span></a>
+                <a class="row" href="vehicle-swept-path.html"><h3>מסלול סחיפה של רכב תכן</h3><p>מסלולי פנייה וסחיפה של רכבי תכן סטנדרטיים ברדיוס נתון.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="Design-Vehicle-Swept-Path%20Analysis.html"><h3>ניתוח מסלול סחיפה של רכב תכן</h3><p>סימולציית מסלולי פנייה ורוחבי נתיבים לרכבי תכן.</p><span class="std">AASHTO Green Book</span></a>
+                <a class="row" href="pavement-design.html"><h3>תכנון מבנה מיסעה</h3><p>עובי מבנה לפי שיטת 1993 ולפי ניתוח מכני-אמפירי.</p><span class="std">AASHTO Pavement Structures</span></a>
+                <a class="row" href="MEPDG-methodologies.html"><h3>מתודולוגיות MEPDG לתכנון מיסעה</h3><p>ניתוח מבני מכני-אמפירי לתכנון מיסעות גמישות וקשיחות.</p><span class="std">AASHTO MEPDG</span></a>
+                <a class="row" href="roadside-safety.html"><h3>בחירת אמצעי בטיחות בשולי הדרך</h3><p>מעקות, כריות בלימה וקצוות, בהתאמה למפגע ולמהירות.</p><span class="std">AASHTO Roadside Design Guide</span></a>
+                <a class="row" href="Roadside-Design-Guide.html"><h3>מדריך תכנון שולי דרך</h3><p>תכנון אזורי בטיחות, מעקות וקצוות לפי המדריך האמריקאי.</p><span class="std">AASHTO Roadside Design Guide</span></a>
+                <a class="row" href="Clear-Zone-Design.html"><h3>תכנון אזור ביטחון צדדי</h3><p>קביעת רוחבי אזור ביטחון (Clear Zone) בשולי הכביש.</p><span class="std">AASHTO Roadside Design Guide</span></a>
+                <a class="row" href="bridge-scour.html"><h3>ניתוח סחיפה בגשרים</h3><p>פוטנציאל סחיפה כללית, סביב עמודים וסביב כתפיים במעבר נחל.</p><span class="std">HEC-18 / AASHTO LRFD</span></a>
+                <a class="row" href="bca.html"><h3>ניתוח כלכלי ותועלת-עלות</h3><p>עלויות משתמש, תועלות, ערך נוכחי נקי ודירוג פרויקטים.</p><span class="std">AASHTO Red Book</span></a>
+                <a class="row" href="BCA.html"><h3>ניתוח תועלת-עלות (BCA)</h3><p>הערכה כלכלית של פרויקטים תחבורתיים לפי ערך נוכחי נקי.</p><span class="std">AASHTO Red Book</span></a>
+            </section>
+
+            <!-- ========== ACCESS (API pricing) ========== -->
+            <section class="group" id="access">
+                <div class="group-head">
+                    <h2>גישה</h2>
+                    <p>כל נוהל זמין להרצה בדפדפן. מפתח מעלה את מגבלת הקצב ומאפשר לשלוח בקשות ישירות ל‑API.</p>
+                </div>
+
+                <div class="tier">
+                    <div>
+                        <h3>התנסות</h3>
+                        <p>מפתח התנסות לשבועיים, בלי תשלום ובלי כרטיס אשראי. שלחו מייל ותקבלו מפתח.</p>
+                    </div>
+                    <span class="rate">30 בקשות בשעה</span>
+                    <a class="price" href="mailto:Mahmoudalem95@icloud.com?subject=%D7%91%D7%A7%D7%A9%D7%AA%20%D7%9E%D7%A4%D7%AA%D7%97%20%D7%94%D7%AA%D7%A0%D7%A1%D7%95%D7%אות">בקשת מפתח</a>
+                </div>
+
+                <div class="tier">
+                    <div>
+                        <h3>מפתחים</h3>
+                        <p>מפתח API לעבודת אב-טיפוס ולצומת בודד.</p>
+                    </div>
+                    <span class="rate">120 בקשות בשעה</span>
+                    <a class="price buy" href="https://paypal.me/MahmoudAlem" target="_blank" rel="noopener">‏$19 לחודש</a>
+                </div>
+
+                <div class="tier">
+                    <div>
+                        <h3>משרד</h3>
+                        <p>לבדיקות מסדרון ולתרחישים על פני רשת שלמה.</p>
+                    </div>
+                    <span class="rate">600 בקשות בשעה</span>
+                    <a class="price buy" href="https://paypal.me/MahmoudAlem" target="_blank" rel="noopener">‏$79 לחודש</a>
+                </div>
+
+                <div class="tier">
+                    <div>
+                        <h3>ארגוני</h3>
+                        <p>ללא מגבלת בקשות, עם איש קשר לשאלות מתודולוגיה.</p>
+                    </div>
+                    <span class="rate">ללא מגבלה</span>
+                    <a class="price" href="mailto:Mahmoudalem95@icloud.com">דברו איתנו</a>
+                </div>
+
+                <p class="note">המפתחות מונפקים ידנית לאחר התשלום — שלחו את כתובת המייל שממנה שילמתם ותקבלו את המפתח בחזרה. אפשר לבטל בכל עת במייל.</p>
+            </section>
+
+            <!-- ========== COMING WORKS / AI PROJECTS ========== -->
+            <section class="group" id="coming">
+                <div class="group-head">
+                    <h2>בפיתוח – חידושים מבוססי בינה מלאכותית</h2>
+                    <p>יישומים מבוססי AI שיחוללו מהפכה בתכנון התחבורה. הבעת עניין מוקדם מזכה בגישה מוקדמת למוצר.</p>
+                    <span class="n">3 בפתח</span>
+                </div>
+
+                <!-- UPDATED: changed רמזורים to תמרורים -->
+                <div class="row">
+                    <h3>תכנון תמרורים אוטומטי מבוסס AI</h3>
+                    <p>הפקת תכנית DWG מלאה של תמרורים מתוך תצלום אוויר בלבד. דיוק גבוה עם דוגמאות קבצי DWG.</p>
+                    <span class="std">Early Demand – פנו אלינו</span>
+                </div>
+
+                <div class="row">
+                    <h3>מחולל מרחקי ראייה אוטומטי</h3>
+                    <p>יצירת תכנית מרחקי ראייה (Sight Distance) מתוך תצלום אוויר – מתאים לכיכרות עירוניות ובין-עירוניות.</p>
+                    <span class="std">Early Demand – פנו אלינו</span>
+                </div>
+
+                <div class="row">
+                    <h3>מחולל חתכים טיפוסיים מבוסס AI</h3>
+                    <p>יצירת חתכים טיפוסיים חכמים תוך דקות מתוך נתוני קווי תכנון.</p>
+                    <span class="std">בשלבי פיתוח (Underwork)</span>
+                </div>
+                <p style="margin-top: 16px; color: var(--muted); font-size: 14px;">להבעת עניין מוקדם, צרו קשר באמצעות המייל או הטלפון שבתחתית העמוד.</p>
+            </section>
+
+            <!-- ========== UPDATED: CATEGORIZED KEYWORD SECTION (MOVED TO BOTTOM) ========== -->
+            <div class="keyword-section">
+                <h2>🔍 כל מה שמהנדסי תנועה, מתכנני כבישים ומנהלי פרויקטים מחפשים</h2>
+                <p>אנו נותנים מענה מקצועי לכל תחומי ההנדסה – בדפדפן, דרך ה‑API, או בשילוב עם מערכות החברה שלכם.</p>
+
+                <!-- Category 1: Software & Simulations -->
+                <span class="keyword-cat">📊 תוכנות ניתוח תנועה וסימולציות</span>
+                <div>
+                    <span class="tag tag-soft">PTV Vissim</span>
+                    <span class="tag tag-soft">PTV Visum</span>
+                    <span class="tag tag-soft">Synchro</span>
+                    <span class="tag tag-soft">SimTraffic</span>
+                    <span class="tag tag-soft">TransModeler</span>
+                    <span class="tag tag-soft">Aimsun</span>
+                    <span class="tag tag-soft">SIDRA Intersection</span>
+                    <span class="tag tag-soft">Civil 3D</span>
+                    <span class="tag tag-soft">InRoads</span>
+                    <span class="tag tag-soft">MX</span>
+                    <span class="tag tag-soft">GIS / מיפוי</span>
+                    <span class="tag tag-soft">סימולציות תנועה</span>
+                    <span class="tag tag-soft">מודל תחבורה</span>
+                </div>
+
+                <!-- Category 2: National Agencies & Companies -->
+                <span class="keyword-cat">🏛️ גופים לאומיים, עירוניים וחברות תשתית</span>
+                <div>
+                    <span class="tag tag-agency">משרד התחבורה</span>
+                    <span class="tag tag-agency">נתיבי ישראל</span>
+                    <span class="tag tag-agency">חוצה ישראל</span>
+                    <span class="tag tag-agency">כביש 6</span>
+                    <span class="tag tag-agency">רכבת ישראל</span>
+                    <span class="tag tag-agency">נת"ע (רכבת קלה)</span>
+                    <span class="tag tag-agency">כרמלית</span>
+                    <span class="tag tag-agency">יפה נוף (חיפה)</span>
+                    <span class="tag tag-agency">מוריה (ירושלים)</span>
+                    <span class="tag tag-agency">נתיבי איילון</span>
+                    <span class="tag tag-agency">ות"ל</span>
+                    <span class="tag tag-agency">ועדות מחוזיות</span>
+                    <span class="tag tag-agency">רשויות מקומיות</span>
+                </div>
+
+                <!-- Category 3: Guidelines, Standards & Professional Literature -->
+                <span class="keyword-cat">📚 הנחיות, תקינה וספרות מקצועית</span>
+                <div>
+                    <span class="tag tag-guideline">HCM (Highway Capacity Manual)</span>
+                    <span class="tag tag-guideline">AASHTO Green Book</span>
+                    <span class="tag tag-guideline">HSM (Highway Safety Manual)</span>
+                    <span class="tag tag-guideline">MUTCD</span>
+                    <span class="tag tag-guideline">ספר אדום (עורקי תנועה)</span>
+                    <span class="tag tag-guideline">אדם רחוב (הנחיות רחובות)</span>
+                    <span class="tag tag-guideline">מפרט 3 (סלילה)</span>
+                    <span class="tag tag-guideline">מפרט 35 (תמרור)</span>
+                    <span class="tag tag-guideline">הנחיות ניקוז</span>
+                    <span class="tag tag-guideline">הסדרה הירוקה</span>
+                    <span class="tag tag-guideline">הנחיות הצבת מעקות</span>
+                    <span class="tag tag-guideline">הנחיות רמזורים</span>
+                </div>
+
+                <!-- Category 4: Geometric Design, Cross-Sections & Infrastructure -->
+                <span class="keyword-cat">📐 תכנון גיאומטרי, חתכים ותשתיות (כבישים, אופניים, תח"צ)</span>
+                <div>
+                    <span class="tag tag-geo">תכנון אופקי ואנכי</span>
+                    <span class="tag tag-geo">עקומות מעבר (קלואיד/ספירלה)</span>
+                    <span class="tag tag-geo">סופר-אלוויישן (שיפוע רוחבי)</span>
+                    <span class="tag tag-geo">שיפוע אורך</span>
+                    <span class="tag tag-geo">כיכרות תנועה (מעגלי תנועה)</span>
+                    <span class="tag tag-geo">שדה ראייה</span>
+                    <span class="tag tag-geo">חתכים טיפוסיים</span>
+                    <span class="tag tag-geo">שוליים ומפרצי עצירה</span>
+                    <span class="tag tag-geo">תעלות ניקוז</span>
+                    <span class="tag tag-geo">איים מפרידים</span>
+                    <span class="tag tag-geo">נת"צ (נתיבי תחבורה ציבורית)</span>
+                    <span class="tag tag-geo">שבילי אופניים</span>
+                    <span class="tag tag-geo">תחנות אוטובוס</span>
+                </div>
+
+                <!-- Category 5: Projects, Tenders & Careers -->
+                <span class="keyword-cat">💼 פרויקטים, מכרזים, משרות וניהול</span>
+                <div>
+                    <span class="tag tag-project">מכרזי תשתית ופיתוח</span>
+                    <span class="tag tag-project">מכרזי סלילה (נתיבי ישראל)</span>
+                    <span class="tag tag-project">מכרזי מסגרת ליועצי תנועה</span>
+                    <span class="tag tag-project">מכרזי פיתוח עירוני</span>
+                    <span class="tag tag-project">דרושים מהנדס תנועה בכיר</span>
+                    <span class="tag tag-project">מתכנן תחבורה עירונית</span>
+                    <span class="tag tag-project">מהנדס כבישים ותשתיות</span>
+                    <span class="tag tag-project">מנהל פרויקט תשתיות (PMCM)</span>
+                    <span class="tag tag-project">יועץ בטיחות בדרכים (סב"ד)</span>
+                    <span class="tag tag-project">מהנדס רשות מקומית</span>
+                    <span class="tag tag-project">חברות ניהול פרויקטים</span>
+                    <span class="tag tag-project">סקרי שדה (נפחים, מהירויות, חניה)</span>
+                </div>
+
+                <!-- Category 6: Planning Documents, Permits & Topography -->
+                <span class="keyword-cat">📋 תכניות הנדסיות, מסמכי רישוי וטופוגרפיה</span>
+                <div>
+                    <span class="tag tag-plan">תב"ע (תכנית בניין עיר)</span>
+                    <span class="tag tag-plan">תמ"א / תמ"מ (מתאר ארצית/מחוזית)</span>
+                    <span class="tag tag-plan">תכנית מפורטת לתשתיות</span>
+                    <span class="tag tag-plan">הס"פ (הסדרי תנועה ופיתוח)</span>
+                    <span class="tag tag-plan">תכנית ניקוז ופיתוח</span>
+                    <span class="tag tag-plan">כתב כמויות (כק)</span>
+                    <span class="tag tag-plan">מט"מ (מפרט טכני מיוחד)</span>
+                    <span class="tag tag-plan">אומדן תקציבי</span>
+                    <span class="tag tag-plan">מפת מדידה (מצבית וגבוהה)</span>
+                    <span class="tag tag-plan">חתכי אורך ורוחב דיגיטליים</span>
+                    <span class="tag tag-plan">מודל תלת-ממדי (Civil 3D)</span>
+                </div>
             </div>
-            <div class="who">Mahmoud Alem &copy; 2026</div>
-        </div>
-    </footer>
+
+            <p class="empty" id="empty" hidden>אין נוהל שתואם את החיפוש. אפשר לחפש </p>
+        </main>
+
+        <footer>
+            <div class="wrap">
+                <p>מהאלco מספקת כלי חישוב וניתוח הנדסיים מבוססי תקנים בינלאומיים וישראליים. כל התוצאות כפופות לבדיקה מקצועית של מהנדס מוסמך.</p>
+                <div class="contact">
+                    <span>📧 <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a></span>
+                    <span>📞 <a href="tel:+972546528572">+972-546-528572</a></span>
+                    <a href="#" class="policy">מדיניות פרטיות</a>
+                    <a href="https://github.com/mahmoudalem95/mahalco" class="github" target="_blank" rel="noopener">🐙 GitHub</a>
+                </div>
+                <div class="who">Mahmoud Alem &copy; 2026</div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ========== VISIT COUNTER SCRIPT ========== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const STORAGE_KEY = 'mahalco_visit_data';
+            const MAX_VISITS = 5;
+            const overlay = document.getElementById('blocker-overlay');
+            const mainContent = document.getElementById('main-content');
+
+            let stored = localStorage.getItem(STORAGE_KEY);
+            let visitData = stored ? JSON.parse(stored) : { count: 0, ip: '' };
+
+            // Fetch the visitor's public IP
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    let currentIP = data.ip || '';
+                    // If IP changed (different user/network), reset counter to give a fresh start for that IP
+                    if (visitData.ip && visitData.ip !== currentIP) {
+                        visitData.count = 1;
+                        visitData.ip = currentIP;
+                    } else {
+                        visitData.count += 1;
+                        if (!visitData.ip) visitData.ip = currentIP;
+                    }
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(visitData));
+
+                    if (visitData.count > MAX_VISITS) {
+                        overlay.classList.add('visible');
+                        mainContent.classList.remove('visible');
+                    } else {
+                        overlay.classList.remove('visible');
+                        mainContent.classList.add('visible');
+                    }
+                })
+                .catch(() => {
+                    // Fallback: just increment the counter without IP tracking
+                    visitData.count += 1;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(visitData));
+                    if (visitData.count > MAX_VISITS) {
+                        overlay.classList.add('visible');
+                        mainContent.classList.remove('visible');
+                    } else {
+                        overlay.classList.remove('visible');
+                        mainContent.classList.add('visible');
+                    }
+                });
+        });
+    </script>
 
 </body>
 </html>

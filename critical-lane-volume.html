@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* --- styles (unchanged) --- */
         :root {
             --paper: #F4F6F4;
             --surface: #FFFFFF;
@@ -87,7 +88,6 @@
             font-family: 'IBM Plex Mono', ui-monospace, monospace;
         }
 
-        /* ---- geographic input cross ---- */
         .cross {
             direction: ltr;
             display: grid;
@@ -95,11 +95,21 @@
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-areas: ". n ." "w c e" ". s .";
         }
-        .cell-n { grid-area: n; }
-        .cell-s { grid-area: s; }
-        .cell-e { grid-area: e; }
-        .cell-w { grid-area: w; }
-        .cell-c { grid-area: c; }
+        .cell-n {
+            grid-area: n;
+        }
+        .cell-s {
+            grid-area: s;
+        }
+        .cell-e {
+            grid-area: e;
+        }
+        .cell-w {
+            grid-area: w;
+        }
+        .cell-c {
+            grid-area: c;
+        }
 
         .arm {
             direction: rtl;
@@ -123,6 +133,7 @@
             justify-content: space-between;
             gap: 8px;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
         .arm-name {
             font-weight: 600;
@@ -156,6 +167,10 @@
             outline: 2px solid var(--pick);
             outline-offset: 1px;
             border-color: var(--pick);
+        }
+        input[type="number"]:disabled {
+            opacity: 0.5;
+            background: var(--sunk);
         }
         .toggles {
             margin-top: 10px;
@@ -231,7 +246,6 @@
             background: #2A3A42;
         }
 
-        /* ---- tables ---- */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -288,15 +302,6 @@
             color: var(--pick);
             font-weight: 600;
         }
-        .pill {
-            display: inline-block;
-            background: var(--pick-bg);
-            color: var(--pick);
-            border-radius: 3px;
-            padding: 1px 7px;
-            font-size: 12px;
-            font-weight: 600;
-        }
         .note {
             font-size: 13px;
             color: var(--ink2);
@@ -315,9 +320,6 @@
             border-radius: 4px;
             transition: filter .2s;
         }
-        svg.ph.highlighted {
-            filter: drop-shadow(0 0 6px rgba(196, 69, 54, 0.5));
-        }
         svg.ph .movement-label {
             font-family: 'IBM Plex Mono', monospace;
             font-size: 7px;
@@ -335,6 +337,10 @@
             fill: #FFD166;
             font-size: 8px;
             font-weight: 700;
+        }
+        svg.ph .movement-label.free {
+            fill: #F6AD55;
+            font-size: 6px;
         }
         svg.ph .lane-label {
             font-family: 'IBM Plex Mono', monospace;
@@ -358,8 +364,11 @@
         .phase-row.highlight-row td {
             background: var(--hl-bg);
         }
+        .schematic-cell {
+            min-width: 70px;
+            text-align: center;
+        }
 
-        /* ---- comparison ---- */
         .cmp {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -432,16 +441,6 @@
         summary {
             cursor: pointer;
             font-weight: 500;
-        }
-        .schematic-cell {
-            min-width: 70px;
-            text-align: center;
-        }
-
-        /* ---- live schematic interactivity ---- */
-        #liveSchematic {
-            position: relative;
-            cursor: default;
         }
         #liveSchematic svg {
             display: block;
@@ -539,7 +538,7 @@
             'use strict';
 
             /* ============================================================
-               1. Engine
+               1. Core Engine (unchanged logic, but we keep it clear)
                ============================================================ */
             var ARMS = ['N', 'S', 'E', 'W'];
             var HE = { N: 'צפון', S: 'דרום', E: 'מזרח', W: 'מערב' };
@@ -549,21 +548,32 @@
                 E: { S: 'W', L: 'S', R: 'N' },
                 W: { S: 'E', L: 'N', R: 'S' }
             };
-            var AXES = [{ id: 'NS', he: 'צפון–דרום', arms: ['N', 'S'] }, { id: 'EW', he: 'מזרח–מערב', arms: ['E', 'W'] }];
+            var AXES = [
+                { id: 'NS', he: 'צפון–דרום', arms: ['N', 'S'] },
+                { id: 'EW', he: 'מזרח–מערב', arms: ['E', 'W'] }
+            ];
 
             var MOVE = {
                 NS: { d: 'M41,6 L41,89', t: 'M41,95L38,88.5L44,88.5Z', lx: 41, ly: 48, lx2: 41, ly2: 60 },
-                NL: { d: 'M46,6 L46,33 A26,26 0 0 0 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', lx: 64, ly: 32, lx2: 64, ly2: 44 },
-                NR: { d: 'M36,6 L36,33 A8,8 0 0 1 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', lx: 24, ly: 30, lx2: 24, ly2: 42 },
+                NL: { d: 'M46,6 L46,33 A26,26 0 0 0 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', lx: 64, ly: 32,
+                    lx2: 64, ly2: 44 },
+                NR: { d: 'M36,6 L36,33 A8,8 0 0 1 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', lx: 24, ly: 30,
+                    lx2: 24, ly2: 42 },
                 SS: { d: 'M59,94 L59,11', t: 'M59,5L56,11.5L62,11.5Z', lx: 59, ly: 52, lx2: 59, ly2: 40 },
-                SL: { d: 'M54,94 L54,67 A26,26 0 0 0 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', lx: 36, ly: 68, lx2: 36, ly2: 56 },
-                SR: { d: 'M64,94 L64,67 A8,8 0 0 1 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', lx: 76, ly: 70, lx2: 76, ly2: 58 },
+                SL: { d: 'M54,94 L54,67 A26,26 0 0 0 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', lx: 36, ly: 68,
+                    lx2: 36, ly2: 56 },
+                SR: { d: 'M64,94 L64,67 A8,8 0 0 1 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', lx: 76, ly: 70,
+                    lx2: 76, ly2: 58 },
                 ES: { d: 'M94,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', lx: 52, ly: 41, lx2: 40, ly2: 41 },
-                EL: { d: 'M94,46 L67,46 A26,26 0 0 0 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z', lx: 68, ly: 64, lx2: 56, ly2: 64 },
-                ER: { d: 'M94,36 L67,36 A8,8 0 0 1 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z', lx: 76, ly: 30, lx2: 64, ly2: 30 },
+                EL: { d: 'M94,46 L67,46 A26,26 0 0 0 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z', lx: 68, ly: 64,
+                    lx2: 56, ly2: 64 },
+                ER: { d: 'M94,36 L67,36 A8,8 0 0 1 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z', lx: 76, ly: 30,
+                    lx2: 64, ly2: 30 },
                 WS: { d: 'M6,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', lx: 48, ly: 59, lx2: 60, ly2: 59 },
-                WL: { d: 'M6,54 L33,54 A26,26 0 0 0 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z', lx: 32, ly: 36, lx2: 44, ly2: 36 },
-                WR: { d: 'M6,64 L33,64 A8,8 0 0 1 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z', lx: 24, ly: 70, lx2: 36, ly2: 70 }
+                WL: { d: 'M6,54 L33,54 A26,26 0 0 0 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z', lx: 32, ly: 36,
+                    lx2: 44, ly2: 36 },
+                WR: { d: 'M6,64 L33,64 A8,8 0 0 1 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z', lx: 24, ly: 70,
+                    lx2: 36, ly2: 70 }
             };
 
             function allMoves(present) {
@@ -577,27 +587,62 @@
             }
 
             function armGroups(arm, cfg, present) {
-                var a = cfg[arm], g = { left: null, other: [] };
+                var a = cfg[arm],
+                    g = { left: null, other: [] };
                 if (!a || !a.exists) return g;
                 var hasL = present.indexOf(DEST[arm].L) > -1;
                 var hasS = present.indexOf(DEST[arm].S) > -1;
                 var hasR = present.indexOf(DEST[arm].R) > -1;
+
                 if (hasL) {
                     var nl = Math.max(1, a.nL || 1);
-                    g.left = { key: arm + '.L', sym: 'l_' + arm, arm: arm, moves: [arm + 'L'], vol: a.L || 0, lanes: nl, q: (a.L || 0) / nl };
+                    g.left = {
+                        key: arm + '.L',
+                        sym: 'l_' + arm,
+                        arm: arm,
+                        moves: [arm + 'L'],
+                        vol: a.L || 0,
+                        lanes: nl,
+                        q: (a.L || 0) / nl
+                    };
                 }
                 var rActive = hasR && !a.freeRight;
                 if (a.sharedSR && hasS && rActive) {
-                    var ns = Math.max(1, a.nS || 1), vol = (a.S || 0) + (a.R || 0);
-                    g.other.push({ key: arm + '.SR', sym: 'sr_' + arm, arm: arm, moves: [arm + 'S', arm + 'R'], vol: vol, lanes: ns, q: vol / ns });
+                    var ns = Math.max(1, a.nS || 1),
+                        vol = (a.S || 0) + (a.R || 0);
+                    g.other.push({
+                        key: arm + '.SR',
+                        sym: 'sr_' + arm,
+                        arm: arm,
+                        moves: [arm + 'S', arm + 'R'],
+                        vol: vol,
+                        lanes: ns,
+                        q: vol / ns
+                    });
                 } else {
                     if (hasS) {
                         var n2 = Math.max(1, a.nS || 1);
-                        g.other.push({ key: arm + '.S', sym: 's_' + arm, arm: arm, moves: [arm + 'S'], vol: a.S || 0, lanes: n2, q: (a.S || 0) / n2 });
+                        g.other.push({
+                            key: arm + '.S',
+                            sym: 's_' + arm,
+                            arm: arm,
+                            moves: [arm + 'S'],
+                            vol: a.S || 0,
+                            lanes: n2,
+                            q: (a.S || 0) / n2
+                        });
                     }
                     if (rActive) {
                         var n3 = Math.max(1, a.nR || 1);
-                        g.other.push({ key: arm + '.R', sym: 'r_' + arm, arm: arm, moves: [arm + 'R'], vol: a.R || 0, lanes: n3, q: (a.R || 0) / n3 });
+                        g.other.push({
+                            key: arm + '.R',
+                            sym: 'r_' + arm,
+                            arm: arm,
+                            moves: [arm + 'R'],
+                            vol: a.R || 0,
+                            lanes: n3,
+                            q: (a.R || 0) / n3
+                        });
                     }
                 }
                 return g;
@@ -635,23 +680,45 @@
                     var arms = ax.arms.filter(function(a) { return present.indexOf(a) > -1; });
                     if (!arms.length) return;
                     if (arms.length === 1) {
-                        var a = arms[0], terms = allOf(a);
-                        t2.push({ axis: ax.id, he: ax.he, arms: arms, degenerate: true,
-                            phases: [{ label: 'זרוע ' + HE[a] + ' לבדה', terms: terms, moves: movesOf(terms), value: maxQ(terms) }],
-                            optionA: maxQ(terms), optionB: null, chosen: 'א', value: maxQ(terms) });
+                        var a = arms[0],
+                            terms = allOf(a);
+                        t2.push({
+                            axis: ax.id,
+                            he: ax.he,
+                            arms: arms,
+                            degenerate: true,
+                            phases: [{ label: 'זרוע ' + HE[a] + ' לבדה', terms: terms, moves: movesOf(terms),
+                                value: maxQ(terms) }],
+                            optionA: maxQ(terms),
+                            optionB: null,
+                            chosen: 'א',
+                            value: maxQ(terms)
+                        });
                         return;
                     }
-                    var a1 = arms[0], a2 = arms[1];
+                    var a1 = arms[0],
+                        a2 = arms[1];
                     var lefts = [G[a1].left, G[a2].left].filter(Boolean);
                     var others = G[a1].other.concat(G[a2].other);
                     var phases = [];
-                    if (lefts.length) phases.push({ label: 'שמאלות ' + HE[a1] + ' + ' + HE[a2], terms: lefts, moves: movesOf(lefts), value: maxQ(lefts) });
-                    if (others.length) phases.push({ label: 'ישר וימינה ' + HE[a1] + ' + ' + HE[a2], terms: others, moves: movesOf(others), value: maxQ(others) });
+                    if (lefts.length) phases.push({ label: 'שמאלות ' + HE[a1] + ' + ' + HE[a2], terms: lefts,
+                        moves: movesOf(lefts), value: maxQ(lefts) });
+                    if (others.length) phases.push({ label: 'ישר וימינה ' + HE[a1] + ' + ' + HE[a2], terms: others,
+                        moves: movesOf(others), value: maxQ(others) });
                     var optA = phases.reduce(function(s, p) { return s + p.value; }, 0);
                     var optB = maxQ(allOf(a1)) + maxQ(allOf(a2));
-                    t2.push({ axis: ax.id, he: ax.he, arms: arms, degenerate: false, phases: phases,
-                        optionA: optA, optionB: optB, chosen: (optB < optA ? 'ב' : 'א'), value: Math.min(optA, optB),
-                        optionBmoves: [movesOf(allOf(a1)), movesOf(allOf(a2))] });
+                    t2.push({
+                        axis: ax.id,
+                        he: ax.he,
+                        arms: arms,
+                        degenerate: false,
+                        phases: phases,
+                        optionA: optA,
+                        optionB: optB,
+                        chosen: (optB < optA ? 'ב' : 'א'),
+                        value: Math.min(optA, optB),
+                        optionBmoves: [movesOf(allOf(a1)), movesOf(allOf(a2))]
+                    });
                 });
                 var t2A = t2.reduce(function(s, x) { return s + x.optionA; }, 0);
                 var t2best = t2.reduce(function(s, x) { return s + x.value; }, 0);
@@ -662,16 +729,30 @@
                     var arms = ax.arms.filter(function(a) { return present.indexOf(a) > -1; });
                     if (!arms.length) return;
                     if (arms.length === 1) {
-                        var a = arms[0], terms = allOf(a);
-                        t3.push({ axis: ax.id, he: ax.he, arms: arms, degenerate: true,
+                        var a = arms[0],
+                            terms = allOf(a);
+                        t3.push({
+                            axis: ax.id,
+                            he: ax.he,
+                            arms: arms,
+                            degenerate: true,
                             seq: [{ label: HE[a] + ' לבדה', moves: movesOf(terms) }],
-                            rings: null, value: maxQ(terms) });
+                            rings: null,
+                            value: maxQ(terms)
+                        });
                         return;
                     }
-                    var a1 = arms[0], a2 = arms[1];
-                    var l1 = G[a1].left ? G[a1].left.q : 0, l2 = G[a2].left ? G[a2].left.q : 0;
-                    var o1 = maxQ(G[a1].other), o2 = maxQ(G[a2].other);
-                    t3.push({ axis: ax.id, he: ax.he, arms: arms, degenerate: false,
+                    var a1 = arms[0],
+                        a2 = arms[1];
+                    var l1 = G[a1].left ? G[a1].left.q : 0,
+                        l2 = G[a2].left ? G[a2].left.q : 0;
+                    var o1 = maxQ(G[a1].other),
+                        o2 = maxQ(G[a2].other);
+                    t3.push({
+                        axis: ax.id,
+                        he: ax.he,
+                        arms: arms,
+                        degenerate: false,
                         seq: [
                             { label: HE[a1] + ' לבדה', moves: movesOf(allOf(a1)) },
                             { label: 'ישרים וימניות', moves: movesOf(G[a1].other.concat(G[a2].other)) },
@@ -681,7 +762,8 @@
                             { label: 'טבעת 1', leftArm: a1, leftQ: l1, thruArm: a2, thruQ: o2, value: l1 + o2 },
                             { label: 'טבעת 2', leftArm: a2, leftQ: l2, thruArm: a1, thruQ: o1, value: l2 + o1 }
                         ],
-                        value: Math.max(l1 + o2, l2 + o1) });
+                        value: Math.max(l1 + o2, l2 + o1)
+                    });
                 });
                 var t3total = t3.reduce(function(s, x) { return s + x.value; }, 0);
 
@@ -695,7 +777,7 @@
             }
 
             /* ============================================================
-               2. Interactive schematic rendering
+               2. Schematic — now uses volMap and freeRight flags
                ============================================================ */
             function buildVolMap(cfg, present) {
                 var map = {};
@@ -710,96 +792,133 @@
                         var vol = arm[m] || 0;
                         var lanes = arm['n' + m] || 1;
                         if (m === 'R' && arm.sharedSR) lanes = arm.nS || 1;
-                        map[key] = { vol: vol, lanes: lanes };
+                        map[key] = {
+                            vol: vol,
+                            lanes: lanes,
+                            free: (m === 'R' && arm.freeRight)
+                        };
                     });
                 });
                 return map;
             }
 
-            function schematicInteractive(present, active, volMap, highlight, size) {
+            function getActiveMoves(present, volMap) {
+                return allMoves(present).filter(function(m) {
+                    var data = volMap[m];
+                    return data && data.vol > 0 && !data.free;
+                });
+            }
+
+            function schematicInteractive(present, phaseMoves, volMap, highlight, size) {
                 size = size || 180;
                 var allM = allMoves(present);
                 var activeSet = {};
-                (active || []).forEach(function(m) { activeSet[m] = true; });
+                getActiveMoves(present, volMap).forEach(function(m) { activeSet[m] = true; });
                 var highlightSet = {};
                 (highlight || []).forEach(function(m) { highlightSet[m] = true; });
+                var phaseSet = {};
+                (phaseMoves || []).forEach(function(m) { phaseSet[m] = true; });
 
-                var svg = '<svg class="ph' + (highlight && highlight.length ? ' highlighted' : '') + '" viewBox="0 0 100 100" width="' + size + '" height="' + size + '" role="img" aria-label="סכמת צומת">';
-                
-                // Realistic Road Backdrop
+                var svg = '<svg class="ph" viewBox="0 0 100 100" width="' + size + '" height="' + size +
+                    '" role="img" aria-label="סכמת צומת">';
+
+                // road backdrop
                 svg += '<rect width="100" height="100" fill="#E2E8E4" rx="6"/>';
-                
-                // Asphalt Roads
                 if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#3A474E"/>';
                 if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#3A474E"/>';
                 if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#3A474E"/>';
                 if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#3A474E"/>';
                 svg += '<rect x="30" y="30" width="40" height="40" fill="#3A474E"/>';
 
-                // Lane Divider Lines (Dashed White)
-                if (present.indexOf('N') > -1) svg += '<line x1="50" y1="0" x2="50" y2="30" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
-                if (present.indexOf('S') > -1) svg += '<line x1="50" y1="70" x2="50" y2="100" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
-                if (present.indexOf('W') > -1) svg += '<line x1="0" y1="50" x2="30" y2="50" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
-                if (present.indexOf('E') > -1) svg += '<line x1="70" y1="50" x2="100" y2="50" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
+                // lane dividers
+                if (present.indexOf('N') > -1) svg +=
+                    '<line x1="50" y1="0" x2="50" y2="30" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
+                if (present.indexOf('S') > -1) svg +=
+                    '<line x1="50" y1="70" x2="50" y2="100" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
+                if (present.indexOf('W') > -1) svg +=
+                    '<line x1="0" y1="50" x2="30" y2="50" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
+                if (present.indexOf('E') > -1) svg +=
+                    '<line x1="70" y1="50" x2="100" y2="50" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
 
-                // Stop Lines
+                // stop lines
                 if (present.indexOf('N') > -1) svg += '<line x1="30" y1="30" x2="70" y2="30" stroke="#FFFFFF" stroke-width="1.5"/>';
                 if (present.indexOf('S') > -1) svg += '<line x1="30" y1="70" x2="70" y2="70" stroke="#FFFFFF" stroke-width="1.5"/>';
                 if (present.indexOf('W') > -1) svg += '<line x1="30" y1="30" x2="30" y2="70" stroke="#FFFFFF" stroke-width="1.5"/>';
                 if (present.indexOf('E') > -1) svg += '<line x1="70" y1="30" x2="70" y2="70" stroke="#FFFFFF" stroke-width="1.5"/>';
 
-                var paths = '';
-                var labels = '';
-                var laneLabels = '';
+                var paths = '',
+                    labels = '',
+                    laneLabels = '';
 
                 allM.forEach(function(m) {
                     var info = MOVE[m];
                     if (!info) return;
-                    var isActive = activeSet.hasOwnProperty(m) ? !!activeSet[m] : true;
+                    var isActive = !!activeSet[m];
                     var isHighlight = !!highlightSet[m];
+                    var inPhase = !!phaseSet[m];
                     var volData = volMap ? volMap[m] : null;
                     var vol = volData ? volData.vol : 0;
                     var lanes = volData ? volData.lanes : 1;
+                    var free = volData ? volData.free : false;
                     var hasVol = vol > 0;
 
-                    var stroke = '#A0AEC0';
-                    var fill = '#A0AEC0';
-                    var opacity = 0.3;
-                    var width = 1.2;
+                    var stroke = '#A0AEC0',
+                        fill = '#A0AEC0',
+                        opacity = 0.15,
+                        width = 0.8;
 
                     if (isHighlight) {
                         stroke = '#C44536';
                         fill = '#C44536';
                         opacity = 1;
                         width = 3.2;
-                    } else if (isActive && hasVol) {
+                    } else if (inPhase && hasVol && !free) {
                         stroke = '#319795';
                         fill = '#319795';
                         opacity = 0.95;
                         width = 2.4;
-                    } else if (isActive) {
-                        stroke = '#CBD5E0';
-                        fill = '#CBD5E0';
+                    } else if (inPhase && free) {
+                        stroke = '#F6AD55';
+                        fill = '#F6AD55';
                         opacity = 0.5;
-                        width = 1.5;
+                        width = 1.8;
+                    } else if (isActive && hasVol && !free) {
+                        stroke = '#319795';
+                        fill = '#319795';
+                        opacity = 0.6;
+                        width = 1.8;
+                    } else if (isActive && free) {
+                        stroke = '#F6AD55';
+                        fill = '#F6AD55';
+                        opacity = 0.3;
+                        width = 1.2;
+                    } else {
+                        stroke = '#A0AEC0';
+                        fill = '#A0AEC0';
+                        opacity = 0.15;
+                        width = 0.8;
                     }
 
-                    paths += '<path d="' + info.d + '" fill="none" stroke="' + stroke + '" stroke-width="' + width + '" stroke-linecap="round" opacity="' + opacity + '"/>';
+                    paths += '<path d="' + info.d + '" fill="none" stroke="' + stroke +
+                        '" stroke-width="' + width + '" stroke-linecap="round" opacity="' + opacity + '"/>';
                     paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"/>';
 
-                    // Volume label badge
                     var labelText = hasVol ? String(Math.round(vol)) : '0';
                     var labelCls = 'movement-label';
                     if (!hasVol) labelCls += ' zero';
                     if (isHighlight) labelCls += ' highlight';
-                    var labelX = info.lx || 50, labelY = info.ly || 50;
-                    labels += '<text x="' + labelX + '" y="' + labelY + '" class="' + labelCls + '">' + labelText + '</text>';
+                    if (free && hasVol) labelCls += ' free';
+                    var labelX = info.lx || 50,
+                        labelY = info.ly || 50;
+                    labels += '<text x="' + labelX + '" y="' + labelY + '" class="' + labelCls + '">' + labelText +
+                    '</text>';
 
-                    // Lane count badge
                     var laneCls = 'lane-label';
                     if (!hasVol) laneCls += ' zero';
-                    var lx2 = info.lx2 || info.lx || 50, ly2 = (info.ly2 || info.ly || 50) + 7;
-                    laneLabels += '<text x="' + lx2 + '" y="' + ly2 + '" class="' + laneCls + '">×' + lanes + '</text>';
+                    var lx2 = info.lx2 || info.lx || 50,
+                        ly2 = (info.ly2 || info.ly || 50) + 7;
+                    laneLabels += '<text x="' + lx2 + '" y="' + ly2 + '" class="' + laneCls + '">×' + lanes +
+                    '</text>';
                 });
 
                 svg += paths + labels + laneLabels + '</svg>';
@@ -807,7 +926,7 @@
             }
 
             /* ============================================================
-               3. Application State & UI Wiring
+               3. UI state – stable DOM, no full rebuild on value changes
                ============================================================ */
             var state = {
                 N: { exists: true, L: 220, nL: 1, S: 650, nS: 2, R: 120, nR: 1, sharedSR: true, freeRight: false },
@@ -817,7 +936,9 @@
             };
 
             var activeHighlightMoves = null;
+            var currentResult = null;
 
+            // --- Build arm input DOM (only when structure changes) ---
             function renderArmInputs() {
                 ARMS.forEach(function(armKey) {
                     var container = document.querySelector('.arm[data-arm="' + armKey + '"]');
@@ -826,127 +947,187 @@
 
                     var html = '<div class="arm-top">';
                     html += '<span class="arm-name">זרוע ' + HE[armKey] + ' (' + armKey + ')</span>';
-                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey + '" data-field="exists"' + (data.exists ? ' checked' : '') + '> זרוע פעילה</label>';
+                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey +
+                        '" data-field="exists"' + (data.exists ? ' checked' : '') + '> זרוע פעילה</label>';
                     html += '</div>';
 
                     html += '<div class="fields">';
                     html += '<div></div><div class="hd">נפח (רכ/ש)</div><div class="hd">נתיבים</div>';
 
                     html += '<span class="lbl">שמאלה (L):</span>';
-                    html += '<input type="number" min="0" value="' + data.L + '" data-arm="' + armKey + '" data-field="L">';
-                    html += '<input type="number" min="1" value="' + data.nL + '" data-arm="' + armKey + '" data-field="nL">';
+                    html += '<input type="number" min="0" value="' + data.L + '" data-arm="' + armKey +
+                        '" data-field="L">';
+                    html += '<input type="number" min="1" value="' + data.nL + '" data-arm="' + armKey +
+                        '" data-field="nL">';
 
                     html += '<span class="lbl">ישר (S):</span>';
-                    html += '<input type="number" min="0" value="' + data.S + '" data-arm="' + armKey + '" data-field="S">';
-                    html += '<input type="number" min="1" value="' + data.nS + '" data-arm="' + armKey + '" data-field="nS">';
+                    html += '<input type="number" min="0" value="' + data.S + '" data-arm="' + armKey +
+                        '" data-field="S">';
+                    html += '<input type="number" min="1" value="' + data.nS + '" data-arm="' + armKey +
+                        '" data-field="nS">';
 
                     html += '<span class="lbl">ימינה (R):</span>';
-                    html += '<input type="number" min="0" value="' + data.R + '" data-arm="' + armKey + '" data-field="R">';
-                    html += '<input type="number" min="1" value="' + data.nR + '" data-arm="' + armKey + '" data-field="nR"' + (data.sharedSR ? ' disabled' : '') + '>';
+                    html += '<input type="number" min="0" value="' + data.R + '" data-arm="' + armKey +
+                        '" data-field="R">';
+                    html += '<input type="number" min="1" value="' + data.nR + '" data-arm="' + armKey +
+                        '" data-field="nR"' + (data.sharedSR ? ' disabled' : '') + '>';
                     html += '</div>';
 
                     html += '<div class="toggles">';
-                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey + '" data-field="sharedSR"' + (data.sharedSR ? ' checked' : '') + '> נתיב משותף ישר+ימינה</label>';
-                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey + '" data-field="freeRight"' + (data.freeRight ? ' checked' : '') + '> ימינה חופשית (ללא רמזור)</label>';
+                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey +
+                        '" data-field="sharedSR"' + (data.sharedSR ? ' checked' : '') +
+                        '> נתיב משותף ישר+ימינה</label>';
+                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey +
+                        '" data-field="freeRight"' + (data.freeRight ? ' checked' : '') +
+                        '> ימינה חופשית (ללא רמזור)</label>';
                     html += '</div>';
 
                     container.innerHTML = html;
-                    if (data.exists) {
-                        container.classList.remove('off');
-                    } else {
-                        container.classList.add('off');
-                    }
+                    container.classList.toggle('off', !data.exists);
                 });
             }
 
+            // --- Update only values (no DOM rebuild) ---
+            function updateInputValues() {
+                ARMS.forEach(function(armKey) {
+                    var container = document.querySelector('.arm[data-arm="' + armKey + '"]');
+                    if (!container) return;
+                    var data = state[armKey];
+
+                    // Update number inputs
+                    ['L', 'nL', 'S', 'nS', 'R', 'nR'].forEach(function(field) {
+                        var inp = container.querySelector('input[data-field="' + field + '"]');
+                        if (inp) {
+                            inp.value = data[field] || 0;
+                            inp.disabled = (field === 'nR' && data.sharedSR);
+                        }
+                    });
+
+                    // Update checkboxes
+                    ['exists', 'sharedSR', 'freeRight'].forEach(function(field) {
+                        var chk = container.querySelector('input[data-field="' + field + '"]');
+                        if (chk) chk.checked = !!data[field];
+                    });
+
+                    container.classList.toggle('off', !data.exists);
+                });
+            }
+
+            // --- Central update: compute, update schematic, results, JSON ---
+            function updateAll(rebuildInputs) {
+                if (rebuildInputs) {
+                    renderArmInputs();
+                } else {
+                    updateInputValues();
+                }
+                currentResult = compute(state);
+                updateLiveSchematic();
+                renderResults();
+                updateJsonOutput();
+            }
+
+            // --- Live schematic ---
             function updateLiveSchematic() {
-                var res = compute(state);
+                var res = currentResult || compute(state);
                 var volMap = buildVolMap(state, res.present);
                 var el = document.getElementById('liveSchematic');
                 var cap = document.getElementById('liveCap');
 
-                el.innerHTML = schematicInteractive(res.present, allMoves(res.present), volMap, activeHighlightMoves, 200);
-                cap.innerHTML = 'נפחים (רכב/שעה) ומספר נתיבים (×N)<br>זרועות פעילות: ' + res.present.map(function(a) { return HE[a]; }).join(', ');
+                var activeMoves = getActiveMoves(res.present, volMap);
+                el.innerHTML = schematicInteractive(res.present, activeMoves, volMap, activeHighlightMoves, 200);
+                cap.innerHTML = 'נפחים (רכב/שעה) ומספר נתיבים (×N)<br>זרועות פעילות: ' + res.present.map(function(a) {
+                    return HE[a];
+                }).join(', ');
             }
 
+            // --- Results tables ---
             function renderResults() {
-                var res = compute(state);
+                var res = currentResult || compute(state);
                 var container = document.getElementById('results');
+                var volMap = buildVolMap(state, res.present);
 
                 var t1 = res.table1.total;
                 var t2 = res.table2.totalBest;
                 var t3 = res.table3.total;
                 var minVal = Math.min(t1, t2, t3);
 
-                var html = '';
+                if (res.present.length < 2) {
+                    container.innerHTML =
+                        '<div class="warnbox">יש צורך בלפחות שתי זרועות פעילות כדי לבצע חישוב משמעותי.</div>';
+                    return;
+                }
 
-                // Summary Comparison Cards
-                html += '<div class="cmp">';
-                html += '<div class="card' + (t1 === minVal ? ' best' : '') + '">';
-                html += '<div class="k">שיטה 1: זרועות מפוצלות</div>';
-                html += '<div class="n">' + Math.round(t1) + ' <span style="font-size:14px;color:var(--ink2)">רכ/ש/נתיב</span></div>';
-                html += '<div class="d">פאזה נפרדת לכל זרוע גישה</div>';
+                // Comparison cards
+                var html = '<div class="cmp">';
+                var methods = [
+                    { name: 'שיטה 1: זרועות מפוצלות', val: t1, desc: 'פאזה נפרדת לכל זרוע גישה' },
+                    { name: 'שיטה 2: הפרדת שמאלה מוגנת', val: t2, desc: 'פאזות משותפות לצירים + פאזת שמאלות' },
+                    { name: 'שיטה 3: טבעת כפולה (Dual Ring)', val: t3, desc: 'פיקוד NEMA חפוף/Lead-Lag' }
+                ];
+                methods.forEach(function(m) {
+                    html += '<div class="card' + (m.val === minVal ? ' best' : '') + '">';
+                    html += '<div class="k">' + m.name + '</div>';
+                    html += '<div class="n">' + Math.round(m.val) +
+                        ' <span style="font-size:14px;color:var(--ink2)">רכ/ש/נתיב</span></div>';
+                    html += '<div class="d">' + m.desc + '</div>';
+                    html += '</div>';
+                });
                 html += '</div>';
-
-                html += '<div class="card' + (t2 === minVal ? ' best' : '') + '">';
-                html += '<div class="k">שיטה 2: הפרדת שמאלה מוגנת</div>';
-                html += '<div class="n">' + Math.round(t2) + ' <span style="font-size:14px;color:var(--ink2)">רכ/ש/נתיב</span></div>';
-                html += '<div class="d">פאזות משותפות לצירים + פאזת שמאלות</div>';
-                html += '</div>';
-
-                html += '<div class="card' + (t3 === minVal ? ' best' : '') + '">';
-                html += '<div class="k">שיטה 3: טבעת כפולה (Dual Ring)</div>';
-                html += '<div class="n">' + Math.round(t3) + ' <span style="font-size:14px;color:var(--ink2)">רכ/ש/נתיב</span></div>';
-                html += '<div class="d">פיקוד NEMA חפוף/Lead-Lag</div>';
-                html += '</div>';
-                html += '</div>';
-
-                var volMap = buildVolMap(state, res.present);
 
                 // Table 1
                 html += '<section>';
-                html += '<div class="sec-head"><h2>שיטה 1 — פאזה נפרדת לכל זרוע (Split Approach)</h2></div>';
-                html += '<table>';
-                html += '<thead><tr><th>פאזה</th><th>סכמה</th><th>תנועות כלולות</th><th>נפח קריטי q = V/n</th></tr></thead><tbody>';
+                html +=
+                    '<div class="sec-head"><h2>שיטה 1 — פאזה נפרדת לכל זרוע (Split Approach)</h2></div>';
+                html +=
+                    '<table><thead><tr><th>פאזה</th><th>סכמה</th><th>תנועות כלולות</th><th>נפח קריטי q = V/n</th></tr></thead><tbody>';
                 res.table1.phases.forEach(function(p, idx) {
-                    var movesStr = p.moves.join(', ');
                     html += '<tr class="phase-row" data-moves="' + p.moves.join(',') + '">';
                     html += '<td><strong>פאזה ' + (idx + 1) + ' (' + p.he + ')</strong></td>';
-                    html += '<td class="schematic-cell">' + schematicInteractive(res.present, p.moves, volMap, null, 42) + '</td>';
-                    html += '<td><span class="f">' + movesStr + '</span></td>';
+                    html += '<td class="schematic-cell">' + schematicInteractive(res.present, p.moves, volMap,
+                        null, 42) + '</td>';
+                    html += '<td><span class="f">' + p.moves.join(', ') + '</span></td>';
                     html += '<td class="val">' + Math.round(p.value) + '</td>';
                     html += '</tr>';
                 });
-                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math.round(res.table1.total) + '</td></tr>';
-                html += '</tbody></table>';
-                html += '</section>';
+                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math
+                    .round(res.table1.total) + '</td></tr>';
+                html += '</tbody></table></section>';
 
-                // Table 2
+                // Table 2 – show both options clearly
                 html += '<section>';
-                html += '<div class="sec-head"><h2>שיטה 2 — הפרדת שמאלות לפי צירים (Protected Left Separation)</h2></div>';
-                html += '<table>';
-                html += '<thead><tr><th>ציר / פאזות</th><th>סכמה</th><th>תנועות</th><th>נפח קריטי q</th></tr></thead><tbody>';
+                html +=
+                    '<div class="sec-head"><h2>שיטה 2 — הפרדת שמאלות לפי צירים (Protected Left Separation)</h2></div>';
+                html +=
+                    '<table><thead><tr><th>ציר</th><th>חלופה א׳ (שמאלות + ישר/ימין)</th><th>חלופה ב׳ (כל זרוע לבד)</th><th>נבחר</th></tr></thead><tbody>';
                 res.table2.axes.forEach(function(ax) {
-                    html += '<tr style="background:var(--sunk)"><td colspan="4"><strong>ציר ' + ax.he + '</strong> (חלופה שנבחרה: ' + ax.chosen + ' — ' + Math.round(ax.value) + ' רכ/ש)</td></tr>';
-                    ax.phases.forEach(function(p, idx) {
-                        html += '<tr class="phase-row" data-moves="' + p.moves.join(',') + '">';
-                        html += '<td style="padding-right:24px">• ' + p.label + '</td>';
-                        html += '<td class="schematic-cell">' + schematicInteractive(res.present, p.moves, volMap, null, 42) + '</td>';
-                        html += '<td><span class="f">' + p.moves.join(', ') + '</span></td>';
-                        html += '<td class="val">' + Math.round(p.value) + '</td>';
-                        html += '</tr>';
-                    });
+                    if (ax.degenerate) {
+                        html += '<tr><td><strong>ציר ' + ax.he + '</strong></td>';
+                        html += '<td colspan="2">זרוע בודדת — ערך: ' + Math.round(ax.value) + '</td>';
+                        html += '<td class="val">' + Math.round(ax.value) + '</td></tr>';
+                    } else {
+                        var optA = ax.optionA;
+                        var optB = ax.optionB;
+                        var chosen = ax.chosen;
+                        html += '<tr><td><strong>ציר ' + ax.he + '</strong></td>';
+                        html += '<td class="val' + (chosen === 'א' ? ' pick' : '') + '">' + Math.round(optA) +
+                            '</td>';
+                        html += '<td class="val' + (chosen === 'ב' ? ' pick' : '') + '">' + Math.round(optB) +
+                            '</td>';
+                        html += '<td class="val">' + Math.round(ax.value) + ' (' + ax.chosen + ')</td></tr>';
+                    }
                 });
-                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math.round(res.table2.totalBest) + '</td></tr>';
-                html += '</tbody></table>';
-                html += '</section>';
+                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math
+                    .round(res.table2.totalBest) + '</td></tr>';
+                html += '</tbody></table></section>';
 
-                // Table 3
+                // Table 3 – dual ring
                 html += '<section>';
-                html += '<div class="sec-head"><h2>שיטה 3 — טבעת כפולה / Lead-Lag (Dual Ring Phasing)</h2></div>';
-                html += '<table>';
-                html += '<thead><tr><th>ציר</th><th>רצף תנועות / טבעות</th><th>חישוב חפיפה</th><th>נפח קריטי קובע</th></tr></thead><tbody>';
+                html +=
+                    '<div class="sec-head"><h2>שיטה 3 — טבעת כפולה / Lead-Lag (Dual Ring Phasing)</h2></div>';
+                html +=
+                    '<table><thead><tr><th>ציר</th><th>רצף תנועות / טבעות</th><th>חישוב חפיפה</th><th>נפח קריטי קובע</th></tr></thead><tbody>';
                 res.table3.axes.forEach(function(ax) {
+                    var allAxMoves = ax.seq.map(function(s) { return (s.moves || []).join(','); }).join(',');
                     if (ax.degenerate) {
                         html += '<tr class="phase-row" data-moves="' + ax.seq[0].moves.join(',') + '">';
                         html += '<td><strong>ציר ' + ax.he + '</strong></td>';
@@ -955,12 +1136,13 @@
                         html += '<td class="val">' + Math.round(ax.value) + '</td>';
                         html += '</tr>';
                     } else {
-                        var allAxMoves = ax.seq.map(function(s){return s.moves.join(',');}).join(',');
                         html += '<tr class="phase-row" data-moves="' + allAxMoves + '">';
                         html += '<td><strong>ציר ' + ax.he + '</strong></td>';
                         html += '<td>';
                         ax.rings.forEach(function(r) {
-                            html += '<div>' + r.label + ': שמאל ' + HE[r.leftArm] + ' (' + Math.round(r.leftQ) + ') + ישר/ימין ' + HE[r.thruArm] + ' (' + Math.round(r.thruQ) + ') = <strong>' + Math.round(r.value) + '</strong></div>';
+                            html += '<div>' + r.label + ': שמאל ' + HE[r.leftArm] + ' (' + Math.round(r
+                                .leftQ) + ') + ישר/ימין ' + HE[r.thruArm] + ' (' + Math.round(r
+                                .thruQ) + ') = <strong>' + Math.round(r.value) + '</strong></div>';
                         });
                         html += '</td>';
                         html += '<td class="f">max(Ring 1, Ring 2)</td>';
@@ -968,9 +1150,9 @@
                         html += '</tr>';
                     }
                 });
-                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math.round(res.table3.total) + '</td></tr>';
-                html += '</tbody></table>';
-                html += '</section>';
+                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math
+                    .round(res.table3.total) + '</td></tr>';
+                html += '</tbody></table></section>';
 
                 container.innerHTML = html;
                 attachTableHoverEvents();
@@ -994,13 +1176,16 @@
                 });
             }
 
+            /* ============================================================
+               4. Event wiring – stable, no rebuild on number input
+               ============================================================ */
             function syncStateFromInputs() {
                 ARMS.forEach(function(armKey) {
                     var container = document.querySelector('.arm[data-arm="' + armKey + '"]');
                     if (!container) return;
-                    
+
                     var existsChk = container.querySelector('input[data-field="exists"]');
-                    state[armKey].exists = existsChk ? existsChk.checked : true;
+                    if (existsChk) state[armKey].exists = existsChk.checked;
 
                     ['L', 'nL', 'S', 'nS', 'R', 'nR'].forEach(function(field) {
                         var inp = container.querySelector('input[data-field="' + field + '"]');
@@ -1018,103 +1203,114 @@
                 });
             }
 
-            function updateAll() {
-                renderArmInputs();
-                updateLiveSchematic();
-                renderResults();
-                updateJsonOutput();
+            function handleInputEvent(e) {
+                var t = e.target;
+                if (t.type === 'number') {
+                    syncStateFromInputs();
+                    updateAll(false); // no rebuild
+                }
             }
 
+            function handleChangeEvent(e) {
+                var t = e.target;
+                if (t.type === 'checkbox') {
+                    syncStateFromInputs();
+                    // checkbox changes may affect structure (exists, sharedSR, freeRight)
+                    var arm = t.getAttribute('data-arm');
+                    var field = t.getAttribute('data-field');
+                    if (field === 'exists' || field === 'sharedSR' || field === 'freeRight') {
+                        updateAll(true); // rebuild inputs
+                    } else {
+                        updateAll(false);
+                    }
+                }
+            }
+
+            function setState(newState) {
+                state = newState;
+                updateAll(true); // full rebuild
+            }
+
+            // --- Load presets ---
+            var EXAMPLE = {
+                N: { exists: true, L: 220, nL: 1, S: 650, nS: 2, R: 120, nR: 1, sharedSR: true, freeRight: false },
+                S: { exists: true, L: 180, nL: 1, S: 580, nS: 2, R: 110, nR: 1, sharedSR: true, freeRight: false },
+                E: { exists: true, L: 140, nL: 1, S: 320, nS: 1, R: 90, nR: 1, sharedSR: true, freeRight: false },
+                W: { exists: true, L: 160, nL: 1, S: 380, nS: 1, R: 80, nR: 1, sharedSR: true, freeRight: false }
+            };
+            var TJUNC = {
+                N: { exists: true, L: 200, nL: 1, S: 500, nS: 2, R: 100, nR: 1, sharedSR: true, freeRight: false },
+                S: { exists: false, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false },
+                E: { exists: true, L: 150, nL: 1, S: 0, nS: 1, R: 250, nR: 1, sharedSR: true, freeRight: false },
+                W: { exists: true, L: 180, nL: 1, S: 400, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false }
+            };
+            var CLEAR = {
+                N: { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false },
+                S: { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false },
+                E: { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false },
+                W: { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false }
+            };
+
             /* ============================================================
-               4. Handlers & API Documentation
+               5. Init
                ============================================================ */
-            function initEvents() {
-                document.getElementById('cross').addEventListener('input', function(e) {
-                    syncStateFromInputs();
-                    updateAll();
-                });
+            function init() {
+                // Build initial inputs
+                renderArmInputs();
+                // Attach event listeners to the container (delegated)
+                var cross = document.getElementById('cross');
+                cross.addEventListener('input', handleInputEvent);
+                cross.addEventListener('change', handleChangeEvent);
 
-                document.getElementById('cross').addEventListener('change', function(e) {
-                    syncStateFromInputs();
-                    updateAll();
-                });
-
+                // Buttons
                 document.getElementById('btnExample').addEventListener('click', function() {
-                    state = {
-                        N: { exists: true, L: 220, nL: 1, S: 650, nS: 2, R: 120, nR: 1, sharedSR: true, freeRight: false },
-                        S: { exists: true, L: 180, nL: 1, S: 580, nS: 2, R: 110, nR: 1, sharedSR: true, freeRight: false },
-                        E: { exists: true, L: 140, nL: 1, S: 320, nS: 1, R: 90, nR: 1, sharedSR: true, freeRight: false },
-                        W: { exists: true, L: 160, nL: 1, S: 380, nS: 1, R: 80, nR: 1, sharedSR: true, freeRight: false }
-                    };
-                    updateAll();
+                    setState(JSON.parse(JSON.stringify(EXAMPLE)));
                 });
-
                 document.getElementById('btnT').addEventListener('click', function() {
-                    state = {
-                        N: { exists: true, L: 200, nL: 1, S: 500, nS: 2, R: 100, nR: 1, sharedSR: true, freeRight: false },
-                        S: { exists: false, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false },
-                        E: { exists: true, L: 150, nL: 1, S: 0, nS: 1, R: 250, nR: 1, sharedSR: true, freeRight: false },
-                        W: { exists: true, L: 180, nL: 1, S: 400, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false }
-                    };
-                    updateAll();
+                    setState(JSON.parse(JSON.stringify(TJUNC)));
                 });
-
                 document.getElementById('btnClear').addEventListener('click', function() {
-                    ARMS.forEach(function(a) {
-                        state[a] = { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false };
-                    });
-                    updateAll();
+                    setState(JSON.parse(JSON.stringify(CLEAR)));
                 });
 
                 document.getElementById('btnJson').addEventListener('click', function() {
                     var pre = document.getElementById('jsonOut');
                     pre.style.display = pre.style.display === 'none' ? 'block' : 'none';
                 });
-
                 document.getElementById('btnCopy').addEventListener('click', function() {
-                    var res = compute(state);
+                    var res = currentResult || compute(state);
                     var payload = JSON.stringify({ input: state, result: res }, null, 2);
                     navigator.clipboard.writeText(payload).then(function() {
                         var msg = document.getElementById('copyMsg');
                         msg.textContent = 'הועתק בהצלחה!';
                         setTimeout(function() { msg.textContent = ''; }, 2500);
+                    }).catch(function() {
+                        var msg = document.getElementById('copyMsg');
+                        msg.textContent = 'העתקה נכשלה';
+                        setTimeout(function() { msg.textContent = ''; }, 2500);
                     });
                 });
 
-                // Populate Global Function for developer inspection
+                // API doc
+                document.getElementById('apidoc').textContent =
+                    '// קריאה גלובלית בדפדפן:\n' +
+                    'const res = window.computeCriticalVolume(config);\n\n' +
+                    '// דוגמה למבנה הקלט (config):\n' +
+                    '{\n' +
+                    '  "N": { "exists": true, "L": 220, "nL": 1, "S": 650, "nS": 2, "R": 120, "nR": 1, "sharedSR": true, "freeRight": false },\n' +
+                    '  "S": { ... }, "E": { ... }, "W": { ... }\n' +
+                    '}';
+
                 window.computeCriticalVolume = function(inputCfg) {
                     return compute(inputCfg || state);
                 };
+
+                // Initial computation
+                updateAll(false);
             }
 
-            function updateJsonOutput() {
-                var res = compute(state);
-                var pre = document.getElementById('jsonOut');
-                pre.textContent = JSON.stringify({ input: state, result: res }, null, 2);
-            }
-
-            function initApiDoc() {
-                var doc = [
-                    '// קריאה גלובלית בדפדפן:',
-                    'const res = window.computeCriticalVolume(config);',
-                    '',
-                    '// דוגמה למבנה הקלט (config):',
-                    '{',
-                    '  "N": { "exists": true, "L": 220, "nL": 1, "S": 650, "nS": 2, "R": 120, "nR": 1, "sharedSR": true, "freeRight": false },',
-                    '  "S": { "exists": true, "L": 180, "nL": 1, ... },',
-                    '  "E": { ... }, "W": { ... }',
-                    '}'
-                ].join('\n');
-                document.getElementById('apidoc').textContent = doc;
-            }
-
-            // Initial Execution
-            renderArmInputs();
-            updateLiveSchematic();
-            renderResults();
-            initEvents();
-            initApiDoc();
-            updateJsonOutput();
+            // Go
+            init();
 
         })();
     </script>

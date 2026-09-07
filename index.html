@@ -619,9 +619,40 @@
             font-weight: 600;
             margin-inline-start: auto
         }
+        footer .contact {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            width: 100%;
+            align-items: center;
+        }
+        footer .contact a {
+            color: var(--muted-dark);
+            text-decoration: none;
+        }
+        footer .contact a:hover {
+            color: var(--paper);
+        }
+        footer .policy,
+        footer .github {
+            color: var(--muted-dark);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--rule-dark);
+        }
+        footer .policy:hover,
+        footer .github:hover {
+            color: var(--paper);
+            border-bottom-color: var(--paper);
+        }
         @media (max-width:720px) {
             footer .who {
                 margin-inline-start: 0
+            }
+            footer .contact {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
             }
         }
     </style>
@@ -650,6 +681,9 @@
                 <div class="hero-actions">
                     <a class="btn btn-solid" href="#urban">לעיון בקטלוג</a>
                     <a class="btn btn-line" href="critical-lane-volume.html">פתיחת מחשבון פאזות</a>
+                    <!-- Added shortcuts -->
+                    <a class="btn btn-line" href="parking-regulations.html">תקנות והנחיות חניה</a>
+                    <a class="btn btn-line" href="critical-lane-volume.html">נפח נתיב קריטי</a>
                 </div>
                 <div class="tally">
                     <div><b>23</b>רחובות עירוניים</div>
@@ -721,7 +755,8 @@
 
             <a class="row" href="parking-regulations.html"><h3>תקנות והנחיות חניה</h3><p>חישוב תקני חניה לפרויקטים מגורים, מסחר ותעסוקה, כולל דרישות לפריקה וטעינה וחניות נכים.</p><span class="std">הנחיות משרד התחבורה / תב"ע</span></a>
             <a class="row" href="critical-lane-volume.html"><h3>נפח נתיב קריטי</h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-            <a class="row" href="tool.html"><h3>כלי ניתוח צמתים (Tool)</h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
+            <!-- UPDATED: removed "(Tool)" from the heading -->
+            <a class="row" href="tool.html"><h3>כלי ניתוח צמתים</h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
             <a class="row" href="signalized.html"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
             <a class="row" href="unsignalized.html"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
             <a class="row" href="roundabout.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
@@ -954,6 +989,12 @@
     <footer>
         <div class="wrap">
             <p>מהאלco מספקת כלי חישוב וניתוח הנדסיים מבוססי תקנים בינלאומיים וישראליים. כל התוצאות כפופות לבדיקה מקצועית של מהנדס מוסמך.</p>
+            <div class="contact">
+                <span>📧 <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a></span>
+                <span>📞 <a href="tel:+972546528572">+972-546-528572</a></span>
+                <a href="#" class="policy">מדיניות פרטיות</a>
+                <a href="https://github.com/mahmoudalem95/mahalco" class="github" target="_blank" rel="noopener">🐙 GitHub</a>
+            </div>
             <div class="who">Mahmoud Alem &copy; 2026</div>
         </div>
     </footer>

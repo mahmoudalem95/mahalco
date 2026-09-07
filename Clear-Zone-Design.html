@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תכנון רצועת ביטחון – Clear Zone Design</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <style>
+    body { background: #f0f2f5; padding: 20px; }
+    .container { max-width: 1500px; }
+    .card { border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; border: none; }
+    .card-header { background: #1a3a5c; color: white; border-radius: 14px 14px 0 0; font-weight: 700; font-size: 1.1rem; padding: 14px 20px; }
+    .card-header i { margin-left: 8px; }
+    .result-number { font-size: 2.4rem; font-weight: 800; color: #1a3a5c; }
+    .result-label { font-size: 0.85rem; color: #6c757d; font-weight: 500; }
+    .section-title { font-weight: 700; font-size: 1rem; margin: 1rem 0 0.5rem; color: #1a3a5c; border-bottom: 2px solid #e9ecef; padding-bottom: 6px; }
+    .form-label { font-weight: 600; font-size: 0.9rem; }
+    .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; }
+    .form-control:focus, .form-select:focus { border-color: #1a3a5c; box-shadow: 0 0 0 0.25rem rgba(26,58,92,0.15); }
+    .btn-primary { background: #1a3a5c; border-color: #1a3a5c; border-radius: 10px; font-weight: 700; padding: 12px; }
+    .btn-primary:hover { background: #0f2a44; border-color: #0f2a44; }
+    .badge-custom { font-size: 0.8rem; padding: 5px 12px; border-radius: 20px; }
+    .hazard-tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin: 2px; }
+    .hazard-high { background: #f8d7da; color: #721c24; }
+    .hazard-medium { background: #fff3cd; color: #856404; }
+    .hazard-low { background: #d1ecf1; color: #0c5460; }
+    .result-section { background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+    .result-section h6 { font-weight: 700; color: #1a3a5c; }
+    .table-result td { padding: 6px 8px; font-size: 0.9rem; }
+    .table-result th { font-size: 0.85rem; font-weight: 700; color: #495057; }
+    .scrollable-results { max-height: 650px; overflow-y: auto; padding-right: 4px; }
+    .scrollable-results::-webkit-scrollbar { width: 6px; }
+    .scrollable-results::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
+    .footer-text { font-size: 0.8rem; color: #6c757d; }
+    .input-group-text { background: #e9ecef; border-radius: 8px 0 0 8px; }
+    @media (max-width: 768px) {
+      .result-number { font-size: 1.8rem; }
+      .card-header { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="display-5 fw-bold mb-2"><i class="bi bi-shield-check text-primary me-2"></i>תכנון רצועת ביטחון – Clear Zone</h1>
+  <p class="text-muted mb-4">חישוב מרחק צדי פנוי, הערכת מדרונות, זיהוי מפגעים, תכנון מעקות בטיחות וניתוח עלות-תועלת לפי AASHTO Roadside Design Guide.</p>
+
+  <div class="row">
+
+    <!-- LEFT: INPUT FORM -->
+    <div class="col-lg-7">
+      <form id="clearZoneForm">
+
+        <!-- פרטי פרויקט -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-info-circle"></i> פרטי פרויקט וכביש</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">מהירות תכן (mph)</label>
+                <input type="number" class="form-control" id="designSpeed" value="55" min="20" max="75">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">סוג כביש</label>
+                <select class="form-select" id="facilityType">
+                  <option value="rural_highway" selected>כביש כפרי</option>
+                  <option value="urban_highway">כביש עירוני</option>
+                  <option value="freeway">כביש מהיר</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">AADT – תנועה יומית ממוצעת</label>
+                <input type="number" class="form-control" id="aadt" value="3200" min="100">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">אורך קטע (רגל)</label>
+                <input type="number" class="form-control" id="segmentLength" value="5280" min="100">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- מאפייני כביש -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-road"></i> מאפייני הכביש</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-4">
+                <label class="form-label">רוחב נתיב (רגל)</label>
+                <input type="number" class="form-control" id="laneWidth" value="12" min="8" max="14">
+              </div>
+              <div class="col-4">
+                <label class="form-label">סוג שוליים</label>
+                <select class="form-select" id="shoulderType">
+                  <option value="paved" selected>סלול</option>
+                  <option value="gravel">חצץ</option>
+                  <option value="turf">דשא</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">רוחב שוליים (רגל)</label>
+                <input type="number" class="form-control" id="shoulderWidth" value="8" min="0" max="14">
+              </div>
+              <div class="col-4">
+                <label class="form-label">מספר נתיבים</label>
+                <input type="number" class="form-control" id="numLanes" value="2" min="2" max="8">
+              </div>
+              <div class="col-4">
+                <label class="form-label">סוג תפר</label>
+                <select class="form-select" id="medianType">
+                  <option value="none" selected>ללא</option>
+                  <option value="painted">צבוע</option>
+                  <option value="raised_curb">מוגבה</option>
+                  <option value="barrier">מעקה</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">טופוגרפיה</label>
+                <select class="form-select" id="terrainType">
+                  <option value="level">מישור</option>
+                  <option value="rolling" selected>גלי</option>
+                  <option value="mountainous">הררי</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- מדרונות -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-mountain"></i> מדרונות צד</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label">סוג מדרון קדמי</label>
+                <select class="form-select" id="foreslopeType">
+                  <option value="cut" selected>חתך</option>
+                  <option value="fill">מילוי</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">יחס מדרון קדמי</label>
+                <select class="form-select" id="foreslopeRatio">
+                  <option value="1:1">1:1</option>
+                  <option value="1.5:1" selected>1.5:1</option>
+                  <option value="2:1">2:1</option>
+                  <option value="3:1">3:1</option>
+                  <option value="4:1">4:1</option>
+                  <option value="6:1">6:1</option>
+                  <option value="10:1">10:1</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">גובה מדרון קדמי (רגל)</label>
+                <input type="number" class="form-control" id="foreslopeHeight" value="10" min="0">
+              </div>
+              <div class="col-6">
+                <label class="form-label">סוג תעלה</label>
+                <select class="form-select" id="ditchType">
+                  <option value="v_ditch" selected>תעלת V</option>
+                  <option value="trapezoidal">טרפז</option>
+                  <option value="none">ללא</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">עומק תעלה (רגל)</label>
+                <input type="number" class="form-control" id="ditchDepth" value="2" min="0">
+              </div>
+              <div class="col-6">
+                <label class="form-label">יש מדרון אחורי?</label>
+                <select class="form-select" id="backslopePresent">
+                  <option value="true" selected>כן</option>
+                  <option value="false">לא</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">יחס מדרון אחורי</label>
+                <select class="form-select" id="backslopeRatio">
+                  <option value="1:1">1:1</option>
+                  <option value="1.5:1" selected>1.5:1</option>
+                  <option value="2:1">2:1</option>
+                  <option value="3:1">3:1</option>
+                  <option value="4:1">4:1</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">גובה מדרון אחורי (רגל)</label>
+                <input type="number" class="form-control" id="backslopeHeight" value="15" min="0">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- מפגעים -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-exclamation-triangle"></i> מפגעים בצד הדרך</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label">קיימים עצמים קבועים?</label>
+                <select class="form-select" id="fixedObjectsPresent">
+                  <option value="true" selected>כן</option>
+                  <option value="false">לא</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">סוגי מפגעים</label>
+                <select class="form-select" id="fixedObjectTypes" multiple style="height:70px;">
+                  <option value="trees" selected>עצים</option>
+                  <option value="utility_poles" selected>עמודי חשמל</option>
+                  <option value="culvert_headwalls" selected>ראשי תעלות</option>
+                  <option value="signs">שלטים</option>
+                  <option value="light_poles">עמודי תאורה</option>
+                  <option value="buildings">מבנים</option>
+                  <option value="bridge_piers">עמודי גשר</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">מרחק מפגע מקצה הכביש (רגל)</label>
+                <input type="number" class="form-control" id="hazardDistance" value="15" min="0">
+              </div>
+              <div class="col-6">
+                <label class="form-label">צפיפות מפגעים (ליחידה)</label>
+                <input type="number" class="form-control" id="hazardDensity" value="12" min="0">
+              </div>
+              <div class="col-6">
+                <label class="form-label">עמודי גשר?</label>
+                <select class="form-select" id="bridgePiersPresent">
+                  <option value="false" selected>לא</option>
+                  <option value="true">כן</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">קיימים שוליים תלולים?</label>
+                <select class="form-select" id="verticalDropoffsPresent">
+                  <option value="false" selected>לא</option>
+                  <option value="true">כן</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- תנועה -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-car-front"></i> מאפייני תנועה</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-4">
+                <label class="form-label">אחוז משאיות</label>
+                <input type="number" class="form-control" id="truckPercent" value="12" min="0" max="100">
+              </div>
+              <div class="col-4">
+                <label class="form-label">קיים שפה?</label>
+                <select class="form-select" id="curbPresent">
+                  <option value="false" selected>לא</option>
+                  <option value="true">כן</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">רמת פיתוח צד</label>
+                <select class="form-select" id="roadsideDev">
+                  <option value="rural" selected>כפרי</option>
+                  <option value="suburban">פרברי</option>
+                  <option value="urban">עירוני</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">פעילות הולכי רגל</label>
+                <select class="form-select" id="pedestrianActivity">
+                  <option value="low" selected>נמוכה</option>
+                  <option value="moderate">בינונית</option>
+                  <option value="high">גבוהה</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">פעילות אופניים</label>
+                <select class="form-select" id="bicycleActivity">
+                  <option value="low">נמוכה</option>
+                  <option value="moderate" selected>בינונית</option>
+                  <option value="high">גבוהה</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- היסטוריית תאונות -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i> היסטוריית תאונות</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-4">
+                <label class="form-label">תאונות בשולי הדרך (3 שנים)</label>
+                <input type="number" class="form-control" id="roadsideCrashes" value="5" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">תאונות קטלניות</label>
+                <input type="number" class="form-control" id="fatalCrashes" value="0" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">תאונות עם נפגעים</label>
+                <input type="number" class="form-control" id="injuryCrashes" value="2" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">תאונות רכוש בלבד</label>
+                <input type="number" class="form-control" id="pdoCrashes" value="3" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">קיים מעקה בטיחות?</label>
+                <select class="form-select" id="guardrailPresent">
+                  <option value="false" selected>לא</option>
+                  <option value="true">כן</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">אורך מעקה קיים (רגל)</label>
+                <input type="number" class="form-control" id="guardrailLength" value="0" min="0">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- סביבה -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-tree"></i> מאפייני סביבה</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-4">
+                <label class="form-label">סוג קרקע</label>
+                <select class="form-select" id="soilType">
+                  <option value="clay" selected>חרסית</option>
+                  <option value="sandy">חול</option>
+                  <option value="silty">טין</option>
+                  <option value="rocky">סלע</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">סוג צמחייה</label>
+                <select class="form-select" id="vegetationType">
+                  <option value="grasses" selected>דשאים</option>
+                  <option value="shrubs">שיחים</option>
+                  <option value="trees">עצים</option>
+                  <option value="none">ללא</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">רגישות לסחיפה</label>
+                <select class="form-select" id="erosionSensitivity">
+                  <option value="low">נמוכה</option>
+                  <option value="moderate" selected>בינונית</option>
+                  <option value="high">גבוהה</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">עומק מי תהום (רגל)</label>
+                <input type="number" class="form-control" id="groundwaterDepth" value="10" min="0">
+              </div>
+              <div class="col-6">
+                <label class="form-label">אזור רגיש לסביבה?</label>
+                <select class="form-select" id="envSensitive">
+                  <option value="false" selected>לא</option>
+                  <option value="true">כן</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-lg w-100 mt-2" id="calcBtn">
+          <i class="bi bi-calculator me-2"></i>חשב / עדכן תוצאות
+        </button>
+
+      </form>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header"><i class="bi bi-table"></i> תוצאות תכנון רצועת ביטחון</div>
+        <div class="card-body scrollable-results" id="resultsArea">
+          <div class="text-center text-muted py-5">
+            <i class="bi bi-clipboard-data fs-1"></i>
+            <p class="mt-3">לחץ על <strong>"חשב / עדכן תוצאות"</strong><br>לתצוגת ניתוח מלא.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="text-center footer-text mt-4 pb-3">
+    מבוסס על AASHTO Roadside Design Guide (2011) ו‑AASHTO Green Book. כל הזכויות שמורות.
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ---------- AASHTO Clear Zone Table (RDG Table 3-1) ----------
+  function getBaseClearZone(speed, aadt, slopeRecoverable) {
+    // Returns base clear zone in feet based on speed, AADT, and slope type
+    const table = {
+      // speed: { aadt_range: [recoverable, non_recoverable] }
+      30: {
+        '<750':    [10, 10],
+        '750-1500': [12, 14],
+        '1500-6000': [14, 18],
+        '>6000':   [16, 22]
+      },
+      40: {
+        '<750':    [14, 14],
+        '750-1500': [16, 18],
+        '1500-6000': [18, 22],
+        '>6000':   [20, 26]
+      },
+      50: {
+        '<750':    [16, 16],
+        '750-1500': [18, 22],
+        '1500-6000': [22, 26],
+        '>6000':   [24, 30]
+      },
+      55: {
+        '<750':    [18, 20],
+        '750-1500': [20, 24],
+        '1500-6000': [24, 30],
+        '>6000':   [28, 34]
+      },
+      60: {
+        '<750':    [20, 22],
+        '750-1500': [22, 26],
+        '1500-6000': [26, 32],
+        '>6000':   [30, 36]
+      },
+      65: {
+        '<750':    [22, 24],
+        '750-1500': [24, 28],
+        '1500-6000': [28, 34],
+        '>6000':   [32, 38]
+      },
+      70: {
+        '<750':    [24, 26],
+        '750-1500': [26, 30],
+        '1500-6000': [30, 36],
+        '>6000':   [34, 40]
+      }
+    };
+
+    // Round speed to nearest table value
+    let speeds = Object.keys(table).map(Number).sort((a,b)=>a-b);
+    let closest = speeds[0];
+    for (let s of speeds) {
+      if (Math.abs(s - speed) < Math.abs(closest - speed)) closest = s;
+    }
+    // If speed > 70, use 70
+    if (speed > 75) closest = 70;
+    if (speed < 30) closest = 30;
+
+    let row = table[closest];
+    if (!row) return 30;
+
+    let rangeKey;
+    if (aadt < 750) rangeKey = '<750';
+    else if (aadt >= 750 && aadt < 1500) rangeKey = '750-1500';
+    else if (aadt >= 1500 && aadt <= 6000) rangeKey = '1500-6000';
+    else rangeKey = '>6000';
+
+    let vals = row[rangeKey];
+    if (!vals) return 30;
+    return slopeRecoverable ? vals[0] : vals[1];
+  }
+
+  // ---------- Slope recoverability ----------
+  function getSlopeRecoverability(ratio) {
+    const map = {
+      '1:1': { rec: 'non_recoverable', cat: 'barrier_required', factor: 2.0, desc: 'לא ניתן לחזור – סיכון להתהפכות' },
+      '1.5:1': { rec: 'non_recoverable', cat: 'steep', factor: 1.5, desc: 'לא ניתן לחזור – סיכון גבוה' },
+      '2:1': { rec: 'non_recoverable', cat: 'steep', factor: 1.25, desc: 'לא ניתן לחזור – סיכון בינוני' },
+      '3:1': { rec: 'traversable', cat: 'moderate', factor: 1.1, desc: 'ניתן לעבור אך מחוספס' },
+      '4:1': { rec: 'recoverable', cat: 'recoverable', factor: 1.0, desc: 'ניתן לחזור בבטחה' },
+      '6:1': { rec: 'recoverable', cat: 'recoverable', factor: 1.0, desc: 'ניתן לחזור בקלות' },
+      '10:1': { rec: 'recoverable', cat: 'recoverable', factor: 1.0, desc: 'ניתן לחזור בקלות' }
+    };
+    return map[ratio] || map['4:1'];
+  }
+
+  // ---------- Hazard Index ----------
+  function calcHazardIndex(hazardsPerMile, severity) {
+    // severity: high=3, medium=2, low=1
+    return (hazardsPerMile * severity) / 100;
+  }
+
+  // ---------- Main calculation ----------
+  function calculateClearZone() {
+    // Read inputs
+    const speed = parseInt(document.getElementById('designSpeed').value) || 55;
+    const aadt = parseInt(document.getElementById('aadt').value) || 3200;
+    const segLen = parseInt(document.getElementById('segmentLength').value) || 5280;
+    const laneWidth = parseFloat(document.getElementById('laneWidth').value) || 12;
+    const shoulderWidth = parseFloat(document.getElementById('shoulderWidth').value) || 8;
+    const numLanes = parseInt(document.getElementById('numLanes').value) || 2;
+    const terrain = document.getElementById('terrainType').value;
+    const foreslopeRatio = document.getElementById('foreslopeRatio').value;
+    const foreslopeHeight = parseFloat(document.getElementById('foreslopeHeight').value) || 10;
+    const ditchType = document.getElementById('ditchType').value;
+    const ditchDepth = parseFloat(document.getElementById('ditchDepth').value) || 2;
+    const backslopePresent = document.getElementById('backslopePresent').value === 'true';
+    const backslopeRatio = document.getElementById('backslopeRatio').value;
+    const backslopeHeight = parseFloat(document.getElementById('backslopeHeight').value) || 15;
+    const fixedObjects = document.getElementById('fixedObjectsPresent').value === 'true';
+    const hazardDist = parseFloat(document.getElementById('hazardDistance').value) || 15;
+    const hazardDensity = parseFloat(document.getElementById('hazardDensity').value) || 12;
+    const bridgePiers = document.getElementById('bridgePiersPresent').value === 'true';
+    const verticalDrop = document.getElementById('verticalDropoffsPresent').value === 'true';
+    const truckPct = parseFloat(document.getElementById('truckPercent').value) || 12;
+    const curb = document.getElementById('curbPresent').value === 'true';
+    const devLevel = document.getElementById('roadsideDev').value;
+    const pedAct = document.getElementById('pedestrianActivity').value;
+    const bikeAct = document.getElementById('bicycleActivity').value;
+    const roadsideCrashes = parseInt(document.getElementById('roadsideCrashes').value) || 0;
+    const fatalCrashes = parseInt(document.getElementById('fatalCrashes').value) || 0;
+    const injuryCrashes = parseInt(document.getElementById('injuryCrashes').value) || 0;
+    const pdoCrashes = parseInt(document.getElementById('pdoCrashes').value) || 0;
+    const guardrailPresent = document.getElementById('guardrailPresent').value === 'true';
+    const guardrailLen = parseFloat(document.getElementById('guardrailLength').value) || 0;
+    const soilType = document.getElementById('soilType').value;
+    const vegType = document.getElementById('vegetationType').value;
+    const erosionSens = document.getElementById('erosionSensitivity').value;
+    const groundWater = parseFloat(document.getElementById('groundwaterDepth').value) || 10;
+    const envSens = document.getElementById('envSensitive').value === 'true';
+
+    // --- 1. Slope recoverability ---
+    const slopeInfo = getSlopeRecoverability(foreslopeRatio);
+    const recoverable = slopeInfo.rec === 'recoverable';
+    const isSteep = slopeInfo.cat === 'steep' || slopeInfo.cat === 'barrier_required';
+
+    // --- 2. Base clear zone from table ---
+    let baseCZ = getBaseClearZone(speed, aadt, recoverable);
+
+    // --- 3. Adjustments ---
+    let speedAdj = 0;
+    let volumeAdj = 0;
+    let slopeAdj = 0;
+    let hazardAdj = 0;
+
+    // Speed adjustment: if speed > 55, add 2 ft per 5 mph over 55
+    if (speed > 55) {
+      let extra = Math.floor((speed - 55) / 5) * 2;
+      speedAdj = extra;
+    }
+
+    // Volume adjustment: if AADT > 6000, add 2 ft
+    if (aadt > 6000) volumeAdj = 2;
+
+    // Slope adjustment: if non-recoverable, increase by factor
+    if (!recoverable) {
+      slopeAdj = Math.round(baseCZ * (slopeInfo.factor - 1));
+    }
+
+    // Hazard adjustment: if fixed objects within clear zone
+    if (fixedObjects && hazardDist < baseCZ + speedAdj + volumeAdj + slopeAdj) {
+      hazardAdj = 5; // add 5 ft for hazards
+    }
+
+    let finalCZ = baseCZ + speedAdj + volumeAdj + slopeAdj + hazardAdj;
+
+    // Ensure minimums
+    const minCZ = speed <= 40 ? 14 : 18;
+    if (finalCZ < minCZ) finalCZ = minCZ;
+
+    // --- 4. Hazard assessment ---
+    let hazards = [];
+    let hazardMitigation = [];
+    let hazardCount = 0;
+
+    if (fixedObjects) {
+      // Determine hazard types from multi-select
+      const sel = document.getElementById('fixedObjectTypes');
+      const selectedTypes = Array.from(sel.selectedOptions).map(o => o.value);
+      let totalHazards = 0;
+      let highRiskCount = 0;
+
+      selectedTypes.forEach(type => {
+        let qty = 0;
+        let severity = 'medium';
+        let distance = hazardDist;
+        let within = distance < finalCZ;
+        let mitigation = 'remove';
+        let priority = 'medium';
+
+        if (type === 'trees') { qty = Math.round(hazardDensity * 0.6); severity = 'high'; mitigation = 'remove'; priority = 'high'; }
+        else if (type === 'utility_poles') { qty = Math.round(hazardDensity * 0.3); severity = 'medium'; mitigation = 'relocate'; priority = 'medium'; }
+        else if (type === 'culvert_headwalls') { qty = Math.round(hazardDensity * 0.15); severity = 'high'; mitigation = 'guardrail'; priority = 'high'; }
+        else if (type === 'signs') { qty = Math.round(hazardDensity * 0.2); severity = 'medium'; mitigation = 'breakaway'; priority = 'low'; }
+        else if (type === 'light_poles') { qty = Math.round(hazardDensity * 0.15); severity = 'medium'; mitigation = 'frangible'; priority = 'low'; }
+        else if (type === 'buildings') { qty = Math.round(hazardDensity * 0.05); severity = 'high'; mitigation = 'barrier'; priority = 'high'; }
+        else if (type === 'bridge_piers') { qty = bridgePiers ? 2 : 0; severity = 'high'; mitigation = 'barrier'; priority = 'high'; }
+
+        if (qty > 0) {
+          totalHazards += qty;
+          if (severity === 'high') highRiskCount += qty;
+          hazards.push({
+            type: type,
+            quantity: qty,
+            distance: distance,
+            within: within,
+            mitigation: mitigation,
+            priority: priority,
+            severity: severity
+          });
+          if (within) {
+            hazardMitigation.push(`${mitigation} ${type} (${qty})`);
+          }
+        }
+      });
+
+      hazardCount = totalHazards;
+      const hazardIndex = calcHazardIndex(hazardDensity, highRiskCount > 5 ? 3 : (highRiskCount > 2 ? 2 : 1));
+      hazardAdj = hazardIndex > 1.0 ? 5 : (hazardIndex > 0.5 ? 3 : 0);
+      finalCZ += hazardAdj;
+
+      // Recalculate hazard mitigation with new CZ
+      hazardMitigation = [];
+      hazards.forEach(h => {
+        if (h.distance < finalCZ) {
+          hazardMitigation.push(`${h.mitigation} ${h.type} (${h.quantity})`);
+        }
+      });
+    }
+
+    // --- 5. Guardrail analysis ---
+    let guardrailRequired = false;
+    let guardrailReason = '';
+    let guardrailLength = 0;
+    let guardrailCost = 0;
+
+    // Guardrail warrants
+    if (!recoverable && isSteep) {
+      guardrailRequired = true;
+      guardrailReason = 'מדרון לא ניתן לחזרה';
+    }
+    if (finalCZ < baseCZ && !recoverable) {
+      guardrailRequired = true;
+      guardrailReason = 'רצועת ביטחון קטנה מהמינימום עם מדרון תלול';
+    }
+    if (fixedObjects && hazardMitigation.length > 0) {
+      guardrailRequired = true;
+      guardrailReason = 'מפגעים בתוך רצועת הביטחון';
+    }
+    if (bridgePiers) {
+      guardrailRequired = true;
+      guardrailReason = 'עמודי גשר';
+    }
+    if (verticalDrop) {
+      guardrailRequired = true;
+      guardrailReason = 'שוליים תלולים';
+    }
+
+    if (guardrailRequired) {
+      // Length of need calculation
+      let lon = (hazardDist - finalCZ) * 1.5;
+      if (lon < 200) lon = 200;
+      if (lon > 2000) lon = 2000;
+      guardrailLength = Math.round(lon / 10) * 10;
+      guardrailCost = guardrailLength * 100; // $100/ft
+    }
+
+    // --- 6. Cost-benefit ---
+    let annualCrashSavings = 0;
+    let totalCrashes = roadsideCrashes + fatalCrashes + injuryCrashes + pdoCrashes;
+    let crashReductionPct = guardrailRequired ? 15 : 5;
+    if (guardrailRequired && fixedObjects) crashReductionPct = 25;
+    if (isSteep && guardrailRequired) crashReductionPct = 30;
+
+    let avgCrashCost = (fatalCrashes * 12000000 + injuryCrashes * 750000 + pdoCrashes * 10000) / (totalCrashes || 1);
+    if (totalCrashes === 0) avgCrashCost = 150000;
+
+    annualCrashSavings = Math.round((totalCrashes / 3) * (crashReductionPct / 100) * avgCrashCost);
+
+    let constructionCost = 0;
+    let treeRemovalCost = 0;
+    let slopeFlattenCost = 0;
+    let guardrailInstallCost = guardrailCost;
+
+    if (fixedObjects) {
+      let treeCount = hazards.filter(h => h.type === 'trees').reduce((s, h) => s + h.quantity, 0);
+      treeRemovalCost = treeCount * 1000;
+    }
+    if (!recoverable && isSteep) {
+      slopeFlattenCost = 45000;
+    }
+    constructionCost = guardrailInstallCost + treeRemovalCost + slopeFlattenCost + 15000; // + misc
+
+    let bcr = 0;
+    let payback = 0;
+    let npv = 0;
+    if (constructionCost > 0) {
+      bcr = Math.round((annualCrashSavings * 20) / constructionCost * 10) / 10;
+      payback = Math.round(constructionCost / (annualCrashSavings || 1) * 10) / 10;
+      npv = Math.round((annualCrashSavings * 20) - constructionCost);
+    }
+
+    // --- 7. Build result object ---
+    const result = {
+      designSpeed: speed,
+      aadt: aadt,
+      facilityType: document.getElementById('facilityType').value,
+      clearZoneWidth: Math.round(finalCZ),
+      baseClearZone: baseCZ,
+      speedAdjustment: speedAdj,
+      volumeAdjustment: volumeAdj,
+      slopeAdjustment: slopeAdj,
+      hazardAdjustment: hazardAdj,
+      slopeRecoverability: slopeInfo.rec,
+      slopeCategory: slopeInfo.cat,
+      slopeDesc: slopeInfo.desc,
+      foreslopeRatio: foreslopeRatio,
+      backslopePresent: backslopePresent,
+      backslopeRatio: backslopeRatio,
+      hazards: hazards,
+      hazardMitigation: hazardMitigation,
+      hazardCount: hazardCount,
+      guardrailRequired: guardrailRequired,
+      guardrailReason: guardrailReason,
+      guardrailLength: guardrailLength,
+      guardrailCost: guardrailCost,
+      guardrailTestLevel: speed >= 55 ? 'TL-3' : (speed >= 40 ? 'TL-2' : 'TL-1'),
+      constructionCost: constructionCost,
+      annualCrashSavings: annualCrashSavings,
+      crashReductionPct: crashReductionPct,
+      benefitCostRatio: bcr,
+      paybackPeriod: payback,
+      netPresentValue: npv,
+      economicJustification: bcr >= 1.0 ? 'justified' : (bcr >= 0.8 ? 'marginal' : 'not_justified'),
+      erosionControl: erosionSens !== 'low' ? 'required' : 'optional',
+      recommendedSlopeFlattening: isSteep ? '4:1' : 'no_change',
+      slopeStability: soilType === 'rocky' ? 'stable' : (soilType === 'clay' ? 'stable' : 'moderate'),
+      totalCost: constructionCost + (annualCrashSavings * 0.1),
+      safetyRating: guardrailRequired ? 'moderate' : 'good'
+    };
+
+    return result;
+  }
+
+  // ---------- Render results ----------
+  function renderResults(r) {
+    const area = document.getElementById('resultsArea');
+    if (!r) {
+      area.innerHTML = `<div class="alert alert-warning">לא התקבלו תוצאות.</div>`;
+      return;
+    }
+
+    // Build hazard detail rows
+    let hazardRows = '';
+    if (r.hazards && r.hazards.length > 0) {
+      r.hazards.forEach(h => {
+        let badge = h.priority === 'high' ? 'hazard-high' : (h.priority === 'medium' ? 'hazard-medium' : 'hazard-low');
+        let label = h.priority === 'high' ? 'גבוה' : (h.priority === 'medium' ? 'בינוני' : 'נמוך');
+        hazardRows += `
+          <tr>
+            <td>${h.type.replace('_',' ')}</td>
+            <td>${h.quantity}</td>
+            <td>${h.distance} רגל</td>
+            <td>${h.within ? '✅ כן' : '❌ לא'}</td>
+            <td><span class="hazard-tag ${badge}">${label}</span></td>
+            <td>${h.mitigation}</td>
+          </tr>
+        `;
+      });
+    }
+
+    let hazardMitigationHtml = r.hazardMitigation.length > 0
+      ? r.hazardMitigation.map(m => `<span class="badge bg-warning text-dark me-1">${m}</span>`).join('')
+      : '<span class="text-muted">אין מפגעים הדורשים טיפול</span>';
+
+    let guardrailHtml = r.guardrailRequired
+      ? `<span class="badge bg-danger">נדרש - ${r.guardrailReason}</span>
+         <div class="mt-1 small">אורך: ${r.guardrailLength} רגל | עלות: $${r.guardrailCost.toLocaleString()} | רמת מבחן: ${r.guardrailTestLevel}</div>`
+      : `<span class="badge bg-success">לא נדרש</span>`;
+
+    let slopeLabel = r.slopeRecoverability === 'recoverable' ? '✅ ניתן לחזרה' :
+                     (r.slopeRecoverability === 'traversable' ? '⚠️ ניתן לעבור' : '❌ לא ניתן לחזרה');
+
+    let bcrLabel = r.benefitCostRatio >= 1.0 ? '✅ מוצדק' :
+                   (r.benefitCostRatio >= 0.8 ? '⚠️ גבולי' : '❌ לא מוצדק');
+
+    let ecoJust = r.economicJustification === 'justified' ? 'מוצדק' :
+                  (r.economicJustification === 'marginal' ? 'גבולי' : 'לא מוצדק');
+
+    area.innerHTML = `
+      <div class="result-section">
+        <h6><i class="bi bi-rulers"></i> רצועת ביטחון</h6>
+        <div class="row">
+          <div class="col-6">
+            <div class="result-number">${r.clearZoneWidth}</div>
+            <div class="result-label">רוחב סופי (רגל)</div>
+          </div>
+          <div class="col-6">
+            <div class="small text-muted">בסיס: ${r.baseClearZone} רגל</div>
+            <div class="small">התאמות: מהירות +${r.speedAdjustment}, תנועה +${r.volumeAdjustment}, מדרון +${r.slopeAdjustment}, מפגעים +${r.hazardAdjustment}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <h6><i class="bi bi-mountain"></i> ניתוח מדרונות</h6>
+        <div class="row g-2">
+          <div class="col-6"><span class="fw-bold">מדרון קדמי:</span> ${r.foreslopeRatio}</div>
+          <div class="col-6"><span class="fw-bold">התאוששות:</span> ${slopeLabel}</div>
+          <div class="col-12"><span class="fw-bold">תיאור:</span> ${r.slopeDesc}</div>
+          <div class="col-6"><span class="fw-bold">מדרון אחורי:</span> ${r.backslopePresent ? r.backslopeRatio : 'אין'}</div>
+          <div class="col-6"><span class="fw-bold">המלצה:</span> ${r.recommendedSlopeFlattening === 'no_change' ? 'אין צורך בשינוי' : 'יש לשטח ל-'+r.recommendedSlopeFlattening}</div>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <h6><i class="bi bi-exclamation-triangle"></i> מפגעים</h6>
+        <div class="mb-2"><span class="fw-bold">זוהו:</span> ${r.hazardCount} מפגעים</div>
+        <div class="mb-2">${hazardMitigationHtml}</div>
+        ${hazardRows ? `
+        <div class="table-responsive">
+          <table class="table table-sm table-result table-bordered">
+            <thead><tr><th>סוג</th><th>כמות</th><th>מרחק</th><th>בתוך רצועה</th><th>עדיפות</th><th>טיפול</th></tr></thead>
+            <tbody>${hazardRows}</tbody>
+          </table>
+        </div>` : ''}
+      </div>
+
+      <div class="result-section">
+        <h6><i class="bi bi-shield"></i> מעקה בטיחות</h6>
+        ${guardrailHtml}
+      </div>
+
+      <div class="result-section">
+        <h6><i class="bi bi-cash-stack"></i> עלות-תועלת</h6>
+        <div class="row g-2">
+          <div class="col-6"><span class="fw-bold">עלות בנייה:</span> $${r.constructionCost.toLocaleString()}</div>
+          <div class="col-6"><span class="fw-bold">חיסכון שנתי:</span> $${r.annualCrashSavings.toLocaleString()}</div>
+          <div class="col-6"><span class="fw-bold">יחס תועלת-עלות (BCR):</span> ${r.benefitCostRatio}</div>
+          <div class="col-6"><span class="fw-bold">החזר השקעה:</span> ${r.paybackPeriod} שנים</div>
+          <div class="col-6"><span class="fw-bold">NPV:</span> $${r.netPresentValue.toLocaleString()}</div>
+          <div class="col-6"><span class="fw-bold">הצדקה כלכלית:</span> ${bcrLabel}</div>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <h6><i class="bi bi-list-check"></i> המלצות</h6>
+        <ul class="small mb-0">
+          <li>רוחב רצועת ביטחון: ${r.clearZoneWidth} רגל ${r.clearZoneWidth >= 30 ? '(עומד בתקן)' : '(פחות מהמומלץ)'}</li>
+          <li>${r.guardrailRequired ? '✅ נדרש מעקה בטיחות' : '✅ אין צורך במעקה'}</li>
+          <li>${r.recommendedSlopeFlattening !== 'no_change' ? '✅ יש לשטח מדרונות ל-'+r.recommendedSlopeFlattening : '✅ שיפועים מקובלים'}</li>
+          <li>${r.erosionControl === 'required' ? '✅ נדרש בקרת סחיפה' : '✅ בקרת סחיפה אופציונלית'}</li>
+          <li>${r.safetyRating === 'good' ? '✅ דרגת בטיחות: טובה' : '⚠️ דרגת בטיחות: בינונית'}</li>
+        </ul>
+      </div>
+
+      <div class="mt-2 text-center small text-muted">
+        <i class="bi bi-info-circle"></i> מבוסס על AASHTO Roadside Design Guide (2011) – Clear Zone Design
+      </div>
+    `;
+  }
+
+  // ---------- Main calculation trigger ----------
+  function performCalculation() {
+    try {
+      const result = calculateClearZone();
+      renderResults(result);
+    } catch (err) {
+      document.getElementById('resultsArea').innerHTML = `
+        <div class="alert alert-danger">שגיאה בחישוב: ${err.message}</div>
+      `;
+      console.error(err);
+    }
+  }
+
+  // ---------- Attach events ----------
+  document.getElementById('calcBtn').addEventListener('click', performCalculation);
+
+  // Auto-calculate on load
+  window.addEventListener('load', function() {
+    setTimeout(performCalculation, 300);
+  });
+
+})();
+</script>
+</body>
+</html>

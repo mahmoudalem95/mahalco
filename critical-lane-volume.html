@@ -515,6 +515,15 @@
                 animation: none !important;
             }
         }
+        /* right-turn free indicator — dashed border remains as visual cue */
+        .fields input.free-right-input {
+            border-style: dashed;
+            border-color: #C44536;
+        }
+        .fields input.free-right-input:focus-visible {
+            outline-color: #C44536;
+            border-color: #C44536;
+        }
     </style>
 </head>
 <body>
@@ -1065,13 +1074,12 @@
                         '" data-field="nS">';
 
                     html += '<span class="lbl">ימינה (R):</span>';
-                    // ✏️ תיקון: רק ימינה חופשית משביתה את הקלט, לא נתיב משותף
-                    var rDisabled = data.freeRight ? ' disabled' : '';
-                    var rStyle = data.freeRight ? ' style="border:1px dashed #C44536;"' : '';
+                    // ✏️ FIX: inputs are always enabled — free-right is shown via dashed border only
+                    var rStyle = data.freeRight ? ' class="free-right-input"' : '';
                     html += '<input type="number" min="0" value="' + data.R + '" data-arm="' + armKey +
-                        '" data-field="R"' + rDisabled + rStyle + '>';
+                        '" data-field="R"' + rStyle + '>';
                     html += '<input type="number" min="1" value="' + data.nR + '" data-arm="' + armKey +
-                        '" data-field="nR"' + rDisabled + rStyle + '>';
+                        '" data-field="nR"' + rStyle + '>';
                     html += '</div>';
 
                     html += '<div class="toggles">';

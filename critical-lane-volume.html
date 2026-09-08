@@ -881,13 +881,10 @@
                 svg += '<rect x="30" y="30" width="40" height="40" fill="#3A474E"/>';
 
                 // ---- Lane dividers per approach ----
-                // For each approach, draw lane lines based on number of lanes
-                // The rightmost lane (R) gets a dashed line if freeRight is true
-
                 function drawLaneDividers(arm, x1, y1, x2, y2, totalLanes, freeRight) {
-                    if (totalLanes < 2) return;
+                    if (totalLanes < 2) return '';
                     var laneWidth = 1 / totalLanes;
-                    var lines = [];
+                    var lines = '';
                     for (var i = 1; i < totalLanes; i++) {
                         var t = i / totalLanes;
                         var px = x1 + (x2 - x1) * t;
@@ -895,62 +892,53 @@
                         var isRightmost = (i === totalLanes - 1);
                         var dashed = (isRightmost && freeRight);
                         var dashAttr = dashed ? ' stroke-dasharray="3,2.5"' : '';
-                        // Draw the lane line
                         if (arm === 'N') {
-                            lines.push(
+                            lines +=
                                 '<line x1="' + px + '" y1="0" x2="' + px + '" y2="30" stroke="#FFFFFF" stroke-width="0.9"' +
-                                dashAttr + ' opacity="0.7"/>');
+                                dashAttr + ' opacity="0.7"/>';
                         } else if (arm === 'S') {
-                            lines.push(
+                            lines +=
                                 '<line x1="' + px + '" y1="70" x2="' + px + '" y2="100" stroke="#FFFFFF" stroke-width="0.9"' +
-                                dashAttr + ' opacity="0.7"/>');
+                                dashAttr + ' opacity="0.7"/>';
                         } else if (arm === 'W') {
-                            lines.push(
+                            lines +=
                                 '<line x1="0" y1="' + py + '" x2="30" y2="' + py + '" stroke="#FFFFFF" stroke-width="0.9"' +
-                                dashAttr + ' opacity="0.7"/>');
+                                dashAttr + ' opacity="0.7"/>';
                         } else if (arm === 'E') {
-                            lines.push(
+                            lines +=
                                 '<line x1="70" y1="' + py + '" x2="100" y2="' + py + '" stroke="#FFFFFF" stroke-width="0.9"' +
-                                dashAttr + ' opacity="0.7"/>');
+                                dashAttr + ' opacity="0.7"/>';
                         }
                     }
-                    return lines.join('');
+                    return lines;
                 }
 
-                // Determine lane counts per approach
                 var laneCounts = {};
                 present.forEach(function(a) {
                     var armData = volMap ? volMap.__arms[a] : null;
-                    if (!armData) return;
+                    if (!armData) { laneCounts[a] = 1; return; }
                     var nL = armData.nL || 0;
                     var nS = armData.nS || 0;
                     var nR = armData.nR || 0;
-                    // Count active lanes (only if the movement exists in the present set)
                     var count = 0;
                     if (present.indexOf(DEST[a].L) > -1 && (armData.L || 0) > 0) count += nL;
                     else if (present.indexOf(DEST[a].L) > -1 && nL > 0) count += nL;
                     if (present.indexOf(DEST[a].S) > -1 && (armData.S || 0) > 0) count += nS;
                     else if (present.indexOf(DEST[a].S) > -1 && nS > 0) count += nS;
-                    if (present.indexOf(DEST[a].R) > -1 && (armData.R || 0) > 0) count += nR;
+                    if (present.indexOf(DEST[a].R) > -1 && (armData.R || 0) > 0 && !armData.freeRight) count += nR;
                     else if (present.indexOf(DEST[a].R) > -1 && nR > 0 && !armData.freeRight) count += nR;
-                    // If all volumes are 0, show at least 1 lane
                     if (count === 0) count = 1;
-                    // Clamp
                     if (count < 1) count = 1;
                     if (count > 4) count = 4;
                     laneCounts[a] = count;
                 });
 
-                // Draw lane dividers for each approach
                 present.forEach(function(a) {
                     var count = laneCounts[a] || 1;
                     var armData = volMap ? volMap.__arms[a] : null;
                     var freeRight = armData ? !!armData.freeRight : false;
-                    // Check if right turn exists and is free
                     var hasR = present.indexOf(DEST[a].R) > -1;
-                    if (hasR && armData && armData.freeRight) {
-                        freeRight = true;
-                    }
+                    if (hasR && armData && armData.freeRight) freeRight = true;
                     if (a === 'N') {
                         svg += drawLaneDividers('N', 30, 0, 70, 0, count, freeRight);
                     } else if (a === 'S') {
@@ -983,11 +971,10 @@
                     if (!info) return;
 
                     var armKey = m.charAt(0);
-                    var isActive = activeSet.hasOwnProperty(m) ? !!activeSet[m] : false;
+                    var isActive = activeSet.hasOwnProperty(m);
                     var isHighlight = !!highlightSet[m];
                     var volData = volMap ? volMap[m] : null;
                     var vol = volData ? volData.vol : 0;
-                    var lanes = volData ? volData.lanes : 1;
                     var hasVol = vol > 0;
                     var dirColor = DIR_COLORS[armKey] || '#A0AEC0';
 
@@ -1015,30 +1002,29 @@
                         width = 1.5;
                     }
 
-                    // Add dash attribute for free right turns
                     var dashAttr = isFreeRight ? ' stroke-dasharray="4,3"' : '';
                     paths += '<path d="' + info.d + '" fill="none" stroke="' + stroke +
                         '" stroke-width="' + width + '" stroke-linecap="round" opacity="' + opacity + '"' + dashAttr + '/>';
                     paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"' + dashAttr + '/>';
 
+                    // ---- Volume label: only show if the move is active OR highlighted ----
                     var moveArm = m.charAt(0);
                     var turn = m.charAt(1);
                     var pos = labelPos[moveArm] && labelPos[moveArm][turn];
-                    if (pos && volData) {
-                        var labelOpacity = isHighlight ? 1 : (isActive ? 1 : 0.55);
-                        var labelClass = 'approach-volume-label' + (isHighlight ? ' highlight' : '');
+                    if (pos && volData && (isActive || isHighlight)) {
                         var labelFill = isFreeRight ? '#C44536' : dirColor;
+                        var labelClass = 'approach-volume-label' + (isHighlight ? ' highlight' : '');
                         volumeLabels += '<text x="' + pos[0] + '" y="' + pos[1] + '"' +
                             ' transform="rotate(' + pos[2] + ' ' + pos[0] + ' ' + pos[1] + ')"' +
-                            ' class="' + labelClass + '" fill="' + labelFill + '" opacity="' + labelOpacity + '"' +
+                            ' class="' + labelClass + '" fill="' + labelFill + '" opacity="1"' +
                             ' data-move="' + m + '">' + Math.round(vol) + '</text>';
                     }
-
                 });
 
                 svg += paths + volumeLabels + '</svg>';
                 return svg;
             }
+
             /* ============================================================
                3. UI State & Rendering
                ============================================================ */
@@ -1124,7 +1110,6 @@
                 var t3 = res.table3.total;
                 var minVal = Math.min(t1, t2, t3);
 
-                // Direction legend
                 var html = '<div class="direction-key" aria-label="מקרא צבעי כיוונים">' +
                     '<span><i style="background:#2F6B4F"></i>צפון</span>' +
                     '<span><i style="background:#3B6EA8"></i>דרום</span>' +
@@ -1132,7 +1117,6 @@
                     '<span><i style="background:#7656A6"></i>מערב</span>' +
                     '</div>';
 
-                // Comparison cards
                 html += '<div class="cmp">';
                 var methods = [
                     { name: 'שיטה 1: זרועות מפוצלות', val: t1, desc: 'פאזה נפרדת לכל זרוע גישה' },
@@ -1308,7 +1292,6 @@
                4. Event Wiring & API
                ============================================================ */
             function initEvents() {
-                // Remove live listeners; only buttons trigger updates
                 document.getElementById('btnExample').addEventListener('click', function() {
                     syncStateFromInputs();
                     refreshOutputs();

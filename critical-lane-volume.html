@@ -9,21 +9,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --paper: #F4F6F4;
-            --surface: #FFFFFF;
-            --sunk: #EDF0ED;
-            --ink: #19242A;
-            --ink2: #5C6A72;
-            --ink3: #8B979D;
-            --rule: #DCE1DD;
-            --rule2: #C3CBC4;
-            --pick: #2F6B4F;
-            --pick-bg: #E7F0EA;
-            --warn: #A8492A;
-            --warn-bg: #F7EAE4;
+            --bg: #12121e;
+            --surface: #1a1a2e;
+            --sunk: #22223a;
+            --ink: #EDEBF2;
+            --ink2: #9A96AB;
+            --ink3: #6B6780;
+            --rule: rgba(255, 255, 255, .09);
+            --rule2: rgba(255, 255, 255, .05);
+            --pick: #E8A33D;
+            --pick-bg: rgba(232, 163, 61, .16);
+            --warn: #F35B5B;
+            --warn-bg: rgba(243, 91, 91, .15);
             --r: 6px;
-            --hl: #C44536;
-            --hl-bg: #FDF0ED;
+            --hl: #E8A33D;
+            --hl-bg: rgba(232, 163, 61, .15);
         }
         * {
             box-sizing: border-box;
@@ -33,7 +33,7 @@
         }
         body {
             margin: 0;
-            background: var(--paper);
+            background: var(--bg);
             color: var(--ink);
             font-family: 'Assistant', system-ui, 'Segoe UI', sans-serif;
             font-size: 16px;
@@ -95,21 +95,11 @@
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-areas: ". n ." "w c e" ". s .";
         }
-        .cell-n {
-            grid-area: n;
-        }
-        .cell-s {
-            grid-area: s;
-        }
-        .cell-e {
-            grid-area: e;
-        }
-        .cell-w {
-            grid-area: w;
-        }
-        .cell-c {
-            grid-area: c;
-        }
+        .cell-n { grid-area: n; }
+        .cell-s { grid-area: s; }
+        .cell-e { grid-area: e; }
+        .cell-w { grid-area: w; }
+        .cell-c { grid-area: c; }
 
         .arm {
             direction: rtl;
@@ -160,7 +150,7 @@
             padding: 5px 7px;
             border: 1px solid var(--rule2);
             border-radius: 4px;
-            background: var(--surface);
+            background: var(--sunk);
             color: var(--ink);
         }
         input[type="number"]:focus-visible {
@@ -170,7 +160,7 @@
         }
         input[type="number"]:disabled {
             opacity: 0.5;
-            background: var(--sunk);
+            background: var(--bg);
         }
         .toggles {
             margin-top: 10px;
@@ -238,12 +228,13 @@
             outline-offset: 1px;
         }
         button.solid {
-            background: var(--ink);
-            color: #fff;
-            border-color: var(--ink);
+            background: var(--pick);
+            color: #12121e;
+            border-color: var(--pick);
+            font-weight: 600;
         }
         button.solid:hover {
-            background: #2A3A42;
+            background: #c9862f;
         }
 
         /* ---- tables ---- */
@@ -291,13 +282,13 @@
             direction: ltr;
         }
         tr.total td {
-            background: var(--ink);
-            color: #fff;
-            font-weight: 500;
+            background: var(--pick);
+            color: #12121e;
+            font-weight: 600;
             border-bottom: none;
         }
         tr.total .val {
-            color: #fff;
+            color: #12121e;
         }
         .pick {
             color: var(--pick);
@@ -338,13 +329,13 @@
             dominant-baseline: central;
             pointer-events: none;
             paint-order: stroke;
-            stroke: rgba(255, 255, 255, .72);
+            stroke: rgba(18, 18, 30, .9);
             stroke-width: .45px;
         }
         svg.ph .approach-volume-label.highlight {
             font-size: 5.5px;
             font-weight: 700;
-            stroke: rgba(255, 255, 255, .9);
+            stroke: rgba(18, 18, 30, .9);
         }
 
         .phase-row {
@@ -352,18 +343,10 @@
             transition: background .15s, box-shadow .15s;
             border-right: 4px solid transparent;
         }
-        .phase-row.dir-N {
-            border-right-color: #2F6B4F;
-        }
-        .phase-row.dir-S {
-            border-right-color: #3B6EA8;
-        }
-        .phase-row.dir-E {
-            border-right-color: #B56B2C;
-        }
-        .phase-row.dir-W {
-            border-right-color: #7656A6;
-        }
+        .phase-row.dir-N { border-right-color: #4ADE80; }
+        .phase-row.dir-S { border-right-color: #22D3EE; }
+        .phase-row.dir-E { border-right-color: #E8A33D; }
+        .phase-row.dir-W { border-right-color: #A78BFA; }
         .phase-row:hover td,
         .phase-row:focus-within td {
             background: var(--pick-bg);
@@ -391,13 +374,12 @@
             display: inline-block;
         }
         .schematic-cell {
-            min-width: 200px;
-            width: 200px;
-            text-align: center;
+            min-width: 100px;
+            width: 110px;
         }
         .schematic-cell svg.ph {
-            width: 184px;
-            height: 184px;
+            width: 92px;
+            height: 92px;
         }
         .phase-row.highlight-row td {
             background: var(--hl-bg);
@@ -455,8 +437,8 @@
             margin-bottom: 4px;
         }
         pre {
-            background: var(--ink);
-            color: #E6EBE7;
+            background: var(--sunk);
+            color: var(--ink);
             border-radius: var(--r);
             padding: 14px 16px;
             overflow-x: auto;
@@ -466,6 +448,7 @@
             direction: ltr;
             text-align: left;
             margin: 0;
+            border: 1px solid var(--rule);
         }
         details {
             background: var(--surface);
@@ -476,6 +459,10 @@
         summary {
             cursor: pointer;
             font-weight: 500;
+        }
+        .schematic-cell {
+            min-width: 70px;
+            text-align: center;
         }
 
         /* ---- live schematic ---- */
@@ -515,22 +502,13 @@
                 animation: none !important;
             }
         }
-        /* right-turn free indicator — dashed border remains as visual cue */
-        .fields input.free-right-input {
-            border-style: dashed;
-            border-color: #C44536;
-        }
-        .fields input.free-right-input:focus-visible {
-            outline-color: #C44536;
-            border-color: #C44536;
-        }
     </style>
 </head>
 <body>
     <div class="wrap">
 
         <h1>נפח נתיב קריטי</h1>
-        <p class="lede">מחשבון פאזות לצומת מרומזר. מזין נפחים ומספרי נתיבים לכל זרוע, ומקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה, וטבעת כפולה. עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בימין חופשית לכל זרוע בנפרד. <strong>הסכמה המרכזית משתנה לפי הערכים שהזנת בלחיצה על "חשב".</strong></p>
+        <p class="lede">מחשבון פאזות לצומת מרומזר. מזין נפחים ומספרי נתיבים לכל זרוע, ומקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה, וטבעת כפולה. עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בימין חופשית לכל זרוע בנפרד. <strong>הסכמה המרכזית משתנה בזמן אמת לפי המספרים שהזנת.</strong></p>
 
         <section>
             <div class="sec-head"><h2>נתוני הצומת</h2><span class="meta">הזרועות מסודרות לפי מיקומן בשטח</span></div>
@@ -592,10 +570,10 @@
             var ARMS = ['N', 'S', 'E', 'W'];
             var HE = { N: 'צפון', S: 'דרום', E: 'מזרח', W: 'מערב' };
             var DIR_COLORS = {
-                N: '#2F6B4F',
-                S: '#3B6EA8',
-                E: '#B56B2C',
-                W: '#7656A6'
+                N: '#4ADE80',
+                S: '#22D3EE',
+                E: '#E8A33D',
+                W: '#A78BFA'
             };
             var DEST = {
                 N: { S: 'S', L: 'E', R: 'W' },
@@ -881,19 +859,22 @@
                 var svg = '<svg class="ph" viewBox="0 0 100 100" width="' + size + '" height="' + size +
                     '" role="img" aria-label="סכמת צומת">';
 
-                // Road backdrop
-                svg += '<rect width="100" height="100" fill="#E2E8E4" rx="6"/>';
-                if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#3A474E"/>';
-                if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#3A474E"/>';
-                if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#3A474E"/>';
-                if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#3A474E"/>';
-                svg += '<rect x="30" y="30" width="40" height="40" fill="#3A474E"/>';
+                // Road backdrop — dark theme
+                svg += '<rect width="100" height="100" fill="#2A2A3A" rx="6"/>';
+                if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#3A3A4A"/>';
+                if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#3A3A4A"/>';
+                if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#3A3A4A"/>';
+                if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#3A3A4A"/>';
+                svg += '<rect x="30" y="30" width="40" height="40" fill="#3A3A4A"/>';
 
                 // ---- Lane dividers per approach ----
+                // For each approach, draw lane lines based on number of lanes
+                // The rightmost lane (R) gets a dashed line if freeRight is true
+
                 function drawLaneDividers(arm, x1, y1, x2, y2, totalLanes, freeRight) {
-                    if (totalLanes < 2) return '';
+                    if (totalLanes < 2) return;
                     var laneWidth = 1 / totalLanes;
-                    var lines = '';
+                    var lines = [];
                     for (var i = 1; i < totalLanes; i++) {
                         var t = i / totalLanes;
                         var px = x1 + (x2 - x1) * t;
@@ -901,53 +882,62 @@
                         var isRightmost = (i === totalLanes - 1);
                         var dashed = (isRightmost && freeRight);
                         var dashAttr = dashed ? ' stroke-dasharray="3,2.5"' : '';
+                        // Draw the lane line
                         if (arm === 'N') {
-                            lines +=
+                            lines.push(
                                 '<line x1="' + px + '" y1="0" x2="' + px + '" y2="30" stroke="#FFFFFF" stroke-width="0.9"' +
-                                dashAttr + ' opacity="0.7"/>';
+                                dashAttr + ' opacity="0.7"/>');
                         } else if (arm === 'S') {
-                            lines +=
+                            lines.push(
                                 '<line x1="' + px + '" y1="70" x2="' + px + '" y2="100" stroke="#FFFFFF" stroke-width="0.9"' +
-                                dashAttr + ' opacity="0.7"/>';
+                                dashAttr + ' opacity="0.7"/>');
                         } else if (arm === 'W') {
-                            lines +=
+                            lines.push(
                                 '<line x1="0" y1="' + py + '" x2="30" y2="' + py + '" stroke="#FFFFFF" stroke-width="0.9"' +
-                                dashAttr + ' opacity="0.7"/>';
+                                dashAttr + ' opacity="0.7"/>');
                         } else if (arm === 'E') {
-                            lines +=
+                            lines.push(
                                 '<line x1="70" y1="' + py + '" x2="100" y2="' + py + '" stroke="#FFFFFF" stroke-width="0.9"' +
-                                dashAttr + ' opacity="0.7"/>';
+                                dashAttr + ' opacity="0.7"/>');
                         }
                     }
-                    return lines;
+                    return lines.join('');
                 }
 
+                // Determine lane counts per approach
                 var laneCounts = {};
                 present.forEach(function(a) {
                     var armData = volMap ? volMap.__arms[a] : null;
-                    if (!armData) { laneCounts[a] = 1; return; }
+                    if (!armData) return;
                     var nL = armData.nL || 0;
                     var nS = armData.nS || 0;
                     var nR = armData.nR || 0;
+                    // Count active lanes (only if the movement exists in the present set)
                     var count = 0;
                     if (present.indexOf(DEST[a].L) > -1 && (armData.L || 0) > 0) count += nL;
                     else if (present.indexOf(DEST[a].L) > -1 && nL > 0) count += nL;
                     if (present.indexOf(DEST[a].S) > -1 && (armData.S || 0) > 0) count += nS;
                     else if (present.indexOf(DEST[a].S) > -1 && nS > 0) count += nS;
-                    if (present.indexOf(DEST[a].R) > -1 && (armData.R || 0) > 0 && !armData.freeRight) count += nR;
+                    if (present.indexOf(DEST[a].R) > -1 && (armData.R || 0) > 0) count += nR;
                     else if (present.indexOf(DEST[a].R) > -1 && nR > 0 && !armData.freeRight) count += nR;
+                    // If all volumes are 0, show at least 1 lane
                     if (count === 0) count = 1;
+                    // Clamp
                     if (count < 1) count = 1;
                     if (count > 4) count = 4;
                     laneCounts[a] = count;
                 });
 
+                // Draw lane dividers for each approach
                 present.forEach(function(a) {
                     var count = laneCounts[a] || 1;
                     var armData = volMap ? volMap.__arms[a] : null;
                     var freeRight = armData ? !!armData.freeRight : false;
+                    // Check if right turn exists and is free
                     var hasR = present.indexOf(DEST[a].R) > -1;
-                    if (hasR && armData && armData.freeRight) freeRight = true;
+                    if (hasR && armData && armData.freeRight) {
+                        freeRight = true;
+                    }
                     if (a === 'N') {
                         svg += drawLaneDividers('N', 30, 0, 70, 0, count, freeRight);
                     } else if (a === 'S') {
@@ -980,10 +970,11 @@
                     if (!info) return;
 
                     var armKey = m.charAt(0);
-                    var isActive = activeSet.hasOwnProperty(m);
+                    var isActive = activeSet.hasOwnProperty(m) ? !!activeSet[m] : false;
                     var isHighlight = !!highlightSet[m];
                     var volData = volMap ? volMap[m] : null;
                     var vol = volData ? volData.vol : 0;
+                    var lanes = volData ? volData.lanes : 1;
                     var hasVol = vol > 0;
                     var dirColor = DIR_COLORS[armKey] || '#A0AEC0';
 
@@ -994,13 +985,13 @@
                     var isFreeRight = volData && volData.freeRight;
 
                     if (isHighlight) {
-                        stroke = '#C44536';
-                        fill = '#C44536';
+                        stroke = '#E8A33D';
+                        fill = '#E8A33D';
                         opacity = 1;
                         width = 3.2;
                     } else if (isFreeRight) {
-                        stroke = '#C44536';
-                        fill = '#C44536';
+                        stroke = '#E8A33D';
+                        fill = '#E8A33D';
                         opacity = 0.7;
                         width = 1.2;
                     } else if (isActive && hasVol) {
@@ -1011,29 +1002,30 @@
                         width = 1.5;
                     }
 
+                    // Add dash attribute for free right turns
                     var dashAttr = isFreeRight ? ' stroke-dasharray="4,3"' : '';
                     paths += '<path d="' + info.d + '" fill="none" stroke="' + stroke +
                         '" stroke-width="' + width + '" stroke-linecap="round" opacity="' + opacity + '"' + dashAttr + '/>';
                     paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"' + dashAttr + '/>';
 
-                    // ---- Volume label: only show if the move is active OR highlighted ----
                     var moveArm = m.charAt(0);
                     var turn = m.charAt(1);
                     var pos = labelPos[moveArm] && labelPos[moveArm][turn];
-                    if (pos && volData && (isActive || isHighlight)) {
-                        var labelFill = isFreeRight ? '#C44536' : dirColor;
+                    if (pos && volData) {
+                        var labelOpacity = isHighlight ? 1 : (isActive ? 1 : 0.55);
                         var labelClass = 'approach-volume-label' + (isHighlight ? ' highlight' : '');
+                        var labelFill = isFreeRight ? '#E8A33D' : dirColor;
                         volumeLabels += '<text x="' + pos[0] + '" y="' + pos[1] + '"' +
                             ' transform="rotate(' + pos[2] + ' ' + pos[0] + ' ' + pos[1] + ')"' +
-                            ' class="' + labelClass + '" fill="' + labelFill + '" opacity="1"' +
+                            ' class="' + labelClass + '" fill="' + labelFill + '" opacity="' + labelOpacity + '"' +
                             ' data-move="' + m + '">' + Math.round(vol) + '</text>';
                     }
+
                 });
 
                 svg += paths + volumeLabels + '</svg>';
                 return svg;
             }
-
             /* ============================================================
                3. UI State & Rendering
                ============================================================ */
@@ -1074,12 +1066,12 @@
                         '" data-field="nS">';
 
                     html += '<span class="lbl">ימינה (R):</span>';
-                    // ✏️ FIX: inputs are always enabled — free-right is shown via dashed border only
-                    var rStyle = data.freeRight ? ' class="free-right-input"' : '';
+                    var rDisabled = (data.freeRight || data.sharedSR) ? ' disabled' : '';
+                    var rStyle = data.freeRight ? ' style="border:1px dashed #E8A33D;"' : '';
                     html += '<input type="number" min="0" value="' + data.R + '" data-arm="' + armKey +
-                        '" data-field="R"' + rStyle + '>';
+                        '" data-field="R"' + rDisabled + rStyle + '>';
                     html += '<input type="number" min="1" value="' + data.nR + '" data-arm="' + armKey +
-                        '" data-field="nR"' + rStyle + '>';
+                        '" data-field="nR"' + rDisabled + rStyle + '>';
                     html += '</div>';
 
                     html += '<div class="toggles">';
@@ -1103,7 +1095,7 @@
                 var cap = document.getElementById('liveCap');
 
                 el.innerHTML = schematicInteractive(res.present, allMoves(res.present), volMap, activeHighlightMoves,
-                    300);
+                    200);
                 cap.innerHTML = 'נפח לפני תחילת הנתיבים: L/S/R · מספר נתיבים: ×N<br>זרועות פעילות: ' + res.present.map(function(a) {
                     return HE[a];
                 }).join(', ') + (res.present.indexOf('S') === -1 ? '<br><strong>מצב T: ללא זרוע דרום</strong>' : '');
@@ -1119,13 +1111,15 @@
                 var t3 = res.table3.total;
                 var minVal = Math.min(t1, t2, t3);
 
+                // Direction legend
                 var html = '<div class="direction-key" aria-label="מקרא צבעי כיוונים">' +
-                    '<span><i style="background:#2F6B4F"></i>צפון</span>' +
-                    '<span><i style="background:#3B6EA8"></i>דרום</span>' +
-                    '<span><i style="background:#B56B2C"></i>מזרח</span>' +
-                    '<span><i style="background:#7656A6"></i>מערב</span>' +
+                    '<span><i style="background:#4ADE80"></i>צפון</span>' +
+                    '<span><i style="background:#22D3EE"></i>דרום</span>' +
+                    '<span><i style="background:#E8A33D"></i>מזרח</span>' +
+                    '<span><i style="background:#A78BFA"></i>מערב</span>' +
                     '</div>';
 
+                // Comparison cards
                 html += '<div class="cmp">';
                 var methods = [
                     { name: 'שיטה 1: זרועות מפוצלות', val: t1, desc: 'פאזה נפרדת לכל זרוע גישה' },
@@ -1151,7 +1145,7 @@
                     html += '<tr class="phase-row ' + directionClass(p.moves) + '" tabindex="0" data-moves="' + p.moves.join(',') + '">';
                     html += '<td><strong>פאזה ' + (idx + 1) + ' (' + p.he + ')</strong></td>';
                     html += '<td class="schematic-cell">' + schematicInteractive(res.present, p.moves, volMap,
-                        null, 184) + '</td>';
+                        null, 92) + '</td>';
                     html += '<td><span class="f">' + p.moves.join(', ') + '</span></td>';
                     html += '<td class="val">' + Math.round(p.value) + '</td>';
                     html += '</tr>';
@@ -1174,7 +1168,7 @@
                         html += '<tr class="phase-row ' + directionClass(p.moves) + '" tabindex="0" data-moves="' + p.moves.join(',') + '">';
                         html += '<td style="padding-right:24px">• ' + p.label + '</td>';
                         html += '<td class="schematic-cell">' + schematicInteractive(res.present, p.moves,
-                            volMap, null, 184) + '</td>';
+                            volMap, null, 92) + '</td>';
                         html += '<td><span class="f">' + p.moves.join(', ') + '</span></td>';
                         html += '<td class="val">' + Math.round(p.value) + '</td>';
                         html += '</tr>';
@@ -1301,17 +1295,37 @@
                4. Event Wiring & API
                ============================================================ */
             function initEvents() {
-                document.getElementById('btnExample').addEventListener('click', function() {
+                document.getElementById('cross').addEventListener('input', function(e) {
                     syncStateFromInputs();
                     refreshOutputs();
                 });
 
-                document.getElementById('btnClear').addEventListener('click', function() {
-                    ARMS.forEach(function(a) {
-                        state[a] = { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false };
-                    });
+                document.getElementById('cross').addEventListener('change', function(e) {
+                    syncStateFromInputs();
                     renderArmInputs();
                     refreshOutputs();
+                });
+
+                document.getElementById('btnExample').addEventListener('click', function() {
+                    state = {
+                        N: { exists: true, L: 220, nL: 1, S: 650, nS: 2, R: 120, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        S: { exists: true, L: 180, nL: 1, S: 580, nS: 2, R: 110, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        E: { exists: true, L: 140, nL: 1, S: 320, nS: 1, R: 90, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        W: { exists: true, L: 160, nL: 1, S: 380, nS: 1, R: 80, nR: 1, sharedSR: true,
+                            freeRight: false }
+                    };
+                    updateAll();
+                });
+
+                document.getElementById('btnClear').addEventListener('click', function() {
+                    ARMS.forEach(function(a) {
+                        state[a] = { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true,
+                            freeRight: false };
+                    });
+                    updateAll();
                 });
 
                 document.getElementById('btnJson').addEventListener('click', function() {

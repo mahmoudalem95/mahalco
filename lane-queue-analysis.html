@@ -9,21 +9,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --paper: #F4F6F4;
-            --surface: #FFFFFF;
-            --sunk: #EDF0ED;
-            --ink: #19242A;
-            --ink2: #5C6A72;
-            --ink3: #8B979D;
-            --rule: #DCE1DD;
-            --rule2: #C3CBC4;
-            --pick: #2F6B4F;
-            --pick-bg: #E7F0EA;
-            --warn: #A8492A;
-            --warn-bg: #F7EAE4;
+            --bg: #12121e;
+            --surface: #1a1a2e;
+            --sunk: #22223a;
+            --ink: #EDEBF2;
+            --ink2: #9A96AB;
+            --ink3: #6B6780;
+            --rule: rgba(255, 255, 255, .09);
+            --rule2: rgba(255, 255, 255, .05);
+            --pick: #E8A33D;
+            --pick-bg: rgba(232, 163, 61, .16);
+            --warn: #F35B5B;
+            --warn-bg: rgba(243, 91, 91, .15);
             --r: 6px;
-            --hl: #C44536;
-            --hl-bg: #FDF0ED;
+            --hl: #E8A33D;
+            --hl-bg: rgba(232, 163, 61, .15);
         }
         * {
             box-sizing: border-box;
@@ -33,7 +33,7 @@
         }
         body {
             margin: 0;
-            background: var(--paper);
+            background: var(--bg);
             color: var(--ink);
             font-family: 'Assistant', system-ui, 'Segoe UI', sans-serif;
             font-size: 16px;
@@ -95,21 +95,11 @@
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-areas: ". n ." "w c e" ". s .";
         }
-        .cell-n {
-            grid-area: n;
-        }
-        .cell-s {
-            grid-area: s;
-        }
-        .cell-e {
-            grid-area: e;
-        }
-        .cell-w {
-            grid-area: w;
-        }
-        .cell-c {
-            grid-area: c;
-        }
+        .cell-n { grid-area: n; }
+        .cell-s { grid-area: s; }
+        .cell-e { grid-area: e; }
+        .cell-w { grid-area: w; }
+        .cell-c { grid-area: c; }
 
         .arm {
             direction: rtl;
@@ -160,7 +150,7 @@
             padding: 5px 7px;
             border: 1px solid var(--rule2);
             border-radius: 4px;
-            background: var(--surface);
+            background: var(--sunk);
             color: var(--ink);
         }
         input[type="number"]:focus-visible {
@@ -170,7 +160,7 @@
         }
         input[type="number"]:disabled {
             opacity: 0.5;
-            background: var(--sunk);
+            background: var(--bg);
         }
         .toggles {
             margin-top: 10px;
@@ -238,12 +228,13 @@
             outline-offset: 1px;
         }
         button.solid {
-            background: var(--ink);
-            color: #fff;
-            border-color: var(--ink);
+            background: var(--pick);
+            color: #12121e;
+            border-color: var(--pick);
+            font-weight: 600;
         }
         button.solid:hover {
-            background: #2A3A42;
+            background: #c9862f;
         }
 
         /* ---- tables ---- */
@@ -291,13 +282,13 @@
             direction: ltr;
         }
         tr.total td {
-            background: var(--ink);
-            color: #fff;
-            font-weight: 500;
+            background: var(--pick);
+            color: #12121e;
+            font-weight: 600;
             border-bottom: none;
         }
         tr.total .val {
-            color: #fff;
+            color: #12121e;
         }
         .pick {
             color: var(--pick);
@@ -338,13 +329,13 @@
             dominant-baseline: central;
             pointer-events: none;
             paint-order: stroke;
-            stroke: rgba(255, 255, 255, .72);
+            stroke: rgba(18, 18, 30, .9);
             stroke-width: .45px;
         }
         svg.ph .approach-volume-label.highlight {
             font-size: 5.5px;
             font-weight: 700;
-            stroke: rgba(255, 255, 255, .9);
+            stroke: rgba(18, 18, 30, .9);
         }
 
         .phase-row {
@@ -352,18 +343,10 @@
             transition: background .15s, box-shadow .15s;
             border-right: 4px solid transparent;
         }
-        .phase-row.dir-N {
-            border-right-color: #2F6B4F;
-        }
-        .phase-row.dir-S {
-            border-right-color: #3B6EA8;
-        }
-        .phase-row.dir-E {
-            border-right-color: #B56B2C;
-        }
-        .phase-row.dir-W {
-            border-right-color: #7656A6;
-        }
+        .phase-row.dir-N { border-right-color: #4ADE80; }
+        .phase-row.dir-S { border-right-color: #22D3EE; }
+        .phase-row.dir-E { border-right-color: #E8A33D; }
+        .phase-row.dir-W { border-right-color: #A78BFA; }
         .phase-row:hover td,
         .phase-row:focus-within td {
             background: var(--pick-bg);
@@ -454,8 +437,8 @@
             margin-bottom: 4px;
         }
         pre {
-            background: var(--ink);
-            color: #E6EBE7;
+            background: var(--sunk);
+            color: var(--ink);
             border-radius: var(--r);
             padding: 14px 16px;
             overflow-x: auto;
@@ -465,6 +448,7 @@
             direction: ltr;
             text-align: left;
             margin: 0;
+            border: 1px solid var(--rule);
         }
         details {
             background: var(--surface);
@@ -586,10 +570,10 @@
             var ARMS = ['N', 'S', 'E', 'W'];
             var HE = { N: 'צפון', S: 'דרום', E: 'מזרח', W: 'מערב' };
             var DIR_COLORS = {
-                N: '#2F6B4F',
-                S: '#3B6EA8',
-                E: '#B56B2C',
-                W: '#7656A6'
+                N: '#4ADE80',
+                S: '#22D3EE',
+                E: '#E8A33D',
+                W: '#A78BFA'
             };
             var DEST = {
                 N: { S: 'S', L: 'E', R: 'W' },
@@ -875,13 +859,13 @@
                 var svg = '<svg class="ph" viewBox="0 0 100 100" width="' + size + '" height="' + size +
                     '" role="img" aria-label="סכמת צומת">';
 
-                // Road backdrop
-                svg += '<rect width="100" height="100" fill="#E2E8E4" rx="6"/>';
-                if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#3A474E"/>';
-                if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#3A474E"/>';
-                if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#3A474E"/>';
-                if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#3A474E"/>';
-                svg += '<rect x="30" y="30" width="40" height="40" fill="#3A474E"/>';
+                // Road backdrop — dark theme
+                svg += '<rect width="100" height="100" fill="#2A2A3A" rx="6"/>';
+                if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#3A3A4A"/>';
+                if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#3A3A4A"/>';
+                if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#3A3A4A"/>';
+                if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#3A3A4A"/>';
+                svg += '<rect x="30" y="30" width="40" height="40" fill="#3A3A4A"/>';
 
                 // ---- Lane dividers per approach ----
                 // For each approach, draw lane lines based on number of lanes
@@ -1001,13 +985,13 @@
                     var isFreeRight = volData && volData.freeRight;
 
                     if (isHighlight) {
-                        stroke = '#C44536';
-                        fill = '#C44536';
+                        stroke = '#E8A33D';
+                        fill = '#E8A33D';
                         opacity = 1;
                         width = 3.2;
                     } else if (isFreeRight) {
-                        stroke = '#C44536';
-                        fill = '#C44536';
+                        stroke = '#E8A33D';
+                        fill = '#E8A33D';
                         opacity = 0.7;
                         width = 1.2;
                     } else if (isActive && hasVol) {
@@ -1030,7 +1014,7 @@
                     if (pos && volData) {
                         var labelOpacity = isHighlight ? 1 : (isActive ? 1 : 0.55);
                         var labelClass = 'approach-volume-label' + (isHighlight ? ' highlight' : '');
-                        var labelFill = isFreeRight ? '#C44536' : dirColor;
+                        var labelFill = isFreeRight ? '#E8A33D' : dirColor;
                         volumeLabels += '<text x="' + pos[0] + '" y="' + pos[1] + '"' +
                             ' transform="rotate(' + pos[2] + ' ' + pos[0] + ' ' + pos[1] + ')"' +
                             ' class="' + labelClass + '" fill="' + labelFill + '" opacity="' + labelOpacity + '"' +
@@ -1083,7 +1067,7 @@
 
                     html += '<span class="lbl">ימינה (R):</span>';
                     var rDisabled = (data.freeRight || data.sharedSR) ? ' disabled' : '';
-                    var rStyle = data.freeRight ? ' style="border:1px dashed #C44536;"' : '';
+                    var rStyle = data.freeRight ? ' style="border:1px dashed #E8A33D;"' : '';
                     html += '<input type="number" min="0" value="' + data.R + '" data-arm="' + armKey +
                         '" data-field="R"' + rDisabled + rStyle + '>';
                     html += '<input type="number" min="1" value="' + data.nR + '" data-arm="' + armKey +
@@ -1129,10 +1113,10 @@
 
                 // Direction legend
                 var html = '<div class="direction-key" aria-label="מקרא צבעי כיוונים">' +
-                    '<span><i style="background:#2F6B4F"></i>צפון</span>' +
-                    '<span><i style="background:#3B6EA8"></i>דרום</span>' +
-                    '<span><i style="background:#B56B2C"></i>מזרח</span>' +
-                    '<span><i style="background:#7656A6"></i>מערב</span>' +
+                    '<span><i style="background:#4ADE80"></i>צפון</span>' +
+                    '<span><i style="background:#22D3EE"></i>דרום</span>' +
+                    '<span><i style="background:#E8A33D"></i>מזרח</span>' +
+                    '<span><i style="background:#A78BFA"></i>מערב</span>' +
                     '</div>';
 
                 // Comparison cards

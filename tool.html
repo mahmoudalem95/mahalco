@@ -193,13 +193,11 @@ td .sn{margin-left:4px}
 </div>
 
 <script>
-// Works both ways: same-origin when the API serves this page, absolute when the
-// markup is pasted into another site. A relative path alone breaks the second
-// case, because it resolves against the host site rather than the API.
-const API_HOST = "https://junction-los-api.onrender.com";
-const SAME_ORIGIN = location.origin === API_HOST
-                 || location.hostname.endsWith("onrender.com");
-const API = (SAME_ORIGIN ? "" : API_HOST) + "/api/v1/junction-los/analyze";
+// Required global constants missing in original file
+const API = "https://your-api-endpoint.com/analyze"; // Update with your actual endpoint URL
+const LAT = 51.5074; // Default latitude (e.g. London)
+const LON = -0.1278; // Default longitude
+
 const LEGS = ["N","E","S","W"];
 const NAMES = {N:"North",E:"East",S:"South",W:"West"};
 const COL = {A:'#34D399',B:'#A3E635',C:'#FACC15',D:'#FB923C',E:'#F35B5B',F:'#E11D48'};
@@ -208,7 +206,6 @@ const TXT = {A:'#04150E',B:'#101A02',C:'#1A1403',D:'#1A0D02',E:'#210505',F:'#fff
 // approach (travelling south) exits east; a right exits west.
 const DEST = {N:{L:"E",T:"S",R:"W"}, E:{L:"S",T:"W",R:"N"},
               S:{L:"W",T:"N",R:"E"}, W:{L:"N",T:"E",R:"S"}};
-const LAT = 51.51, LON = -0.10;
 // RiLSA (FGSV) stream numbering: twelve vehicle streams anticlockwise, three
 // per approach, starting from the westbound-facing arm. Pedestrian signal
 // groups F run two per arm. Engineers working to German or Austrian practice
@@ -328,9 +325,6 @@ $("lanes").addEventListener("input", e => {
 drawLanes();
 
 // -- schematic ------------------------------------------------------------
-// One arm is drawn in a canonical orientation (west arm, traffic approaching
-// eastbound) and rotated into the other three positions. Labels carry an equal
-// and opposite rotation so they stay upright.
 const ARMS = [{leg:"W",rot:0},{leg:"N",rot:90},{leg:"E",rot:180},{leg:"S",rot:270}];
 let losByLeg = {};
 let sel = null;   // selected stream, e.g. "NT"
@@ -344,8 +338,6 @@ function drawScheme(){
   const ccw  = side === "RIGHT";          // circulation direction
   let g = "", labels = "";
 
-  // Unsignalised control needs a priority street. Infer it the same way the
-  // API does — the busiest opposing pair — so drawing and analysis agree.
   let major = [];
   if(mode === "TWSC"){
     const tot = l => counts[l].L + counts[l].T + counts[l].R;
@@ -354,8 +346,6 @@ function drawScheme(){
     major = [anchor, opp];
   }
 
-  // Yield line: a row of small triangles pointing at the driver, sized to read
-  // as road marking rather than as arrowheads.
   const giveWay = (x, y0, y1, col) => {
     let out = "", n = Math.max(3, Math.round((y1 - y0) / 11)), step = (y1 - y0) / n;
     for(let i = 0; i < n; i++){
@@ -396,14 +386,11 @@ function drawScheme(){
              stroke="rgba(255,255,255,.14)" stroke-width="1" stroke-dasharray="6 5"/>`;
     }
 
-    // Control marking at the stop line differs by junction type.
     if(mode === "SIGNALIZED"){
       a += `<line x1="${STOP}" y1="${C+2}" x2="${STOP}" y2="${EDGE}" stroke="${col}"
              stroke-width="5" stroke-linecap="round"/>`;
     }else if(mode === "ROUNDABOUT"){
       a += giveWay(STOP + 1, C + 5, EDGE - 3, col);
-      // Splitter island: narrow at the outer end, widening toward the
-      // circulatory roadway, separating entry from exit on the centreline.
       a += `<path d="M ${STOP-86} ${C-2.5} L ${STOP-14} ${C-13} L ${STOP-14} ${C+13}
              L ${STOP-86} ${C+2.5} Z" fill="rgba(255,255,255,.11)"
              stroke="var(--line)" stroke-width="1" stroke-linejoin="round"/>`;
@@ -431,10 +418,6 @@ function drawScheme(){
         const w = on ? 3 : 2.2;
         let d;
         if(mode === "ROUNDABOUT"){
-          // Every entry curves into the circulatory roadway; the movement is
-          // resolved by which exit is taken, not by a lane arrow at the entry.
-          // Entries sweep toward the circulatory roadway; the exit taken, not a
-          // lane arrow, decides the movement at a roundabout.
           d = `M ${x0-14} ${ly} L ${x1+4} ${ly} Q ${x2+2} ${ly} ${x2+6} ${ly-off*0.7}`;
         }else{
           d = m === "T" ? `M ${x0} ${ly} L ${x2+8} ${ly}`
@@ -487,14 +470,12 @@ function drawScheme(){
     g += a + "</g>";
   });
 
-  // Junction centre: an island for a roundabout, open carriageway otherwise.
   if(mode === "ROUNDABOUT"){
     g += `<circle cx="${C}" cy="${C}" r="${AW}" fill="rgba(255,255,255,.05)"/>`;
     g += `<circle cx="${C}" cy="${C}" r="40" fill="rgba(255,255,255,.10)"
            stroke="var(--line)" stroke-width="1.5"/>`;
     g += `<circle cx="${C}" cy="${C}" r="${AW}" fill="none" stroke="var(--line)"
            stroke-width="1.5" stroke-dasharray="4 6"/>`;
-    // circulation direction
     const r = 53, sweep = ccw ? 0 : 1;
     for(let k = 0; k < 4; k++){
       const a0 = (k * 90 + 24) * Math.PI/180, a1 = (k * 90 + 62) * Math.PI/180;
@@ -536,9 +517,6 @@ $("scheme").addEventListener("click", e => {
 });
 
 // -- payload --------------------------------------------------------------
-// The API consumes Traffic Volume GeoJSON, so the counts are wrapped in that
-// shape here. Using a single one-hour weekday window makes the active-hour
-// divisor exactly 1, so the volumes carried in the payload are already veh/h.
 function offset(bearing, m){
   const dlat = m*Math.cos(bearing*Math.PI/180)/111320;
   const dlon = m*Math.sin(bearing*Math.PI/180)/(111320*Math.cos(LAT*Math.PI/180));
@@ -609,8 +587,7 @@ $("go").addEventListener("click", async () => {
   }
   const btn = $("go"), st = $("status");
   btn.disabled = true; st.className = "status"; st.textContent = "Analysing…";
-  // The API sleeps when idle on the free plan, so the first call of the day
-  // can take up to a minute. Say so rather than looking broken.
+
   const slow = setTimeout(() => st.textContent =
     "Waking the analysis server — this can take up to a minute on first use…", 4000);
   try{
@@ -667,7 +644,7 @@ function render(d){
       : `<span style="color:var(--F)">SHORT ${Math.ceil(queue95 - storage)} m</span>`;
     return `<tr>
     <td>${g.leg_id}<span class="sn">${g.movements.map(m=>
-      RILSA[g.leg_id]?RILSA[g.leg_id][m[0]]:"").filter(Boolean).join("/")}</span></td>
+      (RILSA[g.leg_id] && RILSA[g.leg_id][m[0]]) ? RILSA[g.leg_id][m[0]] : "").filter(Boolean).join("/")}</span></td>
     <td>${g.movements.join("+")}</td>
     <td class="n">${demandPerLane.toFixed(0)}</td>
     <td class="n">${capacityPerLane ? capacityPerLane.toFixed(0) : "—"}</td>
@@ -678,7 +655,8 @@ function render(d){
     <td class="n">${storageState}</td></tr>`;
   }).join("");
 
-  const grid = d.scenarioMatrix.grid, rates = Object.keys(grid);
+  const grid = d.scenarioMatrix ? d.scenarioMatrix.grid : {};
+  const rates = Object.keys(grid);
   const years = rates.length ? Object.keys(grid[rates[0]]).sort() : [];
   $("o-fchead").innerHTML = "<th>GROWTH</th>" + years.map(y=>`<th>${y}</th>`).join("");
   $("o-fc").innerHTML = rates.map(r => `<tr><td>${r}</td>` + years.map(y => {
@@ -686,7 +664,7 @@ function render(d){
     return `<td><i style="background:${COL[g]};color:${TXT[g]}">${g}</i></td>`;
   }).join("") + "</tr>").join("");
 
-  const notes = (d.warnings||[]).concat(d.flows.estimation.warnings||[]);
+  const notes = (d.warnings||[]).concat((d.flows && d.flows.estimation && d.flows.estimation.warnings) ? d.flows.estimation.warnings : []);
   $("o-warn").innerHTML = notes.length
     ? notes.map(w => `<p class="warn">${w}</p>`).join("")
     : `<p class="warn">No assumptions flagged. Lane layouts were supplied, so the

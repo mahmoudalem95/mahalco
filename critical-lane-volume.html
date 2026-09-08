@@ -332,8 +332,8 @@
         }
         svg.ph .approach-volume-label {
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 7px;
-            font-weight: 700;
+            font-size: 5px;
+            font-weight: 600;
             text-anchor: middle;
             dominant-baseline: central;
             pointer-events: none;
@@ -342,8 +342,8 @@
             stroke-width: .45px;
         }
         svg.ph .approach-volume-label.highlight {
-            font-size: 7.5px;
-            font-weight: 800;
+            font-size: 5.5px;
+            font-weight: 700;
             stroke: rgba(255, 255, 255, .9);
         }
 
@@ -391,12 +391,13 @@
             display: inline-block;
         }
         .schematic-cell {
-            min-width: 100px;
-            width: 110px;
+            min-width: 200px;
+            width: 200px;
+            text-align: center;
         }
         .schematic-cell svg.ph {
-            width: 92px;
-            height: 92px;
+            width: 184px;
+            height: 184px;
         }
         .phase-row.highlight-row td {
             background: var(--hl-bg);
@@ -476,10 +477,6 @@
             cursor: pointer;
             font-weight: 500;
         }
-        .schematic-cell {
-            min-width: 70px;
-            text-align: center;
-        }
 
         /* ---- live schematic ---- */
         #liveSchematic {
@@ -524,7 +521,7 @@
     <div class="wrap">
 
         <h1>נפח נתיב קריטי</h1>
-        <p class="lede">מחשבון פאזות לצומת מרומזר. מזין נפחים ומספרי נתיבים לכל זרוע, ומקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה, וטבעת כפולה. עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בימין חופשית לכל זרוע בנפרד. <strong>הסכמה המרכזית משתנה בזמן אמת לפי המספרים שהזנת.</strong></p>
+        <p class="lede">מחשבון פאזות לצומת מרומזר. מזין נפחים ומספרי נתיבים לכל זרוע, ומקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה, וטבעת כפולה. עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בימין חופשית לכל זרוע בנפרד. <strong>הסכמה המרכזית משתנה לפי הערכים שהזנת בלחיצה על "חשב".</strong></p>
 
         <section>
             <div class="sec-head"><h2>נתוני הצומת</h2><span class="meta">הזרועות מסודרות לפי מיקומן בשטח</span></div>
@@ -540,8 +537,7 @@
                 <div class="arm cell-s" data-arm="S"></div>
             </div>
             <div class="bar">
-                <button class="solid" id="btnExample">טען את צומת הדוגמה</button>
-                <button id="btnT">צומת T ללא זרוע דרום</button>
+                <button class="solid" id="btnExample">חשב</button>
                 <button id="btnClear">אפס הכל</button>
             </div>
         </section>
@@ -847,7 +843,7 @@
                         var vol = arm[m] || 0;
                         var lanes = arm['n' + m] || 1;
                         if (m === 'R' && arm.sharedSR) lanes = arm.nS || 1;
-                        map[key] = { vol: vol, lanes: lanes };
+                        map[key] = { vol: vol, lanes: lanes, freeRight: (m === 'R' && arm.freeRight) };
                     });
                     map.__arms[a] = arm;
                 });
@@ -862,6 +858,17 @@
                 var highlightSet = {};
                 (highlight || []).forEach(function(m) { highlightSet[m] = true; });
 
+                // Build freeRight map from volMap
+                var freeRightMap = {};
+                if (volMap) {
+                    for (var k in volMap) {
+                        if (k === '__arms') continue;
+                        if (volMap[k].freeRight) {
+                            freeRightMap[k] = true;
+                        }
+                    }
+                }
+
                 var svg = '<svg class="ph" viewBox="0 0 100 100" width="' + size + '" height="' + size +
                     '" role="img" aria-label="סכמת צומת">';
 
@@ -873,15 +880,87 @@
                 if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#3A474E"/>';
                 svg += '<rect x="30" y="30" width="40" height="40" fill="#3A474E"/>';
 
-                // Lane dividers
-                if (present.indexOf('N') > -1) svg +=
-                    '<line x1="50" y1="0" x2="50" y2="30" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
-                if (present.indexOf('S') > -1) svg +=
-                    '<line x1="50" y1="70" x2="50" y2="100" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
-                if (present.indexOf('W') > -1) svg +=
-                    '<line x1="0" y1="50" x2="30" y2="50" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
-                if (present.indexOf('E') > -1) svg +=
-                    '<line x1="70" y1="50" x2="100" y2="50" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
+                // ---- Lane dividers per approach ----
+                // For each approach, draw lane lines based on number of lanes
+                // The rightmost lane (R) gets a dashed line if freeRight is true
+
+                function drawLaneDividers(arm, x1, y1, x2, y2, totalLanes, freeRight) {
+                    if (totalLanes < 2) return;
+                    var laneWidth = 1 / totalLanes;
+                    var lines = [];
+                    for (var i = 1; i < totalLanes; i++) {
+                        var t = i / totalLanes;
+                        var px = x1 + (x2 - x1) * t;
+                        var py = y1 + (y2 - y1) * t;
+                        var isRightmost = (i === totalLanes - 1);
+                        var dashed = (isRightmost && freeRight);
+                        var dashAttr = dashed ? ' stroke-dasharray="3,2.5"' : '';
+                        // Draw the lane line
+                        if (arm === 'N') {
+                            lines.push(
+                                '<line x1="' + px + '" y1="0" x2="' + px + '" y2="30" stroke="#FFFFFF" stroke-width="0.9"' +
+                                dashAttr + ' opacity="0.7"/>');
+                        } else if (arm === 'S') {
+                            lines.push(
+                                '<line x1="' + px + '" y1="70" x2="' + px + '" y2="100" stroke="#FFFFFF" stroke-width="0.9"' +
+                                dashAttr + ' opacity="0.7"/>');
+                        } else if (arm === 'W') {
+                            lines.push(
+                                '<line x1="0" y1="' + py + '" x2="30" y2="' + py + '" stroke="#FFFFFF" stroke-width="0.9"' +
+                                dashAttr + ' opacity="0.7"/>');
+                        } else if (arm === 'E') {
+                            lines.push(
+                                '<line x1="70" y1="' + py + '" x2="100" y2="' + py + '" stroke="#FFFFFF" stroke-width="0.9"' +
+                                dashAttr + ' opacity="0.7"/>');
+                        }
+                    }
+                    return lines.join('');
+                }
+
+                // Determine lane counts per approach
+                var laneCounts = {};
+                present.forEach(function(a) {
+                    var armData = volMap ? volMap.__arms[a] : null;
+                    if (!armData) return;
+                    var nL = armData.nL || 0;
+                    var nS = armData.nS || 0;
+                    var nR = armData.nR || 0;
+                    // Count active lanes (only if the movement exists in the present set)
+                    var count = 0;
+                    if (present.indexOf(DEST[a].L) > -1 && (armData.L || 0) > 0) count += nL;
+                    else if (present.indexOf(DEST[a].L) > -1 && nL > 0) count += nL;
+                    if (present.indexOf(DEST[a].S) > -1 && (armData.S || 0) > 0) count += nS;
+                    else if (present.indexOf(DEST[a].S) > -1 && nS > 0) count += nS;
+                    if (present.indexOf(DEST[a].R) > -1 && (armData.R || 0) > 0) count += nR;
+                    else if (present.indexOf(DEST[a].R) > -1 && nR > 0 && !armData.freeRight) count += nR;
+                    // If all volumes are 0, show at least 1 lane
+                    if (count === 0) count = 1;
+                    // Clamp
+                    if (count < 1) count = 1;
+                    if (count > 4) count = 4;
+                    laneCounts[a] = count;
+                });
+
+                // Draw lane dividers for each approach
+                present.forEach(function(a) {
+                    var count = laneCounts[a] || 1;
+                    var armData = volMap ? volMap.__arms[a] : null;
+                    var freeRight = armData ? !!armData.freeRight : false;
+                    // Check if right turn exists and is free
+                    var hasR = present.indexOf(DEST[a].R) > -1;
+                    if (hasR && armData && armData.freeRight) {
+                        freeRight = true;
+                    }
+                    if (a === 'N') {
+                        svg += drawLaneDividers('N', 30, 0, 70, 0, count, freeRight);
+                    } else if (a === 'S') {
+                        svg += drawLaneDividers('S', 30, 100, 70, 100, count, freeRight);
+                    } else if (a === 'W') {
+                        svg += drawLaneDividers('W', 0, 30, 0, 70, count, freeRight);
+                    } else if (a === 'E') {
+                        svg += drawLaneDividers('E', 100, 30, 100, 70, count, freeRight);
+                    }
+                });
 
                 // Stop lines
                 if (present.indexOf('N') > -1) svg += '<line x1="30" y1="30" x2="70" y2="30" stroke="#FFFFFF" stroke-width="1.5"/>';
@@ -892,8 +971,6 @@
                 var paths = '';
                 var volumeLabels = '';
 
-                // Fixed to the incoming movement row, immediately at the
-                // approach edge before the corresponding row/path begins.
                 var labelPos = {
                     N: { L: [46, 5.5, -90], S: [41, 5.5, -90], R: [36, 5.5, -90] },
                     S: { L: [54, 94.5, 90], S: [59, 94.5, 90], R: [64, 94.5, 90] },
@@ -918,12 +995,18 @@
                     var fill = dirColor;
                     var opacity = 0.14;
                     var width = 0.8;
+                    var isFreeRight = volData && volData.freeRight;
 
                     if (isHighlight) {
                         stroke = '#C44536';
                         fill = '#C44536';
                         opacity = 1;
                         width = 3.2;
+                    } else if (isFreeRight) {
+                        stroke = '#C44536';
+                        fill = '#C44536';
+                        opacity = 0.7;
+                        width = 1.2;
                     } else if (isActive && hasVol) {
                         opacity = 0.95;
                         width = 2.6;
@@ -932,20 +1015,22 @@
                         width = 1.5;
                     }
 
+                    // Add dash attribute for free right turns
+                    var dashAttr = isFreeRight ? ' stroke-dasharray="4,3"' : '';
                     paths += '<path d="' + info.d + '" fill="none" stroke="' + stroke +
-                        '" stroke-width="' + width + '" stroke-linecap="round" opacity="' + opacity + '"/>';
-                    paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"/>';
+                        '" stroke-width="' + width + '" stroke-linecap="round" opacity="' + opacity + '"' + dashAttr + '/>';
+                    paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"' + dashAttr + '/>';
 
-                    // Show the current volume at the fixed start of its approach row.
                     var moveArm = m.charAt(0);
                     var turn = m.charAt(1);
                     var pos = labelPos[moveArm] && labelPos[moveArm][turn];
                     if (pos && volData) {
                         var labelOpacity = isHighlight ? 1 : (isActive ? 1 : 0.55);
                         var labelClass = 'approach-volume-label' + (isHighlight ? ' highlight' : '');
+                        var labelFill = isFreeRight ? '#C44536' : dirColor;
                         volumeLabels += '<text x="' + pos[0] + '" y="' + pos[1] + '"' +
                             ' transform="rotate(' + pos[2] + ' ' + pos[0] + ' ' + pos[1] + ')"' +
-                            ' class="' + labelClass + '" fill="' + dirColor + '" opacity="' + labelOpacity + '"' +
+                            ' class="' + labelClass + '" fill="' + labelFill + '" opacity="' + labelOpacity + '"' +
                             ' data-move="' + m + '">' + Math.round(vol) + '</text>';
                     }
 
@@ -994,10 +1079,12 @@
                         '" data-field="nS">';
 
                     html += '<span class="lbl">ימינה (R):</span>';
+                    var rDisabled = (data.freeRight || data.sharedSR) ? ' disabled' : '';
+                    var rStyle = data.freeRight ? ' style="border:1px dashed #C44536;"' : '';
                     html += '<input type="number" min="0" value="' + data.R + '" data-arm="' + armKey +
-                        '" data-field="R">';
+                        '" data-field="R"' + rDisabled + rStyle + '>';
                     html += '<input type="number" min="1" value="' + data.nR + '" data-arm="' + armKey +
-                        '" data-field="nR"' + (data.sharedSR ? ' disabled' : '') + '>';
+                        '" data-field="nR"' + rDisabled + rStyle + '>';
                     html += '</div>';
 
                     html += '<div class="toggles">';
@@ -1021,7 +1108,7 @@
                 var cap = document.getElementById('liveCap');
 
                 el.innerHTML = schematicInteractive(res.present, allMoves(res.present), volMap, activeHighlightMoves,
-                    200);
+                    300);
                 cap.innerHTML = 'נפח לפני תחילת הנתיבים: L/S/R · מספר נתיבים: ×N<br>זרועות פעילות: ' + res.present.map(function(a) {
                     return HE[a];
                 }).join(', ') + (res.present.indexOf('S') === -1 ? '<br><strong>מצב T: ללא זרוע דרום</strong>' : '');
@@ -1071,7 +1158,7 @@
                     html += '<tr class="phase-row ' + directionClass(p.moves) + '" tabindex="0" data-moves="' + p.moves.join(',') + '">';
                     html += '<td><strong>פאזה ' + (idx + 1) + ' (' + p.he + ')</strong></td>';
                     html += '<td class="schematic-cell">' + schematicInteractive(res.present, p.moves, volMap,
-                        null, 92) + '</td>';
+                        null, 184) + '</td>';
                     html += '<td><span class="f">' + p.moves.join(', ') + '</span></td>';
                     html += '<td class="val">' + Math.round(p.value) + '</td>';
                     html += '</tr>';
@@ -1094,7 +1181,7 @@
                         html += '<tr class="phase-row ' + directionClass(p.moves) + '" tabindex="0" data-moves="' + p.moves.join(',') + '">';
                         html += '<td style="padding-right:24px">• ' + p.label + '</td>';
                         html += '<td class="schematic-cell">' + schematicInteractive(res.present, p.moves,
-                            volMap, null, 92) + '</td>';
+                            volMap, null, 184) + '</td>';
                         html += '<td><span class="f">' + p.moves.join(', ') + '</span></td>';
                         html += '<td class="val">' + Math.round(p.value) + '</td>';
                         html += '</tr>';
@@ -1221,51 +1308,18 @@
                4. Event Wiring & API
                ============================================================ */
             function initEvents() {
-                document.getElementById('cross').addEventListener('input', function(e) {
-                    syncStateFromInputs();
-                    refreshOutputs();
-                });
-
-                document.getElementById('cross').addEventListener('change', function(e) {
-                    syncStateFromInputs();
-                    renderArmInputs();
-                    refreshOutputs();
-                });
-
+                // Remove live listeners; only buttons trigger updates
                 document.getElementById('btnExample').addEventListener('click', function() {
-                    state = {
-                        N: { exists: true, L: 220, nL: 1, S: 650, nS: 2, R: 120, nR: 1, sharedSR: true,
-                            freeRight: false },
-                        S: { exists: true, L: 180, nL: 1, S: 580, nS: 2, R: 110, nR: 1, sharedSR: true,
-                            freeRight: false },
-                        E: { exists: true, L: 140, nL: 1, S: 320, nS: 1, R: 90, nR: 1, sharedSR: true,
-                            freeRight: false },
-                        W: { exists: true, L: 160, nL: 1, S: 380, nS: 1, R: 80, nR: 1, sharedSR: true,
-                            freeRight: false }
-                    };
-                    updateAll();
-                });
-
-                document.getElementById('btnT').addEventListener('click', function() {
-                    state = {
-                        N: { exists: true, L: 200, nL: 1, S: 500, nS: 2, R: 100, nR: 1, sharedSR: true,
-                            freeRight: false },
-                        S: { exists: false, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true,
-                            freeRight: false },
-                        E: { exists: true, L: 150, nL: 1, S: 0, nS: 1, R: 250, nR: 1, sharedSR: true,
-                            freeRight: false },
-                        W: { exists: true, L: 180, nL: 1, S: 400, nS: 1, R: 0, nR: 1, sharedSR: true,
-                            freeRight: false }
-                    };
-                    updateAll();
+                    syncStateFromInputs();
+                    refreshOutputs();
                 });
 
                 document.getElementById('btnClear').addEventListener('click', function() {
                     ARMS.forEach(function(a) {
-                        state[a] = { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true,
-                            freeRight: false };
+                        state[a] = { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false };
                     });
-                    updateAll();
+                    renderArmInputs();
+                    refreshOutputs();
                 });
 
                 document.getElementById('btnJson').addEventListener('click', function() {

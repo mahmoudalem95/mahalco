@@ -326,7 +326,7 @@
         }
         svg.ph {
             display: block;
-            background: #1e2a30;
+            background: #edf2f0;
             border-radius: 4px;
             transition: filter .2s;
             overflow: visible;
@@ -608,32 +608,32 @@
                 { id: 'EW', he: 'מזרח–מערב', arms: ['E', 'W'] }
             ];
 
-            /* ----- movement path data with start positions and volume label positions ----- */
+            /* ----- movement path data with start positions and volume label positions + rotation angle ----- */
             var MOVE = {
                 NS: { d: 'M41,6 L41,89', t: 'M41,95L38,88.5L44,88.5Z', sx: 41, sy: 6, vx: 41, vy: 12, lx2: 41,
-                    ly2: 60 },
+                    ly2: 60, angle: 90 },
                 NL: { d: 'M46,6 L46,33 A26,26 0 0 0 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', sx: 46, sy: 6,
-                    vx: 46, vy: 12, lx2: 64, ly2: 44 },
+                    vx: 46, vy: 12, lx2: 64, ly2: 44, angle: 90 },
                 NR: { d: 'M36,6 L36,33 A8,8 0 0 1 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', sx: 36, sy: 6,
-                    vx: 36, vy: 12, lx2: 24, ly2: 42 },
+                    vx: 36, vy: 12, lx2: 24, ly2: 42, angle: 90 },
                 SS: { d: 'M59,94 L59,11', t: 'M59,5L56,11.5L62,11.5Z', sx: 59, sy: 94, vx: 59, vy: 88, lx2: 59,
-                    ly2: 40 },
+                    ly2: 40, angle: 270 },
                 SL: { d: 'M54,94 L54,67 A26,26 0 0 0 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', sx: 54, sy: 94,
-                    vx: 54, vy: 88, lx2: 36, ly2: 56 },
+                    vx: 54, vy: 88, lx2: 36, ly2: 56, angle: 270 },
                 SR: { d: 'M64,94 L64,67 A8,8 0 0 1 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', sx: 64, sy: 94,
-                    vx: 64, vy: 88, lx2: 76, ly2: 58 },
+                    vx: 64, vy: 88, lx2: 76, ly2: 58, angle: 270 },
                 ES: { d: 'M94,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', sx: 94, sy: 41, vx: 88, vy: 41, lx2: 40,
-                    ly2: 41 },
+                    ly2: 41, angle: 180 },
                 EL: { d: 'M94,46 L67,46 A26,26 0 0 0 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z', sx: 94, sy: 46,
-                    vx: 88, vy: 46, lx2: 56, ly2: 64 },
+                    vx: 88, vy: 46, lx2: 56, ly2: 64, angle: 180 },
                 ER: { d: 'M94,36 L67,36 A8,8 0 0 1 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z', sx: 94, sy: 36,
-                    vx: 88, vy: 36, lx2: 64, ly2: 30 },
+                    vx: 88, vy: 36, lx2: 64, ly2: 30, angle: 180 },
                 WS: { d: 'M6,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', sx: 6, sy: 59, vx: 12, vy: 59, lx2: 60,
-                    ly2: 59 },
+                    ly2: 59, angle: 0 },
                 WL: { d: 'M6,54 L33,54 A26,26 0 0 0 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z', sx: 6, sy: 54,
-                    vx: 12, vy: 54, lx2: 44, ly2: 36 },
+                    vx: 12, vy: 54, lx2: 44, ly2: 36, angle: 0 },
                 WR: { d: 'M6,64 L33,64 A8,8 0 0 1 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z', sx: 6, sy: 64,
-                    vx: 12, vy: 64, lx2: 36, ly2: 70 }
+                    vx: 12, vy: 64, lx2: 36, ly2: 70, angle: 0 }
             };
 
             /* ----- color palette per movement (arm + direction) ----- */
@@ -879,7 +879,7 @@
             }
 
             /* ============================================================
-               2. Schematic renderer — NEW with colors, volumes at start, dashed free right, only active moves
+               2. Schematic renderer — lighter background + rotated volume labels
                ============================================================ */
             function buildVolMap(cfg, present) {
                 var map = {};
@@ -902,11 +902,9 @@
 
             function schematicInteractive(present, movements, volMap, highlight, freeRightMap, size) {
                 size = size || 180;
-                // movements: array of movement keys to draw. If null/undefined, draw all from present.
                 var allM = allMoves(present);
                 var drawSet = {};
                 if (!movements || movements.length === 0) {
-                    // draw all
                     allM.forEach(function(m) { drawSet[m] = true; });
                 } else {
                     movements.forEach(function(m) { drawSet[m] = true; });
@@ -917,35 +915,35 @@
                 var svg = '<svg class="ph" viewBox="0 0 100 100" width="' + size + '" height="' + size +
                     '" role="img" aria-label="סכמת צומת" xmlns="http://www.w3.org/2000/svg">';
 
-                // ---- background ----
-                svg += '<rect width="100" height="100" fill="#1e2a30" rx="6"/>';
+                // ---- background - lighter ----
+                svg += '<rect width="100" height="100" fill="#e8eeeb" rx="6"/>';
 
-                // road backdrop (darker)
-                if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#2d3a42"/>';
-                if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#2d3a42"/>';
-                if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#2d3a42"/>';
-                if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#2d3a42"/>';
-                svg += '<rect x="30" y="30" width="40" height="40" fill="#2d3a42"/>';
+                // road backdrop (lighter grey)
+                if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#d5ddd8"/>';
+                if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#d5ddd8"/>';
+                if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#d5ddd8"/>';
+                if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#d5ddd8"/>';
+                svg += '<rect x="30" y="30" width="40" height="40" fill="#d5ddd8"/>';
 
-                // lane dividers
+                // lane dividers (darker)
                 if (present.indexOf('N') > -1) svg +=
-                    '<line x1="50" y1="0" x2="50" y2="30" stroke="#4a5a64" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>';
+                    '<line x1="50" y1="0" x2="50" y2="30" stroke="#a0b0a8" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
                 if (present.indexOf('S') > -1) svg +=
-                    '<line x1="50" y1="70" x2="50" y2="100" stroke="#4a5a64" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>';
+                    '<line x1="50" y1="70" x2="50" y2="100" stroke="#a0b0a8" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
                 if (present.indexOf('W') > -1) svg +=
-                    '<line x1="0" y1="50" x2="30" y2="50" stroke="#4a5a64" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>';
+                    '<line x1="0" y1="50" x2="30" y2="50" stroke="#a0b0a8" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
                 if (present.indexOf('E') > -1) svg +=
-                    '<line x1="70" y1="50" x2="100" y2="50" stroke="#4a5a64" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>';
+                    '<line x1="70" y1="50" x2="100" y2="50" stroke="#a0b0a8" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.6"/>';
 
-                // stop lines (white)
+                // stop lines (dark grey)
                 if (present.indexOf('N') > -1) svg +=
-                    '<line x1="30" y1="30" x2="70" y2="30" stroke="#cbd5e0" stroke-width="1.2"/>';
+                    '<line x1="30" y1="30" x2="70" y2="30" stroke="#4a5a5a" stroke-width="1.2"/>';
                 if (present.indexOf('S') > -1) svg +=
-                    '<line x1="30" y1="70" x2="70" y2="70" stroke="#cbd5e0" stroke-width="1.2"/>';
+                    '<line x1="30" y1="70" x2="70" y2="70" stroke="#4a5a5a" stroke-width="1.2"/>';
                 if (present.indexOf('W') > -1) svg +=
-                    '<line x1="30" y1="30" x2="30" y2="70" stroke="#cbd5e0" stroke-width="1.2"/>';
+                    '<line x1="30" y1="30" x2="30" y2="70" stroke="#4a5a5a" stroke-width="1.2"/>';
                 if (present.indexOf('E') > -1) svg +=
-                    '<line x1="70" y1="30" x2="70" y2="70" stroke="#cbd5e0" stroke-width="1.2"/>';
+                    '<line x1="70" y1="30" x2="70" y2="70" stroke="#4a5a5a" stroke-width="1.2"/>';
 
                 // ---- draw only movements in drawSet ----
                 var paths = '',
@@ -967,7 +965,6 @@
                     var strokeColor = COLOR_STROKE[m] || '#718096';
                     var glowColor = COLOR_GLOW[m] || 'rgba(160,174,192,0.15)';
 
-                    // check if this is a right turn and freeRight is true
                     var isRight = m[1] === 'R';
                     var arm = m[0];
                     var isFreeRight = isRight && freeRightMap && freeRightMap[arm] === true;
@@ -978,7 +975,6 @@
                     var width = isHighlight ? 3.2 : (hasVol ? 2.0 : 1.0);
                     var dash = isFreeRight ? '6,4' : 'none';
 
-                    // glow for highlight
                     if (isHighlight) {
                         paths += '<path d="' + info.d + '" fill="none" stroke="' + glowColor +
                             '" stroke-width="8" stroke-linecap="round" opacity="0.4"/>';
@@ -989,22 +985,25 @@
                         dash + '"/>';
                     paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"/>';
 
-                    // volume label at start (vx, vy)
+                    // volume label with rotation
                     var labelText = hasVol ? String(Math.round(vol)) : '0';
                     var labelCls = 'movement-label';
                     if (!hasVol) labelCls += ' zero';
                     if (isHighlight) labelCls += ' highlight';
                     var labelX = info.vx || info.sx || 50;
                     var labelY = info.vy || info.sy || 50;
-                    labels += '<text x="' + labelX + '" y="' + labelY + '" class="' + labelCls + '">' + labelText +
+                    var angle = info.angle || 0;
+                    // adjust rotation so text reads correctly (e.g., for vertical text, we want it upright)
+                    // For angle 90, text will rotate 90° clockwise, so we need to adjust to make it readable.
+                    // We'll keep as is; if angle=90, text will be rotated 90° so it reads from top to bottom.
+                    // We'll add transform attribute.
+                    labels += '<text x="' + labelX + '" y="' + labelY + '" class="' + labelCls +
+                        '" transform="rotate(' + angle + ',' + labelX + ',' + labelY + ')">' + labelText +
                         '</text>';
 
-                    // lane label (×N) below volume
+                    // lane label (×N) below/above volume, not rotated
                     var laneCls = 'lane-label';
                     if (!hasVol) laneCls += ' zero';
-                    var lx2 = info.lx2 || info.sx || 50;
-                    var ly2 = (info.lx2 ? info.lx2 + 6 : (info.sy || 50) + 6);
-                    // better positioning: use the lane label position from MOVE
                     var llx = info.lx2 || info.sx || 50;
                     var lly = (info.ly2 || info.sy || 50) + 6;
                     laneLabels += '<text x="' + llx + '" y="' + lly + '" class="' + laneCls + '">×' + lanes +

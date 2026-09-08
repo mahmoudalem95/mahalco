@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>MAHALCO — Typical rural highway cross section</title>
+    <style>
+        :root {
+            --desk: #23262a;
+            --desk-2: #2c3036;
+            --paper: #fbfaf6;
+            --ink: #14171a;
+            --ink-2: #585f66;
+            --hair: #c8c6bd;
+            --slate: #4c5560;
+            --moss: #5a7a4e;
+            --earth: #8a6d4a;
+            --blueprint: #2b5c8a;
+            --alarm: #b03a2e;
+            --amber: #8a6d1f;
+            --rail: 280px;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            height: 100%;
+        }
+        body {
+            margin: 0;
+            background: var(--desk);
+            color: #e7e6e1;
+            font: 14px/1.5 ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        a {
+            color: #a9c6e6;
+        }
+
+        header.bar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: #191c1f;
+            border-bottom: 1px solid #383c42;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 18px;
+            flex-wrap: wrap;
+        }
+        .mark {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+            margin-right: auto;
+        }
+        .mark b {
+            font-size: 15px;
+            letter-spacing: .14em;
+            font-weight: 700;
+        }
+        .mark span {
+            font-size: 11px;
+            color: #8d949b;
+            letter-spacing: .02em;
+        }
+        .bar button {
+            background: #33383e;
+            color: #e9e8e3;
+            border: 1px solid #4a5057;
+            border-radius: 6px;
+            padding: 7px 12px;
+            font: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .bar button:hover {
+            background: #3d434a;
+        }
+        .bar button.key {
+            background: #e9e8e3;
+            color: #191c1f;
+            border-color: #e9e8e3;
+            font-weight: 600;
+        }
+        .bar button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        button:focus-visible {
+            outline: 2px solid #6fa3d8;
+            outline-offset: 2px;
+        }
+
+        .shell {
+            display: grid;
+            grid-template-columns: var(--rail) minmax(0, 1fr);
+            gap: 0;
+            align-items: start;
+        }
+
+        aside {
+            position: sticky;
+            top: 53px;
+            max-height: calc(100vh - 53px);
+            overflow: auto;
+            background: var(--desk-2);
+            border-right: 1px solid #3a3f45;
+            padding: 14px 14px 40px;
+        }
+        aside h2 {
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: #8d949b;
+            margin: 18px 0 8px;
+            font-weight: 700;
+        }
+        aside h2:first-child {
+            margin-top: 2px;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 84px;
+            align-items: center;
+            gap: 8px;
+            padding: 3px 0;
+        }
+        .row label {
+            font-size: 13px;
+            color: #cdd1d5;
+        }
+        .row input,
+        .row select {
+            width: 100%;
+            background: #1c1f23;
+            color: #f0efeb;
+            border: 1px solid #464c53;
+            border-radius: 5px;
+            padding: 5px 6px;
+            font: inherit;
+            font-size: 13px;
+            text-align: right;
+        }
+        .row select {
+            text-align: left;
+        }
+        .wide {
+            grid-template-columns: 1fr;
+        }
+        .wide select {
+            text-align: left;
+        }
+        .toggles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .toggles label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #cdd1d5;
+            background: #1c1f23;
+            border: 1px solid #464c53;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+        }
+        .toggles input {
+            accent-color: #6fa3d8;
+        }
+        .hint {
+            font-size: 10.5px;
+            color: #8d949b;
+            margin: 2px 0 6px;
+            line-height: 1.4;
+        }
+
+        main {
+            padding: 20px;
+        }
+        .sheetwrap {
+            background: #1b1e21;
+            border: 1px solid #3a3f45;
+            border-radius: 4px;
+            padding: 16px;
+            overflow: auto;
+        }
+        #drawing {
+            min-width: 980px;
+        }
+        #drawing svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: var(--paper);
+        }
+
+        .readouts {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .box {
+            background: var(--desk-2);
+            border: 1px solid #3a3f45;
+            border-radius: 4px;
+            padding: 14px;
+        }
+        .box h3 {
+            margin: 0 0 10px;
+            font-size: 12px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: #8d949b;
+        }
+        .grid3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .stat {
+            border: 1px solid #40454b;
+            border-radius: 4px;
+            padding: 8px 9px;
+            background: #22262a;
+        }
+        .stat span {
+            display: block;
+            font-size: 11px;
+            color: #8d949b;
+        }
+        .stat b {
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -.01em;
+        }
+        .stat b small {
+            font-size: 11px;
+            font-weight: 400;
+            color: #9aa1a8;
+        }
+        .chk {
+            border-left: 3px solid var(--moss);
+            background: #22262a;
+            padding: 8px 10px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 7px;
+            font-size: 12.5px;
+        }
+        .chk.warn {
+            border-color: var(--amber);
+        }
+        .chk.bad {
+            border-color: var(--alarm);
+        }
+        .chk b {
+            letter-spacing: .04em;
+            font-size: 11px;
+            display: block;
+            color: #b9bfc5;
+        }
+        .notes {
+            margin-top: 16px;
+        }
+        .notes ol {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 12.5px;
+            color: #b8bdc2;
+            line-height: 1.65;
+        }
+        .notes li {
+            margin-bottom: 5px;
+        }
+
+        #tip {
+            position: fixed;
+            pointer-events: none;
+            z-index: 60;
+            background: #111417;
+            color: #f2f1ec;
+            border: 1px solid #4a5057;
+            border-radius: 5px;
+            padding: 6px 9px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity .1s;
+            white-space: nowrap;
+        }
+
+        @media (max-width:1080px) {
+            .shell {
+                grid-template-columns: 1fr;
+            }
+            aside {
+                position: static;
+                max-height: none;
+                border-right: 0;
+                border-bottom: 1px solid #3a3f45;
+            }
+            .row {
+                grid-template-columns: 1fr 100px;
+            }
+            .readouts {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (prefers-reduced-motion:reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+            }
+            header.bar,
+            aside,
+            .readouts,
+            .notes,
+            #tip {
+                display: none;
+            }
+            .shell {
+                display: block;
+            }
+            main {
+                padding: 0;
+            }
+            .sheetwrap {
+                background: #fff;
+                border: 0;
+                padding: 0;
+                overflow: visible;
+            }
+            #drawing {
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="bar">
+        <div class="mark"><b>MAHALCO</b><span>Typical rural highway cross section — preliminary design</span></div>
+        <button id="btnFit" class="key">Redraw</button>
+        <button id="btnSvg">Download SVG</button>
+        <button id="btnPng">Download PNG</button>
+        <button id="btnJson">Download JSON</button>
+        <button onclick="window.print()">Print</button>
+    </header>
+
+    <div class="shell">
+        <aside>
+            <h2>Corridor</h2>
+            <div class="row wide"><select id="class">
+                    <option value="local">Rural local road</option>
+                    <option value="collector" selected>Rural collector</option>
+                    <option value="arterial2">Rural arterial — 2 lane</option>
+                    <option value="arterial4">Rural arterial — divided</option>
+                </select></div>
+            <div class="row wide"><select id="terrain">
+                    <option>Level terrain</option>
+                    <option>Rolling terrain</option>
+                    <option>Mountainous terrain</option>
+                </select></div>
+            <div class="row"><label for="speed">Design speed (km/h)</label><input id="speed" type="number" step="5" value="90"></div>
+
+            <h2>Travelway</h2>
+            <div class="row"><label for="lanes">Lanes each way</label><input id="lanes" type="number" min="1" max="3" step="1" value="1"></div>
+            <div class="row"><label for="lane">Lane width (m)</label><input id="lane" type="number" step=".05" value="3.65"></div>
+            <div class="row"><label for="median">Median width (0 = undivided)</label><input id="median" type="number" step=".1" value="0.00"></div>
+            <div class="row"><label for="cross">Travel-lane crossfall %</label><input id="cross" type="number" step=".1" min="0" max="8" value="2.0"></div>
+
+            <h2>Shoulder</h2>
+            <div class="row"><label for="shPaved">Paved shoulder (m)</label><input id="shPaved" type="number" step=".05" value="1.20"></div>
+            <div class="row"><label for="shGraded">Graded / gravel shoulder (m)</label><input id="shGraded" type="number" step=".05" value="0.60"></div>
+            <div class="row"><label for="shcross">Shoulder crossfall %</label><input id="shcross" type="number" step=".1" min="0" max="10" value="4.0"></div>
+
+            <h2>Roadside &amp; clear zone</h2>
+            <div class="row"><label for="clear">Clear zone width (m)</label><input id="clear" type="number" step=".1" value="9.0"></div>
+            <div class="row"><label for="fore">Foreslope (fill), 1:</label><input id="fore" type="number" step=".5" value="4"></div>
+            <div class="row"><label for="ditchW">Ditch bottom width (m)</label><input id="ditchW" type="number" step=".1" value="0.60"></div>
+            <div class="row"><label for="ditchD">Ditch depth (m)</label><input id="ditchD" type="number" step=".05" value="0.60"></div>
+            <div class="row"><label for="back">Backslope (cut), 1:</label><input id="back" type="number" step=".5" value="3"></div>
+            <div class="row wide"><select id="rowMode">
+                    <option value="fill" selected>Fill section (embankment)</option>
+                    <option value="cut">Cut section</option>
+                </select></div>
+            <div class="row"><label for="rowOff">ROW beyond ditch/toe (m)</label><input id="rowOff" type="number" step=".5" value="3.0"></div>
+
+            <h2>Construction depths <span title="Indicative only">(indicative)</span></h2>
+            <div class="row"><label for="dSurf">Surfacing (m)</label><input id="dSurf" type="number" step=".01" value="0.05"></div>
+            <div class="row"><label for="dBase">Base (m)</label><input id="dBase" type="number" step=".01" value="0.20"></div>
+            <div class="row"><label for="dSub">Sub-base (m)</label><input id="dSub" type="number" step=".01" value="0.30"></div>
+
+            <h2>Sheet</h2>
+            <div class="row wide"><select id="mode">
+                    <option value="illustrated" selected>Illustrated section</option>
+                    <option value="technical">Technical line drawing</option>
+                </select></div>
+            <div class="row wide"><select id="relief">
+                    <option value="150">Vertical relief — subtle</option>
+                    <option value="230" selected>Vertical relief — normal</option>
+                    <option value="320">Vertical relief — strong</option>
+                </select></div>
+            <div class="toggles">
+                <label><input type="checkbox" id="tPeople" checked> Vehicles &amp; signage</label>
+                <label><input type="checkbox" id="tStruct" checked> Construction</label>
+                <label><input type="checkbox" id="tDims" checked> Dimensions</label>
+                <label><input type="checkbox" id="tGuard" checked> Guardrail (if warranted)</label>
+            </div>
+        </aside>
+
+        <main>
+            <div class="sheetwrap"><div id="drawing"></div></div>
+
+            <div class="readouts">
+                <div class="box">
+                    <h3>Calculated dimensions</h3>
+                    <div id="stats" class="grid3"></div>
+                </div>
+                <div class="box">
+                    <h3>Screening checks</h3>
+                    <div id="checks"></div>
+                </div>
+            </div>
+
+            <div class="box notes">
+                <h3>Engineering notes</h3>
+                <ol>
+                    <li>Generated dimensions are project-development parameters, not a universal agency standard.</li>
+                    <li>Lane, shoulder and clear-zone widths should be checked against the current adopted AASHTO Green Book edition (or governing agency criteria) for the selected functional class, design speed and terrain.</li>
+                    <li>Clear-zone width is a function of design speed, traffic volume, and foreslope/backslope rate — the value here is an input, not a calculated result. Confirm against the applicable clear-zone table.</li>
+                    <li>The tool screens whether the foreslope rate shown is "traversable" (flatter than or equal to 1:4) for clear-zone purposes; slopes steeper than 1:3 are flagged as generally non-recoverable and a candidate for barrier.</li>
+                    <li>Guardrail is shown only as a schematic screening flag, not a placement design — actual warrants depend on embankment height, slope, fixed objects, and agency barrier-warrant criteria.</li>
+                    <li>Construction depths, ditch geometry and slope rates drive the drawn geometry only. They are illustrative defaults and carry no pavement or drainage design intent.</li>
+                    <li>Vertical relief is exaggerated so shoulders, ditches and slopes read at plotting size. Vehicles and signage are drawn at true horizontal scale and are not exaggerated.</li>
+                    <li>Confirm drainage design, pavement structure, superelevation, sight distance, right-of-way, utilities and local standards before issuing drawings.</li>
+                </ol>
+            </div>
+        </main>
+    </div>
+
+    <div id="tip" role="status" aria-live="polite"></div>
+
+    <script>
+        "use strict";
+        const $ = id => document.getElementById(id);
+        const num = id => Math.max(0, parseFloat($(id).value) || 0);
+        const f2 = v => v.toFixed(2);
+        const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } [c]));
+
+        /* ------------------------------------------------------------------ *
+         * Presets — rural functional classes per typical AASHTO Green Book
+         * ranges. Values are illustrative starting points, not mandates.
+         * ------------------------------------------------------------------ */
+        const PRESETS = {
+            local: { lanes: 1, lane: 3.35, shPaved: 0.30, shGraded: 0.60, median: 0.00, clear: 3.0, fore: 4, back: 2,
+                ditchW: 0.60, ditchD: 0.45, speed: 70, cross: 2.0, shcross: 4.0 },
+            collector: { lanes: 1, lane: 3.35, shPaved: 0.60, shGraded: 0.60, median: 0.00, clear: 6.0, fore: 4, back: 3,
+                ditchW: 0.60, ditchD: 0.60, speed: 90, cross: 2.0, shcross: 4.0 },
+            arterial2: { lanes: 1, lane: 3.65, shPaved: 1.80, shGraded: 0.60, median: 0.00, clear: 9.0, fore: 6, back: 3,
+                ditchW: 0.60, ditchD: 0.60, speed: 100, cross: 2.0, shcross: 4.0 },
+            arterial4: { lanes: 2, lane: 3.65, shPaved: 3.00, shGraded: 0.60, median: 9.00, clear: 9.0, fore: 6, back: 3,
+                ditchW: 0.60, ditchD: 0.60, speed: 110, cross: 2.0, shcross: 4.0 }
+        };
+
+        /* ---------------- dimension model ---------------- */
+        function dims() {
+            const lanes = Math.max(1, Math.round(num("lanes")));
+            const lane = num("lane"),
+                shPaved = num("shPaved"),
+                shGraded = num("shGraded"),
+                median = num("median"),
+                clear = num("clear"),
+                fore = Math.max(1.5, num("fore")),
+                back = Math.max(1, num("back")),
+                ditchW = num("ditchW"),
+                ditchD = num("ditchD"),
+                rowOff = num("rowOff");
+            const shoulder = shPaved + shGraded;
+            const half = lanes * lane + shoulder;
+            const travelway = 2 * half + median;
+            const isCut = $("rowMode").value === 'cut';
+            const foreRun = isCut ? 0 : ditchD * fore;
+            const backRun = isCut ? ditchD * back : ditchD * back;
+            const roadsideW = isCut ? (ditchW + backRun) : (foreRun + ditchW + backRun);
+            const total = travelway + 2 * roadsideW + 2 * rowOff;
+            return {
+                lanes,
+                lane,
+                shPaved,
+                shGraded,
+                shoulder,
+                median,
+                half,
+                travelway,
+                total,
+                clear,
+                fore,
+                back,
+                ditchW,
+                ditchD,
+                rowOff,
+                isCut,
+                foreRun,
+                backRun,
+                roadsideW,
+                cross: num("cross"),
+                shcross: num("shcross"),
+                dSurf: num("dSurf"),
+                dBase: num("dBase"),
+                dSub: num("dSub"),
+                speed: num("speed")
+            };
+        }
+
+        /* ---------------- element strip, left to right ---------------- */
+        function strips(d) {
+            const s = [];
+            const add = (w, key, name) => { if (w > 0.0001) s.push({ w, key, name }); };
+            const roadside = (dir) => {
+                if (d.isCut) {
+                    add(d.backRun, 'back', 'Backslope');
+                    add(d.ditchW, 'ditch', 'Ditch');
+                } else {
+                    add(d.foreRun, 'fore', 'Foreslope');
+                    add(d.ditchW, 'ditch', 'Ditch');
+                    add(d.backRun, 'back', 'Backslope');
+                }
+            };
+            add(d.rowOff, 'row', 'ROW margin');
+            roadside('L');
+            add(d.shGraded, 'shG', 'Graded shoulder');
+            add(d.shPaved, 'shP', 'Paved shoulder');
+            for (let i = 0; i < d.lanes; i++) add(d.lane, 'lane', 'Travel lane');
+            if (d.median > 0.0001) add(d.median, 'median', 'Median');
+            for (let i = 0; i < d.lanes; i++) add(d.lane, 'lane', 'Travel lane');
+            add(d.shPaved, 'shP', 'Paved shoulder');
+            add(d.shGraded, 'shG', 'Graded shoulder');
+            roadside('R');
+            add(d.rowOff, 'row', 'ROW margin');
+            let x = 0;
+            s.forEach(z => { z.x0 = x;
+                x += z.w;
+                z.x1 = x; });
+            return s;
+        }
+
+        /* ---------------- surface profile in metres ---------------- */
+        function profile(d) {
+            const zTL = (d.cross / 100) * (d.lanes * d.lane);
+            const zSh = zTL - (d.shcross / 100) * d.shoulder;
+            const p = [];
+            let x = 0;
+            x += d.rowOff;
+            const pts = [];
+            let zc = 0;
+            pts.push([x, 0]);
+
+            if (d.isCut) {
+                const topZ = d.ditchD;
+                pts[pts.length - 1] = [x, topZ];
+                x += d.backRun;
+                pts.push([x, 0]);
+                x += d.ditchW;
+                pts.push([x, 0]);
+            } else {
+                x += d.foreRun;
+                pts.push([x, -d.ditchD]);
+                x += d.ditchW;
+                pts.push([x, -d.ditchD]);
+                x += d.backRun;
+                pts.push([x, zSh]);
+            }
+            const zShoulderOuterL = pts[pts.length - 1][1];
+            x += d.shGraded;
+            pts.push([x, zTL - (d.shcross / 100) * d.shPaved]);
+            x += d.shPaved;
+            pts.push([x, zTL]);
+            const laneEdgeL = x;
+            x += d.lanes * d.lane;
+            pts.push([x, d.median > 0.0001 ? zTL : 0]);
+            const crownX = x;
+            if (d.median > 0.0001) {
+                pts.push([x, zTL + 0.15]);
+                x += d.median;
+                pts.push([x, zTL + 0.15]);
+                pts.push([x, zTL]);
+            }
+            const laneEdgeR0 = x;
+            x += d.lanes * d.lane;
+            pts.push([x, zTL]);
+            const laneEdgeR = x;
+            x += d.shPaved;
+            pts.push([x, zTL - (d.shcross / 100) * d.shPaved]);
+            x += d.shGraded;
+            pts.push([x, zShoulderOuterL]);
+            if (d.isCut) {
+                x += d.ditchW;
+                pts.push([x, 0]);
+                x += d.backRun;
+                pts.push([x, d.ditchD]);
+            } else {
+                x += d.backRun;
+                pts.push([x, -d.ditchD]);
+                x += d.ditchW;
+                pts.push([x, -d.ditchD]);
+                x += d.foreRun;
+                pts.push([x, 0]);
+            }
+            x += d.rowOff;
+            pts.push([x, pts[pts.length - 1][1]]);
+
+            return {
+                pts,
+                zTL,
+                zSh: zShoulderOuterL,
+                crownX,
+                laneEdgeL,
+                laneEdgeR0,
+                laneEdgeR,
+                shoulderInnerL: laneEdgeL - d.shPaved,
+                shoulderInnerR: laneEdgeR,
+                total: x
+            };
+        }
+
+        function zAt(pr, xm) {
+            const p = pr.pts;
+            for (let i = 0; i < p.length - 1; i++) {
+                const a = p[i],
+                    b = p[i + 1];
+                if (b[0] > a[0] && xm >= a[0] - 1e-9 && xm <= b[0] + 1e-9)
+                    return a[1] + (b[1] - a[1]) * (xm - a[0]) / (b[0] - a[0]);
+            }
+            return 0;
+        }
+
+        /* ---------------- palette ---------------- */
+        const IL = {
+            row: '#eef0e6',
+            back: '#e3ddc9',
+            fore: '#e3ddc9',
+            ditch: '#cfe0e8',
+            shG: '#e6e0d2',
+            shP: '#dedcd4',
+            lane: '#e6e5e0',
+            median: '#d8e4d2'
+        };
+
+        function paint(mode) {
+            return mode === 'technical' ?
+                { ink: '#111', hair: '#666', dim: '#111', note: '#333', tint: null,
+                    surf: '#8f8f8f', base: 'url(#hBase)', sub: 'url(#hSub)', soil: 'url(#hSoil)',
+                    ground: 'url(#hGrade)', paperEdge: '#111' } :
+                { ink: '#1b1e21', hair: '#b9b6ad', dim: '#2b5c8a', note: '#585f66', tint: IL,
+                    surf: '#4c5560', base: '#a49b8b', sub: '#c7bfae', soil: '#6f8a52',
+                    ground: '#8d7b5f', paperEdge: '#4a4a44' };
+        }
+
+        /* ---------------- small drawing helpers ---------------- */
+        function txt(x, y, s, o = {}) {
+            return `<text x="${x}" y="${y}" text-anchor="${o.a || 'middle'}" font-family="${o.ff || "'Arial Narrow',Arial,sans-serif"}"` +
+                ` font-size="${o.fs || 11}" font-weight="${o.fw || 400}" fill="${o.fill || '#1b1e21'}"` +
+                `${o.ls ? ` letter-spacing="${o.ls}"` : ''}${o.rot ? ` transform="rotate(${o.rot} ${x} ${y})"` : ''}>${esc(s)}</text>`;
+        }
+
+        function tick(x, y, c) { return `<line x1="${x-4}" y1="${y+4}" x2="${x+4}" y2="${y-4}" stroke="${c}" stroke-width="1.1"/>`; }
+
+        function chain(segs, y, c, opt = {}) {
+            if (!segs.length) return '';
+            let g = `<g class="dimchain">`;
+            const x0 = segs[0].x1,
+                x1 = segs[segs.length - 1].x2;
+            g += `<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="${c}" stroke-width="${opt.w || 1}"/>`;
+            let alt = 0;
+            segs.forEach(s => {
+                g += tick(s.x1, y, c);
+                const wpx = s.x2 - s.x1,
+                    mid = (s.x1 + s.x2) / 2;
+                if (wpx >= (opt.min || 42)) {
+                    g += `<rect x="${mid-24}" y="${y-8.5}" width="48" height="13" fill="#fbfaf6"/>`;
+                    g += txt(mid, y + 2.5, s.label, { fs: opt.fs || 10.5, fill: c, fw: 600 });
+                } else {
+                    const off = 18 + (alt % 2) * 15;
+                    alt++;
+                    g += `<line x1="${mid}" y1="${y+2}" x2="${mid}" y2="${y+off-8}" stroke="${c}" stroke-width=".7"/>`;
+                    g += `<rect x="${mid-22}" y="${y+off-8.5}" width="44" height="13" fill="#fbfaf6"/>`;
+                    g += txt(mid, y + off + 2, s.label, { fs: 9.5, fill: c, fw: 600 });
+                }
+            });
+            g += tick(x1, y, c);
+            return g + `</g>`;
+        }
+
+        /* pictograms — drawn at true horizontal scale, never exaggerated */
+        function carIcon(cx, yG, s, col) {
+            const w = 1.80 * s,
+                h = 1.48 * s;
+            return `<g>
+            <rect x="${cx-w*0.36}" y="${yG-h}" width="${w*0.72}" height="${h*0.40}" rx="${h*0.10}" fill="${col}"/>
+            <rect x="${cx-w*0.30}" y="${yG-h+h*0.07}" width="${w*0.60}" height="${h*0.22}" rx="${h*0.05}" fill="#cfd8de" opacity=".85"/>
+            <rect x="${cx-w*0.50}" y="${yG-h*0.62}" width="${w}" height="${h*0.42}" rx="${h*0.09}" fill="${col}"/>
+            <rect x="${cx-w*0.46}" y="${yG-h*0.24}" width="${w*0.16}" height="${h*0.24}" rx="2" fill="#2c2f33"/>
+            <rect x="${cx+w*0.30}" y="${yG-h*0.24}" width="${w*0.16}" height="${h*0.24}" rx="2" fill="#2c2f33"/></g>`;
+        }
+
+        function truckIcon(cx, yG, s, col) {
+            const w = 2.55 * s,
+                h = 2.9 * s;
+            return `<g>
+            <rect x="${cx-w*0.5}" y="${yG-h}" width="${w}" height="${h*0.55}" rx="${h*0.04}" fill="${col}"/>
+            <rect x="${cx-w*0.5}" y="${yG-h*0.42}" width="${w*0.36}" height="${h*0.42}" rx="${h*0.05}" fill="${col}" opacity=".92"/>
+            <rect x="${cx-w*0.42}" y="${yG-h*0.36}" width="${w*0.22}" height="${h*0.18}" fill="#cfd8de" opacity=".8"/>
+            <rect x="${cx-w*0.46}" y="${yG-h*0.18}" width="${w*0.15}" height="${h*0.2}" rx="2" fill="#2c2f33"/>
+            <rect x="${cx+w*0.28}" y="${yG-h*0.18}" width="${w*0.15}" height="${h*0.2}" rx="2" fill="#2c2f33"/></g>`;
+        }
+
+        function guardrailIcon(cx, yG, s, col) {
+            const h = 0.72 * s,
+                w = 3.8 * s;
+            let g = `<g stroke="${col}" stroke-width="${Math.max(1.2, s*0.03)}" fill="none">`;
+            g += `<line x1="${cx-w/2}" y1="${yG-h}" x2="${cx+w/2}" y2="${yG-h}"/>`;
+            for (let px = cx - w / 2; px <= cx + w / 2 + 0.01; px += w / 6) {
+                g += `<line x1="${px}" y1="${yG}" x2="${px}" y2="${yG-h}"/>`;
+            }
+            g += `</g>`;
+            return g;
+        }
+
+        function signIcon(cx, yG, s, col) {
+            const h = 2.2 * s,
+                w = 0.6 * s;
+            return `<g stroke="${col}" stroke-width="${Math.max(1.1, s*0.028)}" fill="none">
+            <line x1="${cx}" y1="${yG}" x2="${cx}" y2="${yG-h}"/></g>
+            <rect x="${cx-w/2}" y="${yG-h-w*0.9}" width="${w}" height="${w*0.9}" fill="${col}" transform="rotate(45 ${cx} ${yG-h-w*0.45})"/>`;
+        }
+
+        function bushIcon(cx, yG, s, col) {
+            const r = 0.45 * s;
+            return `<circle cx="${cx}" cy="${yG-r}" r="${r}" fill="${col}" opacity=".78"/>
+              <circle cx="${cx-r*0.7}" cy="${yG-r*0.6}" r="${r*0.6}" fill="${col}" opacity=".7"/>
+              <circle cx="${cx+r*0.7}" cy="${yG-r*0.6}" r="${r*0.6}" fill="${col}" opacity=".7"/>`;
+        }
+
+        /* ------------------------------------------------------------------ *
+         *  the sheet
+         * ------------------------------------------------------------------ */
+        function draw() {
+            const d = dims(),
+                pr = profile(d),
+                zs = strips(d);
+            const mode = $("mode").value,
+                P = paint(mode);
+            const showPeople = $("tPeople").checked && mode === 'illustrated';
+            const showStruct = $("tStruct").checked;
+            const showDims = $("tDims").checked;
+            const showGuard = $("tGuard").checked;
+
+            const W = 1680,
+                H = 1030,
+                padL = 172,
+                padR = 172;
+            const totalW = pr.total;
+            const sx = (W - padL - padR) / totalW;
+
+            const dSurf = d.dSurf,
+                dBase = d.dBase,
+                dSub = d.dSub;
+            const roadDepth = showStruct ? dSurf + dBase + dSub : 0.10;
+            const shDepth = showStruct ? dSurf * 0.7 + dSub * 0.6 : 0.08;
+
+            let zTop = -Infinity,
+                zBot = Infinity;
+            pr.pts.forEach(p => { zTop = Math.max(zTop, p[1]);
+                zBot = Math.min(zBot, p[1]); });
+            zBot -= (Math.max(roadDepth, shDepth) + 0.16);
+            const span = Math.max(0.6, zTop - zBot);
+            const band = parseFloat($("relief").value);
+            const sz = band / span;
+            const exag = sz / sx;
+
+            const yDatum = 596;
+            const X = m => padL + m * sx;
+            const Y = z => yDatum - z * sz;
+
+            const yColTop = 206;
+            const yTagTop = 152;
+            const yGroup = 122;
+            const yTotal = 92;
+            const yFormMax = Y(zBot);
+            const yDim1 = Math.max(yFormMax + 56, 786);
+            const yDim2 = yDim1 + 58;
+            const yLeg = yDim2 + 46;
+
+            let s = `<svg id="sectionSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img"
+              aria-label="Typical rural highway cross section, total corridor ${f2(totalW)} metres">
+          <defs>
+            <pattern id="hSub" width="7" height="7" patternUnits="userSpaceOnUse">
+              <rect width="7" height="7" fill="#fff"/><circle cx="2" cy="2" r="1" fill="#555"/><circle cx="5.5" cy="5.5" r="1" fill="#555"/></pattern>
+            <pattern id="hBase" width="6" height="6" patternUnits="userSpaceOnUse">
+              <rect width="6" height="6" fill="#fff"/><path d="M0 6 L6 0" stroke="#555" stroke-width=".7"/><path d="M0 0 L6 6" stroke="#555" stroke-width=".7"/></pattern>
+            <pattern id="hSoil" width="8" height="8" patternUnits="userSpaceOnUse">
+              <rect width="8" height="8" fill="#fff"/><path d="M0 8 L8 0" stroke="#666" stroke-width=".7"/></pattern>
+            <pattern id="hGrade" width="9" height="9" patternUnits="userSpaceOnUse">
+              <rect width="9" height="9" fill="#f2f0ea"/><path d="M-2 9 L9 -2 M4 11 L11 4" stroke="#a8a49a" stroke-width=".8"/></pattern>
+            <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+              <path d="M0 0 L8 3 L0 6 z" fill="${P.dim}"/></marker>
+            <clipPath id="sheetClip"><rect x="26" y="26" width="${W-52}" height="${H-52}"/></clipPath>
+          </defs>
+          <rect width="${W}" height="${H}" fill="#fbfaf6"/>
+          <rect x="18" y="18" width="${W-36}" height="${H-36}" fill="none" stroke="${P.paperEdge}" stroke-width="1.6"/>
+          <rect x="26" y="26" width="${W-52}" height="${H-52}" fill="none" stroke="${P.hair}" stroke-width=".7"/>`;
+
+            /* ---------- header ---------- */
+            const className = $("class").options[$("class").selectedIndex].text;
+            s += txt(padL, 56, 'TYPICAL CROSS SECTION', { a: 'start', fs: 21, fw: 700, ls: '1.6', fill: P.ink });
+            s += txt(padL, 72,
+                `${className.toUpperCase()}  ·  ${$("terrain").value.toUpperCase()}  ·  DESIGN SPEED ${Math.round(d.speed)} KM/H  ·  DIMENSIONS IN METRES`, { a: 'start', fs: 10.5, fill: P.note, ls: '.9' });
+            s += txt(W - padR, 56, `CORRIDOR ${f2(totalW)} m`, { a: 'end', fs: 15, fw: 700, fill: P.ink });
+            s += txt(W - padR, 72, `VERTICAL RELIEF EXAGGERATED ×${exag.toFixed(1)}`, { a: 'end', fs: 10.5, fill: P.note,
+                ls: '.9' });
+
+            /* ---------- right of way lines ---------- */
+            s +=
+                `<line x1="${X(0)}" y1="${yTotal-14}" x2="${X(0)}" y2="${yLeg-16}" stroke="${P.note}" stroke-width=".9" stroke-dasharray="9 4 2 4"/>
+                <line x1="${X(totalW)}" y1="${yTotal-14}" x2="${X(totalW)}" y2="${yLeg-16}" stroke="${P.note}" stroke-width=".9" stroke-dasharray="9 4 2 4"/>`;
+            s += txt(X(0) - 7, yColTop - 8, 'ROW', { a: 'end', fs: 10, fw: 700, fill: P.note });
+            s += txt(X(totalW) + 7, yColTop - 8, 'ROW', { a: 'start', fs: 10, fw: 700, fill: P.note });
+
+            if (showDims) s += chain([{ x1: X(0), x2: X(totalW), label: `${f2(totalW)} m` }], yTotal, P.dim, { w: 1.3,
+                fs: 12 });
+
+            /* ---------- group bar ---------- */
+            const roadsideLbl = d.isCut ? 'Cut / ditch' : 'Fill / ditch';
+            const groups = [
+                { a: 0, b: d.rowOff + d.roadsideW, name: roadsideLbl, tone: '#e3ddc9' },
+                { a: d.rowOff + d.roadsideW, b: d.rowOff + d.roadsideW + d.shoulder, name: 'Shoulder', tone: '#e6e0d2' },
+                { a: d.rowOff + d.roadsideW + d.shoulder, b: d.rowOff + d.roadsideW + d.shoulder + d.lanes * d.lane,
+                    name: 'Travelway', tone: '#dcdcd6' }
+            ];
+            const midA = d.rowOff + d.roadsideW + d.shoulder + d.lanes * d.lane;
+            if (d.median > 0.0001) groups.push({ a: midA, b: midA + d.median, name: 'Median', tone: '#d8e4d2' });
+            const midB = midA + d.median;
+            groups.push({ a: midB, b: midB + d.lanes * d.lane, name: 'Travelway', tone: '#dcdcd6' });
+            groups.push({ a: midB + d.lanes * d.lane, b: midB + d.lanes * d.lane + d.shoulder, name: 'Shoulder',
+                tone: '#e6e0d2' });
+            groups.push({ a: totalW - (d.rowOff + d.roadsideW), b: totalW, name: roadsideLbl, tone: '#e3ddc9' });
+            groups.forEach(g => {
+                const gx = X(g.a),
+                    gw = X(g.b) - X(g.a);
+                s +=
+                    `<rect x="${gx}" y="${yGroup}" width="${gw}" height="22" fill="${mode === 'technical' ? '#fff' : g.tone}" stroke="${P.hair}" stroke-width=".8"/>`;
+                if (gw > 74) s += txt(gx + gw / 2, yGroup + 15, `${g.name.toUpperCase()}  ${f2(g.b-g.a)}`, { fs: 10,
+                    fw: 700, ls: '.7', fill: P.ink });
+                else if (gw > 30) s += txt(gx + gw / 2, yGroup + 15, f2(g.b - g.a), { fs: 9.5, fw: 700, fill: P.ink });
+            });
+
+            /* ---------- tint columns + zone tags ---------- */
+            let tagAlt = 0;
+            zs.forEach((z) => {
+                const zx = X(z.x0),
+                    zw = X(z.x1) - X(z.x0);
+                const surfY = Y(Math.max(zAt(pr, z.x0), zAt(pr, z.x1)));
+                if (P.tint) {
+                    s +=
+                        `<rect class="zone" data-name="${esc(z.name)}" data-w="${f2(z.w)}" x="${zx}" y="${yColTop}" width="${zw}"
+                         height="${Math.max(4, surfY - yColTop)}" fill="${P.tint[z.key]}" opacity=".45"/>`;
+                }
+                s +=
+                    `<line x1="${zx}" y1="${yColTop}" x2="${zx}" y2="${surfY}" stroke="${P.hair}" stroke-width=".6" stroke-dasharray="3 3"/>`;
+                const mid = zx + zw / 2;
+                if (zw >= 96) {
+                    s += txt(mid, yTagTop + 22, z.name, { fs: 10.5, fw: 700, ls: '.5', fill: P.ink });
+                    s +=
+                        `<line x1="${mid}" y1="${yTagTop+28}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
+                } else if (zw >= 26) {
+                    s += txt(mid, yTagTop + 42, z.name, { fs: 9.5, fw: 600, fill: P.ink, rot: -90, a: 'start' });
+                    s +=
+                        `<line x1="${mid}" y1="${yTagTop+46}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
+                } else {
+                    const ty = yTagTop + 6 + (tagAlt % 2) * 13;
+                    tagAlt++;
+                    s +=
+                        `<line x1="${mid}" y1="${ty+3}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
+                    s += txt(mid, ty, z.name, { fs: 8.5, fw: 600, fill: P.note });
+                }
+            });
+
+            /* ---------- construction below the surface (travelway + shoulders only) ---------- */
+            const slice = (x1, x2) => {
+                const out = [];
+                pr.pts.forEach(p => { if (p[0] > x1 + 1e-9 && p[0] < x2 - 1e-9) out.push(p.slice()); });
+                return [
+                    [x1, zAt(pr, x1)],
+                    ...out.filter((p, i, a) => i === 0 || p[0] !== a[i - 1][0]),
+                    [x2, zAt(pr, x2)]
+                ];
+            };
+            const bandPoly = (pts, top, thick, fill, stroke) => {
+                const up = pts.map(p => `${X(p[0])},${Y(p[1]-top)}`).join(' ');
+                const dn = pts.slice().reverse().map(p => `${X(p[0])},${Y(p[1]-top-thick)}`).join(' ');
+                return `<polygon points="${up} ${dn}" fill="${fill}" stroke="${stroke || P.hair}" stroke-width=".7"/>`;
+            };
+
+            const pavedL = slice(pr.shoulderInnerL - d.shPaved, pr.laneEdgeR);
+            const pavedX0 = pr.laneEdgeL - d.shPaved,
+                pavedX1 = pr.laneEdgeR + d.shPaved;
+            const pavedPts = slice(pavedX0, pavedX1);
+            const gravelL = slice(pavedX0 - d.shGraded, pavedX0);
+            const gravelR = slice(pavedX1, pavedX1 + d.shGraded);
+
+            if (showStruct) {
+                [gravelL, gravelR].forEach(p => {
+                    s += bandPoly(p, 0, dSub * 0.5, mode === 'technical' ? '#eee' : '#cbbfa0');
+                });
+                s += bandPoly(pavedPts, 0, dSurf, P.surf, mode === 'technical' ? '#111' : '#3c444d');
+                s += bandPoly(pavedPts, dSurf, dBase, P.base);
+                s += bandPoly(pavedPts, dSurf + dBase, dSub, P.sub);
+                if (d.median > 0.0001) {
+                    const medPts = slice(pr.laneEdgeR0, pr.laneEdgeR0 + d.median);
+                    s += bandPoly(medPts, 0, 0.35, P.soil);
+                }
+                const gx0 = X(0),
+                    gx1 = X(totalW);
+                const yForm = Y(-(roadDepth));
+                s +=
+                    `<rect x="${gx0}" y="${yForm}" width="${gx1-gx0}" height="${Math.max(10, Y(zBot)-yForm)}" fill="${P.ground}" stroke="${P.hair}" stroke-width=".7"/>`;
+                s += txt(gx0 + 12, Y(zBot) - 7, 'SUBGRADE / NATURAL GROUND', { a: 'start', fs: 9, fw: 600, fill: P.note,
+                    ls: '.6' });
+            }
+
+            /* ---------- surface line ---------- */
+            s += `<polyline points="${pr.pts.map(p => `${X(p[0])},${Y(p[1])}`).join(' ')}"
+                  fill="none" stroke="${P.ink}" stroke-width="2.1" stroke-linejoin="round"/>`;
+
+            /* ---------- ditch water hint ---------- */
+            {
+                const ditchX0 = d.isCut ? d.rowOff + d.backRun : d.rowOff + d.foreRun;
+                const ditchX1 = ditchX0 + d.ditchW;
+                const dz = zAt(pr, ditchX0);
+                s +=
+                    `<line x1="${X(ditchX0)}" y1="${Y(dz)+3}" x2="${X(ditchX1)}" y2="${Y(zAt(pr, ditchX1))+3}" stroke="${P.dim}" stroke-width="1.4" stroke-dasharray="1 4" opacity=".6"/>`;
+            }
+
+            /* ---------- crossfall / slope annotations ---------- */
+            const fallArrow = (xa, xb, label) => {
+                const ya = Y(zAt(pr, xa)) - 24,
+                    yb = Y(zAt(pr, xb)) - 24;
+                return `<line x1="${X(xa)}" y1="${ya}" x2="${X(xb)}" y2="${yb}" stroke="${P.dim}" stroke-width="1.2" marker-end="url(#ar)"/>` +
+                    txt((X(xa) + X(xb)) / 2, (ya + yb) / 2 - 7, label, { fs: 10, fw: 700, fill: P.dim });
+            };
+            fallArrow(pr.laneEdgeL + d.lanes * d.lane * 0.14, pr.laneEdgeL + d.lanes * d.lane * 0.86, `${d.cross.toFixed(1)}%`);
+            if (d.median > 0.0001) fallArrow(pr.laneEdgeR0 + d.lanes * d.lane * 0.14, pr.laneEdgeR0 + d.lanes * d.lane *
+                0.86, `${d.cross.toFixed(1)}%`);
+            fallArrow(pr.shoulderInnerL + d.shPaved * 0.85, pr.shoulderInnerL + d.shPaved * 0.15, `${d.shcross.toFixed(1)}%`);
+            fallArrow(pr.laneEdgeR + d.shPaved * 0.15, pr.laneEdgeR + d.shPaved * 0.85, `${d.shcross.toFixed(1)}%`);
+
+            const slopeLabel = (xa, xb, rate, name) => {
+                const mid = (xa + xb) / 2,
+                    zm = zAt(pr, mid);
+                return txt(X(mid), Y(zm) - 10, `${name} 1:${rate}`, { fs: 9.5, fw: 700, fill: P.dim,
+                    rot: (zAt(pr, xb) - zAt(pr, xa) > 0 ? -18 : 18) });
+            };
+            if (d.isCut) {
+                slopeLabel(d.rowOff, d.rowOff + d.backRun, d.back, 'BACKSLOPE');
+                const x0 = totalW - d.rowOff - d.backRun,
+                    x1 = totalW - d.rowOff;
+                slopeLabel(x0, x1, d.back, 'BACKSLOPE');
+            } else {
+                slopeLabel(d.rowOff, d.rowOff + d.foreRun, d.fore, 'FORESLOPE');
+                const bx0 = d.rowOff + d.foreRun + d.ditchW,
+                    bx1 = bx0 + d.backRun;
+                slopeLabel(bx0, bx1, d.back, 'BACKSLOPE');
+                const rx1 = totalW - d.rowOff,
+                    rx0 = rx1 - d.foreRun;
+                slopeLabel(rx0, rx1, d.fore, 'FORESLOPE');
+                const rbx1 = totalW - d.rowOff - d.foreRun - d.ditchW,
+                    rbx0 = rbx1 - d.backRun;
+                slopeLabel(rbx0, rbx1, d.back, 'BACKSLOPE');
+            }
+
+            /* ---------- level callouts ---------- */
+            const level = (xm, zv, label, anchor) => {
+                const px = X(xm),
+                    py = Y(zv);
+                return `<circle cx="${px}" cy="${py}" r="2.6" fill="${P.dim}"/>` +
+                    `<line x1="${px}" y1="${py}" x2="${px + (anchor === 'start' ? 16 : -16)}" y2="${py-16}" stroke="${P.dim}" stroke-width=".8"/>` +
+                    txt(px + (anchor === 'start' ? 19 : -19), py - 18, label, { a: anchor, fs: 9.5, fw: 600, fill: P
+                            .dim });
+            };
+            const cl = d.median > 0.0001 ? (pr.laneEdgeR0 + pr.laneEdgeL + d.lanes * d.lane) / 2 : pr.crownX;
+            s += level(cl, pr.zTL + (d.median > 0.0001 ? 0.15 : 0), d.median > 0.0001 ? `MEDIAN` : `CROWN +${pr.zTL.toFixed(3)}`,
+                'start');
+            s += level(pr.laneEdgeL, pr.zTL, `EOP +${pr.zTL.toFixed(3)}`, 'end');
+            s +=
+                `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(totalW)}" y2="${Y(0)}" stroke="${P.dim}" stroke-width=".6" stroke-dasharray="2 6" opacity=".5"/>`;
+
+            /* ---------- centreline symbol ---------- */
+            const clx = totalW / 2;
+            s +=
+                `<line x1="${X(clx)}" y1="${yColTop-46}" x2="${X(clx)}" y2="${Y(zBot)+18}" stroke="${P.ink}" stroke-width=".9" stroke-dasharray="18 5 4 5" opacity=".55"/>`;
+            s += txt(X(clx), yColTop - 52, 'CL', { fs: 11, fw: 700, fill: P.ink, ls: '1' });
+
+            /* ---------- clear zone bracket ---------- */
+            if (d.clear > 0.1) {
+                const czX0 = pr.laneEdgeL - d.shPaved,
+                    czX1 = Math.max(d.rowOff, czX0 - d.clear);
+                const yb = yColTop - 30;
+                s +=
+                    `<line x1="${X(czX1)}" y1="${yb}" x2="${X(czX0)}" y2="${yb}" stroke="${P.alarm}" stroke-width="1.1" marker-end="url(#ar)"/>`;
+                s += txt((X(czX1) + X(czX0)) / 2, yb - 6, `CLEAR ZONE ${f2(d.clear)} m`, { fs: 9.5, fw: 700, fill: P
+                        .alarm });
+                const czX0R = pr.laneEdgeR + d.shPaved,
+                    czX1R = Math.min(totalW - d.rowOff, czX0R + d.clear);
+                s +=
+                    `<line x1="${X(czX0R)}" y1="${yb}" x2="${X(czX1R)}" y2="${yb}" stroke="${P.alarm}" stroke-width="1.1" marker-end="url(#ar)"/>`;
+                s += txt((X(czX0R) + X(czX1R)) / 2, yb - 6, `CLEAR ZONE ${f2(d.clear)} m`, { fs: 9.5, fw: 700, fill: P
+                        .alarm });
+            }
+
+            /* ---------- vehicles, guardrail, signage ---------- */
+            if (showPeople) {
+                const onSurf = xm => Y(zAt(pr, xm));
+                const tL = pr.laneEdgeL + d.lane * 0.5;
+                const tR = pr.laneEdgeR + (d.median > 0.0001 ? d.lane * 0.5 : -d.lane * 0.5);
+                s += carIcon(X(tL), onSurf(tL), sx, '#b0483a');
+                if (d.lanes >= 2) {
+                    const tL2 = tL + d.lane;
+                    s += truckIcon(X(tL2), onSurf(tL2), sx, '#5a6470');
+                }
+                const oppR = totalW - tL;
+                s += carIcon(X(oppR), onSurf(oppR), sx, '#37536f');
+
+                const bushX1 = d.isCut ? d.rowOff + d.backRun * 0.4 : d.rowOff + d.foreRun * 0.55;
+                const bushX2 = totalW - bushX1;
+                s += bushIcon(X(bushX1), onSurf(bushX1), sx, '#5a7a4e');
+                s += bushIcon(X(bushX2), onSurf(bushX2), sx, '#5a7a4e');
+
+                const signX = pr.laneEdgeL - d.shPaved - Math.min(1.0, d.shGraded * 0.6);
+                s += signIcon(X(signX), onSurf(signX), sx, '#b0483a');
+            }
+
+            const warrantGuard = !d.isCut && d.fore < 4 - 1e-9 && d.ditchD >= 0.6;
+            if (showGuard && warrantGuard) {
+                const gX0 = d.rowOff + d.foreRun * 0.5;
+                const gX1 = totalW - d.rowOff - d.foreRun * 0.5;
+                [gX0, gX1].forEach(gx => {
+                    const gy = Y(zAt(pr, gx));
+                    s += guardrailIcon(X(gx), gy, sx, '#6b6f75');
+                });
+            }
+
+            /* ---------- dimension chains ---------- */
+            if (showDims) {
+                zs.forEach(z => {
+                    s +=
+                        `<line x1="${X(z.x0)}" y1="${Y(Math.min(0, zBot+0.05))}" x2="${X(z.x0)}" y2="${yDim1-6}" stroke="${P.hair}" stroke-width=".6"/>`;
+                });
+                s +=
+                    `<line x1="${X(totalW)}" y1="${Y(Math.min(0, zBot+0.05))}" x2="${X(totalW)}" y2="${yDim1-6}" stroke="${P.hair}" stroke-width=".6"/>`;
+                s += chain(zs.map(z => ({ x1: X(z.x0), x2: X(z.x1), label: f2(z.w) })), yDim1, P.dim);
+                s += txt(padL - 14, yDim1 + 3, 'ELEMENTS', { a: 'end', fs: 9, fw: 700, fill: P.note, ls: '.6' });
+
+                const gseg = groups.map(g => ({ x1: X(g.a), x2: X(g.b), label: `${f2(g.b-g.a)} m` }));
+                s += chain(gseg, yDim2, P.dim, { w: 1.15, fs: 11 });
+                s += txt(padL - 14, yDim2 + 3, 'GROUPS', { a: 'end', fs: 9, fw: 700, fill: P.note, ls: '.6' });
+            }
+
+            /* ---------- legend ---------- */
+            const legend = mode === 'technical' ?
+                [
+                    ['url(#hBase)', 'Base'],
+                    ['url(#hSub)', 'Sub-base'],
+                    ['url(#hGrade)', 'Natural ground']
+                ] :
+                [
+                    [IL.row, 'ROW margin'],
+                    [IL.fore, 'Fore/backslope'],
+                    [IL.ditch, 'Ditch'],
+                    [IL.shG, 'Graded shoulder'],
+                    [IL.shP, 'Paved shoulder'],
+                    [IL.lane, 'Travel lane'],
+                    [P.surf, 'Surfacing'],
+                    [P.base, 'Base'],
+                    [P.sub, 'Sub-base']
+                ];
+            let lx = padL;
+            s +=
+                `<line x1="${padL}" y1="${yLeg-18}" x2="${W-padR}" y2="${yLeg-18}" stroke="${P.hair}" stroke-width=".7"/>`;
+            legend.forEach(([fill, name]) => {
+                s +=
+                    `<rect x="${lx}" y="${yLeg-8}" width="16" height="11" fill="${fill}" stroke="${P.hair}" stroke-width=".6"/>`;
+                s += txt(lx + 22, yLeg + 1, name, { a: 'start', fs: 10, fill: P.note });
+                lx += 30 + name.length * 6.1;
+            });
+
+            /* ---------- title block ---------- */
+            const tbW = 470,
+                tbH = 78,
+                tbX = W - padR - tbW,
+                tbY = H - 62 - tbH + 18;
+            s +=
+                `<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="none" stroke="${P.ink}" stroke-width="1.2"/>
+                <line x1="${tbX}" y1="${tbY+26}" x2="${tbX+tbW}" y2="${tbY+26}" stroke="${P.ink}" stroke-width=".8"/>
+                <line x1="${tbX}" y1="${tbY+52}" x2="${tbX+tbW}" y2="${tbY+52}" stroke="${P.hair}" stroke-width=".8"/>
+                <line x1="${tbX+240}" y1="${tbY+26}" x2="${tbX+240}" y2="${tbY+tbH}" stroke="${P.hair}" stroke-width=".8"/>
+                <line x1="${tbX+352}" y1="${tbY+26}" x2="${tbX+352}" y2="${tbY+tbH}" stroke="${P.hair}" stroke-width=".8"/>`;
+            s += txt(tbX + 10, tbY + 18, 'MAHALCO — TRANSPORTATION ENGINEERING', { a: 'start', fs: 11.5, fw: 700, ls: '.9',
+                fill: P.ink });
+            s += txt(tbX + 10, tbY + 44, 'DRAWING', { a: 'start', fs: 8.5, fw: 700, fill: P.note, ls: '.6' });
+            s += txt(tbX + 10, tbY + 68, 'Typical cross section — rural highway', { a: 'start', fs: 12, fill: P.ink });
+            s += txt(tbX + 250, tbY + 44, 'SCALE', { a: 'start', fs: 8.5, fw: 700, fill: P.note, ls: '.6' });
+            s += txt(tbX + 250, tbY + 68, `H 1:${Math.round(1000/sx)} · V ×${exag.toFixed(1)}`, { a: 'start', fs: 11,
+                fill: P.ink });
+            s += txt(tbX + 362, tbY + 44, 'STATUS', { a: 'start', fs: 8.5, fw: 700, fill: P.note, ls: '.6' });
+            s += txt(tbX + 362, tbY + 68, 'Preliminary', { a: 'start', fs: 11, fill: P.alarm || '#b03a2e' });
+
+            s += txt(padL, H - 46,
+                'NOT FOR CONSTRUCTION — parametric output, verify against governing criteria and project conditions.', { a: 'start',
+                    fs: 9.5, fill: P.note });
+            s += txt(padL, H - 32,
+                'Vehicles and signage are drawn at true horizontal scale. Construction depths and slope geometry are indicative.', { a: 'start',
+                    fs: 9.5, fill: P.note });
+
+            s += `</svg>`;
+            $("drawing").innerHTML = s;
+            wireHover();
+            return { d, pr, exag, sx, totalW };
+        }
+
+        /* ---------------- hover readout ---------------- */
+        function wireHover() {
+            const tip = $("tip");
+            document.querySelectorAll('#drawing .zone').forEach(el => {
+                el.style.cursor = 'crosshair';
+                el.addEventListener('mouseenter', e => {
+                    tip.textContent = `${el.dataset.name} — ${el.dataset.w} m`;
+                    tip.style.opacity = 1;
+                    el.setAttribute('opacity', '.78');
+                });
+                el.addEventListener('mousemove', e => {
+                    tip.style.left = (e.clientX + 14) + 'px';
+                    tip.style.top = (e.clientY - 30) + 'px';
+                });
+                el.addEventListener('mouseleave', () => { tip.style.opacity = 0;
+                    el.setAttribute('opacity', '.45'); });
+            });
+        }
+
+        /* ---------------- readouts ---------------- */
+        function render() {
+            const { d, exag, totalW } = draw();
+            $("stats").innerHTML = [
+                ['Total corridor', f2(totalW), 'm'],
+                ['Travelway (EOP–EOP)', f2(d.travelway), 'm'],
+                ['Shoulder each side', f2(d.shoulder), 'm'],
+                ['Lanes each way', String(d.lanes), ''],
+                ['Lane width', f2(d.lane), 'm'],
+                ['Clear zone', f2(d.clear), 'm']
+            ].map(r => `<div class="stat"><span>${r[0]}</span><b>${r[1]}<small> ${r[2]}</small></b></div>`).join('');
+
+            const foreRatio = d.fore,
+                backRatio = d.back;
+            const traversable = !d.isCut && foreRatio >= 4 - 1e-9;
+            const recoverable = !d.isCut && foreRatio >= 3 - 1e-9;
+            const shW = d.shPaved;
+            $("checks").innerHTML =
+                `<div class="chk ${shW >= 1.2 ? '' : 'warn'}"><b>${shW >= 1.2 ? 'SCREENED' : 'CHECK'}</b>Paved shoulder ${f2(shW)} m. Many agencies expect ≥1.2 m paved for a rural collector/arterial — verify against the governing typical section.</div>
+             <div class="chk ${d.isCut ? '' : (traversable ? '' : (recoverable ? 'warn' : 'bad'))}"><b>${d.isCut ? 'CUT SECTION' : (traversable ? 'TRAVERSABLE' : (recoverable ? 'RECOVERABLE' : 'NON-RECOVERABLE'))}</b>${d.isCut ? 'Cut section — backslope screening only; foreslope traversability does not apply.' : `Foreslope 1:${foreRatio.toFixed(1)}. ${traversable ? 'At or flatter than 1:4, generally traversable for clear-zone purposes.' : recoverable ? 'Between 1:3 and 1:4 — generally recoverable but not traversable; check clear-zone credit.' : 'Steeper than 1:3 — generally non-recoverable; a barrier warrant review is indicated.'}</div>
+             <div class="chk"><b>NOTE</b>Clear zone ${f2(d.clear)} m is an input based on design speed/volume/slope, not calculated here. Confirm against the applicable AASHTO clear-zone table.</div>
+             <div class="chk"><b>NOTE</b>Vertical relief on the drawing is exaggerated ×${exag.toFixed(1)}. Read levels from the callouts, not by scaling the sheet.</div>`;
+
+            window.current = {
+                functionalClass: $("class").value,
+                terrain: $("terrain").value,
+                designSpeed_kmh: d.speed,
+                section: $("rowMode").value,
+                widths_m: {
+                    total: +f2(totalW),
+                    travelway: +f2(d.travelway),
+                    shoulderEachSide: +f2(d.shoulder),
+                    pavedShoulder: +f2(d.shPaved),
+                    gradedShoulder: +f2(d.shGraded),
+                    lanesEachWay: d.lanes,
+                    laneWidth: +f2(d.lane),
+                    median: +f2(d.median),
+                    clearZone: +f2(d.clear),
+                    ditchBottom: +f2(d.ditchW),
+                    rowMargin: +f2(d.rowOff)
+                },
+                slopes: { foreslopeRatio: d.isCut ? null : `1:${d.fore}`, backslopeRatio: `1:${d.back}`,
+                    ditchDepth_m: +f2(d.ditchD) },
+                crossfall_pct: { travelway: d.cross, shoulder: d.shcross },
+                indicativeDepths_m: { surfacing: d.dSurf, base: d.dBase, subBase: d.dSub },
+                verticalExaggeration: +exag.toFixed(2),
+                disclaimer: 'Preliminary parametric output. Not for construction.'
+            };
+        }
+
+        /* ---------------- controls ---------------- */
+        function applyPreset() {
+            const p = PRESETS[$("class").value];
+            for (const k in p) {
+                const el = $(k);
+                if (el) el.value = (k === 'lanes' || k === 'speed') ? p[k] : p[k].toFixed(2);
+            }
+            render();
+        }
+        $("class").addEventListener('change', applyPreset);
+        document.querySelectorAll('aside input, aside select').forEach(el => {
+            if (el.id !== 'class') el.addEventListener('input', render);
+        });
+        $("btnFit").onclick = render;
+
+        function save(blob, name) {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = name;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+        }
+        $("btnSvg").onclick = () => {
+            const svg = $("sectionSVG").outerHTML.replace('<svg ',
+                '<svg xmlns:xlink="http://www.w3.org/1999/xlink" ');
+            save(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + svg], { type: 'image/svg+xml;charset=utf-8' }),
+                'MAHALCO_rural_typical_section.svg');
+        };
+        $("btnPng").onclick = () => {
+            const node = $("sectionSVG");
+            const vb = node.viewBox.baseVal,
+                k = 2;
+            const img = new Image();
+            const blob = new Blob([node.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            img.onload = () => {
+                const c = document.createElement('canvas');
+                c.width = vb.width * k;
+                c.height = vb.height * k;
+                const g = c.getContext('2d');
+                g.fillStyle = '#fbfaf6';
+                g.fillRect(0, 0, c.width, c.height);
+                g.drawImage(img, 0, 0, c.width, c.height);
+                c.toBlob(b => { save(b, 'MAHALCO_rural_typical_section.png');
+                    URL.revokeObjectURL(url); }, 'image/png');
+            };
+            img.onerror = () => { URL.revokeObjectURL(url);
+                alert('PNG export failed in this browser. Use Download SVG instead.'); };
+            img.src = url;
+        };
+        $("btnJson").onclick = () => save(new Blob([JSON.stringify(window.current, null, 2)], { type: 'application/json' }),
+            'MAHALCO_rural_typical_section.json');
+
+        render();
+    </script>
+</body>
+</html>

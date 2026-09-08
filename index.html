@@ -63,18 +63,44 @@
         :focus-visible{outline:2px solid var(--marking);outline-offset:3px}
         .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
 
-        /* ---------- VISIT BLOCKER ---------- */
-        #blocker-overlay{display:none;position:fixed;inset:0;background:var(--asphalt);color:var(--paper);
+        /* ---------- ACCESS GATES (visit limit / private window) ---------- */
+        .gate{display:none;position:fixed;inset:0;background:var(--asphalt);color:var(--paper);
             z-index:9999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;direction:rtl}
-        #blocker-overlay.visible{display:flex}
-        #blocker-overlay h1{font-size:2.2rem;margin-bottom:1rem;color:var(--marking)}
-        #blocker-overlay p{max-width:500px;font-size:1.1rem;color:var(--muted-dark);margin-bottom:1.6rem}
-        #blocker-overlay .contact-details{background:#1b1f24;padding:1.6rem 2.4rem;border-radius:12px;border:1px solid var(--rule-dark)}
-        #blocker-overlay .contact-details a{display:inline-block;margin:.4rem 1rem;color:var(--paper);text-decoration:none;
+        .gate.visible{display:flex}
+        .gate h1{font-size:2.2rem;margin-bottom:1rem;color:var(--marking)}
+        .gate p{max-width:500px;font-size:1.1rem;color:var(--muted-dark);margin-bottom:1.6rem}
+        .gate .contact-details{background:#1b1f24;padding:1.6rem 2.4rem;border-radius:12px;border:1px solid var(--rule-dark)}
+        .gate .contact-details a{display:inline-block;margin:.4rem 1rem;color:var(--paper);text-decoration:none;
             font-weight:600;border-bottom:2px solid var(--marking);padding-bottom:4px}
-        #blocker-overlay .contact-details a:hover{color:var(--marking)}
-        #blocker-overlay .note{margin-top:1.2rem;font-size:.9rem;color:var(--muted)}
+        .gate .contact-details a:hover{color:var(--marking)}
+        .gate .note{margin-top:1.2rem;font-size:.9rem;color:var(--muted)}
+        .gate .how{max-width:520px;text-align:start;margin:0 0 1.6rem;padding:0;list-style:none;
+            color:var(--muted-dark);font-size:.98rem}
+        .gate .how li{margin-bottom:.5rem;padding-inline-start:1.1rem;position:relative}
+        .gate .how li::before{content:"";position:absolute;inset-inline-start:0;top:.62em;
+            width:9px;height:3px;border-radius:1px;background:var(--marking)}
         #main-content{display:none} #main-content.visible{display:block}
+
+        /* ---------- VISIT METER ---------- */
+        #visit-meter{background:var(--ink);color:var(--paper);border-bottom:1px solid var(--rule-dark);font-size:13.5px}
+        #visit-meter .vm-inner{display:flex;align-items:center;gap:8px 18px;flex-wrap:wrap;
+            padding-top:9px;padding-bottom:9px}
+        #visit-meter p{margin:0}
+        #visit-meter b{color:var(--marking);font-weight:800;font-variant-numeric:tabular-nums}
+        .vm-road{flex:1 1 150px;min-width:110px;max-width:340px;height:9px;border-radius:2px;
+            background:var(--asphalt);border:1px solid var(--rule-dark);overflow:hidden}
+        .vm-road i{display:block;height:100%;width:0;transition:width .3s ease;
+            background:repeating-linear-gradient(90deg,var(--marking) 0 9px,transparent 9px 15px)}
+        .vm-left{color:var(--muted-dark)}
+        #visit-meter.low{background:#2a1f0c}
+        #visit-meter.low .vm-left{color:var(--marking);font-weight:600}
+        .vm-contact{display:flex;gap:6px 16px;flex-wrap:wrap;margin-inline-start:auto}
+        .vm-contact a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--rule-dark);padding-bottom:2px}
+        .vm-contact a:hover{border-bottom-color:var(--marking)}
+        #vm-close{background:none;border:1px solid var(--rule-dark);color:var(--muted-dark);border-radius:3px;
+            padding:3px 10px;font:inherit;font-size:12px;line-height:1.4;cursor:pointer}
+        #vm-close:hover{color:var(--paper);border-color:var(--muted)}
+        @media (max-width:700px){.vm-road{display:none}.vm-contact{margin-inline-start:0;width:100%}}
 
         /* ---------- MASTHEAD ---------- */
         .masthead{position:sticky;top:0;z-index:20;background:var(--asphalt);border-bottom:1px solid var(--rule-dark)}
@@ -264,15 +290,31 @@
 </head>
 <body>
 
-    <!-- ========== VISIT LIMIT OVERLAY ========== -->
-    <div id="blocker-overlay">
+    <!-- ========== VISIT LIMIT GATE ========== -->
+    <div id="blocker-overlay" class="gate">
         <h1>🔒 הגעת למגבלת הצפייה</h1>
-        <p>הגעת ל-30 צפיות בעמוד זה. לקבלת גישה מלאה לקטלוג ולכלים המתקדמים, אנא צרו קשר ישירות.</p>
+        <p>ניצלת את כל <span id="limit-max">100</span> הצפיות החופשיות בעמוד זה. לגישה מלאה לקטלוג ולכלים המתקדמים — צרו קשר.</p>
         <div class="contact-details">
             <div>📧 <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a></div>
             <div>📞 <a href="tel:+972546528572">+972-546-528572</a></div>
         </div>
         <p class="note">נשמח לשמוע מכם! צרו קשר לקבלת הצעת מחיר או גישה מותאמת.</p>
+    </div>
+
+    <!-- ========== PRIVATE / INCOGNITO GATE ========== -->
+    <div id="private-overlay" class="gate">
+        <h1>🚷 האתר אינו נטען בגלישה פרטית</h1>
+        <p>זוהתה חלון גלישה פרטית (Incognito / Private). מניין הצפיות של האתר נשמר בדפדפן, ובחלון פרטי הוא נמחק בכל פעם — לכן התוכן אינו מוצג כאן.</p>
+        <ul class="how">
+            <li>סגרו את חלון הגלישה הפרטית.</li>
+            <li>פתחו את האתר בחלון דפדפן רגיל.</li>
+            <li>ודאו שאחסון מקומי (Cookies / Site data) מופעל עבור האתר.</li>
+        </ul>
+        <div class="contact-details">
+            <div>📧 <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a></div>
+            <div>📞 <a href="tel:+972546528572">+972-546-528572</a></div>
+        </div>
+        <p class="note">נחסם בטעות? כתבו לנו ונפתח את הגישה.</p>
     </div>
 
     <!-- ========== MAIN CONTENT ========== -->
@@ -292,6 +334,20 @@
                 </nav>
             </div>
         </header>
+
+        <!-- ========== VISIT METER (visits used / left + contact) ========== -->
+        <div id="visit-meter" hidden>
+            <div class="wrap vm-inner">
+                <p class="vm-count">צפייה <b id="vm-now">–</b> מתוך <b id="vm-max">100</b></p>
+                <div class="vm-road" aria-hidden="true"><i id="vm-fill"></i></div>
+                <p class="vm-left" id="vm-left" role="status"></p>
+                <p class="vm-contact">
+                    <a href="mailto:mahmoudalem95@icloud.com">📧 mahmoudalem95@icloud.com</a>
+                    <a href="tel:+972546528572">📞 +972-546-528572</a>
+                </p>
+                <button type="button" id="vm-close">סגירה</button>
+            </div>
+        </div>
 
         <section class="hero" id="top">
             <div class="wrap">
@@ -697,24 +753,122 @@
 
     <!-- ========== SCRIPTS ========== -->
     <script>
-        // ---- Visit blocker (30 free visits) ----
+        // ---- Access control: private-window gate + 100 free visits + visit meter ----
         (function(){
-            const KEY='mahalco_visit_data', MAX=30;
-            const overlay=document.getElementById('blocker-overlay');
-            const main=document.getElementById('main-content');
-            let stored=localStorage.getItem(KEY);
-            let d=stored?JSON.parse(stored):{count:0,ip:''};
-            function decide(){
-                localStorage.setItem(KEY,JSON.stringify(d));
-                if(d.count>MAX){overlay.classList.add('visible');main.classList.remove('visible');}
-                else{overlay.classList.remove('visible');main.classList.add('visible');}
+            /* ---- settings ---- */
+            const KEY   = 'mahalco_visit_data';
+            const MAX   = 100;      // permitted visits before the contact gate appears
+            const WARN  = 10;       // highlight the meter when this many visits (or fewer) are left
+            const BLOCK_PRIVATE = true;          // block incognito / private windows
+            const PRIVATE_QUOTA = 120*1024*1024; // storage quota below this => treat as private window
+
+            const limitGate = document.getElementById('blocker-overlay');
+            const privGate  = document.getElementById('private-overlay');
+            const main      = document.getElementById('main-content');
+            const meter     = document.getElementById('visit-meter');
+            const fill      = document.getElementById('vm-fill');
+            const maxEl     = document.getElementById('vm-max');
+            const limitMax  = document.getElementById('limit-max');
+
+            if(maxEl)    maxEl.textContent = MAX;
+            if(limitMax) limitMax.textContent = MAX;
+
+            /* ---- private / incognito detection (heuristic, best effort) ---- */
+            function detectPrivate(){
+                return new Promise(function(resolve){
+                    // 1. localStorage unavailable or blocked -> treat as private
+                    try{
+                        localStorage.setItem('__mahalco_probe','1');
+                        localStorage.removeItem('__mahalco_probe');
+                    }catch(e){ return resolve(true); }
+
+                    // 2. Firefox private windows expose no Service Worker API
+                    if(/firefox/i.test(navigator.userAgent) && navigator.serviceWorker === undefined){
+                        return resolve(true);
+                    }
+
+                    // 3. Chromium / Safari: storage quota is capped in private windows
+                    if(navigator.storage && navigator.storage.estimate){
+                        navigator.storage.estimate().then(function(est){
+                            const q = est && typeof est.quota === 'number' ? est.quota : null;
+                            resolve(q !== null && q < PRIVATE_QUOTA);
+                        }).catch(function(){ resolve(false); });
+                        return;
+                    }
+
+                    // 4. Legacy Chromium fallback
+                    const fs = window.webkitRequestFileSystem || window.RequestFileSystem;
+                    if(fs){
+                        fs(window.TEMPORARY, 1, function(){ resolve(false); }, function(){ resolve(true); });
+                        return;
+                    }
+
+                    resolve(false); // unknown -> let the visitor in
+                });
             }
-            fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(x=>{
-                const ip=x.ip||'';
-                if(d.ip&&d.ip!==ip){d.count=1;d.ip=ip;}
-                else{d.count+=1;if(!d.ip)d.ip=ip;}
-                decide();
-            }).catch(()=>{d.count+=1;decide();});
+
+            /* ---- meter ---- */
+            function renderMeter(count){
+                if(!meter) return;
+                const used = Math.min(count, MAX);
+                const left = Math.max(MAX - count, 0);
+                document.getElementById('vm-now').textContent = used;
+                document.getElementById('vm-left').textContent =
+                    left === 0 ? 'זו הצפייה האחרונה — צרו קשר להמשך גישה'
+                  : left === 1 ? 'נותרה צפייה אחת עד סיום המכסה'
+                  : 'נותרו ' + left + ' צפיות עד סיום המכסה';
+                if(fill) fill.style.width = Math.round(used / MAX * 100) + '%';
+                meter.classList.toggle('low', left <= WARN);
+                try{ if(sessionStorage.getItem('mahalco_meter_closed') === '1') return; }catch(e){}
+                meter.hidden = false;
+            }
+
+            const closeBtn = document.getElementById('vm-close');
+            if(closeBtn) closeBtn.addEventListener('click', function(){
+                meter.hidden = true;
+                try{ sessionStorage.setItem('mahalco_meter_closed','1'); }catch(e){}
+            });
+
+            /* ---- visit counting ---- */
+            function decide(d){
+                try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){}
+                if(d.count > MAX){
+                    limitGate.classList.add('visible');
+                    main.classList.remove('visible');
+                }else{
+                    limitGate.classList.remove('visible');
+                    main.classList.add('visible');
+                    renderMeter(d.count);
+                }
+            }
+
+            function countVisit(){
+                let d;
+                try{
+                    const stored = localStorage.getItem(KEY);
+                    d = stored ? JSON.parse(stored) : {count:0, ip:''};
+                }catch(e){ d = {count:0, ip:''}; }
+                if(typeof d.count !== 'number' || d.count < 0) d.count = 0;
+
+                fetch('https://api.ipify.org?format=json')
+                    .then(function(r){ return r.json(); })
+                    .then(function(x){
+                        const ip = x.ip || '';
+                        if(d.ip && d.ip !== ip){ d.count = 1; d.ip = ip; }
+                        else { d.count += 1; if(!d.ip) d.ip = ip; }
+                        decide(d);
+                    })
+                    .catch(function(){ d.count += 1; decide(d); });
+            }
+
+            detectPrivate().then(function(isPrivate){
+                if(BLOCK_PRIVATE && isPrivate){
+                    privGate.classList.add('visible');
+                    main.classList.remove('visible');
+                    return;
+                }
+                countVisit();
+            });
         })();
 
         // ---- Tree search & filter ----

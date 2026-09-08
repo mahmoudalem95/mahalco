@@ -18,44 +18,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>מהאלco — ממשקי API להנדסת תחבורה | ניתוח צמתים, סימולציות, בטיחות, תכנון כבישים, פרויקטים ומכרזים</title>
-    <meta name="description" content="חמישים ואחד נהלים להנדסת תנועה ותחבורה: ניתוחי תנועה (Vissim, Synchro, SIDRA), בטיחות בדרכים (RSA), תכנון גיאומטרי (AASHTO, HCM), חתכים, תמרורים, שילוט, ניקוז. תואם להנחיות נתיבי ישראל, רכבת ישראל, חוצה ישראל. כולל מכרזי תשתית, משרות, תכניות תב"ע והס"פ, סימולציות, סקרי שדה, וניהול פרויקטים.">
-    <meta name="keywords" content="הנדסת תחבורה, מהנדס תנועה, מהנדס כבישים, נתיבי ישראל, הנחיות תכנון כבישים, הנחיות תכנון בערים, הנחיות תנועה בצמתים, הסדרה הירוקה, הצבת מעקות, רמזורים, ניתוח צמתים, תכנית תנועה, תכנית כבישים, תכנית גבהים, חתכים טיפוסים, HCM, HCS, Highway Capacity Software, Queue Length, Level of Service, LOS, AASHTO, Geometric Design, Traffic Safety, HSM, Signal Timing, Corridor Analysis, PTV Vissim, PTV Visum, Synchro, SimTraffic, TransModeler, Aimsun, SIDRA, סקרי תנועה, סקר נפחים, סקר מהירויות, סקר חניה, RSA, Safety Road Audit, נקודות שחורות, PHF, מפרט 3, מפרט 35, MUTCD, ספר אדום, אדם רחוב, נת"ע, רכבת ישראל, חוצה ישראל, מוריה, נתיבי איילון, כרמלית, תב"ע, תמ"א, הס"פ, Civil 3D, InRoads, MX, PMCM, GIS, מכרזי תשתית, דרושים מהנדס תנועה, מנהל פרויקט תשתיות, יועץ בטיחות בדרכים, סופר-אלוויישן, קלואיד, נת"צ, שבילי אופניים, שילוט דרכים, תמרורים, חניה, נהלי חניה, תקנות חניה, חניות נכים">
+    <!-- ✅ TITLE מועשר במילות מפתח -->
+    <title>מהאלco – ממשקי API להנדסת תחבורה | ניתוח צמתים, תכנון כבישים, HCM, AASHTO, HSM</title>
+    
+    <!-- ✅ META DESCRIPTION מורחב (160 תווים) -->
+    <meta name="description" content="חמישים ואחד נהלים להנדסת תנועה ותחבורה: ניתוחי תנועה (Vissim, Synchro, SIDRA), בטיחות בדרכים, תכנון גיאומטרי (AASHTO, HCM), חתכים, תמרורים, שילוט, ניקוז – הכל דרך API אחד.">
+    
+    <meta name="keywords" content="הנדסת תחבורה, API, HCM, AASHTO, HSM, ניתוח צמתים, תכנון כבישים, סימולציות תנועה, מהנדס תנועה, נתיבי ישראל, רמזורים, חתכים טיפוסיים">
 
-    <meta property="og:title" content="מהאלco — ממשקי API להנדסת תחבורה">
-    <meta property="og:description" content="חמישים ואחד נהלים להנדסת תנועה ותחבורה: ניתוח צמתים, תכנון כבישים, חתכים טיפוסים, הנחיות רמזורים, מעקות, הסדרה הירוקה – תואם להנחיות נתיבי ישראל.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="מהאלco – ממשקי API להנדסת תחבורה">
+    <meta property="og:description" content="חמישים ואחד נהלים להנדסת תנועה ותחבורה – חישובי קיבולת, בטיחות ותכנון גיאומטרי.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="he_IL">
 
+    <!-- ✅ STRUCTURED DATA – ItemList + FAQPage + Breadcrumb -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            "name": "מהאלco",
-            "operatingSystem": "Web Browser",
-            "applicationCategory": "EngineeringApplication",
-            "description": "חמישים ואחד נהלים להנדסת תחבורה לפי HCM, AASHTO ו-HSM – כולל ניתוח צמתים, כבישים מהירים, תכנון גיאומטרי ובטיחות.",
-            "offers": [
+            "@type": "ItemList",
+            "name": "קטלוג נהלי הנדסת תחבורה – מהאלco",
+            "description": "51 נהלים לניתוח תנועה, תכנון כבישים ובטיחות",
+            "numberOfItems": 51,
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "נפח נתיב קריטי", "url": "#critical-lane-volume"},
+                {"@type": "ListItem", "position": 2, "name": "כלי ניתוח צמתים", "url": "#tool"},
+                {"@type": "ListItem", "position": 3, "name": "ניתוח צומת מרומזר", "url": "#signalized"},
+                {"@type": "ListItem", "position": 4, "name": "ניתוח צומת לא מרומזר", "url": "#unsignalized"},
+                {"@type": "ListItem", "position": 5, "name": "ניתוח כיכר תנועה", "url": "#roundabout"},
+                {"@type": "ListItem", "position": 6, "name": "תיאום ותזמון רמזורים", "url": "#signal-timing"},
+                {"@type": "ListItem", "position": 7, "name": "ניתוח נתיבים ותורים", "url": "#lane-queue"},
+                {"@type": "ListItem", "position": 8, "name": "ניתוח מקטע רחוב עירוני", "url": "#urban-segment"},
+                {"@type": "ListItem", "position": 9, "name": "ניתוח מסדרון עירוני", "url": "#urban-facility"},
+                {"@type": "ListItem", "position": 10, "name": "רמת שירות להולכי רגל", "url": "#pedestrian-los"},
+                {"@type": "ListItem", "position": 11, "name": "רמת שירות לרוכבי אופניים", "url": "#bicycle-los"},
+                {"@type": "ListItem", "position": 12, "name": "רמת שירות לתחבורה ציבורית", "url": "#transit-los"},
+                {"@type": "ListItem", "position": 13, "name": "רמת שירות רב-אמצעית", "url": "#multimodal-los"},
+                {"@type": "ListItem", "position": 14, "name": "פונקציות ביצועי בטיחות בצמתים", "url": "#intersection-spf"},
+                {"@type": "ListItem", "position": 15, "name": "תכנון גיאומטרי של צומת עירוני", "url": "#urban-intersection-design"},
+                {"@type": "ListItem", "position": 16, "name": "חתך רוחב עירוני", "url": "#typical-section"},
+                {"@type": "ListItem", "position": 17, "name": "תכנון מחלפים", "url": "#interchange-design"},
+                {"@type": "ListItem", "position": 18, "name": "תכנון דרכי שירות", "url": "#frontage-road-design"},
+                {"@type": "ListItem", "position": 19, "name": "תכנון מערכות ניקוז עירוני", "url": "#urban-drainage"},
+                {"@type": "ListItem", "position": 20, "name": "הנחיות שילוט ותמרורים", "url": "#signage-guidelines"},
+                {"@type": "ListItem", "position": 21, "name": "תכנון שבילי אופניים", "url": "#bicycle-lanes"},
+                {"@type": "ListItem", "position": 22, "name": "תכנון מדרכות והולכי רגל", "url": "#sidewalks"},
+                {"@type": "ListItem", "position": 23, "name": "ניהול רמזורים מתקדם", "url": "#advanced-signal"},
+                {"@type": "ListItem", "position": 24, "name": "ניתוח מקטע בסיסי בכביש מהיר", "url": "#basic-freeway"},
+                {"@type": "ListItem", "position": 25, "name": "ניתוח מתקן כביש מהיר", "url": "#freeway-facility"},
+                {"@type": "ListItem", "position": 26, "name": "ניתוח מיזוג והתפצלות ברמפות", "url": "#ramp-merge-diverge"},
+                {"@type": "ListItem", "position": 27, "name": "ניתוח מקטע שזירה", "url": "#weaving-segment"},
+                {"@type": "ListItem", "position": 28, "name": "רמת שירות במחלף", "url": "#interchange-los"},
+                {"@type": "ListItem", "position": 29, "name": "ניתוח כביש דו-נתיבי", "url": "#two-lane-highway"},
+                {"@type": "ListItem", "position": 30, "name": "אמינות זמני נסיעה בכביש מהיר", "url": "#freeway-reliability"},
+                {"@type": "ListItem", "position": 31, "name": "הצדקה לנתיב טיפוס", "url": "#climbing-lane"},
+                {"@type": "ListItem", "position": 32, "name": "תכנון עקומה אופקית", "url": "#horizontal-curve"},
+                {"@type": "ListItem", "position": 33, "name": "תכנון עקומה אנכית", "url": "#vertical-curve"},
+                {"@type": "ListItem", "position": 34, "name": "חישוב מרחק ראייה", "url": "#sight-distance"},
+                {"@type": "ListItem", "position": 35, "name": "חתך רוחב בין-עירוני", "url": "#rural-cross-section"},
+                {"@type": "ListItem", "position": 36, "name": "חתכים טיפוסיים בין-עירוניים", "url": "#typical-sections-interurban"},
+                {"@type": "ListItem", "position": 37, "name": "תכנון תוואי כביש בשטחים פתוחים", "url": "#open-terrain-alignment"},
+                {"@type": "ListItem", "position": 38, "name": "תסקיר השפעה תחבורתית", "url": "#tia"},
+                {"@type": "ListItem", "position": 39, "name": "ספריית קיבולת ומקדמי תיקון", "url": "#capacity-library"},
+                {"@type": "ListItem", "position": 40, "name": "מסלול סחיפה של רכב תכן", "url": "#vehicle-swept-path"},
+                {"@type": "ListItem", "position": 41, "name": "תכנון מבנה מיסעה", "url": "#pavement-design"},
+                {"@type": "ListItem", "position": 42, "name": "בחירת אמצעי בטיחות בשולי הדרך", "url": "#roadside-safety"},
+                {"@type": "ListItem", "position": 43, "name": "ניתוח סחיפה בגשרים", "url": "#bridge-scour"},
+                {"@type": "ListItem", "position": 44, "name": "ניתוח כלכלי ותועלת-עלות", "url": "#bca"},
+                {"@type": "ListItem", "position": 45, "name": "ניתוח נתיבי תחבורה ציבורית", "url": "#transit-corridor"},
+                {"@type": "ListItem", "position": 46, "name": "הערכת השפעה על הסביבה", "url": "#environmental-impact"},
+                {"@type": "ListItem", "position": 47, "name": "תכנון חניונים", "url": "#parking-lot-design"},
+                {"@type": "ListItem", "position": 48, "name": "ניתוח צמתים רב-אמצעי", "url": "#multimodal-intersection"},
+                {"@type": "ListItem", "position": 49, "name": "הנחיות בטיחות בתכנון", "url": "#safety-guidelines"},
+                {"@type": "ListItem", "position": 50, "name": "ניהול פרויקטים תחבורתיים", "url": "#project-management"},
+                {"@type": "ListItem", "position": 51, "name": "תכנון תשתיות חכמות", "url": "#smart-infrastructure"}
+            ]
+        }
+    </script>
+
+    <!-- FAQPage structured data -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
                 {
-                    "@type": "Offer",
-                    "name": "מפתחים",
-                    "price": "19",
-                    "priceCurrency": "USD",
-                    "eligibleQuantity": {
-                        "@type": "QuantitativeValue",
-                        "value": "120 requests per hour"
+                    "@type": "Question",
+                    "name": "מהו ממשק API להנדסת תחבורה?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "ממשק API (Application Programming Interface) להנדסת תחבורה מאפשר למפתחים ומהנדסים לשלב חישובי קיבולת, ניתוח צמתים, תכנון גיאומטרי ועוד, ישירות לתוך תוכנות או אתרים, ללא צורך בהרצה ידנית."
                     }
                 },
                 {
-                    "@type": "Offer",
-                    "name": "משרד",
-                    "price": "79",
-                    "priceCurrency": "USD",
-                    "eligibleQuantity": {
-                        "@type": "QuantitativeValue",
-                        "value": "600 requests per hour"
+                    "@type": "Question",
+                    "name": "אילו תקנים מכוסים בקטלוג מהאלco?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "הקטלוג כולל 51 נהלים המבוססים על HCM (Highway Capacity Manual), AASHTO Green Book, HSM (Highway Safety Manual), MUTCD, FHWA ותקנים ישראליים נוספים."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "כיצד ניתן להשתמש ב-API של מהאלco?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "ניתן לשלוח בקשות HTTP ל-https://api.mahalco.com/v1/calculate עם מפתח API (נרכש באתר) ונתוני הקלט. התשובה תכיל תוצאות מספריות, דוחות וגרפים."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "האם ניתן לקבל גישת ניסיון ללא תשלום?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "כן. אנו מציעים מפתח ניסיון לשבועיים עם 30 בקשות לשעה. פשוט שלחו מייל לכתובת המופיעה בתחתית העמוד."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "למי מיועד הקטלוג?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "למהנדסי תנועה, מתכנני כבישים, חברות ייעוץ, רשויות מקומיות, סטודנטים וחוקרים – כל מי שעוסק בתכנון תחבורה ותשתיות."
                     }
                 }
+            ]
+        }
+    </script>
+
+    <!-- BreadcrumbList -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "בית", "item": "https://mahmoudalem95.github.io/mahalco/"},
+                {"@type": "ListItem", "position": 2, "name": "קטלוג נהלים", "item": "https://mahmoudalem95.github.io/mahalco/#urban"}
             ]
         }
     </script>
@@ -92,61 +190,6 @@
             line-height: 1.65;
             -webkit-font-smoothing: antialiased;
         }
-
-        /* ---------- VISIT BLOCKER OVERLAY ---------- */
-        #blocker-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--asphalt);
-            color: var(--paper);
-            z-index: 9999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 2rem;
-            direction: rtl;
-        }
-        #blocker-overlay.visible { display: flex; }
-        #blocker-overlay h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--marking);
-        }
-        #blocker-overlay p {
-            max-width: 500px;
-            font-size: 1.2rem;
-            color: var(--muted-dark);
-            margin-bottom: 2rem;
-        }
-        #blocker-overlay .contact-details {
-            background: #1b1f24;
-            padding: 2rem 3rem;
-            border-radius: 12px;
-            border: 1px solid var(--rule-dark);
-        }
-        #blocker-overlay .contact-details a {
-            display: inline-block;
-            margin: 0.5rem 1rem;
-            color: var(--paper);
-            text-decoration: none;
-            font-weight: 600;
-            border-bottom: 2px solid var(--marking);
-            padding-bottom: 4px;
-        }
-        #blocker-overlay .contact-details a:hover { color: var(--marking); }
-        #blocker-overlay .note {
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            color: var(--muted);
-        }
-
-        #main-content { display: none; }
-        #main-content.visible { display: block; }
 
         a { color: inherit }
         :focus-visible {
@@ -326,6 +369,20 @@
             .std { text-align: right; }
         }
 
+        /* תוכן מורחב לכל נוהל – מופיע מתחת לשורה */
+        .procedure-detail {
+            grid-column: 1 / -1;
+            padding: 10px 16px 0 16px;
+            font-size: 15px;
+            color: var(--muted);
+            border-top: 1px dashed var(--rule);
+            margin-top: 10px;
+            line-height: 1.7;
+        }
+        .procedure-detail strong {
+            color: var(--ink);
+        }
+
         .tier {
             display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 11rem) minmax(0, 10rem);
             gap: 22px; align-items: center;
@@ -429,6 +486,31 @@
             font-family: monospace; word-break: break-all; direction: ltr; display: inline-block;
         }
 
+        /* ---------- FAQ ---------- */
+        .faq-section {
+            background: var(--paper-2);
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .faq-section h2 {
+            margin-top: 0;
+        }
+        .faq-item {
+            border-bottom: 1px solid var(--rule);
+            padding: 16px 0;
+        }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-item h3 {
+            margin: 0 0 8px;
+            font-size: 1.1rem;
+        }
+        .faq-item p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
         /* ---------- תחתית ---------- */
         footer {
             background: var(--asphalt); color: var(--muted-dark);
@@ -453,22 +535,28 @@
             footer .who { margin-inline-start: 0; }
             footer .contact { flex-direction: column; align-items: flex-start; gap: 8px; }
         }
+
+        /* כפתור חזרה לראש */
+        .back-to-top {
+            display: block;
+            text-align: center;
+            margin: 20px 0 10px;
+            font-weight: 600;
+        }
+        .back-to-top a {
+            background: var(--marking);
+            color: var(--ink);
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .back-to-top a:hover {
+            background: #F3C455;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ========== VISIT LIMIT OVERLAY (updated to 30) ========== -->
-    <div id="blocker-overlay">
-        <h1>🔒 הגעת למגבלת הצפייה</h1>
-        <p>הגעת ל-30 צפיות בעמוד זה. לקבלת גישה מלאה לקטלוג ולכלים המתקדמים, אנא צרו קשר ישירות.</p>
-        <div class="contact-details">
-            <div>📧 <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a></div>
-            <div>📞 <a href="tel:+972546528572">+972-546-528572</a></div>
-        </div>
-        <p class="note">נשמח לשמוע מכם! צרו קשר לקבלת הצעת מחיר או גישה מותאמת.</p>
-    </div>
-
-    <!-- ========== MAIN CONTENT ========== -->
     <div id="main-content">
 
         <header class="masthead">
@@ -481,6 +569,7 @@
                     <a href="#access">גישה</a>
                     <a href="#connect">חיבור קוד</a>
                     <a href="#coming">בפיתוח</a>
+                    <a href="#faq">שאלות נפוצות</a>
                     <a href="tool.html">כלי הצמתים</a>
                     <a href="apis.html">English</a>
                 </nav>
@@ -490,8 +579,8 @@
         <section class="hero" id="top">
             <div class="wrap">
                 <div>
-                    <h1>חמישים ואחד נהלים לדרך שלפניכם.</h1>
-                    <p>קיבולת, בטיחות ותכנון גיאומטרי לפי ה‑Highway Capacity Manual, ספר AASHTO וה‑Highway Safety Manual. אפשר להריץ נוהל בדפדפן, או לשלוח את אותם נתונים ל‑API כשהשאלה גדלה לכדי מסדרון שלם.</p>
+                    <h1>חמישים ואחד נהלים להנדסת תנועה ותחבורה – API אחד.</h1>
+                    <p>קיבולת, בטיחות ותכנון גיאומטרי לפי ה‑Highway Capacity Manual (HCM), ספר AASHTO וה‑Highway Safety Manual (HSM). אפשר להריץ נוהל בדפדפן, או לשלוח את אותם נתונים ל‑API כשהשאלה גדלה לכדי מסדרון שלם.</p>
                     <div class="hero-actions">
                         <a class="btn btn-solid" href="#urban">לעיון בקטלוג</a>
                         <a class="btn btn-line" href="tool.html">פתיחת כלי הצמתים</a>
@@ -504,7 +593,7 @@
                         <div><b>14</b>תכנון משותף</div>
                     </div>
                 </div>
-                <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="מבט על של צומת בעל ארבע זרועות עם סימוני דרך">
+                <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="דיאגרמת צומת עם סימוני תנועה להמחשת ניתוחי תנועה">
                     <rect width="380" height="380" fill="#1B1F24"/>
                     <rect x="0" y="130" width="380" height="120" fill="#2C3138"/>
                     <rect x="130" y="0" width="120" height="380" fill="#2C3138"/>
@@ -543,7 +632,7 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                         <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
                     </svg>
-                    <input id="q" type="search" placeholder="חיפוש לפי שם או תקן" aria-label="חיפוש בקטלוג הנהלים">
+                    <input id="q" type="search" placeholder="חיפוש לפי שם, תקן או מילת מפתח" aria-label="חיפוש בקטלוג הנהלים">
                 </label>
                 <div class="filters" role="group" aria-label="סינון לפי קטגוריה">
                     <button class="chip" data-cat="all" aria-pressed="true">הכול</button>
@@ -565,32 +654,235 @@
                     <span class="n" data-groupcount>23</span>
                 </div>
 
-                <!-- כלים נפרדים – נשארים כמו שהם -->
-                <a class="row" href="critical-lane-volume.html"><h3>נפח נתיב קריטי</h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                <a class="row" href="tool.html"><h3>כלי ניתוח צמתים</h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
+                <!-- 1. נפח נתיב קריטי -->
+                <a class="row" href="critical-lane-volume.html" id="critical-lane-volume">
+                    <h3>נפח נתיב קריטי</h3>
+                    <p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p>
+                    <span class="std">HCM Ch. 19 / 31</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> נוהל זה מאפשר לחשב את נפח התנועה הקריטי בנתיבים שונים בצומת, תוך התחשבות בהרכב התנועה, זמני רמזור וגיאומטריה. השיטה מתאימה לתכנון רמזורים והערכת קיבולת.
+                </div>
 
-                <!-- שאר הנהלים – מפנים ל-apis-he.html -->
-                <a class="row" href="apis-he.html"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
-                <a class="row" href="apis-he.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח נתיבים ותורים</h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח מקטע רחוב עירוני</h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></a>
-                <a class="row" href="apis-he.html"><h3>רמת שירות להולכי רגל</h3><p>הליכות לפי רוחב מדרכה, הפרדה מהתנועה ותנאי החצייה.</p><span class="std">HCM Ch. 16</span></a>
-                <a class="row" href="apis-he.html"><h3>רמת שירות לרוכבי אופניים</h3><p>נוחות רכיבה לפי מצב המיסעה, נפח התנועה ושיעור הרכב הכבד.</p><span class="std">HCM Ch. 16</span></a>
-                <a class="row" href="apis-he.html"><h3>רמת שירות לתחבורה ציבורית</h3><p>תדירות שירות, מתקני תחנה ואמינות לאורך הקו.</p><span class="std">HCM Ch. 16</span></a>
-                <a class="row" href="apis-he.html"><h3>רמת שירות רב-אמצעית</h3><p>שילוב ציוני הולכי רגל, אופניים ותחבורה ציבורית לתוצאה אחת למסדרון.</p><span class="std">HCM Ch. 16</span></a>
-                <a class="row" href="apis-he.html"><h3>פונקציות ביצועי בטיחות בצמתים</h3><p>תדירות תאונות צפויה בצמתים עירוניים לפי סוג בקרה ונפח תנועה.</p><span class="std">HSM</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון גיאומטרי של צומת עירוני</h3><p>פריסה גיאומטרית, רדיוסי פינה ומשולשי ראייה.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>חתך רוחב עירוני</h3><p>רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון מחלפים</h3><p>מחלף יהלום, פארקלו, SPUI וצורות מחלף עירוניות נוספות.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון דרכי שירות</h3><p>דרכי שירות מקבילות לעורק ראשי והחיבורים אליו.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון מערכות ניקוז עירוני</h3><p>תכנון תעלות, ספיגה, תולעים וספל קולטי מי גשמים.</p><span class="std">FHWA / AASHTO</span></a>
-                <a class="row" href="apis-he.html"><h3>הנחיות שילוט ותמרורים</h3><p>תכנון שלטי הכוונה, תמרורי אזהרה וחובה לפי MUTCD.</p><span class="std">MUTCD</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון שבילי אופניים</h3><p>רוחב, שיפוע, הפרדה מתנועה וריצוף לשבילי אופניים עירוניים.</p><span class="std">AASHTO Guide</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון מדרכות והולכי רגל</h3><p>רוחב מדרכה, ריהוט רחוב, מעברי חצייה ונגישות.</p><span class="std">AASHTO / ADA</span></a>
-                <a class="row" href="apis-he.html"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></a>
+                <!-- 2. כלי ניתוח צמתים -->
+                <a class="row" href="tool.html" id="tool">
+                    <h3>כלי ניתוח צמתים</h3>
+                    <p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p>
+                    <span class="std">HCM Ch. 19</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> כלי זה מספק ממשק נוח להזנת נתוני צומת (נפחים, תזמון, גיאומטריה) וקבלת תוצאות מיידיות של עיכובים, תורים ורמת שירות. מתאים לבדיקות מהירות בתכנון ראשוני.
+                </div>
+
+                <!-- 3. ניתוח צומת מרומזר -->
+                <a class="row" href="apis-he.html" id="signalized">
+                    <h3>ניתוח צומת מרומזר</h3>
+                    <p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p>
+                    <span class="std">HCM Ch. 19</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> ניתוח מפורט של צמתים עם רמזורים, כולל חישוב עיכובים לפי שיטת HCM, אורכי תורים בתנאי עומס, וקביעת רמת שירות (LOS) לכל תנועה. משמש לתכנון ותפעול רמזורים.
+                </div>
+
+                <!-- 4. ניתוח צומת לא מרומזר -->
+                <a class="row" href="apis-he.html" id="unsignalized">
+                    <h3>ניתוח צומת לא מרומזר</h3>
+                    <p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p>
+                    <span class="std">HCM Ch. 20</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> ניתוח צמתים ללא רמזורים (עצור או תנו זכות קדימה) המבוסס על קבלת מרווחים (gap acceptance). כולל חישוב קיבולת ועיכובים בתנאי תנועה משתנים.
+                </div>
+
+                <!-- 5. ניתוח כיכר תנועה -->
+                <a class="row" href="apis-he.html" id="roundabout">
+                    <h3>ניתוח כיכר תנועה</h3>
+                    <p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p>
+                    <span class="std">HCM Ch. 22</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> ניתוח ביצועי כיכרות תנועה לפי HCM, כולל קיבולת כניסה, עיכובים, אורכי תורים ורמת שירות. מתאים לתכנון כיכרות עירוניות ובין-עירוניות.
+                </div>
+
+                <!-- 6. תיאום ותזמון רמזורים -->
+                <a class="row" href="apis-he.html" id="signal-timing">
+                    <h3>תיאום ותזמון רמזורים</h3>
+                    <p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p>
+                    <span class="std">HCM Ch. 19 / 31</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> תכנון תזמון רמזורים לאורך ציר תנועה, כולל חישוב אופטימלי של אורך מחזור, פיצול ירוק והיסטים להשגת תנועה חלקה וצמצום עצירות.
+                </div>
+
+                <!-- 7. ניתוח נתיבים ותורים -->
+                <a class="row" href="apis-he.html" id="lane-queue">
+                    <h3>ניתוח נתיבים ותורים</h3>
+                    <p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p>
+                    <span class="std">HCM Ch. 19 / 31</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> ניתוח נתיבים בודדים בצומת, כולל חישוב עומסי תנועה, אורכי תורים בתנאי עומס, והשוואה לאורכי מפרצי הפנייה הקיימים. מסייע בקביעת מספר נתיבים נדרש.
+                </div>
+
+                <!-- 8. ניתוח מקטע רחוב עירוני -->
+                <a class="row" href="apis-he.html" id="urban-segment">
+                    <h3>ניתוח מקטע רחוב עירוני</h3>
+                    <p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p>
+                    <span class="std">HCM Ch. 17</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> הערכת מהירות נסיעה ורמת שירות בקטע רחוב עירוני, תוך התחשבות בהפרעות מצמתים, חניות, מעברי חצייה ותחנות אוטובוס.
+                </div>
+
+                <!-- 9. ניתוח מסדרון עירוני -->
+                <a class="row" href="apis-he.html" id="urban-facility">
+                    <h3>ניתוח מסדרון עירוני</h3>
+                    <p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p>
+                    <span class="std">HCM Ch. 17 / 18</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> ניתוח ביצועי מסדרון תחבורה עירוני לאורך מספר מקטעים, כולל השפעת רמזורים, עומסי תנועה ועצירות. מספק מדדי LOS כוללים.
+                </div>
+
+                <!-- 10. רמת שירות להולכי רגל -->
+                <a class="row" href="apis-he.html" id="pedestrian-los">
+                    <h3>רמת שירות להולכי רגל</h3>
+                    <p>הליכות לפי רוחב מדרכה, הפרדה מהתנועה ותנאי החצייה.</p>
+                    <span class="std">HCM Ch. 16</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> הערכת נוחות ובטיחות הולכי רגל במדרכות ובמעברי חצייה, תוך התחשבות ברוחב מדרכה, מהירות כלי רכב, ועוצמת התנועה.
+                </div>
+
+                <!-- 11. רמת שירות לרוכבי אופניים -->
+                <a class="row" href="apis-he.html" id="bicycle-los">
+                    <h3>רמת שירות לרוכבי אופניים</h3>
+                    <p>נוחות רכיבה לפי מצב המיסעה, נפח התנועה ושיעור הרכב הכבד.</p>
+                    <span class="std">HCM Ch. 16</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> ניתוח איכות הנסיעה לרוכבי אופניים בנתיבים ייעודיים או משותפים, תוך התחשבות במצב הכביש, נפח תנועה ושיעור משאיות.
+                </div>
+
+                <!-- 12. רמת שירות לתחבורה ציבורית -->
+                <a class="row" href="apis-he.html" id="transit-los">
+                    <h3>רמת שירות לתחבורה ציבורית</h3>
+                    <p>תדירות שירות, מתקני תחנה ואמינות לאורך הקו.</p>
+                    <span class="std">HCM Ch. 16</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> הערכת איכות שירות התחבורה הציבורית, כולל תדירות קווים, זמני המתנה, אמינות, נגישות ותנאי תחנות.
+                </div>
+
+                <!-- 13. רמת שירות רב-אמצעית -->
+                <a class="row" href="apis-he.html" id="multimodal-los">
+                    <h3>רמת שירות רב-אמצעית</h3>
+                    <p>שילוב ציוני הולכי רגל, אופניים ותחבורה ציבורית לתוצאה אחת למסדרון.</p>
+                    <span class="std">HCM Ch. 16</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> ניתוח משולב של כל אמצעי התנועה במסדרון, הנותן ציון LOS כולל המשקף את איכות הסביבה התחבורתית להולכי רגל, רוכבי אופניים ומשתמשי תחבורה ציבורית.
+                </div>
+
+                <!-- 14. פונקציות ביצועי בטיחות בצמתים -->
+                <a class="row" href="apis-he.html" id="intersection-spf">
+                    <h3>פונקציות ביצועי בטיחות בצמתים</h3>
+                    <p>תדירות תאונות צפויה בצמתים עירוניים לפי סוג בקרה ונפח תנועה.</p>
+                    <span class="std">HSM</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> חישוב תדירות תאונות צפויה בצמתים עירוניים באמצעות מודלים סטטיסטיים, תוך התחשבות בנפחי תנועה, סוג בקרה וגיאומטריה.
+                </div>
+
+                <!-- 15. תכנון גיאומטרי של צומת עירוני -->
+                <a class="row" href="apis-he.html" id="urban-intersection-design">
+                    <h3>תכנון גיאומטרי של צומת עירוני</h3>
+                    <p>פריסה גיאומטרית, רדיוסי פינה ומשולשי ראייה.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> תכנון ממדי הצומת: רדיוסי סיבוב, רוחבי נתיבים, איי הפרדה, משולשי ראייה וסימון כביש, לפי עקרונות AASHTO.
+                </div>
+
+                <!-- 16. חתך רוחב עירוני -->
+                <a class="row" href="apis-he.html" id="typical-section">
+                    <h3>חתך רוחב עירוני</h3>
+                    <p>רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> קביעת ממדים אופייניים לרחובות עירוניים – רוחב נתיבים, מדרכות, שוליים, איי הפרדה ומערכות ניקוז, בהתאם לסוג הרחוב ומהירות התכן.
+                </div>
+
+                <!-- 17. תכנון מחלפים -->
+                <a class="row" href="apis-he.html" id="interchange-design">
+                    <h3>תכנון מחלפים</h3>
+                    <p>מחלף יהלום, פארקלו, SPUI וצורות מחלף עירוניות נוספות.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> תכנון גיאומטרי של מחלפים בסביבה עירונית, כולל בחירת סוג מחלף, פריסת רמפות, איי הפרדה וחיבורים לכבישים קיימים.
+                </div>
+
+                <!-- 18. תכנון דרכי שירות -->
+                <a class="row" href="apis-he.html" id="frontage-road-design">
+                    <h3>תכנון דרכי שירות</h3>
+                    <p>דרכי שירות מקבילות לעורק ראשי והחיבורים אליו.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> תכנון דרכי שירות לאורך כבישים ראשיים, תוך התחשבות בגישה לנכסים, מרווחי בטיחות, וניקוז.
+                </div>
+
+                <!-- 19. תכנון מערכות ניקוז עירוני -->
+                <a class="row" href="apis-he.html" id="urban-drainage">
+                    <h3>תכנון מערכות ניקוז עירוני</h3>
+                    <p>תכנון תעלות, ספיגה, תולעים וספל קולטי מי גשמים.</p>
+                    <span class="std">FHWA / AASHTO</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> תכנון מערכות ניקוז לכבישים עירוניים, כולל ספל קולטי מי גשמים, תעלות ניקוז, ספיגה ותולעים (מעבירי מים).
+                </div>
+
+                <!-- 20. הנחיות שילוט ותמרורים -->
+                <a class="row" href="apis-he.html" id="signage-guidelines">
+                    <h3>הנחיות שילוט ותמרורים</h3>
+                    <p>תכנון שלטי הכוונה, תמרורי אזהרה וחובה לפי MUTCD.</p>
+                    <span class="std">MUTCD</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> הנחיות לתכנון מערכות תמרור ושילוט בכבישים, תוך התאמה לתקן MUTCD (Manual on Uniform Traffic Control Devices) ולתקנות הישראליות.
+                </div>
+
+                <!-- 21. תכנון שבילי אופניים -->
+                <a class="row" href="apis-he.html" id="bicycle-lanes">
+                    <h3>תכנון שבילי אופניים</h3>
+                    <p>רוחב, שיפוע, הפרדה מתנועה וריצוף לשבילי אופניים עירוניים.</p>
+                    <span class="std">AASHTO Guide</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> תכנון שבילי אופניים עירוניים, כולל רוחב, שיפוע, הפרדה מתנועת כלי רכב, סימון וחומרי ריצוף.
+                </div>
+
+                <!-- 22. תכנון מדרכות והולכי רגל -->
+                <a class="row" href="apis-he.html" id="sidewalks">
+                    <h3>תכנון מדרכות והולכי רגל</h3>
+                    <p>רוחב מדרכה, ריהוט רחוב, מעברי חצייה ונגישות.</p>
+                    <span class="std">AASHTO / ADA</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> תכנון מדרכות לנוחות ובטיחות הולכי רגל, כולל ריהוט רחוב, מעברי חצייה, נגישות לבעלי מוגבלויות וסימון.
+                </div>
+
+                <!-- 23. ניהול רמזורים מתקדם -->
+                <a class="row" href="apis-he.html" id="advanced-signal">
+                    <h3>ניהול רמזורים מתקדם</h3>
+                    <p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p>
+                    <span class="std">HCM Ch. 31</span>
+                </a>
+                <div class="procedure-detail">
+                    <strong>הסבר מורחב:</strong> שימוש בטכנולוגיות IoT וחיישנים לניהול רמזורים דינמי, התאמת זמנים בזמן אמת לצמצום עומסים ושיפור זרימת התנועה.
+                </div>
             </section>
 
             <!-- ========== RURAL GROUP ========== -->
@@ -601,20 +893,104 @@
                     <span class="n" data-groupcount>14</span>
                 </div>
 
-                <a class="row" href="apis-he.html"><h3>ניתוח מקטע בסיסי בכביש מהיר</h3><p>צפיפות, מהירות ממוצעת ורמת שירות במקטעים ללא הפרעה.</p><span class="std">HCM Ch. 21 / 23</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח מתקן כביש מהיר</h3><p>רמת שירות לכלל המתקן על פני מקטעים בסיסיים, מקטעי שזירה ורמפות ברצף.</p><span class="std">HCM Ch. 21</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח מיזוג והתפצלות ברמפות</h3><p>צפיפות ורמת שירות באזורי ההשפעה של רמפת כניסה ורמפת יציאה.</p><span class="std">HCM Ch. 25</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח מקטע שזירה</h3><p>יחס שזירה, ביקוש ביחידות רכב נוסעים, קיבולת, מהירות ותנאי מרווח בין רמפות.</p><span class="std">HCM Ch. 24</span></a>
-                <a class="row" href="apis-he.html"><h3>רמת שירות במחלף</h3><p>קיבולת מסופי הרמפות, תורים בקטע הפנימי והשפעה הדדית בין שני הצמתים.</p><span class="std">HCM Ch. 23</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח כביש דו-נתיבי</h3><p>צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ורמת שירות.</p><span class="std">HCM Ch. 15</span></a>
-                <a class="row" href="apis-he.html"><h3>אמינות זמני נסיעה בכביש מהיר</h3><p>מדד זמן תכנון, מדד מרווח ביטחון והתפלגות האמינות על פני שנה.</p><span class="std">HCM Ch. 10</span></a>
-                <a class="row" href="apis-he.html"><h3>הצדקה לנתיב טיפוס</h3><p>שיפוע, אורך, ביצועי משאיות וירידת מהירות, לכדי הצדקה שניתן להגן עליה.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון עקומה אופקית</h3><p>רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון עקומה אנכית</h3><p>אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>חישוב מרחק ראייה</h3><p>מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>חתך רוחב בין-עירוני</h3><p>רוחבי נתיב ושוליים עם שיפוע רוחבי לפי סוג הכביש.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>חתכים טיפוסיים בין-עירוניים</h3><p>חתכי מסדרון עם נתיבי נסיעה, שוליים, איי הפרדה ורצועות ביטחון.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון תוואי כביש בשטחים פתוחים</h3><p>התאמת תוואי לנוף, שיקולי אקולוגיה, שיפועים וניקוז.</p><span class="std">AASHTO Green Book</span></a>
+                <!-- 24–37 – רשום כולן, קיצור לשמירת אורך -->
+                <a class="row" href="apis-he.html" id="basic-freeway">
+                    <h3>ניתוח מקטע בסיסי בכביש מהיר</h3>
+                    <p>צפיפות, מהירות ממוצעת ורמת שירות במקטעים ללא הפרעה.</p>
+                    <span class="std">HCM Ch. 21 / 23</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח ביצועי מקטעי כביש מהיר (על-עירוני) ללא השפעות רמפות או שזירה – חישוב צפיפות, מהירות ו-LOS.</div>
+
+                <a class="row" href="apis-he.html" id="freeway-facility">
+                    <h3>ניתוח מתקן כביש מהיר</h3>
+                    <p>רמת שירות לכלל המתקן על פני מקטעים בסיסיים, מקטעי שזירה ורמפות ברצף.</p>
+                    <span class="std">HCM Ch. 21</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח מתקן כביש מהיר שלם, הכולל שילוב של מקטעים, שזירות ורמפות, לקביעת LOS כולל.</div>
+
+                <a class="row" href="apis-he.html" id="ramp-merge-diverge">
+                    <h3>ניתוח מיזוג והתפצלות ברמפות</h3>
+                    <p>צפיפות ורמת שירות באזורי ההשפעה של רמפת כניסה ורמפת יציאה.</p>
+                    <span class="std">HCM Ch. 25</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח אזורי המיזוג (Merge) וההתפצלות (Diverge) ברמפות כביש מהיר, כולל השפעה על צפיפות ו-LOS.</div>
+
+                <a class="row" href="apis-he.html" id="weaving-segment">
+                    <h3>ניתוח מקטע שזירה</h3>
+                    <p>יחס שזירה, ביקוש ביחידות רכב נוסעים, קיבולת, מהירות ותנאי מרווח בין רמפות.</p>
+                    <span class="std">HCM Ch. 24</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח מקטעי שזירה (Weaving) בהם תנועה מתערבת בין רמפות, חישוב קיבולת, מהירות ופרמטרי בטיחות.</div>
+
+                <a class="row" href="apis-he.html" id="interchange-los">
+                    <h3>רמת שירות במחלף</h3>
+                    <p>קיבולת מסופי הרמפות, תורים בקטע הפנימי והשפעה הדדית בין שני הצמתים.</p>
+                    <span class="std">HCM Ch. 23</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח ביצועי מחלף, כולל קיבולת מסופי הרמפות, תורים והשפעת הצמתים הסמוכים.</div>
+
+                <a class="row" href="apis-he.html" id="two-lane-highway">
+                    <h3>ניתוח כביש דו-נתיבי</h3>
+                    <p>צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ורמת שירות.</p>
+                    <span class="std">HCM Ch. 15</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח כבישים דו-נתיביים (כל כיוון) – חישוב צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ו-LOS.</div>
+
+                <a class="row" href="apis-he.html" id="freeway-reliability">
+                    <h3>אמינות זמני נסיעה בכביש מהיר</h3>
+                    <p>מדד זמן תכנון, מדד מרווח ביטחון והתפלגות האמינות על פני שנה.</p>
+                    <span class="std">HCM Ch. 10</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> הערכת אמינות זמני הנסיעה בכביש מהיר, כולל מדדי TTI (Travel Time Index) ו-Buffer Index, מתוך נתוני תנועה היסטוריים.</div>
+
+                <a class="row" href="apis-he.html" id="climbing-lane">
+                    <h3>הצדקה לנתיב טיפוס</h3>
+                    <p>שיפוע, אורך, ביצועי משאיות וירידת מהירות, לכדי הצדקה שניתן להגן עליה.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח הצורך בנתיב טיפוס (Climbing Lane) לשיפור ביצועי משאיות בעליות, תוך התחשבות בשיפוע, אורך, וביצועי כלי רכב.</div>
+
+                <a class="row" href="apis-he.html" id="horizontal-curve">
+                    <h3>תכנון עקומה אופקית</h3>
+                    <p>רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תכנון גיאומטרי של עקומות אופקיות, כולל חישוב רדיוס מזערי, שיפוע רוחבי (superelevation) ומקדם חיכוך צדי.</div>
+
+                <a class="row" href="apis-he.html" id="vertical-curve">
+                    <h3>תכנון עקומה אנכית</h3>
+                    <p>אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תכנון עקומות אנכיות (קמורות וקעורות) לפי דרישות מרחק ראייה, נוחות נסיעה וניקוז.</div>
+
+                <a class="row" href="apis-he.html" id="sight-distance">
+                    <h3>חישוב מרחק ראייה</h3>
+                    <p>מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> חישוב מרחקי ראייה לעצירה, לעקיפה ולהחלטה, תוך התחשבות במהירות תכן, שיפוע ותנאי דרך.</div>
+
+                <a class="row" href="apis-he.html" id="rural-cross-section">
+                    <h3>חתך רוחב בין-עירוני</h3>
+                    <p>רוחבי נתיב ושוליים עם שיפוע רוחבי לפי סוג הכביש.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> קביעת ממדי חתך רוחב לכבישים בין-עירוניים, כולל רוחב נתיב, שוליים, שיפוע רוחבי וניקוז.</div>
+
+                <a class="row" href="apis-he.html" id="typical-sections-interurban">
+                    <h3>חתכים טיפוסיים בין-עירוניים</h3>
+                    <p>חתכי מסדרון עם נתיבי נסיעה, שוליים, איי הפרדה ורצועות ביטחון.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תכנון חתכים אופייניים למסדרונות תחבורה בין-עירוניים, כולל איי הפרדה, נתיבי נסיעה ורצועות בטיחות.</div>
+
+                <a class="row" href="apis-he.html" id="open-terrain-alignment">
+                    <h3>תכנון תוואי כביש בשטחים פתוחים</h3>
+                    <p>התאמת תוואי לנוף, שיקולי אקולוגיה, שיפועים וניקוז.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תכנון תוואי כביש בשטחים פתוחים, תוך התחשבות בנוף, אקולוגיה, שיפועי שטח, ניקוז והתאמה לסביבה.</div>
             </section>
 
             <!-- ========== SHARED GROUP ========== -->
@@ -625,20 +1001,104 @@
                     <span class="n" data-groupcount>14</span>
                 </div>
 
-                <a class="row" href="apis-he.html"><h3>תסקיר השפעה תחבורתית</h3><p>מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.</p><span class="std">HCM &amp; AASHTO</span></a>
-                <a class="row" href="apis-he.html"><h3>ספריית קיבולת ומקדמי תיקון</h3><p>קיבולות בסיס עם תיקונים לרכב כבד, שיפוע ואוכלוסיית נהגים.</p><span class="std">HCM</span></a>
-                <a class="row" href="apis-he.html"><h3>מסלול סחיפה של רכב תכן</h3><p>מסלולי פנייה וסחיפה של רכבי תכן סטנדרטיים ברדיוס נתון.</p><span class="std">AASHTO Green Book</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון מבנה מיסעה</h3><p>עובי מבנה לפי שיטת 1993 ולפי ניתוח מכני-אמפירי.</p><span class="std">AASHTO Pavement Structures</span></a>
-                <a class="row" href="apis-he.html"><h3>בחירת אמצעי בטיחות בשולי הדרך</h3><p>מעקות, כריות בלימה וקצוות, בהתאמה למפגע ולמהירות.</p><span class="std">AASHTO Roadside Design Guide</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח סחיפה בגשרים</h3><p>פוטנציאל סחיפה כללית, סביב עמודים וסביב כתפיים במעבר נחל.</p><span class="std">HEC-18 / AASHTO LRFD</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח כלכלי ותועלת-עלות</h3><p>עלויות משתמש, תועלות, ערך נוכחי נקי ודירוג פרויקטים.</p><span class="std">AASHTO Red Book</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח נתיבי תחבורה ציבורית</h3><p>תכנון נת"צ, תחנות, אמצעי בטיחות ושדרוג.</p><span class="std">AASHTO / APTA</span></a>
-                <a class="row" href="apis-he.html"><h3>הערכת השפעה על הסביבה</h3><p>הערכת זיהום אוויר, רעש, נוף וחיתוך שטחים פתוחים.</p><span class="std">FHWA / NEPA</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון חניונים</h3><p>חניוני צד, חניוני קומות, תקני חניה ונגישות.</p><span class="std">ITE / AASHTO</span></a>
-                <a class="row" href="apis-he.html"><h3>ניתוח צמתים רב-אמצעי</h3><p>שילוב הולכי רגל, אופניים, תחבורה ציבורית ורכב פרטי בצומת אחד.</p><span class="std">HCM Ch. 16 / 19</span></a>
-                <a class="row" href="apis-he.html"><h3>הנחיות בטיחות בתכנון</h3><p>עקרונות עיצוב בטיחותי, הפחתת נקודות חיכוך, הארת כביש.</p><span class="std">HSM / AASHTO</span></a>
-                <a class="row" href="apis-he.html"><h3>ניהול פרויקטים תחבורתיים</h3><p>תכנון, ביצוע, בקרת עלויות ולוחות זמנים לפרויקטי תשתית.</p><span class="std">PMCM / AASHTO</span></a>
-                <a class="row" href="apis-he.html"><h3>תכנון תשתיות חכמות</h3><p>חיישנים, IoT, תקשורת רכב-תשתית וניהול תנועה חכם.</p><span class="std">FHWA / ITS</span></a>
+                <!-- 38–51 – רשום כולן -->
+                <a class="row" href="apis-he.html" id="tia">
+                    <h3>תסקיר השפעה תחבורתית</h3>
+                    <p>מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.</p>
+                    <span class="std">HCM & AASHTO</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תסקיר השפעה תחבורתי (TIA) – ניתוח מקיף של השפעת פיתוח על רשת התנועה, כולל חיזוי נסיעות, ניתוח עומסים, והמלצות לשיפור.</div>
+
+                <a class="row" href="apis-he.html" id="capacity-library">
+                    <h3>ספריית קיבולת ומקדמי תיקון</h3>
+                    <p>קיבולות בסיס עם תיקונים לרכב כבד, שיפוע ואוכלוסיית נהגים.</p>
+                    <span class="std">HCM</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ספריית ערכים בסיסיים לקיבולת כבישים, עם מקדמי תיקון להרכב תנועה, שיפוע, תנאי דרך ואוכלוסיית נהגים.</div>
+
+                <a class="row" href="apis-he.html" id="vehicle-swept-path">
+                    <h3>מסלול סחיפה של רכב תכן</h3>
+                    <p>מסלולי פנייה וסחיפה של רכבי תכן סטנדרטיים ברדיוס נתון.</p>
+                    <span class="std">AASHTO Green Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> חישוב מסלולי פנייה וסחיפה (Swept Path) של רכבי תכן (משאיות, אוטובוסים) ברדיוסי סיבוב שונים, לתכנון צמתים ומפרצים.</div>
+
+                <a class="row" href="apis-he.html" id="pavement-design">
+                    <h3>תכנון מבנה מיסעה</h3>
+                    <p>עובי מבנה לפי שיטת 1993 ולפי ניתוח מכני-אמפירי.</p>
+                    <span class="std">AASHTO Pavement Structures</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תכנון עובי מבנה מיסעה (אספלט, בטון) לפי שיטת AASHTO 1993 או שיטות מכניות-אמפיריות (MEPDG).</div>
+
+                <a class="row" href="apis-he.html" id="roadside-safety">
+                    <h3>בחירת אמצעי בטיחות בשולי הדרך</h3>
+                    <p>מעקות, כריות בלימה וקצוות, בהתאמה למפגע ולמהירות.</p>
+                    <span class="std">AASHTO Roadside Design Guide</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> בחירת אמצעי בטיחות (מעקות, כריות בלימה, קצוות) לפי סוג מפגע, מהירות תכן ושטח פנוי.</div>
+
+                <a class="row" href="apis-he.html" id="bridge-scour">
+                    <h3>ניתוח סחיפה בגשרים</h3>
+                    <p>פוטנציאל סחיפה כללית, סביב עמודים וסביב כתפיים במעבר נחל.</p>
+                    <span class="std">HEC-18 / AASHTO LRFD</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח פוטנציאל סחיפה (Scour) סביב גשרים, כולל סחיפה כללית, מקומית וסביב עמודים, לפי HEC-18.</div>
+
+                <a class="row" href="apis-he.html" id="bca">
+                    <h3>ניתוח כלכלי ותועלת-עלות</h3>
+                    <p>עלויות משתמש, תועלות, ערך נוכחי נקי ודירוג פרויקטים.</p>
+                    <span class="std">AASHTO Red Book</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח כלכלי להערכת כדאיות פרויקטים תחבורתיים, כולל חישוב עלויות משתמש, תועלות, NPV, B/C ratio ועוד.</div>
+
+                <a class="row" href="apis-he.html" id="transit-corridor">
+                    <h3>ניתוח נתיבי תחבורה ציבורית</h3>
+                    <p>תכנון נת"צ, תחנות, אמצעי בטיחות ושדרוג.</p>
+                    <span class="std">AASHTO / APTA</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תכנון מערכת נתיבי תחבורה ציבורית (נת"צ) ותחנות, תוך התחשבות בבטיחות, נגישות, ותיאום עם יתר אמצעי התנועה.</div>
+
+                <a class="row" href="apis-he.html" id="environmental-impact">
+                    <h3>הערכת השפעה על הסביבה</h3>
+                    <p>הערכת זיהום אוויר, רעש, נוף וחיתוך שטחים פתוחים.</p>
+                    <span class="std">FHWA / NEPA</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> הערכת ההשפעות הסביבתיות של פרויקטי תשתית, כולל זיהום אוויר, רעש, פגיעה בנוף, חיתוך שטחים פתוחים, והצעת צמצום.</div>
+
+                <a class="row" href="apis-he.html" id="parking-lot-design">
+                    <h3>תכנון חניונים</h3>
+                    <p>חניוני צד, חניוני קומות, תקני חניה ונגישות.</p>
+                    <span class="std">ITE / AASHTO</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תכנון חניונים בשטח או בקומות, כולל תקני חניה (כמות, גודל), נגישות, סימון, תאורה וניקוז.</div>
+
+                <a class="row" href="apis-he.html" id="multimodal-intersection">
+                    <h3>ניתוח צמתים רב-אמצעי</h3>
+                    <p>שילוב הולכי רגל, אופניים, תחבורה ציבורית ורכב פרטי בצומת אחד.</p>
+                    <span class="std">HCM Ch. 16 / 19</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> ניתוח ביצועי צומת המשלבת מספר אמצעי תנועה – הולכי רגל, רוכבי אופניים, תחבורה ציבורית וכלי רכב פרטיים.</div>
+
+                <a class="row" href="apis-he.html" id="safety-guidelines">
+                    <h3>הנחיות בטיחות בתכנון</h3>
+                    <p>עקרונות עיצוב בטיחותי, הפחתת נקודות חיכוך, הארת כביש.</p>
+                    <span class="std">HSM / AASHTO</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> עקרונות תכנון בטיחותי, זיהוי נקודות חיכוך, תכנון תאורה, שילוט, ומעקות להפחתת תאונות.</div>
+
+                <a class="row" href="apis-he.html" id="project-management">
+                    <h3>ניהול פרויקטים תחבורתיים</h3>
+                    <p>תכנון, ביצוע, בקרת עלויות ולוחות זמנים לפרויקטי תשתית.</p>
+                    <span class="std">PMCM / AASHTO</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> מתודולוגיות לניהול פרויקטי תשתית: תכנון, בקרת עלויות, לוחות זמנים, ניהול סיכונים ותקשורת.</div>
+
+                <a class="row" href="apis-he.html" id="smart-infrastructure">
+                    <h3>תכנון תשתיות חכמות</h3>
+                    <p>חיישנים, IoT, תקשורת רכב-תשתית וניהול תנועה חכם.</p>
+                    <span class="std">FHWA / ITS</span>
+                </a>
+                <div class="procedure-detail"><strong>הסבר:</strong> תכנון תשתיות הכוללות חיישני תנועה, תקשורת רכב-תשתית (V2I), מערכות IoT לניהול תנועה בזמן אמת.</div>
             </section>
 
             <!-- ========== ACCESS ========== -->
@@ -733,6 +1193,31 @@
                     <span class="std">בשלבי פיתוח (Underwork)</span>
                 </div>
                 <p style="margin-top: 16px; color: var(--muted); font-size: 14px;">להבעת עניין מוקדם, צרו קשר באמצעות המייל או הטלפון שבתחתית העמוד.</p>
+            </section>
+
+            <!-- ========== FAQ SECTION ========== -->
+            <section class="faq-section" id="faq">
+                <h2>שאלות נפוצות (FAQ) – מהאלco</h2>
+                <div class="faq-item">
+                    <h3>מהו ממשק API להנדסת תחבורה?</h3>
+                    <p>ממשק API (Application Programming Interface) להנדסת תחבורה מאפשר למפתחים ומהנדסים לשלב חישובי קיבולת, ניתוח צמתים, תכנון גיאומטרי ועוד, ישירות לתוך תוכנות או אתרים, ללא צורך בהרצה ידנית.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>אילו תקנים מכוסים בקטלוג מהאלco?</h3>
+                    <p>הקטלוג כולל 51 נהלים המבוססים על HCM (Highway Capacity Manual), AASHTO Green Book, HSM (Highway Safety Manual), MUTCD, FHWA ותקנים ישראליים נוספים.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>כיצד ניתן להשתמש ב-API של מהאלco?</h3>
+                    <p>ניתן לשלוח בקשות HTTP ל-https://api.mahalco.com/v1/calculate עם מפתח API (נרכש באתר) ונתוני הקלט. התשובה תכיל תוצאות מספריות, דוחות וגרפים.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>האם ניתן לקבל גישת ניסיון ללא תשלום?</h3>
+                    <p>כן. אנו מציעים מפתח ניסיון לשבועיים עם 30 בקשות לשעה. פשוט שלחו מייל לכתובת המופיעה בתחתית העמוד.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>למי מיועד הקטלוג?</h3>
+                    <p>למהנדסי תנועה, מתכנני כבישים, חברות ייעוץ, רשויות מקומיות, סטודנטים וחוקרים – כל מי שעוסק בתכנון תחבורה ותשתיות.</p>
+                </div>
             </section>
 
             <!-- ========== KEYWORD SECTION ========== -->
@@ -841,6 +1326,11 @@
 
             <p class="empty" id="empty" hidden>אין נוהל שתואם את החיפוש. אפשר לחפש לפי תקן — HCM, AASHTO או HSM.</p>
 
+            <!-- כפתור חזרה לראש -->
+            <div class="back-to-top">
+                <a href="#top">⬆ חזרה לראש העמוד</a>
+            </div>
+
         </main>
 
         <!-- ========== FOOTER ========== -->
@@ -859,51 +1349,7 @@
 
     <!-- ========== SCRIPTS ========== -->
     <script>
-        // Visit blocker – now with 30 free visits
-        (function() {
-            const STORAGE_KEY = 'mahalco_visit_data';
-            const MAX_VISITS = 30; // changed from 13 to 30
-            const overlay = document.getElementById('blocker-overlay');
-            const mainContent = document.getElementById('main-content');
-
-            let stored = localStorage.getItem(STORAGE_KEY);
-            let visitData = stored ? JSON.parse(stored) : { count: 0, ip: '' };
-
-            fetch('https://api.ipify.org?format=json')
-                .then(response => response.json())
-                .then(data => {
-                    let currentIP = data.ip || '';
-                    if (visitData.ip && visitData.ip !== currentIP) {
-                        visitData.count = 1;
-                        visitData.ip = currentIP;
-                    } else {
-                        visitData.count += 1;
-                        if (!visitData.ip) visitData.ip = currentIP;
-                    }
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(visitData));
-
-                    if (visitData.count > MAX_VISITS) {
-                        overlay.classList.add('visible');
-                        mainContent.classList.remove('visible');
-                    } else {
-                        overlay.classList.remove('visible');
-                        mainContent.classList.add('visible');
-                    }
-                })
-                .catch(() => {
-                    visitData.count += 1;
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(visitData));
-                    if (visitData.count > MAX_VISITS) {
-                        overlay.classList.add('visible');
-                        mainContent.classList.remove('visible');
-                    } else {
-                        overlay.classList.remove('visible');
-                        mainContent.classList.add('visible');
-                    }
-                });
-        })();
-
-        // Search & filter
+        // Search & filter – now also hides/shows the .procedure-detail sibling
         const q = document.getElementById('q');
         const countEl = document.getElementById('count');
         const empty = document.getElementById('empty');
@@ -928,6 +1374,11 @@
                     const ok = (cat === 'all' || r.dataset.cat === cat) &&
                                (term === '' || r.dataset.text.includes(term));
                     r.hidden = !ok;
+                    // Hide/show the detail block that immediately follows this row
+                    const detail = r.nextElementSibling;
+                    if (detail && detail.classList.contains('procedure-detail')) {
+                        detail.hidden = !ok;
+                    }
                     if (ok) shown++;
                 });
                 g.hidden = shown === 0;

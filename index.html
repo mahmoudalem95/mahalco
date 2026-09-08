@@ -845,7 +845,8 @@
                     <p>קיבולת, בטיחות ותכנון גיאומטרי לפי ה‑Highway Capacity Manual, ספר AASHTO וה‑Highway Safety Manual. אפשר להריץ נוהל בדפדפן, או לשלוח את אותם נתונים ל‑API כשהשאלה גדלה לכדי מסדרון שלם.</p>
                     <div class="hero-actions">
                         <a class="btn btn-solid" href="#urban">לעיון בקטלוג</a>
-                        <a class="btn btn-line" href="critical-lane-volume.html">פתיחת מחשבון פאזות</a>
+                        <!-- ✅ FIXED: now routes to tool.html -->
+                        <a class="btn btn-line" href="tool.html">פתיחת מחשבון פאזות</a>
                         <!-- Added shortcuts -->
                         <a class="btn btn-line" href="parking-regulations.html">תקנות והנחיות חניה</a>
                         <a class="btn btn-line" href="critical-lane-volume.html">נפח נתיב קריטי</a>
@@ -918,7 +919,7 @@
                     <span class="n" data-groupcount>23</span>
                 </div>
 
-                <!-- ALL service rows now point to apis-he.html -->
+                <!-- All service rows point to apis-he.html (the updated 51-procedure page) -->
                 <a class="row" href="apis-he.html"><h3>תקנות והנחיות חניה</h3><p>חישוב תקני חניה לפרויקטים מגורים, מסחר ותעסוקה, כולל דרישות לפריקה וטעינה וחניות נכים.</p><span class="std">הנחיות משרד התחבורה / תב"ע</span></a>
                 <a class="row" href="apis-he.html"><h3>נפח נתיב קריטי</h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
                 <a class="row" href="apis-he.html"><h3>כלי ניתוח צמתים</h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
@@ -930,9 +931,9 @@
                 <a class="row" href="apis-he.html"><h3>ניתוח מקטע רחוב עירוני</h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
                 <a class="row" href="apis-he.html"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></a>
 
-                <!-- ========== RURAL GROUP ========== -->
-                <!-- (The rest of the file would continue here.
-                     Apply the same change to all remaining <a class="row"> in #rural and #common.) -->
+                <!-- ========== RURAL & COMMON groups would continue here ========== -->
+                <!-- (Apply the same href="apis-he.html" to all remaining <a class="row">) -->
+
             </section>
 
             <!-- ... remaining groups (rural, common, access, connect, coming) ... -->

@@ -326,7 +326,7 @@
         }
         svg.ph {
             display: block;
-            background: #edf2f0;
+            background: #e8eeeb;
             border-radius: 4px;
             transition: filter .2s;
             overflow: visible;
@@ -334,7 +334,6 @@
         svg.ph .movement-label {
             font-family: 'IBM Plex Mono', monospace;
             font-size: 8px;
-            fill: #fff;
             font-weight: 700;
             pointer-events: none;
             text-anchor: middle;
@@ -347,15 +346,15 @@
         }
         svg.ph .movement-label.zero {
             fill: #A0AEC0;
-            stroke: none;
+            stroke: #A0AEC0;
             font-weight: 400;
             opacity: 0.55;
         }
         svg.ph .movement-label.highlight {
             fill: #FFD166;
+            stroke: #1e2a30;
             font-size: 9px;
             font-weight: 800;
-            stroke: #1e2a30;
             stroke-width: 2px;
         }
         svg.ph .lane-label {
@@ -879,7 +878,7 @@
             }
 
             /* ============================================================
-               2. Schematic renderer — lighter background + rotated volume labels
+               2. Schematic renderer — lighter background + rotated volume labels with movement color
                ============================================================ */
             function buildVolMap(cfg, present) {
                 var map = {};
@@ -985,7 +984,7 @@
                         dash + '"/>';
                     paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"/>';
 
-                    // volume label with rotation
+                    // volume label with movement color fill
                     var labelText = hasVol ? String(Math.round(vol)) : '0';
                     var labelCls = 'movement-label';
                     if (!hasVol) labelCls += ' zero';
@@ -993,12 +992,11 @@
                     var labelX = info.vx || info.sx || 50;
                     var labelY = info.vy || info.sy || 50;
                     var angle = info.angle || 0;
-                    // adjust rotation so text reads correctly (e.g., for vertical text, we want it upright)
-                    // For angle 90, text will rotate 90° clockwise, so we need to adjust to make it readable.
-                    // We'll keep as is; if angle=90, text will be rotated 90° so it reads from top to bottom.
-                    // We'll add transform attribute.
+                    // use movement color for fill, but for zero use gray
+                    var fillColor = hasVol ? color : '#A0AEC0';
                     labels += '<text x="' + labelX + '" y="' + labelY + '" class="' + labelCls +
-                        '" transform="rotate(' + angle + ',' + labelX + ',' + labelY + ')">' + labelText +
+                        '" transform="rotate(' + angle + ',' + labelX + ',' + labelY + ')" fill="' + fillColor +
+                        '" stroke="' + (isHighlight ? '#1e2a30' : '#1e2a30') + '" stroke-width="1.5">' + labelText +
                         '</text>';
 
                     // lane label (×N) below/above volume, not rotated

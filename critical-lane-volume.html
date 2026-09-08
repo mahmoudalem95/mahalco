@@ -344,6 +344,10 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
+        /* ---- main schematic numbers at 0.75 scale ---- */
+        #liveSchematic svg.ph .movement-label {
+            font-size: 4.5px;
+        }
         svg.ph .movement-label.zero {
             fill: #A0AEC0;
             stroke: #A0AEC0;
@@ -356,6 +360,10 @@
             font-size: 7px;
             font-weight: 400;
             stroke-width: 1.5px;
+        }
+        /* make sure the main schematic highlight label also scales */
+        #liveSchematic svg.ph .movement-label.highlight {
+            font-size: 5.25px;
         }
         svg.ph .lane-label {
             font-family: 'IBM Plex Mono', monospace;
@@ -988,7 +996,7 @@
                         dash + '"/>';
                     paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"/>';
 
-                    // volume label with movement color fill — size and weight controlled by CSS
+                    // volume label with movement color fill — size controlled by CSS
                     var labelText = hasVol ? String(Math.round(vol)) : '0';
                     var labelCls = 'movement-label';
                     if (!hasVol) labelCls += ' zero';
@@ -1145,7 +1153,7 @@
                 });
                 html += '</div>';
 
-                // Table 1
+                // Table 1 — schematics at 2.5x (was 140, now 350)
                 html += '<section>';
                 html +=
                     '<div class="sec-head"><h2>שיטה 1 — פאזה נפרדת לכל זרוע (Split Approach)</h2></div>';
@@ -1155,7 +1163,7 @@
                     html += '<tr class="phase-row" data-moves="' + moves.join(',') + '">';
                     html += '<td><strong>פאזה ' + (idx + 1) + ' (' + p.he + ')</strong></td>';
                     html += '<td class="schematic-cell">' + schematicInteractive(res.present, moves, volMap,
-                        null, freeMap, 140) + '</td>';
+                        null, freeMap, 350) + '</td>';
                     html += '<td><span class="f">' + moves.join(', ') + '</span></td>';
                     html += '<td class="val">' + Math.round(p.value) + '</td>';
                     html += '</tr>';
@@ -1164,7 +1172,7 @@
                     .round(res.table1.total) + '</td></tr>';
                 html += '</tbody></table></section>';
 
-                // Table 2
+                // Table 2 — schematics at 2.5x (was 140, now 350)
                 html += '<section>';
                 html +=
                     '<div class="sec-head"><h2>שיטה 2 — הפרדת שמאלות לפי צירים (Protected Left Separation)</h2></div>';
@@ -1179,7 +1187,7 @@
                         html += '<tr class="phase-row" data-moves="' + moves.join(',') + '">';
                         html += '<td style="padding-right:24px">• ' + p.label + '</td>';
                         html += '<td class="schematic-cell">' + schematicInteractive(res.present, moves,
-                            volMap, null, freeMap, 140) + '</td>';
+                            volMap, null, freeMap, 350) + '</td>';
                         html += '<td><span class="f">' + moves.join(', ') + '</span></td>';
                         html += '<td class="val">' + Math.round(p.value) + '</td>';
                         html += '</tr>';
@@ -1189,7 +1197,7 @@
                     .round(res.table2.totalBest) + '</td></tr>';
                 html += '</tbody></table></section>';
 
-                // Table 3
+                // Table 3 — no schematics, but we keep the layout consistent
                 html += '<section>';
                 html +=
                     '<div class="sec-head"><h2>שיטה 3 — טבעת כפולה / Lead-Lag (Dual Ring Phasing)</h2></div>';

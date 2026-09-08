@@ -1,440 +1,1390 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Lane and queue analysis — Mahalco</title>
-    <meta name="description" content="Mahalco lane and queue analysis tool for storage length, capacity, and LOS estimates." />
-    <meta name="robots" content="index, follow" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>נפח נתיב קריטי — מחשבון פאזות לצומת מרומזר</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-      :root {
-        --bg: #08070C;
-        --card: #0E0C14;
-        --card-2: #141220;
-        --field: #0A0910;
-        --line: rgba(255,255,255,.09);
-        --line-2: rgba(255,255,255,.05);
-        --purple: #8B5CF6;
-        --cyan: #22D3EE;
-        --green: #4ADE80;
-        --ink: #EDEBF2;
-        --ink-2: #9A96AB;
-        --ink-3: #6B6780;
-        --A: #34D399;
-        --B: #A3E635;
-        --C: #FACC15;
-        --D: #FB923C;
-        --E: #F35B5B;
-        --F: #E11D48;
-      }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body {
-        background: var(--bg);
-        color: var(--ink);
-        font: 400 15px/1.55 Inter, system-ui, sans-serif;
-        font-variant-numeric: tabular-nums;
-        -webkit-font-smoothing: antialiased;
-        padding: clamp(14px, 3vw, 30px);
-      }
-      .card {
-        max-width: 1180px;
-        margin: 0 auto;
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        padding: clamp(18px, 3vw, 32px);
-      }
-      .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
-      .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding-bottom: 18px;
-        border-bottom: 1px solid var(--line);
-        margin-bottom: 24px;
-      }
-      .brand {
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        font-size: 12px;
-        color: var(--ink-2);
-      }
-      .nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-      .nav a {
-        color: var(--ink-2);
-        text-decoration: none;
-        font-size: 12px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 8px 12px;
-      }
-      .nav a:hover { color: var(--ink); border-color: var(--line-2); }
-      h1 { font-size: clamp(24px, 3vw, 34px); letter-spacing: -0.04em; margin-bottom: 8px; }
-      .lede { color: var(--ink-2); max-width: 72ch; }
-      .h {
-        display: block;
-        margin: 26px 0 14px;
-        padding-bottom: 9px;
-        border-bottom: 1px solid var(--line-2);
-        color: var(--ink-3);
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        letter-spacing: .12em;
-        text-transform: uppercase;
-      }
-      .grid {
-        display: grid;
-        gap: 16px;
-        margin-bottom: 18px;
-      }
-      .r4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .r3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .r2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      @media (max-width: 760px) {
-        .r4, .r3, .r2 { grid-template-columns: 1fr 1fr; }
-      }
-      @media (max-width: 520px) {
-        .r4, .r3, .r2 { grid-template-columns: 1fr; }
-      }
-      label { display: block; margin-bottom: 6px; color: var(--ink-2); font-size: 12.5px; }
-      input, select {
-        width: 100%;
-        background: var(--field);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        color: var(--ink);
-        padding: 10px 12px;
-        font: inherit;
-        font-size: 14px;
-      }
-      input:focus, select:focus { outline: 2px solid var(--purple); outline-offset: -1px; }
-      .seg {
-        display: flex;
-        border: 1px solid var(--line);
-        border-radius: 9px;
-        overflow: hidden;
-        margin-top: 8px;
-      }
-      .seg button {
-        flex: 1;
-        background: transparent;
-        border: 0;
-        border-right: 1px solid var(--line);
-        color: var(--ink-2);
-        padding: 9px 6px;
-        cursor: pointer;
-        font: inherit;
-      }
-      .seg button:last-child { border-right: 0; }
-      .seg button[aria-pressed="true"] { background: var(--purple); color: white; font-weight: 600; }
-      .button-row { display: flex; gap: 12px; margin-top: 18px; }
-      .go {
-        background: var(--purple);
-        border: 0;
-        color: white;
-        border-radius: 10px;
-        font: inherit;
-        font-weight: 600;
-        padding: 13px 22px;
-        cursor: pointer;
-      }
-      .go.secondary {
-        background: transparent;
-        border: 1px solid var(--line);
-        color: var(--ink);
-      }
-      .status {
-        min-height: 18px;
-        margin-top: 12px;
-        color: var(--ink-3);
-        font-size: 13px;
-      }
-      .status.error { color: #FF6B6B; }
-      .status.ok { color: var(--green); }
-      .res {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 22px;
-      }
-      .res-box {
-        flex: 1 1 150px;
-        background: var(--card-2);
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 16px;
-      }
-      .res-box span {
-        display: block;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 10px;
-        letter-spacing: .12em;
-        color: var(--ink-3);
-        text-transform: uppercase;
-      }
-      .res-box strong {
-        display: block;
-        margin-top: 6px;
-        font-size: 28px;
-        letter-spacing: -0.04em;
-      }
-      table.result {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-      }
-      .result th, .result td {
-        text-align: left;
-        padding: 10px 8px;
-        border-bottom: 1px solid var(--line-2);
-      }
-      .result th {
-        color: var(--ink-3);
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 10px;
-        letter-spacing: .12em;
-        text-transform: uppercase;
-      }
-      .result td { color: var(--ink-2); }
-      .result td:first-child { color: var(--ink); }
-      .los-badge {
-        display: inline-block;
-        min-width: 42px;
-        text-align: center;
-        border-radius: 999px;
-        padding: 5px 8px;
-        font-weight: 700;
-        color: #0d1117;
-      }
-      .a { background: var(--A); }
-      .b { background: var(--B); }
-      .c { background: var(--C); }
-      .d { background: var(--D); }
-      .e { background: var(--E); color: white; }
-      .f { background: var(--F); color: white; }
-      .note { color: var(--ink-2); margin-top: 10px; }
+        :root {
+            --paper: #F4F6F4;
+            --surface: #FFFFFF;
+            --sunk: #EDF0ED;
+            --ink: #19242A;
+            --ink2: #5C6A72;
+            --ink3: #8B979D;
+            --rule: #DCE1DD;
+            --rule2: #C3CBC4;
+            --pick: #2F6B4F;
+            --pick-bg: #E7F0EA;
+            --warn: #A8492A;
+            --warn-bg: #F7EAE4;
+            --r: 6px;
+            --hl: #C44536;
+            --hl-bg: #FDF0ED;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Assistant', system-ui, 'Segoe UI', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .wrap {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 32px 20px 80px;
+        }
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            margin: 0 0 6px;
+            letter-spacing: -.01em;
+        }
+        h2 {
+            font-size: 19px;
+            font-weight: 600;
+            margin: 0 0 4px;
+        }
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0 0 10px;
+        }
+        p {
+            margin: 0 0 12px;
+        }
+        .lede {
+            color: var(--ink2);
+            max-width: 62ch;
+            margin: 0 0 28px;
+        }
+        section {
+            margin-bottom: 40px;
+        }
+        .sec-head {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--rule2);
+            padding-bottom: 8px;
+        }
+        .sec-head .meta {
+            color: var(--ink3);
+            font-size: 13px;
+        }
+        .mono {
+            font-family: 'IBM Plex Mono', ui-monospace, monospace;
+        }
+
+        /* ---- geographic input cross ---- */
+        .cross {
+            direction: ltr;
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-areas: ". n ." "w c e" ". s .";
+        }
+        .cell-n {
+            grid-area: n;
+        }
+        .cell-s {
+            grid-area: s;
+        }
+        .cell-e {
+            grid-area: e;
+        }
+        .cell-w {
+            grid-area: w;
+        }
+        .cell-c {
+            grid-area: c;
+        }
+
+        .arm {
+            direction: rtl;
+            background: var(--surface);
+            border: 1px solid var(--rule);
+            border-radius: var(--r);
+            padding: 12px 14px;
+            transition: opacity .2s, border-color .2s;
+        }
+        .arm.off {
+            background: var(--sunk);
+            border-style: dashed;
+        }
+        .arm.off .fields {
+            opacity: .35;
+            pointer-events: none;
+        }
+        .arm-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .arm-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .fields {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr;
+            gap: 6px 8px;
+            align-items: center;
+            font-size: 13px;
+        }
+        .fields .lbl {
+            color: var(--ink2);
+        }
+        .fields .hd {
+            color: var(--ink3);
+            font-size: 11.5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            padding: 5px 7px;
+            border: 1px solid var(--rule2);
+            border-radius: 4px;
+            background: var(--surface);
+            color: var(--ink);
+        }
+        input[type="number"]:focus-visible {
+            outline: 2px solid var(--pick);
+            outline-offset: 1px;
+            border-color: var(--pick);
+        }
+        input[type="number"]:disabled {
+            opacity: 0.5;
+            background: var(--sunk);
+        }
+        .toggles {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 12.5px;
+            color: var(--ink2);
+        }
+        label.chk {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--pick);
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            margin: 0;
+        }
+        .cell-c {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            border: 1px solid var(--rule);
+            border-radius: var(--r);
+            padding: 12px;
+            min-height: 220px;
+        }
+        .cell-c .cap {
+            direction: rtl;
+            font-size: 12px;
+            color: var(--ink3);
+            margin-top: 6px;
+            text-align: center;
+        }
+        .bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 18px;
+        }
+        button {
+            font-family: inherit;
+            font-size: 14px;
+            padding: 7px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid var(--rule2);
+            background: var(--surface);
+            color: var(--ink);
+            transition: background .15s, border-color .15s, box-shadow .15s;
+        }
+        button:hover {
+            border-color: var(--ink3);
+            background: var(--sunk);
+        }
+        button:focus-visible {
+            outline: 2px solid var(--pick);
+            outline-offset: 1px;
+        }
+        button.solid {
+            background: var(--ink);
+            color: #fff;
+            border-color: var(--ink);
+        }
+        button.solid:hover {
+            background: #2A3A42;
+        }
+
+        /* ---- tables ---- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            background: var(--surface);
+            border-radius: var(--r);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        th {
+            text-align: right;
+            font-weight: 500;
+            color: var(--ink2);
+            font-size: 12.5px;
+            padding: 9px 10px;
+            border-bottom: 1px solid var(--rule2);
+        }
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--rule);
+            vertical-align: middle;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .f {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+        }
+        .sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11.5px;
+            color: var(--ink3);
+            display: block;
+            margin-top: 3px;
+        }
+        .val {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 15px;
+            font-weight: 500;
+            text-align: left;
+            direction: ltr;
+        }
+        tr.total td {
+            background: var(--ink);
+            color: #fff;
+            font-weight: 500;
+            border-bottom: none;
+        }
+        tr.total .val {
+            color: #fff;
+        }
+        .pick {
+            color: var(--pick);
+            font-weight: 600;
+        }
+        .pill {
+            display: inline-block;
+            background: var(--pick-bg);
+            color: var(--pick);
+            border-radius: 3px;
+            padding: 1px 7px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .note {
+            font-size: 13px;
+            color: var(--ink2);
+            margin: 10px 0 0;
+            max-width: 74ch;
+        }
+        .icons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        svg.ph {
+            display: block;
+            background: #1e2a30;
+            border-radius: 4px;
+            transition: filter .2s;
+            overflow: visible;
+        }
+        svg.ph .movement-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 8px;
+            fill: #fff;
+            font-weight: 700;
+            pointer-events: none;
+            text-anchor: middle;
+            dominant-baseline: central;
+            paint-order: stroke;
+            stroke: #1e2a30;
+            stroke-width: 1.5px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        svg.ph .movement-label.zero {
+            fill: #A0AEC0;
+            stroke: none;
+            font-weight: 400;
+            opacity: 0.55;
+        }
+        svg.ph .movement-label.highlight {
+            fill: #FFD166;
+            font-size: 9px;
+            font-weight: 800;
+            stroke: #1e2a30;
+            stroke-width: 2px;
+        }
+        svg.ph .lane-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 5.5px;
+            fill: #A0AEC0;
+            pointer-events: none;
+            text-anchor: middle;
+            dominant-baseline: central;
+            stroke: #1e2a30;
+            stroke-width: 1px;
+            paint-order: stroke;
+        }
+        svg.ph .lane-label.zero {
+            fill: var(--ink3);
+            opacity: 0.4;
+            stroke: none;
+        }
+        .phase-row {
+            cursor: pointer;
+            transition: background .15s;
+        }
+        .phase-row:hover td {
+            background: var(--pick-bg);
+        }
+        .phase-row.highlight-row td {
+            background: var(--hl-bg);
+        }
+
+        /* ---- comparison ---- */
+        .cmp {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .cmp .card {
+            background: var(--surface);
+            border: 1px solid var(--rule);
+            border-radius: var(--r);
+            padding: 14px 16px;
+        }
+        .cmp .card.best {
+            border-color: var(--pick);
+            border-width: 2px;
+            background: var(--pick-bg);
+        }
+        .cmp .k {
+            font-size: 13px;
+            color: var(--ink2);
+            margin-bottom: 4px;
+        }
+        .cmp .n {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 28px;
+            font-weight: 500;
+            line-height: 1.1;
+        }
+        .cmp .d {
+            font-size: 12.5px;
+            color: var(--ink3);
+            margin-top: 4px;
+        }
+
+        .warnbox {
+            background: var(--warn-bg);
+            border-right: 3px solid var(--warn);
+            border-radius: 0 var(--r) var(--r) 0;
+            padding: 12px 14px;
+            font-size: 13.5px;
+            color: var(--ink);
+            margin-bottom: 16px;
+        }
+        .warnbox ul {
+            margin: 8px 0 0;
+            padding-right: 18px;
+        }
+        .warnbox li {
+            margin-bottom: 4px;
+        }
+        pre {
+            background: var(--ink);
+            color: #E6EBE7;
+            border-radius: var(--r);
+            padding: 14px 16px;
+            overflow-x: auto;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.55;
+            direction: ltr;
+            text-align: left;
+            margin: 0;
+        }
+        details {
+            background: var(--surface);
+            border: 1px solid var(--rule);
+            border-radius: var(--r);
+            padding: 12px 16px;
+        }
+        summary {
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .schematic-cell {
+            min-width: 72px;
+            text-align: center;
+        }
+        .schematic-cell svg {
+            display: inline-block;
+        }
+
+        /* ---- live schematic ---- */
+        #liveSchematic {
+            position: relative;
+            cursor: default;
+        }
+        #liveSchematic svg {
+            display: block;
+            margin: 0 auto;
+        }
+        .movement-hint {
+            font-size: 11px;
+            color: var(--ink3);
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        /* legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            justify-content: center;
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--ink2);
+        }
+        .legend .dot {
+            display: inline-block;
+            width: 18px;
+            height: 4px;
+            border-radius: 2px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        .legend .dot.dash {
+            height: 0;
+            border-top: 3px dashed;
+            width: 18px;
+        }
+
+        @media (max-width: 820px) {
+            .cross {
+                grid-template-columns: 1fr;
+                grid-template-areas: "c" "n" "s" "e" "w";
+            }
+            .cmp {
+                grid-template-columns: 1fr;
+            }
+            .wrap {
+                padding: 24px 14px 60px;
+            }
+            .cell-c {
+                min-height: 180px;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <div class="card">
-      <div class="topbar">
-        <div class="brand">MAHALCO</div>
-        <div class="nav">
-          <a href="index.html">Home</a>
-          <a href="tool.html">Junction LOS</a>
-          <a href="lane-queue-analysis.html">Lane &amp; Queue</a>
-        </div>
-      </div>
+</head>
+<body>
+    <div class="wrap">
 
-      <h1>Lane and queue analysis</h1>
-      <p class="lede">A quick operational tool to estimate queue lengths, lane group capacity and LOS with AASHTO and HCM-informed logic for signalised intersections and lane-based facilities.</p>
+        <h1>נפח נתיב קריטי</h1>
+        <p class="lede">מחשבון פאזות לצומת מרומזר. מזין נפחים ומספרי נתיבים לכל זרוע, ומקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה, וטבעת כפולה. עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בימין חופשית לכל זרוע בנפרד. <strong>הסכמה המרכזית משתנה בזמן אמת לפי המספרים שהזנת.</strong></p>
 
-      <span class="h">Inputs</span>
-      <form id="queueForm">
-        <div class="grid r4">
-          <div>
-            <label>Method</label>
-            <div class="seg" id="methodSeg">
-              <button type="button" value="aashto" aria-pressed="true">AASHTO</button>
-              <button type="button" value="hcm" aria-pressed="false">HCM</button>
+        <section>
+            <div class="sec-head"><h2>נתוני הצומת</h2><span class="meta">הזרועות מסודרות לפי מיקומן בשטח</span></div>
+            <div class="cross" id="cross">
+                <div class="arm cell-n" data-arm="N"></div>
+                <div class="arm cell-w" data-arm="W"></div>
+                <div class="cell-c">
+                    <div id="liveSchematic"></div>
+                    <div class="legend" id="liveLegend"></div>
+                    <div class="cap" id="liveCap"></div>
+                    <div class="movement-hint" id="movementHint">עבור עם העכבר על טבלאות הפאזות להדגשת התנועות</div>
+                </div>
+                <div class="arm cell-e" data-arm="E"></div>
+                <div class="arm cell-s" data-arm="S"></div>
             </div>
-            <input type="hidden" id="method" value="aashto" />
-          </div>
-          <div>
-            <label>Facility type</label>
-            <select id="facility_type">
-              <option value="signalized_intersection">Signalised intersection</option>
-              <option value="twolane_highway">Two-lane highway</option>
-            </select>
-          </div>
-          <div>
-            <label>Volume (veh/h)</label>
-            <input id="volume_vph" type="number" value="600" min="0" step="10" />
-          </div>
-          <div>
-            <label>Number of lanes</label>
-            <input id="num_lanes" type="number" value="2" min="1" max="6" step="1" />
-          </div>
-        </div>
+            <div class="bar">
+                <button class="solid" id="btnExample">טען את צומת הדוגמה</button>
+                <button id="btnT">צומת T ללא זרוע דרום</button>
+                <button id="btnClear">אפס הכל</button>
+            </div>
+        </section>
 
-        <div class="grid r4">
-          <div>
-            <label>Cycle length (s)</label>
-            <input id="cycle_length" type="number" value="90" min="30" max="240" step="5" />
-          </div>
-          <div>
-            <label>Green time (s)</label>
-            <input id="green_time" type="number" value="45" min="0" max="180" step="1" />
-          </div>
-          <div>
-            <label>Truck %</label>
-            <input id="truck_percent" type="number" value="5" min="0" max="50" step="0.5" />
-          </div>
-          <div>
-            <label>Surge factor</label>
-            <input id="surge_factor" type="number" value="1.5" min="1" max="3" step="0.1" />
-          </div>
-        </div>
+        <div id="results"></div>
 
-        <div class="grid r3">
-          <div>
-            <label>Lane width (ft)</label>
-            <input id="lane_width" type="number" value="12" min="9" max="14" step="0.5" />
-          </div>
-          <div>
-            <label>Shoulder width (ft)</label>
-            <input id="shoulder_width" type="number" value="6" min="0" max="12" step="0.5" />
-          </div>
-          <div>
-            <label>Grade (%)</label>
-            <input id="grade_percent" type="number" value="2" min="-8" max="8" step="0.5" />
-          </div>
-        </div>
+        <section>
+            <div class="sec-head"><h2>גבולות השיטה</h2></div>
+            <div class="warnbox">
+                <strong>מה החישוב הזה לא מכסה.</strong> הנפח הקריטי הוא צד אחד של המשוואה בלבד, ויש מקרים שהמודל לא מייצג:
+                <ul>
+                    <li>שמאלה מותרת (permitted) — כאן כל השמאלות מוגנות. שמאלה שעוברת בפערים דורשת גורם המרה לשווה־ערך ישר.</li>
+                    <li>הולכי רגל — זמן חצייה מינימלי יכול לכבול פאזה שנפח הרכב בה נמוך.</li>
+                    <li>זמן אבוד — לכל פאזה 3–5 שניות אבודות. שיטה עם יותר פאזות משלמת עליהן, וזה מקזז חלק מהיתרון בטור הנפח.</li>
+                    <li>ניצולת נתיבים לא אחידה בתוך קבוצת נתיבים.</li>
+                </ul>
+            </div>
+        </section>
 
-        <div class="button-row">
-          <button class="go" type="submit">Analyse queue</button>
-          <button class="go secondary" type="reset">Reset</button>
-        </div>
-        <p id="status" class="status">Ready to analyse.</p>
-      </form>
+        <section>
+            <div class="sec-head"><h2>קריאה מקוד</h2><span class="meta">הפונקציה חשופה גלובלית</span></div>
+            <details>
+                <summary>חוזה הקלט והפלט</summary>
+                <pre id="apidoc"></pre>
+            </details>
+            <div class="bar">
+                <button id="btnJson">הצג JSON של החישוב הנוכחי</button>
+                <button id="btnCopy">העתק JSON</button>
+                <span id="copyMsg" class="meta" style="color:var(--pick)"></span>
+            </div>
+            <pre id="jsonOut" style="display:none;margin-top:12px"></pre>
+        </section>
 
-      <span class="h">Output</span>
-      <div class="res">
-        <div class="res-box"><span>Queue length</span><strong id="queue_vehicles">0.0</strong><div class="note" id="queue_note">veh</div></div>
-        <div class="res-box"><span>Queue feet</span><strong id="queue_feet">0</strong><div class="note">approx ft</div></div>
-        <div class="res-box"><span>v/c ratio</span><strong id="vc_ratio">0.00</strong><div class="note">demand / capacity</div></div>
-        <div class="res-box"><span>LOS</span><strong id="los_letter">A</strong><div class="note" id="los_note">Very good</div></div>
-      </div>
-
-      <table class="result">
-        <thead>
-          <tr>
-            <th>Metric</th>
-            <th>Value</th>
-            <th>Interpretation</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Capacity</td><td id="capacity_value">0 veh/h</td><td id="capacity_note">Estimate</td></tr>
-          <tr><td>95th percentile queue</td><td id="queue_95_value">0 veh</td><td id="queue_95_note">Storage guidance</td></tr>
-          <tr><td>Queue storage</td><td id="storage_value">0 ft</td><td id="storage_note">Design length</td></tr>
-          <tr><td>Method</td><td id="method_value">AASHTO</td><td id="method_note">Applied method</td></tr>
-        </tbody>
-      </table>
     </div>
 
     <script>
-      const methodSeg = document.getElementById('methodSeg');
-      const methodInput = document.getElementById('method');
-      const statusEl = document.getElementById('status');
+        (function() {
+            'use strict';
 
-      methodSeg.addEventListener('click', (event) => {
-        const button = event.target.closest('button');
-        if (!button) return;
-        const value = button.value;
-        methodInput.value = value;
-        Array.from(methodSeg.querySelectorAll('button')).forEach((btn) => {
-          const active = btn.value === value;
-          btn.setAttribute('aria-pressed', String(active));
-        });
-      });
+            /* ============================================================
+               1. Core Engine (unchanged)
+               ============================================================ */
+            var ARMS = ['N', 'S', 'E', 'W'];
+            var HE = { N: 'צפון', S: 'דרום', E: 'מזרח', W: 'מערב' };
+            var DEST = {
+                N: { S: 'S', L: 'E', R: 'W' },
+                S: { S: 'N', L: 'W', R: 'E' },
+                E: { S: 'W', L: 'S', R: 'N' },
+                W: { S: 'E', L: 'N', R: 'S' }
+            };
+            var AXES = [
+                { id: 'NS', he: 'צפון–דרום', arms: ['N', 'S'] },
+                { id: 'EW', he: 'מזרח–מערב', arms: ['E', 'W'] }
+            ];
 
-      function losFromVC(vc) {
-        if (vc < 0.6) return { letter: 'A', note: 'Very good' };
-        if (vc < 0.7) return { letter: 'B', note: 'Good' };
-        if (vc < 0.8) return { letter: 'C', note: 'Acceptable' };
-        if (vc < 0.9) return { letter: 'D', note: 'Moderate delay' };
-        if (vc < 1.0) return { letter: 'E', note: 'Near capacity' };
-        return { letter: 'F', note: 'Over capacity' };
-      }
+            /* ----- movement path data with start positions and volume label positions ----- */
+            var MOVE = {
+                NS: { d: 'M41,6 L41,89', t: 'M41,95L38,88.5L44,88.5Z', sx: 41, sy: 6, vx: 41, vy: 12, lx2: 41,
+                    ly2: 60 },
+                NL: { d: 'M46,6 L46,33 A26,26 0 0 0 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', sx: 46, sy: 6,
+                    vx: 46, vy: 12, lx2: 64, ly2: 44 },
+                NR: { d: 'M36,6 L36,33 A8,8 0 0 1 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', sx: 36, sy: 6,
+                    vx: 36, vy: 12, lx2: 24, ly2: 42 },
+                SS: { d: 'M59,94 L59,11', t: 'M59,5L56,11.5L62,11.5Z', sx: 59, sy: 94, vx: 59, vy: 88, lx2: 59,
+                    ly2: 40 },
+                SL: { d: 'M54,94 L54,67 A26,26 0 0 0 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', sx: 54, sy: 94,
+                    vx: 54, vy: 88, lx2: 36, ly2: 56 },
+                SR: { d: 'M64,94 L64,67 A8,8 0 0 1 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', sx: 64, sy: 94,
+                    vx: 64, vy: 88, lx2: 76, ly2: 58 },
+                ES: { d: 'M94,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z', sx: 94, sy: 41, vx: 88, vy: 41, lx2: 40,
+                    ly2: 41 },
+                EL: { d: 'M94,46 L67,46 A26,26 0 0 0 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z', sx: 94, sy: 46,
+                    vx: 88, vy: 46, lx2: 56, ly2: 64 },
+                ER: { d: 'M94,36 L67,36 A8,8 0 0 1 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z', sx: 94, sy: 36,
+                    vx: 88, vy: 36, lx2: 64, ly2: 30 },
+                WS: { d: 'M6,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z', sx: 6, sy: 59, vx: 12, vy: 59, lx2: 60,
+                    ly2: 59 },
+                WL: { d: 'M6,54 L33,54 A26,26 0 0 0 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z', sx: 6, sy: 54,
+                    vx: 12, vy: 54, lx2: 44, ly2: 36 },
+                WR: { d: 'M6,64 L33,64 A8,8 0 0 1 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z', sx: 6, sy: 64,
+                    vx: 12, vy: 64, lx2: 36, ly2: 70 }
+            };
 
-      function formatNumber(num, decimals = 1) {
-        return Number(num).toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: decimals });
-      }
+            /* ----- color palette per movement (arm + direction) ----- */
+            var COLORS = {
+                'NL': '#4FD1C5',
+                'NS': '#2C7A7B',
+                'NR': '#234E52',
+                'SL': '#D69E2E',
+                'SS': '#B7791F',
+                'SR': '#744210',
+                'EL': '#FC8181',
+                'ES': '#E53E3E',
+                'ER': '#742A2A',
+                'WL': '#63B3ED',
+                'WS': '#2B6CB0',
+                'WR': '#1A365D'
+            };
+            var COLOR_STROKE = {
+                'NL': '#319795',
+                'NS': '#1A5658',
+                'NR': '#0D2B30',
+                'SL': '#B7791F',
+                'SS': '#8B5F0E',
+                'SR': '#4A2F07',
+                'EL': '#C53030',
+                'ES': '#9B2C2C',
+                'ER': '#4A1515',
+                'WL': '#4299E1',
+                'WS': '#1A4B7A',
+                'WR': '#0A1F33'
+            };
+            var COLOR_GLOW = {
+                'NL': 'rgba(79,209,197,0.25)',
+                'NS': 'rgba(44,122,123,0.25)',
+                'NR': 'rgba(35,78,82,0.25)',
+                'SL': 'rgba(214,158,46,0.25)',
+                'SS': 'rgba(183,121,31,0.25)',
+                'SR': 'rgba(116,66,16,0.25)',
+                'EL': 'rgba(252,129,129,0.25)',
+                'ES': 'rgba(229,62,62,0.25)',
+                'ER': 'rgba(116,42,42,0.25)',
+                'WL': 'rgba(99,179,237,0.25)',
+                'WS': 'rgba(43,108,176,0.25)',
+                'WR': 'rgba(26,54,93,0.25)'
+            };
 
-      function setLosBadge(letter) {
-        const target = document.getElementById('los_letter');
-        target.textContent = letter;
-        target.className = 'los-badge ' + letter.toLowerCase();
-      }
+            /* ----- helpers ----- */
+            function allMoves(present) {
+                var out = [];
+                present.forEach(function(a) {
+                    ['L', 'S', 'R'].forEach(function(m) {
+                        if (present.indexOf(DEST[a][m]) > -1) out.push(a + m);
+                    });
+                });
+                return out;
+            }
 
-      document.getElementById('queueForm').addEventListener('submit', (event) => {
-        event.preventDefault();
+            function armGroups(arm, cfg, present) {
+                var a = cfg[arm],
+                    g = { left: null, other: [] };
+                if (!a || !a.exists) return g;
+                var hasL = present.indexOf(DEST[arm].L) > -1;
+                var hasS = present.indexOf(DEST[arm].S) > -1;
+                var hasR = present.indexOf(DEST[arm].R) > -1;
 
-        const method = document.getElementById('method').value;
-        const facilityType = document.getElementById('facility_type').value;
-        const volume = Number(document.getElementById('volume_vph').value) || 0;
-        const lanes = Number(document.getElementById('num_lanes').value) || 1;
-        const cycle = Number(document.getElementById('cycle_length').value) || 90;
-        const green = Number(document.getElementById('green_time').value) || 0;
-        const truckPct = Number(document.getElementById('truck_percent').value) || 0;
-        const surge = Number(document.getElementById('surge_factor').value) || 1.5;
-        const laneWidth = Number(document.getElementById('lane_width').value) || 12;
-        const shoulderWidth = Number(document.getElementById('shoulder_width').value) || 6;
-        const grade = Number(document.getElementById('grade_percent').value) || 0;
+                if (hasL) {
+                    var nl = Math.max(1, a.nL || 1);
+                    g.left = {
+                        key: arm + '.L',
+                        sym: 'l_' + arm,
+                        arm: arm,
+                        moves: [arm + 'L'],
+                        vol: a.L || 0,
+                        lanes: nl,
+                        q: (a.L || 0) / nl
+                    };
+                }
+                var rActive = hasR && !a.freeRight;
+                if (a.sharedSR && hasS && rActive) {
+                    var ns = Math.max(1, a.nS || 1),
+                        vol = (a.S || 0) + (a.R || 0);
+                    g.other.push({
+                        key: arm + '.SR',
+                        sym: 'sr_' + arm,
+                        arm: arm,
+                        moves: [arm + 'S', arm + 'R'],
+                        vol: vol,
+                        lanes: ns,
+                        q: vol / ns
+                    });
+                } else {
+                    if (hasS) {
+                        var n2 = Math.max(1, a.nS || 1);
+                        g.other.push({
+                            key: arm + '.S',
+                            sym: 's_' + arm,
+                            arm: arm,
+                            moves: [arm + 'S'],
+                            vol: a.S || 0,
+                            lanes: n2,
+                            q: (a.S || 0) / n2
+                        });
+                    }
+                    if (rActive) {
+                        var n3 = Math.max(1, a.nR || 1);
+                        g.other.push({
+                            key: arm + '.R',
+                            sym: 'r_' + arm,
+                            arm: arm,
+                            moves: [arm + 'R'],
+                            vol: a.R || 0,
+                            lanes: n3,
+                            q: (a.R || 0) / n3
+                        });
+                    }
+                }
+                return g;
+            }
 
-        const gC = Math.min(Math.max(green / cycle, 0), 1);
-        const truckFactor = truckPct / 100;
-        const baseQueueVeh = (method === 'aashto')
-          ? surge * 25 * volume * (1 + truckFactor) * (1 - gC) * (3600 / cycle) / lanes
-          : (volume * (1 - gC) * 1.2) / Math.max(1, lanes);
+            function maxQ(list) {
+                var v = list.filter(Boolean).map(function(x) { return x.q; });
+                return v.length ? Math.max.apply(null, v) : 0;
+            }
 
-        const queueFeet = Math.max(0, baseQueueVeh * 25);
-        const queue95 = Math.max(0, baseQueueVeh * 1.8);
-        const storageFt = queueFeet * 1.5;
-        const cap = Math.max(0, 1900 * lanes * Math.max(0.2, gC) * (1 - Math.min(0.25, truckFactor)));
-        const vc = volume / cap;
-        const los = losFromVC(vc);
+            function movesOf(terms) {
+                var out = [];
+                terms.filter(Boolean).forEach(function(t) {
+                    t.moves.forEach(function(m) { if (out.indexOf(m) < 0) out.push(m); });
+                });
+                return out;
+            }
 
-        const displayQueueVeh = Math.max(0, baseQueueVeh);
-        document.getElementById('queue_vehicles').textContent = formatNumber(displayQueueVeh, 1);
-        document.getElementById('queue_note').textContent = 'veh';
-        document.getElementById('queue_feet').textContent = formatNumber(queueFeet, 0);
-        document.getElementById('vc_ratio').textContent = formatNumber(vc, 2);
-        document.getElementById('los_letter').textContent = los.letter;
-        document.getElementById('los_note').textContent = los.note;
-        setLosBadge(los.letter);
+            function compute(cfg) {
+                var present = ARMS.filter(function(a) { return cfg[a] && cfg[a].exists; });
+                var G = {};
+                present.forEach(function(a) { G[a] = armGroups(a, cfg, present); });
+                var allOf = function(a) { return [G[a].left].concat(G[a].other).filter(Boolean); };
 
-        document.getElementById('capacity_value').textContent = formatNumber(cap, 0) + ' veh/h';
-        document.getElementById('capacity_note').textContent = facilityType === 'twolane_highway' ? 'two-lane capacity surrogate' : 'lane-group capacity estimate';
-        document.getElementById('queue_95_value').textContent = formatNumber(queue95, 1) + ' veh';
-        document.getElementById('queue_95_note').textContent = '95th percentile design queue';
-        document.getElementById('storage_value').textContent = formatNumber(storageFt, 0) + ' ft';
-        document.getElementById('storage_note').textContent = method === 'aashto' ? 'AASHTO design storage' : 'HCM storage guidance';
-        document.getElementById('method_value').textContent = method.toUpperCase();
-        document.getElementById('method_note').textContent = facilityType === 'twolane_highway' ? 'Highway segment assessment' : 'Intersection lane-group method';
+                var t1 = present.map(function(a) {
+                    var terms = allOf(a);
+                    return { arm: a, he: HE[a], terms: terms, moves: movesOf(terms), value: maxQ(terms) };
+                });
+                var t1total = t1.reduce(function(s, p) { return s + p.value; }, 0);
 
-        statusEl.textContent = 'Analysis complete.';
-        statusEl.className = 'status ok';
-      });
+                var t2 = [];
+                AXES.forEach(function(ax) {
+                    var arms = ax.arms.filter(function(a) { return present.indexOf(a) > -1; });
+                    if (!arms.length) return;
+                    if (arms.length === 1) {
+                        var a = arms[0],
+                            terms = allOf(a);
+                        t2.push({
+                            axis: ax.id,
+                            he: ax.he,
+                            arms: arms,
+                            degenerate: true,
+                            phases: [{ label: 'זרוע ' + HE[a] + ' לבדה', terms: terms, moves: movesOf(terms),
+                                value: maxQ(terms) }],
+                            optionA: maxQ(terms),
+                            optionB: null,
+                            chosen: 'א',
+                            value: maxQ(terms)
+                        });
+                        return;
+                    }
+                    var a1 = arms[0],
+                        a2 = arms[1];
+                    var lefts = [G[a1].left, G[a2].left].filter(Boolean);
+                    var others = G[a1].other.concat(G[a2].other);
+                    var phases = [];
+                    if (lefts.length) phases.push({ label: 'שמאלות ' + HE[a1] + ' + ' + HE[a2], terms: lefts,
+                        moves: movesOf(lefts), value: maxQ(lefts) });
+                    if (others.length) phases.push({ label: 'ישר וימינה ' + HE[a1] + ' + ' + HE[a2], terms: others,
+                        moves: movesOf(others), value: maxQ(others) });
+                    var optA = phases.reduce(function(s, p) { return s + p.value; }, 0);
+                    var optB = maxQ(allOf(a1)) + maxQ(allOf(a2));
+                    t2.push({
+                        axis: ax.id,
+                        he: ax.he,
+                        arms: arms,
+                        degenerate: false,
+                        phases: phases,
+                        optionA: optA,
+                        optionB: optB,
+                        chosen: (optB < optA ? 'ב' : 'א'),
+                        value: Math.min(optA, optB),
+                        optionBmoves: [movesOf(allOf(a1)), movesOf(allOf(a2))]
+                    });
+                });
+                var t2A = t2.reduce(function(s, x) { return s + x.optionA; }, 0);
+                var t2best = t2.reduce(function(s, x) { return s + x.value; }, 0);
 
-      document.getElementById('queueForm').addEventListener('reset', () => {
-        setTimeout(() => {
-          methodInput.value = 'aashto';
-          Array.from(methodSeg.querySelectorAll('button')).forEach((btn) => {
-            btn.setAttribute('aria-pressed', btn.value === 'aashto' ? 'true' : 'false');
-          });
-          statusEl.textContent = 'Ready to analyse.';
-          statusEl.className = 'status';
-          document.getElementById('los_letter').textContent = 'A';
-          document.getElementById('los_note').textContent = 'Very good';
-          setLosBadge('A');
-          document.getElementById('queue_vehicles').textContent = '0.0';
-          document.getElementById('queue_feet').textContent = '0';
-          document.getElementById('vc_ratio').textContent = '0.00';
-        }, 0);
-      });
+                var t3 = [];
+                AXES.forEach(function(ax) {
+                    var arms = ax.arms.filter(function(a) { return present.indexOf(a) > -1; });
+                    if (!arms.length) return;
+                    if (arms.length === 1) {
+                        var a = arms[0],
+                            terms = allOf(a);
+                        t3.push({
+                            axis: ax.id,
+                            he: ax.he,
+                            arms: arms,
+                            degenerate: true,
+                            seq: [{ label: HE[a] + ' לבדה', moves: movesOf(terms) }],
+                            rings: null,
+                            value: maxQ(terms)
+                        });
+                        return;
+                    }
+                    var a1 = arms[0],
+                        a2 = arms[1];
+                    var l1 = G[a1].left ? G[a1].left.q : 0,
+                        l2 = G[a2].left ? G[a2].left.q : 0;
+                    var o1 = maxQ(G[a1].other),
+                        o2 = maxQ(G[a2].other);
+                    t3.push({
+                        axis: ax.id,
+                        he: ax.he,
+                        arms: arms,
+                        degenerate: false,
+                        seq: [
+                            { label: HE[a1] + ' לבדה', moves: movesOf(allOf(a1)) },
+                            { label: 'ישרים וימניות', moves: movesOf(G[a1].other.concat(G[a2].other)) },
+                            { label: HE[a2] + ' לבדה', moves: movesOf(allOf(a2)) }
+                        ],
+                        rings: [
+                            { label: 'טבעת 1', leftArm: a1, leftQ: l1, thruArm: a2, thruQ: o2, value: l1 + o2 },
+                            { label: 'טבעת 2', leftArm: a2, leftQ: l2, thruArm: a1, thruQ: o1, value: l2 + o1 }
+                        ],
+                        value: Math.max(l1 + o2, l2 + o1)
+                    });
+                });
+                var t3total = t3.reduce(function(s, x) { return s + x.value; }, 0);
 
-      setLosBadge('A');
-      document.getElementById('queueForm').dispatchEvent(new Event('submit'));
+                return {
+                    present: present,
+                    groups: G,
+                    table1: { phases: t1, total: t1total },
+                    table2: { axes: t2, totalOptionA: t2A, totalBest: t2best },
+                    table3: { axes: t3, total: t3total }
+                };
+            }
+
+            /* ============================================================
+               2. Schematic renderer — NEW with colors, volumes at start, dashed free right, only active moves
+               ============================================================ */
+            function buildVolMap(cfg, present) {
+                var map = {};
+                present.forEach(function(a) {
+                    var arm = cfg[a];
+                    if (!arm || !arm.exists) return;
+                    var dest = DEST[a];
+                    ['L', 'S', 'R'].forEach(function(m) {
+                        var key = a + m;
+                        var destArm = dest[m];
+                        if (present.indexOf(destArm) === -1) return;
+                        var vol = arm[m] || 0;
+                        var lanes = arm['n' + m] || 1;
+                        if (m === 'R' && arm.sharedSR) lanes = arm.nS || 1;
+                        map[key] = { vol: vol, lanes: lanes };
+                    });
+                });
+                return map;
+            }
+
+            function schematicInteractive(present, movements, volMap, highlight, freeRightMap, size) {
+                size = size || 180;
+                // movements: array of movement keys to draw. If null/undefined, draw all from present.
+                var allM = allMoves(present);
+                var drawSet = {};
+                if (!movements || movements.length === 0) {
+                    // draw all
+                    allM.forEach(function(m) { drawSet[m] = true; });
+                } else {
+                    movements.forEach(function(m) { drawSet[m] = true; });
+                }
+                var highlightSet = {};
+                (highlight || []).forEach(function(m) { highlightSet[m] = true; });
+
+                var svg = '<svg class="ph" viewBox="0 0 100 100" width="' + size + '" height="' + size +
+                    '" role="img" aria-label="סכמת צומת" xmlns="http://www.w3.org/2000/svg">';
+
+                // ---- background ----
+                svg += '<rect width="100" height="100" fill="#1e2a30" rx="6"/>';
+
+                // road backdrop (darker)
+                if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#2d3a42"/>';
+                if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#2d3a42"/>';
+                if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#2d3a42"/>';
+                if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#2d3a42"/>';
+                svg += '<rect x="30" y="30" width="40" height="40" fill="#2d3a42"/>';
+
+                // lane dividers
+                if (present.indexOf('N') > -1) svg +=
+                    '<line x1="50" y1="0" x2="50" y2="30" stroke="#4a5a64" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>';
+                if (present.indexOf('S') > -1) svg +=
+                    '<line x1="50" y1="70" x2="50" y2="100" stroke="#4a5a64" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>';
+                if (present.indexOf('W') > -1) svg +=
+                    '<line x1="0" y1="50" x2="30" y2="50" stroke="#4a5a64" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>';
+                if (present.indexOf('E') > -1) svg +=
+                    '<line x1="70" y1="50" x2="100" y2="50" stroke="#4a5a64" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>';
+
+                // stop lines (white)
+                if (present.indexOf('N') > -1) svg +=
+                    '<line x1="30" y1="30" x2="70" y2="30" stroke="#cbd5e0" stroke-width="1.2"/>';
+                if (present.indexOf('S') > -1) svg +=
+                    '<line x1="30" y1="70" x2="70" y2="70" stroke="#cbd5e0" stroke-width="1.2"/>';
+                if (present.indexOf('W') > -1) svg +=
+                    '<line x1="30" y1="30" x2="30" y2="70" stroke="#cbd5e0" stroke-width="1.2"/>';
+                if (present.indexOf('E') > -1) svg +=
+                    '<line x1="70" y1="30" x2="70" y2="70" stroke="#cbd5e0" stroke-width="1.2"/>';
+
+                // ---- draw only movements in drawSet ----
+                var paths = '',
+                    labels = '',
+                    laneLabels = '';
+
+                allM.forEach(function(m) {
+                    if (!drawSet[m]) return;
+                    var info = MOVE[m];
+                    if (!info) return;
+
+                    var isHighlight = !!highlightSet[m];
+                    var volData = volMap ? volMap[m] : null;
+                    var vol = volData ? volData.vol : 0;
+                    var lanes = volData ? volData.lanes : 1;
+                    var hasVol = vol > 0;
+
+                    var color = COLORS[m] || '#A0AEC0';
+                    var strokeColor = COLOR_STROKE[m] || '#718096';
+                    var glowColor = COLOR_GLOW[m] || 'rgba(160,174,192,0.15)';
+
+                    // check if this is a right turn and freeRight is true
+                    var isRight = m[1] === 'R';
+                    var arm = m[0];
+                    var isFreeRight = isRight && freeRightMap && freeRightMap[arm] === true;
+
+                    var stroke = strokeColor;
+                    var fill = color;
+                    var opacity = isHighlight ? 1 : (hasVol ? 0.95 : 0.5);
+                    var width = isHighlight ? 3.2 : (hasVol ? 2.0 : 1.0);
+                    var dash = isFreeRight ? '6,4' : 'none';
+
+                    // glow for highlight
+                    if (isHighlight) {
+                        paths += '<path d="' + info.d + '" fill="none" stroke="' + glowColor +
+                            '" stroke-width="8" stroke-linecap="round" opacity="0.4"/>';
+                    }
+
+                    paths += '<path d="' + info.d + '" fill="none" stroke="' + stroke +
+                        '" stroke-width="' + width + '" stroke-linecap="round" opacity="' + opacity + '" stroke-dasharray="' +
+                        dash + '"/>';
+                    paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"/>';
+
+                    // volume label at start (vx, vy)
+                    var labelText = hasVol ? String(Math.round(vol)) : '0';
+                    var labelCls = 'movement-label';
+                    if (!hasVol) labelCls += ' zero';
+                    if (isHighlight) labelCls += ' highlight';
+                    var labelX = info.vx || info.sx || 50;
+                    var labelY = info.vy || info.sy || 50;
+                    labels += '<text x="' + labelX + '" y="' + labelY + '" class="' + labelCls + '">' + labelText +
+                        '</text>';
+
+                    // lane label (×N) below volume
+                    var laneCls = 'lane-label';
+                    if (!hasVol) laneCls += ' zero';
+                    var lx2 = info.lx2 || info.sx || 50;
+                    var ly2 = (info.lx2 ? info.lx2 + 6 : (info.sy || 50) + 6);
+                    // better positioning: use the lane label position from MOVE
+                    var llx = info.lx2 || info.sx || 50;
+                    var lly = (info.ly2 || info.sy || 50) + 6;
+                    laneLabels += '<text x="' + llx + '" y="' + lly + '" class="' + laneCls + '">×' + lanes +
+                        '</text>';
+                });
+
+                svg += paths + labels + laneLabels + '</svg>';
+                return svg;
+            }
+
+            /* ============================================================
+               3. UI State & Rendering
+               ============================================================ */
+            var state = {
+                N: { exists: true, L: 220, nL: 1, S: 650, nS: 2, R: 120, nR: 1, sharedSR: true, freeRight: false },
+                S: { exists: true, L: 180, nL: 1, S: 580, nS: 2, R: 110, nR: 1, sharedSR: true, freeRight: false },
+                E: { exists: true, L: 140, nL: 1, S: 320, nS: 1, R: 90, nR: 1, sharedSR: true, freeRight: false },
+                W: { exists: true, L: 160, nL: 1, S: 380, nS: 1, R: 80, nR: 1, sharedSR: true, freeRight: false }
+            };
+
+            var activeHighlightMoves = null;
+
+            function getFreeRightMap(cfg) {
+                var map = {};
+                ARMS.forEach(function(a) {
+                    map[a] = cfg[a] && cfg[a].exists && cfg[a].freeRight === true;
+                });
+                return map;
+            }
+
+            function renderArmInputs() {
+                ARMS.forEach(function(armKey) {
+                    var container = document.querySelector('.arm[data-arm="' + armKey + '"]');
+                    if (!container) return;
+                    var data = state[armKey];
+
+                    var html = '<div class="arm-top">';
+                    html += '<span class="arm-name">זרוע ' + HE[armKey] + ' (' + armKey + ')</span>';
+                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey +
+                        '" data-field="exists"' + (data.exists ? ' checked' : '') + '> זרוע פעילה</label>';
+                    html += '</div>';
+
+                    html += '<div class="fields">';
+                    html += '<div></div><div class="hd">נפח (רכ/ש)</div><div class="hd">נתיבים</div>';
+
+                    html += '<span class="lbl">שמאלה (L):</span>';
+                    html += '<input type="number" min="0" value="' + data.L + '" data-arm="' + armKey +
+                        '" data-field="L">';
+                    html += '<input type="number" min="1" value="' + data.nL + '" data-arm="' + armKey +
+                        '" data-field="nL">';
+
+                    html += '<span class="lbl">ישר (S):</span>';
+                    html += '<input type="number" min="0" value="' + data.S + '" data-arm="' + armKey +
+                        '" data-field="S">';
+                    html += '<input type="number" min="1" value="' + data.nS + '" data-arm="' + armKey +
+                        '" data-field="nS">';
+
+                    html += '<span class="lbl">ימינה (R):</span>';
+                    html += '<input type="number" min="0" value="' + data.R + '" data-arm="' + armKey +
+                        '" data-field="R">';
+                    html += '<input type="number" min="1" value="' + data.nR + '" data-arm="' + armKey +
+                        '" data-field="nR"' + (data.sharedSR ? ' disabled' : '') + '>';
+                    html += '</div>';
+
+                    html += '<div class="toggles">';
+                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey +
+                        '" data-field="sharedSR"' + (data.sharedSR ? ' checked' : '') +
+                        '> נתיב משותף ישר+ימינה</label>';
+                    html += '<label class="chk"><input type="checkbox" data-arm="' + armKey +
+                        '" data-field="freeRight"' + (data.freeRight ? ' checked' : '') +
+                        '> ימינה חופשית (ללא רמזור)</label>';
+                    html += '</div>';
+
+                    container.innerHTML = html;
+                    container.classList.toggle('off', !data.exists);
+                });
+            }
+
+            function updateLiveSchematic() {
+                var res = compute(state);
+                var volMap = buildVolMap(state, res.present);
+                var freeMap = getFreeRightMap(state);
+                var allM = allMoves(res.present);
+                var el = document.getElementById('liveSchematic');
+                var cap = document.getElementById('liveCap');
+                var legend = document.getElementById('liveLegend');
+
+                el.innerHTML = schematicInteractive(res.present, allM, volMap, activeHighlightMoves, freeMap, 200);
+
+                var armColors = {
+                    'N': '#2C7A7B',
+                    'S': '#B7791F',
+                    'E': '#E53E3E',
+                    'W': '#2B6CB0'
+                };
+                var legendHtml = '';
+                res.present.forEach(function(a) {
+                    legendHtml += '<span><span class="dot" style="background:' + armColors[a] + '"></span>' +
+                        HE[a] + '</span>';
+                });
+                var hasFree = res.present.some(function(a) { return state[a] && state[a].freeRight; });
+                if (hasFree) {
+                    legendHtml +=
+                        '<span><span class="dot dash" style="border-color:#A0AEC0"></span>ימינה חופשית</span>';
+                }
+                legend.innerHTML = legendHtml || '';
+
+                cap.innerHTML = 'נפחים (רכב/שעה) ומספר נתיבים (×N)<br>זרועות פעילות: ' + res.present.map(function(a) {
+                    return HE[a];
+                }).join(', ');
+            }
+
+            function renderResults() {
+                var res = compute(state);
+                var container = document.getElementById('results');
+                var volMap = buildVolMap(state, res.present);
+                var freeMap = getFreeRightMap(state);
+
+                var t1 = res.table1.total;
+                var t2 = res.table2.totalBest;
+                var t3 = res.table3.total;
+                var minVal = Math.min(t1, t2, t3);
+
+                // Comparison cards
+                var html = '<div class="cmp">';
+                var methods = [
+                    { name: 'שיטה 1: זרועות מפוצלות', val: t1, desc: 'פאזה נפרדת לכל זרוע גישה' },
+                    { name: 'שיטה 2: הפרדת שמאלה מוגנת', val: t2, desc: 'פאזות משותפות לצירים + פאזת שמאלות' },
+                    { name: 'שיטה 3: טבעת כפולה (Dual Ring)', val: t3, desc: 'פיקוד NEMA חפוף/Lead-Lag' }
+                ];
+                methods.forEach(function(m, i) {
+                    html += '<div class="card' + (m.val === minVal ? ' best' : '') + '">';
+                    html += '<div class="k">' + m.name + '</div>';
+                    html += '<div class="n">' + Math.round(m.val) +
+                        ' <span style="font-size:14px;color:var(--ink2)">רכ/ש/נתיב</span></div>';
+                    html += '<div class="d">' + m.desc + '</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+
+                // Table 1
+                html += '<section>';
+                html +=
+                    '<div class="sec-head"><h2>שיטה 1 — פאזה נפרדת לכל זרוע (Split Approach)</h2></div>';
+                html += '<table><thead><tr><th>פאזה</th><th>סכמה</th><th>תנועות כלולות</th><th>נפח קריטי q = V/n</th></tr></thead><tbody>';
+                res.table1.phases.forEach(function(p, idx) {
+                    var moves = p.moves;
+                    html += '<tr class="phase-row" data-moves="' + moves.join(',') + '">';
+                    html += '<td><strong>פאזה ' + (idx + 1) + ' (' + p.he + ')</strong></td>';
+                    html += '<td class="schematic-cell">' + schematicInteractive(res.present, moves, volMap,
+                        null, freeMap, 44) + '</td>';
+                    html += '<td><span class="f">' + moves.join(', ') + '</span></td>';
+                    html += '<td class="val">' + Math.round(p.value) + '</td>';
+                    html += '</tr>';
+                });
+                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math
+                    .round(res.table1.total) + '</td></tr>';
+                html += '</tbody></table></section>';
+
+                // Table 2
+                html += '<section>';
+                html +=
+                    '<div class="sec-head"><h2>שיטה 2 — הפרדת שמאלות לפי צירים (Protected Left Separation)</h2></div>';
+                html +=
+                    '<table><thead><tr><th>ציר / פאזות</th><th>סכמה</th><th>תנועות</th><th>נפח קריטי q</th></tr></thead><tbody>';
+                res.table2.axes.forEach(function(ax) {
+                    html += '<tr style="background:var(--sunk)"><td colspan="4"><strong>ציר ' + ax.he +
+                        '</strong> (חלופה שנבחרה: ' + ax.chosen + ' — ' + Math.round(ax.value) +
+                        ' רכ/ש)</td></tr>';
+                    ax.phases.forEach(function(p) {
+                        var moves = p.moves;
+                        html += '<tr class="phase-row" data-moves="' + moves.join(',') + '">';
+                        html += '<td style="padding-right:24px">• ' + p.label + '</td>';
+                        html += '<td class="schematic-cell">' + schematicInteractive(res.present, moves,
+                            volMap, null, freeMap, 44) + '</td>';
+                        html += '<td><span class="f">' + moves.join(', ') + '</span></td>';
+                        html += '<td class="val">' + Math.round(p.value) + '</td>';
+                        html += '</tr>';
+                    });
+                });
+                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math
+                    .round(res.table2.totalBest) + '</td></tr>';
+                html += '</tbody></table></section>';
+
+                // Table 3
+                html += '<section>';
+                html +=
+                    '<div class="sec-head"><h2>שיטה 3 — טבעת כפולה / Lead-Lag (Dual Ring Phasing)</h2></div>';
+                html +=
+                    '<table><thead><tr><th>ציר</th><th>רצף תנועות / טבעות</th><th>חישוב חפיפה</th><th>נפח קריטי קובע</th></tr></thead><tbody>';
+                res.table3.axes.forEach(function(ax) {
+                    var allAxMoves = ax.seq.map(function(s) { return (s.moves || []).join(','); }).join(',');
+                    if (ax.degenerate) {
+                        var moves = ax.seq[0].moves || [];
+                        html += '<tr class="phase-row" data-moves="' + moves.join(',') + '">';
+                        html += '<td><strong>ציר ' + ax.he + '</strong></td>';
+                        html += '<td>' + ax.seq[0].label + '</td>';
+                        html += '<td>זרוע בודדת בציר</td>';
+                        html += '<td class="val">' + Math.round(ax.value) + '</td>';
+                        html += '</tr>';
+                    } else {
+                        var ringMoves = [];
+                        ax.rings.forEach(function(r) {
+                            var m1 = r.leftArm + 'L';
+                            var m2 = r.thruArm + 'S';
+                            var m3 = r.thruArm + 'R';
+                            ringMoves.push(m1, m2, m3);
+                        });
+                        html += '<tr class="phase-row" data-moves="' + ringMoves.join(',') + '">';
+                        html += '<td><strong>ציר ' + ax.he + '</strong></td>';
+                        html += '<td>';
+                        ax.rings.forEach(function(r) {
+                            html += '<div>' + r.label + ': שמאל ' + HE[r.leftArm] + ' (' + Math.round(r
+                                .leftQ) + ') + ישר/ימין ' + HE[r.thruArm] + ' (' + Math.round(r
+                                .thruQ) + ') = <strong>' + Math.round(r.value) + '</strong></div>';
+                        });
+                        html += '</td>';
+                        html += '<td class="f">max(Ring 1, Ring 2)</td>';
+                        html += '<td class="val">' + Math.round(ax.value) + '</td>';
+                        html += '</tr>';
+                    }
+                });
+                html += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V_c)</td><td class="val">' + Math
+                    .round(res.table3.total) + '</td></tr>';
+                html += '</tbody></table></section>';
+
+                container.innerHTML = html;
+                attachTableHoverEvents();
+            }
+
+            function attachTableHoverEvents() {
+                var rows = document.querySelectorAll('.phase-row');
+                rows.forEach(function(row) {
+                    row.addEventListener('mouseenter', function() {
+                        var mStr = this.getAttribute('data-moves');
+                        if (!mStr) return;
+                        activeHighlightMoves = mStr.split(',').filter(Boolean);
+                        this.classList.add('highlight-row');
+                        updateLiveSchematic();
+                    });
+                    row.addEventListener('mouseleave', function() {
+                        activeHighlightMoves = null;
+                        this.classList.remove('highlight-row');
+                        updateLiveSchematic();
+                    });
+                });
+            }
+
+            function syncStateFromInputs() {
+                ARMS.forEach(function(armKey) {
+                    var container = document.querySelector('.arm[data-arm="' + armKey + '"]');
+                    if (!container) return;
+
+                    var existsChk = container.querySelector('input[data-field="exists"]');
+                    state[armKey].exists = existsChk ? existsChk.checked : true;
+
+                    ['L', 'nL', 'S', 'nS', 'R', 'nR'].forEach(function(field) {
+                        var inp = container.querySelector('input[data-field="' + field + '"]');
+                        if (inp) {
+                            var val = parseInt(inp.value, 10);
+                            state[armKey][field] = isNaN(val) ? 0 : val;
+                        }
+                    });
+
+                    var sharedChk = container.querySelector('input[data-field="sharedSR"]');
+                    if (sharedChk) state[armKey].sharedSR = sharedChk.checked;
+
+                    var freeChk = container.querySelector('input[data-field="freeRight"]');
+                    if (freeChk) state[armKey].freeRight = freeChk.checked;
+                });
+            }
+
+            function updateAll() {
+                syncStateFromInputs();
+                renderArmInputs();
+                updateLiveSchematic();
+                renderResults();
+                updateJsonOutput();
+            }
+
+            /* ============================================================
+               4. Event Wiring & API
+               ============================================================ */
+            function initEvents() {
+                document.getElementById('cross').addEventListener('input', function(e) {
+                    syncStateFromInputs();
+                    updateAll();
+                });
+
+                document.getElementById('cross').addEventListener('change', function(e) {
+                    syncStateFromInputs();
+                    updateAll();
+                });
+
+                document.getElementById('btnExample').addEventListener('click', function() {
+                    state = {
+                        N: { exists: true, L: 220, nL: 1, S: 650, nS: 2, R: 120, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        S: { exists: true, L: 180, nL: 1, S: 580, nS: 2, R: 110, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        E: { exists: true, L: 140, nL: 1, S: 320, nS: 1, R: 90, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        W: { exists: true, L: 160, nL: 1, S: 380, nS: 1, R: 80, nR: 1, sharedSR: true,
+                            freeRight: false }
+                    };
+                    updateAll();
+                });
+
+                document.getElementById('btnT').addEventListener('click', function() {
+                    state = {
+                        N: { exists: true, L: 200, nL: 1, S: 500, nS: 2, R: 100, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        S: { exists: false, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        E: { exists: true, L: 150, nL: 1, S: 0, nS: 1, R: 250, nR: 1, sharedSR: true,
+                            freeRight: false },
+                        W: { exists: true, L: 180, nL: 1, S: 400, nS: 1, R: 0, nR: 1, sharedSR: true,
+                            freeRight: false }
+                    };
+                    updateAll();
+                });
+
+                document.getElementById('btnClear').addEventListener('click', function() {
+                    ARMS.forEach(function(a) {
+                        state[a] = { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true,
+                            freeRight: false };
+                    });
+                    updateAll();
+                });
+
+                document.getElementById('btnJson').addEventListener('click', function() {
+                    var pre = document.getElementById('jsonOut');
+                    pre.style.display = pre.style.display === 'none' ? 'block' : 'none';
+                });
+
+                document.getElementById('btnCopy').addEventListener('click', function() {
+                    var res = compute(state);
+                    var payload = JSON.stringify({ input: state, result: res }, null, 2);
+                    navigator.clipboard.writeText(payload).then(function() {
+                        var msg = document.getElementById('copyMsg');
+                        msg.textContent = 'הועתק בהצלחה!';
+                        setTimeout(function() { msg.textContent = ''; }, 2500);
+                    });
+                });
+
+                window.computeCriticalVolume = function(inputCfg) {
+                    return compute(inputCfg || state);
+                };
+            }
+
+            function updateJsonOutput() {
+                var res = compute(state);
+                var pre = document.getElementById('jsonOut');
+                pre.textContent = JSON.stringify({ input: state, result: res }, null, 2);
+            }
+
+            function initApiDoc() {
+                var doc = [
+                    '// קריאה גלובלית בדפדפן:',
+                    'const res = window.computeCriticalVolume(config);',
+                    '',
+                    '// דוגמה למבנה הקלט (config):',
+                    '{',
+                    '  "N": { "exists": true, "L": 220, "nL": 1, "S": 650, "nS": 2, "R": 120, "nR": 1, "sharedSR": true, "freeRight": false },',
+                    '  "S": { "exists": true, "L": 180, "nL": 1, ... },',
+                    '  "E": { ... }, "W": { ... }',
+                    '}'
+                ].join('\n');
+                document.getElementById('apidoc').textContent = doc;
+            }
+
+            // Initial render
+            renderArmInputs();
+            updateLiveSchematic();
+            renderResults();
+            initEvents();
+            initApiDoc();
+            updateJsonOutput();
+
+        })();
     </script>
-  </body>
+</body>
 </html>

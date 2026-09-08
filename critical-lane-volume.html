@@ -333,14 +333,14 @@
         }
         svg.ph .movement-label {
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 8px;
-            font-weight: 700;
+            font-size: 6px;
+            font-weight: 400;
             pointer-events: none;
             text-anchor: middle;
             dominant-baseline: central;
             paint-order: stroke;
             stroke: #1e2a30;
-            stroke-width: 1.5px;
+            stroke-width: 1.2px;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
@@ -353,13 +353,13 @@
         svg.ph .movement-label.highlight {
             fill: #FFD166;
             stroke: #1e2a30;
-            font-size: 9px;
-            font-weight: 800;
-            stroke-width: 2px;
+            font-size: 7px;
+            font-weight: 400;
+            stroke-width: 1.5px;
         }
         svg.ph .lane-label {
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 5.5px;
+            font-size: 5px;
             fill: #A0AEC0;
             pointer-events: none;
             text-anchor: middle;
@@ -459,7 +459,7 @@
             font-weight: 500;
         }
         .schematic-cell {
-            min-width: 72px;
+            min-width: 120px;
             text-align: center;
         }
         .schematic-cell svg {
@@ -519,6 +519,9 @@
             }
             .cell-c {
                 min-height: 180px;
+            }
+            .schematic-cell {
+                min-width: 90px;
             }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -984,7 +987,7 @@
                         dash + '"/>';
                     paths += '<path d="' + info.t + '" fill="' + fill + '" opacity="' + opacity + '"/>';
 
-                    // volume label with movement color fill
+                    // volume label with movement color fill — size and weight controlled by CSS
                     var labelText = hasVol ? String(Math.round(vol)) : '0';
                     var labelCls = 'movement-label';
                     if (!hasVol) labelCls += ' zero';
@@ -992,11 +995,10 @@
                     var labelX = info.vx || info.sx || 50;
                     var labelY = info.vy || info.sy || 50;
                     var angle = info.angle || 0;
-                    // use movement color for fill, but for zero use gray
                     var fillColor = hasVol ? color : '#A0AEC0';
                     labels += '<text x="' + labelX + '" y="' + labelY + '" class="' + labelCls +
                         '" transform="rotate(' + angle + ',' + labelX + ',' + labelY + ')" fill="' + fillColor +
-                        '" stroke="' + (isHighlight ? '#1e2a30' : '#1e2a30') + '" stroke-width="1.5">' + labelText +
+                        '" stroke="' + (isHighlight ? '#1e2a30' : '#1e2a30') + '" stroke-width="1.2">' + labelText +
                         '</text>';
 
                     // lane label (×N) below/above volume, not rotated
@@ -1152,7 +1154,7 @@
                     html += '<tr class="phase-row" data-moves="' + moves.join(',') + '">';
                     html += '<td><strong>פאזה ' + (idx + 1) + ' (' + p.he + ')</strong></td>';
                     html += '<td class="schematic-cell">' + schematicInteractive(res.present, moves, volMap,
-                        null, freeMap, 44) + '</td>';
+                        null, freeMap, 88) + '</td>';
                     html += '<td><span class="f">' + moves.join(', ') + '</span></td>';
                     html += '<td class="val">' + Math.round(p.value) + '</td>';
                     html += '</tr>';
@@ -1176,7 +1178,7 @@
                         html += '<tr class="phase-row" data-moves="' + moves.join(',') + '">';
                         html += '<td style="padding-right:24px">• ' + p.label + '</td>';
                         html += '<td class="schematic-cell">' + schematicInteractive(res.present, moves,
-                            volMap, null, freeMap, 44) + '</td>';
+                            volMap, null, freeMap, 88) + '</td>';
                         html += '<td><span class="f">' + moves.join(', ') + '</span></td>';
                         html += '<td class="val">' + Math.round(p.value) + '</td>';
                         html += '</tr>';

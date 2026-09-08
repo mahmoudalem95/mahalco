@@ -1065,7 +1065,8 @@
                         '" data-field="nS">';
 
                     html += '<span class="lbl">ימינה (R):</span>';
-                    var rDisabled = (data.freeRight || data.sharedSR) ? ' disabled' : '';
+                    // ✏️ תיקון: רק ימינה חופשית משביתה את הקלט, לא נתיב משותף
+                    var rDisabled = data.freeRight ? ' disabled' : '';
                     var rStyle = data.freeRight ? ' style="border:1px dashed #C44536;"' : '';
                     html += '<input type="number" min="0" value="' + data.R + '" data-arm="' + armKey +
                         '" data-field="R"' + rDisabled + rStyle + '>';

@@ -13,11 +13,15 @@
     .radio-group { display: flex; gap: 15px; margin-top: 5px; }
     .radio-group label { font-weight: normal; }
     button { padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 10px; }
+    button:disabled { background-color: #999; cursor: not-allowed; }
     button[type="button"] { background-color: #6c757d; }
     .results-box { margin-top: 30px; padding: 20px; background: #eef6ff; border-left: 5px solid #0066cc; border-radius: 4px; }
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     th { background-color: #f2f2f2; }
+    .status-msg { margin-top: 10px; font-weight: bold; }
+    .status-msg.error { color: #d9534f; }
+    .status-msg.info { color: #0275d8; }
   </style>
 </head>
 <body>
@@ -50,7 +54,7 @@
 
     <div class="form-group">
       <label for="lanes">Number of Lanes</label>
-      <input type="number" id="lanes" value="1" required>
+      <input type="number" id="lanes" value="2" required>
     </div>
 
     <div class="form-group">
@@ -65,12 +69,12 @@
 
     <div class="form-group">
       <label for="truckPct">Truck %</label>
-      <input type="number" id="truckPct" step="0.1" value="2" required>
+      <input type="number" id="truckPct" step="0.1" value="5" required>
     </div>
 
     <div class="form-group">
       <label for="surgeFactor">Surge Factor</label>
-      <input type="number" id="surgeFactor" step="0.01" value="1.0" required>
+      <input type="number" id="surgeFactor" step="0.01" value="1.5" required>
     </div>
 
     <!-- METRIC INPUTS -->
@@ -86,12 +90,14 @@
 
     <div class="form-group">
       <label for="grade">Grade (%)</label>
-      <input type="number" id="grade" step="0.1" value="0" required>
+      <input type="number" id="grade" step="0.1" value="2" required>
     </div>
 
-    <button type="submit">Analyse Queue</button>
-    <button type="button" onclick="document.getElementById('queueForm').reset()">Reset</button>
+    <button type="submit" id="submitBtn">Analyse Queue</button>
+    <button type="button" onclick="resetForm()">Reset</button>
   </form>
+
+  <div id="statusMsg" class="status-msg"></div>
 
   <div id="results" class="results-box" style="display:none;">
     <h2>OUTPUT (METRIC)</h2>
@@ -135,21 +141,32 @@
 </div>
 
 <script>
-  // Conversion constant: 1 meter = 3.28084 feet
   const METERS_TO_FEET = 3.28084;
+  const API_URL = 'https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis';
+
+  function resetForm() {
+    document.getElementById('queueForm').reset();
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('statusMsg').innerText = '';
+  }
 
   document.getElementById('queueForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    // 1. Read Inputs in Metric
+    const submitBtn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const resultsBox = document.getElementById('results');
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Connecting...";
+    statusMsg.className = "status-msg info";
+    statusMsg.innerText = "Waking up Render server & processing (takes ~30-50s on initial load)...";
+    resultsBox.style.display = 'none';
+
+    // 1. Convert Metric Inputs to Imperial Feet
     const laneWidthMeters = parseFloat(document.getElementById('laneWidth').value);
     const shoulderWidthMeters = parseFloat(document.getElementById('shoulderWidth').value);
 
-    // 2. Convert Metric Inputs to Feet for the Render API
-    const laneWidthFeet = laneWidthMeters * METERS_TO_FEET;
-    const shoulderWidthFeet = shoulderWidthMeters * METERS_TO_FEET;
-
-    // 3. Build Payload (matching your API's expected property names)
     const payload = {
       method: document.querySelector('input[name="method"]:checked').value,
       facility_type: document.getElementById('facilityType').value,
@@ -159,44 +176,56 @@
       green_time: parseFloat(document.getElementById('greenTime').value),
       truck_pct: parseFloat(document.getElementById('truckPct').value),
       surge_factor: parseFloat(document.getElementById('surgeFactor').value),
-      lane_width: laneWidthFeet,         // Sent in Feet
-      shoulder_width: shoulderWidthFeet, // Sent in Feet
+      lane_width: laneWidthMeters * METERS_TO_FEET,
+      shoulder_width: shoulderWidthMeters * METERS_TO_FEET,
       grade: parseFloat(document.getElementById('grade').value)
     };
 
     try {
-      const response = await fetch('https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis', {
+      const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'cors',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify(payload)
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP Status ${response.status} (${response.statusText})`);
+      }
+
       const data = await response.json();
 
-      // 4. Convert Outputs from Feet back to Meters
-      // (Adjust JSON property keys below to match what your API returns)
-      const queueFeet = data.queue_feet || data.queue_length_ft || 0;
-      const storageFeet = data.queue_storage_ft || data.design_storage_ft || 0;
+      // 2. Imperial Output to Metric Conversion
+      const queueFeet = data.queue_feet ?? data.queue_length_ft ?? data.queue_ft ?? 0;
+      const storageFeet = data.queue_storage_ft ?? data.design_storage_ft ?? data.storage_ft ?? 0;
 
-      const queueMeters = (queueFeet / METERS_TO_FEET).toFixed(2);
-      const storageMeters = (storageFeet / METERS_TO_FEET).toFixed(2);
+      const queueMeters = queueFeet ? (queueFeet / METERS_TO_FEET).toFixed(2) : "--";
+      const storageMeters = storageFeet ? (storageFeet / METERS_TO_FEET).toFixed(2) : "--";
 
-      // 5. Render Metric Results directly on the page
-      document.getElementById('outQueueVeh').innerText = data.queue_veh || data.queue_length_veh || "--";
-      document.getElementById('outQueueMeters').innerText = Number(queueMeters).toLocaleString();
-      document.getElementById('outVcRatio').innerText = data.vc_ratio || "--";
-      document.getElementById('outLos').innerText = data.los || "--";
+      // 3. Render Results
+      document.getElementById('outQueueVeh').innerText = data.queue_veh ?? data.queue_length_veh ?? "--";
+      document.getElementById('outQueueMeters').innerText = queueMeters !== "--" ? Number(queueMeters).toLocaleString() : "--";
+      document.getElementById('outVcRatio').innerText = data.vc_ratio ?? "--";
+      document.getElementById('outLos').innerText = data.los ?? "--";
 
-      document.getElementById('tableCapacity').innerText = (data.capacity || "--") + " veh/h";
-      document.getElementById('table95Queue').innerText = (data.queue_95th || "--") + " veh";
-      document.getElementById('tableStorageMeters').innerText = Number(storageMeters).toLocaleString() + " m";
+      document.getElementById('tableCapacity').innerText = (data.capacity ?? "--") + " veh/h";
+      document.getElementById('table95Queue').innerText = (data.queue_95th ?? "--") + " veh";
+      document.getElementById('tableStorageMeters').innerText = storageMeters !== "--" ? Number(storageMeters).toLocaleString() + " m" : "--";
       document.getElementById('tableMethod').innerText = payload.method;
 
-      document.getElementById('results').style.display = 'block';
+      statusMsg.innerText = "";
+      resultsBox.style.display = 'block';
 
     } catch (err) {
       console.error("API Error:", err);
-      alert("Error reaching the Render API. (Note: Free tier Render instances take ~50s to wake up if asleep).");
+      statusMsg.className = "status-msg error";
+      statusMsg.innerText = "API Request Failed: " + err.message;
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Analyse Queue";
     }
   });
 </script>

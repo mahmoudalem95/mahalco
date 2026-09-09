@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MAHALCO – Lane & Queue Analysis (Metric)</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Segoe UI', Roboto, Arial, sans-serif;
       margin: 0;
@@ -25,7 +27,9 @@
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
       transition: box-shadow 0.2s;
     }
-    .container:hover { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12); }
+    .container:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
     h1 {
       margin: 0 0 6px;
       font-size: 26px;
@@ -40,7 +44,9 @@
       border-bottom: 1px solid #e9edf2;
       padding-bottom: 14px;
     }
-    .form-group { margin-bottom: 16px; }
+    .form-group {
+      margin-bottom: 16px;
+    }
     label {
       display: block;
       margin-bottom: 4px;
@@ -53,7 +59,8 @@
       color: #7a8a9a;
       font-size: 12.5px;
     }
-    input, select {
+    input,
+    select {
       width: 100%;
       padding: 10px 12px;
       font-size: 15px;
@@ -64,15 +71,27 @@
       font-family: inherit;
       color: #1a2634;
     }
-    input:focus, select:focus {
+    input:focus,
+    select:focus {
       border-color: #0066cc;
       outline: none;
       box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
       background: #fff;
     }
-    input[type="number"] { -moz-appearance: textfield; }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
     input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input:disabled,
+    select:disabled {
+      background: #f0f2f5;
+      color: #9aa7b4;
+      cursor: not-allowed;
+    }
     .radio-group {
       display: flex;
       gap: 24px;
@@ -100,9 +119,26 @@
       grid-template-columns: 1fr 1fr;
       gap: 14px;
     }
+    .row-2.hidden {
+      display: none;
+    }
+    .field-note {
+      font-size: 12.5px;
+      color: #8a97a5;
+      margin: -10px 0 16px;
+      display: none;
+    }
+    .field-note.visible {
+      display: block;
+    }
     @media (max-width: 500px) {
-      .row-2 { grid-template-columns: 1fr; gap: 10px; }
-      .container { padding: 20px 16px 24px; }
+      .row-2 {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .container {
+        padding: 20px 16px 24px;
+      }
     }
     .actions {
       display: flex;
@@ -123,7 +159,9 @@
       align-items: center;
       justify-content: center;
     }
-    button:active { transform: scale(0.97); }
+    button:active {
+      transform: scale(0.97);
+    }
     #submitBtn {
       background: #0066cc;
       color: #fff;
@@ -142,7 +180,9 @@
       background: #e9edf2;
       color: #2d3a4a;
     }
-    .reset-btn:hover { background: #dce1e8; }
+    .reset-btn:hover {
+      background: #dce1e8;
+    }
     .status-msg {
       margin-top: 16px;
       padding: 10px 14px;
@@ -163,6 +203,12 @@
       color: #b33;
       border-left: 4px solid #cc4444;
     }
+    .status-msg.warn {
+      display: block;
+      background: #fff6e0;
+      color: #8a6100;
+      border-left: 4px solid #e0a800;
+    }
     .status-msg.success {
       display: block;
       background: #e6f5e6;
@@ -177,7 +223,9 @@
       border: 1px solid #e0e8f0;
       display: none;
     }
-    .results-box.visible { display: block; }
+    .results-box.visible {
+      display: block;
+    }
     .results-box h2 {
       margin: 0 0 14px;
       font-size: 20px;
@@ -198,16 +246,26 @@
       border-bottom: 1px solid #eef2f7;
       font-size: 14.5px;
     }
-    .result-item .label { color: #4a5a6a; font-weight: 500; }
-    .result-item .value { font-weight: 700; color: #0b1a2e; font-variant-numeric: tabular-nums; }
-    .result-item .value.highlight { color: #0066cc; }
+    .result-item .label {
+      color: #4a5a6a;
+      font-weight: 500;
+    }
+    .result-item .value {
+      font-weight: 700;
+      color: #0b1a2e;
+      font-variant-numeric: tabular-nums;
+    }
+    .result-item .value.highlight {
+      color: #0066cc;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 6px;
       font-size: 14px;
     }
-    th, td {
+    th,
+    td {
       border: 1px solid #e0e8f0;
       padding: 10px 12px;
       text-align: left;
@@ -217,8 +275,13 @@
       font-weight: 600;
       color: #1f2a3a;
     }
-    td { background: #ffffff; }
-    td:last-child { color: #4a5a6a; font-size: 13px; }
+    td {
+      background: #ffffff;
+    }
+    td:last-child {
+      color: #4a5a6a;
+      font-size: 13px;
+    }
     .footnote {
       margin-top: 14px;
       font-size: 13px;
@@ -226,8 +289,13 @@
       border-top: 1px solid #e9edf2;
       padding-top: 14px;
     }
-    .footnote a { color: #0066cc; text-decoration: none; }
-    .footnote a:hover { text-decoration: underline; }
+    .footnote a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .footnote a:hover {
+      text-decoration: underline;
+    }
     .badge {
       display: inline-block;
       background: #e9edf2;
@@ -246,7 +314,7 @@
   <div class="container">
     <h1>🚦 Lane &amp; Queue Analysis <span class="badge">Metric</span></h1>
     <p class="subhead">Estimate queue lengths, lane‑group capacity, V/C ratio and LOS using metric units.<br>
-      <span style="font-size:13px;color:#6a7a8a;">Uses direct fetch + fallback proxies for reliable browser access.</span></p>
+      <span style="font-size:13px;color:#6a7a8a;">Computed entirely in your browser — HCM/AASHTO‑informed screening method, no server round‑trip.</span></p>
 
     <form id="queueForm" novalidate>
       <div class="form-group">
@@ -276,7 +344,7 @@
         </div>
       </div>
 
-      <div class="row-2">
+      <div class="row-2" id="signalFieldsRow">
         <div class="form-group">
           <label for="cycleLength">Cycle Length <span class="unit">(s)</span></label>
           <input type="number" id="cycleLength" value="90" min="1" step="1" required>
@@ -286,6 +354,7 @@
           <input type="number" id="greenTime" value="45" min="1" step="1" required>
         </div>
       </div>
+      <p class="field-note" id="signalFieldsNote">Cycle length &amp; green time only apply to signalised intersections — ignored for two‑lane highway.</p>
 
       <div class="row-2">
         <div class="form-group">
@@ -326,7 +395,7 @@
       <h2>📊 Output <span style="font-size:14px;font-weight:400;color:#4a5a6a;">(metric)</span></h2>
       <div class="result-grid">
         <div class="result-item"><span class="label">Queue Length</span><span class="value" id="outQueueVeh">-- veh</span></div>
-        <div class="result-item"><span class="label">Queue Length</span><span class="value highlight" id="outQueueMeters">-- m</span></div>
+        <div class="result-item"><span class="label">Queue Storage</span><span class="value highlight" id="outQueueMeters">-- m</span></div>
         <div class="result-item"><span class="label">V/C Ratio</span><span class="value" id="outVcRatio">--</span></div>
         <div class="result-item"><span class="label">Level of Service</span><span class="value highlight" id="outLos">--</span></div>
       </div>
@@ -341,21 +410,41 @@
         </tbody>
       </table>
       <div class="footnote">
-        ⚡ Results are converted from imperial to metric. <a href="#" onclick="document.getElementById('statusMsg').innerHTML='';return false;">Clear status</a>
+        ⚡ Simplified screening method (HCM/AASHTO‑informed) — verify final designs with a full HCM operational analysis. <a href="#" onclick="document.getElementById('statusMsg').innerHTML='';return false;">Clear status</a>
       </div>
     </div>
   </div>
 
   <script>
-    // ---- CONFIG ----
-    const METERS_TO_FEET = 3.28084;
-    const TARGET_API = 'https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis';
+    // ==========================================================
+    // Lane & Queue Analysis — computed entirely client-side.
+    // Signalized: HCM 2010/2016-based saturation-flow / capacity /
+    //   two-term delay (d1 uniform + d2 incremental) formulas.
+    // Two-lane highway: simplified HCM Ch.15-informed capacity
+    //   screening (v/c based, since full PTSF/ATS needs opposing-
+    //   direction volume that isn't collected by this form).
+    // Queue storage: deterministic average queue during red,
+    //   inflated by an X-dependent overflow factor (same structural
+    //   family as Webster's random-delay term / HCM's d2), then
+    //   converted to a design length using a per-vehicle spacing
+    //   assumption (AASHTO ~7.6 m/veh, HCM-style ~6.1 m/veh),
+    //   nudged upward for truck share.
+    // This is a screening-level tool, consistent with the original
+    // page's own framing — not a substitute for a full HCM/AASHTO
+    // operational study. Always confirm final designs with a
+    // licensed engineer using complete software (HCS, Synchro, SIDRA).
+    // ==========================================================
 
     // ---- DOM refs ----
     const form = document.getElementById('queueForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
     const resultsBox = document.getElementById('results');
+    const facilityType = document.getElementById('facilityType');
+    const signalFieldsRow = document.getElementById('signalFieldsRow');
+    const signalFieldsNote = document.getElementById('signalFieldsNote');
+    const cycleLengthInput = document.getElementById('cycleLength');
+    const greenTimeInput = document.getElementById('greenTime');
 
     const outQueueVeh = document.getElementById('outQueueVeh');
     const outQueueMeters = document.getElementById('outQueueMeters');
@@ -386,163 +475,152 @@
       clearStatus();
       submitBtn.disabled = false;
       submitBtn.textContent = 'Analyse Queue';
+      syncFacilityFields();
     }
 
-    // ---- core request function with fallback ----
-    async function sendRequest(payload) {
-      // 1. Try direct fetch (CORS might be allowed)
-      try {
-        const response = await fetch(TARGET_API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (response.ok) {
-          const data = await response.json();
-          return { data, via: 'direct' };
-        }
-        // if not ok, fall through to proxy
-      } catch (e) {
-        // CORS or network error, continue to proxy
+    function syncFacilityFields() {
+      const isSignal = facilityType.value === 'signalized';
+      cycleLengthInput.disabled = !isSignal;
+      greenTimeInput.disabled = !isSignal;
+      signalFieldsRow.style.opacity = isSignal ? '1' : '0.55';
+      signalFieldsNote.classList.toggle('visible', !isSignal);
+    }
+    facilityType.addEventListener('change', syncFacilityFields);
+
+    // ---- calculation engine ----
+    function losFromDelay(d) {
+      if (d <= 10) return 'A';
+      if (d <= 20) return 'B';
+      if (d <= 35) return 'C';
+      if (d <= 55) return 'D';
+      if (d <= 80) return 'E';
+      return 'F';
+    }
+
+    function losFromVC(x) {
+      if (x < 0.60) return 'A';
+      if (x < 0.70) return 'B';
+      if (x < 0.80) return 'C';
+      if (x < 0.90) return 'D';
+      if (x <= 1.00) return 'E';
+      return 'F';
+    }
+
+    function computeSignalized(p) {
+      const s0 = 1900; // pc/h/ln ideal saturation flow rate (HCM default)
+      const fw = 1 + (p.laneWidthM - 3.6576) / 9.144;      // lane-width factor (12 ft = 3.6576 m, 30 ft = 9.144 m)
+      const fHV = 100 / (100 + p.truckPct);                 // heavy-vehicle factor, ET = 2.0
+      const fg = 1 - p.grade / 200;                          // grade factor (downgrade increases capacity)
+      const sPerLane = Math.max(s0 * fw * fHV * fg, 100);
+      const sTotal = sPerLane * p.lanes;
+      const gC = p.greenTime / p.cycleLength;
+      const capacity = sTotal * gC;
+
+      const designVolume = p.volume * p.surgeFactor;
+      const X = designVolume / capacity;
+      const Xc = Math.min(X, 0.98); // clamp so 1/(1-X) terms stay finite
+
+      const T = 0.25, k = 0.5, I = 1.0; // HCM defaults: 15-min analysis period, pretimed control, isolated intersection
+      const d1 = 0.5 * p.cycleLength * Math.pow(1 - gC, 2) / (1 - Xc * gC);
+      const d2 = 900 * T * ((X - 1) + Math.sqrt(Math.pow(X - 1, 2) + (8 * k * I * X) / (capacity * T)));
+      const delay = d1 + Math.max(d2, 0);
+      const los = losFromDelay(delay);
+
+      const redTime = p.cycleLength - p.greenTime;
+      const qAvgPerLane = (designVolume * redTime / 3600) / p.lanes;
+
+      let queueVeh;
+      if (p.method === 'HCM') {
+        const overflowFactor = 1 + (Math.pow(Xc, 2) / (2 * (1 - Xc)));
+        queueVeh = qAvgPerLane * overflowFactor;
+      } else {
+        queueVeh = qAvgPerLane * 1.5; // simpler AASHTO-style design multiplier
       }
 
-      // 2. Try proxy 1: api.allorigins.win (correct endpoint)
-      try {
-        const proxyUrl = 'https://api.allorigins.win/';
-        const proxyPayload = {
-          url: TARGET_API,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          data: payload
-        };
-        const resp = await fetch(proxyUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(proxyPayload)
-        });
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const text = await resp.text();
-        let data;
-        try { data = JSON.parse(text); } catch (e) { throw new Error('Invalid JSON'); }
-        return { data, via: 'api.allorigins.win' };
-      } catch (e) {
-        // continue
-      }
+      const spacing = (p.method === 'AASHTO' ? 7.6 : 6.1) + (p.truckPct / 100) * 3.0; // m/veh, nudged for truck share
+      const storageMeters = queueVeh * spacing;
 
-      // 3. Try proxy 2: corsproxy.io
-      try {
-        const proxyUrl = 'https://corsproxy.io/?' + new URLSearchParams({ url: TARGET_API });
-        const resp = await fetch(proxyUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const text = await resp.text();
-        let data;
-        try { data = JSON.parse(text); } catch (e) { throw new Error('Invalid JSON'); }
-        return { data, via: 'corsproxy.io' };
-      } catch (e) {
-        // continue
-      }
+      return { capacity, X, delay, los, queueVeh, storageMeters, oversaturated: X >= 0.95 };
+    }
 
-      // All attempts failed
-      throw new Error('All connection attempts failed. Please check your network or try again later.');
+    function computeTwoLaneHighway(p) {
+      const base = 1700; // pc/h/ln, HCM Ch.15 base ideal capacity (per direction)
+      const fHV = 100 / (100 + p.truckPct);
+      const fg = Math.max(1 - Math.abs(p.grade) / 150, 0.5);
+      const capacity = base * p.lanes * fHV * fg;
+      const designVolume = p.volume * p.surgeFactor;
+      const X = designVolume / capacity;
+      const los = losFromVC(X);
+      return { capacity, X, los, oversaturated: X >= 0.95 };
     }
 
     // ---- main submit ----
-    form.addEventListener('submit', async function(e) {
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
       clearStatus();
       resultsBox.classList.remove('visible');
       resultsBox.style.display = 'none';
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = '⏳ Connecting…';
-      setStatus('⏳ Waking up server & processing (initial load may take 30‑50s)…', 'info');
-
       try {
-        // gather & validate inputs
         const method = document.querySelector('input[name="method"]:checked').value;
-        const facilityType = document.getElementById('facilityType').value;
+        const facility = facilityType.value;
         const volume = parseFloat(document.getElementById('volume').value);
-        const lanes = parseInt(document.getElementById('lanes').value);
-        const cycleLength = parseFloat(document.getElementById('cycleLength').value);
-        const greenTime = parseFloat(document.getElementById('greenTime').value);
+        const lanes = parseInt(document.getElementById('lanes').value, 10);
+        const cycleLength = parseFloat(cycleLengthInput.value);
+        const greenTime = parseFloat(greenTimeInput.value);
         const truckPct = parseFloat(document.getElementById('truckPct').value);
         const surgeFactor = parseFloat(document.getElementById('surgeFactor').value);
         const laneWidthM = parseFloat(document.getElementById('laneWidth').value);
         const shoulderWidthM = parseFloat(document.getElementById('shoulderWidth').value);
         const grade = parseFloat(document.getElementById('grade').value);
 
-        if ([volume, lanes, cycleLength, greenTime, truckPct, surgeFactor, laneWidthM, shoulderWidthM, grade].some(isNaN)) {
-          throw new Error('Please fill in all numeric fields correctly.');
-        }
+        const requiredVals = facility === 'signalized'
+          ? [volume, lanes, cycleLength, greenTime, truckPct, surgeFactor, laneWidthM, shoulderWidthM, grade]
+          : [volume, lanes, truckPct, surgeFactor, laneWidthM, shoulderWidthM, grade];
+        if (requiredVals.some(isNaN)) throw new Error('Please fill in all numeric fields correctly.');
         if (lanes < 1) throw new Error('Number of lanes must be at least 1.');
-        if (cycleLength < greenTime) throw new Error('Cycle length must be ≥ green time.');
+        if (facility === 'signalized' && cycleLength < greenTime) throw new Error('Cycle length must be ≥ green time.');
         if (laneWidthM < 2.0) throw new Error('Lane width should be at least 2.0 m.');
 
-        // build payload (imperial for API)
-        const payload = {
-          method,
-          facility_type: facilityType,
-          volume,
-          lanes,
-          cycle_length: cycleLength,
-          green_time: greenTime,
-          truck_pct: truckPct,
-          surge_factor: surgeFactor,
-          lane_width: laneWidthM * METERS_TO_FEET,
-          shoulder_width: shoulderWidthM * METERS_TO_FEET,
-          grade
-        };
+        let r;
+        if (facility === 'signalized') {
+          r = computeSignalized({ method, volume, lanes, cycleLength, greenTime, truckPct, surgeFactor, laneWidthM, grade });
+          outQueueVeh.textContent = r.queueVeh.toFixed(1) + ' veh';
+          outQueueMeters.textContent = r.storageMeters.toFixed(1) + ' m';
+          table95Queue.textContent = r.queueVeh.toFixed(1) + ' veh';
+          tableStorageMeters.textContent = r.storageMeters.toFixed(1) + ' m';
+        } else {
+          r = computeTwoLaneHighway({ volume, lanes, truckPct, surgeFactor, grade });
+          outQueueVeh.textContent = 'N/A (unsignalised)';
+          outQueueMeters.textContent = '—';
+          table95Queue.textContent = '—';
+          tableStorageMeters.textContent = '—';
+        }
 
-        // send request with fallback
-        setStatus('📡 Sending request…', 'info');
-        const { data, via } = await sendRequest(payload);
-        console.log('Response via:', via);
-
-        // extract & convert results
-        const queueFeet = data.queue_feet ?? data.queue_length_ft ?? data.queue_ft ?? 0;
-        const storageFeet = data.queue_storage_ft ?? data.design_storage_ft ?? data.storage_ft ?? 0;
-        const queueVeh = data.queue_veh ?? data.queue_length_veh ?? data.queue_length ?? 0;
-        const vcRatio = data.vc_ratio ?? data.v_c_ratio ?? data.vc ?? 0;
-        const los = data.los ?? data.level_of_service ?? '—';
-        const capacity = data.capacity ?? data.cap ?? 0;
-        const queue95 = data.queue_95th ?? data.queue_95 ?? data.q95 ?? 0;
-
-        const queueMeters = queueFeet ? (queueFeet / METERS_TO_FEET) : 0;
-        const storageMeters = storageFeet ? (storageFeet / METERS_TO_FEET) : 0;
-
-        // render
-        outQueueVeh.textContent = (queueVeh || 0).toFixed(1) + ' veh';
-        outQueueMeters.textContent = queueMeters ? queueMeters.toFixed(2) + ' m' : '—';
-        outVcRatio.textContent = vcRatio ? vcRatio.toFixed(3) : '—';
-        outLos.textContent = los;
-
-        tableCapacity.textContent = capacity ? capacity.toFixed(0) + ' veh/h' : '—';
-        table95Queue.textContent = queue95 ? queue95.toFixed(1) + ' veh' : '—';
-        tableStorageMeters.textContent = storageMeters ? storageMeters.toFixed(2) + ' m' : '—';
-        tableMethod.textContent = method;
+        outVcRatio.textContent = r.X.toFixed(3);
+        outLos.textContent = r.los;
+        tableCapacity.textContent = r.capacity.toFixed(0) + ' veh/h';
+        tableMethod.textContent = method + (facility === 'two_lane_highway' ? ' (v/c screening)' : '');
 
         resultsBox.style.display = 'block';
         requestAnimationFrame(() => resultsBox.classList.add('visible'));
 
-        setStatus(`✅ Analysis complete (via ${via}).`, 'success');
-
+        if (r.oversaturated) {
+          setStatus('⚠️ v/c ≥ 0.95 — near or over capacity. Queue/delay estimates grow quickly here; treat as approximate and consider a full HCM operational analysis.', 'warn');
+        } else {
+          setStatus('✅ Analysis complete.', 'success');
+        }
       } catch (err) {
-        console.error('API Error:', err);
-        setStatus('❌ API Request Failed: ' + err.message, 'error');
+        setStatus('❌ ' + err.message, 'error');
         resultsBox.classList.remove('visible');
         resultsBox.style.display = 'none';
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Analyse Queue';
       }
     });
 
-    // ---- auto-reset on page load ----
-    document.addEventListener('DOMContentLoaded', resetForm);
+    // ---- init ----
+    document.addEventListener('DOMContentLoaded', () => {
+      resetForm();
+    });
   </script>
 </body>
 </html>

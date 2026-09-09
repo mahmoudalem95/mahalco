@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAHALCO – Roundabout Analysis (Metric)</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px 16px;
+    }
+    .container {
+      max-width: 980px;
+      width: 100%;
+      background: #ffffff;
+      padding: 28px 30px 34px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      transition: box-shadow 0.2s;
+    }
+    .container:hover { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12); }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #0b1a2e;
+      letter-spacing: -0.3px;
+    }
+    .subhead {
+      color: #5a6a7a;
+      font-size: 15px;
+      margin: 0 0 24px;
+      border-bottom: 1px solid #e9edf2;
+      padding-bottom: 14px;
+    }
+    h3.section-title {
+      margin: 26px 0 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0b1a2e;
+      border-left: 4px solid #0066cc;
+      padding-left: 10px;
+    }
+    .section-note {
+      font-size: 13px;
+      color: #7a8a9a;
+      margin: -6px 0 14px;
+      line-height: 1.5;
+    }
+    .form-group { margin-bottom: 16px; }
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #1f2a3a;
+    }
+    label .unit { font-weight: 400; color: #7a8a9a; font-size: 12.5px; }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 15px;
+      border: 1.5px solid #dce1e8;
+      border-radius: 8px;
+      background: #fafbfc;
+      transition: border 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+      color: #1a2634;
+    }
+    input:focus, select:focus {
+      border-color: #0066cc;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+      background: #fff;
+    }
+    input[type="number"] { -moz-appearance: textfield; }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    @media (max-width: 720px) {
+      .row-2, .row-3 { grid-template-columns: 1fr; gap: 10px; }
+      .container { padding: 20px 16px 24px; }
+    }
+    .table-scroll { overflow-x: auto; margin-top: 6px; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 14px; }
+    th, td { border: 1px solid #e0e8f0; padding: 10px 12px; text-align: left; }
+    th {
+      background: #f0f4fa;
+      font-weight: 600;
+      color: #1f2a3a;
+      white-space: nowrap;
+      font-size: 12.5px;
+    }
+    td { background: #ffffff; }
+    #approachTable { font-size: 13px; min-width: 900px; }
+    #approachTable th, #approachTable td { padding: 6px 7px; }
+    #approachTable td:first-child {
+      font-weight: 700;
+      color: #0b1a2e;
+      background: #f8faff;
+      white-space: nowrap;
+    }
+    #approachTable input, #approachTable select {
+      padding: 7px 8px;
+      font-size: 13.5px;
+      border-radius: 6px;
+      min-width: 74px;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    button {
+      padding: 11px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button:active { transform: scale(0.97); }
+    #submitBtn {
+      background: #0066cc;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 102, 204, 0.25);
+    }
+    #submitBtn:hover:not(:disabled) {
+      background: #0055b3;
+      box-shadow: 0 4px 14px rgba(0, 102, 204, 0.35);
+    }
+    .reset-btn { background: #e9edf2; color: #2d3a4a; }
+    .reset-btn:hover { background: #dce1e8; }
+    .status-msg {
+      margin-top: 16px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      display: none;
+      line-height: 1.5;
+    }
+    .status-msg.info { display: block; background: #e8f0fe; color: #0055a0; border-left: 4px solid #0066cc; }
+    .status-msg.error { display: block; background: #fde8e8; color: #b33; border-left: 4px solid #cc4444; }
+    .status-msg.warn { display: block; background: #fff6e0; color: #8a6100; border-left: 4px solid #e0a800; }
+    .status-msg.success { display: block; background: #e6f5e6; color: #1f7a2a; border-left: 4px solid #2b8f3a; }
+    .results-box {
+      margin-top: 28px;
+      padding: 20px 22px 24px;
+      background: #f8faff;
+      border-radius: 12px;
+      border: 1px solid #e0e8f0;
+      display: none;
+    }
+    .results-box.visible { display: block; }
+    .results-box h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #0b1a2e;
+      letter-spacing: -0.2px;
+    }
+    .results-box h4 {
+      margin: 22px 0 4px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1f2a3a;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 24px;
+      margin-bottom: 6px;
+    }
+    @media (max-width: 560px) { .result-grid { grid-template-columns: 1fr; } }
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 0;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 14.5px;
+    }
+    .result-item .label { color: #4a5a6a; font-weight: 500; }
+    .result-item .value {
+      font-weight: 700;
+      color: #0b1a2e;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .result-item .value.highlight { color: #0066cc; }
+    .results-box table { background: #fff; border-radius: 8px; overflow: hidden; }
+    .results-box td { font-variant-numeric: tabular-nums; }
+    .los {
+      display: inline-block;
+      min-width: 22px;
+      text-align: center;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+    }
+    .los-A { background: #1f7a2a; }
+    .los-B { background: #4f9e2f; }
+    .los-C { background: #b58a00; }
+    .los-D { background: #d97a00; }
+    .los-E { background: #cc5500; }
+    .los-F { background: #c02b2b; }
+    .warrant-panel {
+      margin-top: 10px;
+      border: 1px solid #e0e8f0;
+      border-radius: 10px;
+      background: #fff;
+      padding: 14px 16px;
+    }
+    .warrant-line {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 7px 0;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 14px;
+      color: #2d3a4a;
+      line-height: 1.5;
+    }
+    .warrant-line:last-child { border-bottom: none; }
+    .flag {
+      flex: 0 0 auto;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .flag.met { background: #fde8e8; color: #b33; }
+    .flag.not { background: #e6f5e6; color: #1f7a2a; }
+    .footnote {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #6a7a8a;
+      border-top: 1px solid #e9edf2;
+      padding-top: 14px;
+      line-height: 1.6;
+    }
+    .footnote a { color: #0066cc; text-decoration: none; }
+    .footnote a:hover { text-decoration: underline; }
+    .badge {
+      display: inline-block;
+      background: #e9edf2;
+      color: #2d3a4a;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🔄 Roundabout Analysis <span class="badge">Metric</span></h1>
+    <p class="subhead">Entry capacity, v/c, control delay, 95th‑percentile queue and LOS for single‑ and multi‑lane roundabouts, plus pedestrian and bicycle delay and a signalisation warrant screening.<br>
+      <span style="font-size:13px;color:#6a7a8a;">HCM 6th/7th Edition Chapter 22 method, computed entirely in your browser — no server round‑trip.</span></p>
+
+    <form id="rbtForm" novalidate>
+
+      <h3 class="section-title">Roundabout geometry and project</h3>
+      <div class="row-3">
+        <div class="form-group">
+          <label for="rbtId">Roundabout ID</label>
+          <input type="text" id="rbtId" value="RBT-01">
+        </div>
+        <div class="form-group">
+          <label for="periodLabel">Analysis period</label>
+          <input type="text" id="periodLabel" value="AM peak 07:30–08:30">
+        </div>
+        <div class="form-group">
+          <label for="phf">Peak hour factor</label>
+          <input type="number" id="phf" value="0.92" step="0.01" min="0.25" max="1" required>
+        </div>
+      </div>
+      <div class="row-3">
+        <div class="form-group">
+          <label for="inscribedD">Inscribed diameter <span class="unit">(m)</span></label>
+          <input type="number" id="inscribedD" value="45" step="0.1" min="15" required>
+        </div>
+        <div class="form-group">
+          <label for="islandD">Central island diameter <span class="unit">(m)</span></label>
+          <input type="number" id="islandD" value="33" step="0.1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="entryWidth">Entry width <span class="unit">(m)</span></label>
+          <input type="number" id="entryWidth" value="4.60" step="0.05" min="2.5" required>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label for="circWidth">Circulatory roadway width <span class="unit">(m)</span></label>
+          <input type="number" id="circWidth" value="6.00" step="0.05" min="2.5" required>
+        </div>
+        <div class="form-group">
+          <label for="periodHours">Analysis period <span class="unit">(hours)</span></label>
+          <input type="number" id="periodHours" value="0.25" step="0.05" min="0.05" max="1" required>
+        </div>
+      </div>
+
+      <h3 class="section-title">Calibration parameters</h3>
+      <p class="section-note">Leave headway and gap at 0 to use the HCM national‑default capacity models. Entering your own values switches every lane to the calibrated form c = (3600/t<sub>f</sub>)·exp[−(t<sub>c</sub> − t<sub>f</sub>/2)·v<sub>c</sub>/3600].</p>
+      <div class="row-3">
+        <div class="form-group">
+          <label for="hvPct">Heavy vehicles <span class="unit">(%)</span></label>
+          <input type="number" id="hvPct" value="3" step="0.1" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+          <label for="driverPop">Driver population factor</label>
+          <input type="number" id="driverPop" value="1.00" step="0.01" min="0.5" max="1.2" required>
+        </div>
+        <div class="form-group">
+          <label for="pedFactor">Pedestrian flow factor</label>
+          <input type="number" id="pedFactor" value="1.00" step="0.01" min="0.5" max="1.2" required>
+        </div>
+      </div>
+      <div class="row-3">
+        <div class="form-group">
+          <label for="bikeFactor">Bicycle flow factor</label>
+          <input type="number" id="bikeFactor" value="1.00" step="0.01" min="0" max="2" required>
+        </div>
+        <div class="form-group">
+          <label for="followUp">Follow‑up headway <span class="unit">(s, 0 = default)</span></label>
+          <input type="number" id="followUp" value="0" step="0.01" min="0" max="6" required>
+        </div>
+        <div class="form-group">
+          <label for="criticalGap">Critical gap <span class="unit">(s, 0 = default)</span></label>
+          <input type="number" id="criticalGap" value="0" step="0.01" min="0" max="9" required>
+        </div>
+      </div>
+
+      <h3 class="section-title">Approaches</h3>
+      <p class="section-note">Enter approach demand and lane configuration. Conflicting bicycle and pedestrian volumes affect entry capacity and non‑motorised‑user delay. Leave an approach at zero entry volume to exclude it (3‑leg roundabouts).</p>
+      <div class="table-scroll">
+        <table id="approachTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Entry lanes</th>
+              <th>Circulating lanes</th>
+              <th>Entry volume</th>
+              <th>Circulating volume</th>
+              <th>Exiting volume</th>
+              <th>Right turn</th>
+              <th>Left turn</th>
+              <th>Through</th>
+              <th>Bikes</th>
+              <th>Pedestrians</th>
+            </tr>
+          </thead>
+          <tbody id="approachBody"></tbody>
+        </table>
+      </div>
+
+      <div class="actions">
+        <button type="submit" id="submitBtn">Analyse roundabout</button>
+        <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
+      </div>
+    </form>
+
+    <div id="statusMsg" class="status-msg"></div>
+
+    <div id="results" class="results-box">
+      <h2>📊 Output <span style="font-size:14px;font-weight:400;color:#4a5a6a;">(metric)</span></h2>
+
+      <div class="result-grid">
+        <div class="result-item"><span class="label">Roundabout</span><span class="value" id="outId">--</span></div>
+        <div class="result-item"><span class="label">Analysis period</span><span class="value" id="outPeriod">--</span></div>
+        <div class="result-item"><span class="label">Total entering flow</span><span class="value" id="outTotalFlow">--</span></div>
+        <div class="result-item"><span class="label">Worst approach v/c</span><span class="value highlight" id="outWorstVC">--</span></div>
+        <div class="result-item"><span class="label">Intersection control delay</span><span class="value" id="outIntDelay">--</span></div>
+        <div class="result-item"><span class="label">Intersection LOS</span><span class="value highlight" id="outIntLos">--</span></div>
+      </div>
+
+      <h4>Entry lane operations</h4>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Approach</th><th>Lane</th><th>Demand<br>(veh/h)</th><th>Conflicting<br>(pc/h)</th>
+              <th>Capacity<br>(veh/h)</th><th>v/c</th><th>Delay<br>(s/veh)</th><th>LOS</th>
+              <th>Q<sub>95</sub><br>(veh)</th><th>Q<sub>95</sub><br>(m)</th>
+            </tr>
+          </thead>
+          <tbody id="laneBody"></tbody>
+        </table>
+      </div>
+
+      <h4>Approach summary</h4>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Approach</th><th>Demand (veh/h)</th><th>Capacity (veh/h)</th><th>v/c</th><th>Control delay (s/veh)</th><th>LOS</th><th>Q<sub>95</sub> (m)</th></tr>
+          </thead>
+          <tbody id="approachSummaryBody"></tbody>
+        </table>
+      </div>
+
+      <h4>Pedestrian and bicycle</h4>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Approach</th><th>Peds (p/h)</th><th>Crossing conflict (veh/h)</th><th>Ped delay (s)</th><th>Ped LOS</th><th>Bikes (bic/h)</th><th>Bike delay (s)</th><th>Bike LOS</th></tr>
+          </thead>
+          <tbody id="nonMotorBody"></tbody>
+        </table>
+      </div>
+
+      <h4>Signalisation warrant screening</h4>
+      <div class="warrant-panel" id="warrantPanel"></div>
+
+      <h4>Geometry and applicability checks</h4>
+      <div class="warrant-panel" id="geometryPanel"></div>
+
+      <div class="footnote">
+        ⚡ Capacity uses the HCM Chapter 22 exponential gap‑acceptance models; delay and queue use HCM Equations 22‑17 and 22‑20; LOS follows Exhibit 22‑8 (A ≤ 10 s, B ≤ 15, C ≤ 25, D ≤ 35, E ≤ 50, F &gt; 50 s or v/c &gt; 1.0). Warrant lines are a screening only — a formal MUTCD determination needs 8‑hour and 4‑hour counts, and meeting a warrant never by itself requires a signal. Verify final designs with a full operational analysis (HCS, SIDRA, VISSIM) and a licensed engineer.
+        <a href="#" onclick="clearStatus();return false;">Clear status</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================================
+    // Roundabout Analysis — HCM 6th/7th Edition Chapter 22,
+    // computed entirely client-side, metric input/output.
+    //
+    // Capacity (pc/h per entry lane): c = A · exp(−B · v_c,pce)
+    //   1 entry lane  / 1 circulating lane : A = 1380, B = 1.02e-3
+    //   1 entry lane  / 2 circulating lanes: A = 1420, B = 0.85e-3
+    //   2 entry lanes / any                : right lane A = 1420, B = 0.85e-3
+    //                                        left  lane A = 1350, B = 0.92e-3
+    //   Calibrated form (user t_f, t_c)    : A = 3600/t_f,
+    //                                        B = (t_c − t_f/2)/3600
+    // Delay  (Eq. 22-17): d = 3600/c + 900T[(x−1) + √((x−1)²
+    //                        + (3600/c)x/(450T))] + 5·min(x,1)
+    // Queue  (Eq. 22-20): Q95 = 900T[(x−1) + √((x−1)²
+    //                        + (3600/c)x/(150T))]·(c/3600)
+    // Pedestrian delay: gap-acceptance form d_p = (1/y)(e^(y·tc) − y·tc − 1)
+    //   with y = crossing conflict flow in veh/s and tc = crossing
+    //   time at 1.2 m/s plus 3 s start-up (HCM Ch.20 family).
+    // Pedestrian impedance of entry capacity uses the HCM f_ped form;
+    //   the two-lane-entry coefficients here are reduced-magnitude
+    //   proxies — override them with the Pedestrian flow factor if
+    //   you have local calibration.
+    // Bicycle delay is a screening estimate: bicycles entering in
+    //   mixed traffic queue with vehicles, so bike delay is taken as
+    //   the approach control delay scaled by the bicycle flow factor.
+    // ==========================================================
+
+    const APPROACHES = [
+      { key: 'north', label: 'NORTH' },
+      { key: 'east',  label: 'EAST'  },
+      { key: 'south', label: 'SOUTH' },
+      { key: 'west',  label: 'WEST'  }
+    ];
+
+    // Reasonable starting values so the page demonstrates itself.
+    const DEFAULTS = {
+      north: { entryLanes: 1, circLanes: 1, entry: 520, circ: 380, exit: 460, rt: 120, lt: 110, th: 290, bikes: 10, peds: 40 },
+      east:  { entryLanes: 1, circLanes: 1, entry: 430, circ: 450, exit: 500, rt: 100, lt: 90,  th: 240, bikes: 5,  peds: 25 },
+      south: { entryLanes: 1, circLanes: 1, entry: 560, circ: 410, exit: 520, rt: 140, lt: 120, th: 300, bikes: 8,  peds: 60 },
+      west:  { entryLanes: 1, circLanes: 1, entry: 380, circ: 430, exit: 410, rt: 80,  lt: 100, th: 200, bikes: 4,  peds: 30 }
+    };
+
+    // ---- build the approach input rows ----
+    const approachBody = document.getElementById('approachBody');
+    APPROACHES.forEach(a => {
+      const d = DEFAULTS[a.key];
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + a.label + '</td>' +
+        '<td><select id="' + a.key + '_entryLanes"><option value="1">1</option><option value="2">2</option></select></td>' +
+        '<td><select id="' + a.key + '_circLanes"><option value="1">1</option><option value="2">2</option></select></td>' +
+        numCell(a.key + '_entry', d.entry) +
+        numCell(a.key + '_circ', d.circ) +
+        numCell(a.key + '_exit', d.exit) +
+        numCell(a.key + '_rt', d.rt) +
+        numCell(a.key + '_lt', d.lt) +
+        numCell(a.key + '_th', d.th) +
+        numCell(a.key + '_bikes', d.bikes) +
+        numCell(a.key + '_peds', d.peds);
+      approachBody.appendChild(tr);
+      document.getElementById(a.key + '_entryLanes').value = String(d.entryLanes);
+      document.getElementById(a.key + '_circLanes').value = String(d.circLanes);
+    });
+
+    function numCell(id, value) {
+      return '<td><input type="number" id="' + id + '" value="' + value + '" min="0" step="1"></td>';
+    }
+
+    // ---- DOM refs ----
+    const form = document.getElementById('rbtForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const resultsBox = document.getElementById('results');
+
+    function $(id) { return document.getElementById(id); }
+    function num(id) { return parseFloat($(id).value); }
+    function fmt(x, d) { return (isFinite(x) ? x.toFixed(d === undefined ? 1 : d) : '—'); }
+
+    function setStatus(msg, type) {
+      statusMsg.innerHTML = msg;
+      statusMsg.className = 'status-msg ' + (type || 'info');
+      statusMsg.style.display = 'block';
+    }
+    function clearStatus() {
+      statusMsg.innerHTML = '';
+      statusMsg.className = 'status-msg';
+      statusMsg.style.display = 'none';
+    }
+    function resetForm() {
+      APPROACHES.forEach(a => {
+        const d = DEFAULTS[a.key];
+        $(a.key + '_entryLanes').value = String(d.entryLanes);
+        $(a.key + '_circLanes').value = String(d.circLanes);
+        ['entry','circ','exit','rt','lt','th','bikes','peds'].forEach(f => { $(a.key + '_' + f).value = d[f]; });
+      });
+      $('rbtId').value = 'RBT-01';
+      $('periodLabel').value = 'AM peak 07:30–08:30';
+      $('phf').value = 0.92;
+      $('inscribedD').value = 45;
+      $('islandD').value = 33;
+      $('entryWidth').value = 4.60;
+      $('circWidth').value = 6.00;
+      $('periodHours').value = 0.25;
+      $('hvPct').value = 3;
+      $('driverPop').value = 1.00;
+      $('pedFactor').value = 1.00;
+      $('bikeFactor').value = 1.00;
+      $('followUp').value = 0;
+      $('criticalGap').value = 0;
+      resultsBox.classList.remove('visible');
+      resultsBox.style.display = 'none';
+      clearStatus();
+    }
+
+    // ---- LOS scales ----
+    function losFromDelay(d, x) {
+      if (x > 1.0) return 'F';
+      if (d <= 10) return 'A';
+      if (d <= 15) return 'B';
+      if (d <= 25) return 'C';
+      if (d <= 35) return 'D';
+      if (d <= 50) return 'E';
+      return 'F';
+    }
+    function losPed(d) {
+      if (d <= 5) return 'A';
+      if (d <= 10) return 'B';
+      if (d <= 20) return 'C';
+      if (d <= 30) return 'D';
+      if (d <= 45) return 'E';
+      return 'F';
+    }
+    function losTag(l) { return '<span class="los los-' + l + '">' + l + '</span>'; }
+
+    // ---- capacity model coefficients ----
+    function laneCoefficients(entryLanes, circLanes, laneIndex, tf, tc) {
+      if (tf > 0 && tc > 0) {
+        return { A: 3600 / tf, B: (tc - tf / 2) / 3600, src: 'calibrated' };
+      }
+      if (entryLanes === 1) {
+        return circLanes === 1
+          ? { A: 1380, B: 0.00102, src: '1×1' }
+          : { A: 1420, B: 0.00085, src: '1×2' };
+      }
+      return laneIndex === 0
+        ? { A: 1350, B: 0.00092, src: 'left lane' }    // left (inner) entry lane
+        : { A: 1420, B: 0.00085, src: 'right lane' };  // right (outer) entry lane
+    }
+
+    // Pedestrian impedance of entry capacity, HCM f_ped form.
+    function pedImpedance(circPce, nPed, entryLanes) {
+      if (!(nPed > 0)) return 1;
+      if (entryLanes === 1) {
+        if (circPce > 881) return 1.0; // circulating flow already governs the gap supply
+        return nPed <= 101
+          ? 1 - 0.000137 * nPed
+          : Math.max(0.997 - 0.000206 * nPed, 0.30);
+      }
+      if (circPce > 1500) return 1.0;
+      return nPed <= 101
+        ? 1 - 0.000073 * nPed
+        : Math.max(0.998 - 0.000110 * nPed, 0.50);
+    }
+
+    function controlDelay(v, c, T) {
+      if (!(c > 0)) return 999;
+      const x = v / c;
+      const term = (x - 1) + Math.sqrt(Math.pow(x - 1, 2) + ((3600 / c) * x) / (450 * T));
+      return 3600 / c + 900 * T * term + 5 * Math.min(x, 1);
+    }
+    function queue95(v, c, T) {
+      if (!(c > 0)) return 0;
+      const x = v / c;
+      const term = (x - 1) + Math.sqrt(Math.pow(x - 1, 2) + ((3600 / c) * x) / (150 * T));
+      return 900 * T * term * (c / 3600);
+    }
+    function pedestrianDelay(conflictVeh, crossWidthM) {
+      const y = conflictVeh / 3600;               // veh/s
+      const tcP = crossWidthM / 1.2 + 3.0;        // 1.2 m/s walking speed + 3 s start-up
+      if (y <= 0) return 0;
+      const d = (1 / y) * (Math.exp(y * tcP) - y * tcP - 1);
+      return Math.min(d, 600);
+    }
+
+    // ---- main submit ----
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      clearStatus();
+      resultsBox.classList.remove('visible');
+      resultsBox.style.display = 'none';
+
+      try {
+        const phf = num('phf');
+        const T = num('periodHours');
+        const hv = num('hvPct');
+        const driverPop = num('driverPop');
+        const pedFactorIn = num('pedFactor');
+        const bikeFactor = num('bikeFactor');
+        const tf = num('followUp');
+        const tc = num('criticalGap');
+        const inscribedD = num('inscribedD');
+        const islandD = num('islandD');
+        const entryWidth = num('entryWidth');
+        const circWidth = num('circWidth');
+
+        const geomVals = [phf, T, hv, driverPop, pedFactorIn, bikeFactor, tf, tc, inscribedD, islandD, entryWidth, circWidth];
+        if (geomVals.some(isNaN)) throw new Error('Fill in every geometry and calibration field with a number.');
+        if (phf <= 0 || phf > 1) throw new Error('Peak hour factor must be greater than 0 and at most 1.00.');
+        if (T <= 0 || T > 1) throw new Error('Analysis period must be between 0.05 and 1.00 hours.');
+        if (islandD >= inscribedD) throw new Error('Central island diameter must be smaller than the inscribed diameter.');
+        if ((tf > 0) !== (tc > 0)) throw new Error('Enter both follow‑up headway and critical gap, or leave both at 0 for HCM defaults.');
+        if (tf > 0 && tc <= tf / 2) throw new Error('Critical gap must be larger than half the follow‑up headway.');
+
+        const fHV = 1 / (1 + 0.01 * hv * (2.0 - 1.0)); // ET = 2.0 passenger-car equivalents
+
+        const laneRows = [];
+        const approachRows = [];
+        const nonMotorRows = [];
+        let totalDemand = 0, weightedDelay = 0, worstVC = 0, worstApproach = '—';
+        let anyActive = false;
+
+        APPROACHES.forEach(a => {
+          a._res = null;
+          const entryLanes = parseInt($(a.key + '_entryLanes').value, 10);
+          const circLanes = parseInt($(a.key + '_circLanes').value, 10);
+          const entryV = num(a.key + '_entry');
+          const circV = num(a.key + '_circ');
+          const exitV = num(a.key + '_exit');
+          const rt = num(a.key + '_rt');
+          const lt = num(a.key + '_lt');
+          const th = num(a.key + '_th');
+          const bikes = num(a.key + '_bikes');
+          const peds = num(a.key + '_peds');
+
+          if ([entryV, circV, exitV, rt, lt, th, bikes, peds].some(isNaN)) {
+            throw new Error('Approach ' + a.label + ' has a blank or invalid volume cell.');
+          }
+          if (entryV <= 0) {
+            approachRows.push('<tr><td>' + a.label + '</td><td colspan="6" style="color:#8a97a5;">Not analysed — zero entry demand</td></tr>');
+            return;
+          }
+          anyActive = true;
+
+          // Demand flow rate for the peak 15 minutes.
+          const vEntry = entryV / phf;
+          const vCircVeh = circV / phf;
+          const vCircPce = vCircVeh / fHV + bikes * bikeFactor; // bicycles ride in the circulating stream
+
+          // Lane demand split. Left (inner) lane serves lefts + half the throughs.
+          let splits;
+          if (entryLanes === 1) {
+            splits = [vEntry];
+          } else {
+            const leftShare = lt + th / 2;
+            const rightShare = rt + th / 2;
+            const sum = leftShare + rightShare;
+            splits = sum > 0
+              ? [vEntry * leftShare / sum, vEntry * rightShare / sum]
+              : [vEntry / 2, vEntry / 2];
+          }
+
+          const fPedHCM = pedImpedance(vCircPce, peds, entryLanes);
+          const spacing = 7.6 + (hv / 100) * 3.0; // m per queued vehicle, nudged for heavy-vehicle share
+
+          let apCap = 0, apDelayNum = 0, apQueueM = 0, apVC = 0;
+
+          splits.forEach((vLane, i) => {
+            const co = laneCoefficients(entryLanes, circLanes, i, tf, tc);
+            const cPce = co.A * Math.exp(-co.B * vCircPce);
+            const cVeh = Math.max(cPce * fHV * fPedHCM * pedFactorIn * driverPop, 1);
+            const x = vLane / cVeh;
+            const d = controlDelay(vLane, cVeh, T);
+            const q = queue95(vLane, cVeh, T);
+            const los = losFromDelay(d, x);
+
+            apCap += cVeh;
+            apDelayNum += d * vLane;
+            apQueueM = Math.max(apQueueM, q * spacing);
+            apVC = Math.max(apVC, x);
+
+            laneRows.push(
+              '<tr><td>' + a.label + '</td><td>' +
+              (entryLanes === 1 ? 'Single' : (i === 0 ? 'Left' : 'Right')) +
+              '</td><td>' + fmt(vLane, 0) + '</td><td>' + fmt(vCircPce, 0) + '</td><td>' + fmt(cVeh, 0) +
+              '</td><td>' + fmt(x, 3) + '</td><td>' + fmt(d, 1) + '</td><td>' + losTag(los) +
+              '</td><td>' + fmt(q, 1) + '</td><td>' + fmt(q * spacing, 1) + '</td></tr>'
+            );
+          });
+
+          const apDelay = apDelayNum / vEntry;
+          const apLos = losFromDelay(apDelay, apVC);
+          totalDemand += vEntry;
+          weightedDelay += apDelayNum;
+          if (apVC > worstVC) { worstVC = apVC; worstApproach = a.label; }
+
+          approachRows.push(
+            '<tr><td>' + a.label + '</td><td>' + fmt(vEntry, 0) + '</td><td>' + fmt(apCap, 0) +
+            '</td><td>' + fmt(apVC, 3) + '</td><td>' + fmt(apDelay, 1) + '</td><td>' + losTag(apLos) +
+            '</td><td>' + fmt(apQueueM, 1) + '</td></tr>'
+          );
+
+          // Pedestrians cross the entry and exit legs of this approach.
+          const crossConflict = (entryV + exitV) / phf;
+          const dPed = pedestrianDelay(crossConflict, entryWidth + 1.5); // entry width plus splitter refuge
+          const dBike = apDelay * (bikeFactor > 0 ? bikeFactor : 1);
+          nonMotorRows.push(
+            '<tr><td>' + a.label + '</td><td>' + fmt(peds, 0) + '</td><td>' + fmt(crossConflict, 0) +
+            '</td><td>' + fmt(dPed, 1) + '</td><td>' + losTag(losPed(dPed)) +
+            '</td><td>' + fmt(bikes, 0) + '</td><td>' + fmt(dBike, 1) + '</td><td>' +
+            losTag(losFromDelay(dBike, apVC)) + '</td></tr>'
+          );
+
+          // Stash for warrant screening.
+          a._res = { entryV: entryV, vEntry: vEntry, vc: apVC, delay: apDelay, peds: peds, dPed: dPed, entryLanes: entryLanes, queueM: apQueueM };
+        });
+
+        if (!anyActive) throw new Error('Enter entry demand on at least one approach.');
+
+        const intDelay = weightedDelay / totalDemand;
+        const intLos = losFromDelay(intDelay, worstVC);
+
+        // ---- render tables ----
+        $('outId').textContent = $('rbtId').value || '—';
+        $('outPeriod').textContent = $('periodLabel').value || '—';
+        $('outTotalFlow').textContent = fmt(totalDemand, 0) + ' veh/h';
+        $('outWorstVC').textContent = fmt(worstVC, 3) + ' (' + worstApproach + ')';
+        $('outIntDelay').textContent = fmt(intDelay, 1) + ' s/veh';
+        $('outIntLos').innerHTML = losTag(intLos);
+        $('laneBody').innerHTML = laneRows.join('');
+        $('approachSummaryBody').innerHTML = approachRows.join('');
+        $('nonMotorBody').innerHTML = nonMotorRows.join('');
+
+        // ---- signalisation warrant screening ----
+        const active = APPROACHES.filter(a => a._res);
+        const sorted = active.slice().sort((p, q) => q._res.entryV - p._res.entryV);
+        const majorTotal = sorted.slice(0, 2).reduce((s, a) => s + a._res.entryV, 0);
+        const minorHigh = sorted.length > 2 ? sorted[2]._res.entryV : 0;
+        const minorLanes = sorted.length > 2 ? sorted[2]._res.entryLanes : 1;
+        const majorThreshold = sorted.slice(0, 2).some(a => a._res.entryLanes >= 2) ? 600 : 500;
+        const minorThreshold = minorLanes >= 2 ? 200 : 150;
+
+        const capacityFail = active.some(a => a._res.vc >= 1.0 || a._res.delay > 50);
+        const volumeMet = majorTotal >= majorThreshold && minorHigh >= minorThreshold;
+        const pedApproach = active.slice().sort((p, q) => q._res.dPed - p._res.dPed)[0];
+        const pedMet = pedApproach && pedApproach._res.peds >= 100 && pedApproach._res.dPed > 30;
+
+        const wLines = [];
+        wLines.push(warrantLine(capacityFail,
+          'Operational deficiency — at least one entry reaches v/c ≥ 1.00 or control delay above 50 s/veh (LOS F). Metering signals, an added entry lane or a geometric change merit study.',
+          'Operational check — every entry stays below v/c 1.00 and under 50 s/veh of control delay, so no capacity‑driven signal need is indicated.'));
+        wLines.push(warrantLine(volumeMet,
+          'MUTCD Warrant 3 (peak hour) volume screening met — major approaches carry ' + fmt(majorTotal, 0) + ' veh/h (threshold ' + majorThreshold + ') and the highest minor approach ' + fmt(minorHigh, 0) + ' veh/h (threshold ' + minorThreshold + '). Confirm with the full 4‑hour and 8‑hour count set.',
+          'MUTCD Warrant 3 (peak hour) volume screening not met — major approaches ' + fmt(majorTotal, 0) + ' veh/h against a ' + majorThreshold + ' veh/h threshold, highest minor approach ' + fmt(minorHigh, 0) + ' veh/h against ' + minorThreshold + ' veh/h.'));
+        wLines.push(warrantLine(!!pedMet,
+          'Pedestrian screening met on ' + (pedApproach ? pedApproach.label : '—') + ' — ' + (pedApproach ? fmt(pedApproach._res.peds, 0) : '0') + ' p/h with ' + (pedApproach ? fmt(pedApproach._res.dPed, 1) : '0') + ' s of crossing delay. Consider an RRFB, pedestrian hybrid beacon or raised crossing rather than full signalisation.',
+          'Pedestrian screening not met — no crossing combines 100 p/h or more with delay above 30 s.'));
+        $('warrantPanel').innerHTML = wLines.join('');
+
+        // ---- geometry and applicability checks ----
+        const gLines = [];
+        const impliedCirc = (inscribedD - islandD) / 2;
+        if (Math.abs(impliedCirc - circWidth) > 0.5) {
+          gLines.push(warrantLine(true, 'Geometry mismatch — the inscribed and central island diameters imply a circulatory width of ' + fmt(impliedCirc, 2) + ' m, but ' + fmt(circWidth, 2) + ' m was entered. Reconcile the dimensions before relying on the output.', ''));
+        } else {
+          gLines.push(warrantLine(false, '', 'Diameters and circulatory width are internally consistent (' + fmt(impliedCirc, 2) + ' m implied).'));
+        }
+        if (circWidth < entryWidth) {
+          gLines.push(warrantLine(true, 'Circulatory width (' + fmt(circWidth, 2) + ' m) is narrower than the entry width (' + fmt(entryWidth, 2) + ' m). Standard practice keeps it at 1.0–1.2 times the widest entry.', ''));
+        }
+        const multilane = active.some(a => a._res.entryLanes >= 2);
+        const dLow = multilane ? 45 : 30, dHigh = multilane ? 75 : 55;
+        if (inscribedD < dLow || inscribedD > dHigh) {
+          gLines.push(warrantLine(true, 'Inscribed diameter ' + fmt(inscribedD, 1) + ' m sits outside the usual ' + dLow + '–' + dHigh + ' m range for a ' + (multilane ? 'multi‑lane' : 'single‑lane') + ' roundabout. Capacity models were calibrated inside that range, so treat results as indicative.', ''));
+        } else {
+          gLines.push(warrantLine(false, '', 'Inscribed diameter is within the usual ' + dLow + '–' + dHigh + ' m range for a ' + (multilane ? 'multi‑lane' : 'single‑lane') + ' roundabout.'));
+        }
+        if (tf > 0 && tc > 0) {
+          gLines.push(warrantLine(false, '', 'Calibrated headways in use: t\u1d69 = ' + fmt(tf, 2) + ' s, t\u1d04 = ' + fmt(tc, 2) + ' s → capacity intercept ' + fmt(3600 / tf, 0) + ' pc/h.'));
+        } else {
+          gLines.push(warrantLine(false, '', 'HCM national‑default headways in use (single lane ≈ t\u1d69 2.61 s, t\u1d04 4.98 s). Local calibration is recommended for design‑level work.'));
+        }
+        $('geometryPanel').innerHTML = gLines.join('');
+
+        resultsBox.style.display = 'block';
+        const raf = (typeof requestAnimationFrame === 'function')
+          ? requestAnimationFrame
+          : function (fn) { setTimeout(fn, 0); };
+        raf(() => resultsBox.classList.add('visible'));
+
+        if (worstVC >= 1.0) {
+          setStatus('⚠️ Worst entry v/c is ' + fmt(worstVC, 2) + ' on ' + worstApproach + ' — the roundabout is over capacity. Delay and queue estimates grow very quickly here and should be confirmed with a microsimulation.', 'warn');
+        } else if (worstVC >= 0.85) {
+          setStatus('⚠️ Worst entry v/c is ' + fmt(worstVC, 2) + ' on ' + worstApproach + ' — approaching the practical capacity threshold. Check queue storage against the available approach length.', 'warn');
+        } else {
+          setStatus('✅ Analysis complete. Intersection LOS ' + intLos + ' at ' + fmt(intDelay, 1) + ' s/veh.', 'success');
+        }
+      } catch (err) {
+        setStatus('❌ ' + err.message, 'error');
+        resultsBox.classList.remove('visible');
+        resultsBox.style.display = 'none';
+      }
+    });
+
+    function warrantLine(met, metText, notText) {
+      return '<div class="warrant-line"><span class="flag ' + (met ? 'met' : 'not') + '">' +
+        (met ? 'FLAGGED' : 'CLEAR') + '</span><span>' + (met ? metText : notText) + '</span></div>';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { clearStatus(); });
+  </script>
+</body>
+</html>

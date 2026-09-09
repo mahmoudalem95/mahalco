@@ -66,6 +66,7 @@
         .masthead .wrap { display: flex; align-items: center; gap: 24px; height: 60px }
         .mark { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -.01em; font-size: 19px; color: var(--paper); text-decoration: none }
         .mark span { width: 22px; height: 10px; border-radius: 2px; background: repeating-linear-gradient(90deg, var(--marking) 0 7px, transparent 7px 12px) }
+        .flag-icon { height: 18px; width: auto; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255,255,255,0.15); flex: none; }
         .masthead nav { margin-inline-start: auto; display: flex; gap: 20px; font-size: 14.5px }
         .masthead nav a { color: var(--muted-dark); text-decoration: none; padding: 4px 0 }
         .masthead nav a:hover { color: var(--paper) }
@@ -209,7 +210,11 @@
 
     <header class="masthead">
         <div class="wrap">
-            <a class="mark" href="#top"><span aria-hidden="true"></span>Mahalco</a>
+            <a class="mark" href="#top">
+                <span aria-hidden="true"></span>
+                <img class="flag-icon" src="assets/IL.jpeg" alt="IL" loading="lazy">
+                Mahalco
+            </a>
             <nav>
                 <a href="#catalog">קטלוג</a>
                 <a href="#access">גישה ותשלום</a>
@@ -308,57 +313,51 @@
                         <div class="leaves">
                             <a class="leaf" href="critical-lane-volume.html"><h3>נפח נתיב קריטי<span class="tool-flag">כלי חי</span></h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
                             <a class="leaf" href="tool.html"><h3>כלי ניתוח צמתים<span class="tool-flag">כלי חי</span></h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
-                            <a class="leaf" href="apis-he.html"><h3><a class="leaf" href="critical-lane-volume.html"><h3>נפח נתיב קריטי<span class="tool-flag">כלי חי</span></h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-<a class="leaf" href="tool.html"><h3>כלי ניתוח צמתים<span class="tool-flag">כלי חי</span></h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
-<a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
-<a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
-<a class="leaf" href="roundabout-analysis-metric.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
-<a class="leaf" href="optimizes-signal-timing%20plans-metric.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
-<div class="soon"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></div></h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
+                            <a class="leaf" href="roundabout-analysis-metric.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
+                            <a class="leaf" href="optimizes-signal-timing%20plans-metric.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <div class="soon"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></div>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>נתיבים, מקטעים ומסדרונות<span class="t-n" data-twigcount>3</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח נתיבים ותורים</h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח מקטע רחוב עירוני</h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis"><h3>ניתוח נתיבים ותורים</h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-segment"><h3>ניתוח מקטע רחוב עירוני</h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></a>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>רמת שירות רב-אמצעית<span class="t-n" data-twigcount>4</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>רמת שירות להולכי רגל</h3><p>הליכות לפי רוחב מדרכה, הפרדה מהתנועה ותנאי החצייה.</p><span class="std">HCM Ch. 16</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>רמת שירות לרוכבי אופניים</h3><p>נוחות רכיבה לפי מצב המיסעה, נפח התנועה ושיעור הרכב הכבד.</p><span class="std">HCM Ch. 16</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>רמת שירות לתחבורה ציבורית</h3><p>תדירות שירות, מתקני תחנה ואמינות לאורך הקו.</p><span class="std">HCM Ch. 16</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>רמת שירות רב-אמצעית</h3><p>שילוב ציוני הולכי רגל, אופניים ותחבורה ציבורית לתוצאה אחת למסדרון.</p><span class="std">HCM Ch. 16</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los"><h3>רמת שירות להולכי רגל</h3><p>הליכות לפי רוחב מדרכה, הפרדה מהתנועה ותנאי החצייה.</p><span class="std">HCM Ch. 16</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/bicycle-los"><h3>רמת שירות לרוכבי אופניים</h3><p>נוחות רכיבה לפי מצב המיסעה, נפח התנועה ושיעור הרכב הכבד.</p><span class="std">HCM Ch. 16</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/transit-los"><h3>רמת שירות לתחבורה ציבורית</h3><p>תדירות שירות, מתקני תחנה ואמינות לאורך הקו.</p><span class="std">HCM Ch. 16</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/multimodal-los"><h3>רמת שירות רב-אמצעית</h3><p>שילוב ציוני הולכי רגל, אופניים ותחבורה ציבורית לתוצאה אחת למסדרון.</p><span class="std">HCM Ch. 16</span></a>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>תכנון גיאומטרי עירוני<span class="t-n" data-twigcount>4</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>תכנון גיאומטרי של צומת עירוני</h3><p>פריסה גיאומטרית, רדיוסי פינה ומשולשי ראייה.</p><span class="std">AASHTO Green Book</span></a>
+                            <div class="soon"><h3>תכנון גיאומטרי של צומת עירוני</h3><p>פריסה גיאומטרית, רדיוסי פינה ומשולשי ראייה.</p><span class="std">AASHTO Green Book</span></div>
                             <a class="leaf" href="typical-section.html"><h3>חתך רוחב עירוני</h3><p>רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון מחלפים</h3><p>מחלף יהלום, פארקלו, SPUI וצורות מחלף עירוניות נוספות.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון דרכי שירות</h3><p>דרכי שירות מקבילות לעורק ראשי והחיבורים אליו.</p><span class="std">AASHTO Green Book</span></a>
+                            <div class="soon"><h3>תכנון מחלפים</h3><p>מחלף יהלום, פארקלו, SPUI וצורות מחלף עירוניות נוספות.</p><span class="std">AASHTO Green Book</span></div>
+                            <div class="soon"><h3>תכנון דרכי שירות</h3><p>דרכי שירות מקבילות לעורק ראשי והחיבורים אליו.</p><span class="std">AASHTO Green Book</span></div>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>תשתיות נלוות ובטיחות<span class="t-n" data-twigcount>5</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>פונקציות ביצועי בטיחות בצמתים</h3><p>תדירות תאונות צפויה בצמתים עירוניים לפי סוג בקרה ונפח תנועה.</p><span class="std">HSM</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון מערכות ניקוז עירוני</h3><p>תכנון תעלות, ספיגה, תולעים וספל קולטי מי גשמים.</p><span class="std">FHWA / AASHTO</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>הנחיות שילוט ותמרורים</h3><p>תכנון שלטי הכוונה, תמרורי אזהרה וחובה לפי MUTCD.</p><span class="std">MUTCD</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון שבילי אופניים</h3><p>רוחב, שיפוע, הפרדה מתנועה וריצוף לשבילי אופניים עירוניים.</p><span class="std">AASHTO Guide</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון מדרכות והולכי רגל</h3><p>רוחב מדרכה, ריהוט רחוב, מעברי חצייה ונגישות.</p><span class="std">AASHTO / ADA</span></a>
+                            <div class="soon"><h3>פונקציות ביצועי בטיחות בצמתים</h3><p>תדירות תאונות צפויה בצמתים עירוניים לפי סוג בקרה ונפח תנועה.</p><span class="std">HSM</span></div>
+                            <div class="soon"><h3>תכנון מערכות ניקוז עירוני</h3><p>תכנון תעלות, ספיגה, תולעים וספל קולטי מי גשמים.</p><span class="std">FHWA / AASHTO</span></div>
+                            <div class="soon"><h3>הנחיות שילוט ותמרורים</h3><p>תכנון שלטי הכוונה, תמרורי אזהרה וחובה לפי MUTCD.</p><span class="std">MUTCD</span></div>
+                            <div class="soon"><h3>תכנון שבילי אופניים</h3><p>רוחב, שיפוע, הפרדה מתנועה וריצוף לשבילי אופניים עירוניים.</p><span class="std">AASHTO Guide</span></div>
+                            <div class="soon"><h3>תכנון מדרכות והולכי רגל</h3><p>רוחב מדרכה, ריהוט רחוב, מעברי חצייה ונגישות.</p><span class="std">AASHTO / ADA</span></div>
                         </div>
                     </details>
 
@@ -377,32 +376,32 @@
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>כבישים מהירים ומחלפים<span class="t-n" data-twigcount>5</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח מקטע בסיסי בכביש מהיר</h3><p>צפיפות, מהירות ממוצעת ורמת שירות במקטעים ללא הפרעה.</p><span class="std">HCM Ch. 21 / 23</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח מתקן כביש מהיר</h3><p>רמת שירות לכלל המתקן על פני מקטעים בסיסיים, מקטעי שזירה ורמפות ברצף.</p><span class="std">HCM Ch. 21</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח מיזוג והתפצלות ברמפות</h3><p>צפיפות ורמת שירות באזורי ההשפעה של רמפת כניסה ורמפת יציאה.</p><span class="std">HCM Ch. 25</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח מקטע שזירה</h3><p>יחס שזירה, ביקוש ביחידות רכב נוסעים, קיבולת, מהירות ותנאי מרווח בין רמפות.</p><span class="std">HCM Ch. 24</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>רמת שירות במחלף</h3><p>קיבולת מסופי הרמפות, תורים בקטע הפנימי והשפעה הדדית בין שני הצמתים.</p><span class="std">HCM Ch. 23</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/basic-freeway"><h3>ניתוח מקטע בסיסי בכביש מהיר</h3><p>צפיפות, מהירות ממוצעת ורמת שירות במקטעים ללא הפרעה.</p><span class="std">HCM Ch. 21 / 23</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/freeway-facility"><h3>ניתוח מתקן כביש מהיר</h3><p>רמת שירות לכלל המתקן על פני מקטעים בסיסיים, מקטעי שזירה ורמפות ברצף.</p><span class="std">HCM Ch. 21</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/ramp-merge-diverge"><h3>ניתוח מיזוג והתפצלות ברמפות</h3><p>צפיפות ורמת שירות באזורי ההשפעה של רמפת כניסה ורמפת יציאה.</p><span class="std">HCM Ch. 25</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/weaving-segment"><h3>ניתוח מקטע שזירה</h3><p>יחס שזירה, ביקוש ביחידות רכב נוסעים, קיבולת, מהירות ותנאי מרווח בין רמפות.</p><span class="std">HCM Ch. 24</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/interchange-los"><h3>רמת שירות במחלף</h3><p>קיבולת מסופי הרמפות, תורים בקטע הפנימי והשפעה הדדית בין שני הצמתים.</p><span class="std">HCM Ch. 23</span></a>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>כבישים דו-נתיביים ואמינות<span class="t-n" data-twigcount>3</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח כביש דו-נתיבי</h3><p>צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ורמת שירות.</p><span class="std">HCM Ch. 15</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>אמינות זמני נסיעה בכביש מהיר</h3><p>מדד זמן תכנון, מדד מרווח ביטחון והתפלגות האמינות על פני שנה.</p><span class="std">HCM Ch. 10</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>הצדקה לנתיב טיפוס</h3><p>שיפוע, אורך, ביצועי משאיות וירידת מהירות, לכדי הצדקה שניתן להגן עליה.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/two-lane-highway"><h3>ניתוח כביש דו-נתיבי</h3><p>צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ורמת שירות.</p><span class="std">HCM Ch. 15</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/freeway-reliability"><h3>אמינות זמני נסיעה בכביש מהיר</h3><p>מדד זמן תכנון, מדד מרווח ביטחון והתפלגות האמינות על פני שנה.</p><span class="std">HCM Ch. 10</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/climbing-lane-justification"><h3>הצדקה לנתיב טיפוס</h3><p>שיפוע, אורך, ביצועי משאיות וירידת מהירות, לכדי הצדקה שניתן להגן עליה.</p><span class="std">AASHTO Green Book</span></a>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>תוואי, עקומות וחתכים<span class="t-n" data-twigcount>6</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>תכנון עקומה אופקית</h3><p>רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון עקומה אנכית</h3><p>אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>חישוב מרחק ראייה</h3><p>מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/horizontal-curve"><h3>תכנון עקומה אופקית</h3><p>רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/vertical-curve"><h3>תכנון עקומה אנכית</h3><p>אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance"><h3>חישוב מרחק ראייה</h3><p>מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.</p><span class="std">AASHTO Green Book</span></a>
                             <a class="leaf" href="rural.html"><h3>חתך רוחב בין-עירוני</h3><p>רוחבי נתיב ושוליים עם שיפוע רוחבי לפי סוג הכביש.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>חתכים טיפוסיים בין-עירוניים</h3><p>חתכי מסדרון עם נתיבי נסיעה, שוליים, איי הפרדה ורצועות ביטחון.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון תוואי כביש בשטחים פתוחים</h3><p>התאמת תוואי לנוף, שיקולי אקולוגיה, שיפועים וניקוז.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/typical-sections-interurban"><h3>חתכים טיפוסיים בין-עירוניים</h3><p>חתכי מסדרון עם נתיבי נסיעה, שוליים, איי הפרדה ורצועות ביטחון.</p><span class="std">AASHTO Green Book</span></a>
+                            <div class="soon"><h3>תכנון תוואי כביש בשטחים פתוחים</h3><p>התאמת תוואי לנוף, שיקולי אקולוגיה, שיפועים וניקוז.</p><span class="std">AASHTO Green Book</span></div>
                         </div>
                     </details>
 
@@ -421,38 +420,38 @@
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>תסקירים, קיבולת וכלכלה<span class="t-n" data-twigcount>3</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>תסקיר השפעה תחבורתית</h3><p>מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.</p><span class="std">HCM &amp; AASHTO</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ספריית קיבולת ומקדמי תיקון</h3><p>קיבולות בסיס עם תיקונים לרכב כבד, שיפוע ואוכלוסיית נהגים.</p><span class="std">HCM</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח כלכלי ותועלת-עלות</h3><p>עלויות משתמש, תועלות, ערך נוכחי נקי ודירוג פרויקטים.</p><span class="std">AASHTO Red Book</span></a>
+                            <div class="soon"><h3>תסקיר השפעה תחבורתית</h3><p>מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.</p><span class="std">HCM &amp; AASHTO</span></div>
+                            <div class="soon"><h3>ספריית קיבולת ומקדמי תיקון</h3><p>קיבולות בסיס עם תיקונים לרכב כבד, שיפוע ואוכלוסיית נהגים.</p><span class="std">HCM</span></div>
+                            <div class="soon"><h3>ניתוח כלכלי ותועלת-עלות</h3><p>עלויות משתמש, תועלות, ערך נוכחי נקי ודירוג פרויקטים.</p><span class="std">AASHTO Red Book</span></div>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>מיסעה, גשרים ובטיחות שוליים<span class="t-n" data-twigcount>5</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>מסלול סחיפה של רכב תכן</h3><p>מסלולי פנייה וסחיפה של רכבי תכן סטנדרטיים ברדיוס נתון.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון מבנה מיסעה</h3><p>עובי מבנה לפי שיטת 1993 ולפי ניתוח מכני-אמפירי.</p><span class="std">AASHTO Pavement Structures</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>בחירת אמצעי בטיחות בשולי הדרך</h3><p>מעקות, כריות בלימה וקצוות, בהתאמה למפגע ולמהירות.</p><span class="std">AASHTO Roadside Design Guide</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח סחיפה בגשרים</h3><p>פוטנציאל סחיפה כללית, סביב עמודים וסביב כתפיים במעבר נחל.</p><span class="std">HEC-18 / AASHTO LRFD</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>הנחיות בטיחות בתכנון</h3><p>עקרונות עיצוב בטיחותי, הפחתת נקודות חיכוך, הארת כביש.</p><span class="std">HSM / AASHTO</span></a>
+                            <div class="soon"><h3>מסלול סחיפה של רכב תכן</h3><p>מסלולי פנייה וסחיפה של רכבי תכן סטנדרטיים ברדיוס נתון.</p><span class="std">AASHTO Green Book</span></div>
+                            <div class="soon"><h3>תכנון מבנה מיסעה</h3><p>עובי מבנה לפי שיטת 1993 ולפי ניתוח מכני-אמפירי.</p><span class="std">AASHTO Pavement Structures</span></div>
+                            <div class="soon"><h3>בחירת אמצעי בטיחות בשולי הדרך</h3><p>מעקות, כריות בלימה וקצוות, בהתאמה למפגע ולמהירות.</p><span class="std">AASHTO Roadside Design Guide</span></div>
+                            <div class="soon"><h3>ניתוח סחיפה בגשרים</h3><p>פוטנציאל סחיפה כללית, סביב עמודים וסביב כתפיים במעבר נחל.</p><span class="std">HEC-18 / AASHTO LRFD</span></div>
+                            <div class="soon"><h3>הנחיות בטיחות בתכנון</h3><p>עקרונות עיצוב בטיחותי, הפחתת נקודות חיכוך, הארת כביש.</p><span class="std">HSM / AASHTO</span></div>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>תחבורה ציבורית, חניה ורב-אמצעי<span class="t-n" data-twigcount>3</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח נתיבי תחבורה ציבורית</h3><p>תכנון נת"צ, תחנות, אמצעי בטיחות ושדרוג.</p><span class="std">AASHTO / APTA</span></a>
+                            <div class="soon"><h3>ניתוח נתיבי תחבורה ציבורית</h3><p>תכנון נת"צ, תחנות, אמצעי בטיחות ושדרוג.</p><span class="std">AASHTO / APTA</span></div>
                             <a class="leaf" href="parking-regulations.html"><h3>תכנון חניונים ותקנות חניה<span class="tool-flag">כלי חי</span></h3><p>חניוני צד, חניוני קומות, תקני חניה ונגישות.</p><span class="std">ITE / AASHTO</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח צמתים רב-אמצעי</h3><p>שילוב הולכי רגל, אופניים, תחבורה ציבורית ורכב פרטי בצומת אחד.</p><span class="std">HCM Ch. 16 / 19</span></a>
+                            <div class="soon"><h3>ניתוח צמתים רב-אמצעי</h3><p>שילוב הולכי רגל, אופניים, תחבורה ציבורית ורכב פרטי בצומת אחד.</p><span class="std">HCM Ch. 16 / 19</span></div>
                         </div>
                     </details>
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>סביבה, ניהול וטכנולוגיה<span class="t-n" data-twigcount>3</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="apis-he.html"><h3>הערכת השפעה על הסביבה</h3><p>הערכת זיהום אוויר, רעש, נוף וחיתוך שטחים פתוחים.</p><span class="std">FHWA / NEPA</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניהול פרויקטים תחבורתיים</h3><p>תכנון, ביצוע, בקרת עלויות ולוחות זמנים לפרויקטי תשתית.</p><span class="std">PMCM / AASHTO</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תכנון תשתיות חכמות</h3><p>חיישנים, IoT, תקשורת רכב-תשתית וניהול תנועה חכם.</p><span class="std">FHWA / ITS</span></a>
+                            <div class="soon"><h3>הערכת השפעה על הסביבה</h3><p>הערכת זיהום אוויר, רעש, נוף וחיתוך שטחים פתוחים.</p><span class="std">FHWA / NEPA</span></div>
+                            <div class="soon"><h3>ניהול פרויקטים תחבורתיים</h3><p>תכנון, ביצוע, בקרת עלויות ולוחות זמנים לפרויקטי תשתית.</p><span class="std">PMCM / AASHTO</span></div>
+                            <div class="soon"><h3>תכנון תשתיות חכמות</h3><p>חיישנים, IoT, תקשורת רכב-תשתית וניהול תנועה חכם.</p><span class="std">FHWA / ITS</span></div>
                         </div>
                     </details>
 
@@ -575,7 +574,7 @@
     const branches = [...document.querySelectorAll('.branch')];
     let cat = 'all', first = true;
 
-    document.querySelectorAll('.leaf').forEach(l => { l.dataset.text = l.textContent.toLowerCase(); });
+    document.querySelectorAll('.leaf, .soon').forEach(l => { l.dataset.text = l.textContent.toLowerCase(); });
 
     function apply() {
         const term = q.value.trim().toLowerCase();
@@ -587,7 +586,7 @@
             let bShown = 0;
             b.querySelectorAll('.twig').forEach(t => {
                 let tShown = 0;
-                t.querySelectorAll('.leaf').forEach(l => {
+                t.querySelectorAll('.leaf, .soon').forEach(l => {
                     const ok = inCat && (term === '' || l.dataset.text.includes(term));
                     l.hidden = !ok;
                     if (ok) tShown++;

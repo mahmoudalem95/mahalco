@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAHALCO – Signal Coordination &amp; Timing Optimization (Metric)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 16px;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: #fff;
+            padding: 28px 30px 34px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
+            transition: box-shadow .2s;
+        }
+        .container:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .12);
+        }
+        h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #0b1a2e;
+            letter-spacing: -.3px;
+        }
+        .subhead {
+            color: #5a6a7a;
+            font-size: 15px;
+            margin: 0 0 24px;
+            border-bottom: 1px solid #e9edf2;
+            padding-bottom: 14px;
+        }
+        .badge {
+            display: inline-block;
+            background: #e9edf2;
+            color: #2d3a4a;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        h3.section-title {
+            margin: 26px 0 12px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0b1a2e;
+            border-left: 4px solid #0066cc;
+            padding-left: 10px;
+        }
+        .section-note {
+            font-size: 13px;
+            color: #7a8a9a;
+            margin: -6px 0 14px;
+            line-height: 1.5;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1f2a3a;
+        }
+        label .unit {
+            font-weight: 400;
+            color: #7a8a9a;
+            font-size: 12.5px;
+        }
+        input,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 15px;
+            border: 1.5px solid #dce1e8;
+            border-radius: 8px;
+            background: #fafbfc;
+            transition: border .2s, box-shadow .2s;
+            font-family: inherit;
+            color: #1a2634;
+        }
+        input:focus,
+        select:focus {
+            border-color: #0066cc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, .15);
+            background: #fff;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+        .row-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 14px;
+        }
+        @media(max-width:720px) {
+            .row-2,
+            .row-3,
+            .row-4 {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .container {
+                padding: 20px 16px 24px;
+            }
+        }
+        .table-scroll {
+            overflow-x: auto;
+            margin-top: 6px;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+            font-size: 13px;
+        }
+        th,
+        td {
+            border: 1px solid #e0e8f0;
+            padding: 8px 6px;
+            text-align: left;
+        }
+        th {
+            background: #f0f4fa;
+            font-weight: 600;
+            color: #1f2a3a;
+            white-space: nowrap;
+            font-size: 12px;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            background: #fff;
+        }
+        #phaseTable {
+            min-width: 1250px;
+        }
+        #phaseTable th,
+        #phaseTable td {
+            padding: 5px 5px;
+            font-size: 12.5px;
+        }
+        #phaseTable td:first-child {
+            font-weight: 700;
+            color: #0b1a2e;
+            background: #f8faff;
+            white-space: nowrap;
+        }
+        #phaseTable input,
+        #phaseTable select {
+            padding: 4px 5px;
+            font-size: 12px;
+            min-width: 50px;
+            border-radius: 5px;
+        }
+        #phaseTable input[type="checkbox"] {
+            width: auto;
+            min-width: auto;
+            margin: 0;
+            accent-color: #0066cc;
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+        button {
+            padding: 11px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background .2s, transform .1s, box-shadow .2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:active {
+            transform: scale(.97);
+        }
+        #submitBtn {
+            background: #0066cc;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, .25);
+        }
+        #submitBtn:hover:not(:disabled) {
+            background: #0055b3;
+            box-shadow: 0 4px 14px rgba(0, 102, 204, .35);
+        }
+        .reset-btn {
+            background: #e9edf2;
+            color: #2d3a4a;
+        }
+        .reset-btn:hover {
+            background: #dce1e8;
+        }
+        .status-msg {
+            margin-top: 16px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            display: none;
+            line-height: 1.5;
+        }
+        .status-msg.info {
+            display: block;
+            background: #e8f0fe;
+            color: #0055a0;
+            border-left: 4px solid #0066cc;
+        }
+        .status-msg.error {
+            display: block;
+            background: #fde8e8;
+            color: #b33;
+            border-left: 4px solid #cc4444;
+        }
+        .status-msg.warn {
+            display: block;
+            background: #fff6e0;
+            color: #8a6100;
+            border-left: 4px solid #e0a800;
+        }
+        .status-msg.success {
+            display: block;
+            background: #e6f5e6;
+            color: #1f7a2a;
+            border-left: 4px solid #2b8f3a;
+        }
+        .results-box {
+            margin-top: 28px;
+            padding: 20px 22px 24px;
+            background: #f8faff;
+            border-radius: 12px;
+            border: 1px solid #e0e8f0;
+            display: none;
+        }
+        .results-box.visible {
+            display: block;
+        }
+        .results-box h2 {
+            margin: 0 0 14px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0b1a2e;
+            letter-spacing: -.2px;
+        }
+        .results-box h4 {
+            margin: 22px 0 4px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1f2a3a;
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px 24px;
+            margin-bottom: 6px;
+        }
+        @media(max-width:560px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid #eef2f7;
+            font-size: 14px;
+        }
+        .result-item .label {
+            color: #4a5a6a;
+            font-weight: 500;
+        }
+        .result-item .value {
+            font-weight: 700;
+            color: #0b1a2e;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+        }
+        .result-item .value.highlight {
+            color: #0066cc;
+        }
+        .results-box table {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .los {
+            display: inline-block;
+            min-width: 22px;
+            text-align: center;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 12px;
+        }
+        .los-A {
+            background: #1f7a2a;
+        }
+        .los-B {
+            background: #4f9e2f;
+        }
+        .los-C {
+            background: #b58a00;
+        }
+        .los-D {
+            background: #d97a00;
+        }
+        .los-E {
+            background: #cc5500;
+        }
+        .los-F {
+            background: #c02b2b;
+        }
+        .timing-diagram {
+            margin-top: 10px;
+            border: 1px solid #e0e8f0;
+            border-radius: 10px;
+            background: #fff;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+        .timing-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            min-width: 600px;
+        }
+        .timing-label {
+            width: 80px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #1f2a3a;
+            white-space: nowrap;
+        }
+        .timing-bar {
+            display: flex;
+            height: 28px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .timing-seg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            min-width: 16px;
+        }
+        .seg-green {
+            background: #2b8f3a;
+        }
+        .seg-yellow {
+            background: #e0a800;
+        }
+        .seg-red {
+            background: #c02b2b;
+        }
+        .seg-allred {
+            background: #cc5500;
+        }
+        .footnote {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #6a7a8a;
+            border-top: 1px solid #e9edf2;
+            padding-top: 14px;
+            line-height: 1.6;
+        }
+        .footnote a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .footnote a:hover {
+            text-decoration: underline;
+        }
+        .warrant-panel {
+            margin-top: 10px;
+            border: 1px solid #e0e8f0;
+            border-radius: 10px;
+            background: #fff;
+            padding: 12px 16px;
+        }
+        .warrant-line {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 6px 0;
+            border-bottom: 1px solid #eef2f7;
+            font-size: 13px;
+            color: #2d3a4a;
+            line-height: 1.5;
+        }
+        .warrant-line:last-child {
+            border-bottom: none;
+        }
+        .flag {
+            flex: 0 0 auto;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .flag.ok {
+            background: #e6f5e6;
+            color: #1f7a2a;
+        }
+        .flag.warn {
+            background: #fff6e0;
+            color: #8a6100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚦 Signal Coordination &amp; Timing Optimization <span class="badge">Metric</span></h1>
+        <p class="subhead">HCM Chapters 19 &amp; 31 informed — search cycle length, allocate constrained green time, assess delay &amp; progression, return an implementable timing plan.<br>
+            <span style="font-size:13px;color:#6a7a8a;">Computed entirely in your browser — km/h, metres, seconds. No server round-trip.</span></p>
+
+        <form id="sigForm" novalidate>
+            <h3 class="section-title">Project &amp; Constraints</h3>
+            <div class="row-3">
+                <div class="form-group"><label>Project ID</label><input id="projId" value="MAIN-ST-AVE" readonly></div>
+                <div class="form-group"><label>Analysis period</label><input id="periodLabel" value="AM Peak 07:30–08:30"></div>
+                <div class="form-group"><label>Peak hour factor</label><input type="number" id="phf" value="0.92" min="0.25" max="1" step="0.01"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>Objective</label><select id="objective"><option value="delay">Minimise Delay</option><option value="bandwidth">Maximise Bandwidth</option><option value="balanced">Balanced</option></select></div>
+                <div class="form-group"><label>Min cycle <span class="unit">(s)</span></label><input type="number" id="minCycle" value="60" min="30" max="180" step="5"></div>
+                <div class="form-group"><label>Max cycle <span class="unit">(s)</span></label><input type="number" id="maxCycle" value="120" min="60" max="240" step="5"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>Min green/phase <span class="unit">(s)</span></label><input type="number" id="minGreen" value="5" min="1" max="60"></div>
+                <div class="form-group"><label>Max green split <span class="unit">(%)</span></label><input type="number" id="maxGreenSplit" value="80" min="10" max="95"></div>
+                <div class="form-group"><label>Max v/c ratio</label><input type="number" id="maxVc" value="0.95" min="0.5" max="1.5" step="0.05"></div>
+            </div>
+
+            <h3 class="section-title">Coordination &amp; Calibration</h3>
+            <div class="row-3">
+                <div class="form-group"><label>Corridor speed <span class="unit">(km/h)</span></label><input type="number" id="corridorSpeed" value="50" min="10" max="120"></div>
+                <div class="form-group"><label>Reference intersection</label><select id="refIntersection"><option value="INT_1">INT_1</option><option value="INT_2">INT_2</option></select></div>
+                <div class="form-group"><label>Reference phase</label><select id="refPhase"><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option><option value="P4">P4</option></select></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>Distance between ints <span class="unit">(m)</span></label><input type="number" id="distBetween" value="300" min="50" max="2000"></div>
+                <div class="form-group"><label>Desired bandwidth <span class="unit">(s)</span></label><input type="number" id="desiredBW" value="40" min="5" max="120"></div>
+                <div class="form-group"><label>Bandwidth weight</label><input type="number" id="bwWeight" value="0.5" min="0" max="1" step="0.1"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>Start-up lost time <span class="unit">(s)</span></label><input type="number" id="startUpLost" value="2" min="0" max="5"></div>
+                <div class="form-group"><label>Green extension <span class="unit">(s)</span></label><input type="number" id="greenExt" value="2" min="0" max="5"></div>
+                <div class="form-group"><label>Walking speed <span class="unit">(km/h)</span></label><input type="number" id="walkSpeed" value="4.8" min="1" max="10" step="0.1"></div>
+            </div>
+
+            <h3 class="section-title">Intersections, Phases &amp; Lane Groups</h3>
+            <p class="section-note">Enter demand, saturation flow rate, lanes, phase constraints. Check "Coordinated" for the through phases in the progressive direction. Barrier indicates a barrier group boundary.</p>
+            <div class="table-scroll">
+                <table id="phaseTable">
+                    <thead><tr><th>Int.</th><th>Phase</th><th>Min G</th><th>Max G</th><th>Y</th><th>AR</th><th>Lost</th><th>Coord</th><th>Barrier</th><th>Movement</th><th>Vol</th><th>SFR</th><th>Lanes</th><th>Platoon</th></tr></thead>
+                    <tbody id="phaseBody"></tbody>
+                </table>
+            </div>
+
+            <div class="actions">
+                <button type="submit" id="submitBtn">Optimise Timing</button>
+                <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
+            </div>
+        </form>
+
+        <div id="statusMsg" class="status-msg"></div>
+
+        <div id="results" class="results-box">
+            <h2>📊 Optimised Timing Plan <span style="font-size:14px;font-weight:400;color:#4a5a6a;">(metric)</span></h2>
+
+            <div class="result-grid">
+                <div class="result-item"><span class="label">Optimal Cycle</span><span class="value highlight" id="outCycle">-- s</span></div>
+                <div class="result-item"><span class="label">Effective Green</span><span class="value" id="outEffGreen">-- s</span></div>
+                <div class="result-item"><span class="label">Total Delay</span><span class="value" id="outDelay">-- s/veh</span></div>
+                <div class="result-item"><span class="label">Overall LOS</span><span class="value highlight" id="outLos">--</span></div>
+                <div class="result-item"><span class="label">Bandwidth</span><span class="value" id="outBW">-- s</span></div>
+                <div class="result-item"><span class="label">BW %</span><span class="value" id="outBWpct">--%</span></div>
+            </div>
+
+            <h4>Phase Timing &amp; Performance</h4>
+            <div class="table-scroll">
+                <table><thead><tr><th>Int.</th><th>Phase</th><th>Green</th><th>Split</th><th>V/C</th><th>Delay</th><th>LOS</th><th>Q<sub>95</sub> (m)</th></tr></thead><tbody id="perfBody"></tbody></table>
+            </div>
+
+            <h4>Offset &amp; Progression</h4>
+            <div class="table-scroll">
+                <table><thead><tr><th>Intersection</th><th>Offset (s)</th><th>Offset (m)</th><th>Bandwidth (s)</th><th>Bandwidth (%)</th><th>Coord. Phase</th></tr></thead><tbody id="offsetBody"></tbody></table>
+            </div>
+
+            <h4>Timing Diagram (Green / Yellow / All-Red / Red)</h4>
+            <div class="timing-diagram" id="timingDiagram"></div>
+
+            <div class="warrant-panel" id="warrantPanel"></div>
+
+            <div class="footnote">
+                ⚡ Screening tool — HCM-informed delay and capacity models (Ch. 19/31) with a simplified bandwidth estimator. Verify final designs with a licensed engineer and full operational software (HCS, Synchro, VISSIM). <a href="#" onclick="clearStatus();return false;">Clear status</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================================
+        // Signal Coordination & Timing Optimization — client-side
+        // ==========================================================
+
+        const PHASE_DEFAULTS = [
+            { int: 'INT_1', phase: 'P1', minG: 10, maxG: 60, y: 4, ar: 2, lost: 6, coord: true, barrier: false, move: 'NB/SB Th', vol: 1200,
+                sfr: 1900, lanes: 2, plat: 1.0 },
+            { int: 'INT_1', phase: 'P2', minG: 5, maxG: 40, y: 4, ar: 2, lost: 6, coord: false, barrier: false, move: 'NB/SB L', vol: 400,
+                sfr: 1700, lanes: 1, plat: 1.0 },
+            { int: 'INT_1', phase: 'P3', minG: 10, maxG: 60, y: 4, ar: 2, lost: 6, coord: false, barrier: true, move: 'EB/WB Th', vol: 900,
+                sfr: 1900, lanes: 2, plat: 1.0 },
+            { int: 'INT_1', phase: 'P4', minG: 5, maxG: 40, y: 4, ar: 2, lost: 6, coord: false, barrier: false, move: 'EB/WB L', vol: 300,
+                sfr: 1700, lanes: 1, plat: 1.0 },
+            { int: 'INT_2', phase: 'P1', minG: 10, maxG: 60, y: 4, ar: 2, lost: 6, coord: true, barrier: false, move: 'NB/SB Th', vol: 1100,
+                sfr: 1900, lanes: 2, plat: 0.9 },
+            { int: 'INT_2', phase: 'P2', minG: 5, maxG: 40, y: 4, ar: 2, lost: 6, coord: false, barrier: false, move: 'NB/SB L', vol: 350,
+                sfr: 1700, lanes: 1, plat: 0.9 },
+            { int: 'INT_2', phase: 'P3', minG: 10, maxG: 60, y: 4, ar: 2, lost: 6, coord: false, barrier: true, move: 'EB/WB Th', vol: 800,
+                sfr: 1900, lanes: 2, plat: 0.9 },
+            { int: 'INT_2', phase: 'P4', minG: 5, maxG: 40, y: 4, ar: 2, lost: 6, coord: false, barrier: false, move: 'EB/WB L', vol: 250,
+                sfr: 1700, lanes: 1, plat: 0.9 }
+        ];
+
+        const phaseBody = document.getElementById('phaseBody');
+        PHASE_DEFAULTS.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td>${p.int}</td><td><select class="phaseSel"><option>P1</option><option>P2</option><option>P3</option><option>P4</option></select></td>
+            <td><input type="number" class="minG" value="${p.minG}" min="1" max="120"></td>
+            <td><input type="number" class="maxG" value="${p.maxG}" min="1" max="200"></td>
+            <td><input type="number" class="y" value="${p.y}" min="1" max="6"></td>
+            <td><input type="number" class="ar" value="${p.ar}" min="0" max="5"></td>
+            <td><input type="number" class="lost" value="${p.lost}" min="0" max="10"></td>
+            <td><input type="checkbox" class="coord" ${p.coord?'checked':''}></td>
+            <td><input type="checkbox" class="barrier" ${p.barrier?'checked':''}></td>
+            <td><input type="text" class="move" value="${p.move}" style="width:80px"></td>
+            <td><input type="number" class="vol" value="${p.vol}" min="0" step="10"></td>
+            <td><input type="number" class="sfr" value="${p.sfr}" min="500" step="50"></td>
+            <td><input type="number" class="lanes" value="${p.lanes}" min="1" step="1"></td>
+            <td><input type="number" class="plat" value="${p.plat}" min="0.5" step="0.1"></td>`;
+            phaseBody.appendChild(tr);
+            tr.querySelector('.phaseSel').value = p.phase;
+        });
+
+        // DOM refs
+        const form = document.getElementById('sigForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const resultsBox = document.getElementById('results');
+
+        function $(id) { return document.getElementById(id); }
+
+        function num(id) { return parseFloat($(id).value); }
+
+        function setStatus(msg, type) {
+            statusMsg.innerHTML = msg;
+            statusMsg.className = 'status-msg ' + (type || 'info');
+            statusMsg.style.display = 'block';
+        }
+
+        function clearStatus() {
+            statusMsg.innerHTML = '';
+            statusMsg.className = 'status-msg';
+            statusMsg.style.display = 'none';
+        }
+
+        function resetForm() {
+            PHASE_DEFAULTS.forEach((p, i) => {
+                const tr = phaseBody.children[i];
+                tr.querySelector('.phaseSel').value = p.phase;
+                tr.querySelector('.minG').value = p.minG;
+                tr.querySelector('.maxG').value = p.maxG;
+                tr.querySelector('.y').value = p.y;
+                tr.querySelector('.ar').value = p.ar;
+                tr.querySelector('.lost').value = p.lost;
+                tr.querySelector('.coord').checked = p.coord;
+                tr.querySelector('.barrier').checked = p.barrier;
+                tr.querySelector('.move').value = p.move;
+                tr.querySelector('.vol').value = p.vol;
+                tr.querySelector('.sfr').value = p.sfr;
+                tr.querySelector('.lanes').value = p.lanes;
+                tr.querySelector('.plat').value = p.plat;
+            });
+            $('periodLabel').value = 'AM Peak 07:30–08:30';
+            $('phf').value = 0.92;
+            $('objective').value = 'delay';
+            $('minCycle').value = 60;
+            $('maxCycle').value = 120;
+            $('minGreen').value = 5;
+            $('maxGreenSplit').value = 80;
+            $('maxVc').value = 0.95;
+            $('corridorSpeed').value = 50;
+            $('refIntersection').value = 'INT_1';
+            $('refPhase').value = 'P1';
+            $('distBetween').value = 300;
+            $('desiredBW').value = 40;
+            $('bwWeight').value = 0.5;
+            $('startUpLost').value = 2;
+            $('greenExt').value = 2;
+            $('walkSpeed').value = 4.8;
+            resultsBox.classList.remove('visible');
+            resultsBox.style.display = 'none';
+            clearStatus();
+        }
+
+        // ---- LOS ----
+        function losFromDelay(d, x) {
+            if (x > 1.0) return 'F';
+            if (d <= 10) return 'A';
+            if (d <= 20) return 'B';
+            if (d <= 35) return 'C';
+            if (d <= 55) return 'D';
+            if (d <= 80) return 'E';
+            return 'F';
+        }
+
+        function losTag(l) { return '<span class="los los-' + l + '">' + l + '</span>'; }
+
+        // ---- HCM Delay (simplified) ----
+        function hcmDelay(C, g, vol, sfr, lanes, plat) {
+            const capacity = sfr * lanes * (g / C) * plat;
+            const X = vol / capacity;
+            const Xc = Math.min(X, 0.98);
+            const T = 0.25;
+            const d1 = 0.5 * C * Math.pow(1 - g / C, 2) / (1 - Xc * g / C);
+            const k = 0.5,
+                I = 1.0;
+            const d2 = 900 * T * ((X - 1) + Math.sqrt(Math.pow(X - 1, 2) + (8 * k * I * X) / (capacity * T)));
+            return { d: d1 + Math.max(d2, 0), X, capacity };
+        }
+
+        // ---- Queue ----
+        function queue95(vol, capacity, C, g) {
+            const X = vol / capacity;
+            if (capacity <= 0) return 0;
+            const T = 0.25;
+            const term = (X - 1) + Math.sqrt(Math.pow(X - 1, 2) + (8 * 0.5 * 1.0 * X) / (capacity * T));
+            const q = 900 * T * term * (capacity / 3600);
+            return Math.max(q, 0);
+        }
+
+        // ---- Read phase data ----
+        function readPhases() {
+            const phases = [];
+            for (let i = 0; i < phaseBody.children.length; i++) {
+                const tr = phaseBody.children[i];
+                const p = {
+                    int: tr.children[0].textContent.trim(),
+                    phase: tr.querySelector('.phaseSel').value,
+                    minG: parseFloat(tr.querySelector('.minG').value) || 5,
+                    maxG: parseFloat(tr.querySelector('.maxG').value) || 60,
+                    y: parseFloat(tr.querySelector('.y').value) || 4,
+                    ar: parseFloat(tr.querySelector('.ar').value) || 2,
+                    lost: parseFloat(tr.querySelector('.lost').value) || 6,
+                    coord: tr.querySelector('.coord').checked,
+                    barrier: tr.querySelector('.barrier').checked,
+                    move: tr.querySelector('.move').value,
+                    vol: parseFloat(tr.querySelector('.vol').value) || 0,
+                    sfr: parseFloat(tr.querySelector('.sfr').value) || 1900,
+                    lanes: parseFloat(tr.querySelector('.lanes').value) || 1,
+                    plat: parseFloat(tr.querySelector('.plat').value) || 1.0
+                };
+                phases.push(p);
+            }
+            return phases;
+        }
+
+        // ---- Optimizer ----
+        function optimize(phases, params) {
+            const ints = [...new Set(phases.map(p => p.int))];
+            const results = { best: null };
+
+            for (let C = params.minCycle; C <= params.maxCycle; C += 5) {
+                let totalDelay = 0,
+                    totalVol = 0,
+                    worstX = 0,
+                    bwSum = 0,
+                    bwCount = 0;
+                const phaseResults = [];
+                let feasible = true;
+
+                for (const int of ints) {
+                    const intPhases = phases.filter(p => p.int === int);
+                    const totalLost = intPhases.reduce((s, p) => s + p.lost + p.y + p.ar, 0);
+                    const effGreen = C - totalLost;
+                    if (effGreen < 10) { feasible = false; break; }
+
+                    // Demand-based green allocation
+                    const totalDemand = intPhases.reduce((s, p) => s + p.vol / (p.sfr * p.lanes), 0);
+                    let greens = intPhases.map(p => effGreen * (p.vol / (p.sfr * p.lanes)) / totalDemand);
+
+                    // Min green constraint
+                    greens = greens.map((g, i) => Math.max(g, intPhases[i].minG));
+
+                    // Max green split (% of cycle)
+                    greens = greens.map((g, i) => Math.min(g, intPhases[i].maxG * C / 100));
+
+                    // Scale to fit effective green if needed
+                    let sumG = greens.reduce((s, g) => s + g, 0);
+                    if (sumG > effGreen) {
+                        greens = greens.map(g => g * effGreen / sumG);
+                        // Re-apply min constraints
+                        greens = greens.map((g, i) => Math.max(g, Math.min(intPhases[i].minG, effGreen)));
+                        sumG = greens.reduce((s, g) => s + g, 0);
+                        if (sumG > effGreen) {
+                            greens = greens.map(g => g * effGreen / sumG);
+                        }
+                    }
+
+                    // Compute per-phase delay
+                    let intDelaySum = 0;
+                    for (let i = 0; i < intPhases.length; i++) {
+                        const p = intPhases[i];
+                        const g = greens[i];
+                        const res = hcmDelay(C, g, p.vol / params.phf, p.sfr, p.lanes, p.plat);
+                        const d = res.d;
+                        const X = res.X;
+                        const q = queue95(p.vol / params.phf, res.capacity, C, g);
+
+                        phaseResults.push({ ...p, green: g, X, delay: d, queue: q });
+                        intDelaySum += d * (p.vol / params.phf);
+                        totalVol += p.vol / params.phf;
+                        worstX = Math.max(worstX, X);
+                    }
+                    totalDelay += intDelaySum;
+                }
+
+                if (!feasible) continue;
+
+                const avgDelay = totalDelay / totalVol;
+                const objectiveScore = avgDelay;
+
+                // Bandwidth estimate (for coordinated phases)
+                const coordPhases = phases.filter(p => p.coord);
+                const travelTime = params.distBetween / (params.corridorSpeed * 1000 / 3600);
+                let bw = 999;
+                coordPhases.forEach(p => {
+                    const pr = phaseResults.find(r => r.int === p.int && r.phase === p.phase);
+                    if (pr) {
+                        bw = Math.min(bw, pr.green - travelTime);
+                    }
+                });
+                bw = Math.max(bw, 0);
+                const bwPct = (bw / C) * 100;
+
+                // Combined score based on objective
+                let score;
+                if (params.objective === 'delay') {
+                    score = avgDelay;
+                } else if (params.objective === 'bandwidth') {
+                    score = -bw; // negative to minimize
+                } else {
+                    score = avgDelay * (1 - params.bwWeight) + (100 - bwPct) * params.bwWeight;
+                }
+
+                if (!results.best || score < results.best.score) {
+                    results.best = {
+                        cycle: C,
+                        score,
+                        avgDelay,
+                        worstX,
+                        phaseResults,
+                        bw,
+                        bwPct,
+                        effGreen,
+                        totalLost: totalLost
+                    };
+                }
+            }
+
+            return results;
+        }
+
+        // ---- Main submit ----
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearStatus();
+            resultsBox.classList.remove('visible');
+            resultsBox.style.display = 'none';
+
+            try {
+                const phases = readPhases();
+                const params = {
+                    minCycle: num('minCycle'),
+                    maxCycle: num('maxCycle'),
+                    phf: num('phf'),
+                    objective: $('objective').value,
+                    corridorSpeed: num('corridorSpeed'),
+                    distBetween: num('distBetween'),
+                    bwWeight: num('bwWeight'),
+                    desiredBW: num('desiredBW')
+                };
+
+                if (params.minCycle >= params.maxCycle) throw new Error('Min cycle must be < max cycle.');
+                if (params.phf <= 0 || params.phf > 1) throw new Error('PHF must be between 0 and 1.');
+                if (phases.length === 0) throw new Error('Add at least one phase.');
+
+                const result = optimize(phases, params);
+                if (!result.best) throw new Error('No feasible cycle found — check min green constraints and cycle range.');
+
+                const b = result.best;
+
+                // Render results
+                $('outCycle').textContent = b.cycle + ' s';
+                $('outEffGreen').textContent = b.effGreen.toFixed(1) + ' s';
+                $('outDelay').textContent = b.avgDelay.toFixed(1) + ' s/veh';
+                $('outLos').innerHTML = losTag(losFromDelay(b.avgDelay, b.worstX));
+                $('outBW').textContent = b.bw.toFixed(1) + ' s';
+                $('outBWpct').textContent = b.bwPct.toFixed(1) + '%';
+
+                // Perf table
+                const perfBody = document.getElementById('perfBody');
+                let perfHtml = '';
+                b.phaseResults.forEach(r => {
+                    perfHtml += `<tr><td>${r.int}</td><td>${r.phase}</td><td>${r.green.toFixed(1)}</td><td>${(r.green/b.cycle*100).toFixed(1)}%</td><td>${r.X.toFixed(3)}</td><td>${r.delay.toFixed(1)}</td><td>${losTag(losFromDelay(r.delay,r.X))}</td><td>${r.queue.toFixed(1)}</td></tr>`;
+                });
+                perfBody.innerHTML = perfHtml;
+
+                // Offset table
+                const ints = [...new Set(phases.map(p => p.int))];
+                const travelTime = params.distBetween / (params.corridorSpeed * 1000 / 3600);
+                let offsetHtml = '';
+                let prevOffset = 0;
+                ints.forEach((int, idx) => {
+                    const coordPhase = phases.find(p => p.int === int && p.coord);
+                    if (coordPhase) {
+                        const pr = b.phaseResults.find(r => r.int === int && r.phase === coordPhase.phase);
+                        const offset = idx === 0 ? 0 : prevOffset + travelTime;
+                        prevOffset = offset;
+                        const bw = pr ? Math.max(pr.green - travelTime, 0) : 0;
+                        offsetHtml += `<tr><td>${int}</td><td>${offset.toFixed(1)}</td><td>${(offset * params.corridorSpeed / 3.6).toFixed(1)}</td><td>${bw.toFixed(1)}</td><td>${(bw/b.cycle*100).toFixed(1)}%</td><td>${coordPhase.phase}</td></tr>`;
+                    } else {
+                        offsetHtml += `<tr><td>${int}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`;
+                    }
+                });
+                $('offsetBody').innerHTML = offsetHtml;
+
+                // Timing diagram
+                const diagram = document.getElementById('timingDiagram');
+                let diaHtml = '';
+                b.phaseResults.forEach(r => {
+                    const pctG = (r.green / b.cycle * 100);
+                    const pctY = (r.y / b.cycle * 100);
+                    const pctAR = (r.ar / b.cycle * 100);
+                    const pctR = 100 - pctG - pctY - pctAR;
+                    diaHtml += `<div class="timing-row"><span class="timing-label">${r.int} ${r.phase}</span><div class="timing-bar">`;
+                    if (pctG > 0) diaHtml += `<div class="timing-seg seg-green" style="width:${pctG}%">${r.green.toFixed(1)}</div>`;
+                    if (pctY > 0) diaHtml += `<div class="timing-seg seg-yellow" style="width:${pctY}%">${r.y}</div>`;
+                    if (pctAR > 0) diaHtml += `<div class="timing-seg seg-allred" style="width:${pctAR}%">${r.ar}</div>`;
+                    if (pctR > 0) diaHtml += `<div class="timing-seg seg-red" style="width:${pctR}%">${Math.max(0,pctR).toFixed(1)}</div>`;
+                    diaHtml += `</div></div>`;
+                });
+                diagram.innerHTML = diaHtml;
+
+                // Warrant panel
+                const wPanel = document.getElementById('warrantPanel');
+                let wHtml = '';
+                if (b.worstX > 1.0) {
+                    wHtml += `<div class="warrant-line"><span class="flag warn">WARN</span><span>Worst v/c = ${b.worstX.toFixed(2)} — at least one lane group is over capacity. Consider adding lanes, adjusting max green split, or using a longer cycle.</span></div>`;
+                } else {
+                    wHtml += `<div class="warrant-line"><span class="flag ok">OK</span><span>Worst v/c = ${b.worstX.toFixed(2)} — all lane groups below capacity.</span></div>`;
+                }
+                if (b.bwPct < 30) {
+                    wHtml += `<div class="warrant-line"><span class="flag warn">WARN</span><span>Bandwidth ${b.bwPct.toFixed(1)}% is below the 30% guideline for good progression. Adjust offsets or cycle length.</span></div>`;
+                } else {
+                    wHtml += `<div class="warrant-line"><span class="flag ok">OK</span><span>Bandwidth ${b.bwPct.toFixed(1)}% — reasonable progression potential.</span></div>`;
+                }
+                if (b.avgDelay > 55) {
+                    wHtml += `<div class="warrant-line"><span class="flag warn">WARN</span><span>Average delay ${b.avgDelay.toFixed(1)} s/veh — LOS E/F. Need a more substantial improvement.</span></div>`;
+                } else {
+                    wHtml += `<div class="warrant-line"><span class="flag ok">OK</span><span>Average delay ${b.avgDelay.toFixed(1)} s/veh — acceptable for this analysis.</span></div>`;
+                }
+                wPanel.innerHTML = wHtml;
+
+                resultsBox.style.display = 'block';
+                requestAnimationFrame(() => resultsBox.classList.add('visible'));
+
+                setStatus('✅ Optimisation complete — cycle ' + b.cycle + ' s, avg delay ' + b.avgDelay.toFixed(1) +
+                    ' s/veh, LOS ' + losFromDelay(b.avgDelay, b.worstX) + '.', 'success');
+            } catch (err) {
+                setStatus('❌ ' + err.message, 'error');
+                resultsBox.classList.remove('visible');
+                resultsBox.style.display = 'none';
+            }
+        });
+
+        // ---- Init ----
+        document.addEventListener('DOMContentLoaded', () => { clearStatus(); });
+    </script>
+</body>
+</html>

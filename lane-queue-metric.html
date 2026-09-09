@@ -2,233 +2,562 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MAHALCO - Lane & Queue Analysis (Metric)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAHALCO – Lane & Queue Analysis (Metric)</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 30px; background-color: #f8f9fa; color: #333; }
-    .container { max-width: 700px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    h1 { margin-top: 0; color: #111; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; }
-    input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-    .radio-group { display: flex; gap: 15px; margin-top: 5px; }
-    .radio-group label { font-weight: normal; }
-    button { padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 10px; }
-    button:disabled { background-color: #999; cursor: not-allowed; }
-    button[type="button"] { background-color: #6c757d; }
-    .results-box { margin-top: 30px; padding: 20px; background: #eef6ff; border-left: 5px solid #0066cc; border-radius: 4px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    .status-msg { margin-top: 10px; font-weight: bold; }
-    .status-msg.error { color: #d9534f; }
-    .status-msg.info { color: #0275d8; }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px 16px;
+    }
+    .container {
+      max-width: 720px;
+      width: 100%;
+      background: #ffffff;
+      padding: 28px 30px 34px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      transition: box-shadow 0.2s;
+    }
+    .container:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #0b1a2e;
+      letter-spacing: -0.3px;
+    }
+    .subhead {
+      color: #5a6a7a;
+      font-size: 15px;
+      margin: 0 0 24px;
+      border-bottom: 1px solid #e9edf2;
+      padding-bottom: 14px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #1f2a3a;
+    }
+    label .unit {
+      font-weight: 400;
+      color: #7a8a9a;
+      font-size: 12.5px;
+    }
+    input,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 15px;
+      border: 1.5px solid #dce1e8;
+      border-radius: 8px;
+      background: #fafbfc;
+      transition: border 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+      color: #1a2634;
+    }
+    input:focus,
+    select:focus {
+      border-color: #0066cc;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+      background: #fff;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .radio-group {
+      display: flex;
+      gap: 24px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .radio-group label {
+      font-weight: 500;
+      font-size: 14px;
+      color: #1f2a3a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .radio-group input[type="radio"] {
+      width: auto;
+      margin: 0;
+      accent-color: #0066cc;
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 500px) {
+      .row-2 {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .container {
+        padding: 20px 16px 24px;
+      }
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    button {
+      padding: 11px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+    #submitBtn {
+      background: #0066cc;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 102, 204, 0.25);
+    }
+    #submitBtn:hover:not(:disabled) {
+      background: #0055b3;
+      box-shadow: 0 4px 14px rgba(0, 102, 204, 0.35);
+    }
+    #submitBtn:disabled {
+      background: #9ab0c9;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .reset-btn {
+      background: #e9edf2;
+      color: #2d3a4a;
+    }
+    .reset-btn:hover {
+      background: #dce1e8;
+    }
+    .status-msg {
+      margin-top: 16px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      display: none;
+    }
+    .status-msg.info {
+      display: block;
+      background: #e8f0fe;
+      color: #0055a0;
+      border-left: 4px solid #0066cc;
+    }
+    .status-msg.error {
+      display: block;
+      background: #fde8e8;
+      color: #b33;
+      border-left: 4px solid #cc4444;
+    }
+    .status-msg.success {
+      display: block;
+      background: #e6f5e6;
+      color: #1f7a2a;
+      border-left: 4px solid #2b8f3a;
+    }
+    .results-box {
+      margin-top: 28px;
+      padding: 20px 22px 24px;
+      background: #f8faff;
+      border-radius: 12px;
+      border: 1px solid #e0e8f0;
+      display: none;
+    }
+    .results-box.visible {
+      display: block;
+    }
+    .results-box h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #0b1a2e;
+      letter-spacing: -0.2px;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 24px;
+      margin-bottom: 16px;
+    }
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 14.5px;
+    }
+    .result-item .label {
+      color: #4a5a6a;
+      font-weight: 500;
+    }
+    .result-item .value {
+      font-weight: 700;
+      color: #0b1a2e;
+      font-variant-numeric: tabular-nums;
+    }
+    .result-item .value.highlight {
+      color: #0066cc;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 14px;
+    }
+    th,
+    td {
+      border: 1px solid #e0e8f0;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background: #f0f4fa;
+      font-weight: 600;
+      color: #1f2a3a;
+    }
+    td {
+      background: #ffffff;
+    }
+    td:last-child {
+      color: #4a5a6a;
+      font-size: 13px;
+    }
+    .footnote {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #6a7a8a;
+      border-top: 1px solid #e9edf2;
+      padding-top: 14px;
+    }
+    .footnote a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .footnote a:hover {
+      text-decoration: underline;
+    }
+    .badge {
+      display: inline-block;
+      background: #e9edf2;
+      color: #2d3a4a;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Lane and Queue Analysis (Metric)</h1>
-  <p>A quick operational tool to estimate queue lengths, lane group capacity and LOS using Metric units.</p>
+  <div class="container">
+    <h1>🚦 Lane &amp; Queue Analysis <span class="badge">Metric</span></h1>
+    <p class="subhead">Estimate queue lengths, lane‑group capacity, V/C ratio and LOS using metric units.<br>
+      <span style="font-size:13px;color:#6a7a8a;">API calls are routed through a CORS proxy for reliable browser access.</span></p>
 
-  <form id="queueForm">
-    <div class="form-group">
-      <label>Method</label>
-      <div class="radio-group">
-        <label><input type="radio" name="method" value="AASHTO" checked> AASHTO</label>
-        <label><input type="radio" name="method" value="HCM"> HCM</label>
+    <form id="queueForm" novalidate>
+      <div class="form-group">
+        <label>Method</label>
+        <div class="radio-group">
+          <label><input type="radio" name="method" value="AASHTO" checked> AASHTO</label>
+          <label><input type="radio" name="method" value="HCM"> HCM</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="facilityType">Facility Type</label>
+        <select id="facilityType">
+          <option value="signalized">Signalised intersection</option>
+          <option value="two_lane_highway">Two‑lane highway</option>
+        </select>
+      </div>
+
+      <div class="row-2">
+        <div class="form-group">
+          <label for="volume">Volume <span class="unit">(veh/h)</span></label>
+          <input type="number" id="volume" value="600" min="1" step="1" required>
+        </div>
+        <div class="form-group">
+          <label for="lanes">Number of Lanes</label>
+          <input type="number" id="lanes" value="2" min="1" step="1" required>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="form-group">
+          <label for="cycleLength">Cycle Length <span class="unit">(s)</span></label>
+          <input type="number" id="cycleLength" value="90" min="1" step="1" required>
+        </div>
+        <div class="form-group">
+          <label for="greenTime">Green Time <span class="unit">(s)</span></label>
+          <input type="number" id="greenTime" value="45" min="1" step="1" required>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="form-group">
+          <label for="truckPct">Truck <span class="unit">(%)</span></label>
+          <input type="number" id="truckPct" step="0.1" value="5" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+          <label for="surgeFactor">Surge Factor</label>
+          <input type="number" id="surgeFactor" step="0.01" value="1.5" min="0.5" required>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="form-group">
+          <label for="laneWidth">Lane Width <span class="unit">(meters)</span></label>
+          <input type="number" id="laneWidth" step="0.01" value="3.65" min="2.0" required>
+        </div>
+        <div class="form-group">
+          <label for="shoulderWidth">Shoulder Width <span class="unit">(meters)</span></label>
+          <input type="number" id="shoulderWidth" step="0.01" value="1.80" min="0" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="grade">Grade <span class="unit">(%)</span></label>
+        <input type="number" id="grade" step="0.1" value="2" min="-20" max="20" required>
+      </div>
+
+      <div class="actions">
+        <button type="submit" id="submitBtn">Analyse Queue</button>
+        <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
+      </div>
+    </form>
+
+    <div id="statusMsg" class="status-msg"></div>
+
+    <div id="results" class="results-box">
+      <h2>📊 Output <span style="font-size:14px;font-weight:400;color:#4a5a6a;">(metric)</span></h2>
+      <div class="result-grid">
+        <div class="result-item"><span class="label">Queue Length</span><span class="value" id="outQueueVeh">-- veh</span></div>
+        <div class="result-item"><span class="label">Queue Length</span><span class="value highlight" id="outQueueMeters">-- m</span></div>
+        <div class="result-item"><span class="label">V/C Ratio</span><span class="value" id="outVcRatio">--</span></div>
+        <div class="result-item"><span class="label">Level of Service</span><span class="value highlight" id="outLos">--</span></div>
+      </div>
+
+      <table>
+        <thead><tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr></thead>
+        <tbody>
+          <tr><td>Capacity</td><td id="tableCapacity">--</td><td>lane‑group capacity estimate</td></tr>
+          <tr><td>95th percentile queue</td><td id="table95Queue">--</td><td>design queue length</td></tr>
+          <tr><td>Queue storage (AASHTO)</td><td id="tableStorageMeters">--</td><td>storage length in meters</td></tr>
+          <tr><td>Method</td><td id="tableMethod">--</td><td>analysis method used</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        ⚡ API results are converted from imperial to metric. <a href="#" onclick="document.getElementById('statusMsg').innerHTML='';return false;">Clear status</a>
       </div>
     </div>
-
-    <div class="form-group">
-      <label for="facilityType">Facility Type</label>
-      <select id="facilityType">
-        <option value="signalized">Signalised intersection</option>
-        <option value="two_lane_highway">Two-lane highway</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="volume">Volume (veh/h)</label>
-      <input type="number" id="volume" value="600" required>
-    </div>
-
-    <div class="form-group">
-      <label for="lanes">Number of Lanes</label>
-      <input type="number" id="lanes" value="2" required>
-    </div>
-
-    <div class="form-group">
-      <label for="cycleLength">Cycle Length (s)</label>
-      <input type="number" id="cycleLength" value="90" required>
-    </div>
-
-    <div class="form-group">
-      <label for="greenTime">Green Time (s)</label>
-      <input type="number" id="greenTime" value="45" required>
-    </div>
-
-    <div class="form-group">
-      <label for="truckPct">Truck %</label>
-      <input type="number" id="truckPct" step="0.1" value="5" required>
-    </div>
-
-    <div class="form-group">
-      <label for="surgeFactor">Surge Factor</label>
-      <input type="number" id="surgeFactor" step="0.01" value="1.5" required>
-    </div>
-
-    <!-- METRIC INPUTS -->
-    <div class="form-group">
-      <label for="laneWidth">Lane Width (meters)</label>
-      <input type="number" id="laneWidth" step="0.01" value="3.65" required>
-    </div>
-
-    <div class="form-group">
-      <label for="shoulderWidth">Shoulder Width (meters)</label>
-      <input type="number" id="shoulderWidth" step="0.01" value="1.80" required>
-    </div>
-
-    <div class="form-group">
-      <label for="grade">Grade (%)</label>
-      <input type="number" id="grade" step="0.1" value="2" required>
-    </div>
-
-    <button type="submit" id="submitBtn">Analyse Queue</button>
-    <button type="button" onclick="resetForm()">Reset</button>
-  </form>
-
-  <div id="statusMsg" class="status-msg"></div>
-
-  <div id="results" class="results-box" style="display:none;">
-    <h2>OUTPUT (METRIC)</h2>
-    <p><strong>QUEUE LENGTH:</strong> <span id="outQueueVeh">--</span> veh</p>
-    <p><strong>QUEUE METERS:</strong> <span id="outQueueMeters">--</span> approx m</p>
-    <p><strong>V/C RATIO:</strong> <span id="outVcRatio">--</span></p>
-    <p><strong>LOS:</strong> <span id="outLos">--</span></p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Metric</th>
-          <th>Value</th>
-          <th>Interpretation</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Capacity</td>
-          <td id="tableCapacity">--</td>
-          <td>lane-group capacity estimate</td>
-        </tr>
-        <tr>
-          <td>95th percentile queue</td>
-          <td id="table95Queue">--</td>
-          <td>95th percentile design queue</td>
-        </tr>
-        <tr>
-          <td>Queue storage</td>
-          <td id="tableStorageMeters">--</td>
-          <td>AASHTO design storage</td>
-        </tr>
-        <tr>
-          <td>Method</td>
-          <td id="tableMethod">--</td>
-          <td>Intersection lane-group method</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
-</div>
 
-<script>
-  const METERS_TO_FEET = 3.28084;
-  const API_URL = 'https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis';
+  <script>
+    // ---- CONFIG ----
+    const METERS_TO_FEET = 3.28084;
+    const TARGET_API = 'https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis';
+    // CORS proxy: api.allorigins.win/raw (reliable, supports POST with body)
+    const PROXY_URL = 'https://api.allorigins.win/raw';
 
-  function resetForm() {
-    document.getElementById('queueForm').reset();
-    document.getElementById('results').style.display = 'none';
-    document.getElementById('statusMsg').innerText = '';
-  }
-
-  document.getElementById('queueForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
+    // ---- DOM refs ----
+    const form = document.getElementById('queueForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
     const resultsBox = document.getElementById('results');
 
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Connecting...";
-    statusMsg.className = "status-msg info";
-    statusMsg.innerText = "Waking up Render server & processing (takes ~30-50s on initial load)...";
-    resultsBox.style.display = 'none';
+    const outQueueVeh = document.getElementById('outQueueVeh');
+    const outQueueMeters = document.getElementById('outQueueMeters');
+    const outVcRatio = document.getElementById('outVcRatio');
+    const outLos = document.getElementById('outLos');
+    const tableCapacity = document.getElementById('tableCapacity');
+    const table95Queue = document.getElementById('table95Queue');
+    const tableStorageMeters = document.getElementById('tableStorageMeters');
+    const tableMethod = document.getElementById('tableMethod');
 
-    // 1. Convert Metric Inputs to Imperial Feet
-    const laneWidthMeters = parseFloat(document.getElementById('laneWidth').value);
-    const shoulderWidthMeters = parseFloat(document.getElementById('shoulderWidth').value);
-
-    const payload = {
-      method: document.querySelector('input[name="method"]:checked').value,
-      facility_type: document.getElementById('facilityType').value,
-      volume: parseFloat(document.getElementById('volume').value),
-      lanes: parseInt(document.getElementById('lanes').value),
-      cycle_length: parseFloat(document.getElementById('cycleLength').value),
-      green_time: parseFloat(document.getElementById('greenTime').value),
-      truck_pct: parseFloat(document.getElementById('truckPct').value),
-      surge_factor: parseFloat(document.getElementById('surgeFactor').value),
-      lane_width: laneWidthMeters * METERS_TO_FEET,
-      shoulder_width: shoulderWidthMeters * METERS_TO_FEET,
-      grade: parseFloat(document.getElementById('grade').value)
-    };
-
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP Status ${response.status} (${response.statusText})`);
-      }
-
-      const data = await response.json();
-
-      // 2. Imperial Output to Metric Conversion
-      const queueFeet = data.queue_feet ?? data.queue_length_ft ?? data.queue_ft ?? 0;
-      const storageFeet = data.queue_storage_ft ?? data.design_storage_ft ?? data.storage_ft ?? 0;
-
-      const queueMeters = queueFeet ? (queueFeet / METERS_TO_FEET).toFixed(2) : "--";
-      const storageMeters = storageFeet ? (storageFeet / METERS_TO_FEET).toFixed(2) : "--";
-
-      // 3. Render Results
-      document.getElementById('outQueueVeh').innerText = data.queue_veh ?? data.queue_length_veh ?? "--";
-      document.getElementById('outQueueMeters').innerText = queueMeters !== "--" ? Number(queueMeters).toLocaleString() : "--";
-      document.getElementById('outVcRatio').innerText = data.vc_ratio ?? "--";
-      document.getElementById('outLos').innerText = data.los ?? "--";
-
-      document.getElementById('tableCapacity').innerText = (data.capacity ?? "--") + " veh/h";
-      document.getElementById('table95Queue').innerText = (data.queue_95th ?? "--") + " veh";
-      document.getElementById('tableStorageMeters').innerText = storageMeters !== "--" ? Number(storageMeters).toLocaleString() + " m" : "--";
-      document.getElementById('tableMethod').innerText = payload.method;
-
-      statusMsg.innerText = "";
-      resultsBox.style.display = 'block';
-
-    } catch (err) {
-      console.error("API Error:", err);
-      statusMsg.className = "status-msg error";
-      statusMsg.innerText = "API Request Failed: " + err.message;
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Analyse Queue";
+    // ---- helpers ----
+    function setStatus(msg, type) {
+      statusMsg.textContent = msg;
+      statusMsg.className = 'status-msg ' + (type || 'info');
+      statusMsg.style.display = 'block';
     }
-  });
-</script>
 
+    function clearStatus() {
+      statusMsg.textContent = '';
+      statusMsg.className = 'status-msg';
+      statusMsg.style.display = 'none';
+    }
+
+    function resetForm() {
+      form.reset();
+      resultsBox.classList.remove('visible');
+      resultsBox.style.display = 'none';
+      clearStatus();
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Analyse Queue';
+    }
+
+    // ---- main submit ----
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      clearStatus();
+      resultsBox.classList.remove('visible');
+      resultsBox.style.display = 'none';
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Connecting…';
+      setStatus('⏳ Waking up server & processing (initial load may take 30‑50s)…', 'info');
+
+      try {
+        // 1. gather & validate inputs
+        const method = document.querySelector('input[name="method"]:checked').value;
+        const facilityType = document.getElementById('facilityType').value;
+        const volume = parseFloat(document.getElementById('volume').value);
+        const lanes = parseInt(document.getElementById('lanes').value);
+        const cycleLength = parseFloat(document.getElementById('cycleLength').value);
+        const greenTime = parseFloat(document.getElementById('greenTime').value);
+        const truckPct = parseFloat(document.getElementById('truckPct').value);
+        const surgeFactor = parseFloat(document.getElementById('surgeFactor').value);
+        const laneWidthM = parseFloat(document.getElementById('laneWidth').value);
+        const shoulderWidthM = parseFloat(document.getElementById('shoulderWidth').value);
+        const grade = parseFloat(document.getElementById('grade').value);
+
+        if ([volume, lanes, cycleLength, greenTime, truckPct, surgeFactor, laneWidthM, shoulderWidthM, grade].some(isNaN)) {
+          throw new Error('Please fill in all numeric fields correctly.');
+        }
+        if (lanes < 1) throw new Error('Number of lanes must be at least 1.');
+        if (cycleLength < greenTime) throw new Error('Cycle length must be ≥ green time.');
+        if (laneWidthM < 2.0) throw new Error('Lane width should be at least 2.0 m.');
+
+        // 2. build payload (imperial for the API)
+        const payload = {
+          method: method,
+          facility_type: facilityType,
+          volume: volume,
+          lanes: lanes,
+          cycle_length: cycleLength,
+          green_time: greenTime,
+          truck_pct: truckPct,
+          surge_factor: surgeFactor,
+          lane_width: laneWidthM * METERS_TO_FEET,
+          shoulder_width: shoulderWidthM * METERS_TO_FEET,
+          grade: grade
+        };
+
+        // 3. make request via CORS proxy
+        setStatus('📡 Sending request via proxy…', 'info');
+
+        const proxyBody = {
+          url: TARGET_API,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          data: payload
+        };
+
+        const proxyResp = await fetch(PROXY_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(proxyBody)
+        });
+
+        if (!proxyResp.ok) {
+          const errText = await proxyResp.text();
+          throw new Error(`Proxy error (${proxyResp.status}): ${errText.slice(0, 120)}`);
+        }
+
+        // The proxy returns the raw response body – parse as JSON
+        let data;
+        try {
+          const rawText = await proxyResp.text();
+          data = JSON.parse(rawText);
+        } catch (parseErr) {
+          throw new Error('Invalid JSON response from API. Raw: ' + rawText.slice(0, 200));
+        }
+
+        // 4. extract & convert results
+        const queueFeet = data.queue_feet ?? data.queue_length_ft ?? data.queue_ft ?? 0;
+        const storageFeet = data.queue_storage_ft ?? data.design_storage_ft ?? data.storage_ft ?? 0;
+        const queueVeh = data.queue_veh ?? data.queue_length_veh ?? data.queue_length ?? 0;
+        const vcRatio = data.vc_ratio ?? data.v_c_ratio ?? data.vc ?? 0;
+        const los = data.los ?? data.level_of_service ?? '—';
+        const capacity = data.capacity ?? data.cap ?? 0;
+        const queue95 = data.queue_95th ?? data.queue_95 ?? data.q95 ?? 0;
+
+        const queueMeters = queueFeet ? (queueFeet / METERS_TO_FEET) : 0;
+        const storageMeters = storageFeet ? (storageFeet / METERS_TO_FEET) : 0;
+
+        // 5. render
+        outQueueVeh.textContent = (queueVeh || 0).toFixed(1) + ' veh';
+        outQueueMeters.textContent = queueMeters ? queueMeters.toFixed(2) + ' m' : '—';
+        outVcRatio.textContent = vcRatio ? vcRatio.toFixed(3) : '—';
+        outLos.textContent = los;
+
+        tableCapacity.textContent = capacity ? capacity.toFixed(0) + ' veh/h' : '—';
+        table95Queue.textContent = queue95 ? queue95.toFixed(1) + ' veh' : '—';
+        tableStorageMeters.textContent = storageMeters ? storageMeters.toFixed(2) + ' m' : '—';
+        tableMethod.textContent = method;
+
+        resultsBox.style.display = 'block';
+        // small delay so the browser renders before we add the visible class
+        requestAnimationFrame(() => {
+          resultsBox.classList.add('visible');
+        });
+
+        setStatus('✅ Analysis complete.', 'success');
+
+      } catch (err) {
+        console.error('API Error:', err);
+        setStatus('❌ API Request Failed: ' + err.message, 'error');
+        resultsBox.classList.remove('visible');
+        resultsBox.style.display = 'none';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Analyse Queue';
+      }
+    });
+
+    // ---- auto-reset on page load ----
+    document.addEventListener('DOMContentLoaded', resetForm);
+  </script>
 </body>
 </html>

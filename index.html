@@ -101,63 +101,9 @@
             padding: 0 28px
         }
 
-        /* ---------- VISIT BLOCKER ---------- */
-        #blocker-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: var(--asphalt);
-            color: var(--paper);
-            z-index: 9999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 2rem;
-            direction: rtl
-        }
-        #blocker-overlay.visible {
-            display: flex
-        }
-        #blocker-overlay h1 {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-            color: var(--marking)
-        }
-        #blocker-overlay p {
-            max-width: 500px;
-            font-size: 1.1rem;
-            color: var(--muted-dark);
-            margin-bottom: 1.6rem
-        }
-        #blocker-overlay .contact-details {
-            background: #1b1f24;
-            padding: 1.6rem 2.4rem;
-            border-radius: 12px;
-            border: 1px solid var(--rule-dark)
-        }
-        #blocker-overlay .contact-details a {
-            display: inline-block;
-            margin: .4rem 1rem;
-            color: var(--paper);
-            text-decoration: none;
-            font-weight: 600;
-            border-bottom: 2px solid var(--marking);
-            padding-bottom: 4px
-        }
-        #blocker-overlay .contact-details a:hover {
-            color: var(--marking)
-        }
-        #blocker-overlay .note {
-            margin-top: 1.2rem;
-            font-size: .9rem;
-            color: var(--muted)
-        }
+        /* ---------- VISIT BLOCKER REMOVED ---------- */
         #main-content {
-            display: none
-        }
-        #main-content.visible {
-            display: block
+            display: block;
         }
 
         /* ---------- MASTHEAD ---------- */
@@ -1025,18 +971,7 @@
 </head>
 <body>
 
-    <!-- ========== VISIT LIMIT OVERLAY ========== -->
-    <div id="blocker-overlay">
-        <h1>🔒 הגעת למגבלת הצפייה</h1>
-        <p>הגעת ל-30 צפיות בעמוד זה. לקבלת גישה מלאה לקטלוג ולכלים המתקדמים, אנא צרו קשר ישירות.</p>
-        <div class="contact-details">
-            <div>📧 <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a></div>
-            <div>📞 <a href="tel:+972546528572">+972-546-528572</a></div>
-        </div>
-        <p class="note">נשמח לשמוע מכם! צרו קשר לקבלת הצעת מחיר או גישה מותאמת.</p>
-    </div>
-
-    <!-- ========== MAIN CONTENT ========== -->
+    <!-- ========== MAIN CONTENT (visitor blocker removed) ========== -->
     <div id="main-content">
 
         <header class="masthead">
@@ -1064,7 +999,6 @@
                         <a class="btn btn-line" href="tool.html">פתיחת כלי הצמתים</a>
                         <a class="btn btn-line" href="parking-regulations.html">תקנות והנחיות חניה</a>
                         <a class="btn btn-line" href="critical-lane-volume.html">נפח נתיב קריטי</a>
-                        <a class="btn btn-line" href="lane-queue-metric.html">ניתוח נתיבים ותורים (מטרי)</a>
                     </div>
                     <div class="tally">
                         <div><b>23</b>רחובות עירוניים</div>
@@ -1135,7 +1069,7 @@
                     <button class="chip" data-cat="rural" aria-pressed="false">בין-עירוני</button>
                     <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
                 </div>
-                <p class="count" id="count" aria-live="polite">52 נהלים</p>
+                <p class="count" id="count" aria-live="polite">51 נהלים</p>
             </div>
         </div>
 
@@ -1150,30 +1084,27 @@
                         <span class="arrow" aria-hidden="true"></span>
                         <span class="b-title">רחובות עירוניים</span>
                         <span class="b-sub">רמזורים, צמתים, איכות רב-אמצעית וגיאומטריית חתך.</span>
-                        <span class="b-n"><b data-groupcount>24</b> נהלים</span>
+                        <span class="b-n"><b data-groupcount>23</b> נהלים</span>
                     </summary>
                     <div class="twigs">
 
                         <details class="twig">
-                            <summary><span class="arrow" aria-hidden="true"></span>צמתים ורמזורים<span class="t-n" data-twigcount>8</span></summary>
+                            <summary><span class="arrow" aria-hidden="true"></span>צמתים ורמזורים<span class="t-n" data-twigcount>7</span></summary>
                             <div class="leaves">
                                 <a class="leaf" href="critical-lane-volume.html"><h3>נפח נתיב קריטי<span class="tool-flag">כלי חי</span></h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
                                 <a class="leaf" href="tool.html"><h3>כלי ניתוח צמתים<span class="tool-flag">כלי חי</span></h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
-                                <!-- NEW: Metric roundabout analysis -->
-                                <a class="leaf" href="roundabout-analysis-metric.html"><h3>ניתוח כיכר תנועה (מטרי)<span class="tool-flag">כלי חי</span></h3><p>חישוב קיבולת, יחס נפח-קיבולת, עיכוב ותור באחוזון 95 – עם יחידות מטריות.</p><span class="std">HCM Ch. 22</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></a>
                             </div>
                         </details>
 
                         <details class="twig">
-                            <summary><span class="arrow" aria-hidden="true"></span>נתיבים, מקטעים ומסדרונות<span class="t-n" data-twigcount>4</span></summary>
+                            <summary><span class="arrow" aria-hidden="true"></span>נתיבים, מקטעים ומסדרונות<span class="t-n" data-twigcount>3</span></summary>
                             <div class="leaves">
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח נתיבים ותורים</h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                                <a class="leaf" href="lane-queue-metric.html"><h3>ניתוח נתיבים ותורים (מטרי)<span class="tool-flag">כלי חי</span></h3><p>חישוב מטרי של יחס נפח-קיבולת, עיכוב ואורך תור לכל נתיב.</p><span class="std">HCM Ch. 19 / 31</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח מקטע רחוב עירוני</h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></a>
                             </div>
@@ -1451,8 +1382,6 @@
                     <a href="tool.html">כלי הצמתים</a>
                     <a href="critical-lane-volume.html">נפח נתיב קריטי</a>
                     <a href="parking-regulations.html">תקנות חניה</a>
-                    <a href="lane-queue-metric.html">ניתוח נתיבים (מטרי)</a>
-                    <a href="roundabout-analysis-metric.html">כיכר תנועה (מטרי)</a>
                     <a href="apis-he.html">כל ה‑API</a>
                     <a href="apis.html">English</a>
                     <a href="policy.html">מדיניות</a>
@@ -1464,30 +1393,6 @@
 
     <!-- ========== SCRIPTS ========== -->
     <script>
-        // ---- Visit blocker (30 free visits) ----
-        (function() {
-            const KEY = 'mahalco_visit_data',
-                MAX = 30;
-            const overlay = document.getElementById('blocker-overlay');
-            const main = document.getElementById('main-content');
-            let stored = localStorage.getItem(KEY);
-            let d = stored ? JSON.parse(stored) : { count: 0, ip: '' };
-
-            function decide() {
-                localStorage.setItem(KEY, JSON.stringify(d));
-                if (d.count > MAX) { overlay.classList.add('visible');
-                    main.classList.remove('visible'); } else { overlay.classList.remove('visible');
-                    main.classList.add('visible'); }
-            }
-            fetch('https://api.ipify.org?format=json').then(r => r.json()).then(x => {
-                const ip = x.ip || '';
-                if (d.ip && d.ip !== ip) { d.count = 1;
-                    d.ip = ip; } else { d.count += 1; if (!d.ip) d.ip = ip; }
-                decide();
-            }).catch(() => { d.count += 1;
-                decide(); });
-        })();
-
         // ---- Tree search & filter ----
         (function() {
             const q = document.getElementById('q');

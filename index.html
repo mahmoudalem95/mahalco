@@ -52,6 +52,8 @@
             --rule-dark: #39404A;
             --muted: #5C6570;
             --muted-dark: #9BA4AE;
+            --alert: #B22D20;
+            --alert-ink: #8A2318;
             --measure: 66ch;
         }
         * { box-sizing: border-box }
@@ -201,6 +203,38 @@
         .f-bottom { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--rule-dark); font-size: 13px }
         .f-bottom .who { color: var(--paper); font-weight: 600; margin-inline-start: auto }
         @media (max-width:820px) { footer .f-grid { grid-template-columns: 1fr; gap: 22px } .f-bottom .who { margin-inline-start: 0; width: 100% } }
+
+        /* --- נהלים שטרם הושלמו --- */
+        .flag-pending { display: inline-block; font-size: 11px; font-weight: 700; color: #fff; background: var(--alert); border-radius: 2px; padding: 1px 6px; margin-inline-start: 7px; vertical-align: middle }
+        a.leaf.pending::before { background: var(--alert); transform: scaleY(1); opacity: .5 }
+        a.leaf.pending:hover::before, a.leaf.pending:focus-visible::before { opacity: 1 }
+        a.leaf.pending h3 { color: var(--alert-ink) }
+        .soon.pending { border-inline-start: 3px solid rgba(178,45,32,.4); padding-inline-start: 13px }
+        .chip-pending[aria-pressed="true"] { background: var(--alert); border-color: var(--alert); color: #fff }
+        .count .pend { color: var(--alert-ink); font-weight: 600 }
+
+        /* --- מכסת שימוש יומית --- */
+        .usage { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 7px 14px; margin-top: 12px; padding-top: 11px; border-top: 1px dashed var(--rule); font-size: 13px; color: var(--muted) }
+        .usage b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums }
+        .usage .meter { flex: none; width: 116px; height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden }
+        .usage .meter i { display: block; height: 100%; width: 0; background: var(--marking); transition: width .25s ease }
+        .usage .u-contact { margin-inline-start: auto }
+        .usage .u-contact a { color: #8a6a12 }
+        .usage.low .meter i { background: var(--alert) }
+        .usage.low .u-msg { color: var(--alert-ink); font-weight: 600 }
+        @media (max-width:640px) { .usage .u-contact { margin-inline-start: 0; flex: 1 1 100% } }
+
+        #limit-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(20,26,31,.97); padding: 24px; display: none; align-items: center; justify-content: center }
+        #limit-overlay[data-on="1"] { display: flex }
+        body.locked { overflow: hidden }
+        .limit-card { max-width: 540px; width: 100%; background: var(--paper); border-radius: 5px; border-top: 5px solid var(--alert); padding: 30px 32px 26px }
+        .limit-card h2 { margin: 0 0 12px; font-size: 1.5rem; font-weight: 800; letter-spacing: -.01em }
+        .limit-card p { margin: 0 0 12px; font-size: 15px; line-height: 1.65; color: #33393F }
+        .limit-card .reset { display: inline-block; background: var(--paper-2); border: 1px solid var(--rule); border-radius: 3px; padding: 8px 13px; font-size: 14px; font-variant-numeric: tabular-nums }
+        .limit-card ul { margin: 14px 0 0; padding: 0; list-style: none; font-size: 14.5px }
+        .limit-card li { margin-bottom: 7px }
+        .limit-card a { color: #8a6a12 }
+        .limit-card .card-foot { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted) }
     </style>
 </head>
 <body>
@@ -209,7 +243,7 @@
 
     <header class="masthead">
         <div class="wrap">
-            <a class="mark" href="#top"><img src="docs/assets/IL.jpeg" alt="MahAlCo" style="height: 40px; width: auto; display: block;"></a>
+            <a class="mark" href="#top"><span aria-hidden="true"></span>Mahalco</a>
             <nav>
                 <a href="#catalog">קטלוג</a>
                 <a href="#access">גישה ותשלום</a>
@@ -285,8 +319,15 @@
                 <button class="chip" data-cat="urban" aria-pressed="false">עירוני</button>
                 <button class="chip" data-cat="rural" aria-pressed="false">בין-עירוני</button>
                 <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
+                <button class="chip chip-pending" id="chip-pending" type="button" aria-pressed="false">טרם הושלמו</button>
             </div>
             <p class="count" id="count" aria-live="polite">51 נהלים</p>
+
+            <div class="usage" id="usage" hidden>
+                <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
+                <span class="u-msg" id="usage-msg">שימוש היום: <b>0</b> מתוך 10 נהלים</span>
+                <span class="u-contact">מכסה גדולה יותר: <a href="mailto:mahmoudalem95@icloud.com?subject=%D7%94%D7%92%D7%93%D7%9C%D7%AA%20%D7%9E%D7%9B%D7%A1%D7%94%20%D7%99%D7%95%D7%9E%D7%99%D7%AA">mahmoudalem95@icloud.com</a> · <a href="tel:+972546528572">‎+972-546-528572</a></span>
+            </div>
         </div>
     </div>
 
@@ -308,16 +349,10 @@
                         <div class="leaves">
                             <a class="leaf" href="critical-lane-volume.html"><h3>נפח נתיב קריטי<span class="tool-flag">כלי חי</span></h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
                             <a class="leaf" href="tool.html"><h3>כלי ניתוח צמתים<span class="tool-flag">כלי חי</span></h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
-                            <a class="leaf" href="apis-he.html"><h3><a class="leaf" href="critical-lane-volume.html"><h3>נפח נתיב קריטי<span class="tool-flag">כלי חי</span></h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-<a class="leaf" href="tool.html"><h3>כלי ניתוח צמתים<span class="tool-flag">כלי חי</span></h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
-<a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
-<a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
-<a class="leaf" href="roundabout-analysis-metric.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
-<a class="leaf" href="optimizes-signal-timing%20plans-metric.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
-<div class="soon"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></div></h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
-                            <a class="leaf" href="apis-he.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>ניתוח צומת מרומזר<span class="tool-flag">כלי חי</span></h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>ניתוח צומת לא מרומזר<span class="tool-flag">כלי חי</span></h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
+                            <a class="leaf" href="roundabout-analysis-metric.html"><h3>ניתוח כיכר תנועה<span class="tool-flag">כלי חי</span></h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
+                            <a class="leaf" href="optimizes-signal-timing%20plans-metric.html"><h3>תיאום ותזמון רמזורים<span class="tool-flag">כלי חי</span></h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
                             <a class="leaf" href="apis-he.html"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></a>
                         </div>
                     </details>
@@ -565,22 +600,144 @@
     </footer>
 </div>
 
+<div id="limit-overlay" role="dialog" aria-modal="true" aria-labelledby="limit-title" data-on="0">
+    <div class="limit-card">
+        <h2 id="limit-title">הגעתם למכסת השימוש היומית</h2>
+        <p>נפתחו היום <b>10</b> נהלים מהאתר, וזו המכסה היומית לגישה חופשית. הגישה נפתחת מחדש בחצות לפי השעון המקומי שלכם.</p>
+        <p class="reset">הגישה תיפתח בעוד <b id="limit-countdown">—</b></p>
+        <ul>
+            <li>למכסה גדולה יותר או למפתח API: <a href="mailto:mahmoudalem95@icloud.com?subject=%D7%94%D7%92%D7%93%D7%9C%D7%AA%20%D7%9E%D7%9B%D7%A1%D7%94%20%D7%99%D7%95%D7%9E%D7%99%D7%AA">mahmoudalem95@icloud.com</a></li>
+            <li>טלפון: <a href="tel:+972546528572">‎+972-546-528572</a></li>
+            <li>המסלולים והמחירים מפורטים בעמוד — פתחו אותו מחר או פנו אלינו במייל.</li>
+        </ul>
+        <p class="card-foot">המכסה נספרת בדפדפן הזה בלבד ומתאפסת בכל יום קלנדרי.</p>
+    </div>
+</div>
+
 <script>
+/* מכסת שימוש יומית — 10 פתיחות של נהלים ליום, וסימון נהלים שטרם הושלמו */
+(function() {
+    const LIMIT = 10;                     /* לשינוי המכסה: שנו את המספר הזה */
+    const KEY = 'mahalco_daily_use_v1';
+    const REPEAT_GRACE = 30000;           /* לחיצה חוזרת על אותו נוהל בתוך 30 שניות לא נספרת שוב */
+    const PENDING = /(^|\/)apis(-he)?\.html([?#].*)?$/i;
+
+    let mem = null;
+    const stamp = () => {
+        const d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    };
+    const fresh = () => ({ date: stamp(), count: 0, last: {} });
+    function readState() {
+        let raw = null;
+        try { raw = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { raw = mem; }
+        if (!raw) raw = mem;
+        if (!raw || raw.date !== stamp() || typeof raw.count !== 'number') return fresh();
+        if (!raw.last) raw.last = {};
+        return raw;
+    }
+    function writeState(s) {
+        mem = s;
+        try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+    }
+
+    const usage = document.getElementById('usage');
+    const usageMsg = document.getElementById('usage-msg');
+    const usageFill = document.getElementById('usage-fill');
+    const overlay = document.getElementById('limit-overlay');
+    const countdown = document.getElementById('limit-countdown');
+
+    function render() {
+        const s = readState();
+        const left = Math.max(0, LIMIT - s.count);
+        usage.hidden = false;
+        usageMsg.innerHTML = left > 0
+            ? 'שימוש היום: <b>' + s.count + '</b> מתוך ' + LIMIT + ' נהלים · נותרו <b>' + left + '</b>'
+            : 'המכסה היומית נוצלה — <b>' + LIMIT + '</b> מתוך ' + LIMIT + ' נהלים';
+        usageFill.style.width = Math.min(100, (s.count / LIMIT) * 100) + '%';
+        usage.classList.toggle('low', left <= 2);
+        return s;
+    }
+
+    function tickCountdown() {
+        const end = new Date(); end.setHours(24, 0, 0, 0);
+        let mins = Math.max(0, Math.round((end - Date.now()) / 60000));
+        const h = Math.floor(mins / 60); mins = mins % 60;
+        countdown.textContent = h > 0 ? h + ' שעות ו‑' + mins + ' דקות' : mins + ' דקות';
+    }
+
+    let locked = false;
+    function lock() {
+        if (locked) return;
+        locked = true;
+        overlay.setAttribute('data-on', '1');
+        document.body.classList.add('locked');
+        tickCountdown();
+        setInterval(tickCountdown, 60000);
+    }
+
+    /* סימון נהלים שטרם הושלמו + סימון קישורי שירות פעילים */
+    document.querySelectorAll('a.leaf').forEach(a => {
+        const href = a.getAttribute('href') || '';
+        if (PENDING.test(href) || href === '#' || href === '') {
+            a.classList.add('pending');
+            a.dataset.status = 'pending';
+            const h = a.querySelector('h3');
+            if (h && !h.querySelector('.flag-pending')) {
+                const flag = document.createElement('span');
+                flag.className = 'flag-pending';
+                flag.textContent = 'טרם הושלם';
+                h.appendChild(flag);
+            }
+            a.setAttribute('title', 'הנוהל טרם הושלם — הקישור מוביל לרשימת ה‑API');
+        } else {
+            a.dataset.service = '1';
+        }
+    });
+    document.querySelectorAll('.soon').forEach(d => d.classList.add('pending'));
+
+    const SERVICE = /(tool|critical-lane-volume|parking-regulations|roundabout-analysis-metric|typical-section|rural|lane-queue-metric|optimizes-signal-timing[^"']*metric)\.html|junction-los-api\.onrender\.com/i;
+    document.querySelectorAll('a[href]').forEach(a => {
+        if (a.dataset.service || a.classList.contains('leaf')) return;
+        if (SERVICE.test(a.getAttribute('href') || '')) a.dataset.service = '1';
+    });
+
+    /* ספירה בלחיצה: רק נהלים פעילים נספרים, נהלים שטרם הושלמו לא */
+    document.addEventListener('click', function(ev) {
+        const a = ev.target.closest('a[data-service]');
+        if (!a) return;
+        const s = readState();
+        if (s.count >= LIMIT) { ev.preventDefault(); lock(); return; }
+        const id = a.getAttribute('href');
+        const now = Date.now();
+        if (s.last[id] && now - s.last[id] < REPEAT_GRACE) { s.last[id] = now; writeState(s); return; }
+        s.last[id] = now;
+        s.count += 1;
+        writeState(s);
+        render();
+    }, true);
+
+    const start = render();
+    if (start.count >= LIMIT) lock();
+    window.addEventListener('pageshow', () => { const s = render(); if (s.count >= LIMIT) lock(); });
+})();
+
 (function() {
     const q = document.getElementById('q');
     const countEl = document.getElementById('count');
     const empty = document.getElementById('empty');
     const reset = document.getElementById('reset');
-    const chips = [...document.querySelectorAll('.chip')];
+    const chips = [...document.querySelectorAll('.chip[data-cat]')];
+    const pendingChip = document.getElementById('chip-pending');
     const branches = [...document.querySelectorAll('.branch')];
-    let cat = 'all', first = true;
+    let cat = 'all', pendingOnly = false, first = true;
 
     document.querySelectorAll('.leaf').forEach(l => { l.dataset.text = l.textContent.toLowerCase(); });
 
     function apply() {
         const term = q.value.trim().toLowerCase();
-        const filtering = term !== '' || cat !== 'all';
-        let total = 0;
+        const filtering = term !== '' || cat !== 'all' || pendingOnly;
+        let total = 0, pend = 0;
 
         branches.forEach(b => {
             const inCat = (cat === 'all' || b.dataset.group === cat);
@@ -588,9 +745,10 @@
             b.querySelectorAll('.twig').forEach(t => {
                 let tShown = 0;
                 t.querySelectorAll('.leaf').forEach(l => {
-                    const ok = inCat && (term === '' || l.dataset.text.includes(term));
+                    const isPending = l.classList.contains('pending');
+                    const ok = inCat && (term === '' || l.dataset.text.includes(term)) && (!pendingOnly || isPending);
                     l.hidden = !ok;
-                    if (ok) tShown++;
+                    if (ok) { tShown++; if (isPending) pend++; }
                 });
                 t.hidden = tShown === 0;
                 const tc = t.querySelector('[data-twigcount]');
@@ -607,7 +765,8 @@
             total += bShown;
         });
 
-        countEl.textContent = total === 1 ? 'נוהל אחד' : total + ' נהלים';
+        countEl.innerHTML = (total === 1 ? 'נוהל אחד' : total + ' נהלים')
+            + (pend > 0 ? ' · <span class="pend">' + pend + ' טרם הושלמו</span>' : '');
         empty.hidden = total !== 0;
         first = false;
     }
@@ -618,9 +777,16 @@
         chips.forEach(o => o.setAttribute('aria-pressed', String(o === c)));
         apply();
     }));
+    if (pendingChip) pendingChip.addEventListener('click', () => {
+        pendingOnly = !pendingOnly;
+        pendingChip.setAttribute('aria-pressed', String(pendingOnly));
+        apply();
+    });
     if (reset) reset.addEventListener('click', () => {
         q.value = '';
         cat = 'all';
+        pendingOnly = false;
+        if (pendingChip) pendingChip.setAttribute('aria-pressed', 'false');
         chips.forEach(o => o.setAttribute('aria-pressed', String(o.dataset.cat === 'all')));
         apply();
         q.focus();

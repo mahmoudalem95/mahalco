@@ -1064,7 +1064,6 @@
                         <a class="btn btn-line" href="tool.html">פתיחת כלי הצמתים</a>
                         <a class="btn btn-line" href="parking-regulations.html">תקנות והנחיות חניה</a>
                         <a class="btn btn-line" href="critical-lane-volume.html">נפח נתיב קריטי</a>
-                        <!-- NEW: Metric Lane Queue Analysis button -->
                         <a class="btn btn-line" href="lane-queue-metric.html">ניתוח נתיבים ותורים (מטרי)</a>
                     </div>
                     <div class="tally">
@@ -1136,7 +1135,7 @@
                     <button class="chip" data-cat="rural" aria-pressed="false">בין-עירוני</button>
                     <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
                 </div>
-                <p class="count" id="count" aria-live="polite">51 נהלים</p>
+                <p class="count" id="count" aria-live="polite">52 נהלים</p>
             </div>
         </div>
 
@@ -1151,18 +1150,20 @@
                         <span class="arrow" aria-hidden="true"></span>
                         <span class="b-title">רחובות עירוניים</span>
                         <span class="b-sub">רמזורים, צמתים, איכות רב-אמצעית וגיאומטריית חתך.</span>
-                        <span class="b-n"><b data-groupcount>23</b> נהלים</span>
+                        <span class="b-n"><b data-groupcount>24</b> נהלים</span>
                     </summary>
                     <div class="twigs">
 
                         <details class="twig">
-                            <summary><span class="arrow" aria-hidden="true"></span>צמתים ורמזורים<span class="t-n" data-twigcount>7</span></summary>
+                            <summary><span class="arrow" aria-hidden="true"></span>צמתים ורמזורים<span class="t-n" data-twigcount>8</span></summary>
                             <div class="leaves">
                                 <a class="leaf" href="critical-lane-volume.html"><h3>נפח נתיב קריטי<span class="tool-flag">כלי חי</span></h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
                                 <a class="leaf" href="tool.html"><h3>כלי ניתוח צמתים<span class="tool-flag">כלי חי</span></h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח צומת מרומזר</h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח צומת לא מרומזר</h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח כיכר תנועה</h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
+                                <!-- NEW: Metric roundabout analysis -->
+                                <a class="leaf" href="roundabout-analysis-metric.html"><h3>ניתוח כיכר תנועה (מטרי)<span class="tool-flag">כלי חי</span></h3><p>חישוב קיבולת, יחס נפח-קיבולת, עיכוב ותור באחוזון 95 – עם יחידות מטריות.</p><span class="std">HCM Ch. 22</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>תיאום ותזמון רמזורים</h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></a>
                             </div>
@@ -1171,10 +1172,8 @@
                         <details class="twig">
                             <summary><span class="arrow" aria-hidden="true"></span>נתיבים, מקטעים ומסדרונות<span class="t-n" data-twigcount>4</span></summary>
                             <div class="leaves">
-                                <!-- existing lane/queue analysis -->
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח נתיבים ותורים</h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                                <!-- NEW: Metric lane queue analysis tool -->
-                                <a class="leaf" href="lane-queue-metric.html"><h3>ניתוח נתיבים ותורים (מטרי)<span class="tool-flag">כלי חי</span></h3><p>חישוב מטרי של יחס נפח-קיבולת, עיכוב ואורך תור לכל נתיב, עם תמיכה ביחידות מטריות.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                                <a class="leaf" href="lane-queue-metric.html"><h3>ניתוח נתיבים ותורים (מטרי)<span class="tool-flag">כלי חי</span></h3><p>חישוב מטרי של יחס נפח-קיבולת, עיכוב ואורך תור לכל נתיב.</p><span class="std">HCM Ch. 19 / 31</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח מקטע רחוב עירוני</h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
                                 <a class="leaf" href="apis-he.html"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></a>
                             </div>
@@ -1453,6 +1452,7 @@
                     <a href="critical-lane-volume.html">נפח נתיב קריטי</a>
                     <a href="parking-regulations.html">תקנות חניה</a>
                     <a href="lane-queue-metric.html">ניתוח נתיבים (מטרי)</a>
+                    <a href="roundabout-analysis-metric.html">כיכר תנועה (מטרי)</a>
                     <a href="apis-he.html">כל ה‑API</a>
                     <a href="apis.html">English</a>
                     <a href="policy.html">מדיניות</a>

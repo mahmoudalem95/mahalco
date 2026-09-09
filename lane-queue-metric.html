@@ -246,7 +246,7 @@
   <div class="container">
     <h1>🚦 Lane &amp; Queue Analysis <span class="badge">Metric</span></h1>
     <p class="subhead">Estimate queue lengths, lane‑group capacity, V/C ratio and LOS using metric units.<br>
-      <span style="font-size:13px;color:#6a7a8a;">API calls are routed through a reliable CORS proxy for browser compatibility.</span></p>
+      <span style="font-size:13px;color:#6a7a8a;">Uses a robust multi‑proxy fallback to ensure reliable browser access.</span></p>
 
     <form id="queueForm" novalidate>
       <div class="form-group">
@@ -341,7 +341,7 @@
         </tbody>
       </table>
       <div class="footnote">
-        ⚡ API results are converted from imperial to metric. <a href="#" onclick="document.getElementById('statusMsg').innerHTML='';return false;">Clear status</a>
+        ⚡ Results are converted from imperial to metric. <a href="#" onclick="document.getElementById('statusMsg').innerHTML='';return false;">Clear status</a>
       </div>
     </div>
   </div>
@@ -350,8 +350,43 @@
     // ---- CONFIG ----
     const METERS_TO_FEET = 3.28084;
     const TARGET_API = 'https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis';
-    // Use a reliable CORS proxy that supports POST with body
-    const PROXY_URL = 'https://corsproxy.io/';
+
+    // List of CORS proxies that support POST with body.
+    // They are tried in order until one succeeds.
+    const PROXIES = [
+      // api.allorigins.win/raw (most reliable)
+      {
+        url: 'https://api.allorigins.win/raw',
+        buildRequest: (targetUrl, payload) => ({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            url: targetUrl,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            data: payload
+          })
+        })
+      },
+      // corsproxy.io (alternative)
+      {
+        url: 'https://corsproxy.io/?' + new URLSearchParams({ url: TARGET_API }),
+        buildRequest: (targetUrl, payload) => ({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+      },
+      // herokuapp (fallback)
+      {
+        url: 'https://cors-anywhere.herokuapp.com/' + TARGET_API,
+        buildRequest: (targetUrl, payload) => ({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+      }
+    ];
 
     // ---- DOM refs ----
     const form = document.getElementById('queueForm');
@@ -388,6 +423,32 @@
       clearStatus();
       submitBtn.disabled = false;
       submitBtn.textContent = 'Analyse Queue';
+    }
+
+    // ---- attempt request with proxy fallback ----
+    async function fetchWithProxy(payload) {
+      const errors = [];
+      for (let i = 0; i < PROXIES.length; i++) {
+        const proxy = PROXIES[i];
+        try {
+          const req = proxy.buildRequest(TARGET_API, payload);
+          const response = await fetch(proxy.url, req);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status} - ${await response.text().slice(0, 80)}`);
+          }
+          // Try to parse JSON
+          const text = await response.text();
+          try {
+            return JSON.parse(text);
+          } catch (parseErr) {
+            throw new Error('Invalid JSON response: ' + text.slice(0, 100));
+          }
+        } catch (err) {
+          errors.push(`Proxy ${i+1} (${proxy.url.split('//')[1].split('/')[0]}): ${err.message}`);
+          // Continue to next proxy
+        }
+      }
+      throw new Error('All proxies failed:\n' + errors.join('\n'));
     }
 
     // ---- main submit ----
@@ -437,34 +498,9 @@
           grade: grade
         };
 
-        // 3. make request via CORS proxy (corsproxy.io)
+        // 3. send request via proxy with fallback
         setStatus('📡 Sending request via proxy…', 'info');
-
-        // corsproxy.io expects the target URL as a query parameter ?url=...
-        const proxyUrl = PROXY_URL + '?' + new URLSearchParams({ url: TARGET_API });
-
-        const response = await fetch(proxyUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-          const errText = await response.text();
-          throw new Error(`Proxy error (${response.status}): ${errText.slice(0, 120)}`);
-        }
-
-        // The proxy returns the raw response body – parse as JSON
-        let data;
-        try {
-          const rawText = await response.text();
-          data = JSON.parse(rawText);
-        } catch (parseErr) {
-          throw new Error('Invalid JSON response from API. Raw: ' + rawText.slice(0, 200));
-        }
+        const data = await fetchWithProxy(payload);
 
         // 4. extract & convert results
         const queueFeet = data.queue_feet ?? data.queue_length_ft ?? data.queue_ft ?? 0;

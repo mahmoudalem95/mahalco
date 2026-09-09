@@ -101,7 +101,7 @@
             padding: 0 28px
         }
 
-        /* ---------- VISIT BLOCKER REMOVED ---------- */
+        /* ---------- NO LIMITATION – main content always visible ---------- */
         #main-content {
             display: block;
         }
@@ -971,7 +971,7 @@
 </head>
 <body>
 
-    <!-- ========== MAIN CONTENT (visitor blocker removed) ========== -->
+    <!-- ========== MAIN CONTENT – always visible, no limitations ========== -->
     <div id="main-content">
 
         <header class="masthead">
@@ -1391,7 +1391,7 @@
         </footer>
     </div>
 
-    <!-- ========== SCRIPTS ========== -->
+    <!-- ========== SCRIPTS – only search/filter and API key storage (no limitation) ========== -->
     <script>
         // ---- Tree search & filter ----
         (function() {
@@ -1469,7 +1469,7 @@
             apply();
         })();
 
-        // ---- API key box ----
+        // ---- API key storage (optional, no restriction) ----
         (function() {
             const btn = document.getElementById('connect-api-btn');
             const input = document.getElementById('api-key-input');
@@ -1478,11 +1478,11 @@
             btn.addEventListener('click', () => {
                 const v = input.value.trim();
                 msg.hidden = false;
-                if (!v) { msg.textContent = 'הזינו מפתח API כדי להתחבר.';
+                if (!v) { msg.textContent = 'הזינו מפתח API כדי לשמור אותו.';
                     msg.style.color = '#8a2f2f';
                     input.focus(); return; }
                 try { sessionStorage.setItem('mahalco_api_key', v); } catch (e) {}
-                msg.textContent = 'המפתח נשמר לדפדפן. אפשר לעבור לכלי הצמתים ולהריץ ניתוח.';
+                msg.textContent = 'המפתח נשמר בדפדפן לצורך נוחות.';
                 msg.style.color = '#2f6b3f';
             });
         })();

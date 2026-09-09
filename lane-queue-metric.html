@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MAHALCO – Lane & Queue Analysis (Metric)</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Roboto, Arial, sans-serif;
       margin: 0;
@@ -27,9 +25,7 @@
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
       transition: box-shadow 0.2s;
     }
-    .container:hover {
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-    }
+    .container:hover { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12); }
     h1 {
       margin: 0 0 6px;
       font-size: 26px;
@@ -44,9 +40,7 @@
       border-bottom: 1px solid #e9edf2;
       padding-bottom: 14px;
     }
-    .form-group {
-      margin-bottom: 16px;
-    }
+    .form-group { margin-bottom: 16px; }
     label {
       display: block;
       margin-bottom: 4px;
@@ -59,8 +53,7 @@
       color: #7a8a9a;
       font-size: 12.5px;
     }
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 10px 12px;
       font-size: 15px;
@@ -71,21 +64,15 @@
       font-family: inherit;
       color: #1a2634;
     }
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       border-color: #0066cc;
       outline: none;
       box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
       background: #fff;
     }
-    input[type="number"] {
-      -moz-appearance: textfield;
-    }
+    input[type="number"] { -moz-appearance: textfield; }
     input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .radio-group {
       display: flex;
       gap: 24px;
@@ -114,13 +101,8 @@
       gap: 14px;
     }
     @media (max-width: 500px) {
-      .row-2 {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      .container {
-        padding: 20px 16px 24px;
-      }
+      .row-2 { grid-template-columns: 1fr; gap: 10px; }
+      .container { padding: 20px 16px 24px; }
     }
     .actions {
       display: flex;
@@ -141,9 +123,7 @@
       align-items: center;
       justify-content: center;
     }
-    button:active {
-      transform: scale(0.97);
-    }
+    button:active { transform: scale(0.97); }
     #submitBtn {
       background: #0066cc;
       color: #fff;
@@ -162,9 +142,7 @@
       background: #e9edf2;
       color: #2d3a4a;
     }
-    .reset-btn:hover {
-      background: #dce1e8;
-    }
+    .reset-btn:hover { background: #dce1e8; }
     .status-msg {
       margin-top: 16px;
       padding: 10px 14px;
@@ -199,9 +177,7 @@
       border: 1px solid #e0e8f0;
       display: none;
     }
-    .results-box.visible {
-      display: block;
-    }
+    .results-box.visible { display: block; }
     .results-box h2 {
       margin: 0 0 14px;
       font-size: 20px;
@@ -222,26 +198,16 @@
       border-bottom: 1px solid #eef2f7;
       font-size: 14.5px;
     }
-    .result-item .label {
-      color: #4a5a6a;
-      font-weight: 500;
-    }
-    .result-item .value {
-      font-weight: 700;
-      color: #0b1a2e;
-      font-variant-numeric: tabular-nums;
-    }
-    .result-item .value.highlight {
-      color: #0066cc;
-    }
+    .result-item .label { color: #4a5a6a; font-weight: 500; }
+    .result-item .value { font-weight: 700; color: #0b1a2e; font-variant-numeric: tabular-nums; }
+    .result-item .value.highlight { color: #0066cc; }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 6px;
       font-size: 14px;
     }
-    th,
-    td {
+    th, td {
       border: 1px solid #e0e8f0;
       padding: 10px 12px;
       text-align: left;
@@ -251,13 +217,8 @@
       font-weight: 600;
       color: #1f2a3a;
     }
-    td {
-      background: #ffffff;
-    }
-    td:last-child {
-      color: #4a5a6a;
-      font-size: 13px;
-    }
+    td { background: #ffffff; }
+    td:last-child { color: #4a5a6a; font-size: 13px; }
     .footnote {
       margin-top: 14px;
       font-size: 13px;
@@ -265,13 +226,8 @@
       border-top: 1px solid #e9edf2;
       padding-top: 14px;
     }
-    .footnote a {
-      color: #0066cc;
-      text-decoration: none;
-    }
-    .footnote a:hover {
-      text-decoration: underline;
-    }
+    .footnote a { color: #0066cc; text-decoration: none; }
+    .footnote a:hover { text-decoration: underline; }
     .badge {
       display: inline-block;
       background: #e9edf2;
@@ -290,7 +246,7 @@
   <div class="container">
     <h1>🚦 Lane &amp; Queue Analysis <span class="badge">Metric</span></h1>
     <p class="subhead">Estimate queue lengths, lane‑group capacity, V/C ratio and LOS using metric units.<br>
-      <span style="font-size:13px;color:#6a7a8a;">API calls are routed through a CORS proxy for reliable browser access.</span></p>
+      <span style="font-size:13px;color:#6a7a8a;">API calls are routed through a reliable CORS proxy for browser compatibility.</span></p>
 
     <form id="queueForm" novalidate>
       <div class="form-group">
@@ -394,8 +350,8 @@
     // ---- CONFIG ----
     const METERS_TO_FEET = 3.28084;
     const TARGET_API = 'https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis';
-    // CORS proxy: api.allorigins.win/raw (reliable, supports POST with body)
-    const PROXY_URL = 'https://api.allorigins.win/raw';
+    // Use a reliable CORS proxy that supports POST with body
+    const PROXY_URL = 'https://corsproxy.io/';
 
     // ---- DOM refs ----
     const form = document.getElementById('queueForm');
@@ -481,34 +437,30 @@
           grade: grade
         };
 
-        // 3. make request via CORS proxy
+        // 3. make request via CORS proxy (corsproxy.io)
         setStatus('📡 Sending request via proxy…', 'info');
 
-        const proxyBody = {
-          url: TARGET_API,
+        // corsproxy.io expects the target URL as a query parameter ?url=...
+        const proxyUrl = PROXY_URL + '?' + new URLSearchParams({ url: TARGET_API });
+
+        const response = await fetch(proxyUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          data: payload
-        };
-
-        const proxyResp = await fetch(PROXY_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(proxyBody)
+          body: JSON.stringify(payload)
         });
 
-        if (!proxyResp.ok) {
-          const errText = await proxyResp.text();
-          throw new Error(`Proxy error (${proxyResp.status}): ${errText.slice(0, 120)}`);
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`Proxy error (${response.status}): ${errText.slice(0, 120)}`);
         }
 
         // The proxy returns the raw response body – parse as JSON
         let data;
         try {
-          const rawText = await proxyResp.text();
+          const rawText = await response.text();
           data = JSON.parse(rawText);
         } catch (parseErr) {
           throw new Error('Invalid JSON response from API. Raw: ' + rawText.slice(0, 200));
@@ -538,7 +490,6 @@
         tableMethod.textContent = method;
 
         resultsBox.style.display = 'block';
-        // small delay so the browser renders before we add the visible class
         requestAnimationFrame(() => {
           resultsBox.classList.add('visible');
         });

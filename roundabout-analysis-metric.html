@@ -117,104 +117,83 @@
     <br><span style="font-size:13px;color:#6a7a8a;">שיטת HCM מהדורה 6/7, פרק 22 — מחושב כולו בדפדפן, ללא שרת. יחידות: מטר (m), רכב/שעה (veh/h), שניות (s).</span>
   </p>
 
-  <!-- ====== תרשים מחשה ====== -->
+  <!-- ====== תרשים הממחיש מעגל תנועה ====== -->
   <div class="diagram-box">
-    <svg viewBox="0 0 700 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="תרשים מחשה של מעגל תנועה ארבע-זרועי">
-      <!-- רקע -->
-      <rect x="0" y="0" width="700" height="460" fill="#f8faff"/>
-
-      <!-- זרוע צפונית -->
-      <rect x="325" y="10" width="50" height="140" fill="#e8eef7" stroke="#b8c4d4"/>
-      <rect x="325" y="10" width="25" height="140" fill="#dfe7f2" stroke="#b8c4d4"/>
-      <!-- זרוע דרומית -->
-      <rect x="325" y="310" width="50" height="140" fill="#e8eef7" stroke="#b8c4d4"/>
-      <rect x="350" y="310" width="25" height="140" fill="#dfe7f2" stroke="#b8c4d4"/>
-      <!-- זרוע מזרחית -->
-      <rect x="550" y="205" width="140" height="50" fill="#e8eef7" stroke="#b8c4d4"/>
-      <rect x="550" y="230" width="140" height="25" fill="#dfe7f2" stroke="#b8c4d4"/>
-      <!-- זרוע מערבית -->
-      <rect x="10" y="205" width="140" height="50" fill="#e8eef7" stroke="#b8c4d4"/>
-      <rect x="10" y="205" width="140" height="25" fill="#dfe7f2" stroke="#b8c4d4"/>
-
-      <!-- מסלול מעגלי -->
-      <circle cx="350" cy="230" r="120" fill="#eef3fa" stroke="#8fa2bb" stroke-width="2"/>
-      <circle cx="350" cy="230" r="100" fill="#dfe7f2" stroke="#8fa2bb" stroke-width="1" stroke-dasharray="6 4"/>
-      <circle cx="350" cy="230" r="80" fill="#dfe7f2" stroke="#8fa2bb" stroke-width="1" stroke-dasharray="6 4"/>
-
-      <!-- אי מרכזי -->
-      <circle cx="350" cy="230" r="70" fill="#ffffff" stroke="#2d3a4a" stroke-width="2.5"/>
-      <text x="350" y="230" text-anchor="middle" font-size="13" fill="#2d3a4a" font-weight="700">אי</text>
-      <text x="350" y="246" text-anchor="middle" font-size="13" fill="#2d3a4a" font-weight="700">מרכזי</text>
-
-      <!-- חיצים סיבוביים -->
-      <path d="M 350 100 A 130 130 0 0 1 480 230" fill="none" stroke="#0066cc" stroke-width="4" marker-end="url(#arrBlue)"/>
-      <path d="M 480 230 A 130 130 0 0 1 350 360" fill="none" stroke="#0066cc" stroke-width="4" marker-end="url(#arrBlue)"/>
-      <path d="M 350 360 A 130 130 0 0 1 220 230" fill="none" stroke="#0066cc" stroke-width="4" marker-end="url(#arrBlue)"/>
-      <path d="M 220 230 A 130 130 0 0 1 350 100" fill="none" stroke="#0066cc" stroke-width="4" marker-end="url(#arrBlue)"/>
-
+    <svg viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="תרשים מעגל תנועה">
       <defs>
-        <marker id="arrBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#0066cc"/>
+        <!-- מרקר לחץ עבור כיווני תנועה -->
+        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1f2a3a"/>
         </marker>
-        <marker id="arrRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#c02b2b"/>
+        <!-- מרקר דו-כיווני עבור קוטר Dc -->
+        <marker id="doubleArrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 5 L 6 1.5 L 6 8.5 z M 10 5 L 4 1.5 L 4 8.5 z" fill="#1f2a3a"/>
         </marker>
-        <marker id="arrGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f7a2a"/>
-        </marker>
-        <marker id="arrDim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a97a5"/>
-        </marker>
+        <!-- דוגמת מילוי מרוצפת/נקודות עבור האי המרכזי -->
+        <pattern id="greenGrass" width="10" height="10" patternUnits="userSpaceOnUse">
+          <rect width="10" height="10" fill="#cbebd3"/>
+          <circle cx="2" cy="2" r="1" fill="#a4dcae"/>
+          <circle cx="7" cy="7" r="1" fill="#a4dcae"/>
+        </pattern>
       </defs>
 
-      <!-- חיצי כניסה -->
-      <path d="M 350 100 L 350 140" stroke="#1f7a2a" stroke-width="4" marker-end="url(#arrGreen)"/>
-      <text x="368" y="130" font-size="11" fill="#1f7a2a" font-weight="700">כניסה צפון</text>
+      <!-- רקע כללי -->
+      <rect x="0" y="0" width="700" height="600" fill="#ffffff"/>
 
-      <path d="M 480 230 L 440 230" stroke="#1f7a2a" stroke-width="4" marker-end="url(#arrGreen)"/>
-      <text x="500" y="222" font-size="11" fill="#1f7a2a" font-weight="700">כניסה מזרח</text>
+      <!-- כבישים ופניות (משטח אפור) -->
+      <!-- נתיב מעגלי חיצוני -->
+      <circle cx="350" cy="300" r="190" fill="#e2e4e8"/>
 
-      <path d="M 350 360 L 350 320" stroke="#1f7a2a" stroke-width="4" marker-end="url(#arrGreen)"/>
-      <text x="368" y="345" font-size="11" fill="#1f7a2a" font-weight="700">כניסה דרום</text>
+      <!-- זרועות הכביש -->
+      <rect x="300" y="10" width="100" height="150" fill="#e2e4e8"/>
+      <rect x="300" y="440" width="100" height="150" fill="#e2e4e8"/>
+      <rect x="10" y="250" width="150" height="100" fill="#e2e4e8"/>
+      <rect x="540" y="250" width="150" height="100" fill="#e2e4e8"/>
 
-      <path d="M 220 230 L 260 230" stroke="#1f7a2a" stroke-width="4" marker-end="url(#arrGreen)"/>
-      <text x="120" y="222" font-size="11" fill="#1f7a2a" font-weight="700">כניסה מערב</text>
+      <!-- פינות קעורות / רדיוס עיקול בחיבור הזרועות -->
+      <path d="M 300 10 A 190 190 0 0 0 10 250 L 10 350 A 190 190 0 0 0 300 590 L 400 590 A 190 190 0 0 0 690 350 L 690 250 A 190 190 0 0 0 400 10 Z" fill="none"/>
 
-      <!-- חיצי יציאה -->
-      <path d="M 320 140 L 320 100" stroke="#c02b2b" stroke-width="4" marker-end="url(#arrRed)"/>
-      <text x="220" y="130" font-size="11" fill="#c02b2b" font-weight="700">יציאה צפון</text>
+      <!-- איי תנועה משולשים בכל זרוע -->
+      <!-- צפון -->
+      <path d="M 350 50 L 332 175 C 342 185 358 185 368 175 Z" fill="#dddfd8" stroke="#1f2a3a" stroke-width="2.5"/>
+      <!-- דרום -->
+      <path d="M 350 550 L 332 425 C 342 415 358 415 368 425 Z" fill="#dddfd8" stroke="#1f2a3a" stroke-width="2.5"/>
+      <!-- מערב -->
+      <path d="M 50 300 L 175 282 C 185 292 185 308 175 318 Z" fill="#dddfd8" stroke="#1f2a3a" stroke-width="2.5"/>
+      <!-- מזרח -->
+      <path d="M 650 300 L 525 282 C 515 292 515 308 525 318 Z" fill="#dddfd8" stroke="#1f2a3a" stroke-width="2.5"/>
 
-      <path d="M 440 260 L 480 260" stroke="#c02b2b" stroke-width="4" marker-end="url(#arrRed)"/>
-      <text x="500" y="278" font-size="11" fill="#c02b2b" font-weight="700">יציאה מזרח</text>
+      <!-- קווי הפרדה מקווקווים אדומים במרכז הכבישים -->
+      <line x1="350" y1="10" x2="350" y2="50" stroke="#d93838" stroke-width="2" stroke-dasharray="5 4"/>
+      <line x1="350" y1="550" x2="350" y2="590" stroke="#d93838" stroke-width="2" stroke-dasharray="5 4"/>
+      <line x1="10" y1="300" x2="50" y2="300" stroke="#d93838" stroke-width="2" stroke-dasharray="5 4"/>
+      <line x1="650" y1="300" x2="690" y2="300" stroke="#d93838" stroke-width="2" stroke-dasharray="5 4"/>
 
-      <path d="M 380 320 L 380 360" stroke="#c02b2b" stroke-width="4" marker-end="url(#arrRed)"/>
-      <text x="395" y="345" font-size="11" fill="#c02b2b" font-weight="700">יציאה דרום</text>
+      <!-- גבולות הכביש החיצוניים -->
+      <circle cx="350" cy="300" r="190" fill="none" stroke="#1f2a3a" stroke-width="2"/>
 
-      <path d="M 260 200 L 220 200" stroke="#c02b2b" stroke-width="4" marker-end="url(#arrRed)"/>
-      <text x="90" y="195" font-size="11" fill="#c02b2b" font-weight="700">יציאה מערב</text>
+      <!-- אי מרכזי (מעגל פנימי) -->
+      <!-- טבעת אופקית/שוליים -->
+      <circle cx="350" cy="300" r="105" fill="#e2e4e8" stroke="#1f2a3a" stroke-width="2"/>
+      <!--שטח ירוק במרכז -->
+      <circle cx="350" cy="300" r="95" fill="url(#greenGrass)" stroke="#1f2a3a" stroke-width="3"/>
 
-      <!-- מידות מרכזיות -->
-      <line x1="220" y1="230" x2="480" y2="230" stroke="#8a97a5" stroke-width="1" stroke-dasharray="4 4"/>
-      <text x="350" y="222" text-anchor="middle" font-size="11" fill="#8a97a5" font-weight="700">D_c (קוטר חיצוני)</text>
+      <!-- מידות וחיצים בדיוק כפי שמופיע בתמונה -->
+      <!-- קוטר Dc (קו אלכסוני דרך המרכז) -->
+      <line x1="220" y1="430" x2="480" y2="170" stroke="#1f2a3a" stroke-width="1.8"/>
+      <!-- חיצי קצה עבור קוטר Dc -->
+      <line x1="283" y1="367" x2="417" y2="233" stroke="#1f2a3a" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+      <text x="340" y="290" font-size="18" font-weight="700" fill="#1f2a3a" transform="rotate(-45, 340, 290)">D<tspan dy="4" font-size="13">c</tspan></text>
 
-      <line x1="280" y1="230" x2="420" y2="230" stroke="#8a97a5" stroke-width="1" stroke-dasharray="4 4"/>
-      <text x="350" y="252" text-anchor="middle" font-size="11" fill="#8a97a5" font-weight="700">D_island (אי מרכזי)</text>
+      <!-- כיוון זרימת מעגל התנועה Vc -->
+      <path d="M 330 415 Q 350 418 370 415" fill="none" stroke="#1f2a3a" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="350" y="405" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2a3a">V<tspan dy="3" font-size="12">c</tspan></text>
 
-      <!-- רדיוס -->
-      <line x1="350" y1="230" x2="430" y2="180" stroke="#8a97a5" stroke-width="1" stroke-dasharray="3 3"/>
-      <text x="395" y="200" font-size="10" fill="#8a97a5">R</text>
-
-      <!-- מקרא -->
-      <rect x="14" y="14" width="180" height="88" fill="#fff" stroke="#dce1e8" rx="8"/>
-      <text x="24" y="34" font-size="12" font-weight="700" fill="#0b1a2e">מקרא:</text>
-      <line x1="24" y1="48" x2="54" y2="48" stroke="#1f7a2a" stroke-width="3"/>
-      <text x="60" y="52" font-size="11" fill="#2d3a4a">כיוון כניסה</text>
-      <line x1="24" y1="66" x2="54" y2="66" stroke="#c02b2b" stroke-width="3"/>
-      <text x="60" y="70" font-size="11" fill="#2d3a4a">כיוון יציאה</text>
-      <line x1="24" y1="84" x2="54" y2="84" stroke="#0066cc" stroke-width="3"/>
-      <text x="60" y="88" font-size="11" fill="#2d3a4a">תנועה סובבת</text>
+      <!-- כיוון תנועה נכנסת Ve (זרוע דרומית) -->
+      <path d="M 360 480 Q 365 450 375 425" fill="none" stroke="#1f2a3a" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="382" y="460" font-size="16" font-weight="700" fill="#1f2a3a">V<tspan dy="3" font-size="12">e</tspan></text>
     </svg>
-    <div class="diagram-caption">תרשים 1 — סכימת מעגל תנועה ארבע-זרועי עם סימון מידות וזרימות</div>
+    <div class="diagram-caption">תרשים 1 — סכימת מעגל תנועה ומדדי נפח (D<sub>c</sub>, V<sub>c</sub>, V<sub>e</sub>)</div>
   </div>
 
   <form id="rbtForm" novalidate>
@@ -552,7 +531,7 @@ form.addEventListener('submit', function (e) {
 
     const geomVals = [phf, T, hv, driverPop, pedFactorIn, bikeFactor, tf, tc, inscribedD, islandD, entryWidth, circWidth];
     if (geomVals.some(isNaN)) throw new Error('מלא כל שדה גיאומטריה וכיול בערך מספרי.');
-    if (phf <= 0 || phf > 1) throw new Error('מקדם שעת שיא חייב להיות גדול מ-0 ול� לכל היותר 1.00.');
+    if (phf <= 0 || phf > 1) throw new Error('מקדם שעת שיא חייב להיות גדול מ-0 ולכל היותר 1.00.');
     if (T <= 0 || T > 1) throw new Error('משך תקופת ניתוח חייב להיות בין 0.05 ל-1.00 שעות.');
     if (islandD >= inscribedD) throw new Error('קוטר האי המרכזי חייב להיות קטן מהקוטר החיצוני.');
     if ((tf > 0) !== (tc > 0)) throw new Error('הזן גם מרווח עוקב וגם פער קריטי, או השאר את שניהם 0 לברירות HCM.');

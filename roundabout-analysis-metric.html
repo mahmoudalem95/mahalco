@@ -101,10 +101,49 @@
   .badge { display: inline-block; background: #e9edf2; color: #2d3a4a;
     font-size: 11px; font-weight: 600; padding: 2px 8px;
     border-radius: 20px; margin-right: 6px; vertical-align: middle; }
-  .diagram-box { background: #fff; border: 1px solid #e0e8f0;
-    border-radius: 12px; padding: 12px; margin: 6px 0 20px; text-align: center; }
-  .diagram-box svg { max-width: 100%; height: auto; }
-  .diagram-caption { font-size: 12.5px; color: #6a7a8a; margin-top: 6px; }
+  
+  /* תרשים מעגל תנועה - סגנונות מעודכנים */
+  .diagram-box {
+    background-color: #ffffff;
+    border: 1px solid #e0e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 6px 0 20px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  .diagram-box svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+  }
+  .road-fill {
+    fill: #dedede;
+  }
+  .curb-line {
+    stroke: #666666;
+    stroke-width: 2;
+    fill: none;
+  }
+  .dashed-red-line {
+    stroke: #d32f2f;
+    stroke-width: 1.8;
+    stroke-dasharray: 3, 3;
+    fill: none;
+  }
+  .center-line {
+    stroke: #777777;
+    stroke-width: 1.5;
+  }
+  .label-text {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 18px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+  .diagram-caption { font-size: 12.5px; color: #6a7a8a; margin-top: 10px; }
   .unit-cell { font-variant-numeric: tabular-nums; direction: ltr; }
 </style>
 </head>
@@ -119,79 +158,114 @@
 
   <!-- ====== תרשים הממחיש מעגל תנועה ====== -->
   <div class="diagram-box">
-    <svg viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="תרשים מעגל תנועה">
-      <defs>
-        <!-- מרקר לחץ עבור כיווני תנועה -->
-        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1f2a3a"/>
-        </marker>
-        <!-- מרקר דו-כיווני עבור קוטר Dc -->
-        <marker id="doubleArrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M 0 5 L 6 1.5 L 6 8.5 z M 10 5 L 4 1.5 L 4 8.5 z" fill="#1f2a3a"/>
-        </marker>
-        <!-- דוגמת מילוי מרוצפת/נקודות עבור האי המרכזי -->
-        <pattern id="greenGrass" width="10" height="10" patternUnits="userSpaceOnUse">
-          <rect width="10" height="10" fill="#cbebd3"/>
-          <circle cx="2" cy="2" r="1" fill="#a4dcae"/>
-          <circle cx="7" cy="7" r="1" fill="#a4dcae"/>
-        </pattern>
-      </defs>
+    <svg width="700" height="700" viewBox="0 0 700 700">
+        <defs>
+            <!-- Pattern for central island green texture -->
+            <pattern id="greenTexture" width="6" height="6" patternUnits="userSpaceOnUse">
+                <rect width="6" height="6" fill="#8cc63f" />
+                <circle cx="1.5" cy="1.5" r="0.7" fill="#6ba428" />
+                <circle cx="4.5" cy="4.5" r="0.7" fill="#6ba428" />
+            </pattern>
 
-      <!-- רקע כללי -->
-      <rect x="0" y="0" width="700" height="600" fill="#ffffff"/>
+            <!-- Marker for movement direction arrows -->
+            <marker id="flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#000000"/>
+            </marker>
 
-      <!-- כבישים ופניות (משטח אפור) -->
-      <!-- נתיב מעגלי חיצוני -->
-      <circle cx="350" cy="300" r="190" fill="#e2e4e8"/>
+            <!-- Marker for dimension line arrows -->
+            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#000000"/>
+            </marker>
+        </defs>
 
-      <!-- זרועות הכביש -->
-      <rect x="300" y="10" width="100" height="150" fill="#e2e4e8"/>
-      <rect x="300" y="440" width="100" height="150" fill="#e2e4e8"/>
-      <rect x="10" y="250" width="150" height="100" fill="#e2e4e8"/>
-      <rect x="540" y="250" width="150" height="100" fill="#e2e4e8"/>
+        <!-- Main Road Surface (Gray Background Layer) -->
+        <path d="
+            M 310,0 L 390,0 L 390,130 
+            A 200,200 0 0,0 570,310 
+            L 700,310 L 700,390 L 570,390 
+            A 200,200 0 0,0 390,570 
+            L 390,700 L 310,700 L 310,570 
+            A 200,200 0 0,0 130,390 
+            L 0,390 L 0,310 L 130,310 
+            A 200,200 0 0,0 310,130 
+            Z" 
+            class="road-fill" />
 
-      <!-- פינות קעורות / רדיוס עיקול בחיבור הזרועות -->
-      <path d="M 300 10 A 190 190 0 0 0 10 250 L 10 350 A 190 190 0 0 0 300 590 L 400 590 A 190 190 0 0 0 690 350 L 690 250 A 190 190 0 0 0 400 10 Z" fill="none"/>
+        <!-- Outer Edge Curbs -->
+        <path d="
+            M 310,0 L 310,130 
+            A 200,200 0 0,1 130,310 
+            L 0,310 
+            M 0,390 L 130,390 
+            A 200,200 0 0,1 310,570 
+            L 310,700 
+            M 390,700 L 390,570 
+            A 200,200 0 0,1 570,390 
+            L 700,390 
+            M 700,310 L 570,310 
+            A 200,200 0 0,1 390,130 
+            L 390,0" 
+            class="curb-line" />
 
-      <!-- איי תנועה משולשים בכל זרוע -->
-      <!-- צפון -->
-      <path d="M 350 50 L 332 175 C 342 185 358 185 368 175 Z" fill="#dddfd8" stroke="#1f2a3a" stroke-width="2.5"/>
-      <!-- דרום -->
-      <path d="M 350 550 L 332 425 C 342 415 358 415 368 425 Z" fill="#dddfd8" stroke="#1f2a3a" stroke-width="2.5"/>
-      <!-- מערב -->
-      <path d="M 50 300 L 175 282 C 185 292 185 308 175 318 Z" fill="#dddfd8" stroke="#1f2a3a" stroke-width="2.5"/>
-      <!-- מזרח -->
-      <path d="M 650 300 L 525 282 C 515 292 515 308 525 318 Z" fill="#dddfd8" stroke="#1f2a3a" stroke-width="2.5"/>
+        <!-- Red Dashed Boundary Lines -->
+        <path d="M 318,0 L 318,125 A 190,190 0 0,1 135,318 L 0,318" class="dashed-red-line" />
+        <path d="M 0,382 L 135,382 A 190,190 0 0,1 318,565 L 318,700" class="dashed-red-line" />
+        <path d="M 382,700 L 382,565 A 190,190 0 0,1 565,382 L 700,382" class="dashed-red-line" />
+        <path d="M 700,318 L 565,318 A 190,190 0 0,1 382,125 L 382,0" class="dashed-red-line" />
 
-      <!-- קווי הפרדה מקווקווים אדומים במרכז הכבישים -->
-      <line x1="350" y1="10" x2="350" y2="50" stroke="#d93838" stroke-width="2" stroke-dasharray="5 4"/>
-      <line x1="350" y1="550" x2="350" y2="590" stroke="#d93838" stroke-width="2" stroke-dasharray="5 4"/>
-      <line x1="10" y1="300" x2="50" y2="300" stroke="#d93838" stroke-width="2" stroke-dasharray="5 4"/>
-      <line x1="650" y1="300" x2="690" y2="300" stroke="#d93838" stroke-width="2" stroke-dasharray="5 4"/>
+        <!-- Road Center Division Lines -->
+        <line x1="350" y1="0" x2="350" y2="700" class="center-line" />
+        <line x1="0" y1="350" x2="700" y2="350" class="center-line" />
 
-      <!-- גבולות הכביש החיצוניים -->
-      <circle cx="350" cy="300" r="190" fill="none" stroke="#1f2a3a" stroke-width="2"/>
+        <!-- Shortened Splitter Islands (Medians) -->
+        <!-- Top Island -->
+        <g>
+            <rect x="342" y="140" width="16" height="60" fill="#ffffff" stroke="#000000" stroke-width="2" rx="2"/>
+            <rect x="345" y="145" width="10" height="50" fill="#b0bec5" stroke="#424242" stroke-width="1.5" rx="1"/>
+        </g>
+        <!-- Bottom Island -->
+        <g>
+            <rect x="342" y="500" width="16" height="60" fill="#ffffff" stroke="#000000" stroke-width="2" rx="2"/>
+            <rect x="345" y="505" width="10" height="50" fill="#b0bec5" stroke="#424242" stroke-width="1.5" rx="1"/>
+        </g>
+        <!-- Left Island -->
+        <g>
+            <rect x="140" y="342" width="60" height="16" fill="#ffffff" stroke="#000000" stroke-width="2" rx="2"/>
+            <rect x="145" y="345" width="50" height="10" fill="#b0bec5" stroke="#424242" stroke-width="1.5" rx="1"/>
+        </g>
+        <!-- Right Island -->
+        <g>
+            <rect x="500" y="342" width="60" height="16" fill="#ffffff" stroke="#000000" stroke-width="2" rx="2"/>
+            <rect x="505" y="345" width="50" height="10" fill="#b0bec5" stroke="#424242" stroke-width="1.5" rx="1"/>
+        </g>
 
-      <!-- אי מרכזי (מעגל פנימי) -->
-      <!-- טבעת אופקית/שוליים -->
-      <circle cx="350" cy="300" r="105" fill="#e2e4e8" stroke="#1f2a3a" stroke-width="2"/>
-      <!--שטח ירוק במרכז -->
-      <circle cx="350" cy="300" r="95" fill="url(#greenGrass)" stroke="#1f2a3a" stroke-width="3"/>
+        <!-- Central Green Island (r = 100) -->
+        <circle cx="350" cy="350" r="100" fill="url(#greenTexture)" stroke="#000000" stroke-width="2" />
 
-      <!-- מידות וחיצים בדיוק כפי שמופיע בתמונה -->
-      <!-- קוטר Dc (קו אלכסוני דרך המרכז) -->
-      <line x1="220" y1="430" x2="480" y2="170" stroke="#1f2a3a" stroke-width="1.8"/>
-      <!-- חיצי קצה עבור קוטר Dc -->
-      <line x1="283" y1="367" x2="417" y2="233" stroke="#1f2a3a" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-      <text x="340" y="290" font-size="18" font-weight="700" fill="#1f2a3a" transform="rotate(-45, 340, 290)">D<tspan dy="4" font-size="13">c</tspan></text>
+        <!-- Dimension Line for Dc (Exactly measuring Green Island Diameter: r = 100) -->
+        <!-- Start: (350 - 100*cos(45°), 350 + 100*sin(45°)) = (279.3, 420.7) -->
+        <!-- End:   (350 + 100*cos(45°), 350 - 100*sin(45°)) = (420.7, 279.3) -->
+        <g>
+            <line x1="279.3" y1="420.7" x2="420.7" y2="279.3" stroke="#000000" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+            
+            <!-- Central Label Badge (Dc) -->
+            <rect x="337" y="337" width="26" height="26" fill="#ffffff" stroke="#cccccc" stroke-width="1" rx="3"/>
+            <text x="350" y="350" class="label-text">D<tspan font-size="13px" dy="4">c</tspan></text>
+        </g>
 
-      <!-- כיוון זרימת מעגל התנועה Vc -->
-      <path d="M 330 415 Q 350 418 370 415" fill="none" stroke="#1f2a3a" stroke-width="2" marker-end="url(#arrow)"/>
-      <text x="350" y="405" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2a3a">V<tspan dy="3" font-size="12">c</tspan></text>
+        <!-- Flow Vectors and Labels -->
+        <!-- Circulating Flow Arrow (Vc) -->
+        <g>
+            <path d="M 330,480 A 130,130 0 0,0 380,480" fill="none" stroke="#000000" stroke-width="1.8" marker-end="url(#flow-arrow)" />
+            <text x="350" y="468" class="label-text">V<tspan font-size="13px" dy="4">c</tspan></text>
+        </g>
 
-      <!-- כיוון תנועה נכנסת Ve (זרוע דרומית) -->
-      <path d="M 360 480 Q 365 450 375 425" fill="none" stroke="#1f2a3a" stroke-width="2" marker-end="url(#arrow)"/>
-      <text x="382" y="460" font-size="16" font-weight="700" fill="#1f2a3a">V<tspan dy="3" font-size="12">e</tspan></text>
+        <!-- Entry Flow Arrow (Ve) -->
+        <g>
+            <path d="M 373,620 C 373,560 385,525 405,495" fill="none" stroke="#000000" stroke-width="1.8" marker-end="url(#flow-arrow)" />
+            <text x="372" y="560" class="label-text">V<tspan font-size="13px" dy="4">e</tspan></text>
+        </g>
+
     </svg>
     <div class="diagram-caption">תרשים 1 — סכימת מעגל תנועה ומדדי נפח (D<sub>c</sub>, V<sub>c</sub>, V<sub>e</sub>)</div>
   </div>

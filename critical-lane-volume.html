@@ -178,7 +178,7 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
 <div class="wrap">
 
   <h1>נפח נתיב קריטי</h1>
-  <p class="lede">מחשבון פאזות לצומת מרומזר. הזן נפחים ומספרי נתיבים לכל זרוע וקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלות, וטבעת כפולה. עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בנתיב משותף ישר+ימינה ובימין חופשית לכל זרוע בנפרד. <strong>החישוב והסכמה מתעדכנים בזמן אמת — אין צורך ללחוץ "חשב".</strong></p>
+  <p class="lede">מחשבון פאזות לצומת מרומזר. הזן נפחים ומספרי נתיבים לכל זרוע וקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלות, ופאזה מתמשכת (שילוב שתי השיטות). עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בנתיב משותף ישר+ימינה ובימין חופשית לכל זרוע בנפרד. <strong>החישוב והסכמה מתעדכנים בזמן אמת — אין צורך ללחוץ "חשב".</strong></p>
 
   <section>
     <div class="sec-head"><h2>נתוני הצומת</h2><span class="meta">הזרועות מסודרות לפי מיקומן בשטח</span></div>
@@ -219,6 +219,36 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
         <li>סף התכנון הוא פרמטר שהמשתמש קובע. ברירת המחדל (1500) היא ערך אצבע נפוץ בספרות CLV ואינה תחליף להנחיות המזמין.</li>
       </ul>
     </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>מספר מופעים מומלץ לפי סוג צומת</h2></div>
+    <details>
+      <summary>טבלת ייחוס — מס' השלבים הראשיים (מופעים) במחזור</summary>
+      <div class="warnbox soft">
+        <p><strong>1. צומת בעל 3 גישות (צומת T)</strong></p>
+        <ul>
+          <li>ללא פניות שמאלה מוגנות (זרימה חופשית/מותרת): 2 מופעים — מופע 1: הגישה הישרה (כביש ראשי); מופע 2: הגישה המשתלבת (ה"רגל" של ה-T).</li>
+          <li>עם פנייה שמאלה מוגנת: 3 מופעים. מופע נפרד מוקצה לפנייה שמאלה מהכביש הראשי כדי למנוע קונפליקט עם התנועה הנגדית.</li>
+        </ul>
+        <p><strong>2. צומת בעל 4 גישות (צומת פלוס X)</strong></p>
+        <ul>
+          <li>צומת רגיל (ללא נפחי שמאלה חריגים): 2 עד 3 מופעים — מופע 1: ציר צפון-דרום (ישר + ימינה); מופע 2: ציר מזרח-מערב (ישר + ימינה); מופע 3 (אופציונלי): מופע משולב להולכי רגל.</li>
+          <li>עם פניות שמאלה מוגנות (נפח תנועה גבוה לשמאלה): 3 עד 4 מופעים — מופעים ייעודיים מוקצים לשמאלה (למשל: מופע לשמאלה צפון+דרום, ואז מופע לישר צפון+דרום).</li>
+        </ul>
+        <p><strong>3. שילוב פניות שמאלה (מוגנות או מותנות)</strong></p>
+        <ul>
+          <li>פנייה שמאלה מותנת (מותרת בקונפליקט): 0 מופעים נוספים — מתבצעת יחד עם התנועה הישרה, והנהג נדרש לתת זכות קדימה.</li>
+          <li>פנייה שמאלה מוגנת (איתות חץ ירוק בלבד): מוסיפה מופע נוסף אחד לכל ציר (צפון/דרום או מזרח/מערב).</li>
+        </ul>
+        <p><strong>4. שילוב תחבורה ציבורית (נת"צ / רכבת קלה)</strong></p>
+        <ul>
+          <li>נת"צ ימני או שמאלי רגיל (אוטובוסים): לרוב לא מוסיף מופע — נוסע יחד עם מופע הרכב הכללי, לעיתים עם הקדמה של מספר שניות ("קפיצה בירוק").</li>
+          <li>רכבת קלה (רק"ל) או נת"צ מרכזי עם פניות שמאלה חוצות: מוסיף 1 עד 2 מופעים ייעודיים לחציה בטוחה, לרוב מנוהל ע"י מערכת העדפה דינמית.</li>
+        </ul>
+        <p class="meta">שיטה 3 (פאזה מתמשכת) מתאימה את עצמה אוטומטית לצומת T: הציר בעל זרוע אחת תמיד משמש כ"ציר המפוצל" (פאזה בודדת), והטיפול ההיברידי חל על הציר בעל שתי הזרועות — כך מתקבלות 4 פאזות במקום 5, בהתאמה לטווח המומלץ בטבלה שלמעלה.</p>
+      </div>
+    </details>
   </section>
 
   <section>
@@ -458,43 +488,107 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     var t2A = t2.reduce(function (s, x) { return s + x.optionA; }, 0);
     var t2best = t2.reduce(function (s, x) { return s + x.value; }, 0);
 
-    /* --- Method 3: dual ring / lead-lag --- */
-    var t3 = [];
-    AXES.forEach(function (ax) {
-      var arms = ax.arms.filter(function (a) { return present.indexOf(a) > -1; });
-      if (!arms.length) return;
+    /* --- Method 3: continuous phase (Method 1 + Method 2 hybrid) ---
+       One axis gets "overlap" treatment: each of its two arms keeps its own
+       phase (as in Method 1), sized only by its through/right volume — its
+       protected left rides free inside that phase up to that size. Only the
+       *excess* left volume (the part that doesn't fit) is pushed into a
+       shared middle phase with the opposite arm's excess left (the two
+       excesses don't conflict with each other, so that phase is sized by
+       their max, not their sum). The other axis is left fully split
+       (Method 1 style, one plain phase per arm, no left-sharing).
+       Both axis choices are evaluated and the cheaper one is kept — this is
+       also what makes a T-junction degrade gracefully: the single-arm axis
+       always plays "the plain split axis", so the hybrid treatment lands on
+       whichever axis actually has two arms to share between. */
+    function splitPhase(arm) {
+      var terms = allOf(arm);
+      return {
+        arm: arm, he: HE[arm], label: 'זרוע ' + HE[arm],
+        moves: movesOf(terms), value: maxQ(terms),
+        detail: 'פאזה נפרדת (ללא שיתוף שמאלות)'
+      };
+    }
+    function hybridScenario(hybridAxis, otherAxis) {
+      var hArms = hybridAxis.arms.filter(function (a) { return present.indexOf(a) > -1; });
+      var oArms = otherAxis.arms.filter(function (a) { return present.indexOf(a) > -1; });
+      var phases = [], total = 0;
 
-      if (arms.length === 1) {
-        var a = arms[0], terms = allOf(a);
-        t3.push({
-          axis: ax.id, he: ax.he, arms: arms, degenerate: true,
-          rings: [{ label: 'זרוע ' + HE[a] + ' לבדה', moves: movesOf(terms), value: maxQ(terms), detail: 'זרוע בודדת בציר' }],
-          value: maxQ(terms)
+      if (hArms.length >= 2) {
+        var a1 = hArms[0], a2 = hArms[1];
+        var tr1 = maxQ(G[a1].other), tr2 = maxQ(G[a2].other);
+        var l1 = G[a1].left ? G[a1].left.q : 0, l2 = G[a2].left ? G[a2].left.q : 0;
+        var excess1 = Math.max(0, l1 - tr1), excess2 = Math.max(0, l2 - tr2);
+        var sharedVal = Math.max(excess1, excess2);
+
+        // Once the shared phase has to run anyway (driven by whichever arm's
+        // excess is larger), the OTHER arm's own left can ride along for
+        // free too, up to that same duration — not just its own excess.
+        var served1 = sharedVal > 0 ? Math.min(l1, sharedVal) : 0;
+        var served2 = sharedVal > 0 ? Math.min(l2, sharedVal) : 0;
+        var own1 = l1 - served1, own2 = l2 - served2;
+
+        var sharedMoves = [];
+        if (served1 > 0 && G[a1].left) sharedMoves = sharedMoves.concat(G[a1].left.moves);
+        if (served2 > 0 && G[a2].left) sharedMoves = sharedMoves.concat(G[a2].left.moves);
+
+        function ownDetail(he, tr, l, own) {
+          var base = 'ישר/ימין ' + he + ' (' + Math.round(tr) + ')';
+          if (l <= 0) return base;
+          if (own <= 0) return base + ' · שמאלה (' + Math.round(l) + ') כולה עברה לפאזת הביניים';
+          if (own >= l) return base + ' · שמאלה (' + Math.round(l) + ') כולה נכנסת כאן';
+          return base + ' · יתרת שמאלה (' + Math.round(own) + ') נכנסת כאן, השאר בפאזת הביניים';
+        }
+        function sharedDetail(he, l, served) {
+          if (served <= 0) return null;
+          if (served >= l) return 'שמאלה ' + he + ' כולה (' + Math.round(served) + ') עוברת כאן';
+          return 'מ' + he + ' עוברים כאן ' + Math.round(served) + ' מתוך ' + Math.round(l);
+        }
+
+        phases.push({
+          arm: a1, he: HE[a1], label: 'זרוע ' + HE[a1],
+          moves: movesOf(allOf(a1)), value: tr1,
+          detail: ownDetail(HE[a1], tr1, l1, own1)
         });
-        return;
+        if (sharedVal > 0) {
+          phases.push({
+            arm: null, he: null, label: 'שמאלות ' + HE[a1] + ' + ' + HE[a2] + ' (משותף)',
+            moves: sharedMoves, value: sharedVal,
+            detail: [sharedDetail(HE[a1], l1, served1), sharedDetail(HE[a2], l2, served2)]
+              .filter(Boolean).join(' + ')
+          });
+        }
+        phases.push({
+          arm: a2, he: HE[a2], label: 'זרוע ' + HE[a2],
+          moves: movesOf(allOf(a2)), value: tr2,
+          detail: ownDetail(HE[a2], tr2, l2, own2)
+        });
+        total += tr1 + sharedVal + tr2;
+      } else if (hArms.length === 1) {
+        var p = splitPhase(hArms[0]);
+        p.detail = 'זרוע בודדת בציר — פאזה רגילה';
+        phases.push(p);
+        total += p.value;
       }
 
-      var a1 = arms[0], a2 = arms[1];
-      var l1 = G[a1].left ? G[a1].left.q : 0;
-      var l2 = G[a2].left ? G[a2].left.q : 0;
-      var o1 = maxQ(G[a1].other), o2 = maxQ(G[a2].other);
-
-      // Critical path across the barrier: left(a1)+through(a2)  vs  left(a2)+through(a1).
-      var ring1Moves = movesOf([G[a1].left]).concat(movesOf(G[a2].other));
-      var ring2Moves = movesOf([G[a2].left]).concat(movesOf(G[a1].other));
-
-      t3.push({
-        axis: ax.id, he: ax.he, arms: arms, degenerate: false,
-        rings: [
-          { label: 'טבעת 1', moves: ring1Moves, value: l1 + o2,
-            detail: 'שמאל ' + HE[a1] + ' (' + Math.round(l1) + ') + ישר/ימין ' + HE[a2] + ' (' + Math.round(o2) + ')' },
-          { label: 'טבעת 2', moves: ring2Moves, value: l2 + o1,
-            detail: 'שמאל ' + HE[a2] + ' (' + Math.round(l2) + ') + ישר/ימין ' + HE[a1] + ' (' + Math.round(o1) + ')' }
-        ],
-        value: Math.max(l1 + o2, l2 + o1)
+      oArms.forEach(function (a) {
+        var p = splitPhase(a);
+        phases.push(p);
+        total += p.value;
       });
-    });
-    var t3total = t3.reduce(function (s, x) { return s + x.value; }, 0);
+
+      return { hybridAxis: hybridAxis.id, hybridHe: hybridAxis.he, otherHe: otherAxis.he, phases: phases, total: total };
+    }
+
+    var t3scenarios = AXES.map(function (ax, i) { return hybridScenario(ax, AXES[1 - i]); })
+      .filter(function (s) { return s.phases.length; });
+    var t3 = t3scenarios.length
+      ? t3scenarios.reduce(function (best, s) { return (!best || s.total < best.total) ? s : best; }, null)
+      : { hybridHe: '', otherHe: '', phases: [], total: 0 };
+    var t3alt = t3scenarios.length > 1
+      ? t3scenarios.filter(function (s) { return s !== t3; })[0]
+      : null;
+    var t3total = t3.total;
 
     return {
       present: present,
@@ -502,7 +596,7 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
       warnings: buildWarnings(cfg, present),
       table1: { phases: t1, total: t1total },
       table2: { axes: t2, totalOptionA: t2A, totalBest: t2best },
-      table3: { axes: t3, total: t3total },
+      table3: { hybridHe: t3.hybridHe, otherHe: t3.otherHe, phases: t3.phases, total: t3total, alt: t3alt ? t3alt.total : null },
       best: Math.min(t1total, t2best, t3total)
     };
   }
@@ -751,7 +845,7 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     var methods = [
       { name: 'שיטה 1: זרועות מפוצלות', val: t1, desc: 'פאזה נפרדת לכל זרוע גישה' },
       { name: 'שיטה 2: הפרדת שמאלה מוגנת', val: t2, desc: 'פאזות משותפות לצירים + פאזת שמאלות' },
-      { name: 'שיטה 3: טבעת כפולה (Dual Ring)', val: t3, desc: 'פיקוד NEMA חופף / Lead-Lag' }
+      { name: 'שיטה 3: פאזה מתמשכת (שילוב 1+2)', val: t3, desc: 'פאזה עצמאית לכל זרוע + פאזת ביניים לעודף שמאלות' }
     ];
     h += '<div class="cmp">';
     methods.forEach(function (m) {
@@ -805,21 +899,22 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
       Math.round(res.table2.totalOptionA) + '</span> רכ/ש/נתיב.</p></section>';
 
     /* --- Table 3 --- */
-    h += '<section><div class="sec-head"><h2>שיטה 3 — טבעת כפולה / Lead-Lag (Dual Ring)</h2></div>';
-    h += '<div class="tblwrap"><table><caption>בכל ציר הנפח הקובע הוא המסלול הקריטי הגבוה מבין שתי הטבעות: שמאל של זרוע אחת + ישר/ימין של הנגדית.</caption>';
-    h += '<thead><tr><th>טבעת / רצף</th><th>סכמה</th><th>חישוב</th><th>נפח קריטי</th></tr></thead><tbody>';
-    res.table3.axes.forEach(function (ax) {
-      h += '<tr class="grp"><td colspan="4"><strong>ציר ' + ax.he + '</strong> — נפח קובע ' +
-        '<span class="pill">' + Math.round(ax.value) + '</span>' +
-        (ax.degenerate ? '' : '<span class="alt"> · max(טבעת 1, טבעת 2)</span>') + '</td></tr>';
-      ax.rings.forEach(function (r, i) {
-        h += phaseRow('t3-' + ax.axis + '-' + i, directionClass(r.moves), r.moves,
-          '<td style="padding-right:24px">• ' + esc(r.label) + '</td>' +
-          '<td class="schematic-cell">' + sc(r.moves) + '</td>' +
-          '<td><span class="f">' + esc(r.detail) + '</span><span class="sub">' + r.moves.join(', ') + '</span></td>' +
-          '<td class="val">' + Math.round(r.value) + '</td>');
+    h += '<section><div class="sec-head"><h2>שיטה 3 — פאזה מתמשכת (שילוב שיטה 1 + שיטה 2)</h2></div>';
+    h += '<div class="tblwrap"><table><caption>ציר אחד מקבל טיפול היברידי: כל זרוע בו שומרת פאזה עצמאית (כמו שיטה 1), אבל גודלה נקבע רק לפי הישר/ימין שלה — השמאלה "רוכבת" בחינם עד לגודל הזה, ורק העודף (אם יש) עובר לפאזת ביניים משותפת עם עודף השמאלה של הזרוע הנגדית. הציר השני מפוצל לזרועות נפרדות בלי שיתוף שמאלות, כמו בשיטה 1. נבחר הציר ההיברידי שנותן את הסכום הנמוך יותר.</caption>';
+    h += '<thead><tr><th>פאזה</th><th>סכמה</th><th>תנועות / חישוב</th><th>נפח קריטי</th></tr></thead><tbody>';
+    if (res.table3.phases.length) {
+      h += '<tr class="grp"><td colspan="4"><strong>ציר היברידי: ' + esc(res.table3.hybridHe) +
+        '</strong> · ציר מפוצל: ' + esc(res.table3.otherHe) +
+        (res.table3.alt != null ? '<span class="alt"> · לעומת חלופה הפוכה: ' + Math.round(res.table3.alt) + '</span>' : '') +
+        '</td></tr>';
+      res.table3.phases.forEach(function (p, i) {
+        h += phaseRow('t3-' + i, directionClass(p.moves), p.moves,
+          '<td><strong>פאזה ' + (i + 1) + (p.he ? ' (' + p.he + ')' : '') + '</strong><div class="sub">' + esc(p.label) + '</div></td>' +
+          '<td class="schematic-cell">' + sc(p.moves) + '</td>' +
+          '<td><span class="f">' + (p.moves.length ? p.moves.join(', ') : '—') + '</span><span class="sub">' + esc(p.detail) + '</span></td>' +
+          '<td class="val">' + Math.round(p.value) + '</td>');
       });
-    });
+    }
     h += '<tr class="total"><td colspan="3">סה״כ נפח קריטי כולל (V<sub>c</sub>)</td><td class="val">' +
       Math.round(res.table3.total) + '</td></tr>';
     h += '</tbody></table></div></section>';
@@ -1012,7 +1107,7 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
       '  warnings: [ ... ],',
       '  table1: { phases:[{arm,he,moves,value}], total },',
       '  table2: { axes:[{he,chosen,optionA,optionB,phases,value}], totalOptionA, totalBest },',
-      '  table3: { axes:[{he,rings:[{label,moves,detail,value}],value}], total },',
+      '  table3: { hybridHe, otherHe, phases:[{arm,he,label,moves,detail,value}], total, alt }, // alt = חלופה הפוכה שלא נבחרה',
       '  best: <המינימום מבין שלוש השיטות>',
       '}'
     ].join('\n');

@@ -3,48 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מחקר השפעה על התנועה – TIS</title>
+  <title>MAHALCO – בדיקת השפעה על התנועה (מטרי)</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
   <style>
-    body { background: #f0f2f5; padding: 20px; }
-    .container { max-width: 1500px; }
-    .card { border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; border: none; }
-    .card-header { background: #1a3a5c; color: white; border-radius: 14px 14px 0 0; font-weight: 700; font-size: 1.1rem; padding: 14px 20px; }
-    .card-header i { margin-left: 8px; }
-    .result-number { font-size: 2.4rem; font-weight: 800; color: #1a3a5c; }
-    .result-label { font-size: 0.85rem; color: #6c757d; font-weight: 500; }
-    .section-title { font-weight: 700; font-size: 1rem; margin: 1rem 0 0.5rem; color: #1a3a5c; border-bottom: 2px solid #e9ecef; padding-bottom: 6px; }
-    .form-label { font-weight: 600; font-size: 0.9rem; }
-    .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; }
-    .form-control:focus, .form-select:focus { border-color: #1a3a5c; box-shadow: 0 0 0 0.25rem rgba(26,58,92,0.15); }
-    .btn-primary { background: #1a3a5c; border-color: #1a3a5c; border-radius: 10px; font-weight: 700; padding: 12px; }
-    .btn-primary:hover { background: #0f2a44; border-color: #0f2a44; }
-    .badge-custom { font-size: 0.8rem; padding: 5px 12px; border-radius: 20px; }
-    .result-section { background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
-    .result-section h6 { font-weight: 700; color: #1a3a5c; }
-    .table-result td { padding: 6px 8px; font-size: 0.9rem; }
-    .table-result th { font-size: 0.85rem; font-weight: 700; color: #495057; }
-    .scrollable-results { max-height: 700px; overflow-y: auto; padding-right: 4px; }
-    .scrollable-results::-webkit-scrollbar { width: 6px; }
-    .scrollable-results::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
-    .footer-text { font-size: 0.8rem; color: #6c757d; }
-    .land-use-select { min-width: 140px; }
-    .mitigation-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin: 2px; }
-    .mitigation-high { background: #f8d7da; color: #721c24; }
-    .mitigation-medium { background: #fff3cd; color: #856404; }
-    .mitigation-low { background: #d1ecf1; color: #0c5460; }
-    @media (max-width: 768px) {
-      .result-number { font-size: 1.8rem; }
-      .card-header { font-size: 0.95rem; }
+    :root {
+      --bg: #12121e;
+      --card: #1a1a2e;
+      --card-2: #22223a;
+      --field: #0f0f1a;
+      --line: rgba(255, 255, 255, .09);
+      --line-2: rgba(255, 255, 255, .05);
+      --accent: #E8A33D;
+      --accent-dim: rgba(232, 163, 61, .16);
+      --green: #4ADE80;
+      --ink: #EDEBF2;
+      --ink-2: #9A96AB;
+      --ink-3: #6B6780;
+      --danger: #F35B5B;
+      --warn: #F5C451;
+      --info: #7AB8F5;
     }
+    body { background: var(--bg); color: var(--ink); padding: 20px; font-family: Arial, sans-serif; }
+    .container { max-width: 1400px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+    .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,.1); }
+    .result-number { font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+    .result-label { font-size: .85rem; color: var(--ink-2); }
+    .result-sub { font-size: .75rem; color: var(--ink-3); }
+    .land-use-item { background: var(--card-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .land-use-item .btn-close { filter: invert(1); }
+    .land-use-item .ref { font-size: .75rem; color: var(--ink-3); }
+    .rule-hint { font-size: .78rem; color: var(--ink-2); background: var(--field); border: 1px solid var(--line-2); border-radius: 6px; padding: 6px 8px; margin-top: 8px; }
+    .rule-hint b { color: var(--accent); font-weight: 600; }
+    .form-control, .form-select { background-color: var(--field); border: 1px solid var(--line); color: var(--ink); }
+    .form-control:focus, .form-select:focus { background-color: var(--field); border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); color: var(--ink); }
+    .form-control:disabled { background-color: #15151f; color: var(--ink-3); }
+    .form-label { color: var(--ink-2); }
+    .form-text { color: var(--ink-3); font-size: .75rem; }
+    .form-control::placeholder { color: var(--ink-3); }
+    .form-check-input { background-color: var(--field); border-color: var(--ink-3); }
+    .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+    .form-range::-webkit-slider-thumb { background: var(--accent); }
+    .form-range::-moz-range-thumb { background: var(--accent); }
+    .table { --bs-table-bg: transparent; --bs-table-color: var(--ink); --bs-table-border-color: var(--line); font-size: .82rem; }
+    .table thead th { color: var(--ink-3); border-color: var(--line); font-weight: 600; white-space: nowrap; }
+    .table td, .table th { border-color: var(--line-2); vertical-align: top; }
+    .table-hover tbody tr:hover { --bs-table-hover-bg: rgba(255,255,255,.03); --bs-table-hover-color: var(--ink); }
+    .table tfoot td { font-weight: 700; color: var(--accent); border-top: 1px solid var(--line); }
+    .bg-success { background-color: var(--green) !important; color: #04150E !important; }
+    .bg-secondary { background-color: var(--card-2) !important; color: var(--ink-2) !important; }
+    .result-box { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: 1rem !important; height: 100%; }
+    .btn-primary { background-color: var(--accent); border-color: var(--accent); color: #1a1a2e; }
+    .btn-primary:hover { background-color: #c9862f; border-color: #c9862f; color: #1a1a2e; }
+    .btn-outline-secondary { color: var(--ink-2); border-color: var(--line); }
+    .btn-outline-secondary:hover { background-color: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+    .alert-danger { background-color: rgba(243,91,91,.15); color: var(--danger); border-color: rgba(243,91,91,.3); }
+    h1.display-6 { color: var(--ink); }
+    .text-muted { color: var(--ink-3) !important; }
+    footer { color: var(--ink-3); }
+    .zone-info { background: var(--accent-dim); border: 1px solid rgba(232,163,61,.35); border-radius: 8px; padding: 8px 10px; font-size: .85rem; }
+    .zone-info b { color: var(--accent); }
+    .notes { list-style: none; padding: 0; margin: 0; font-size: .8rem; }
+    .notes li { padding: 6px 8px; border-right: 3px solid var(--ink-3); margin-bottom: 6px; background: var(--field); border-radius: 4px; color: var(--ink-2); }
+    .notes li.danger { border-color: var(--danger); color: #f7a3a3; }
+    .notes li.warn { border-color: var(--warn); color: #f2dca2; }
+    .notes li.info { border-color: var(--info); }
+    .sticky-results { position: sticky; top: 16px; }
+    .small-muted { font-size: .75rem; color: var(--ink-3); }
+    @media (max-width: 991px) { .sticky-results { position: static; } }
+  
+    .result-section { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; font-size: .9rem; }
+    .result-section h6 { font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+    .result-section .fw-bold { color: var(--ink-2); font-weight: 600 !important; }
+    .result-section .row > div { padding-top: 3px; padding-bottom: 3px; }
+    .table-bordered > :not(caption) > * > * { border-color: var(--line-2); }
+    .table-result td { padding: 6px 8px; font-size: .85rem; }
+    .table-result th { font-size: .78rem; }
+    .scrollable-results { max-height: 760px; overflow-y: auto; }
+    .scrollable-results::-webkit-scrollbar { width: 6px; }
+    .scrollable-results::-webkit-scrollbar-thumb { background: var(--ink-3); border-radius: 10px; }
+    .footer-text { font-size: .8rem; color: var(--ink-3); }
+    .intersection-item { background: var(--card-2); border-color: var(--line) !important; border-radius: 8px !important; }
+    .intersection-item h6 { color: var(--ink); }
+    .btn-outline-danger { color: var(--danger); border-color: rgba(243,91,91,.4); }
+    .btn-outline-danger:hover { background: rgba(243,91,91,.15); color: var(--danger); border-color: var(--danger); }
+    .alert-warning { background-color: rgba(245,196,81,.12); color: var(--warn); border-color: rgba(245,196,81,.3); }
+    .mitigation-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: .75rem; font-weight: 600; margin: 2px; }
+    .mitigation-high { background: rgba(243,91,91,.15); color: #f7a3a3; }
+    .mitigation-medium { background: rgba(245,196,81,.15); color: #f2dca2; }
+    .mitigation-low { background: rgba(122,184,245,.15); color: var(--info); }
+    .unit { color: var(--ink-3); font-size: .8rem; font-weight: 400; }
+    .result-section ul { color: var(--ink-2); margin-bottom: 0; }
   </style>
 </head>
 <body>
 <div class="container">
 
-  <h1 class="display-5 fw-bold mb-2"><i class="bi bi-signpost-2 text-primary me-2"></i>מחקר השפעה על התנועה – Traffic Impact Study</h1>
-  <p class="text-muted mb-4">חישוב מקיף של השפעת פרויקט חדש על רשת התנועה – כולל יצירת נסיעות, התפלגות, ניתוח צמתים, תורים, בטיחות והמלצות להקלות.</p>
+  <h1 class="display-6 fw-bold mb-2"><i class="bi bi-signpost-2-fill text-warning ms-2"></i>בדיקת השפעה על התנועה (תסקיר תנועה)</h1>
+  <p class="text-muted mb-4">חישוב השפעת פרויקט חדש על רשת התנועה – יצירת נסיעות, גדילת רקע, ניתוח צמתים, תורים, בטיחות, חניה והמלצות להקלות. יחידות: מטרים ומ"ר (שיעורי ITE מומרים פנימית מ־1,000 רגל רבוע).</p>
 
   <div class="row">
 
@@ -75,8 +132,8 @@
                 </select>
               </div>
               <div class="col-md-4">
-                <label class="form-label">שטח (אלף רגל רבוע)</label>
-                <input type="number" class="form-control" id="grossArea" value="120" min="1">
+                <label class="form-label">שטח בנוי ברוטו <span class="unit">(מ"ר)</span></label>
+                <input type="number" class="form-control" id="grossArea" value="11148" min="1" step="10">
               </div>
               <div class="col-md-4">
                 <label class="form-label">שנת ניתוח</label>
@@ -96,15 +153,15 @@
           <div class="card-body">
             <div class="row g-3">
               <div class="col-md-4">
-                <label class="form-label">אחוז נסיעות עוקפות (Pass‑by)</label>
+                <label class="form-label">נסיעות עוברות (Pass‑by) <span class="unit">(%)</span></label>
                 <input type="number" class="form-control" id="passByPct" value="30" min="0" max="100">
               </div>
               <div class="col-md-4">
-                <label class="form-label">אחוז נסיעות מוסטות</label>
+                <label class="form-label">נסיעות מוסטות <span class="unit">(%)</span></label>
                 <input type="number" class="form-control" id="divertedPct" value="20" min="0" max="100">
               </div>
               <div class="col-md-4">
-                <label class="form-label">אחוז משאיות</label>
+                <label class="form-label">שיעור משאיות <span class="unit">(%)</span></label>
                 <input type="number" class="form-control" id="truckPct" value="2" min="0" max="100">
               </div>
             </div>
@@ -117,23 +174,23 @@
           <div class="card-body">
             <div class="row g-3">
               <div class="col-md-4">
-                <label class="form-label">AADT – רחוב ראשי</label>
+                <label class="form-label">תנועה יומית ממוצעת (AADT) – רחוב ראשי <span class="unit">(רכב/יום)</span></label>
                 <input type="number" class="form-control" id="mainAadt" value="18000" min="0">
               </div>
               <div class="col-md-4">
-                <label class="form-label">AADT – רחוב משני</label>
+                <label class="form-label">תנועה יומית ממוצעת (AADT) – רחוב משני <span class="unit">(רכב/יום)</span></label>
                 <input type="number" class="form-control" id="sideAadt" value="8000" min="0">
               </div>
               <div class="col-md-4">
-                <label class="form-label">שיעור גדילה שנתי (%)</label>
+                <label class="form-label">שיעור גדילה שנתי <span class="unit">(%)</span></label>
                 <input type="number" class="form-control" id="growthRate" value="2.5" min="0" step="0.1">
               </div>
               <div class="col-md-6">
-                <label class="form-label">נפח תנועה בשעת שיא – רחוב ראשי</label>
+                <label class="form-label">נפח בשעת שיא – רחוב ראשי <span class="unit">(רכב/שעה)</span></label>
                 <input type="number" class="form-control" id="mainPeak" value="1500" min="0">
               </div>
               <div class="col-md-6">
-                <label class="form-label">נפח תנועה בשעת שיא – רחוב משני</label>
+                <label class="form-label">נפח בשעת שיא – רחוב משני <span class="unit">(רכב/שעה)</span></label>
                 <input type="number" class="form-control" id="sidePeak" value="800" min="0">
               </div>
             </div>
@@ -148,7 +205,7 @@
               <!-- צומת 1 -->
               <div class="border rounded p-3 mb-3 intersection-item" data-id="INT_1">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                  <h6 class="fw-bold m-0"><i class="bi bi-pin-map"></i> צומת 1: רחוב ראשי &amp; Oak Avenue</h6>
+                  <h6 class="fw-bold m-0"><i class="bi bi-pin-map"></i> צומת 1: רחוב ראשי / רחוב האלון</h6>
                   <button type="button" class="btn btn-outline-danger btn-sm remove-intersection"><i class="bi bi-trash"></i></button>
                 </div>
                 <div class="row g-2">
@@ -160,7 +217,7 @@
                     </select>
                   </div>
                   <div class="col-4">
-                    <label class="form-label small">LOS קיים</label>
+                    <label class="form-label small">רמת שירות קיימת</label>
                     <select class="form-select int-existing-los">
                       <option value="A">A</option>
                       <option value="B">B</option>
@@ -171,7 +228,7 @@
                     </select>
                   </div>
                   <div class="col-4">
-                    <label class="form-label small">עיכוב קיים (שנ''ל)</label>
+                    <label class="form-label small">עיכוב קיים (שניות)</label>
                     <input type="number" class="form-control int-existing-delay" value="35" min="0">
                   </div>
                   <div class="col-4">
@@ -179,11 +236,11 @@
                     <input type="number" class="form-control int-existing-vc" value="0.78" min="0" max="1.2" step="0.01">
                   </div>
                   <div class="col-4">
-                    <label class="form-label small">אורך תור (רגל)</label>
-                    <input type="number" class="form-control int-queue" value="250" min="0">
+                    <label class="form-label small">אורך תור (מטר)</label>
+                    <input type="number" class="form-control int-queue" value="76" min="0">
                   </div>
                   <div class="col-4">
-                    <label class="form-label small">עומס תנועה בצומת (vph)</label>
+                    <label class="form-label small">נפח בצומת (רכב/שעה)</label>
                     <input type="number" class="form-control int-volume" value="2000" min="0">
                   </div>
                 </div>
@@ -192,7 +249,7 @@
               <!-- צומת 2 -->
               <div class="border rounded p-3 mb-3 intersection-item" data-id="INT_2">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                  <h6 class="fw-bold m-0"><i class="bi bi-pin-map"></i> צומת 2: רחוב ראשי &amp; כניסה לפרויקט</h6>
+                  <h6 class="fw-bold m-0"><i class="bi bi-pin-map"></i> צומת 2: רחוב ראשי / כניסה לפרויקט</h6>
                   <button type="button" class="btn btn-outline-danger btn-sm remove-intersection"><i class="bi bi-trash"></i></button>
                 </div>
                 <div class="row g-2">
@@ -204,7 +261,7 @@
                     </select>
                   </div>
                   <div class="col-4">
-                    <label class="form-label small">LOS קיים</label>
+                    <label class="form-label small">רמת שירות קיימת</label>
                     <select class="form-select int-existing-los">
                       <option value="A">A</option>
                       <option value="B" selected>B</option>
@@ -215,7 +272,7 @@
                     </select>
                   </div>
                   <div class="col-4">
-                    <label class="form-label small">עיכוב קיים (שנ''ל)</label>
+                    <label class="form-label small">עיכוב קיים (שניות)</label>
                     <input type="number" class="form-control int-existing-delay" value="15" min="0">
                   </div>
                   <div class="col-4">
@@ -223,11 +280,11 @@
                     <input type="number" class="form-control int-existing-vc" value="0.45" min="0" max="1.2" step="0.01">
                   </div>
                   <div class="col-4">
-                    <label class="form-label small">אורך תור (רגל)</label>
-                    <input type="number" class="form-control int-queue" value="100" min="0">
+                    <label class="form-label small">אורך תור (מטר)</label>
+                    <input type="number" class="form-control int-queue" value="30" min="0">
                   </div>
                   <div class="col-4">
-                    <label class="form-label small">עומס תנועה בצומת (vph)</label>
+                    <label class="form-label small">נפח בצומת (רכב/שעה)</label>
                     <input type="number" class="form-control int-volume" value="1200" min="0">
                   </div>
                 </div>
@@ -243,11 +300,11 @@
           <div class="card-body">
             <div class="row g-3">
               <div class="col-4">
-                <label class="form-label">הולכי רגל (ל'/שעה)</label>
+                <label class="form-label">הולכי רגל <span class="unit">(לשעה)</span></label>
                 <input type="number" class="form-control" id="pedVolume" value="50" min="0">
               </div>
               <div class="col-4">
-                <label class="form-label">רוכבי אופניים (ל'/שעה)</label>
+                <label class="form-label">רוכבי אופניים <span class="unit">(לשעה)</span></label>
                 <input type="number" class="form-control" id="bikeVolume" value="20" min="0">
               </div>
               <div class="col-4">
@@ -263,7 +320,7 @@
                 <input type="number" class="form-control" id="parkingRequired" value="420" min="0">
               </div>
               <div class="col-4">
-                <label class="form-label">עלות הקלות (דולר)</label>
+                <label class="form-label">עלות הקלות בסיסית <span class="unit">($)</span></label>
                 <input type="number" class="form-control" id="mitigationCost" value="200000" min="0">
               </div>
             </div>
@@ -271,7 +328,7 @@
         </div>
 
         <button type="button" class="btn btn-primary btn-lg w-100 mt-2" id="calcBtn">
-          <i class="bi bi-calculator me-2"></i>חשב / עדכן תוצאות
+          <i class="bi bi-calculator ms-2"></i>חשב / עדכן תוצאות
         </button>
 
       </form>
@@ -293,7 +350,7 @@
   </div>
 
   <footer class="text-center footer-text mt-4 pb-3">
-    מבוסס על ITE Trip Generation Manual, HCM, AASHTO Green Book. כל הזכויות שמורות.
+    MAHALCO – בדיקת השפעה על התנועה. מבוסס על ITE Trip Generation Manual, ‏HCM ו־AASHTO Green Book.
   </footer>
 </div>
 
@@ -333,7 +390,7 @@
     div.dataset.id = 'INT_' + count;
     div.innerHTML = `
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <h6 class="fw-bold m-0"><i class="bi bi-pin-map"></i> צומת ${count}: רחוב ראשי &amp; רחוב צדדי</h6>
+        <h6 class="fw-bold m-0"><i class="bi bi-pin-map"></i> צומת ${count}: רחוב ראשי / רחוב צדדי</h6>
         <button type="button" class="btn btn-outline-danger btn-sm remove-intersection"><i class="bi bi-trash"></i></button>
       </div>
       <div class="row g-2">
@@ -345,7 +402,7 @@
           </select>
         </div>
         <div class="col-4">
-          <label class="form-label small">LOS קיים</label>
+          <label class="form-label small">רמת שירות קיימת</label>
           <select class="form-select int-existing-los">
             <option value="A">A</option>
             <option value="B" selected>B</option>
@@ -356,7 +413,7 @@
           </select>
         </div>
         <div class="col-4">
-          <label class="form-label small">עיכוב קיים (שנ''ל)</label>
+          <label class="form-label small">עיכוב קיים (שניות)</label>
           <input type="number" class="form-control int-existing-delay" value="20" min="0">
         </div>
         <div class="col-4">
@@ -364,11 +421,11 @@
           <input type="number" class="form-control int-existing-vc" value="0.50" min="0" max="1.2" step="0.01">
         </div>
         <div class="col-4">
-          <label class="form-label small">אורך תור (רגל)</label>
-          <input type="number" class="form-control int-queue" value="120" min="0">
+          <label class="form-label small">אורך תור (מטר)</label>
+          <input type="number" class="form-control int-queue" value="37" min="0">
         </div>
         <div class="col-4">
-          <label class="form-label small">עומס תנועה בצומת (vph)</label>
+          <label class="form-label small">נפח בצומת (רכב/שעה)</label>
           <input type="number" class="form-control int-volume" value="1000" min="0">
         </div>
       </div>
@@ -397,7 +454,7 @@
       const existingLos = item.querySelector('.int-existing-los').value;
       const existingDelay = parseFloat(item.querySelector('.int-existing-delay').value) || 0;
       const existingVc = parseFloat(item.querySelector('.int-existing-vc').value) || 0;
-      const queue = parseFloat(item.querySelector('.int-queue').value) || 0;
+      const queue = (parseFloat(item.querySelector('.int-queue').value) || 0) / 0.3048; // m → ft (internal thresholds in ft)
       const volume = parseFloat(item.querySelector('.int-volume').value) || 0;
       intersections.push({
         id, type, existingLos, existingDelay, existingVc, queue, volume
@@ -410,7 +467,7 @@
   function calculateTIS() {
     const projectName = document.getElementById('projectName').value || 'פרויקט';
     const landUse = document.getElementById('landUseType').value;
-    const area = parseFloat(document.getElementById('grossArea').value) || 0;
+    const area = (parseFloat(document.getElementById('grossArea').value) || 0) / 92.903; // m² → 1,000 ft² (ITE unit)
     const analysisYear = parseInt(document.getElementById('analysisYear').value) || 2028;
     const existingYear = parseInt(document.getElementById('existingYear').value) || 2026;
     const passByPct = parseFloat(document.getElementById('passByPct').value) || 0;
@@ -597,6 +654,13 @@
     };
   }
 
+  // Hebrew display labels for internal status codes (display only)
+  const HE = {
+    low: 'נמוכה', moderate: 'בינונית', acceptable: 'סביר', high: 'גבוהה', medium: 'בינונית',
+    SIGNIFICANT: 'משמעותית', NOT_SIGNIFICANT: 'לא משמעותית',
+    'APPROVE WITH CONDITIONS': 'אישור בתנאים', APPROVE: 'אישור'
+  };
+
   // ---------- Render results ----------
   function renderResults(r) {
     const area = document.getElementById('resultsArea');
@@ -627,8 +691,8 @@
           <div class="col-6"><span class="fw-bold">שנת פרויקט:</span> ${r.background_growth.project_year}</div>
           <div class="col-6"><span class="fw-bold">שיעור גדילה:</span> ${r.background_growth.growth_rate}%</div>
           <div class="col-6"><span class="fw-bold">מקדם גדילה:</span> ${r.background_growth.growth_factor.toFixed(2)}</div>
-          <div class="col-6"><span class="fw-bold">תנועת רקע - ראשי:</span> ${r.background_growth.background_trips_main} vph</div>
-          <div class="col-6"><span class="fw-bold">תנועת רקע - משני:</span> ${r.background_growth.background_trips_side} vph</div>
+          <div class="col-6"><span class="fw-bold">תנועת רקע - ראשי:</span> ${r.background_growth.background_trips_main} רכב/שעה</div>
+          <div class="col-6"><span class="fw-bold">תנועת רקע - משני:</span> ${r.background_growth.background_trips_side} רכב/שעה</div>
         </div>
       </div>
     `;
@@ -642,7 +706,7 @@
           <td>${int.id}</td>
           <td>${int.existing.los} (v/c ${int.existing.v_c.toFixed(2)})</td>
           <td>${int.future_with.los} (v/c ${int.future_with.v_c.toFixed(2)})</td>
-          <td>${int.delay_impact.toFixed(1)} שנ''ל</td>
+          <td>${int.delay_impact.toFixed(1)} שנ'</td>
           <td>${int.vc_impact.toFixed(2)}</td>
           <td>${sig}</td>
           <td>${mit}</td>
@@ -655,7 +719,7 @@
         <h6><i class="bi bi-diagram-3"></i> ניתוח צמתים</h6>
         <div class="table-responsive">
           <table class="table table-sm table-result table-bordered">
-            <thead><tr><th>צומת</th><th>LOS קיים</th><th>LOS עם פרויקט</th><th>עליית עיכוב</th><th>עליית v/c</th><th>משמעות</th><th>הקלות</th></tr></thead>
+            <thead><tr><th>צומת</th><th>רמת שירות קיימת</th><th>רמת שירות עם הפרויקט</th><th>עליית עיכוב</th><th>עליית v/c</th><th>משמעות</th><th>הקלות</th></tr></thead>
             <tbody>${intRows}</tbody>
           </table>
         </div>
@@ -676,8 +740,8 @@
       <div class="result-section">
         <h6><i class="bi bi-shield-check"></i> בטיחות</h6>
         <div class="row">
-          <div class="col-6"><span class="fw-bold">דירוג בטיחות:</span> ${r.safety.safety_rating}</div>
-          <div class="col-6"><span class="fw-bold">השפעה:</span> ${r.safety.safety_impact}</div>
+          <div class="col-6"><span class="fw-bold">דירוג בטיחות:</span> ${HE[r.safety.safety_rating] || r.safety.safety_rating}</div>
+          <div class="col-6"><span class="fw-bold">השפעה:</span> ${HE[r.safety.safety_impact] || r.safety.safety_impact}</div>
           <div class="col-12"><span class="fw-bold">אמצעים מומלצים:</span> ${r.safety.measures.join(', ')}</div>
         </div>
       </div>
@@ -704,7 +768,7 @@
         </div>
         ${r.mitigation.recommendations.length > 0 ? `
           <ul class="small mt-2">
-            ${r.mitigation.recommendations.map(m => `<li>${m.improvement} – עלות $${m.cost.toLocaleString()} (${m.priority})</li>`).join('')}
+            ${r.mitigation.recommendations.map(m => `<li>${m.improvement} – עלות $${m.cost.toLocaleString()} (עדיפות ${HE[m.priority] || m.priority})</li>`).join('')}
           </ul>
         ` : '<p class="text-muted small">אין הקלות נדרשות</p>'}
       </div>
@@ -714,8 +778,8 @@
       <div class="result-section">
         <h6><i class="bi bi-check-circle"></i> מסקנות</h6>
         <div class="row">
-          <div class="col-6"><span class="fw-bold">השפעה כוללת:</span> ${r.conclusion.overall_impact}</div>
-          <div class="col-6"><span class="fw-bold">המלצה:</span> ${r.conclusion.recommendation}</div>
+          <div class="col-6"><span class="fw-bold">השפעה כוללת:</span> ${HE[r.conclusion.overall_impact] || r.conclusion.overall_impact}</div>
+          <div class="col-6"><span class="fw-bold">המלצה:</span> ${HE[r.conclusion.recommendation] || r.conclusion.recommendation}</div>
           <div class="col-6"><span class="fw-bold">נסיעות חדשות:</span> ${r.summary.new_trips}</div>
           <div class="col-6"><span class="fw-bold">עלות הקלות:</span> $${r.summary.total_mitigation_cost.toLocaleString()}</div>
           <div class="col-12"><span class="fw-bold">תנאים:</span> ${r.conclusion.conditions.join(', ')}</div>

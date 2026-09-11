@@ -1,626 +1,438 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MAHALCO – Lane & Queue Analysis (Metric)</title>
+  <title>MAHALCO – ניתוח נתיבים ותורים (מטרי)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --bg: #12121e;
+      --card: #1a1a2e;
+      --card-2: #22223a;
+      --field: #0f0f1a;
+      --line: rgba(255, 255, 255, .09);
+      --line-2: rgba(255, 255, 255, .05);
+      --accent: #E8A33D;
+      --accent-dim: rgba(232, 163, 61, .16);
+      --green: #4ADE80;
+      --ink: #EDEBF2;
+      --ink-2: #9A96AB;
+      --ink-3: #6B6780;
+      --danger: #F35B5B;
+      --warn: #F5C451;
+      --info: #7AB8F5;
     }
-    body {
-      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-      margin: 0;
-      min-height: 100vh;
-      background: #f0f2f5;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 30px 16px;
-    }
-    .container {
-      max-width: 720px;
-      width: 100%;
-      background: #ffffff;
-      padding: 28px 30px 34px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-      transition: box-shadow 0.2s;
-    }
-    .container:hover {
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-    }
-    h1 {
-      margin: 0 0 6px;
-      font-size: 26px;
-      font-weight: 700;
-      color: #0b1a2e;
-      letter-spacing: -0.3px;
-    }
-    .subhead {
-      color: #5a6a7a;
-      font-size: 15px;
-      margin: 0 0 24px;
-      border-bottom: 1px solid #e9edf2;
-      padding-bottom: 14px;
-    }
-    .form-group {
-      margin-bottom: 16px;
-    }
-    label {
-      display: block;
-      margin-bottom: 4px;
-      font-weight: 600;
-      font-size: 14px;
-      color: #1f2a3a;
-    }
-    label .unit {
-      font-weight: 400;
-      color: #7a8a9a;
-      font-size: 12.5px;
-    }
-    input,
-    select {
-      width: 100%;
-      padding: 10px 12px;
-      font-size: 15px;
-      border: 1.5px solid #dce1e8;
-      border-radius: 8px;
-      background: #fafbfc;
-      transition: border 0.2s, box-shadow 0.2s;
-      font-family: inherit;
-      color: #1a2634;
-    }
-    input:focus,
-    select:focus {
-      border-color: #0066cc;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
-      background: #fff;
-    }
-    input[type="number"] {
-      -moz-appearance: textfield;
-    }
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    input:disabled,
-    select:disabled {
-      background: #f0f2f5;
-      color: #9aa7b4;
-      cursor: not-allowed;
-    }
-    .radio-group {
-      display: flex;
-      gap: 24px;
-      margin-top: 6px;
-      flex-wrap: wrap;
-    }
-    .radio-group label {
-      font-weight: 500;
-      font-size: 14px;
-      color: #1f2a3a;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-    .radio-group input[type="radio"] {
-      width: auto;
-      margin: 0;
-      accent-color: #0066cc;
-      transform: scale(1.05);
-      cursor: pointer;
-    }
-    .row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    .row-2.hidden {
-      display: none;
-    }
-    .field-note {
-      font-size: 12.5px;
-      color: #8a97a5;
-      margin: -10px 0 16px;
-      display: none;
-    }
-    .field-note.visible {
-      display: block;
-    }
-    @media (max-width: 500px) {
-      .row-2 {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      .container {
-        padding: 20px 16px 24px;
-      }
-    }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 8px;
-    }
-    button {
-      padding: 11px 28px;
-      font-size: 15px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-      font-family: inherit;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    button:active {
-      transform: scale(0.97);
-    }
-    #submitBtn {
-      background: #0066cc;
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(0, 102, 204, 0.25);
-    }
-    #submitBtn:hover:not(:disabled) {
-      background: #0055b3;
-      box-shadow: 0 4px 14px rgba(0, 102, 204, 0.35);
-    }
-    #submitBtn:disabled {
-      background: #9ab0c9;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .reset-btn {
-      background: #e9edf2;
-      color: #2d3a4a;
-    }
-    .reset-btn:hover {
-      background: #dce1e8;
-    }
-    .status-msg {
-      margin-top: 16px;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 14px;
-      display: none;
-    }
-    .status-msg.info {
-      display: block;
-      background: #e8f0fe;
-      color: #0055a0;
-      border-left: 4px solid #0066cc;
-    }
-    .status-msg.error {
-      display: block;
-      background: #fde8e8;
-      color: #b33;
-      border-left: 4px solid #cc4444;
-    }
-    .status-msg.warn {
-      display: block;
-      background: #fff6e0;
-      color: #8a6100;
-      border-left: 4px solid #e0a800;
-    }
-    .status-msg.success {
-      display: block;
-      background: #e6f5e6;
-      color: #1f7a2a;
-      border-left: 4px solid #2b8f3a;
-    }
-    .results-box {
-      margin-top: 28px;
-      padding: 20px 22px 24px;
-      background: #f8faff;
-      border-radius: 12px;
-      border: 1px solid #e0e8f0;
-      display: none;
-    }
-    .results-box.visible {
-      display: block;
-    }
-    .results-box h2 {
-      margin: 0 0 14px;
-      font-size: 20px;
-      font-weight: 700;
-      color: #0b1a2e;
-      letter-spacing: -0.2px;
-    }
-    .result-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px 24px;
-      margin-bottom: 16px;
-    }
-    .result-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid #eef2f7;
-      font-size: 14.5px;
-    }
-    .result-item .label {
-      color: #4a5a6a;
-      font-weight: 500;
-    }
-    .result-item .value {
-      font-weight: 700;
-      color: #0b1a2e;
-      font-variant-numeric: tabular-nums;
-    }
-    .result-item .value.highlight {
-      color: #0066cc;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 6px;
-      font-size: 14px;
-    }
-    th,
-    td {
-      border: 1px solid #e0e8f0;
-      padding: 10px 12px;
-      text-align: left;
-    }
-    th {
-      background: #f0f4fa;
-      font-weight: 600;
-      color: #1f2a3a;
-    }
-    td {
-      background: #ffffff;
-    }
-    td:last-child {
-      color: #4a5a6a;
-      font-size: 13px;
-    }
-    .footnote {
-      margin-top: 14px;
-      font-size: 13px;
-      color: #6a7a8a;
-      border-top: 1px solid #e9edf2;
-      padding-top: 14px;
-    }
-    .footnote a {
-      color: #0066cc;
-      text-decoration: none;
-    }
-    .footnote a:hover {
-      text-decoration: underline;
-    }
-    .badge {
-      display: inline-block;
-      background: #e9edf2;
-      color: #2d3a4a;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 20px;
-      margin-left: 6px;
-      vertical-align: middle;
-    }
+    body { background: var(--bg); color: var(--ink); padding: 20px; font-family: Arial, sans-serif; }
+    .container { max-width: 1400px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+    .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,.1); }
+    h1.display-6 { color: var(--ink); }
+    .text-muted { color: var(--ink-3) !important; }
+
+    .form-control, .form-select { background-color: var(--field); border: 1px solid var(--line); color: var(--ink); }
+    .form-control:focus, .form-select:focus { background-color: var(--field); border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); color: var(--ink); }
+    .form-control:disabled, .form-select:disabled { background-color: #15151f; color: var(--ink-3); cursor: not-allowed; }
+    .form-label { color: var(--ink-2); }
+    .form-label .unit { color: var(--ink-3); font-size: .8rem; }
+    .form-text { color: var(--ink-3); font-size: .75rem; }
+    .form-check-input { background-color: var(--field); border-color: var(--ink-3); }
+    .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+    .form-check-label { color: var(--ink); }
+    input[type="number"] { -moz-appearance: textfield; }
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .field-note { display: none; }
+    .field-note.visible { display: block; }
+
+    .btn-primary { background-color: var(--accent); border-color: var(--accent); color: #1a1a2e; font-weight: 600; }
+    .btn-primary:hover, .btn-primary:focus { background-color: #c9862f; border-color: #c9862f; color: #1a1a2e; }
+    .btn-primary:disabled { background-color: #7a6440; border-color: #7a6440; color: #1a1a2e; }
+    .btn-outline-secondary { color: var(--ink-2); border-color: var(--line); }
+    .btn-outline-secondary:hover { background-color: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+
+    .status-msg { margin-top: 16px; padding: 10px 14px; border-radius: 6px; font-size: .9rem; display: none; background: var(--field); border-right: 3px solid var(--ink-3); color: var(--ink-2); }
+    .status-msg.info { display: block; border-color: var(--info); }
+    .status-msg.error { display: block; border-color: var(--danger); color: #f7a3a3; background: rgba(243,91,91,.08); }
+    .status-msg.warn { display: block; border-color: var(--warn); color: #f2dca2; background: rgba(245,196,81,.07); }
+    .status-msg.success { display: block; border-color: var(--green); color: #a6efc0; background: rgba(74,222,128,.07); }
+
+    .result-box { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; height: 100%; }
+    .result-label { font-size: .85rem; color: var(--ink-2); }
+    .result-number { font-size: 1.8rem; font-weight: 700; color: var(--ink); line-height: 1.15; font-variant-numeric: tabular-nums; }
+    .result-number.highlight { color: var(--accent); }
+
+    .results-box { display: none; }
+    .results-box.visible { display: block; }
+
+    .table { --bs-table-bg: transparent; --bs-table-color: var(--ink); --bs-table-border-color: var(--line); font-size: .88rem; }
+    .table thead th { color: var(--ink-3); border-color: var(--line); font-weight: 600; }
+    .table td, .table th { border-color: var(--line-2); }
+    .table td:last-child { color: var(--ink-2); font-size: .8rem; }
+
+    .footnote { margin-top: 14px; font-size: .8rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 12px; }
+    .footnote a { color: var(--accent); text-decoration: none; }
+    .footnote a:hover { text-decoration: underline; }
+    .badge-metric { background: var(--card-2); color: var(--ink-2); font-size: .8rem; font-weight: 600; vertical-align: middle; }
+    .sticky-results { position: sticky; top: 16px; }
+    @media (max-width: 991px) { .sticky-results { position: static; } }
+    footer { color: var(--ink-3); }
   </style>
 </head>
 <body>
+<div class="container">
+  <h1 class="display-6 fw-bold mb-2"><i class="bi bi-stoplights-fill text-warning ms-2"></i>ניתוח נתיבים ותורים <span class="badge badge-metric">מטרי</span></h1>
+  <p class="text-muted mb-4">הערכת אורכי תור, קיבולת קבוצת נתיבים, יחס נפח לקיבולת (V/C) ורמת שירות, ביחידות מטריות (מטרים, קמ"ש).<br>
+    החישוב מתבצע כולו בדפדפן – שיטת סינון המבוססת על HCM/AASHTO, ללא פנייה לשרת.</p>
 
-  <div class="container">
-    <h1>🚦 Lane &amp; Queue Analysis <span class="badge">Metric</span></h1>
-    <p class="subhead">Estimate queue lengths, lane‑group capacity, V/C ratio and LOS using metric units.<br>
-      <span style="font-size:13px;color:#6a7a8a;">Computed entirely in your browser — HCM/AASHTO‑informed screening method, no server round‑trip.</span></p>
+  <form id="queueForm" novalidate>
+    <div class="row">
+      <div class="col-lg-7">
 
-    <form id="queueForm" novalidate>
-      <div class="form-group">
-        <label>Method</label>
-        <div class="radio-group">
-          <label><input type="radio" name="method" value="AASHTO" checked> AASHTO</label>
-          <label><input type="radio" name="method" value="HCM"> HCM</label>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-signpost-split ms-2"></i>שיטה וסוג מתקן</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label d-block">שיטת החישוב</label>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method" id="mAASHTO" value="AASHTO" checked>
+                  <label class="form-check-label" for="mAASHTO">AASHTO</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method" id="mHCM" value="HCM">
+                  <label class="form-check-label" for="mHCM">HCM</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="facilityType">סוג המתקן</label>
+                <select class="form-select" id="facilityType">
+                  <option value="signalized">צומת מרומזר</option>
+                  <option value="two_lane_highway">כביש דו־נתיבי</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div class="card">
+          <div class="card-header"><i class="bi bi-car-front ms-2"></i>תנועה ורמזור</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="volume">נפח תנועה <span class="unit">(רכב/שעה)</span></label>
+                <input class="form-control" type="number" id="volume" value="600" min="1" step="1" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="lanes">מספר נתיבים</label>
+                <input class="form-control" type="number" id="lanes" value="2" min="1" step="1" required>
+              </div>
+            </div>
+            <div class="row g-3 mt-0" id="signalFieldsRow">
+              <div class="col-md-6">
+                <label class="form-label" for="cycleLength">זמן מחזור <span class="unit">(שניות)</span></label>
+                <input class="form-control" type="number" id="cycleLength" value="90" min="1" step="1" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="greenTime">זמן ירוק <span class="unit">(שניות)</span></label>
+                <input class="form-control" type="number" id="greenTime" value="45" min="1" step="1" required>
+              </div>
+            </div>
+            <p class="form-text field-note mt-2 mb-0" id="signalFieldsNote">זמן מחזור וזמן ירוק רלוונטיים לצומת מרומזר בלבד – אינם נלקחים בחשבון בכביש דו־נתיבי.</p>
+            <div class="row g-3 mt-0">
+              <div class="col-md-6">
+                <label class="form-label" for="truckPct">שיעור משאיות <span class="unit">(%)</span></label>
+                <input class="form-control" type="number" id="truckPct" step="0.1" value="5" min="0" max="100" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="surgeFactor">מקדם עומס (Surge Factor)</label>
+                <input class="form-control" type="number" id="surgeFactor" step="0.01" value="1.5" min="0.5" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><i class="bi bi-rulers ms-2"></i>גיאומטריה</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label" for="laneWidth">רוחב נתיב <span class="unit">(מטר)</span></label>
+                <input class="form-control" type="number" id="laneWidth" step="0.01" value="3.65" min="2.0" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="shoulderWidth">רוחב שול <span class="unit">(מטר)</span></label>
+                <input class="form-control" type="number" id="shoulderWidth" step="0.01" value="1.80" min="0" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="grade">שיפוע אורכי <span class="unit">(%)</span></label>
+                <input class="form-control" type="number" id="grade" step="0.1" value="2" min="-20" max="20" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mb-2">
+          <button type="submit" class="btn btn-primary btn-lg flex-grow-1" id="submitBtn">נתח תור</button>
+          <button type="button" class="btn btn-outline-secondary btn-lg" onclick="resetForm()"><i class="bi bi-arrow-counterclockwise"></i> איפוס</button>
+        </div>
+        <div id="statusMsg" class="status-msg"></div>
       </div>
 
-      <div class="form-group">
-        <label for="facilityType">Facility Type</label>
-        <select id="facilityType">
-          <option value="signalized">Signalised intersection</option>
-          <option value="two_lane_highway">Two‑lane highway</option>
-        </select>
-      </div>
-
-      <div class="row-2">
-        <div class="form-group">
-          <label for="volume">Volume <span class="unit">(veh/h)</span></label>
-          <input type="number" id="volume" value="600" min="1" step="1" required>
+      <div class="col-lg-5">
+        <div class="sticky-results">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-table ms-2"></i>תוצאות <span class="fw-normal">(יחידות מטריות)</span></div>
+            <div class="card-body">
+              <div id="resultsPlaceholder" class="text-center text-muted py-5">
+                <i class="bi bi-clipboard-data fs-1"></i>
+                <p class="mt-3">מלאו את הנתונים ולחצו על <strong>נתח תור</strong>.</p>
+              </div>
+              <div id="results" class="results-box">
+                <div class="row g-3">
+                  <div class="col-6"><div class="result-box"><div class="result-label">אורך תור</div><div class="result-number" id="outQueueVeh">-- רכבים</div></div></div>
+                  <div class="col-6"><div class="result-box"><div class="result-label">אורך אגירה נדרש</div><div class="result-number highlight" id="outQueueMeters">-- מ'</div></div></div>
+                  <div class="col-6"><div class="result-box"><div class="result-label">יחס V/C</div><div class="result-number" id="outVcRatio">--</div></div></div>
+                  <div class="col-6"><div class="result-box"><div class="result-label">רמת שירות (LOS)</div><div class="result-number highlight" id="outLos">--</div></div></div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                  <table class="table table-sm text-end">
+                    <thead><tr><th>מדד</th><th>ערך</th><th>פירוש</th></tr></thead>
+                    <tbody>
+                      <tr><td>קיבולת</td><td id="tableCapacity">--</td><td>אומדן קיבולת קבוצת הנתיבים</td></tr>
+                      <tr><td>תור אחוזון 95</td><td id="table95Queue">--</td><td>אורך תור לתכנון</td></tr>
+                      <tr><td>אורך אגירה (AASHTO)</td><td id="tableStorageMeters">--</td><td>אורך אגירה במטרים</td></tr>
+                      <tr><td>שיטה</td><td id="tableMethod">--</td><td>שיטת החישוב שהופעלה</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="footnote">
+                  <i class="bi bi-lightning-charge ms-1"></i>שיטת סינון מקורבת (מבוססת HCM/AASHTO) – יש לאמת תכנון סופי בניתוח תפעולי מלא לפי HCM. <a href="#" onclick="document.getElementById('statusMsg').innerHTML='';return false;">ניקוי הודעה</a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="lanes">Number of Lanes</label>
-          <input type="number" id="lanes" value="2" min="1" step="1" required>
-        </div>
-      </div>
-
-      <div class="row-2" id="signalFieldsRow">
-        <div class="form-group">
-          <label for="cycleLength">Cycle Length <span class="unit">(s)</span></label>
-          <input type="number" id="cycleLength" value="90" min="1" step="1" required>
-        </div>
-        <div class="form-group">
-          <label for="greenTime">Green Time <span class="unit">(s)</span></label>
-          <input type="number" id="greenTime" value="45" min="1" step="1" required>
-        </div>
-      </div>
-      <p class="field-note" id="signalFieldsNote">Cycle length &amp; green time only apply to signalised intersections — ignored for two‑lane highway.</p>
-
-      <div class="row-2">
-        <div class="form-group">
-          <label for="truckPct">Truck <span class="unit">(%)</span></label>
-          <input type="number" id="truckPct" step="0.1" value="5" min="0" max="100" required>
-        </div>
-        <div class="form-group">
-          <label for="surgeFactor">Surge Factor</label>
-          <input type="number" id="surgeFactor" step="0.01" value="1.5" min="0.5" required>
-        </div>
-      </div>
-
-      <div class="row-2">
-        <div class="form-group">
-          <label for="laneWidth">Lane Width <span class="unit">(meters)</span></label>
-          <input type="number" id="laneWidth" step="0.01" value="3.65" min="2.0" required>
-        </div>
-        <div class="form-group">
-          <label for="shoulderWidth">Shoulder Width <span class="unit">(meters)</span></label>
-          <input type="number" id="shoulderWidth" step="0.01" value="1.80" min="0" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="grade">Grade <span class="unit">(%)</span></label>
-        <input type="number" id="grade" step="0.1" value="2" min="-20" max="20" required>
-      </div>
-
-      <div class="actions">
-        <button type="submit" id="submitBtn">Analyse Queue</button>
-        <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
-      </div>
-    </form>
-
-    <div id="statusMsg" class="status-msg"></div>
-
-    <div id="results" class="results-box">
-      <h2>📊 Output <span style="font-size:14px;font-weight:400;color:#4a5a6a;">(metric)</span></h2>
-      <div class="result-grid">
-        <div class="result-item"><span class="label">Queue Length</span><span class="value" id="outQueueVeh">-- veh</span></div>
-        <div class="result-item"><span class="label">Queue Storage</span><span class="value highlight" id="outQueueMeters">-- m</span></div>
-        <div class="result-item"><span class="label">V/C Ratio</span><span class="value" id="outVcRatio">--</span></div>
-        <div class="result-item"><span class="label">Level of Service</span><span class="value highlight" id="outLos">--</span></div>
-      </div>
-
-      <table>
-        <thead><tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr></thead>
-        <tbody>
-          <tr><td>Capacity</td><td id="tableCapacity">--</td><td>lane‑group capacity estimate</td></tr>
-          <tr><td>95th percentile queue</td><td id="table95Queue">--</td><td>design queue length</td></tr>
-          <tr><td>Queue storage (AASHTO)</td><td id="tableStorageMeters">--</td><td>storage length in meters</td></tr>
-          <tr><td>Method</td><td id="tableMethod">--</td><td>analysis method used</td></tr>
-        </tbody>
-      </table>
-      <div class="footnote">
-        ⚡ Simplified screening method (HCM/AASHTO‑informed) — verify final designs with a full HCM operational analysis. <a href="#" onclick="document.getElementById('statusMsg').innerHTML='';return false;">Clear status</a>
       </div>
     </div>
-  </div>
+  </form>
 
-  <script>
-    // ==========================================================
-    // Lane & Queue Analysis — computed entirely client-side.
-    // Signalized: HCM 2010/2016-based saturation-flow / capacity /
-    //   two-term delay (d1 uniform + d2 incremental) formulas.
-    // Two-lane highway: simplified HCM Ch.15-informed capacity
-    //   screening (v/c based, since full PTSF/ATS needs opposing-
-    //   direction volume that isn't collected by this form).
-    // Queue storage: deterministic average queue during red,
-    //   inflated by an X-dependent overflow factor (same structural
-    //   family as Webster's random-delay term / HCM's d2), then
-    //   converted to a design length using a per-vehicle spacing
-    //   assumption (AASHTO ~7.6 m/veh, HCM-style ~6.1 m/veh),
-    //   nudged upward for truck share.
-    // This is a screening-level tool, consistent with the original
-    // page's own framing — not a substitute for a full HCM/AASHTO
-    // operational study. Always confirm final designs with a
-    // licensed engineer using complete software (HCS, Synchro, SIDRA).
-    // ==========================================================
+  <footer class="text-center small mt-4 pb-3">MAHALCO – ניתוח נתיבים ותורים (מטרי)</footer>
+</div>
 
-    // ---- DOM refs ----
-    const form = document.getElementById('queueForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const statusMsg = document.getElementById('statusMsg');
-    const resultsBox = document.getElementById('results');
-    const facilityType = document.getElementById('facilityType');
-    const signalFieldsRow = document.getElementById('signalFieldsRow');
-    const signalFieldsNote = document.getElementById('signalFieldsNote');
-    const cycleLengthInput = document.getElementById('cycleLength');
-    const greenTimeInput = document.getElementById('greenTime');
+<script>
+  // ==========================================================
+  // Lane & Queue Analysis — computed entirely client-side.
+  // Signalized: HCM 2010/2016-based saturation-flow / capacity /
+  //   two-term delay (d1 uniform + d2 incremental) formulas.
+  // Two-lane highway: simplified HCM Ch.15-informed capacity
+  //   screening (v/c based, since full PTSF/ATS needs opposing-
+  //   direction volume that isn't collected by this form).
+  // Queue storage: deterministic average queue during red,
+  //   inflated by an X-dependent overflow factor (same structural
+  //   family as Webster's random-delay term / HCM's d2), then
+  //   converted to a design length using a per-vehicle spacing
+  //   assumption (AASHTO ~7.6 m/veh, HCM-style ~6.1 m/veh),
+  //   nudged upward for truck share.
+  // This is a screening-level tool, consistent with the original
+  // page's own framing — not a substitute for a full HCM/AASHTO
+  // operational study. Always confirm final designs with a
+  // licensed engineer using complete software (HCS, Synchro, SIDRA).
+  // ==========================================================
 
-    const outQueueVeh = document.getElementById('outQueueVeh');
-    const outQueueMeters = document.getElementById('outQueueMeters');
-    const outVcRatio = document.getElementById('outVcRatio');
-    const outLos = document.getElementById('outLos');
-    const tableCapacity = document.getElementById('tableCapacity');
-    const table95Queue = document.getElementById('table95Queue');
-    const tableStorageMeters = document.getElementById('tableStorageMeters');
-    const tableMethod = document.getElementById('tableMethod');
+  // ---- DOM refs ----
+  const form = document.getElementById('queueForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const resultsBox = document.getElementById('results');
+  const resultsPlaceholder = document.getElementById('resultsPlaceholder');
+  const facilityType = document.getElementById('facilityType');
+  const signalFieldsRow = document.getElementById('signalFieldsRow');
+  const signalFieldsNote = document.getElementById('signalFieldsNote');
+  const cycleLengthInput = document.getElementById('cycleLength');
+  const greenTimeInput = document.getElementById('greenTime');
 
-    // ---- helpers ----
-    function setStatus(msg, type) {
-      statusMsg.textContent = msg;
-      statusMsg.className = 'status-msg ' + (type || 'info');
-      statusMsg.style.display = 'block';
+  const outQueueVeh = document.getElementById('outQueueVeh');
+  const outQueueMeters = document.getElementById('outQueueMeters');
+  const outVcRatio = document.getElementById('outVcRatio');
+  const outLos = document.getElementById('outLos');
+  const tableCapacity = document.getElementById('tableCapacity');
+  const table95Queue = document.getElementById('table95Queue');
+  const tableStorageMeters = document.getElementById('tableStorageMeters');
+  const tableMethod = document.getElementById('tableMethod');
+
+  // ---- helpers ----
+  function setStatus(msg, type) {
+    statusMsg.textContent = msg;
+    statusMsg.className = 'status-msg ' + (type || 'info');
+    statusMsg.style.display = 'block';
+  }
+
+  function clearStatus() {
+    statusMsg.textContent = '';
+    statusMsg.className = 'status-msg';
+    statusMsg.style.display = 'none';
+  }
+
+  function hideResults() {
+    resultsBox.classList.remove('visible');
+    resultsBox.style.display = 'none';
+    resultsPlaceholder.style.display = '';
+  }
+
+  function resetForm() {
+    form.reset();
+    hideResults();
+    clearStatus();
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'נתח תור';
+    syncFacilityFields();
+  }
+
+  function syncFacilityFields() {
+    const isSignal = facilityType.value === 'signalized';
+    cycleLengthInput.disabled = !isSignal;
+    greenTimeInput.disabled = !isSignal;
+    signalFieldsRow.style.opacity = isSignal ? '1' : '0.55';
+    signalFieldsNote.classList.toggle('visible', !isSignal);
+  }
+  facilityType.addEventListener('change', syncFacilityFields);
+
+  // ---- calculation engine (unchanged) ----
+  function losFromDelay(d) {
+    if (d <= 10) return 'A';
+    if (d <= 20) return 'B';
+    if (d <= 35) return 'C';
+    if (d <= 55) return 'D';
+    if (d <= 80) return 'E';
+    return 'F';
+  }
+
+  function losFromVC(x) {
+    if (x < 0.60) return 'A';
+    if (x < 0.70) return 'B';
+    if (x < 0.80) return 'C';
+    if (x < 0.90) return 'D';
+    if (x <= 1.00) return 'E';
+    return 'F';
+  }
+
+  function computeSignalized(p) {
+    const s0 = 1900; // pc/h/ln ideal saturation flow rate (HCM default)
+    const fw = 1 + (p.laneWidthM - 3.6576) / 9.144;      // lane-width factor (12 ft = 3.6576 m, 30 ft = 9.144 m)
+    const fHV = 100 / (100 + p.truckPct);                 // heavy-vehicle factor, ET = 2.0
+    const fg = 1 - p.grade / 200;                          // grade factor (downgrade increases capacity)
+    const sPerLane = Math.max(s0 * fw * fHV * fg, 100);
+    const sTotal = sPerLane * p.lanes;
+    const gC = p.greenTime / p.cycleLength;
+    const capacity = sTotal * gC;
+
+    const designVolume = p.volume * p.surgeFactor;
+    const X = designVolume / capacity;
+    const Xc = Math.min(X, 0.98); // clamp so 1/(1-X) terms stay finite
+
+    const T = 0.25, k = 0.5, I = 1.0; // HCM defaults: 15-min analysis period, pretimed control, isolated intersection
+    const d1 = 0.5 * p.cycleLength * Math.pow(1 - gC, 2) / (1 - Xc * gC);
+    const d2 = 900 * T * ((X - 1) + Math.sqrt(Math.pow(X - 1, 2) + (8 * k * I * X) / (capacity * T)));
+    const delay = d1 + Math.max(d2, 0);
+    const los = losFromDelay(delay);
+
+    const redTime = p.cycleLength - p.greenTime;
+    const qAvgPerLane = (designVolume * redTime / 3600) / p.lanes;
+
+    let queueVeh;
+    if (p.method === 'HCM') {
+      const overflowFactor = 1 + (Math.pow(Xc, 2) / (2 * (1 - Xc)));
+      queueVeh = qAvgPerLane * overflowFactor;
+    } else {
+      queueVeh = qAvgPerLane * 1.5; // simpler AASHTO-style design multiplier
     }
 
-    function clearStatus() {
-      statusMsg.textContent = '';
-      statusMsg.className = 'status-msg';
-      statusMsg.style.display = 'none';
-    }
+    const spacing = (p.method === 'AASHTO' ? 7.6 : 6.1) + (p.truckPct / 100) * 3.0; // m/veh, nudged for truck share
+    const storageMeters = queueVeh * spacing;
 
-    function resetForm() {
-      form.reset();
-      resultsBox.classList.remove('visible');
-      resultsBox.style.display = 'none';
-      clearStatus();
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Analyse Queue';
-      syncFacilityFields();
-    }
+    return { capacity, X, delay, los, queueVeh, storageMeters, oversaturated: X >= 0.95 };
+  }
 
-    function syncFacilityFields() {
-      const isSignal = facilityType.value === 'signalized';
-      cycleLengthInput.disabled = !isSignal;
-      greenTimeInput.disabled = !isSignal;
-      signalFieldsRow.style.opacity = isSignal ? '1' : '0.55';
-      signalFieldsNote.classList.toggle('visible', !isSignal);
-    }
-    facilityType.addEventListener('change', syncFacilityFields);
+  function computeTwoLaneHighway(p) {
+    const base = 1700; // pc/h/ln, HCM Ch.15 base ideal capacity (per direction)
+    const fHV = 100 / (100 + p.truckPct);
+    const fg = Math.max(1 - Math.abs(p.grade) / 150, 0.5);
+    const capacity = base * p.lanes * fHV * fg;
+    const designVolume = p.volume * p.surgeFactor;
+    const X = designVolume / capacity;
+    const los = losFromVC(X);
+    return { capacity, X, los, oversaturated: X >= 0.95 };
+  }
 
-    // ---- calculation engine ----
-    function losFromDelay(d) {
-      if (d <= 10) return 'A';
-      if (d <= 20) return 'B';
-      if (d <= 35) return 'C';
-      if (d <= 55) return 'D';
-      if (d <= 80) return 'E';
-      return 'F';
-    }
+  // ---- main submit ----
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearStatus();
+    hideResults();
 
-    function losFromVC(x) {
-      if (x < 0.60) return 'A';
-      if (x < 0.70) return 'B';
-      if (x < 0.80) return 'C';
-      if (x < 0.90) return 'D';
-      if (x <= 1.00) return 'E';
-      return 'F';
-    }
+    try {
+      const method = document.querySelector('input[name="method"]:checked').value;
+      const facility = facilityType.value;
+      const volume = parseFloat(document.getElementById('volume').value);
+      const lanes = parseInt(document.getElementById('lanes').value, 10);
+      const cycleLength = parseFloat(cycleLengthInput.value);
+      const greenTime = parseFloat(greenTimeInput.value);
+      const truckPct = parseFloat(document.getElementById('truckPct').value);
+      const surgeFactor = parseFloat(document.getElementById('surgeFactor').value);
+      const laneWidthM = parseFloat(document.getElementById('laneWidth').value);
+      const shoulderWidthM = parseFloat(document.getElementById('shoulderWidth').value);
+      const grade = parseFloat(document.getElementById('grade').value);
 
-    function computeSignalized(p) {
-      const s0 = 1900; // pc/h/ln ideal saturation flow rate (HCM default)
-      const fw = 1 + (p.laneWidthM - 3.6576) / 9.144;      // lane-width factor (12 ft = 3.6576 m, 30 ft = 9.144 m)
-      const fHV = 100 / (100 + p.truckPct);                 // heavy-vehicle factor, ET = 2.0
-      const fg = 1 - p.grade / 200;                          // grade factor (downgrade increases capacity)
-      const sPerLane = Math.max(s0 * fw * fHV * fg, 100);
-      const sTotal = sPerLane * p.lanes;
-      const gC = p.greenTime / p.cycleLength;
-      const capacity = sTotal * gC;
+      const requiredVals = facility === 'signalized'
+        ? [volume, lanes, cycleLength, greenTime, truckPct, surgeFactor, laneWidthM, shoulderWidthM, grade]
+        : [volume, lanes, truckPct, surgeFactor, laneWidthM, shoulderWidthM, grade];
+      if (requiredVals.some(isNaN)) throw new Error('יש למלא את כל השדות המספריים כראוי.');
+      if (lanes < 1) throw new Error('מספר הנתיבים חייב להיות לפחות 1.');
+      if (facility === 'signalized' && cycleLength < greenTime) throw new Error('זמן המחזור חייב להיות גדול או שווה לזמן הירוק.');
+      if (laneWidthM < 2.0) throw new Error('רוחב הנתיב צריך להיות לפחות 2.0 מ\'.');
 
-      const designVolume = p.volume * p.surgeFactor;
-      const X = designVolume / capacity;
-      const Xc = Math.min(X, 0.98); // clamp so 1/(1-X) terms stay finite
-
-      const T = 0.25, k = 0.5, I = 1.0; // HCM defaults: 15-min analysis period, pretimed control, isolated intersection
-      const d1 = 0.5 * p.cycleLength * Math.pow(1 - gC, 2) / (1 - Xc * gC);
-      const d2 = 900 * T * ((X - 1) + Math.sqrt(Math.pow(X - 1, 2) + (8 * k * I * X) / (capacity * T)));
-      const delay = d1 + Math.max(d2, 0);
-      const los = losFromDelay(delay);
-
-      const redTime = p.cycleLength - p.greenTime;
-      const qAvgPerLane = (designVolume * redTime / 3600) / p.lanes;
-
-      let queueVeh;
-      if (p.method === 'HCM') {
-        const overflowFactor = 1 + (Math.pow(Xc, 2) / (2 * (1 - Xc)));
-        queueVeh = qAvgPerLane * overflowFactor;
+      let r;
+      if (facility === 'signalized') {
+        r = computeSignalized({ method, volume, lanes, cycleLength, greenTime, truckPct, surgeFactor, laneWidthM, grade });
+        outQueueVeh.textContent = r.queueVeh.toFixed(1) + ' רכבים';
+        outQueueMeters.textContent = r.storageMeters.toFixed(1) + ' מ\'';
+        table95Queue.textContent = r.queueVeh.toFixed(1) + ' רכבים';
+        tableStorageMeters.textContent = r.storageMeters.toFixed(1) + ' מ\'';
       } else {
-        queueVeh = qAvgPerLane * 1.5; // simpler AASHTO-style design multiplier
+        r = computeTwoLaneHighway({ volume, lanes, truckPct, surgeFactor, grade });
+        outQueueVeh.textContent = 'לא רלוונטי (לא מרומזר)';
+        outQueueMeters.textContent = '—';
+        table95Queue.textContent = '—';
+        tableStorageMeters.textContent = '—';
       }
 
-      const spacing = (p.method === 'AASHTO' ? 7.6 : 6.1) + (p.truckPct / 100) * 3.0; // m/veh, nudged for truck share
-      const storageMeters = queueVeh * spacing;
+      outVcRatio.textContent = r.X.toFixed(3);
+      outLos.textContent = r.los;
+      tableCapacity.textContent = r.capacity.toFixed(0) + ' רכב/שעה';
+      tableMethod.textContent = method + (facility === 'two_lane_highway' ? ' (סינון לפי v/c)' : '');
 
-      return { capacity, X, delay, los, queueVeh, storageMeters, oversaturated: X >= 0.95 };
-    }
+      resultsPlaceholder.style.display = 'none';
+      resultsBox.style.display = 'block';
+      requestAnimationFrame(() => resultsBox.classList.add('visible'));
 
-    function computeTwoLaneHighway(p) {
-      const base = 1700; // pc/h/ln, HCM Ch.15 base ideal capacity (per direction)
-      const fHV = 100 / (100 + p.truckPct);
-      const fg = Math.max(1 - Math.abs(p.grade) / 150, 0.5);
-      const capacity = base * p.lanes * fHV * fg;
-      const designVolume = p.volume * p.surgeFactor;
-      const X = designVolume / capacity;
-      const los = losFromVC(X);
-      return { capacity, X, los, oversaturated: X >= 0.95 };
-    }
-
-    // ---- main submit ----
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      clearStatus();
-      resultsBox.classList.remove('visible');
-      resultsBox.style.display = 'none';
-
-      try {
-        const method = document.querySelector('input[name="method"]:checked').value;
-        const facility = facilityType.value;
-        const volume = parseFloat(document.getElementById('volume').value);
-        const lanes = parseInt(document.getElementById('lanes').value, 10);
-        const cycleLength = parseFloat(cycleLengthInput.value);
-        const greenTime = parseFloat(greenTimeInput.value);
-        const truckPct = parseFloat(document.getElementById('truckPct').value);
-        const surgeFactor = parseFloat(document.getElementById('surgeFactor').value);
-        const laneWidthM = parseFloat(document.getElementById('laneWidth').value);
-        const shoulderWidthM = parseFloat(document.getElementById('shoulderWidth').value);
-        const grade = parseFloat(document.getElementById('grade').value);
-
-        const requiredVals = facility === 'signalized'
-          ? [volume, lanes, cycleLength, greenTime, truckPct, surgeFactor, laneWidthM, shoulderWidthM, grade]
-          : [volume, lanes, truckPct, surgeFactor, laneWidthM, shoulderWidthM, grade];
-        if (requiredVals.some(isNaN)) throw new Error('Please fill in all numeric fields correctly.');
-        if (lanes < 1) throw new Error('Number of lanes must be at least 1.');
-        if (facility === 'signalized' && cycleLength < greenTime) throw new Error('Cycle length must be ≥ green time.');
-        if (laneWidthM < 2.0) throw new Error('Lane width should be at least 2.0 m.');
-
-        let r;
-        if (facility === 'signalized') {
-          r = computeSignalized({ method, volume, lanes, cycleLength, greenTime, truckPct, surgeFactor, laneWidthM, grade });
-          outQueueVeh.textContent = r.queueVeh.toFixed(1) + ' veh';
-          outQueueMeters.textContent = r.storageMeters.toFixed(1) + ' m';
-          table95Queue.textContent = r.queueVeh.toFixed(1) + ' veh';
-          tableStorageMeters.textContent = r.storageMeters.toFixed(1) + ' m';
-        } else {
-          r = computeTwoLaneHighway({ volume, lanes, truckPct, surgeFactor, grade });
-          outQueueVeh.textContent = 'N/A (unsignalised)';
-          outQueueMeters.textContent = '—';
-          table95Queue.textContent = '—';
-          tableStorageMeters.textContent = '—';
-        }
-
-        outVcRatio.textContent = r.X.toFixed(3);
-        outLos.textContent = r.los;
-        tableCapacity.textContent = r.capacity.toFixed(0) + ' veh/h';
-        tableMethod.textContent = method + (facility === 'two_lane_highway' ? ' (v/c screening)' : '');
-
-        resultsBox.style.display = 'block';
-        requestAnimationFrame(() => resultsBox.classList.add('visible'));
-
-        if (r.oversaturated) {
-          setStatus('⚠️ v/c ≥ 0.95 — near or over capacity. Queue/delay estimates grow quickly here; treat as approximate and consider a full HCM operational analysis.', 'warn');
-        } else {
-          setStatus('✅ Analysis complete.', 'success');
-        }
-      } catch (err) {
-        setStatus('❌ ' + err.message, 'error');
-        resultsBox.classList.remove('visible');
-        resultsBox.style.display = 'none';
+      if (r.oversaturated) {
+        setStatus('⚠️ v/c ≥ 0.95 – קרוב לקיבולת או מעליה. אומדני התור והעיכוב גדלים כאן במהירות; יש להתייחס אליהם כמקורבים ולשקול ניתוח תפעולי מלא לפי HCM.', 'warn');
+      } else {
+        setStatus('✅ הניתוח הושלם.', 'success');
       }
-    });
+    } catch (err) {
+      setStatus('❌ ' + err.message, 'error');
+      hideResults();
+    }
+  });
 
-    // ---- init ----
-    document.addEventListener('DOMContentLoaded', () => {
-      resetForm();
-    });
-  </script>
+  // ---- init ----
+  document.addEventListener('DOMContentLoaded', () => {
+    resetForm();
+  });
+</script>
 </body>
 </html>

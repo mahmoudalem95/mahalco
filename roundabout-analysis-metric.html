@@ -3,161 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 <title>MAHALCO – ניתוח מעגל תנועה (שיטה מטרית)</title>
 <style>
+  :root {
+    --bg: #12121e; --card: #1a1a2e; --card-2: #22223a; --field: #0f0f1a;
+    --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.05);
+    --accent: #E8A33D; --accent-dim: rgba(232,163,61,.16); --green: #4ADE80;
+    --ink: #EDEBF2; --ink-2: #9A96AB; --ink-3: #6B6780;
+    --danger: #F35B5B; --warn: #F5C451; --info: #7AB8F5;
+  }
   * { box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
-    margin: 0; min-height: 100vh; background: #f0f2f5;
-    display: flex; justify-content: center; align-items: flex-start;
-    padding: 30px 16px; direction: rtl;
-  }
-  .container {
-    max-width: 1080px; width: 100%; background: #fff;
-    padding: 28px 30px 34px; border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.08);
-  }
-  h1 { margin: 0 0 6px; font-size: 26px; font-weight: 700; color: #0b1a2e; }
-  .subhead { color: #5a6a7a; font-size: 15px; margin: 0 0 20px;
-    border-bottom: 1px solid #e9edf2; padding-bottom: 14px; line-height: 1.6; }
-  h3.section-title {
-    margin: 26px 0 12px; font-size: 16px; font-weight: 700; color: #0b1a2e;
-    border-right: 4px solid #0066cc; padding-right: 10px;
-  }
-  .section-note { font-size: 13px; color: #7a8a9a; margin: -6px 0 14px; line-height: 1.6; }
-  .form-group { margin-bottom: 16px; }
-  label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 14px; color: #1f2a3a; }
-  label .unit { font-weight: 400; color: #7a8a9a; font-size: 12.5px; }
-  input, select {
-    width: 100%; padding: 10px 12px; font-size: 15px;
-    border: 1.5px solid #dce1e8; border-radius: 8px; background: #fafbfc;
-    font-family: inherit; color: #1a2634; direction: ltr; text-align: right;
-  }
-  input:focus, select:focus { border-color: #0066cc; outline: none;
-    box-shadow: 0 0 0 3px rgba(0,102,204,.15); background: #fff; }
-  input[type=number]::-webkit-outer-spin-button,
-  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-  @media (max-width: 720px) { .row-2,.row-3 { grid-template-columns: 1fr; gap: 10px; }
-    .container { padding: 20px 16px 24px; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: Arial, sans-serif;
+    padding: 20px; direction: rtl; line-height: 1.5; font-size: 1rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: clamp(1.6rem, 1.375rem + 1.5vw, 2.5rem); font-weight: 700; margin: 0 0 .5rem; color: var(--ink); line-height: 1.2; }
+  h1 .bi { color: #ffc107; margin-left: .5rem; }
+  .subhead { color: var(--ink-3); margin: 0 0 1.5rem; line-height: 1.6; }
+  .badge { display: inline-block; background: var(--card-2); color: var(--ink-2); font-size: .8rem;
+    font-weight: 600; padding: .25em .6em; border-radius: 6px; vertical-align: middle; margin-right: 6px; }
+
+  /* cards – same as parking page */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+  .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0;
+    font-weight: 600; padding: .5rem 1rem; border-bottom: 1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left: .5rem; }
+  .card-body { padding: 1rem; }
+  .section-note { font-size: .78rem; color: var(--ink-3); margin: 0 0 12px; line-height: 1.6; }
+
+  /* form */
+  .form-group { margin-bottom: 12px; }
+  .row-2, .row-3, .row-4 { display: grid; gap: 12px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 720px) { .row-2, .row-3, .row-4 { grid-template-columns: 1fr; gap: 8px; } }
+  label { display: block; margin-bottom: .35rem; color: var(--ink-2); font-size: .9rem; }
+  label .unit { color: var(--ink-3); font-size: .8rem; }
+  input, select { width: 100%; padding: .375rem .75rem; font-size: 1rem; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--field); color: var(--ink); font-family: inherit; }
+  select option { background: var(--field); color: var(--ink); }
+  input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); }
+  input:disabled, select:disabled { background: #15151f; color: var(--ink-3); cursor: not-allowed; }
+  input[type=number] { -moz-appearance: textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* tables */
   .table-scroll { overflow-x: auto; margin-top: 6px; }
-  table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 14px; }
-  th, td { border: 1px solid #e0e8f0; padding: 10px 12px; text-align: right; }
-  th { background: #f0f4fa; font-weight: 600; color: #1f2a3a; white-space: nowrap; font-size: 12.5px; }
-  td { background: #fff; }
-  #approachTable { font-size: 13px; min-width: 960px; }
-  #approachTable th, #approachTable td { padding: 6px 7px; }
-  #approachTable td:first-child { font-weight: 700; color: #0b1a2e;
-    background: #f8faff; white-space: nowrap; }
-  #approachTable input, #approachTable select { padding: 7px 8px; font-size: 13.5px;
-    border-radius: 6px; min-width: 74px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-  button {
-    padding: 11px 28px; font-size: 15px; font-weight: 600; border: none;
-    border-radius: 8px; cursor: pointer; font-family: inherit;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  button:active { transform: scale(.97); }
-  #submitBtn { background: #0066cc; color: #fff; box-shadow: 0 2px 8px rgba(0,102,204,.25); }
-  #submitBtn:hover:not(:disabled) { background: #0055b3; }
-  .reset-btn { background: #e9edf2; color: #2d3a4a; }
-  .status-msg { margin-top: 16px; padding: 10px 14px; border-radius: 8px;
-    font-weight: 500; font-size: 14px; display: none; line-height: 1.5; }
-  .status-msg.info { display: block; background: #e8f0fe; color: #0055a0; border-right: 4px solid #0066cc; }
-  .status-msg.error { display: block; background: #fde8e8; color: #b33; border-right: 4px solid #cc4444; }
-  .status-msg.warn { display: block; background: #fff6e0; color: #8a6100; border-right: 4px solid #e0a800; }
-  .status-msg.success { display: block; background: #e6f5e6; color: #1f7a2a; border-right: 4px solid #2b8f3a; }
-  .results-box { margin-top: 28px; padding: 20px 22px 24px; background: #f8faff;
-    border-radius: 12px; border: 1px solid #e0e8f0; display: none; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; color: var(--ink); }
+  th, td { padding: .45rem .55rem; text-align: right; border-bottom: 1px solid var(--line-2); background: transparent; }
+  th { color: var(--ink-3); font-weight: 600; border-bottom: 1px solid var(--line); white-space: nowrap; font-size: .78rem; }
+  tbody tr:hover td { background: rgba(255,255,255,.03); }
+
+  /* buttons */
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 8px; }
+  button { padding: .5rem 1.4rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer;
+    font-family: inherit; border: 1px solid transparent; }
+  button:active { transform: scale(.98); }
+  #submitBtn { background: var(--accent); border-color: var(--accent); color: #1a1a2e; flex: 1 1 auto; }
+  #submitBtn:hover:not(:disabled) { background: #c9862f; border-color: #c9862f; }
+  #submitBtn:disabled { background: #7a6440; border-color: #7a6440; cursor: not-allowed; }
+  .reset-btn { background: transparent; color: var(--ink-2); border-color: var(--line); }
+  .reset-btn:hover { background: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+
+  /* status */
+  .status-msg { margin: 12px 0; padding: 10px 14px; border-radius: 6px; font-size: .9rem; display: none;
+    background: var(--field); border-right: 3px solid var(--ink-3); color: var(--ink-2); line-height: 1.5; }
+  .status-msg.info { display: block; border-color: var(--info); }
+  .status-msg.error { display: block; border-color: var(--danger); color: #f7a3a3; background: rgba(243,91,91,.08); }
+  .status-msg.warn { display: block; border-color: var(--warn); color: #f2dca2; background: rgba(245,196,81,.07); }
+  .status-msg.success { display: block; border-color: var(--green); color: #a6efc0; background: rgba(74,222,128,.07); }
+
+  /* results card */
+  .results-box { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin: 20px 0; padding: 0 0 1rem; }
   .results-box.visible { display: block; }
-  .results-box h2 { margin: 0 0 14px; font-size: 20px; font-weight: 700; color: #0b1a2e; }
-  .results-box h4 { margin: 22px 0 4px; font-size: 15px; font-weight: 700; color: #1f2a3a; }
-  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin-bottom: 6px; }
-  @media (max-width: 560px) { .result-grid { grid-template-columns: 1fr; } }
-  .result-item { display: flex; justify-content: space-between; gap: 12px;
-    padding: 6px 0; border-bottom: 1px solid #eef2f7; font-size: 14.5px; }
-  .result-item .label { color: #4a5a6a; font-weight: 500; }
-  .result-item .value { font-weight: 700; color: #0b1a2e;
-    font-variant-numeric: tabular-nums; text-align: left; direction: ltr; }
-  .result-item .value.highlight { color: #0066cc; }
-  .los { display: inline-block; min-width: 22px; text-align: center;
-    font-weight: 700; padding: 2px 7px; border-radius: 6px; color: #fff; font-size: 13px; }
-  .los-A { background: #1f7a2a; } .los-B { background: #4f9e2f; }
-  .los-C { background: #b58a00; } .los-D { background: #d97a00; }
-  .los-E { background: #cc5500; } .los-F { background: #c02b2b; }
-  .warrant-panel { margin-top: 10px; border: 1px solid #e0e8f0;
-    border-radius: 10px; background: #fff; padding: 14px 16px; }
-  .warrant-line { display: flex; gap: 10px; align-items: flex-start;
-    padding: 7px 0; border-bottom: 1px solid #eef2f7; font-size: 14px;
-    color: #2d3a4a; line-height: 1.6; }
+  .results-box > * { margin-left: 1rem; margin-right: 1rem; }
+  .results-box > h2 { margin: 0 0 1rem; background: var(--accent); color: #1a1a2e; padding: .5rem 1rem;
+    border-radius: 12px 12px 0 0; font-size: 1rem; font-weight: 600; }
+  .results-box > h2 span { color: #1a1a2e !important; font-weight: 400; font-size: .9rem !important; }
+  .results-box h4 { margin: 22px 1rem 6px; font-size: .95rem; font-weight: 700; color: var(--ink);
+    padding-top: 14px; border-top: 1px solid var(--line); }
+  .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-bottom: 6px; }
+  .result-item { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem;
+    display: flex; flex-direction: column; gap: 4px; }
+  .result-item .label { font-size: .85rem; color: var(--ink-2); }
+  .result-item .value { font-size: 1.5rem; font-weight: 700; color: var(--ink); line-height: 1.2;
+    font-variant-numeric: tabular-nums; unicode-bidi: plaintext; text-align: right; }
+  .result-item .value.highlight { color: var(--accent); }
+
+  .los { display: inline-block; min-width: 24px; text-align: center; font-weight: 700; padding: 2px 7px;
+    border-radius: 6px; color: #fff; font-size: .85rem; line-height: 1.3; }
+  .result-item .value .los { font-size: 1.1rem; padding: 2px 10px; }
+  .los-A { background: #1f7a2a; } .los-B { background: #4f9e2f; } .los-C { background: #b58a00; }
+  .los-D { background: #d97a00; } .los-E { background: #cc5500; } .los-F { background: #c02b2b; }
+
+  .warrant-panel { margin-top: 8px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--field); padding: 8px 12px; }
+  .warrant-line { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--line-2);
+    font-size: .85rem; color: var(--ink-2); line-height: 1.6; }
   .warrant-line:last-child { border-bottom: none; }
-  .flag { flex: 0 0 auto; font-weight: 700; font-size: 12px;
-    padding: 2px 8px; border-radius: 20px; }
-  .flag.met { background: #fde8e8; color: #b33; }
-  .flag.not { background: #e6f5e6; color: #1f7a2a; }
-  .footnote { margin-top: 18px; font-size: 13px; color: #6a7a8a;
-    border-top: 1px solid #e9edf2; padding-top: 14px; line-height: 1.6; }
-  .badge { display: inline-block; background: #e9edf2; color: #2d3a4a;
-    font-size: 11px; font-weight: 600; padding: 2px 8px;
-    border-radius: 20px; margin-right: 6px; vertical-align: middle; }
-  
-  /* תרשים מעגל תנועה - סגנונות מעודכנים */
-  .diagram-box {
-    background-color: #ffffff;
-    border: 1px solid #e0e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    margin: 6px 0 20px;
-    text-align: center;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  }
-  .diagram-box svg {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-  }
-  .road-fill {
-    fill: #dedede;
-  }
-  .curb-line {
-    stroke: #666666;
-    stroke-width: 2;
-    fill: none;
-  }
-  .dashed-red-line {
-    stroke: #d32f2f;
-    stroke-width: 1.8;
-    stroke-dasharray: 3, 3;
-    fill: none;
-  }
-  .center-line {
-    stroke: #777777;
-    stroke-width: 1.5;
-  }
-  .label-text {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    font-style: italic;
-    font-size: 18px;
-    text-anchor: middle;
-    dominant-baseline: middle;
-  }
-  .diagram-caption { font-size: 12.5px; color: #6a7a8a; margin-top: 10px; }
+  .flag { flex: 0 0 auto; font-weight: 700; font-size: .72rem; padding: 2px 8px; border-radius: 20px; }
+  .flag.met, .flag.warn { background: rgba(243,91,91,.15); color: #f7a3a3; }
+  .flag.not, .flag.ok { background: rgba(74,222,128,.15); color: #a6efc0; }
+
+  .footnote { margin-top: 16px; font-size: .8rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 12px; line-height: 1.6; }
+  .footnote a { color: var(--accent); text-decoration: none; }
+  .footnote a:hover { text-decoration: underline; }
+  footer { text-align: center; color: var(--ink-3); font-size: .85rem; margin-top: 1.5rem; padding-bottom: 1rem; }
+
+  #approachTable { font-size: .82rem; min-width: 960px; }
+  #approachTable th, #approachTable td { padding: 6px 6px; }
+  #approachTable td:first-child { font-weight: 700; color: var(--accent); white-space: nowrap; }
+  #approachTable input, #approachTable select { padding: .3rem .45rem; font-size: .9rem; min-width: 74px; }
   .unit-cell { font-variant-numeric: tabular-nums; direction: ltr; }
+  /* diagram – dark version */
+  .diagram-box { text-align: center; }
+  .diagram-box svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .road-fill { fill: #2c2c46; }
+  .curb-line { stroke: #9A96AB; stroke-width: 2; fill: none; }
+  .dashed-red-line { stroke: #F35B5B; stroke-width: 1.8; stroke-dasharray: 3, 3; fill: none; }
+  .center-line { stroke: #6B6780; stroke-width: 1.5; }
+  .label-text { font-family: 'Georgia', 'Times New Roman', serif; font-style: italic; font-size: 18px;
+    text-anchor: middle; dominant-baseline: middle; fill: #EDEBF2; }
+  .diagram-box svg marker path { fill: #E8A33D; }
+  .diagram-box svg [stroke="#000000"] { stroke: #EDEBF2; }
+  .diagram-box svg rect[fill="#ffffff"] { fill: #1a1a2e; }
+  .diagram-box svg circle[fill^="url"] { stroke: #0f0f1a; }
+  .diagram-box svg path[marker-end] { stroke: #E8A33D; }
+  .diagram-caption { font-size: .8rem; color: var(--ink-3); margin-top: 10px; }
 </style>
 </head>
 <body>
 <div class="container">
 
-  <h1>🔄 ניתוח מעגל תנועה <span class="badge">מטרי</span></h1>
+  <h1><i class="bi bi-arrow-repeat"></i>ניתוח מעגל תנועה <span class="badge">מטרי</span></h1>
   <p class="subhead">
     קיבולת כניסה, יחס v/c, עיכוב בקרה, תור באחוזון 95 ורמת שירות (LOS) עבור מעגלי תנועה חד- ודו-נתיביים, כולל עיכוב הולכי-רגל ואופניים ובדיקת סף-איתות.
-    <br><span style="font-size:13px;color:#6a7a8a;">שיטת HCM מהדורה 6/7, פרק 22 — מחושב כולו בדפדפן, ללא שרת. יחידות: מטר (m), רכב/שעה (veh/h), שניות (s).</span>
+    <br>שיטת HCM מהדורה 6/7, פרק 22 – מחושב כולו בדפדפן, ללא שרת. יחידות: מטרים, רכב/שעה, שניות.
   </p>
 
   <!-- ====== תרשים הממחיש מעגל תנועה ====== -->
-  <div class="diagram-box">
+  <div class="card"><div class="card-header"><i class="bi bi-diagram-3"></i>תרשים מעגל התנועה</div><div class="card-body diagram-box">
     <svg width="700" height="700" viewBox="0 0 700 700">
         <defs>
             <!-- Pattern for central island green texture -->
@@ -268,11 +255,11 @@
 
     </svg>
     <div class="diagram-caption">תרשים 1 — סכימת מעגל תנועה ומדדי נפח (D<sub>c</sub>, V<sub>c</sub>, V<sub>e</sub>)</div>
-  </div>
+  </div></div>
 
   <form id="rbtForm" novalidate>
 
-    <h3 class="section-title">גיאומטריית המעגל והפרויקט</h3>
+    <div class="card"><div class="card-header"><i class="bi bi-rulers"></i>גיאומטריית המעגל והפרויקט</div><div class="card-body">
     <div class="row-3">
       <div class="form-group">
         <label for="rbtId">מזהה מעגל</label>
@@ -311,8 +298,11 @@
         <input type="number" id="periodHours" value="0.25" step="0.05" min="0.05" max="1" required>
       </div>
     </div>
+    </div></div>
 
-    <h3 class="section-title">פרמטרי כיול</h3>
+    
+
+    <div class="card"><div class="card-header"><i class="bi bi-sliders"></i>פרמטרי כיול</div><div class="card-body">
     <p class="section-note">השאר מרווח ופער קריטי בערך 0 כדי להשתמש בברירות-המחדל של HCM. הזנת ערכים משלך מפעילה את הצורה המכוילת: c = (3600/t<sub>f</sub>)·exp[−(t<sub>c</sub> − t<sub>f</sub>/2)·v<sub>c</sub>/3600].</p>
     <div class="row-3">
       <div class="form-group">
@@ -342,8 +332,11 @@
         <input type="number" id="criticalGap" value="0" step="0.01" min="0" max="9" required>
       </div>
     </div>
+    </div></div>
 
-    <h3 class="section-title">זרועות</h3>
+    
+
+    <div class="card"><div class="card-header"><i class="bi bi-signpost-split"></i>זרועות</div><div class="card-body">
     <p class="section-note">הזן ביקוש זרוע ותצורת נתיבים. זרימות אופניים והולכי-רגל משפיעות על קיבולת הכניסה ועל עיכוב משתמשי דרך לא-ממונעים. השאר זרוע עם נפח כניסה 0 כדי להוציאה מניתוח (מעגלי 3 זרועות).</p>
     <div class="table-scroll">
       <table id="approachTable">
@@ -366,6 +359,9 @@
       </table>
     </div>
 
+    
+    </div></div>
+
     <div class="actions">
       <button type="submit" id="submitBtn">חשב ניתוח מעגל תנועה</button>
       <button type="button" class="reset-btn" onclick="resetForm()">איפוס</button>
@@ -375,7 +371,7 @@
   <div id="statusMsg" class="status-msg"></div>
 
   <div id="results" class="results-box">
-    <h2>📊 תוצאות <span style="font-size:14px;font-weight:400;color:#4a5a6a;">(יחידות מטריות)</span></h2>
+    <h2><i class="bi bi-table"></i> תוצאות <span>(יחידות מטריות)</span></h2>
 
     <div class="result-grid">
       <div class="result-item"><span class="label">מעגל תנועה</span><span class="value" id="outId">--</span></div>
@@ -427,12 +423,13 @@
     <div class="warrant-panel" id="geometryPanel"></div>
 
     <div class="footnote">
-      ⚡ הקיבולת משתמשת במודלי קבלת-פער אקספוננציאליים של HCM פרק 22; עיכוב ותור משתמשים במשוואות HCM 22-17 ו-22-20; רמת שירות לפי Exhibit 22-8 (A ≤ 10 שנ', B ≤ 15, C ≤ 25, D ≤ 35, E ≤ 50, F > 50 שנ' או v/c > 1.0).
+      <i class="bi bi-lightning-charge"></i> הקיבולת משתמשת במודלי קבלת-פער אקספוננציאליים של HCM פרק 22; עיכוב ותור משתמשים במשוואות HCM 22-17 ו-22-20; רמת שירות לפי Exhibit 22-8 (A ≤ 10 שנ', B ≤ 15, C ≤ 25, D ≤ 35, E ≤ 50, F > 50 שנ' או v/c > 1.0).
       שורות הסף הן סינון בלבד — קביעת איתות רשמית דורשת ספירות 8 ו-4 שעות, ועמידה בסף אינה מחייבת איתות כשלעצמה.
       יש לאמת תכן סופי עם ניתוח תפעולי מלא (HCS, SIDRA, VISSIM) ועל ידי מהנדס מוסמך.
       <a href="#" onclick="clearStatus();return false;">נקה הודעה</a>
     </div>
   </div>
+  <footer>MAHALCO – ניתוח מעגל תנועה (מטרי)</footer>
 </div>
 
 <script>
@@ -636,7 +633,7 @@ form.addEventListener('submit', function (e) {
         throw new Error('לזרוע ' + a.label + ' יש תא נפח ריק או לא תקין.');
       }
       if (entryV <= 0) {
-        approachRows.push('<tr><td>' + a.label + '</td><td colspan="6" style="color:#8a97a5;">לא מנותח — נפח כניסה אפס</td></tr>');
+        approachRows.push('<tr><td>' + a.label + '</td><td colspan="6" style="color:#6B6780;">לא מנותח — נפח כניסה אפס</td></tr>');
         return;
       }
       anyActive = true;

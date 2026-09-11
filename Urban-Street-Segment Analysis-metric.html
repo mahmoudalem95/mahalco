@@ -1,409 +1,272 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAHALCO – Urban Street Segment Analysis (Metric)</title>
+    <title>MAHALCO – ניתוח מקטע רחוב עירוני (מטרי)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            background: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 30px 16px;
-        }
-        .container {
-            max-width: 1100px;
-            width: 100%;
-            background: #ffffff;
-            padding: 28px 30px 34px;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            transition: box-shadow 0.2s;
-        }
-        .container:hover { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12); }
-        h1 {
-            margin: 0 0 6px;
-            font-size: 26px;
-            font-weight: 700;
-            color: #0b1a2e;
-            letter-spacing: -0.3px;
-        }
-        .subhead {
-            color: #5a6a7a;
-            font-size: 15px;
-            margin: 0 0 24px;
-            border-bottom: 1px solid #e9edf2;
-            padding-bottom: 14px;
-        }
-        .badge {
-            display: inline-block;
-            background: #e9edf2;
-            color: #2d3a4a;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 20px;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-        h3.section-title {
-            margin: 26px 0 12px;
-            font-size: 16px;
-            font-weight: 700;
-            color: #0b1a2e;
-            border-left: 4px solid #0066cc;
-            padding-left: 10px;
-        }
-        .section-note {
-            font-size: 13px;
-            color: #7a8a9a;
-            margin: -6px 0 14px;
-            line-height: 1.5;
-        }
-        .form-group { margin-bottom: 14px; }
-        label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #1f2a3a;
-        }
-        label .unit { font-weight: 400; color: #7a8a9a; font-size: 12.5px; }
-        input, select {
-            width: 100%;
-            padding: 9px 12px;
-            font-size: 14px;
-            border: 1.5px solid #dce1e8;
-            border-radius: 8px;
-            background: #fafbfc;
-            transition: border 0.2s, box-shadow 0.2s;
-            font-family: inherit;
-            color: #1a2634;
-        }
-        input:focus, select:focus {
-            border-color: #0066cc;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
-            background: #fff;
-        }
-        input[type="number"] { -moz-appearance: textfield; }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-        .row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
-        @media (max-width: 760px) {
-            .row-2, .row-3, .row-4 { grid-template-columns: 1fr; gap: 10px; }
-            .container { padding: 20px 16px 24px; }
-        }
-        .table-scroll { overflow-x: auto; margin-top: 6px; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 14px; }
-        th, td { border: 1px solid #e0e8f0; padding: 8px 12px; text-align: left; }
-        th {
-            background: #f0f4fa;
-            font-weight: 600;
-            color: #1f2a3a;
-            white-space: nowrap;
-            font-size: 12.5px;
-        }
-        td { background: #ffffff; }
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 22px;
-        }
-        button {
-            padding: 11px 28px;
-            font-size: 15px;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        button:active { transform: scale(0.97); }
-        #submitBtn {
-            background: #0066cc;
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.25);
-        }
-        #submitBtn:hover:not(:disabled) {
-            background: #0055b3;
-            box-shadow: 0 4px 14px rgba(0, 102, 204, 0.35);
-        }
-        .reset-btn { background: #e9edf2; color: #2d3a4a; }
-        .reset-btn:hover { background: #dce1e8; }
-        .status-msg {
-            margin-top: 16px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 14px;
-            display: none;
-            line-height: 1.5;
-        }
-        .status-msg.info { display: block; background: #e8f0fe; color: #0055a0; border-left: 4px solid #0066cc; }
-        .status-msg.error { display: block; background: #fde8e8; color: #b33; border-left: 4px solid #cc4444; }
-        .status-msg.warn { display: block; background: #fff6e0; color: #8a6100; border-left: 4px solid #e0a800; }
-        .status-msg.success { display: block; background: #e6f5e6; color: #1f7a2a; border-left: 4px solid #2b8f3a; }
-        .results-box {
-            margin-top: 28px;
-            padding: 20px 22px 24px;
-            background: #f8faff;
-            border-radius: 12px;
-            border: 1px solid #e0e8f0;
-            display: none;
-        }
-        .results-box.visible { display: block; }
-        .results-box h2 {
-            margin: 0 0 14px;
-            font-size: 20px;
-            font-weight: 700;
-            color: #0b1a2e;
-            letter-spacing: -0.2px;
-        }
-        .results-box h4 {
-            margin: 22px 0 4px;
-            font-size: 15px;
-            font-weight: 700;
-            color: #1f2a3a;
-        }
-        .result-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px 24px;
-            margin-bottom: 6px;
-        }
-        @media (max-width: 600px) {
-            .result-grid { grid-template-columns: 1fr; }
-        }
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 6px 0;
-            border-bottom: 1px solid #eef2f7;
-            font-size: 14px;
-        }
-        .result-item .label { color: #4a5a6a; font-weight: 500; }
-        .result-item .value {
-            font-weight: 700;
-            color: #0b1a2e;
-            font-variant-numeric: tabular-nums;
-            text-align: right;
-        }
-        .result-item .value.highlight { color: #0066cc; }
-        .los {
-            display: inline-block;
-            min-width: 22px;
-            text-align: center;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 13px;
-        }
-        .los-A { background: #1f7a2a; }
-        .los-B { background: #4f9e2f; }
-        .los-C { background: #b58a00; }
-        .los-D { background: #d97a00; }
-        .los-E { background: #cc5500; }
-        .los-F { background: #c02b2b; }
-        .warrant-panel {
-            margin-top: 10px;
-            border: 1px solid #e0e8f0;
-            border-radius: 10px;
-            background: #fff;
-            padding: 14px 16px;
-        }
-        .warrant-line {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-            padding: 7px 0;
-            border-bottom: 1px solid #eef2f7;
-            font-size: 14px;
-            color: #2d3a4a;
-            line-height: 1.5;
-        }
-        .warrant-line:last-child { border-bottom: none; }
-        .flag {
-            flex: 0 0 auto;
-            font-weight: 700;
-            font-size: 12px;
-            padding: 2px 8px;
-            border-radius: 20px;
-        }
-        .flag.ok { background: #e6f5e6; color: #1f7a2a; }
-        .flag.warn { background: #fff6e0; color: #8a6100; }
-        .footnote {
-            margin-top: 18px;
-            font-size: 13px;
-            color: #6a7a8a;
-            border-top: 1px solid #e9edf2;
-            padding-top: 14px;
-            line-height: 1.6;
-        }
-        .footnote a { color: #0066cc; text-decoration: none; }
-        .footnote a:hover { text-decoration: underline; }
-        .table-scroll table { min-width: 800px; }
+  :root {
+    --bg: #12121e; --card: #1a1a2e; --card-2: #22223a; --field: #0f0f1a;
+    --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.05);
+    --accent: #E8A33D; --accent-dim: rgba(232,163,61,.16); --green: #4ADE80;
+    --ink: #EDEBF2; --ink-2: #9A96AB; --ink-3: #6B6780;
+    --danger: #F35B5B; --warn: #F5C451; --info: #7AB8F5;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: Arial, sans-serif;
+    padding: 20px; direction: rtl; line-height: 1.5; font-size: 1rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: clamp(1.6rem, 1.375rem + 1.5vw, 2.5rem); font-weight: 700; margin: 0 0 .5rem; color: var(--ink); line-height: 1.2; }
+  h1 .bi { color: #ffc107; margin-left: .5rem; }
+  .subhead { color: var(--ink-3); margin: 0 0 1.5rem; line-height: 1.6; }
+  .badge { display: inline-block; background: var(--card-2); color: var(--ink-2); font-size: .8rem;
+    font-weight: 600; padding: .25em .6em; border-radius: 6px; vertical-align: middle; margin-right: 6px; }
+
+  /* cards – same as parking page */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+  .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0;
+    font-weight: 600; padding: .5rem 1rem; border-bottom: 1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left: .5rem; }
+  .card-body { padding: 1rem; }
+  .section-note { font-size: .78rem; color: var(--ink-3); margin: 0 0 12px; line-height: 1.6; }
+
+  /* form */
+  .form-group { margin-bottom: 12px; }
+  .row-2, .row-3, .row-4 { display: grid; gap: 12px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 720px) { .row-2, .row-3, .row-4 { grid-template-columns: 1fr; gap: 8px; } }
+  label { display: block; margin-bottom: .35rem; color: var(--ink-2); font-size: .9rem; }
+  label .unit { color: var(--ink-3); font-size: .8rem; }
+  input, select { width: 100%; padding: .375rem .75rem; font-size: 1rem; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--field); color: var(--ink); font-family: inherit; }
+  select option { background: var(--field); color: var(--ink); }
+  input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); }
+  input:disabled, select:disabled { background: #15151f; color: var(--ink-3); cursor: not-allowed; }
+  input[type=number] { -moz-appearance: textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* tables */
+  .table-scroll { overflow-x: auto; margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; color: var(--ink); }
+  th, td { padding: .45rem .55rem; text-align: right; border-bottom: 1px solid var(--line-2); background: transparent; }
+  th { color: var(--ink-3); font-weight: 600; border-bottom: 1px solid var(--line); white-space: nowrap; font-size: .78rem; }
+  tbody tr:hover td { background: rgba(255,255,255,.03); }
+
+  /* buttons */
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 8px; }
+  button { padding: .5rem 1.4rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer;
+    font-family: inherit; border: 1px solid transparent; }
+  button:active { transform: scale(.98); }
+  #submitBtn { background: var(--accent); border-color: var(--accent); color: #1a1a2e; flex: 1 1 auto; }
+  #submitBtn:hover:not(:disabled) { background: #c9862f; border-color: #c9862f; }
+  #submitBtn:disabled { background: #7a6440; border-color: #7a6440; cursor: not-allowed; }
+  .reset-btn { background: transparent; color: var(--ink-2); border-color: var(--line); }
+  .reset-btn:hover { background: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+
+  /* status */
+  .status-msg { margin: 12px 0; padding: 10px 14px; border-radius: 6px; font-size: .9rem; display: none;
+    background: var(--field); border-right: 3px solid var(--ink-3); color: var(--ink-2); line-height: 1.5; }
+  .status-msg.info { display: block; border-color: var(--info); }
+  .status-msg.error { display: block; border-color: var(--danger); color: #f7a3a3; background: rgba(243,91,91,.08); }
+  .status-msg.warn { display: block; border-color: var(--warn); color: #f2dca2; background: rgba(245,196,81,.07); }
+  .status-msg.success { display: block; border-color: var(--green); color: #a6efc0; background: rgba(74,222,128,.07); }
+
+  /* results card */
+  .results-box { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin: 20px 0; padding: 0 0 1rem; }
+  .results-box.visible { display: block; }
+  .results-box > * { margin-left: 1rem; margin-right: 1rem; }
+  .results-box > h2 { margin: 0 0 1rem; background: var(--accent); color: #1a1a2e; padding: .5rem 1rem;
+    border-radius: 12px 12px 0 0; font-size: 1rem; font-weight: 600; }
+  .results-box > h2 span { color: #1a1a2e !important; font-weight: 400; font-size: .9rem !important; }
+  .results-box h4 { margin: 22px 1rem 6px; font-size: .95rem; font-weight: 700; color: var(--ink);
+    padding-top: 14px; border-top: 1px solid var(--line); }
+  .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-bottom: 6px; }
+  .result-item { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem;
+    display: flex; flex-direction: column; gap: 4px; }
+  .result-item .label { font-size: .85rem; color: var(--ink-2); }
+  .result-item .value { font-size: 1.5rem; font-weight: 700; color: var(--ink); line-height: 1.2;
+    font-variant-numeric: tabular-nums; unicode-bidi: plaintext; text-align: right; }
+  .result-item .value.highlight { color: var(--accent); }
+
+  .los { display: inline-block; min-width: 24px; text-align: center; font-weight: 700; padding: 2px 7px;
+    border-radius: 6px; color: #fff; font-size: .85rem; line-height: 1.3; }
+  .result-item .value .los { font-size: 1.1rem; padding: 2px 10px; }
+  .los-A { background: #1f7a2a; } .los-B { background: #4f9e2f; } .los-C { background: #b58a00; }
+  .los-D { background: #d97a00; } .los-E { background: #cc5500; } .los-F { background: #c02b2b; }
+
+  .warrant-panel { margin-top: 8px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--field); padding: 8px 12px; }
+  .warrant-line { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--line-2);
+    font-size: .85rem; color: var(--ink-2); line-height: 1.6; }
+  .warrant-line:last-child { border-bottom: none; }
+  .flag { flex: 0 0 auto; font-weight: 700; font-size: .72rem; padding: 2px 8px; border-radius: 20px; }
+  .flag.met, .flag.warn { background: rgba(243,91,91,.15); color: #f7a3a3; }
+  .flag.not, .flag.ok { background: rgba(74,222,128,.15); color: #a6efc0; }
+
+  .footnote { margin-top: 16px; font-size: .8rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 12px; line-height: 1.6; }
+  .footnote a { color: var(--accent); text-decoration: none; }
+  .footnote a:hover { text-decoration: underline; }
+  footer { text-align: center; color: var(--ink-3); font-size: .85rem; margin-top: 1.5rem; padding-bottom: 1rem; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🛣️ Urban Street Segment Analysis <span class="badge">Metric</span></h1>
-        <p class="subhead">HCM Chapters 18 &amp; 30 screening — running time, travel speed, stop rates, motorized &amp; multimodal LOS, and roundabout geometric delay.</p>
+        <h1><i class="bi bi-signpost-2-fill"></i>ניתוח מקטע רחוב עירוני <span class="badge">מטרי</span></h1>
+        <p class="subhead">סינון לפי HCM פרקים 18 ו־30 – זמן ריצה, מהירות נסיעה, שיעור עצירות, רמת שירות לרכב מנועי ורב־אמצעית, ועיכוב גיאומטרי במעגל תנועה.<br>החישוב מתבצע כולו בדפדפן. יחידות: מטרים, קמ"ש, שניות.</p>
 
         <form id="segmentForm" novalidate>
 
-            <!-- SECTION: Segment Geometry -->
-            <h3 class="section-title">Segment Geometry</h3>
+            <div class="card"><div class="card-header"><i class="bi bi-rulers"></i>גיאומטריית המקטע</div><div class="card-body">
             <div class="row-3">
-                <div class="form-group"><label>Segment ID</label><input id="segmentId" value="URB-001"></div>
-                <div class="form-group"><label>Analysis period</label><input id="periodLabel" value="PM Peak 16:30–17:30"></div>
-                <div class="form-group"><label>Peak hour factor</label><input type="number" id="phf" value="0.92" min="0.25" max="1" step="0.01"></div>
+                <div class="form-group"><label>מזהה מקטע</label><input id="segmentId" value="URB-001"></div>
+                <div class="form-group"><label>תקופת ניתוח</label><input id="periodLabel" value="שעת שיא ערב 16:30–17:30"></div>
+                <div class="form-group"><label>מקדם שעת שיא (PHF)</label><input type="number" id="phf" value="0.92" min="0.25" max="1" step="0.01"></div>
             </div>
             <div class="row-3">
-                <div class="form-group"><label>Analysis duration <span class="unit">(h)</span></label><input type="number" id="analysisDur" value="0.25" min="0.05" max="1" step="0.05"></div>
-                <div class="form-group"><label>Segment length <span class="unit">(m)</span></label><input type="number" id="segLength" value="200" min="50" max="2000" step="10"></div>
-                <div class="form-group"><label>Through lanes</label><input type="number" id="throughLanes" value="2" min="1" max="6" step="1"></div>
+                <div class="form-group"><label>משך הניתוח <span class="unit">(שעות)</span></label><input type="number" id="analysisDur" value="0.25" min="0.05" max="1" step="0.05"></div>
+                <div class="form-group"><label>אורך המקטע <span class="unit">(מטר)</span></label><input type="number" id="segLength" value="200" min="50" max="2000" step="10"></div>
+                <div class="form-group"><label>נתיבים ישרים</label><input type="number" id="throughLanes" value="2" min="1" max="6" step="1"></div>
             </div>
             <div class="row-3">
-                <div class="form-group"><label>Lane width <span class="unit">(m)</span></label><input type="number" id="laneWidth" value="3.65" min="2.5" max="4.5" step="0.05"></div>
-                <div class="form-group"><label>Shoulder width <span class="unit">(m)</span></label><input type="number" id="shoulderWidth" value="1.5" min="0" max="5" step="0.1"></div>
-                <div class="form-group"><label>Median type</label><select id="medianType"><option value="none">None</option><option value="raised">Raised</option><option value="painted">Painted</option><option value="divided">Divided</option></select></div>
+                <div class="form-group"><label>רוחב נתיב <span class="unit">(מטר)</span></label><input type="number" id="laneWidth" value="3.65" min="2.5" max="4.5" step="0.05"></div>
+                <div class="form-group"><label>רוחב שול <span class="unit">(מטר)</span></label><input type="number" id="shoulderWidth" value="1.5" min="0" max="5" step="0.1"></div>
+                <div class="form-group"><label>סוג אי מפריד</label><select id="medianType"><option value="none">ללא</option><option value="raised">מוגבה</option><option value="painted">צבוע</option><option value="divided">דרך מופרדת</option></select></div>
             </div>
             <div class="row-3">
-                <div class="form-group"><label>Access points <span class="unit">(/km)</span></label><input type="number" id="accessPerKm" value="15" min="0" max="120" step="1"></div>
-                <div class="form-group"><label>On-street parking</label><select id="parking"><option value="none">None</option><option value="allowed">Allowed</option><option value="restricted">Restricted</option></select></div>
-                <div class="form-group"><label>Parking maneuvers <span class="unit">(vph)</span></label><input type="number" id="parkMan" value="10" min="0" max="200" step="5"></div>
+                <div class="form-group"><label>נקודות גישה <span class="unit">(לק"מ)</span></label><input type="number" id="accessPerKm" value="15" min="0" max="120" step="1"></div>
+                <div class="form-group"><label>חניה ברחוב</label><select id="parking"><option value="none">ללא</option><option value="allowed">מותרת</option><option value="restricted">מוגבלת</option></select></div>
+                <div class="form-group"><label>תמרוני חניה <span class="unit">(לשעה)</span></label><input type="number" id="parkMan" value="10" min="0" max="200" step="5"></div>
             </div>
             <div class="row-3">
-                <div class="form-group"><label>Bus stops <span class="unit">(/km)</span></label><input type="number" id="busStops" value="2" min="0" max="10" step="0.5"></div>
-                <div class="form-group"><label>Bus dwell <span class="unit">(s)</span></label><input type="number" id="busDwell" value="20" min="0" max="120" step="5"></div>
-                <div class="form-group"><label>Grade <span class="unit">(%)</span></label><input type="number" id="grade" value="1" min="-10" max="10" step="0.5"></div>
+                <div class="form-group"><label>תחנות אוטובוס <span class="unit">(לק"מ)</span></label><input type="number" id="busStops" value="2" min="0" max="10" step="0.5"></div>
+                <div class="form-group"><label>זמן עצירת אוטובוס <span class="unit">(שניות)</span></label><input type="number" id="busDwell" value="20" min="0" max="120" step="5"></div>
+                <div class="form-group"><label>שיפוע אורכי <span class="unit">(%)</span></label><input type="number" id="grade" value="1" min="-10" max="10" step="0.5"></div>
             </div>
             <div class="row-3">
-                <div class="form-group"><label>Speed limit <span class="unit">(km/h)</span></label><input type="number" id="speedLimit" value="50" min="20" max="120" step="5"></div>
-                <div class="form-group"><label>Segment type</label><select id="segType"><option value="urban">Urban</option><option value="suburban">Suburban</option><option value="rural">Rural</option></select></div>
+                <div class="form-group"><label>מהירות מותרת <span class="unit">(קמ"ש)</span></label><input type="number" id="speedLimit" value="50" min="20" max="120" step="5"></div>
+                <div class="form-group"><label>סוג המקטע</label><select id="segType"><option value="urban">עירוני</option><option value="suburban">פרברי</option><option value="rural">כפרי</option></select></div>
             </div>
+            </div></div>
 
-            <!-- SECTION: Traffic Demand & Intersections -->
-            <h3 class="section-title">Traffic Demand &amp; Intersections</h3>
+            
+
+            <div class="card"><div class="card-header"><i class="bi bi-car-front"></i>ביקוש תנועה וצמתים</div><div class="card-body">
             <div class="row-3">
-                <div class="form-group"><label>Through volume <span class="unit">(veh/h)</span></label><input type="number" id="throughVol" value="1500" min="0" step="50"></div>
-                <div class="form-group"><label>Truck percentage <span class="unit">(%)</span></label><input type="number" id="truckPct" value="5" min="0" max="100" step="0.5"></div>
-                <div class="form-group"><label>RV percentage <span class="unit">(%)</span></label><input type="number" id="rvPct" value="1" min="0" max="100" step="0.5"></div>
+                <div class="form-group"><label>נפח ישר <span class="unit">(רכב/שעה)</span></label><input type="number" id="throughVol" value="1500" min="0" step="50"></div>
+                <div class="form-group"><label>שיעור משאיות <span class="unit">(%)</span></label><input type="number" id="truckPct" value="5" min="0" max="100" step="0.5"></div>
+                <div class="form-group"><label>שיעור רכבי נופש (RV) <span class="unit">(%)</span></label><input type="number" id="rvPct" value="1" min="0" max="100" step="0.5"></div>
             </div>
             <div class="row-3">
-                <div class="form-group"><label>Bicycle volume <span class="unit">(bic/h)</span></label><input type="number" id="bikeVol" value="20" min="0" step="5"></div>
-                <div class="form-group"><label>Pedestrian volume <span class="unit">(ped/h)</span></label><input type="number" id="pedVol" value="80" min="0" step="10"></div>
-                <div class="form-group"><label>Transit volume <span class="unit">(veh/h)</span></label><input type="number" id="transitVol" value="6" min="0" step="1"></div>
+                <div class="form-group"><label>נפח אופניים <span class="unit">(אופניים/שעה)</span></label><input type="number" id="bikeVol" value="20" min="0" step="5"></div>
+                <div class="form-group"><label>נפח הולכי רגל <span class="unit">(הולכי רגל/שעה)</span></label><input type="number" id="pedVol" value="80" min="0" step="10"></div>
+                <div class="form-group"><label>נפח תחבורה ציבורית <span class="unit">(כלי רכב/שעה)</span></label><input type="number" id="transitVol" value="6" min="0" step="1"></div>
             </div>
             <div class="row-2">
-                <div class="form-group"><label>Upstream ID</label><input id="upstreamId" value="INT_1"></div>
-                <div class="form-group"><label>Upstream delay <span class="unit">(s)</span></label><input type="number" id="upstreamDelay" value="30" min="0" step="5"></div>
+                <div class="form-group"><label>מזהה צומת במעלה</label><input id="upstreamId" value="INT_1"></div>
+                <div class="form-group"><label>עיכוב בצומת במעלה <span class="unit">(שניות)</span></label><input type="number" id="upstreamDelay" value="30" min="0" step="5"></div>
             </div>
             <div class="row-2">
-                <div class="form-group"><label>Upstream type</label><select id="upstreamType"><option value="signal">Signalised</option><option value="unsignal">Unsignalised</option><option value="roundabout">Roundabout</option></select></div>
-                <div class="form-group"><label>Downstream ID</label><input id="downstreamId" value="INT_2"></div>
+                <div class="form-group"><label>סוג צומת במעלה</label><select id="upstreamType"><option value="signal">מרומזר</option><option value="unsignal">לא מרומזר</option><option value="roundabout">מעגל תנועה</option></select></div>
+                <div class="form-group"><label>מזהה צומת במורד</label><input id="downstreamId" value="INT_2"></div>
             </div>
             <div class="row-2">
-                <div class="form-group"><label>Downstream delay <span class="unit">(s)</span></label><input type="number" id="downstreamDelay" value="25" min="0" step="5"></div>
-                <div class="form-group"><label>Downstream type</label><select id="downstreamType"><option value="signal">Signalised</option><option value="unsignal">Unsignalised</option><option value="roundabout">Roundabout</option></select></div>
+                <div class="form-group"><label>עיכוב בצומת במורד <span class="unit">(שניות)</span></label><input type="number" id="downstreamDelay" value="25" min="0" step="5"></div>
+                <div class="form-group"><label>סוג צומת במורד</label><select id="downstreamType"><option value="signal">מרומזר</option><option value="unsignal">לא מרומזר</option><option value="roundabout">מעגל תנועה</option></select></div>
+            </div>
+            </div></div>
+
+            
+
+            <div class="card"><div class="card-header"><i class="bi bi-people"></i>נתונים רב־אמצעיים וכיול</div><div class="card-body">
+            <div class="row-3">
+                <div class="form-group"><label>מהירות הליכה <span class="unit">(קמ"ש)</span></label><input type="number" id="walkSpeed" value="4.8" min="1" max="10" step="0.1"></div>
+                <div class="form-group"><label>שיעור קשישים <span class="unit">(%)</span></label><input type="number" id="elderlyPct" value="15" min="0" max="100" step="1"></div>
+                <div class="form-group"><label>אורך מעבר חציה <span class="unit">(מטר)</span></label><input type="number" id="crosswalkLen" value="15" min="3" max="60" step="1"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>רוחב מדרכה <span class="unit">(מטר)</span></label><input type="number" id="sidewalkWidth" value="1.8" min="0" max="6" step="0.1"></div>
+                <div class="form-group"><label>רוחב רצועת הפרדה <span class="unit">(מטר)</span></label><input type="number" id="bufferWidth" value="0.6" min="0" max="5" step="0.1"></div>
+                <div class="form-group"><label>רוחב מדרכה אפקטיבי <span class="unit">(מטר)</span></label><input type="number" id="effSidewalk" value="1.5" min="0" max="6" step="0.1"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>רוחב נתיב אופניים <span class="unit">(מטר)</span></label><input type="number" id="bikeLaneWidth" value="1.2" min="0" max="4" step="0.1"></div>
+                <div class="form-group"><label>מצב המיסעה</label><select id="pavement"><option value="good">טוב</option><option value="fair">בינוני</option><option value="poor">גרוע</option></select></div>
+                <div class="form-group"><label>תדירות תחבורה ציבורית <span class="unit">(דקות בין נסיעות)</span></label><input type="number" id="transitHeadway" value="10" min="1" max="60" step="1"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>מתקני תחנה</label><select id="stopAmenities"><option value="shelter">סככה</option><option value="bench">ספסל</option><option value="shelter_bench">סככה וספסל</option><option value="none">ללא</option></select></div>
+                <div class="form-group"><label>עמידה בזמנים <span class="unit">(%)</span></label><input type="number" id="onTime" value="85" min="0" max="100" step="1"></div>
+                <div class="form-group"><label>מהירות זרימה חופשית בסיסית <span class="unit">(קמ"ש)</span></label><input type="number" id="baseFFS" value="55" min="30" max="120" step="5"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>איכות תיאום (גל ירוק)</label><select id="progQuality"><option value="poor">גרועה</option><option value="fair">בינונית</option><option value="good">טובה</option></select></div>
+                <div class="form-group"><label>מקדם אוכלוסיית נהגים</label><input type="number" id="driverPop" value="1.0" min="0.5" max="1.5" step="0.05"></div>
+            </div>
+            </div></div>
+
+            
+
+            <div class="card"><div class="card-header"><i class="bi bi-arrow-repeat"></i>גבול מעגל תנועה</div><div class="card-body">
+            <div class="row-3">
+                <div class="form-group"><label>מעגל תנועה בקצה המקטע</label><select id="rbSegment"><option value="none">ללא</option><option value="upstream">במעלה</option><option value="downstream">במורד</option></select></div>
+                <div class="form-group"><label>קוטר חיצוני <span class="unit">(מטר)</span></label><input type="number" id="rbInscribed" value="30" min="10" max="100" step="1"></div>
+                <div class="form-group"><label>רוחב מסלול מעגלי <span class="unit">(מטר)</span></label><input type="number" id="rbCircWidth" value="5.5" min="3" max="15" step="0.5"></div>
             </div>
 
-            <!-- SECTION: Multimodal & Calibration -->
-            <h3 class="section-title">Multimodal &amp; Calibration Inputs</h3>
-            <div class="row-3">
-                <div class="form-group"><label>Walking speed <span class="unit">(km/h)</span></label><input type="number" id="walkSpeed" value="4.8" min="1" max="10" step="0.1"></div>
-                <div class="form-group"><label>Percent elderly <span class="unit">(%)</span></label><input type="number" id="elderlyPct" value="15" min="0" max="100" step="1"></div>
-                <div class="form-group"><label>Crosswalk length <span class="unit">(m)</span></label><input type="number" id="crosswalkLen" value="15" min="3" max="60" step="1"></div>
-            </div>
-            <div class="row-3">
-                <div class="form-group"><label>Sidewalk width <span class="unit">(m)</span></label><input type="number" id="sidewalkWidth" value="1.8" min="0" max="6" step="0.1"></div>
-                <div class="form-group"><label>Buffer width <span class="unit">(m)</span></label><input type="number" id="bufferWidth" value="0.6" min="0" max="5" step="0.1"></div>
-                <div class="form-group"><label>Effective sidewalk width <span class="unit">(m)</span></label><input type="number" id="effSidewalk" value="1.5" min="0" max="6" step="0.1"></div>
-            </div>
-            <div class="row-3">
-                <div class="form-group"><label>Bike lane width <span class="unit">(m)</span></label><input type="number" id="bikeLaneWidth" value="1.2" min="0" max="4" step="0.1"></div>
-                <div class="form-group"><label>Pavement condition</label><select id="pavement"><option value="good">Good</option><option value="fair">Fair</option><option value="poor">Poor</option></select></div>
-                <div class="form-group"><label>Transit headway <span class="unit">(min)</span></label><input type="number" id="transitHeadway" value="10" min="1" max="60" step="1"></div>
-            </div>
-            <div class="row-3">
-                <div class="form-group"><label>Stop amenities</label><select id="stopAmenities"><option value="shelter">Shelter</option><option value="bench">Bench</option><option value="shelter_bench">Both</option><option value="none">None</option></select></div>
-                <div class="form-group"><label>On-time performance <span class="unit">(%)</span></label><input type="number" id="onTime" value="85" min="0" max="100" step="1"></div>
-                <div class="form-group"><label>Base FFS <span class="unit">(km/h)</span></label><input type="number" id="baseFFS" value="55" min="30" max="120" step="5"></div>
-            </div>
-            <div class="row-3">
-                <div class="form-group"><label>Progression quality</label><select id="progQuality"><option value="poor">Poor</option><option value="fair">Fair</option><option value="good">Good</option></select></div>
-                <div class="form-group"><label>Driver population factor</label><input type="number" id="driverPop" value="1.0" min="0.5" max="1.5" step="0.05"></div>
-            </div>
-
-            <!-- SECTION: Roundabout Boundary -->
-            <h3 class="section-title">Roundabout-Boundary Inputs</h3>
-            <div class="row-3">
-                <div class="form-group"><label>Roundabout boundary segment</label><select id="rbSegment"><option value="none">None</option><option value="upstream">Upstream</option><option value="downstream">Downstream</option></select></div>
-                <div class="form-group"><label>Inscribed diameter <span class="unit">(m)</span></label><input type="number" id="rbInscribed" value="30" min="10" max="100" step="1"></div>
-                <div class="form-group"><label>Circulating lane width <span class="unit">(m)</span></label><input type="number" id="rbCircWidth" value="5.5" min="3" max="15" step="0.5"></div>
-            </div>
+            
+            </div></div>
 
             <div class="actions">
-                <button type="submit" id="submitBtn">Analyze Segment</button>
-                <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
+                <button type="submit" id="submitBtn"><i class="bi bi-calculator"></i> נתח מקטע</button>
+                <button type="button" class="reset-btn" onclick="resetForm()"><i class="bi bi-arrow-counterclockwise"></i> איפוס</button>
             </div>
         </form>
 
         <div id="statusMsg" class="status-msg"></div>
 
         <div id="results" class="results-box">
-            <h2>📊 Segment Analysis Results <span style="font-size:14px;font-weight:400;color:#4a5a6a;">(metric)</span></h2>
+            <h2><i class="bi bi-table"></i> תוצאות ניתוח המקטע <span>(יחידות מטריות)</span></h2>
 
             <div class="result-grid">
-                <div class="result-item"><span class="label">Running Time</span><span class="value" id="outRunTime">-- s</span></div>
-                <div class="result-item"><span class="label">Travel Speed</span><span class="value highlight" id="outTravelSpeed">-- km/h</span></div>
-                <div class="result-item"><span class="label">Stops</span><span class="value" id="outStops">-- stops/km</span></div>
-                <div class="result-item"><span class="label">Motorized LOS</span><span class="value highlight" id="outMlos">--</span></div>
-                <div class="result-item"><span class="label">Pedestrian LOS</span><span class="value highlight" id="outPlos">--</span></div>
-                <div class="result-item"><span class="label">Bicycle LOS</span><span class="value highlight" id="outBlos">--</span></div>
-                <div class="result-item"><span class="label">Transit LOS</span><span class="value highlight" id="outTlos">--</span></div>
-                <div class="result-item"><span class="label">Roundabout Delay</span><span class="value" id="outRbDelay">-- s</span></div>
+                <div class="result-item"><span class="label">זמן ריצה</span><span class="value" id="outRunTime">-- שנ'</span></div>
+                <div class="result-item"><span class="label">מהירות נסיעה</span><span class="value highlight" id="outTravelSpeed">-- קמ"ש</span></div>
+                <div class="result-item"><span class="label">עצירות</span><span class="value" id="outStops">-- עצירות/ק"מ</span></div>
+                <div class="result-item"><span class="label">רמת שירות – רכב מנועי</span><span class="value highlight" id="outMlos">--</span></div>
+                <div class="result-item"><span class="label">רמת שירות – הולכי רגל</span><span class="value highlight" id="outPlos">--</span></div>
+                <div class="result-item"><span class="label">רמת שירות – אופניים</span><span class="value highlight" id="outBlos">--</span></div>
+                <div class="result-item"><span class="label">רמת שירות – תחבורה ציבורית</span><span class="value highlight" id="outTlos">--</span></div>
+                <div class="result-item"><span class="label">עיכוב מעגל תנועה</span><span class="value" id="outRbDelay">-- שנ'</span></div>
             </div>
 
-            <h4>Detailed Performance Metrics</h4>
+            <h4>מדדי ביצוע מפורטים</h4>
             <div class="table-scroll">
                 <table>
-                    <thead><tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr></thead>
+                    <thead><tr><th>מדד</th><th>ערך</th><th>פירוש</th></tr></thead>
                     <tbody id="perfBody"></tbody>
                 </table>
             </div>
 
-            <h4>Multimodal Scores</h4>
+            <h4>ציונים רב־אמצעיים</h4>
             <div class="table-scroll">
                 <table>
-                    <thead><tr><th>Mode</th><th>Score</th><th>LOS</th><th>Key Factor</th></tr></thead>
+                    <thead><tr><th>אמצעי</th><th>ציון</th><th>רמת שירות</th><th>גורם מרכזי</th></tr></thead>
                     <tbody id="multimodalBody"></tbody>
                 </table>
             </div>
 
-            <h4>Diagnostics &amp; Checks</h4>
+            <h4>אבחון ובדיקות</h4>
             <div class="warrant-panel" id="diagnosticPanel"></div>
 
             <div class="footnote">
-                ⚡ Screening-level tool based on HCM Chapters 18 &amp; 30 concepts. Verified full analyses require HCS, Synchro, or VISSIM. <a href="#" onclick="clearStatus();return false;">Clear status</a>
+                <i class="bi bi-lightning-charge"></i> כלי סינון המבוסס על עקרונות HCM פרקים 18 ו־30. ניתוח מלא ומאומת מחייב HCS, ‏Synchro או VISSIM. <a href="#" onclick="clearStatus();return false;">ניקוי הודעה</a>
             </div>
         </div>
+        <footer>MAHALCO – ניתוח מקטע רחוב עירוני (מטרי)</footer>
     </div>
 
     <script>
@@ -503,9 +366,9 @@
                 const rbCircWidth = parseFloat(document.getElementById('rbCircWidth').value) || 5.5;
 
                 // Validation
-                if (segLength < 50) throw new Error('Segment length must be at least 50 m.');
-                if (throughVol < 0) throw new Error('Through volume cannot be negative.');
-                if (phf <= 0 || phf > 1) throw new Error('PHF must be between 0 and 1.');
+                if (segLength < 50) throw new Error('אורך המקטע חייב להיות לפחות 50 מ\'.');
+                if (throughVol < 0) throw new Error('הנפח הישר אינו יכול להיות שלילי.');
+                if (phf <= 0 || phf > 1) throw new Error('מקדם שעת השיא חייב להיות בין 0 ל־1.');
 
                 // ================= CALCULATIONS =================
 
@@ -602,60 +465,60 @@
                 const diagnostics = [];
 
                 if (vcApprox > 1.0) {
-                    diagnostics.push({ type: 'warn', text: 'Approximate v/c = ' + vcApprox.toFixed(2) + ' exceeds 1.0 — segment may be oversaturated.' });
+                    diagnostics.push({ type: 'warn', text: 'יחס v/c משוער ' + vcApprox.toFixed(2) + ' עולה על 1.0 – ייתכן שהמקטע רווי.' });
                 } else if (vcApprox > 0.85) {
-                    diagnostics.push({ type: 'warn', text: 'Approximate v/c = ' + vcApprox.toFixed(2) + ' — approaching capacity. Consider widening or alternate routing.' });
+                    diagnostics.push({ type: 'warn', text: 'יחס v/c משוער ' + vcApprox.toFixed(2) + ' – מתקרב לקיבולת. יש לשקול הרחבה או מסלול חלופי.' });
                 } else {
-                    diagnostics.push({ type: 'ok', text: 'Volume-to-capacity ratio is ' + vcApprox.toFixed(2) + ' — acceptable.' });
+                    diagnostics.push({ type: 'ok', text: 'יחס נפח לקיבולת ' + vcApprox.toFixed(2) + ' – סביר.' });
                 }
 
                 if (travelSpeed < 20) {
-                    diagnostics.push({ type: 'warn', text: 'Travel speed ' + travelSpeed.toFixed(1) + ' km/h is low. Check intersection spacing, signal coordination, or access density.' });
+                    diagnostics.push({ type: 'warn', text: 'מהירות נסיעה ' + travelSpeed.toFixed(1) + ' קמ"ש נמוכה. יש לבדוק מרווחי צמתים, תיאום רמזורים או צפיפות גישות.' });
                 } else {
-                    diagnostics.push({ type: 'ok', text: 'Travel speed ' + travelSpeed.toFixed(1) + ' km/h is reasonable for this street class.' });
+                    diagnostics.push({ type: 'ok', text: 'מהירות נסיעה ' + travelSpeed.toFixed(1) + ' קמ"ש סבירה לסוג רחוב זה.' });
                 }
 
                 if (pedVol > 100 && pLos === 'F') {
-                    diagnostics.push({ type: 'warn', text: 'Pedestrian volume is high and LOS is F — consider wider sidewalks or more crossing aids.' });
+                    diagnostics.push({ type: 'warn', text: 'נפח הולכי הרגל גבוה ורמת השירות F – יש לשקול מדרכות רחבות יותר או אמצעי חציה נוספים.' });
                 }
 
                 if (rbSegment !== 'none' && rbDelay > 20) {
-                    diagnostics.push({ type: 'warn', text: 'Roundabout boundary delay is ' + rbDelay.toFixed(1) + ' s — consider a multi-lane roundabout or geometric improvements.' });
+                    diagnostics.push({ type: 'warn', text: 'העיכוב במעגל התנועה בקצה המקטע ' + rbDelay.toFixed(1) + ' שנ\' – יש לשקול מעגל רב־נתיבי או שיפורים גיאומטריים.' });
                 }
 
                 // ================= RENDER =================
 
                 // Main output
-                document.getElementById('outRunTime').textContent = travelTime.toFixed(1) + ' s';
-                document.getElementById('outTravelSpeed').textContent = travelSpeed.toFixed(1) + ' km/h';
-                document.getElementById('outStops').textContent = stopRate.toFixed(2) + ' stops/km';
+                document.getElementById('outRunTime').textContent = travelTime.toFixed(1) + ' שנ\'';
+                document.getElementById('outTravelSpeed').textContent = travelSpeed.toFixed(1) + ' קמ"ש';
+                document.getElementById('outStops').textContent = stopRate.toFixed(2) + ' עצירות/ק"מ';
                 document.getElementById('outMlos').innerHTML = losTag(mlos);
                 document.getElementById('outPlos').innerHTML = losTag(pLos);
                 document.getElementById('outBlos').innerHTML = losTag(bLos);
                 document.getElementById('outTlos').innerHTML = losTag(tLos);
-                document.getElementById('outRbDelay').textContent = rbDelay.toFixed(1) + ' s';
+                document.getElementById('outRbDelay').textContent = rbDelay.toFixed(1) + ' שנ\'';
 
                 // Detailed metrics
                 const perfBody = document.getElementById('perfBody');
                 let perfHtml = '';
-                perfHtml += '<tr><td>Segment ID</td><td>' + document.getElementById('segmentId').value + '</td><td>Analysis identifier</td></tr>';
-                perfHtml += '<tr><td>Free-flow speed</td><td>' + ffs.toFixed(1) + ' km/h</td><td>Adjusted base FFS</td></tr>';
-                perfHtml += '<tr><td>Running time</td><td>' + runTimeFFS.toFixed(1) + ' s</td><td>At free-flow speed</td></tr>';
-                perfHtml += '<tr><td>Intersection delay</td><td>' + totalInterDelay.toFixed(1) + ' s</td><td>Upstream + downstream</td></tr>';
-                perfHtml += '<tr><td>Stop rate</td><td>' + stopRate.toFixed(2) + ' stops/km</td><td>Estimated</td></tr>';
-                perfHtml += '<tr><td>Travel time</td><td>' + travelTime.toFixed(1) + ' s</td><td>Includes delays</td></tr>';
-                perfHtml += '<tr><td>Approx. V/C</td><td>' + vcApprox.toFixed(2) + '</td><td>Through volume / capacity</td></tr>';
-                perfHtml += '<tr><td>Segment length</td><td>' + segLength + ' m</td><td>Entered</td></tr>';
-                perfHtml += '<tr><td>Roundabout delay</td><td>' + rbDelay.toFixed(1) + ' s</td><td>' + (rbSegment === 'none' ? 'Not applicable' : 'Geometric delay') + '</td></tr>';
+                perfHtml += '<tr><td>מזהה מקטע</td><td>' + document.getElementById('segmentId').value + '</td><td>מזהה הניתוח</td></tr>';
+                perfHtml += '<tr><td>מהירות זרימה חופשית</td><td>' + ffs.toFixed(1) + ' קמ"ש</td><td>מהירות בסיס מתוקנת</td></tr>';
+                perfHtml += '<tr><td>זמן ריצה</td><td>' + runTimeFFS.toFixed(1) + ' שנ\'</td><td>במהירות זרימה חופשית</td></tr>';
+                perfHtml += '<tr><td>עיכוב בצמתים</td><td>' + totalInterDelay.toFixed(1) + ' שנ\'</td><td>במעלה + במורד</td></tr>';
+                perfHtml += '<tr><td>שיעור עצירות</td><td>' + stopRate.toFixed(2) + ' עצירות/ק"מ</td><td>אומדן</td></tr>';
+                perfHtml += '<tr><td>זמן נסיעה</td><td>' + travelTime.toFixed(1) + ' שנ\'</td><td>כולל עיכובים</td></tr>';
+                perfHtml += '<tr><td>V/C משוער</td><td>' + vcApprox.toFixed(2) + '</td><td>נפח ישר / קיבולת</td></tr>';
+                perfHtml += '<tr><td>אורך המקטע</td><td>' + segLength + ' מ\'</td><td>כפי שהוזן</td></tr>';
+                perfHtml += '<tr><td>עיכוב מעגל תנועה</td><td>' + rbDelay.toFixed(1) + ' שנ\'</td><td>' + (rbSegment === 'none' ? 'לא רלוונטי' : 'עיכוב גיאומטרי') + '</td></tr>';
                 perfBody.innerHTML = perfHtml;
 
                 // Multimodal scores
                 const multiBody = document.getElementById('multimodalBody');
                 let multiHtml = '';
-                multiHtml += '<tr><td>Motorized</td><td>' + travelSpeed.toFixed(1) + ' km/h</td><td>' + losTag(mlos) + '</td><td>Travel speed</td></tr>';
-                multiHtml += '<tr><td>Pedestrian</td><td>' + pScore.toFixed(2) + '</td><td>' + losTag(pLos) + '</td><td>Sidewalk, buffer, volume</td></tr>';
-                multiHtml += '<tr><td>Bicycle</td><td>' + bScore.toFixed(2) + '</td><td>' + losTag(bLos) + '</td><td>Bike lane width, traffic</td></tr>';
-                multiHtml += '<tr><td>Transit</td><td>' + tScore.toFixed(2) + '</td><td>' + losTag(tLos) + '</td><td>Headway, on-time, amenities</td></tr>';
+                multiHtml += '<tr><td>רכב מנועי</td><td>' + travelSpeed.toFixed(1) + ' קמ"ש</td><td>' + losTag(mlos) + '</td><td>מהירות נסיעה</td></tr>';
+                multiHtml += '<tr><td>הולכי רגל</td><td>' + pScore.toFixed(2) + '</td><td>' + losTag(pLos) + '</td><td>מדרכה, רצועת הפרדה, נפח</td></tr>';
+                multiHtml += '<tr><td>אופניים</td><td>' + bScore.toFixed(2) + '</td><td>' + losTag(bLos) + '</td><td>רוחב נתיב אופניים, תנועה</td></tr>';
+                multiHtml += '<tr><td>תחבורה ציבורית</td><td>' + tScore.toFixed(2) + '</td><td>' + losTag(tLos) + '</td><td>תדירות, עמידה בזמנים, מתקני תחנה</td></tr>';
                 multiBody.innerHTML = multiHtml;
 
                 // Diagnostics
@@ -663,7 +526,7 @@
                 let diagHtml = '';
                 diagnostics.forEach(d => {
                     diagHtml += '<div class="warrant-line"><span class="flag ' + d.type + '">' +
-                        (d.type === 'warn' ? 'FLAG' : 'OK') + '</span><span>' + d.text + '</span></div>';
+                        (d.type === 'warn' ? 'מסומן' : 'תקין') + '</span><span>' + d.text + '</span></div>';
                 });
                 diagPanel.innerHTML = diagHtml;
 
@@ -672,7 +535,7 @@
                 requestAnimationFrame(() => document.getElementById('results').classList.add('visible'));
 
                 // Status
-                setStatus('✅ Segment analysis complete. Travel speed ' + travelSpeed.toFixed(1) + ' km/h, motorized LOS ' + mlos + '.', 'success');
+                setStatus('✅ ניתוח המקטע הושלם. מהירות נסיעה ' + travelSpeed.toFixed(1) + ' קמ"ש, רמת שירות לרכב מנועי ' + mlos + '.', 'success');
             } catch (err) {
                 setStatus('❌ ' + err.message, 'error');
                 document.getElementById('results').classList.remove('visible');
@@ -683,7 +546,7 @@
         // ---- Reset ----
         function resetForm() {
             document.getElementById('segmentId').value = 'URB-001';
-            document.getElementById('periodLabel').value = 'PM Peak 16:30–17:30';
+            document.getElementById('periodLabel').value = 'שעת שיא ערב 16:30–17:30';
             document.getElementById('phf').value = 0.92;
             document.getElementById('analysisDur').value = 0.25;
             document.getElementById('segLength').value = 200;

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MAHALCO — Typical urban cross section</title>
+<style>
+  :root{
+    --desk:#23262a;        /* drafting table */
+    --desk-2:#2c3036;
+    --paper:#fbfaf6;
+    --ink:#14171a;
+    --ink-2:#585f66;
+    --hair:#c8c6bd;
+    --slate:#4c5560;       /* carriageway */
+    --moss:#5a7a4e;        /* landscape */
+    --blueprint:#2b5c8a;   /* annotation */
+    --alarm:#b03a2e;
+    --amber:#8a6d1f;
+    --rail:280px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--desk);color:#e7e6e1;
+    font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  a{color:#a9c6e6}
+
+  header.bar{
+    position:sticky;top:0;z-index:30;background:#191c1f;border-bottom:1px solid #383c42;
+    display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap;
+  }
+  .mark{display:flex;flex-direction:column;line-height:1.15;margin-right:auto}
+  .mark b{font-size:15px;letter-spacing:.14em;font-weight:700}
+  .mark span{font-size:11px;color:#8d949b;letter-spacing:.02em}
+  .bar button{
+    background:#33383e;color:#e9e8e3;border:1px solid #4a5057;border-radius:6px;
+    padding:7px 12px;font:inherit;font-size:13px;cursor:pointer
+  }
+  .bar button:hover{background:#3d434a}
+  .bar button.key{background:#e9e8e3;color:#191c1f;border-color:#e9e8e3;font-weight:600}
+  .bar button:focus-visible,input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid #6fa3d8;outline-offset:2px}
+
+  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:0;align-items:start}
+
+  /* ---- parameter rail ---- */
+  aside{
+    position:sticky;top:53px;max-height:calc(100vh - 53px);overflow:auto;
+    background:var(--desk-2);border-right:1px solid #3a3f45;padding:14px 14px 40px
+  }
+  aside h2{
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8d949b;
+    margin:18px 0 8px;font-weight:700
+  }
+  aside h2:first-child{margin-top:2px}
+  .row{display:grid;grid-template-columns:1fr 84px;align-items:center;gap:8px;padding:3px 0}
+  .row label{font-size:13px;color:#cdd1d5}
+  .row input,.row select{
+    width:100%;background:#1c1f23;color:#f0efeb;border:1px solid #464c53;border-radius:5px;
+    padding:5px 6px;font:inherit;font-size:13px;text-align:right
+  }
+  .row select{text-align:left}
+  .wide{grid-template-columns:1fr}
+  .wide select{text-align:left}
+  .toggles{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .toggles label{
+    display:flex;align-items:center;gap:5px;font-size:12px;color:#cdd1d5;
+    background:#1c1f23;border:1px solid #464c53;border-radius:5px;padding:5px 8px;cursor:pointer
+  }
+  .toggles input{accent-color:#6fa3d8}
+
+  /* ---- sheet ---- */
+  main{padding:20px}
+  .sheetwrap{background:#1b1e21;border:1px solid #3a3f45;border-radius:4px;padding:16px;overflow:auto}
+  #drawing{min-width:980px}
+  #drawing svg{display:block;width:100%;height:auto;background:var(--paper)}
+
+  .readouts{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+  .box{background:var(--desk-2);border:1px solid #3a3f45;border-radius:4px;padding:14px}
+  .box h3{margin:0 0 10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8d949b}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat{border:1px solid #40454b;border-radius:4px;padding:8px 9px;background:#22262a}
+  .stat span{display:block;font-size:11px;color:#8d949b}
+  .stat b{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .stat b small{font-size:11px;font-weight:400;color:#9aa1a8}
+  .chk{border-left:3px solid var(--moss);background:#22262a;padding:8px 10px;border-radius:0 4px 4px 0;margin-bottom:7px;font-size:12.5px}
+  .chk.warn{border-color:var(--amber)}
+  .chk.bad{border-color:var(--alarm)}
+  .chk b{letter-spacing:.04em;font-size:11px;display:block;color:#b9bfc5}
+  .notes{margin-top:16px}
+  .notes ol{margin:0;padding-left:18px;font-size:12.5px;color:#b8bdc2;line-height:1.65}
+  .notes li{margin-bottom:5px}
+
+  #tip{
+    position:fixed;pointer-events:none;z-index:60;background:#111417;color:#f2f1ec;
+    border:1px solid #4a5057;border-radius:5px;padding:6px 9px;font-size:12px;opacity:0;
+    transition:opacity .1s;white-space:nowrap
+  }
+
+  @media(max-width:1080px){
+    .shell{grid-template-columns:1fr}
+    aside{position:static;max-height:none;border-right:0;border-bottom:1px solid #3a3f45}
+    .row{grid-template-columns:1fr 100px}
+    .readouts{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    body{background:#fff;color:#000}
+    header.bar,aside,.readouts,.notes,#tip{display:none}
+    .shell{display:block}main{padding:0}
+    .sheetwrap{background:#fff;border:0;padding:0;overflow:visible}
+    #drawing{min-width:0}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="mark"><b>MAHALCO</b><span>Typical urban cross section — preliminary design</span></div>
+  <button id="btnFit" class="key">Redraw</button>
+  <button id="btnSvg">Download SVG</button>
+  <button id="btnPng">Download PNG</button>
+  <button id="btnJson">Download JSON</button>
+  <button onclick="window.print()">Print</button>
+</header>
+
+<div class="shell">
+  <aside>
+    <h2>Corridor</h2>
+    <div class="row wide"><select id="class">
+      <option value="local">Local street</option>
+      <option value="collector" selected>Collector</option>
+      <option value="arterial">Urban arterial</option>
+    </select></div>
+    <div class="row wide"><select id="context">
+      <option>Urban</option><option>Suburban</option><option>Mixed use / main street</option>
+    </select></div>
+
+    <h2>Carriageway</h2>
+    <div class="row"><label for="lanes">Lanes each way</label><input id="lanes" type="number" min="1" max="6" step="1" value="1"></div>
+    <div class="row"><label for="lane">Lane width</label><input id="lane" type="number" step=".05" value="3.30"></div>
+    <div class="row"><label for="parking">Parking lane</label><input id="parking" type="number" step=".05" value="2.40"></div>
+    <div class="row"><label for="bike">Cycle lane</label><input id="bike" type="number" step=".05" value="1.80"></div>
+    <div class="row"><label for="median">Median</label><input id="median" type="number" step=".05" value="2.40"></div>
+    <div class="row"><label for="cross">Carriageway crossfall %</label><input id="cross" type="number" step=".1" min="0" max="8" value="2.0"></div>
+
+    <h2>Pedestrian realm</h2>
+    <div class="row"><label for="par">Clear walking width</label><input id="par" type="number" step=".05" value="1.80"></div>
+    <div class="row"><label for="furn">Furnishing / planting</label><input id="furn" type="number" step=".05" value="0.60"></div>
+    <div class="row"><label for="front">Frontage</label><input id="front" type="number" step=".05" value="0.30"></div>
+    <div class="row"><label for="swcross">Footway crossfall %</label><input id="swcross" type="number" step=".1" min="0" max="5" value="2.0"></div>
+
+    <h2>Kerbs</h2>
+    <div class="row"><label for="curb">Kerb width</label><input id="curb" type="number" step=".01" value="0.15"></div>
+    <div class="row"><label for="reveal">Kerb reveal</label><input id="reveal" type="number" step=".01" value="0.15"></div>
+    <div class="row"><label for="medrev">Median upstand</label><input id="medrev" type="number" step=".01" value="0.15"></div>
+
+    <h2>Construction depths <span title="Indicative only">(indicative)</span></h2>
+    <div class="row"><label for="dSurf">Surfacing</label><input id="dSurf" type="number" step=".01" value="0.06"></div>
+    <div class="row"><label for="dBase">Base</label><input id="dBase" type="number" step=".01" value="0.20"></div>
+    <div class="row"><label for="dSub">Sub-base</label><input id="dSub" type="number" step=".01" value="0.30"></div>
+
+    <h2>Sheet</h2>
+    <div class="row wide"><select id="mode">
+      <option value="illustrated" selected>Illustrated section</option>
+      <option value="technical">Technical line drawing</option>
+    </select></div>
+    <div class="row wide"><select id="relief">
+      <option value="140">Vertical relief — subtle</option>
+      <option value="210" selected>Vertical relief — normal</option>
+      <option value="290">Vertical relief — strong</option>
+    </select></div>
+    <div class="toggles">
+      <label><input type="checkbox" id="tPeople" checked> People &amp; vehicles</label>
+      <label><input type="checkbox" id="tStruct" checked> Construction</label>
+      <label><input type="checkbox" id="tDims" checked> Dimensions</label>
+      <label><input type="checkbox" id="tContext" checked> Building line</label>
+    </div>
+  </aside>
+
+  <main>
+    <div class="sheetwrap"><div id="drawing"></div></div>
+
+    <div class="readouts">
+      <div class="box">
+        <h3>Calculated dimensions</h3>
+        <div id="stats" class="grid3"></div>
+      </div>
+      <div class="box">
+        <h3>Screening checks</h3>
+        <div id="checks"></div>
+      </div>
+    </div>
+
+    <div class="box notes">
+      <h3>Engineering notes</h3>
+      <ol>
+        <li>Generated dimensions are project-development parameters, not a universal agency standard.</li>
+        <li>Accessibility screening uses a 1.22 m continuous clear pedestrian-route check. Passing-space arrangements must be confirmed for the governing standard and project conditions.</li>
+        <li>The geometric framework is intended to be checked against the current adopted AASHTO Green Book edition, agency criteria, and project context. AASHTO does not impose one universal urban typical section.</li>
+        <li>Construction depths, kerb reveal, median upstand and footway crossfall drive the drawn geometry only. They are illustrative defaults and carry no pavement-design intent.</li>
+        <li>Vertical relief is exaggerated so kerbs and crossfalls read at plotting size. People, vehicles and trees are drawn at true horizontal scale and are not exaggerated.</li>
+        <li>Confirm drainage, kerb and channel, pavement structure, utilities, ROW, cycle treatment, parking, transit, landscaping and local standards before issuing drawings.</li>
+      </ol>
+    </div>
+  </main>
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const num = id => Math.max(0, parseFloat($(id).value) || 0);
+const f2 = v => v.toFixed(2);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ------------------------------------------------------------------ *
+ * Presets. Width fields are unchanged from the original tool so that
+ * every computed number stays identical; the new fields only affect
+ * the drawn geometry.
+ * ------------------------------------------------------------------ */
+const PRESETS = {
+  local:     {lanes:1, lane:3.00, parking:0.00, bike:1.50, par:1.80, furn:0.45, front:0.30, median:0.00, curb:0.15, cross:2.0, swcross:2.0, reveal:0.15, medrev:0.15},
+  collector: {lanes:1, lane:3.30, parking:2.40, bike:1.80, par:1.80, furn:0.60, front:0.30, median:2.40, curb:0.15, cross:2.0, swcross:2.0, reveal:0.15, medrev:0.15},
+  arterial:  {lanes:2, lane:3.30, parking:2.40, bike:1.80, par:1.83, furn:0.60, front:0.30, median:3.00, curb:0.15, cross:2.0, swcross:2.0, reveal:0.15, medrev:0.15}
+};
+
+/* ---------------- dimension model (arithmetic preserved) ---------------- */
+function dims(){
+  const lanes = Math.max(1, Math.round(num("lanes")));
+  const lane = num("lane"), park = num("parking"), bike = num("bike"),
+        par = num("par"), furn = num("furn"), front = num("front"),
+        median = num("median"), curb = num("curb");
+  const sidewalk = par + furn + front;
+  const side = park + bike + lanes * lane + curb;   // one side, kerb included
+  const roadway = 2 * side + median;
+  const total = roadway + 2 * sidewalk;
+  return {
+    lanes, lane, park, bike, par, furn, front, median, curb,
+    side, roadway, sidewalk, total,
+    carr: park + bike + lanes * lane,               // kerb face to median / crown
+    cross: num("cross"), swcross: num("swcross"),
+    reveal: num("reveal"), medrev: num("medrev"),
+    dSurf: num("dSurf"), dBase: num("dBase"), dSub: num("dSub")
+  };
+}
+
+/* ---------------- element strip, left to right ---------------- */
+function strips(d){
+  const s = [];
+  const add = (w, key, name) => { if (w > 0.0001) s.push({w, key, name}); };
+  const foot = () => { add(d.front,'front','Frontage'); add(d.furn,'furn','Furnishing'); add(d.par,'par','Clear walking'); };
+  const road = () => { add(d.park,'park','Parking'); add(d.bike,'bike','Cycle lane');
+                       for (let i=0;i<d.lanes;i++) add(d.lane,'lane','Travel lane'); };
+  foot(); add(d.curb,'kerb','Kerb'); road();
+  if (d.median > 0.0001) add(d.median,'median','Median');
+  // mirror
+  const rl=[]; { const t=[]; add.call(null,0,'',''); }
+  (function(){
+    const mirrored=[];
+    const push=(w,key,name)=>{ if(w>0.0001) mirrored.push({w,key,name}); };
+    for (let i=d.lanes-1;i>=0;i--) push(d.lane,'lane','Travel lane');
+    push(d.bike,'bike','Cycle lane'); push(d.park,'park','Parking');
+    push(d.curb,'kerb','Kerb');
+    push(d.par,'par','Clear walking'); push(d.furn,'furn','Furnishing'); push(d.front,'front','Frontage');
+    mirrored.forEach(m => s.push(m));
+  })();
+  let x = 0;
+  s.forEach(z => { z.x0 = x; x += z.w; z.x1 = x; });
+  return s;
+}
+
+/* ---------------- surface profile in metres ---------------- */
+function profile(d){
+  const zK = d.reveal;
+  const zSw = zK + (d.swcross/100) * d.sidewalk;
+  const zH = (d.cross/100) * d.carr;
+  const p = []; let x = 0;
+  p.push([0, zSw]);
+  x = d.sidewalk;         p.push([x, zK]);
+  x += d.curb;            p.push([x, zK]); p.push([x, 0]);
+  x += d.carr;            p.push([x, zH]);
+  const medL = x;
+  if (d.median > 0.0001){
+    p.push([x, zH + d.medrev]);
+    x += d.median;        p.push([x, zH + d.medrev]);
+    p.push([x, zH]);
+  }
+  const medR = x;
+  x += d.carr;            p.push([x, 0]);
+                          p.push([x, zK]);
+  x += d.curb;            p.push([x, zK]);
+  x += d.sidewalk;        p.push([x, zSw]);
+  return {pts:p, zK, zSw, zH, medL, medR,
+          gutterL: d.sidewalk + d.curb, gutterR: d.total - d.sidewalk - d.curb};
+}
+function zAt(pr, xm){
+  const p = pr.pts;
+  for (let i=0;i<p.length-1;i++){
+    const a=p[i], b=p[i+1];
+    if (b[0] > a[0] && xm >= a[0]-1e-9 && xm <= b[0]+1e-9)
+      return a[1] + (b[1]-a[1]) * (xm-a[0]) / (b[0]-a[0]);
+  }
+  return 0;
+}
+
+/* ---------------- palette ---------------- */
+const IL = {
+  front:'#efeadf', furn:'#dfe7d6', par:'#f3f1ea', kerb:'#cfccc4',
+  park:'#e4e2da', bike:'#dbe8e0', lane:'#e6e5e0', median:'#d8e4d2'
+};
+function paint(mode){
+  return mode === 'technical'
+    ? {ink:'#111', hair:'#666', dim:'#111', note:'#333', tint:null,
+       surf:'#8f8f8f', base:'url(#hBase)', sub:'url(#hSub)', soil:'url(#hSoil)',
+       kerbFill:'#d6d6d6', medFill:'#eee', paperEdge:'#111'}
+    : {ink:'#1b1e21', hair:'#b9b6ad', dim:'#2b5c8a', note:'#585f66', tint:IL,
+       surf:'#4c5560', base:'#a49b8b', sub:'#c7bfae', soil:'#8d7b5f',
+       kerbFill:'#cfccc4', medFill:'#d8e4d2', paperEdge:'#4a4a44'};
+}
+
+/* ---------------- small drawing helpers ---------------- */
+function txt(x,y,s,o={}){
+  return `<text x="${x}" y="${y}" text-anchor="${o.a||'middle'}" font-family="${o.ff||"'Arial Narrow',Arial,sans-serif"}"`
+       + ` font-size="${o.fs||11}" font-weight="${o.fw||400}" fill="${o.fill||'#1b1e21'}"`
+       + `${o.ls?` letter-spacing="${o.ls}"`:''}${o.rot?` transform="rotate(${o.rot} ${x} ${y})"`:''}>${esc(s)}</text>`;
+}
+function tick(x,y,c){ return `<line x1="${x-4}" y1="${y+4}" x2="${x+4}" y2="${y-4}" stroke="${c}" stroke-width="1.1"/>`; }
+
+/* tiered dimension chain with slash ticks */
+function chain(segs, y, c, opt={}){
+  if (!segs.length) return '';
+  let g = `<g class="dimchain">`;
+  const x0 = segs[0].x1, x1 = segs[segs.length-1].x2;
+  g += `<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="${c}" stroke-width="${opt.w||1}"/>`;
+  let alt = 0;
+  segs.forEach(s => {
+    g += tick(s.x1, y, c);
+    const wpx = s.x2 - s.x1, mid = (s.x1 + s.x2) / 2;
+    if (wpx >= (opt.min || 42)){
+      g += `<rect x="${mid-24}" y="${y-8.5}" width="48" height="13" fill="#fbfaf6"/>`;
+      g += txt(mid, y+2.5, s.label, {fs: opt.fs||10.5, fill:c, fw:600});
+    } else {
+      const off = 18 + (alt % 2) * 15; alt++;
+      g += `<line x1="${mid}" y1="${y+2}" x2="${mid}" y2="${y+off-8}" stroke="${c}" stroke-width=".7"/>`;
+      g += `<rect x="${mid-22}" y="${y+off-8.5}" width="44" height="13" fill="#fbfaf6"/>`;
+      g += txt(mid, y+off+2, s.label, {fs: 9.5, fill:c, fw:600});
+    }
+  });
+  g += tick(x1, y, c);
+  return g + `</g>`;
+}
+
+/* pictograms — drawn at true horizontal scale, never exaggerated */
+function personIcon(cx, yG, s, col){
+  const h = 1.70*s, w = 0.46*s, head = 0.20*s;
+  return `<g fill="${col}" opacity=".82">
+    <circle cx="${cx}" cy="${yG-h+head}" r="${head}"/>
+    <path d="M${cx-w/2} ${yG-h+head*2.1} h${w} v${h*0.42} l${-w*0.28} 0 v${h*0.44} h${-w*0.16} v${-h*0.44}
+             h${-w*0.12} v${h*0.44} h${-w*0.16} v${-h*0.44} l${-w*0.28} 0 z"/></g>`;
+}
+function treeIcon(cx, yG, s, hM, col){
+  const h = hM*s, r = h*0.30, tw = Math.max(1.4, h*0.045);
+  return `<g><rect x="${cx-tw/2}" y="${yG-h*0.58}" width="${tw}" height="${h*0.58}" fill="#6b5a44"/>
+    <circle cx="${cx}" cy="${yG-h*0.70}" r="${r}" fill="${col}" opacity=".9"/>
+    <circle cx="${cx-r*0.62}" cy="${yG-h*0.55}" r="${r*0.72}" fill="${col}" opacity=".82"/>
+    <circle cx="${cx+r*0.62}" cy="${yG-h*0.56}" r="${r*0.68}" fill="${col}" opacity=".82"/></g>`;
+}
+function carIcon(cx, yG, s, col){          /* head-on view, 1.80 × 1.48 m */
+  const w = 1.80*s, h = 1.48*s;
+  return `<g>
+    <rect x="${cx-w*0.36}" y="${yG-h}" width="${w*0.72}" height="${h*0.40}" rx="${h*0.10}" fill="${col}"/>
+    <rect x="${cx-w*0.30}" y="${yG-h+h*0.07}" width="${w*0.60}" height="${h*0.22}" rx="${h*0.05}" fill="#cfd8de" opacity=".85"/>
+    <rect x="${cx-w*0.50}" y="${yG-h*0.62}" width="${w}" height="${h*0.42}" rx="${h*0.09}" fill="${col}"/>
+    <rect x="${cx-w*0.46}" y="${yG-h*0.24}" width="${w*0.16}" height="${h*0.24}" rx="2" fill="#2c2f33"/>
+    <rect x="${cx+w*0.30}" y="${yG-h*0.24}" width="${w*0.16}" height="${h*0.24}" rx="2" fill="#2c2f33"/></g>`;
+}
+function bikeIcon(cx, yG, s, col){         /* head-on cyclist, ~0.75 m envelope */
+  const w = 0.70*s, h = 1.75*s;
+  return `<g>
+    <circle cx="${cx}" cy="${yG-h*0.16}" r="${h*0.16}" fill="none" stroke="#3b3f44" stroke-width="${Math.max(1.2,s*0.035)}"/>
+    <line x1="${cx-w*0.5}" y1="${yG-h*0.52}" x2="${cx+w*0.5}" y2="${yG-h*0.52}" stroke="#3b3f44" stroke-width="${Math.max(1.2,s*0.035)}"/>
+    <circle cx="${cx}" cy="${yG-h*0.90}" r="${h*0.10}" fill="${col}"/>
+    <path d="M${cx-w*0.34} ${yG-h*0.76} h${w*0.68} v${h*0.34} h${-w*0.68} z" fill="${col}" opacity=".9"/></g>`;
+}
+function lampIcon(cx, yG, s, col){
+  const h = 5.2*s;
+  return `<g stroke="${col}" fill="none" stroke-width="${Math.max(1.2,s*0.03)}">
+    <line x1="${cx}" y1="${yG}" x2="${cx}" y2="${yG-h}"/>
+    <path d="M${cx} ${yG-h} q0 ${-h*0.06} ${h*0.13} ${-h*0.06}"/>
+    </g><ellipse cx="${cx+h*0.13}" cy="${yG-h*1.05}" rx="${h*0.05}" ry="${h*0.028}" fill="${col}"/>`;
+}
+function buildingBlock(xR, yG, s, dir, col){
+  /* dir = 1 draws to the right of xR, -1 to the left */
+  const w = 3.4*s, h = 9.0*s;
+  const x = dir === 1 ? xR : xR - w;
+  let win = '';
+  const cols = 3, rows = 4, mw = w*0.16, mh = h*0.10;
+  for (let r=0;r<rows;r++) for (let c=0;c<cols;c++){
+    win += `<rect x="${x + w*0.14 + c*(w*0.29)}" y="${yG - h + h*0.14 + r*(h*0.20)}" width="${mw}" height="${mh}" fill="#f0f3f6" opacity=".62"/>`;
+  }
+  return `<g><rect x="${x}" y="${yG-h}" width="${w}" height="${h}" fill="${col}" opacity=".55"/>${win}</g>`;
+}
+
+/* ------------------------------------------------------------------ *
+ *  the sheet
+ * ------------------------------------------------------------------ */
+function draw(){
+  const d = dims(), pr = profile(d), zs = strips(d);
+  const mode = $("mode").value, P = paint(mode);
+  const showPeople = $("tPeople").checked && mode === 'illustrated';
+  const showStruct = $("tStruct").checked;
+  const showDims   = $("tDims").checked;
+  const showCtx    = $("tContext").checked;
+
+  const W = 1680, H = 1030, padL = 172, padR = 172;
+  const sx = (W - padL - padR) / d.total;
+
+  const dSurf = d.dSurf, dBase = d.dBase, dSub = d.dSub;
+  const roadDepth = showStruct ? dSurf + dBase + dSub : 0.10;
+  const footDepth = showStruct ? dSurf * 0.9 + dSub * 0.5 : 0.08;
+  const medDepth  = showStruct ? 0.40 : 0.10;
+
+  const zTop = Math.max(pr.zSw, pr.zH + (d.median > 0 ? d.medrev : 0));
+  const zBot = -(Math.max(roadDepth, footDepth, medDepth) + 0.14);
+  const span = Math.max(0.35, zTop - zBot);
+  const band = parseFloat($("relief").value);
+  const sz = band / span;
+  const exag = sz / sx;
+
+  const yDatum = 596;                        // z = 0, channel line
+  const X = m => padL + m * sx;
+  const Y = z => yDatum - z * sz;
+
+  const yColTop = 206;                       // top of tint columns
+  const yTagTop = 152;                       // zone tag band
+  const yGroup  = 122;
+  const yTotal  = 92;
+  const yFormMax = Y(zBot);
+  const yDim1 = Math.max(yFormMax + 56, 786);
+  const yDim2 = yDim1 + 58;
+  const yLeg  = yDim2 + 46;
+
+  let s = `<svg id="sectionSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img"
+      aria-label="Typical urban cross section, total corridor ${f2(d.total)} metres">
+  <defs>
+    <pattern id="hSub" width="7" height="7" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="#fff"/><circle cx="2" cy="2" r="1" fill="#555"/><circle cx="5.5" cy="5.5" r="1" fill="#555"/></pattern>
+    <pattern id="hBase" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#fff"/><path d="M0 6 L6 0" stroke="#555" stroke-width=".7"/><path d="M0 0 L6 6" stroke="#555" stroke-width=".7"/></pattern>
+    <pattern id="hSoil" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="#fff"/><path d="M0 8 L8 0" stroke="#666" stroke-width=".7"/></pattern>
+    <pattern id="hGrade" width="9" height="9" patternUnits="userSpaceOnUse">
+      <rect width="9" height="9" fill="#f2f0ea"/><path d="M-2 9 L9 -2 M4 11 L11 4" stroke="#a8a49a" stroke-width=".8"/></pattern>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 z" fill="${P.dim}"/></marker>
+    <clipPath id="sheetClip"><rect x="26" y="26" width="${W-52}" height="${H-52}"/></clipPath>
+  </defs>
+  <rect width="${W}" height="${H}" fill="#fbfaf6"/>
+  <rect x="18" y="18" width="${W-36}" height="${H-36}" fill="none" stroke="${P.paperEdge}" stroke-width="1.6"/>
+  <rect x="26" y="26" width="${W-52}" height="${H-52}" fill="none" stroke="${P.hair}" stroke-width=".7"/>`;
+
+  /* ---------- header ---------- */
+  const className = $("class").options[$("class").selectedIndex].text;
+  s += txt(padL, 56, 'TYPICAL CROSS SECTION', {a:'start', fs:21, fw:700, ls:'1.6', fill:P.ink});
+  s += txt(padL, 72, `${className.toUpperCase()}  ·  ${$("context").value.toUpperCase()}  ·  DIMENSIONS IN METRES`, {a:'start', fs:10.5, fill:P.note, ls:'.9'});
+  s += txt(W-padR, 56, `CORRIDOR ${f2(d.total)} m`, {a:'end', fs:15, fw:700, fill:P.ink});
+  s += txt(W-padR, 72, `VERTICAL RELIEF EXAGGERATED ×${exag.toFixed(1)}`, {a:'end', fs:10.5, fill:P.note, ls:'.9'});
+
+  /* ---------- right of way lines ---------- */
+  s += `<line x1="${X(0)}" y1="${yTotal-14}" x2="${X(0)}" y2="${yLeg-16}" stroke="${P.note}" stroke-width=".9" stroke-dasharray="9 4 2 4"/>
+        <line x1="${X(d.total)}" y1="${yTotal-14}" x2="${X(d.total)}" y2="${yLeg-16}" stroke="${P.note}" stroke-width=".9" stroke-dasharray="9 4 2 4"/>`;
+  s += txt(X(0)-7, yColTop-8, 'ROW', {a:'end', fs:10, fw:700, fill:P.note});
+  s += txt(X(d.total)+7, yColTop-8, 'ROW', {a:'start', fs:10, fw:700, fill:P.note});
+
+  /* ---------- total dimension ---------- */
+  if (showDims) s += chain([{x1:X(0), x2:X(d.total), label:`${f2(d.total)} m`}], yTotal, P.dim, {w:1.3, fs:12});
+
+  /* ---------- group bar ---------- */
+  const groups = [
+    {a:0, b:d.sidewalk, name:'Footway', tone:'#eae6da'},
+    {a:d.sidewalk, b:d.sidewalk+d.side, name:'Carriageway', tone:'#dcdcd6'},
+  ];
+  if (d.median > 0.0001) groups.push({a:d.sidewalk+d.side, b:d.sidewalk+d.side+d.median, name:'Median', tone:'#d8e4d2'});
+  groups.push({a:d.total-d.sidewalk-d.side, b:d.total-d.sidewalk, name:'Carriageway', tone:'#dcdcd6'});
+  groups.push({a:d.total-d.sidewalk, b:d.total, name:'Footway', tone:'#eae6da'});
+  groups.forEach(g => {
+    const gx = X(g.a), gw = X(g.b) - X(g.a);
+    s += `<rect x="${gx}" y="${yGroup}" width="${gw}" height="22" fill="${mode==='technical'?'#fff':g.tone}" stroke="${P.hair}" stroke-width=".8"/>`;
+    if (gw > 74) s += txt(gx+gw/2, yGroup+15, `${g.name.toUpperCase()}  ${f2(g.b-g.a)}`, {fs:10, fw:700, ls:'.7', fill:P.ink});
+    else if (gw > 30) s += txt(gx+gw/2, yGroup+15, f2(g.b-g.a), {fs:9.5, fw:700, fill:P.ink});
+  });
+
+  /* ---------- tint columns + zone tags ---------- */
+  let tagAlt = 0;
+  zs.forEach((z, i) => {
+    const zx = X(z.x0), zw = X(z.x1) - X(z.x0);
+    const surfY = Y(Math.max(zAt(pr, z.x0), zAt(pr, z.x1)));
+    if (P.tint){
+      s += `<rect class="zone" data-name="${esc(z.name)}" data-w="${f2(z.w)}" x="${zx}" y="${yColTop}" width="${zw}"
+             height="${Math.max(4, surfY - yColTop)}" fill="${P.tint[z.key]}" opacity=".5"/>`;
+    }
+    s += `<line x1="${zx}" y1="${yColTop}" x2="${zx}" y2="${surfY}" stroke="${P.hair}" stroke-width=".6" stroke-dasharray="3 3"/>`;
+    // tag
+    const mid = zx + zw/2;
+    if (zw >= 96){
+      s += txt(mid, yTagTop+22, z.name, {fs:10.5, fw:700, ls:'.5', fill:P.ink});
+      s += `<line x1="${mid}" y1="${yTagTop+28}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
+    } else if (zw >= 26){
+      s += txt(mid, yTagTop+42, z.name, {fs:9.5, fw:600, fill:P.ink, rot:-90, a:'start'});
+      s += `<line x1="${mid}" y1="${yTagTop+46}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
+    } else {
+      const ty = yTagTop + 6 + (tagAlt % 2) * 13; tagAlt++;
+      s += `<line x1="${mid}" y1="${ty+3}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
+      s += txt(mid, ty, z.name, {fs:8.5, fw:600, fill:P.note});
+    }
+  });
+
+  /* ---------- context: building line, clipped by the sheet ---------- */
+  if (showCtx){
+    const gL = Y(pr.zSw), gR = Y(pr.zSw);
+    s += `<g clip-path="url(#sheetClip)">`;
+    s += buildingBlock(X(0), gL, sx, -1, '#5d7796');
+    s += buildingBlock(X(0) - 3.4*sx - 0.4*sx, gL, sx, -1, '#7a8ba3');
+    s += buildingBlock(X(d.total), gR, sx, 1, '#5d7796');
+    s += buildingBlock(X(d.total) + 3.4*sx + 0.4*sx, gR, sx, 1, '#7a8ba3');
+    s += `</g>`;
+  }
+
+  /* ---------- construction below the surface ---------- */
+  const slice = (x1, x2) => {
+    const out = [];
+    pr.pts.forEach(p => { if (p[0] > x1 + 1e-9 && p[0] < x2 - 1e-9) out.push(p.slice()); });
+    return [[x1, zAt(pr,x1)], ...out.filter((p,i,a)=> i===0 || p[0]!==a[i-1][0]), [x2, zAt(pr,x2)]];
+  };
+  const bandPoly = (pts, top, thick, fill, stroke) => {
+    const up = pts.map(p => `${X(p[0])},${Y(p[1]-top)}`).join(' ');
+    const dn = pts.slice().reverse().map(p => `${X(p[0])},${Y(p[1]-top-thick)}`).join(' ');
+    return `<polygon points="${up} ${dn}" fill="${fill}" stroke="${stroke||P.hair}" stroke-width=".7"/>`;
+  };
+
+  const footL = [[0, pr.zSw], [d.sidewalk, pr.zK], [d.sidewalk + d.curb, pr.zK]];
+  const footR = [[d.total - d.sidewalk - d.curb, pr.zK], [d.total - d.sidewalk, pr.zK], [d.total, pr.zSw]];
+  const roadL = [[pr.gutterL, 0], [pr.medL, pr.zH]];
+  const roadR = [[pr.medR, pr.zH], [pr.gutterR, 0]];
+  const medTop = d.median > 0.0001 ? [[pr.medL, pr.zH + d.medrev], [pr.medR, pr.zH + d.medrev]] : null;
+
+  if (showStruct){
+    // footways
+    [footL, footR].forEach(p => {
+      s += bandPoly(p, 0, dSurf*0.9, mode==='technical' ? '#ddd' : '#e2ded2');
+      s += bandPoly(p, dSurf*0.9, dSub*0.5, P.sub);
+    });
+    // carriageways
+    [roadL, roadR].forEach(p => {
+      s += bandPoly(p, 0, dSurf, P.surf, mode==='technical' ? '#111' : '#3c444d');
+      s += bandPoly(p, dSurf, dBase, P.base);
+      s += bandPoly(p, dSurf + dBase, dSub, P.sub);
+    });
+    if (medTop) s += bandPoly(medTop, 0, medDepth, P.soil);
+    // subgrade below the deepest formation
+    const gx0 = X(0), gx1 = X(d.total);
+    const yForm = Y(-(roadDepth));
+    s += `<rect x="${gx0}" y="${yForm}" width="${gx1-gx0}" height="${Math.max(10, Y(zBot)-yForm)}" fill="url(#hGrade)" stroke="${P.hair}" stroke-width=".7"/>`;
+    s += txt(gx0 + 12, Y(zBot) - 7, 'SUBGRADE / FORMATION', {a:'start', fs:9, fw:600, fill:P.note, ls:'.6'});
+  }
+
+  /* ---------- kerbs ---------- */
+  const kerb = (xBack, xFace, dir) => {
+    const a = X(xBack), b = X(xFace);
+    return `<path d="M${a} ${Y(pr.zK)} L${b} ${Y(pr.zK)} L${b} ${Y(0)} L${a} ${Y(-0.12)} Z"
+              fill="${P.kerbFill}" stroke="${P.ink}" stroke-width="1"/>`;
+  };
+  s += kerb(d.sidewalk, d.sidewalk + d.curb, 1);
+  s += kerb(d.total - d.sidewalk, d.total - d.sidewalk - d.curb, -1);
+  if (d.median > 0.0001){
+    s += `<path d="M${X(pr.medL)} ${Y(pr.zH)} L${X(pr.medL)} ${Y(pr.zH + d.medrev)}
+                  L${X(pr.medR)} ${Y(pr.zH + d.medrev)} L${X(pr.medR)} ${Y(pr.zH)} Z"
+            fill="${P.medFill}" stroke="${P.ink}" stroke-width="1"/>`;
+  }
+
+  /* ---------- surface line ---------- */
+  s += `<polyline points="${pr.pts.map(p => `${X(p[0])},${Y(p[1])}`).join(' ')}"
+          fill="none" stroke="${P.ink}" stroke-width="2.1" stroke-linejoin="round"/>`;
+
+  /* ---------- crossfall annotation ---------- */
+  const fallArrow = (xa, xb) => {
+    const ya = Y(zAt(pr,xa)) - 26, yb = Y(zAt(pr,xb)) - 26;
+    return `<line x1="${X(xa)}" y1="${ya}" x2="${X(xb)}" y2="${yb}" stroke="${P.dim}" stroke-width="1.2" marker-end="url(#ar)"/>`
+         + txt((X(xa)+X(xb))/2, (ya+yb)/2 - 7, `${d.cross.toFixed(1)}%`, {fs:10.5, fw:700, fill:P.dim});
+  };
+  s += fallArrow(pr.medL - d.carr*0.18, pr.gutterL + d.carr*0.14);
+  s += fallArrow(pr.medR + d.carr*0.18, pr.gutterR - d.carr*0.14);
+  if (d.sidewalk > 0.6){
+    s += `<line x1="${X(0.15)}" y1="${Y(pr.zSw)-16}" x2="${X(d.sidewalk-0.1)}" y2="${Y(pr.zK)-16}" stroke="${P.dim}" stroke-width="1" marker-end="url(#ar)"/>`;
+    s += txt(X(d.sidewalk/2), Y((pr.zSw+pr.zK)/2)-22, `${d.swcross.toFixed(1)}%`, {fs:10, fw:700, fill:P.dim});
+    s += `<line x1="${X(d.total-0.15)}" y1="${Y(pr.zSw)-16}" x2="${X(d.total-d.sidewalk+0.1)}" y2="${Y(pr.zK)-16}" stroke="${P.dim}" stroke-width="1" marker-end="url(#ar)"/>`;
+    s += txt(X(d.total-d.sidewalk/2), Y((pr.zSw+pr.zK)/2)-22, `${d.swcross.toFixed(1)}%`, {fs:10, fw:700, fill:P.dim});
+  }
+
+  /* ---------- level callouts ---------- */
+  const level = (xm, zv, label, anchor) => {
+    const px = X(xm), py = Y(zv);
+    return `<circle cx="${px}" cy="${py}" r="2.6" fill="${P.dim}"/>`
+         + `<line x1="${px}" y1="${py}" x2="${px + (anchor==='start'?16:-16)}" y2="${py-16}" stroke="${P.dim}" stroke-width=".8"/>`
+         + txt(px + (anchor==='start'?19:-19), py-18, label, {a:anchor, fs:9.5, fw:600, fill:P.dim});
+  };
+  const cl = d.median > 0.0001 ? (pr.medL + pr.medR)/2 : pr.medL;
+  const clz = d.median > 0.0001 ? pr.zH + d.medrev : pr.zH;
+  s += level(cl, clz, d.median > 0.0001 ? `MEDIAN +${(clz).toFixed(3)}` : `CROWN +${clz.toFixed(3)}`, 'start');
+  s += level(d.sidewalk + d.curb, 0, `CHANNEL ±0.000`, 'start');
+  s += level(d.sidewalk, pr.zK, `TOP OF KERB +${pr.zK.toFixed(3)}`, 'end');
+  s += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(d.total)}" y2="${Y(0)}" stroke="${P.dim}" stroke-width=".6" stroke-dasharray="2 6" opacity=".8"/>`;
+
+  /* ---------- centreline symbol ---------- */
+  s += `<line x1="${X(d.total/2)}" y1="${yColTop-46}" x2="${X(d.total/2)}" y2="${Y(zBot)+18}" stroke="${P.ink}" stroke-width=".9" stroke-dasharray="18 5 4 5" opacity=".55"/>`;
+  s += txt(X(d.total/2), yColTop-52, 'CL', {fs:11, fw:700, fill:P.ink, ls:'1'});
+
+  /* ---------- people, vehicles, planting ---------- */
+  if (showPeople){
+    const onSurf = xm => Y(zAt(pr, xm));
+    // planting + lamp in the furnishing zone
+    if (d.furn > 0.4){
+      const fl = d.front + d.furn/2, frx = d.total - d.front - d.furn/2;
+      s += treeIcon(X(fl), onSurf(fl), sx, Math.min(6.4, d.furn*7), '#5a7a4e');
+      s += treeIcon(X(frx), onSurf(frx), sx, Math.min(5.8, d.furn*6.4), '#6b8a58');
+      s += lampIcon(X(d.front + d.furn*0.15), onSurf(d.front + d.furn*0.15), sx, '#5b6169');
+    }
+    // pedestrians in the clear walking zone
+    if (d.par > 0.7){
+      const pl = d.front + d.furn + d.par*0.45, pr2 = d.total - d.front - d.furn - d.par*0.5;
+      s += personIcon(X(pl), onSurf(pl), sx, '#3f4a55');
+      s += personIcon(X(pl + Math.min(0.62, d.par*0.34)), onSurf(pl + Math.min(0.62, d.par*0.34)), sx, '#6a5a4c');
+      s += personIcon(X(pr2), onSurf(pr2), sx, '#3f4a55');
+    }
+    // parked vehicle
+    if (d.park > 1.9){
+      const ax = d.sidewalk + d.curb + d.park/2;
+      s += carIcon(X(ax), onSurf(ax), sx, '#8a8f96');
+      const bx = d.total - d.sidewalk - d.curb - d.park/2;
+      s += carIcon(X(bx), onSurf(bx), sx, '#9aa0a6');
+    }
+    // cyclists
+    if (d.bike > 0.9){
+      const cx1 = d.sidewalk + d.curb + d.park + d.bike/2;
+      s += bikeIcon(X(cx1), onSurf(cx1), sx, '#b8763a');
+      const cx2 = d.total - d.sidewalk - d.curb - d.park - d.bike/2;
+      s += bikeIcon(X(cx2), onSurf(cx2), sx, '#7f9464');
+    }
+    // moving traffic — first lane each side
+    const t1 = d.sidewalk + d.curb + d.park + d.bike + d.lane/2;
+    s += carIcon(X(t1), onSurf(t1), sx, '#b0483a');
+    const t2 = d.total - d.sidewalk - d.curb - d.park - d.bike - d.lane/2;
+    s += carIcon(X(t2), onSurf(t2), sx, '#37536f');
+    // median planting
+    if (d.median > 1.2){
+      const mx = (pr.medL + pr.medR)/2;
+      s += treeIcon(X(mx), Y(pr.zH + d.medrev), sx, Math.min(7.2, d.median*2.4), '#4e7043');
+    }
+  }
+
+  /* ---------- dimension chains ---------- */
+  if (showDims){
+    // extension lines from the section down to the first chain
+    zs.forEach(z => {
+      s += `<line x1="${X(z.x0)}" y1="${Y(Math.min(0, zBot+0.05))}" x2="${X(z.x0)}" y2="${yDim1-6}" stroke="${P.hair}" stroke-width=".6"/>`;
+    });
+    s += `<line x1="${X(d.total)}" y1="${Y(Math.min(0, zBot+0.05))}" x2="${X(d.total)}" y2="${yDim1-6}" stroke="${P.hair}" stroke-width=".6"/>`;
+    s += chain(zs.map(z => ({x1:X(z.x0), x2:X(z.x1), label:f2(z.w)})), yDim1, P.dim);
+    s += txt(padL - 14, yDim1 + 3, 'ELEMENTS', {a:'end', fs:9, fw:700, fill:P.note, ls:'.6'});
+
+    const gseg = groups.map(g => ({x1:X(g.a), x2:X(g.b), label:`${f2(g.b-g.a)} m`}));
+    s += chain(gseg, yDim2, P.dim, {w:1.15, fs:11});
+    s += txt(padL - 14, yDim2 + 3, 'GROUPS', {a:'end', fs:9, fw:700, fill:P.note, ls:'.6'});
+  }
+
+  /* ---------- legend ---------- */
+  const legend = mode === 'technical'
+    ? [['url(#hBase)','Base'], ['url(#hSub)','Sub-base'], ['url(#hSoil)','Topsoil'], ['url(#hGrade)','Subgrade']]
+    : [[IL.par,'Footway'], [IL.bike,'Cycle lane'], [IL.lane,'Travel lane'], [IL.park,'Parking'],
+       [IL.median,'Median / planting'], [P.surf,'Surfacing'], [P.base,'Base'], [P.sub,'Sub-base']];
+  let lx = padL;
+  s += `<line x1="${padL}" y1="${yLeg-18}" x2="${W-padR}" y2="${yLeg-18}" stroke="${P.hair}" stroke-width=".7"/>`;
+  legend.forEach(([fill, name]) => {
+    s += `<rect x="${lx}" y="${yLeg-8}" width="16" height="11" fill="${fill}" stroke="${P.hair}" stroke-width=".6"/>`;
+    s += txt(lx+22, yLeg+1, name, {a:'start', fs:10, fill:P.note});
+    lx += 30 + name.length * 6.1;
+  });
+
+  /* ---------- title block ---------- */
+  const tbW = 470, tbH = 78, tbX = W - padR - tbW, tbY = H - 62 - tbH + 18;
+  s += `<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="none" stroke="${P.ink}" stroke-width="1.2"/>
+        <line x1="${tbX}" y1="${tbY+26}" x2="${tbX+tbW}" y2="${tbY+26}" stroke="${P.ink}" stroke-width=".8"/>
+        <line x1="${tbX}" y1="${tbY+52}" x2="${tbX+tbW}" y2="${tbY+52}" stroke="${P.hair}" stroke-width=".8"/>
+        <line x1="${tbX+240}" y1="${tbY+26}" x2="${tbX+240}" y2="${tbY+tbH}" stroke="${P.hair}" stroke-width=".8"/>
+        <line x1="${tbX+352}" y1="${tbY+26}" x2="${tbX+352}" y2="${tbY+tbH}" stroke="${P.hair}" stroke-width=".8"/>`;
+  s += txt(tbX+10, tbY+18, 'MAHALCO — TRANSPORTATION ENGINEERING', {a:'start', fs:11.5, fw:700, ls:'.9', fill:P.ink});
+  s += txt(tbX+10, tbY+44, 'DRAWING', {a:'start', fs:8.5, fw:700, fill:P.note, ls:'.6'});
+  s += txt(tbX+10, tbY+68, 'Typical cross section', {a:'start', fs:12, fill:P.ink});
+  s += txt(tbX+250, tbY+44, 'SCALE', {a:'start', fs:8.5, fw:700, fill:P.note, ls:'.6'});
+  s += txt(tbX+250, tbY+68, `H 1:${Math.round(1000/sx)} · V ×${exag.toFixed(1)}`, {a:'start', fs:11, fill:P.ink});
+  s += txt(tbX+362, tbY+44, 'STATUS', {a:'start', fs:8.5, fw:700, fill:P.note, ls:'.6'});
+  s += txt(tbX+362, tbY+68, 'Preliminary', {a:'start', fs:11, fill:P.alarm || '#b03a2e'});
+
+  s += txt(padL, H-46, 'NOT FOR CONSTRUCTION — parametric output, verify against governing criteria and project conditions.', {a:'start', fs:9.5, fill:P.note});
+  s += txt(padL, H-32, 'People, vehicles and planting are drawn at true horizontal scale. Construction depths are indicative.', {a:'start', fs:9.5, fill:P.note});
+
+  s += `</svg>`;
+  $("drawing").innerHTML = s;
+  wireHover();
+  return {d, exag, sx};
+}
+
+/* ---------------- hover readout ---------------- */
+function wireHover(){
+  const tip = $("tip");
+  document.querySelectorAll('#drawing .zone').forEach(el => {
+    el.style.cursor = 'crosshair';
+    el.addEventListener('mouseenter', e => {
+      tip.textContent = `${el.dataset.name} — ${el.dataset.w} m`;
+      tip.style.opacity = 1; el.setAttribute('opacity', '.78');
+    });
+    el.addEventListener('mousemove', e => {
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top  = (e.clientY - 30) + 'px';
+    });
+    el.addEventListener('mouseleave', () => { tip.style.opacity = 0; el.setAttribute('opacity', '.5'); });
+  });
+}
+
+/* ---------------- readouts ---------------- */
+function render(){
+  const {d, exag} = draw();
+  const kerbToKerb = d.roadway;
+  $("stats").innerHTML = [
+    ['Total corridor', f2(d.total), 'm'],
+    ['Kerb to kerb', f2(kerbToKerb), 'm'],
+    ['Footway each side', f2(d.sidewalk), 'm'],
+    ['Lanes each way', String(d.lanes), ''],
+    ['Lane width', f2(d.lane), 'm'],
+    ['Median', f2(d.median), 'm']
+  ].map(r => `<div class="stat"><span>${r[0]}</span><b>${r[1]}<small> ${r[2]}</small></b></div>`).join('');
+
+  const par = d.par, cf = d.cross;
+  $("checks").innerHTML =
+    `<div class="chk ${par>=1.22?'':'bad'}"><b>${par>=1.22?'PASS':'FAIL'}</b>Clear walking width ${f2(par)} m against a 1.22 m continuous-route screening threshold.</div>
+     <div class="chk ${par>=1.525?'':'warn'}"><b>${par>=1.525?'PASS':'CHECK'}</b>${par>=1.525?'Width is at or above 1.525 m, so a passing-space arrangement is unlikely to govern.':'Below 1.525 m — the project may require a passing-space arrangement.'}</div>
+     <div class="chk ${cf>=1&&cf<=3?'':'warn'}"><b>${cf>=1&&cf<=3?'SCREENED':'CHECK'}</b>Carriageway crossfall ${cf.toFixed(1)}%. Verify drainage and accessibility criteria for the actual project.</div>
+     <div class="chk"><b>NOTE</b>Vertical relief on the drawing is exaggerated ×${exag.toFixed(1)}. Read levels from the callouts, not by scaling the sheet.</div>`;
+
+  window.current = {
+    functionalClass: $("class").value,
+    context: $("context").value,
+    widths_m: {
+      total: +f2(d.total), roadway: +f2(d.roadway), sidewalkEachSide: +f2(d.sidewalk),
+      lanesEachWay: d.lanes, laneWidth: +f2(d.lane), parking: +f2(d.park),
+      cycleLane: +f2(d.bike), median: +f2(d.median), kerb: +f2(d.curb),
+      clearWalking: +f2(d.par), furnishing: +f2(d.furn), frontage: +f2(d.front)
+    },
+    levels_m: {kerbReveal: d.reveal, medianUpstand: d.medrev},
+    crossfall_pct: {carriageway: d.cross, footway: d.swcross},
+    indicativeDepths_m: {surfacing: d.dSurf, base: d.dBase, subBase: d.dSub},
+    verticalExaggeration: +exag.toFixed(2),
+    disclaimer: 'Preliminary parametric output. Not for construction.'
+  };
+}
+
+/* ---------------- controls ---------------- */
+function applyPreset(){
+  const p = PRESETS[$("class").value];
+  for (const k in p){
+    const el = $(k === 'parking' ? 'parking' : k);
+    if (el) el.value = (k === 'lanes') ? p[k] : p[k].toFixed(2);
+  }
+  render();
+}
+$("class").addEventListener('change', applyPreset);
+document.querySelectorAll('aside input, aside select').forEach(el => {
+  if (el.id !== 'class') el.addEventListener('input', render);
+});
+$("btnFit").onclick = render;
+
+function save(blob, name){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+$("btnSvg").onclick = () => {
+  const svg = $("sectionSVG").outerHTML.replace('<svg ', '<svg xmlns:xlink="http://www.w3.org/1999/xlink" ');
+  save(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + svg], {type:'image/svg+xml;charset=utf-8'}),
+       'MAHALCO_typical_section.svg');
+};
+$("btnPng").onclick = () => {
+  const node = $("sectionSVG");
+  const vb = node.viewBox.baseVal, k = 2;
+  const img = new Image();
+  const blob = new Blob([node.outerHTML], {type:'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = vb.width * k; c.height = vb.height * k;
+    const g = c.getContext('2d');
+    g.fillStyle = '#fbfaf6'; g.fillRect(0, 0, c.width, c.height);
+    g.drawImage(img, 0, 0, c.width, c.height);
+    c.toBlob(b => { save(b, 'MAHALCO_typical_section.png'); URL.revokeObjectURL(url); }, 'image/png');
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); alert('PNG export failed in this browser. Use Download SVG instead.'); };
+  img.src = url;
+};
+$("btnJson").onclick = () => save(new Blob([JSON.stringify(window.current, null, 2)], {type:'application/json'}),
+                                  'MAHALCO_typical_section.json');
+
+render();
+</script>
+</body>
+</html>

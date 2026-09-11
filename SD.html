@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAHALCO – מרחקי ראות (פרק 4)</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<style>
+  :root {
+    --bg:#12121e; --card:#1a1a2e; --card-2:#22223a; --field:#0f0f1a;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.05);
+    --accent:#E8A33D; --accent-dim:rgba(232,163,61,.16); --green:#4ADE80;
+    --ink:#EDEBF2; --ink-2:#9A96AB; --ink-3:#6B6780;
+    --danger:#F35B5B; --warn:#F5C451; --info:#7AB8F5;
+  }
+  * { box-sizing: border-box; }
+  body { background:var(--bg); color:var(--ink); padding:20px; font-family:Arial, sans-serif; line-height:1.5; }
+  .container { max-width:1400px; }
+  h1 { font-size:clamp(1.6rem, 1.375rem + 1.5vw, 2.4rem); font-weight:700; margin:0 0 .5rem; color:var(--ink); line-height:1.2; }
+  h1 .bi { color:#ffc107; margin-left:.5rem; }
+  .subhead { color:var(--ink-3); margin:0 0 1.5rem; line-height:1.6; font-size:.95rem; }
+  .badge { display:inline-block; background:var(--card-2); color:var(--ink-2); font-size:.8rem;
+    font-weight:600; padding:.25em .6em; border-radius:6px; vertical-align:middle; margin-right:6px; }
+
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.3); margin-bottom:20px; }
+  .card-header { background:var(--accent); color:#1a1a2e; border-radius:12px 12px 0 0;
+    font-weight:600; padding:.5rem 1rem; border-bottom:1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left:.5rem; }
+  .card-body { padding:1rem; }
+  .section-note { font-size:.78rem; color:var(--ink-3); margin:0 0 12px; line-height:1.6; }
+
+  .form-group { margin-bottom:12px; }
+  .row-2, .row-3, .row-4 { display:grid; gap:12px; }
+  .row-2 { grid-template-columns:1fr 1fr; }
+  .row-3 { grid-template-columns:1fr 1fr 1fr; }
+  .row-4 { grid-template-columns:repeat(4,1fr); }
+  @media (max-width:720px) { .row-2,.row-3,.row-4 { grid-template-columns:1fr; gap:8px; } }
+  label { display:block; margin-bottom:.35rem; color:var(--ink-2); font-size:.9rem; }
+  label .unit { color:var(--ink-3); font-size:.8rem; }
+  input, select { width:100%; padding:.375rem .75rem; font-size:1rem; border:1px solid var(--line);
+    border-radius:6px; background:var(--field); color:var(--ink); font-family:inherit; }
+  select option { background:var(--field); color:var(--ink); }
+  input:focus, select:focus { border-color:var(--accent); outline:none; box-shadow:0 0 0 .2rem rgba(232,163,61,.2); }
+  input[type=number] { -moz-appearance:textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .form-text { color:var(--ink-3); font-size:.75rem; }
+
+  .tabs { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+  .tabs button { padding:.5rem 1rem; border-radius:8px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink-2); font-size:.88rem; font-weight:600; cursor:pointer;
+    font-family:inherit; transition:.15s; width:auto; }
+  .tabs button:hover { background:var(--card-2); color:var(--ink); }
+  .tabs button.active { background:var(--accent); color:#1a1a2e; border-color:var(--accent); }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+
+  .results-sticky { position:sticky; top:16px; }
+  @media (max-width:991px) { .results-sticky { position:static; } }
+  .result-box { background:var(--card-2); border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; height:100%; }
+  .result-label { font-size:.82rem; color:var(--ink-2); }
+  .result-number { font-size:1.7rem; font-weight:700; color:var(--ink); line-height:1.15;
+    font-variant-numeric:tabular-nums; direction:ltr; text-align:right; }
+  .result-number.highlight { color:var(--accent); }
+  .result-sub { font-size:.72rem; color:var(--ink-3); }
+
+  ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+  ol.steps > li { counter-increment:st; position:relative; padding:12px 40px 12px 0; border-bottom:1px dashed var(--line); }
+  ol.steps > li:last-child { border-bottom:0; }
+  ol.steps > li::before { content:counter(st); position:absolute; right:0; top:12px;
+    background:var(--accent); color:#1a1a2e; width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800; }
+  .steps .ttl { font-weight:700; color:var(--ink); font-size:.93rem; margin-bottom:5px; }
+  .steps .formula { direction:ltr; text-align:left; background:var(--field); border:1px solid var(--line-2);
+    border-radius:6px; padding:6px 9px; font-family:Consolas,"Courier New",monospace;
+    font-size:.78rem; margin:5px 0; overflow-x:auto; white-space:nowrap; color:#d8d4e4; }
+  .steps .num { direction:ltr; display:inline-block; font-family:Consolas,monospace; font-weight:700; color:var(--accent); }
+
+  .table { --bs-table-bg:transparent; --bs-table-color:var(--ink); --bs-table-border-color:var(--line); font-size:.85rem; }
+  .table thead th { color:var(--ink-3); border-color:var(--line); font-weight:600; white-space:nowrap; font-size:.78rem; }
+  .table td, .table th { border-color:var(--line-2); vertical-align:middle; }
+  .table td.c { text-align:center; }
+  .table tfoot td { font-weight:700; color:var(--accent); border-top:1px solid var(--line); }
+  .table tr.highlight td { background:var(--accent-dim); }
+
+  .warn-list { list-style:none; padding:0; margin:0; }
+  .warn-list li { padding:9px 12px; border-radius:8px; margin-bottom:7px; font-size:.85rem;
+    line-height:1.55; border-right:4px solid; background:var(--field); }
+  .warn-list li.ok { border-color:var(--green); color:#a6efc0; }
+  .warn-list li.warn { border-color:var(--warn); color:#f2dca2; }
+  .warn-list li.bad { border-color:var(--danger); color:#f7a3a3; }
+  .warn-list li.info { border-color:var(--info); color:#bcd9fb; }
+
+  .btn-accent { background:var(--accent); border-color:var(--accent); color:#1a1a2e; font-weight:700;
+    padding:.55rem 1.4rem; border-radius:8px; border:1px solid transparent; width:100%; font-family:inherit; cursor:pointer; }
+  .btn-accent:hover { background:#c9862f; border-color:#c9862f; }
+
+  .scheme-box { background:var(--field); border:1px solid var(--line-2); border-radius:10px; padding:14px; overflow-x:auto; }
+  .scheme-box svg { display:block; margin:0 auto; width:100%; max-width:1000px; height:auto; }
+  .scheme-caption { font-size:.78rem; color:var(--ink-3); text-align:center; margin-top:8px; }
+
+  footer { text-align:center; color:var(--ink-3); font-size:.85rem; margin-top:1.5rem; padding-bottom:1rem; }
+  .col-help { font-size:.75rem; color:var(--ink-3); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1><i class="bi bi-eye"></i>מרחקי ראות <span class="badge">פרק 4</span></h1>
+  <p class="subhead">
+    מחשבון מרחקי ראות לתכן גיאומטרי של דרכים בין-עירוניות לפי הנחיות התכן (כרך 1, פרק 4).
+    כולל מרחקי עצירה, החלטה, עקיפה מלאה ועקיפה דחוקה — בהתאם למהירות, שיפוע, סוג רכב וסוג דרך.
+    <br>החישוב מתבצע כולו בדפדפן. יחידות: מטר, קמ"ש, אחוזים.
+  </p>
+
+  <div class="tabs">
+    <button class="active" data-tab="tab1"><i class="bi bi-hand-index-thumb"></i> מרחק לעצירה</button>
+    <button data-tab="tab2"><i class="bi bi-signpost-split"></i> מרחק להחלטה</button>
+    <button data-tab="tab3"><i class="bi bi-arrow-left-right"></i> עקיפה מלאה</button>
+    <button data-tab="tab4"><i class="bi bi-arrow-return-left"></i> עקיפה דחוקה</button>
+    <button data-tab="tab5"><i class="bi bi-clipboard-check"></i> יישום לפי סוג דרך</button>
+    <button data-tab="tab6"><i class="bi bi-table"></i> טבלאות עזר</button>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 1: Stopping Sight Distance                                  -->
+  <!-- =============================================================== -->
+  <div id="tab1" class="tab-pane active">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – מרחק ראות לעצירה</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t1_vd">מהירות תכן V<sub>d</sub> <span class="unit">(קמ"ש)</span></label>
+                <select id="t1_vd">
+                  <option>40</option><option>50</option><option>60</option><option>70</option><option>80</option>
+                  <option selected>90</option><option>100</option><option>110</option><option>120</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t1_veh">סוג הרכב</label>
+                <select id="t1_veh">
+                  <option value="passenger" selected>מכונית נוסעים</option>
+                  <option value="truck">משאית / אוטובוס (רכב כבד)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t1_mode">מצב החישוב</label>
+              <select id="t1_mode">
+                <option value="table" selected>לפי טבלאות 4.1 / 4.2 (מישורי, i &lt; 3%)</option>
+                <option value="slope">עם שיפוע אורכי i ≥ 3%</option>
+              </select>
+            </div>
+            <div class="form-group" id="slopeField" style="display:none;">
+              <label for="t1_i">שיפוע אורכי i <span class="unit">(%)</span></label>
+              <input type="number" id="t1_i" value="0" step="0.5" min="-12" max="12">
+              <div class="col-help">עלייה = חיובי (+); ירידה = שלילי (−). מותר רק |i| ≥ 3%.</div>
+            </div>
+            <div class="form-group">
+              <label for="t1_check">מרחק ראות מתוכנן לבדיקה <span class="unit">(מ')</span></label>
+              <input type="number" id="t1_check" value="200" step="5" min="20">
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה – מרחק עצירה</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#E8A33D"/>
+                  </marker>
+                  <marker id="ar1b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#4ADE80"/>
+                  </marker>
+                </defs>
+                <!-- road -->
+                <rect x="0" y="140" width="480" height="14" fill="#2c2c46"/>
+                <line x1="0" y1="147" x2="480" y2="147" stroke="#6B6780" stroke-width="1" stroke-dasharray="8,6"/>
+                <!-- car at perception point -->
+                <rect x="60" y="122" width="32" height="14" rx="2" fill="#E8A33D"/>
+                <text x="76" y="118" text-anchor="middle" fill="#E8A33D" font-size="10">רכב</text>
+                <!-- obstacle -->
+                <rect x="410" y="122" width="12" height="16" rx="1" fill="#F35B5B"/>
+                <text x="416" y="118" text-anchor="middle" fill="#F35B5B" font-size="10">מכשול</text>
+                <!-- eye height arrow -->
+                <line x1="76" y1="122" x2="76" y2="100" stroke="#7AB8F5" stroke-width="1.4"/>
+                <text x="82" y="106" fill="#7AB8F5" font-size="10">1.05 מ'</text>
+                <!-- SD dimension -->
+                <line x1="76" y1="170" x2="410" y2="170" stroke="#4ADE80" stroke-width="1.4" marker-start="url(#ar1b)" marker-end="url(#ar1b)"/>
+                <text x="243" y="188" text-anchor="middle" fill="#4ADE80" font-size="12" font-weight="700" font-style="italic">S<tspan font-size="9" dy="2">D</tspan> — מרחק הראות לעצירה</text>
+                <!-- Phase 1: perception -->
+                <line x1="76" y1="180" x2="150" y2="180" stroke="#7AB8F5" stroke-width="1.2"/>
+                <text x="113" y="195" text-anchor="middle" fill="#7AB8F5" font-size="9">חישה-תגובה</text>
+                <!-- Phase 2: braking -->
+                <line x1="150" y1="180" x2="410" y2="180" stroke="#F35B5B" stroke-width="1.2"/>
+                <text x="280" y="195" text-anchor="middle" fill="#F35B5B" font-size="9">בלימה</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">תרשים 1 — מרחק הראות לעצירה: מרחק חישה-תגובה + מרחק בלימה</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – מרחק ראות לעצירה</div>
+          <div class="card-body" id="t1_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 2: Decision Sight Distance                                  -->
+  <!-- =============================================================== -->
+  <div id="tab2" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – מרחק ראות להחלטה</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_vd">מהירות תכן V<sub>d</sub> <span class="unit">(קמ"ש)</span></label>
+                <select id="t2_vd">
+                  <option>50</option><option>60</option><option>70</option><option>80</option>
+                  <option selected>90</option><option>100</option><option>110</option><option>120</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t2_vm">מהירות התמרון V<sub>m</sub> <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="t2_vm" value="50" step="5" min="20" max="120">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_a">תאוטת בלימה a <span class="unit">(מ'/שנ'²)</span></label>
+                <input type="number" id="t2_a" value="3.57" step="0.05" min="2" max="5">
+              </div>
+              <div class="form-group">
+                <label for="t2_tm">משך זמן התמרון T<sub>m</sub> <span class="unit">(שניות)</span></label>
+                <input type="number" id="t2_tm" value="3.5" step="0.1" min="2" max="6">
+                <div class="col-help">טיפוסי: 3.5 שנ'. טווח: 3.5–4.5 שנ'.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t2_check">מרחק ראות מתוכנן לבדיקה <span class="unit">(מ')</span></label>
+              <input type="number" id="t2_check" value="250" step="5" min="20">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – מרחק ראות להחלטה</div>
+          <div class="card-body" id="t2_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 3: Full Passing Sight Distance                              -->
+  <!-- =============================================================== -->
+  <div id="tab3" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – מרחק ראות לעקיפה מלאה</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_vd">מהירות תכן V<sub>p</sub> <span class="unit">(קמ"ש)</span></label>
+                <select id="t3_vd">
+                  <option>60</option><option>70</option><option>80</option>
+                  <option selected>90</option><option>100</option><option>110</option><option>120</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t3_veh">רכב נעקף</label>
+                <select id="t3_veh">
+                  <option value="car" selected>מכונית נוסעים</option>
+                  <option value="truck">משאית</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_m">הפרש מהירויות m <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="t3_m" value="11" step="1" min="5" max="25">
+                <div class="col-help">טיפוסי: 15 קמ"ש ל-60/70; 11 קמ"ש ל-80 ומעלה</div>
+              </div>
+              <div class="form-group">
+                <label for="t3_a">תאוצת הרכב העוקף a <span class="unit">(מ'/שנ'²)</span></label>
+                <input type="number" id="t3_a" value="0.64" step="0.01" min="0.4" max="1.0">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_t1">זמן תמרון התחלתי t<sub>1</sub> <span class="unit">(שניות)</span></label>
+                <input type="number" id="t3_t1" value="3.9" step="0.1" min="3.0" max="5.0">
+                <div class="col-help">טווח: 3.6–4.5 שנ'</div>
+              </div>
+              <div class="form-group">
+                <label for="t3_t2">זמן בנתיב הנגדי t<sub>2</sub> <span class="unit">(שניות)</span></label>
+                <input type="number" id="t3_t2" value="10.0" step="0.1" min="8" max="12">
+                <div class="col-help">טווח: 9.3–11.3 שנ'; +1.5 שנ' למשאית נעקפת</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה – שלבי העקיפה</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- opposite lane -->
+                <rect x="0" y="60" width="600" height="30" fill="#2c2c46"/>
+                <line x1="0" y1="75" x2="600" y2="75" stroke="#6B6780" stroke-width="1" stroke-dasharray="6,6"/>
+                <!-- our lane -->
+                <rect x="0" y="120" width="600" height="30" fill="#2c2c46"/>
+                <line x1="0" y1="135" x2="600" y2="135" stroke="#6B6780" stroke-width="1" stroke-dasharray="6,6"/>
+                <!-- center line -->
+                <line x1="0" y1="105" x2="600" y2="105" stroke="#9A96AB" stroke-width="1.5"/>
+                <!-- overtaking car trajectory -->
+                <path d="M 40,135 L 120,135 Q 180,135 220,90 L 400,90 Q 440,90 470,135 L 520,135" stroke="#E8A33D" stroke-width="2.2" fill="none"/>
+                <!-- overtaken car -->
+                <rect x="80" y="122" width="34" height="14" rx="2" fill="#7AB8F5"/>
+                <text x="97" y="118" text-anchor="middle" fill="#7AB8F5" font-size="9">נעקף</text>
+                <!-- oncoming car -->
+                <rect x="540" y="60" width="34" height="14" rx="2" fill="#F35B5B"/>
+                <text x="557" y="56" text-anchor="middle" fill="#F35B5B" font-size="9">ממול</text>
+                <!-- distance labels -->
+                <line x1="120" y1="170" x2="220" y2="170" stroke="#4ADE80" stroke-width="1.2"/>
+                <text x="170" y="185" text-anchor="middle" fill="#4ADE80" font-size="10">d₁</text>
+                <line x1="220" y1="170" x2="440" y2="170" stroke="#E8A33D" stroke-width="1.2"/>
+                <text x="330" y="185" text-anchor="middle" fill="#E8A33D" font-size="10">d₂</text>
+                <line x1="440" y1="170" x2="480" y2="170" stroke="#F35B5B" stroke-width="1.2"/>
+                <text x="460" y="185" text-anchor="middle" fill="#F35B5B" font-size="10">d₃</text>
+                <line x1="480" y1="170" x2="560" y2="170" stroke="#7AB8F5" stroke-width="1.2"/>
+                <text x="520" y="185" text-anchor="middle" fill="#7AB8F5" font-size="10">d₄</text>
+                <text x="300" y="205" text-anchor="middle" fill="#EDEBF2" font-size="11" font-weight="700">d_PSD = d₁ + d₂ + d₃ + d₄</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">תרשים 2 — ארבעת מרכיבי מרחק הראות לעקיפה מלאה</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – עקיפה מלאה</div>
+          <div class="card-body" id="t3_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 4: Restricted passing                                       -->
+  <!-- =============================================================== -->
+  <div id="tab4" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – עקיפה דחוקה</div>
+          <div class="card-body">
+            <p class="section-note">מרחק הראות המזערי שמתחתיו אסורה העקיפה לכל כלי הרכב. בקטעים בהם לא מתקיים מרחק זה — יסומן קו הפרדה רצוף כפול (סימון 803).</p>
+            <div class="form-group">
+              <label for="t4_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+              <select id="t4_vd">
+                <option>60</option><option>70</option><option>80</option>
+                <option selected>90</option><option>100</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="t4_actual">מרחק ראות קיים בקטע <span class="unit">(מ')</span></label>
+              <input type="number" id="t4_actual" value="250" step="5" min="10">
+              <div class="col-help">מרחק הראות בפועל בקטע הנבדק</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – עקיפה דחוקה</div>
+          <div class="card-body" id="t4_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 5: Application by road class                                -->
+  <!-- =============================================================== -->
+  <div id="tab5" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – יישום לפי סוג דרך</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="t5_roadtype">סיווג הדרך</label>
+              <select id="t5_roadtype">
+                <option value="freeway">מהירה (Freeway)</option>
+                <option value="dual_major">דו-מסלולית ראשית / אזורית</option>
+                <option value="single_major">דו-נתיבית ראשית</option>
+                <option value="single_arterial" selected>דו-נתיבית אזורית</option>
+                <option value="local">מקומית</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="t5_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+              <select id="t5_vd">
+                <option>50</option><option>60</option><option>70</option><option>80</option>
+                <option selected>90</option><option>100</option><option>110</option><option>120</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="t5_length">אורך הקטע הנבדק <span class="unit">(ק"מ)</span></label>
+              <input type="number" id="t5_length" value="5" step="0.5" min="0.1">
+            </div>
+            <div class="form-group">
+              <label for="t5_actual">מרחק ראות קיים בקטע <span class="unit">(מ')</span></label>
+              <input type="number" id="t5_actual" value="250" step="5" min="10">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – יישום</div>
+          <div class="card-body" id="t5_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 6: Reference tables                                         -->
+  <!-- =============================================================== -->
+  <div id="tab6" class="tab-pane">
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 4.1 — מרחק ראות לעצירה, מכונית נוסעים, קטע אופקי</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מהירות תכן (קמ"ש)</th><th class="c">תאוטה a (מ'/שנ'²)</th><th class="c">מקדם חיכוך שקול (a/g)</th><th class="c">מרחק תכן (מ')</th></tr></thead>
+          <tbody>
+            <tr><td>(40)</td><td class="c">4.19</td><td class="c">0.43</td><td class="c">45</td></tr>
+            <tr><td>(50)</td><td class="c">4.19</td><td class="c">0.43</td><td class="c">60</td></tr>
+            <tr><td>60</td><td class="c">4.19</td><td class="c">0.43</td><td class="c">75</td></tr>
+            <tr><td>70</td><td class="c">3.96</td><td class="c">0.40</td><td class="c">100</td></tr>
+            <tr><td>80</td><td class="c">3.76</td><td class="c">0.38</td><td class="c">125</td></tr>
+            <tr><td>90</td><td class="c">3.57</td><td class="c">0.36</td><td class="c">155</td></tr>
+            <tr><td>100</td><td class="c">3.41</td><td class="c">0.35</td><td class="c">185</td></tr>
+            <tr><td>110</td><td class="c">3.36</td><td class="c">0.34</td><td class="c">220</td></tr>
+            <tr><td>120</td><td class="c">3.36</td><td class="c">0.34</td><td class="c">250</td></tr>
+          </tbody>
+        </table>
+        <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">בשיפוע הקטן מ-3%. SD = 0.69·Vd + Vd²/(25.92·a)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 4.2 — מרחק ראות לעצירה, רכב כבד, קטע אופקי</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מהירות תכן (קמ"ש)</th><th class="c">תאוטה a (מ'/שנ'²)</th><th class="c">מקדם חיכוך שקול</th><th class="c">מרחק תכן (מ')</th></tr></thead>
+          <tbody>
+            <tr><td>(40)</td><td class="c">2.85</td><td class="c">0.29</td><td class="c">50</td></tr>
+            <tr><td>(50)</td><td class="c">2.85</td><td class="c">0.29</td><td class="c">70</td></tr>
+            <tr><td>60</td><td class="c">2.85</td><td class="c">0.29</td><td class="c">95</td></tr>
+            <tr><td>70</td><td class="c">2.85</td><td class="c">0.29</td><td class="c">120</td></tr>
+            <tr><td>80</td><td class="c">2.85</td><td class="c">0.29</td><td class="c">145</td></tr>
+            <tr><td>90</td><td class="c">2.85</td><td class="c">0.29</td><td class="c">175</td></tr>
+            <tr><td>100</td><td class="c">2.75</td><td class="c">0.28</td><td class="c">210</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 4.7 — מרחק ראות להחלטה</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מהירות תכן V<sub>d</sub> (קמ"ש)</th><th class="c">60</th><th class="c">70</th><th class="c">80</th><th class="c">90</th><th class="c">100</th><th class="c">110</th><th class="c">120</th></tr></thead>
+          <tbody>
+            <tr><td>מהירות התמרון V<sub>m</sub></td><td class="c">35</td><td class="c">40</td><td class="c">50</td><td class="c">50</td><td class="c">60</td><td class="c">60</td><td class="c">60</td></tr>
+            <tr><td>תאוטה a</td><td class="c">4.19</td><td class="c">3.96</td><td class="c">3.76</td><td class="c">3.57</td><td class="c">3.41</td><td class="c">3.36</td><td class="c">3.36</td></tr>
+            <tr><td><b>SDC (מ')</b></td><td class="c"><b>135</b></td><td class="c"><b>160</b></td><td class="c"><b>190</b></td><td class="c"><b>220</b></td><td class="c"><b>255</b></td><td class="c"><b>290</b></td><td class="c"><b>325</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 4.9 — מרחק ראות לעקיפה דחוקה</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מהירות תכן (קמ"ש)</th><th class="c">60</th><th class="c">70</th><th class="c">80</th><th class="c">90</th><th class="c">100</th></tr></thead>
+          <tbody>
+            <tr><td><b>ערכי תכן (מ')</b></td><td class="c"><b>220</b></td><td class="c"><b>260</b></td><td class="c"><b>290</b></td><td class="c"><b>320</b></td><td class="c"><b>350</b></td></tr>
+          </tbody>
+        </table>
+        <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">
+          מתחת למרחק זה — חל איסור עקיפה (סימון 803). מהירויות מעל 80 קמ"ש בדרכים חד-מסלוליות מיועדות לשלב ביניים של נסיעה דו-סיטרית במסלול ראשון מתוך שניים.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 4.10 — יישום מרחקי הראות לפי סיווג הדרך</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סיווג הדרך</th><th class="c">מזערי לעצירה</th><th class="c">החלטה</th><th class="c">עקיפה דחוקה</th></tr></thead>
+          <tbody>
+            <tr><td>מהירה</td><td class="c">תמיד</td><td class="c">תמיד (בכל הוספת / הפחתת נתיב)</td><td class="c">—</td></tr>
+            <tr><td>דו-מסלולית ראשית / אזורית</td><td class="c">תמיד</td><td class="c">לפני צמתים, במחליפים, בהוספה / הפחתת נתיב</td><td class="c">—</td></tr>
+            <tr><td>דו-נתיבית ראשית</td><td class="c">תמיד</td><td class="c">תדירות בק"מ — 1/20 × מהירות תכן</td><td class="c">יש לאפשר עקיפה דחוקה כל 3 ק"מ</td></tr>
+            <tr><td>דו-נתיבית אזורית</td><td class="c">תמיד</td><td class="c">תדירות בק"מ — 1/20 × מהירות תכן</td><td class="c">יש לאפשר עקיפה דחוקה כל 3 ק"מ</td></tr>
+            <tr><td>מקומית</td><td class="c">תמיד</td><td class="c">—</td><td class="c">מתחת למרחק → סימון 803</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>גבהי קצוות קו הראות (סעיף 4.6)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>קצה הקו</th><th class="c">גובה (מ')</th><th>הערות</th></tr></thead>
+          <tbody>
+            <tr><td>עיני נהג — מכונית נוסעים</td><td class="c">1.05</td><td>ברירת מחדל לתכן</td></tr>
+            <tr><td>עיני נהג — אוטובוס</td><td class="c">1.80</td><td>בתוואי בלעדי לאוטובוסים</td></tr>
+            <tr><td>עיני נהג — משאית</td><td class="c">2.40</td><td>בתוואי לתנועת רכב כבד</td></tr>
+            <tr><td>גובה עצם — דרך חד-מסלולית</td><td class="c">0.15</td><td>אין אפשרות לעקוף את המכשול; הדרך פחות מתוחזקת</td></tr>
+            <tr><td>גובה עצם — דרך דו-מסלולית</td><td class="c">0.60</td><td>גובה הפנס האחורי; מאפשר הבחנה גם בחיות</td></tr>
+            <tr><td>גובה עצם — לפני צומת / מחלף</td><td class="c">0.15</td><td>גובה אבן שפה / אף פיסי</td></tr>
+            <tr><td>גובה עצם — עקיפה</td><td class="c">1.05</td><td>זהה לגובה עיני הנהג</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>MAHALCO – מרחקי ראות (פרק 4) · מבוסס על הנחיות התכן של דרכים בין-עירוניות, כרך 1</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ==================== Data tables ==================== */
+/* Table 4.1 — passenger car, flat */
+const SD_PASS = {
+  40:  { a: 4.19, f: 0.43, SD: 45 },
+  50:  { a: 4.19, f: 0.43, SD: 60 },
+  60:  { a: 4.19, f: 0.43, SD: 75 },
+  70:  { a: 3.96, f: 0.40, SD: 100 },
+  80:  { a: 3.76, f: 0.38, SD: 125 },
+  90:  { a: 3.57, f: 0.36, SD: 155 },
+  100: { a: 3.41, f: 0.35, SD: 185 },
+  110: { a: 3.36, f: 0.34, SD: 220 },
+  120: { a: 3.36, f: 0.34, SD: 250 }
+};
+
+/* Table 4.2 — heavy vehicle, flat */
+const SD_TRUCK = {
+  40:  { a: 2.85, f: 0.29, SD: 50 },
+  50:  { a: 2.85, f: 0.29, SD: 70 },
+  60:  { a: 2.85, f: 0.29, SD: 95 },
+  70:  { a: 2.85, f: 0.29, SD: 120 },
+  80:  { a: 2.85, f: 0.29, SD: 145 },
+  90:  { a: 2.85, f: 0.29, SD: 175 },
+  100: { a: 2.75, f: 0.28, SD: 210 }
+};
+
+/* Table 4.7 — decision sight distance */
+const SDC_TABLE = {
+  50:  { vm: 35, a: 4.19, SDC: 135 },
+  60:  { vm: 35, a: 4.19, SDC: 135 },
+  70:  { vm: 40, a: 3.96, SDC: 160 },
+  80:  { vm: 50, a: 3.76, SDC: 190 },
+  90:  { vm: 50, a: 3.57, SDC: 220 },
+  100: { vm: 60, a: 3.41, SDC: 255 },
+  110: { vm: 60, a: 3.36, SDC: 290 },
+  120: { vm: 60, a: 3.36, SDC: 325 }
+};
+
+/* Table 4.9 — restricted passing */
+const RPSD_TABLE = { 60: 220, 70: 260, 80: 290, 90: 320, 100: 350 };
+
+/* Passing parameters — tuned per speed */
+const PASS_PARAMS = {
+  60:  { m: 15, a: 0.64, t1: 3.6, t2: 9.3 },
+  70:  { m: 15, a: 0.64, t1: 3.7, t2: 9.6 },
+  80:  { m: 11, a: 0.66, t1: 3.8, t2: 9.9 },
+  90:  { m: 11, a: 0.66, t1: 3.9, t2: 10.2 },
+  100: { m: 11, a: 0.67, t1: 4.0, t2: 10.5 },
+  110: { m: 11, a: 0.67, t1: 4.1, t2: 10.8 },
+  120: { m: 11, a: 0.67, t1: 4.2, t2: 11.1 }
+};
+
+/* ==================== Utilities ==================== */
+const $ = id => document.getElementById(id);
+const fmt = (x, d=2) => isFinite(x) ? Number(x).toFixed(d) : '—';
+const numF = (x, d=0) => isFinite(x) ? Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
+function setHtml(id, html){ const e=$(id); if (e) e.innerHTML = html; }
+
+/* ==================== TAB 1 — Stopping Sight Distance ==================== */
+function calcTab1(){
+  const vd = parseFloat($('t1_vd').value);
+  const veh = $('t1_veh').value;
+  const mode = $('t1_mode').value;
+  const i = parseFloat($('t1_i').value) || 0;
+  const check = parseFloat($('t1_check').value) || 0;
+
+  const tbl = veh === 'passenger' ? SD_PASS : SD_TRUCK;
+  const row = tbl[vd];
+  if (!row) {
+    setHtml('t1_results', '<p class="text-muted p-3">מהירות לא נתמכת עבור סוג רכב זה.</p>');
+    return;
+  }
+
+  const aFlat = row.a;
+  const fFlat = row.f;
+  const SDFlat = row.SD;
+
+  /* Formula: SD = 0.69·Vd + Vd²/(25.92·(a ± 0.1·i)) */
+  let aUsed = aFlat;
+  let SDSlope = SDFlat;
+  let slopeNote = '';
+
+  if (mode === 'slope') {
+    if (Math.abs(i) < 3) {
+      slopeNote = 'שיפוע קטן מ-3% — משתמשים בערכי הטבלה המישורית';
+    } else {
+      aUsed = aFlat + 0.1 * i * 9.81 / 9.81; /* effective decel */
+      /* SD = 0.69·Vd + Vd² / [25.92·(a ± 0.1·i)] */
+      const denom = 25.92 * (aFlat + 0.1 * i);
+      SDSlope = 0.69 * vd + (vd * vd) / denom;
+      /* round up to 5 m */
+      SDSlope = Math.ceil(SDSlope / 5) * 5;
+    }
+  }
+
+  const SD = mode === 'slope' ? SDSlope : SDFlat;
+
+  /* Warnings */
+  const warn = [];
+  if (check >= SD) {
+    warn.push(['ok', `מרחק הראות המתוכנן (${numF(check)} מ') ≥ הנדרש (${numF(SD)} מ') — תקין.`]);
+  } else {
+    warn.push(['bad', `מרחק הראות המתוכנן (${numF(check)} מ') קטן מהנדרש (${numF(SD)} מ') — יש לתקן את התוואי (הגדלת רדיוס, שינוי שיפוע).`]);
+  }
+  if (veh === 'truck' && vd >= 90) {
+    warn.push(['info', `רכב כבד — מהירויות יעוד מ-90 קמ"ש ומעלה מתוכננות לפי מהירות תכן של 90 קמ"ש (מגבלת רכב כבד).`]);
+  }
+  if (mode === 'slope' && i < 0) {
+    warn.push(['warn', `בירידה (i = ${i}%) — מרחק הבלימה מתארך. מרחק הראות הנדרש: ${numF(SDSlope)} מ'.`]);
+  } else if (mode === 'slope' && i > 0) {
+    warn.push(['info', `בעלייה (i = ${i}%) — מרחק הבלימה מתקצר. מרחק הראות הנדרש: ${numF(SDSlope)} מ'.`]);
+  }
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">ערכי תכן בסיסיים (טבלה 4.1 / 4.2)</div>
+    <div class="formula">V_d = ${vd} קמ"ש ; סוג רכב = ${veh === 'passenger' ? 'מכונית נוסעים' : 'רכב כבד'}</div>
+    <div class="formula">a (תאוטה) = ${aFlat} מ'/שנ'² ; f = ${fFlat} (a/g)</div>
+    <div class="formula">S_D (מישורי, |i| &lt; 3%) = ${SDFlat} מ'</div>
+  `);
+
+  if (mode === 'slope' && Math.abs(i) >= 3) {
+    const denom = 25.92 * (aFlat + 0.1 * i);
+    steps.push(`
+      <div class="ttl">חישוב עם שיפוע אורכי — נוסחה 4.2</div>
+      <div class="formula">S_D = 0.69·V_d + V_d² / [25.92·(a ± 0.1·i)]</div>
+      <div class="formula">a_eff = a ± 0.1·i = ${aFlat} + 0.1·(${i}) = ${fmt(aFlat + 0.1*i,3)} מ'/שנ'²</div>
+      <div class="formula">S_D = 0.69·${vd} + ${vd}² / [25.92·${fmt(aFlat + 0.1*i,3)}]</div>
+      <div class="formula">S_D = ${fmt(0.69*vd,1)} + ${fmt(vd*vd/denom,1)} = ${fmt(0.69*vd + vd*vd/denom,1)} מ' → ${numF(SDSlope)} מ' (מעוגל כלפי מעלה)</div>
+    `);
+  }
+
+  steps.push(`
+    <div class="ttl">בדיקה מול מרחק מתוכנן</div>
+    <div class="formula">S_D נדרש = ${numF(SD)} מ' ; S_D מתוכנן = ${numF(check)} מ'</div>
+    <div class="formula">${check >= SD ? '✓ עומד בדרישה' : '✗ אינו עומד בדרישה'}</div>
+  `);
+
+  setHtml('t1_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">S<sub>D</sub> נדרש</div><div class="result-number highlight">${numF(SD)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">S<sub>D</sub> מישורי (טבלה)</div><div class="result-number">${numF(SDFlat)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">תאוטה a</div><div class="result-number">${aFlat}</div><div class="result-sub">מ'/שנ'²</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">f שקול (a/g)</div><div class="result-number">${fFlat}</div><div class="result-sub">—</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 2 — Decision Sight Distance ==================== */
+function calcTab2(){
+  const vd = parseFloat($('t2_vd').value);
+  const vm = parseFloat($('t2_vm').value);
+  const a = parseFloat($('t2_a').value);
+  const tm = parseFloat($('t2_tm').value);
+  const check = parseFloat($('t2_check').value) || 0;
+
+  /* SDC = 5.5/3.6 · Vd + (Vd² − Vm²)/(2·3.6²·a) + (Tm/3.6) · Vm
+         = 1.53·Vd + (Vd² − Vm²)/(25.92·a) + (Tm/3.6)·Vm */
+  const term1 = 1.53 * vd;
+  const term2 = (vd * vd - vm * vm) / (25.92 * a);
+  const term3 = (tm / 3.6) * vm;
+  const SDC = term1 + term2 + term3;
+
+  /* Table lookup */
+  const tblRow = SDC_TABLE[vd];
+
+  const warn = [];
+  if (check >= SDC) {
+    warn.push(['ok', `מרחק ההחלטה המתוכנן (${numF(check)} מ') ≥ הנדרש (${numF(SDC)} מ') — תקין.`]);
+  } else {
+    warn.push(['bad', `מרחק ההחלטה המתוכנן (${numF(check)} מ') קטן מהנדרש (${numF(SDC)} מ') — יש להאריך את מרחק הראות.`]);
+  }
+  if (tblRow) {
+    warn.push(['info', `ערך תכן מטבלה 4.7 למהירות ${vd}: V<sub>m</sub> = ${tblRow.vm} קמ"ש, a = ${tblRow.a}, S<sub>DC</sub> = ${tblRow.SDC} מ'`]);
+  }
+  if (tm < 3.5) {
+    warn.push(['warn', `משך זמן תמרון T<sub>m</sub> = ${tm} שנ' קצר מהמינימום המומלץ (3.5 שנ').`]);
+  } else if (tm > 4.5) {
+    warn.push(['warn', `משך זמן תמרון T<sub>m</sub> = ${tm} שנ' ארוך מהמקסימום המומלץ (4.5 שנ').`]);
+  }
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">נוסחת מרחק הראות להחלטה</div>
+    <div class="formula">S_DC = (5.5/3.6)·V_d + (V_d² − V_m²)/(2·3.6²·a) + (T_m/3.6)·V_m</div>
+    <div class="formula">S_DC = 1.53·V_d + (V_d² − V_m²)/(25.92·a) + (T_m/3.6)·V_m</div>
+  `);
+  steps.push(`
+    <div class="ttl">רכיב 1 — חישה-תגובה והאטה ראשונית</div>
+    <div class="formula">term₁ = 1.53·V_d = 1.53·${vd} = ${fmt(term1,1)} מ'</div>
+    <div class="formula">(5.5 שנ' × V_d / 3.6 — כולל חישה 2.0 שנ' + תמרון 3.5 שנ')</div>
+  `);
+  steps.push(`
+    <div class="ttl">רכיב 2 — האטה מ-V<sub>d</sub> ל-V<sub>m</sub></div>
+    <div class="formula">term₂ = (V_d² − V_m²)/(25.92·a)</div>
+    <div class="formula">term₂ = (${vd}² − ${vm}²)/(25.92·${a}) = (${vd*vd} − ${vm*vm})/${fmt(25.92*a,2)} = ${fmt(term2,1)} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">רכיב 3 — תמרון במהירות V<sub>m</sub></div>
+    <div class="formula">term₃ = (T_m/3.6)·V_m = (${tm}/3.6)·${vm} = ${fmt(term3,1)} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">סכום</div>
+    <div class="formula">S_DC = ${fmt(term1,1)} + ${fmt(term2,1)} + ${fmt(term3,1)} = ${fmt(SDC,1)} מ' → ${numF(Math.ceil(SDC/5)*5)} מ'</div>
+  `);
+
+  setHtml('t2_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">S<sub>DC</sub> מחושב</div><div class="result-number highlight">${numF(SDC)}</div><div class="result-sub">מ'</div></div></div>
+      ${tblRow ? `<div class="col-6"><div class="result-box"><div class="result-label">S<sub>DC</sub> מטבלה 4.7</div><div class="result-number">${tblRow.SDC}</div><div class="result-sub">מ'</div></div></div>` : ''}
+      <div class="col-6"><div class="result-box"><div class="result-label">V<sub>m</sub> תמרון</div><div class="result-number">${vm}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">T<sub>m</sub></div><div class="result-number">${tm}</div><div class="result-sub">שניות</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 3 — Full Passing ==================== */
+function calcTab3(){
+  const vd = parseFloat($('t3_vd').value);
+  const veh = $('t3_veh').value;
+  const m = parseFloat($('t3_m').value);
+  const a = parseFloat($('t3_a').value);
+  let t1 = parseFloat($('t3_t1').value);
+  let t2 = parseFloat($('t3_t2').value);
+
+  /* If truck is overtaken — add 1.5 s to t2 */
+  if (veh === 'truck') {
+    t2 = t2 + 1.5;
+  }
+
+  /* d1 = t1/3.6 · (Vp − m + a·t1/2) */
+  const vpMinusM = vd - m;
+  const d1 = (t1/3.6) * (vpMinusM + (a * t1) / 2);
+
+  /* d2 = Vp/3.6 · t2 */
+  const d2 = (vd / 3.6) * t2;
+
+  /* d3 = Vp/3.6 · 3 */
+  const d3 = (vd / 3.6) * 3;
+
+  /* d4 = 2/3 · d2 */
+  const d4 = (2/3) * d2;
+
+  const dPSD = d1 + d2 + d3 + d4;
+
+  const warn = [];
+  warn.push(['info', `הערה: הפרמטרים תואמו למהירות ${vd} קמ"ש — להנחות מפורטות ראו סעיף 4.4.`]);
+  if (veh === 'truck') {
+    warn.push(['info', `רכב נעקף: משאית — הוספו 1.5 שנ' ל-t₂ (סה"כ ${t2.toFixed(1)} שנ').`]);
+  }
+  if (vd >= 80 && m === 15) {
+    warn.push(['warn', `למהירויות 80 קמ"ש ומעלה מומלץ m = 11 קמ"ש (ולא 15) — ראו סעיף 4.4.`]);
+  }
+  if (dPSD > 800) {
+    warn.push(['info', `מרחק עקיפה ${numF(dPSD)} מ' — ארוך מאוד, מתאים לדרך דו-נתיבית מהירה עם מעט עקיפות.`]);
+  }
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">נתונים</div>
+    <div class="formula">V_p = ${vd} קמ"ש ; m = ${m} קמ"ש ; a = ${a} מ'/שנ'²</div>
+    <div class="formula">t₁ = ${t1} שנ' ; t₂ = ${t2.toFixed(1)} שנ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">d₁ — תמרון התחלתי</div>
+    <div class="formula">d₁ = (t₁/3.6) · [V_p − m + a·t₁/2]</div>
+    <div class="formula">d₁ = (${t1}/3.6) · [${vd} − ${m} + ${a}·${t1}/2]</div>
+    <div class="formula">d₁ = ${fmt(t1/3.6,3)} · [${vpMinusM} + ${fmt(a*t1/2,2)}] = ${fmt(d1,1)} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">d₂ — נסיעה בנתיב הנגדי</div>
+    <div class="formula">d₂ = (V_p/3.6) · t₂ = (${vd}/3.6) · ${t2.toFixed(1)} = ${fmt(d2,1)} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">d₃ — מרווח בטיחות לרכב ממול בסוף העקיפה</div>
+    <div class="formula">d₃ = (V_p/3.6) · 3.0 = (${vd}/3.6) · 3 = ${fmt(d3,1)} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">d₄ — נסיעת הרכב ממול במהלך 2/3 מהעקיפה</div>
+    <div class="formula">d₄ = (2/3) · d₂ = (2/3) · ${fmt(d2,1)} = ${fmt(d4,1)} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">סכום — מרחק ראות לעקיפה מלאה</div>
+    <div class="formula">d_PSD = d₁ + d₂ + d₃ + d₄ = ${fmt(d1,1)} + ${fmt(d2,1)} + ${fmt(d3,1)} + ${fmt(d4,1)} = ${fmt(dPSD,1)} מ'</div>
+    <div class="formula">→ ${numF(Math.ceil(dPSD/5)*5)} מ' (מעוגל)</div>
+  `);
+
+  setHtml('t3_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">d<sub>PSD</sub> — עקיפה מלאה</div><div class="result-number highlight">${numF(dPSD)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">דרך דו-נתיבית</div><div class="result-number">${vd}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">d₁</div><div class="result-number">${fmt(d1,0)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">d₂</div><div class="result-number">${fmt(d2,0)}</div><div class="result-sub">מ'</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">הערות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 4 — Restricted Passing ==================== */
+function calcTab4(){
+  const vd = parseFloat($('t4_vd').value);
+  const actual = parseFloat($('t4_actual').value);
+
+  const RPSD = RPSD_TABLE[vd] || 0;
+
+  const warn = [];
+  if (actual >= RPSD) {
+    warn.push(['ok', `מרחק הראות בקטע (${numF(actual)} מ') ≥ מרחק העקיפה הדחוקה (${numF(RPSD)} מ') — עקיפה מותרת.`]);
+  } else {
+    warn.push(['bad', `מרחק הראות בקטע (${numF(actual)} מ') קטן ממרחק העקיפה הדחוקה (${numF(RPSD)} מ') — חל איסור עקיפה (סימון 803).`]);
+  }
+  if (vd >= 90) {
+    warn.push(['info', `מהירות ${vd} קמ"ש בדרך חד-מסלולית — מיועד רק לשלב ביניים של נסיעה דו-סיטרית במסלול ראשון מתוך שניים של דרך מחולקת (סעיף 2.3.3).`]);
+  }
+  warn.push(['info', `מרחק עקיפה דחוקה מייצג את המזערי — נהגים יכולים לבצע עקיפה קצרה. מתחת לערך זה אסורה עקיפה לכל כלי הרכב.`]);
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">ערך תכן מטבלה 4.9</div>
+    <div class="formula">V_d = ${vd} קמ"ש → d_RPSD = ${RPSD} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">חישוב מרכיבים (מבוסס על סעיף 4.5)</div>
+    <div class="formula">d_RPSD = 2·(0.6·d₂) + (1/3)·d₃</div>
+    <div class="formula">כאשר d₂ ו-d₃ הם המרכיבים של העקיפה הקצרה ביותר האפשרית</div>
+  `);
+  steps.push(`
+    <div class="ttl">השוואה למרחק בפועל</div>
+    <div class="formula">d בפועל = ${numF(actual)} מ' ; d_RPSD = ${numF(RPSD)} מ'</div>
+    <div class="formula">${actual >= RPSD ? '✓ עקיפה מותרת' : '✗ יש לסמן קו הפרדה רצוף כפול (803)'}</div>
+  `);
+
+  setHtml('t4_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">d<sub>RPSD</sub> נדרש</div><div class="result-number highlight">${RPSD}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">d בפועל</div><div class="result-number">${numF(actual)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-12">
+        <div class="result-box" style="text-align:center;">
+          <div class="result-label">מצב סימון</div>
+          <div class="result-number ${actual >= RPSD ? 'highlight' : ''}" style="font-size:1.3rem;direction:rtl;text-align:center;">
+            ${actual >= RPSD ? '✓ עקיפה מותרת' : '🚫 חל איסור עקיפה — סמן 803'}
+          </div>
+        </div>
+      </div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">הערות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 5 — Application ==================== */
+function calcTab5(){
+  const roadtype = $('t5_roadtype').value;
+  const vd = parseFloat($('t5_vd').value);
+  const length = parseFloat($('t5_length').value);
+  const actual = parseFloat($('t5_actual').value);
+
+  /* Base SD from table */
+  const sdTable = (vd <= 100) ? SD_PASS[vd] : SD_PASS[100];
+  const sd = sdTable ? sdTable.SD : 0;
+
+  /* Decision frequency */
+  const decisionInterval = vd / 20; /* km — 1/20 of Vd */
+
+  /* Passing allowed every 3 km on single-carriageway */
+  const passingInterval = 3;
+
+  const warn = [];
+  const steps = [];
+
+  /* SD requirement */
+  steps.push(`
+    <div class="ttl">מרחק ראות מזערי לעצירה</div>
+    <div class="formula">V_d = ${vd} קמ"ש ; S_D = ${sd} מ' (טבלה 4.1, מישורי)</div>
+    <div class="formula">חייב להתקיים תמיד — לאורך כל הדרך</div>
+  `);
+  if (actual < sd) {
+    warn.push(['bad', `מרחק הראות הקיים (${numF(actual)} מ') קטן מהמזערי לעצירה (${numF(sd)} מ') — יש לתקן.`]);
+  } else {
+    warn.push(['ok', `מרחק הראות הקיים (${numF(actual)} מ') ≥ המזערי לעצירה (${numF(sd)} מ').`]);
+  }
+
+  /* Decision */
+  if (roadtype === 'freeway' || roadtype === 'dual_major') {
+    steps.push(`
+      <div class="ttl">מרחק החלטה — חובה תמיד / לפני צמתים ומחליפים</div>
+      <div class="formula">בדרך ${roadtype === 'freeway' ? 'מהירה' : 'דו-מסלולית'}: נדרש בכל הוספת / הפחתת נתיב, לפני צמתים ומחליפים</div>
+    `);
+  } else if (roadtype === 'single_major' || roadtype === 'single_arterial') {
+    const decisionCount = Math.ceil(length / decisionInterval);
+    steps.push(`
+      <div class="ttl">תדירות מרחק החלטה בדרך דו-נתיבית</div>
+      <div class="formula">תדירות = 1/${vd/20} = ${fmt(20/vd,4)} לק"מ → סה"כ ${decisionCount} מקומות ב-${length} ק"מ</div>
+      <div class="formula">לכל מקום נדרש S_DC (טבלה 4.7): ${SDC_TABLE[vd] ? SDC_TABLE[vd].SDC + ' מ\'' : '—'}</div>
+    `);
+    warn.push(['info', `בדרך דו-נתיבית — נדרשים ${decisionCount} מקומות עם מרחק החלטה לאורך ${length} ק"מ.`]);
+  }
+
+  /* Passing */
+  if (roadtype === 'single_major' || roadtype === 'single_arterial') {
+    const passingCount = Math.ceil(length / passingInterval);
+    const rpsd = RPSD_TABLE[vd] || 0;
+    steps.push(`
+      <div class="ttl">עקיפה דחוקה בדרך דו-נתיבית</div>
+      <div class="formula">יש לאפשר עקיפה דחוקה כל 3 ק"מ → ${passingCount} מקומות ב-${length} ק"מ</div>
+      <div class="formula">d_RPSD = ${rpsd} מ'</div>
+    `);
+    if (actual < rpsd) {
+      warn.push(['warn', `מרחק הראות הקיים (${numF(actual)} מ') קטן מ-d_RPSD (${rpsd} מ') — יש לסמן 803 או לבדוק שיפור.`]);
+    } else {
+      warn.push(['ok', `מרחק הראות הקיים מאפשר עקיפה דחוקה (≥ ${rpsd} מ').`]);
+    }
+  }
+
+  setHtml('t5_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">S<sub>D</sub> מזערי</div><div class="result-number highlight">${sd}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">S<sub>D</sub> בפועל</div><div class="result-number ${actual >= sd ? '' : 'highlight'}">${numF(actual)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">S<sub>DC</sub> החלטה</div><div class="result-number">${SDC_TABLE[vd] ? SDC_TABLE[vd].SDC : '—'}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">d<sub>RPSD</sub> עקיפה דחוקה</div><div class="result-number">${RPSD_TABLE[vd] || '—'}</div><div class="result-sub">מ'</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">הערות יישום</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    <div class="section-note mt-3">
+      <b>גבהי קצוות קו הראות (סעיף 4.6):</b> עיני נהג — 1.05 מ' (מכונית), 1.80 מ' (אוטובוס), 2.40 מ' (משאית). גובה עצם — 0.15 מ' (חד-מסלולית), 0.60 מ' (דו-מסלולית), 1.05 מ' (עקיפה).
+    </div>
+  `);
+}
+
+/* ==================== Wire-up ==================== */
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(btn.dataset.tab);
+    if (target) target.classList.add('active');
+  });
+});
+
+/* Tab 1 */
+['t1_vd','t1_veh','t1_mode','t1_i','t1_check'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab1); el.addEventListener('change', calcTab1); }
+});
+$('t1_mode').addEventListener('change', () => {
+  $('slopeField').style.display = $('t1_mode').value === 'slope' ? '' : 'none';
+  calcTab1();
+});
+
+/* Tab 2 */
+['t2_vd','t2_vm','t2_a','t2_tm','t2_check'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab2); el.addEventListener('change', calcTab2); }
+});
+$('t2_vd').addEventListener('change', () => {
+  const vd = parseFloat($('t2_vd').value);
+  const row = SDC_TABLE[vd];
+  if (row) { $('t2_vm').value = row.vm; $('t2_a').value = row.a; }
+  calcTab2();
+});
+
+/* Tab 3 */
+['t3_vd','t3_veh','t3_m','t3_a','t3_t1','t3_t2'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab3); el.addEventListener('change', calcTab3); }
+});
+$('t3_vd').addEventListener('change', () => {
+  const vd = parseFloat($('t3_vd').value);
+  const p = PASS_PARAMS[vd];
+  if (p) { $('t3_m').value = p.m; $('t3_a').value = p.a; $('t3_t1').value = p.t1; $('t3_t2').value = p.t2; }
+  calcTab3();
+});
+
+/* Tab 4 */
+['t4_vd','t4_actual'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab4); el.addEventListener('change', calcTab4); }
+});
+
+/* Tab 5 */
+['t5_roadtype','t5_vd','t5_length','t5_actual'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab5); el.addEventListener('change', calcTab5); }
+});
+
+/* Init */
+calcTab1();
+calcTab2();
+calcTab3();
+calcTab4();
+calcTab5();
+
+})();
+</script>
+</body>
+</html>

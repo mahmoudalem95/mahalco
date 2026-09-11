@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAHALCO – מדיניות תכן וחתך רוחב (פרקים 2–3)</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<style>
+  :root {
+    --bg:#12121e; --card:#1a1a2e; --card-2:#22223a; --field:#0f0f1a;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.05);
+    --accent:#E8A33D; --accent-dim:rgba(232,163,61,.16); --green:#4ADE80;
+    --ink:#EDEBF2; --ink-2:#9A96AB; --ink-3:#6B6780;
+    --danger:#F35B5B; --warn:#F5C451; --info:#7AB8F5;
+  }
+  * { box-sizing: border-box; }
+  body { background:var(--bg); color:var(--ink); padding:20px; font-family:Arial, sans-serif; line-height:1.5; }
+  .container { max-width:1400px; }
+  h1 { font-size:clamp(1.6rem, 1.375rem + 1.5vw, 2.4rem); font-weight:700; margin:0 0 .5rem; color:var(--ink); line-height:1.2; }
+  h1 .bi { color:#ffc107; margin-left:.5rem; }
+  .subhead { color:var(--ink-3); margin:0 0 1.5rem; line-height:1.6; font-size:.95rem; }
+  .badge { display:inline-block; background:var(--card-2); color:var(--ink-2); font-size:.8rem;
+    font-weight:600; padding:.25em .6em; border-radius:6px; vertical-align:middle; margin-right:6px; }
+
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.3); margin-bottom:20px; }
+  .card-header { background:var(--accent); color:#1a1a2e; border-radius:12px 12px 0 0;
+    font-weight:600; padding:.5rem 1rem; border-bottom:1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left:.5rem; }
+  .card-body { padding:1rem; }
+  .section-note { font-size:.78rem; color:var(--ink-3); margin:0 0 12px; line-height:1.6; }
+
+  .form-group { margin-bottom:12px; }
+  .row-2, .row-3, .row-4 { display:grid; gap:12px; }
+  .row-2 { grid-template-columns:1fr 1fr; }
+  .row-3 { grid-template-columns:1fr 1fr 1fr; }
+  .row-4 { grid-template-columns:repeat(4,1fr); }
+  @media (max-width:720px) { .row-2,.row-3,.row-4 { grid-template-columns:1fr; gap:8px; } }
+  label { display:block; margin-bottom:.35rem; color:var(--ink-2); font-size:.9rem; }
+  label .unit { color:var(--ink-3); font-size:.8rem; }
+  input, select { width:100%; padding:.375rem .75rem; font-size:1rem; border:1px solid var(--line);
+    border-radius:6px; background:var(--field); color:var(--ink); font-family:inherit; }
+  select option { background:var(--field); color:var(--ink); }
+  input:focus, select:focus { border-color:var(--accent); outline:none; box-shadow:0 0 0 .2rem rgba(232,163,61,.2); }
+  input[type=number] { -moz-appearance:textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .form-text { color:var(--ink-3); font-size:.75rem; }
+
+  .tabs { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+  .tabs button { padding:.5rem 1rem; border-radius:8px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink-2); font-size:.88rem; font-weight:600; cursor:pointer;
+    font-family:inherit; transition:.15s; width:auto; }
+  .tabs button:hover { background:var(--card-2); color:var(--ink); }
+  .tabs button.active { background:var(--accent); color:#1a1a2e; border-color:var(--accent); }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+
+  .results-sticky { position:sticky; top:16px; }
+  @media (max-width:991px) { .results-sticky { position:static; } }
+  .result-box { background:var(--card-2); border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; height:100%; }
+  .result-label { font-size:.82rem; color:var(--ink-2); }
+  .result-number { font-size:1.7rem; font-weight:700; color:var(--ink); line-height:1.15;
+    font-variant-numeric:tabular-nums; direction:ltr; text-align:right; }
+  .result-number.highlight { color:var(--accent); }
+  .result-sub { font-size:.72rem; color:var(--ink-3); }
+
+  ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+  ol.steps > li { counter-increment:st; position:relative; padding:12px 40px 12px 0; border-bottom:1px dashed var(--line); }
+  ol.steps > li:last-child { border-bottom:0; }
+  ol.steps > li::before { content:counter(st); position:absolute; right:0; top:12px;
+    background:var(--accent); color:#1a1a2e; width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800; }
+  .steps .ttl { font-weight:700; color:var(--ink); font-size:.93rem; margin-bottom:5px; }
+  .steps .formula { direction:ltr; text-align:left; background:var(--field); border:1px solid var(--line-2);
+    border-radius:6px; padding:6px 9px; font-family:Consolas,"Courier New",monospace;
+    font-size:.78rem; margin:5px 0; overflow-x:auto; white-space:nowrap; color:#d8d4e4; }
+  .steps .num { direction:ltr; display:inline-block; font-family:Consolas,monospace; font-weight:700; color:var(--accent); }
+
+  .table { --bs-table-bg:transparent; --bs-table-color:var(--ink); --bs-table-border-color:var(--line); font-size:.85rem; }
+  .table thead th { color:var(--ink-3); border-color:var(--line); font-weight:600; white-space:nowrap; font-size:.78rem; }
+  .table td, .table th { border-color:var(--line-2); vertical-align:middle; }
+  .table td.c { text-align:center; }
+  .table tfoot td { font-weight:700; color:var(--accent); border-top:1px solid var(--line); }
+  .table tr.highlight td { background:var(--accent-dim); }
+
+  .warn-list { list-style:none; padding:0; margin:0; }
+  .warn-list li { padding:9px 12px; border-radius:8px; margin-bottom:7px; font-size:.85rem;
+    line-height:1.55; border-right:4px solid; background:var(--field); }
+  .warn-list li.ok { border-color:var(--green); color:#a6efc0; }
+  .warn-list li.warn { border-color:var(--warn); color:#f2dca2; }
+  .warn-list li.bad { border-color:var(--danger); color:#f7a3a3; }
+  .warn-list li.info { border-color:var(--info); color:#bcd9fb; }
+
+  .btn-accent { background:var(--accent); border-color:var(--accent); color:#1a1a2e; font-weight:700;
+    padding:.55rem 1.4rem; border-radius:8px; border:1px solid transparent; width:100%; font-family:inherit; cursor:pointer; }
+  .btn-accent:hover { background:#c9862f; border-color:#c9862f; }
+
+  .scheme-box { background:var(--field); border:1px solid var(--line-2); border-radius:10px; padding:14px; overflow-x:auto; }
+  .scheme-box svg { display:block; margin:0 auto; width:100%; max-width:1000px; height:auto; }
+  .scheme-caption { font-size:.78rem; color:var(--ink-3); text-align:center; margin-top:8px; }
+
+  footer { text-align:center; color:var(--ink-3); font-size:.85rem; margin-top:1.5rem; padding-bottom:1rem; }
+  .col-help { font-size:.75rem; color:var(--ink-3); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1><i class="bi bi-layout-three-columns"></i>מדיניות תכן וחתך רוחב <span class="badge">פרקים 2–3</span></h1>
+  <p class="subhead">
+    מחשבון מקיף למדיניות התכן הבסיסית ולחתך הרוחב של דרכים בין-עירוניות לפי הנחיות התכן (כרך 1, פרקים 2–3).
+    כולל סיווג דרכים, מהירויות יעוד/תכן/ממ"מ, רוחב נתיבים ושוליים, מפרדה, שיפועים לרוחב, חתכי ביניים,
+    נתיבי עקיפה וחזילה, ומפרצי חירום.
+    <br>החישוב מתבצע כולו בדפדפן. יחידות: מטר, קמ"ש, אחוזים.
+  </p>
+
+  <div class="tabs">
+    <button class="active" data-tab="tab1"><i class="bi bi-signpost-2"></i> סיווג ומהירויות (פרק 2)</button>
+    <button data-tab="tab2"><i class="bi bi-arrows-expand"></i> רוחב נתיבים ושוליים (3.2–3.3)</button>
+    <button data-tab="tab3"><i class="bi bi-arrows-collapse"></i> מפרדה ושיפועים (3.4–3.6)</button>
+    <button data-tab="tab4"><i class="bi bi-signpost-split"></i> חתכי ביניים (3.9)</button>
+    <button data-tab="tab5"><i class="bi bi-cone-striped"></i> מפרץ חירום (3.10)</button>
+    <button data-tab="tab6"><i class="bi bi-table"></i> טבלאות עזר</button>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 1: Classification & Speeds                                  -->
+  <!-- =============================================================== -->
+  <div id="tab1" class="tab-pane active">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – סיווג ומהירויות</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="t1_roadtype">סוג הדרך (סיווג תפקודי)</label>
+              <select id="t1_roadtype">
+                <option value="freeway">דרך מהירה בין-עירונית</option>
+                <option value="urban_express">דרך מעויירת / פרברית מהירה</option>
+                <option value="dual_major">דרך דו-מסלולית ממוחלפת</option>
+                <option value="dual_other">דרך דו-מסלולית אחרת</option>
+                <option value="single">דרך חד-מסלולית (דו-נתיבית)</option>
+                <option value="local">דרך מקומית / גישה</option>
+              </select>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t1_terrain">סיווג טופוגרפי / רגישות</label>
+                <select id="t1_terrain">
+                  <option value="flat">מישורי (ללא הפחתה)</option>
+                  <option value="rolling" selected>גבעי (הפחתה בדרגה אחת)</option>
+                  <option value="mountainous">הררי (הפחתה בשתי דרגות)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t1_sensitivity">רגישות סביבתית</label>
+                <select id="t1_sensitivity">
+                  <option value="low">נמוכה (C)</option>
+                  <option value="medium" selected>בינונית (D)</option>
+                  <option value="high">גבוהה (E)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t1_target">מהירות יעוד קיימת / רצויה <span class="unit">(קמ"ש)</span></label>
+              <input type="number" id="t1_target" value="0" step="5" min="0" max="120">
+              <div class="col-help">0 = חשב אוטומטית לפי טבלה 2.3</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>תרשים 2.2 — קשרי גומלין</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arT1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#E8A33D"/>
+                  </marker>
+                </defs>
+                <!-- step boxes -->
+                <rect x="20" y="20" width="140" height="50" rx="6" fill="#22223a" stroke="#E8A33D" stroke-width="1.5"/>
+                <text x="90" y="42" text-anchor="middle" fill="#EDEBF2" font-size="10" font-weight="700">קביעת סוג דרך</text>
+                <text x="90" y="58" text-anchor="middle" fill="#9A96AB" font-size="9">תפקיד, מהירות יעוד</text>
+
+                <rect x="190" y="20" width="140" height="50" rx="6" fill="#22223a" stroke="#E8A33D" stroke-width="1.5"/>
+                <text x="260" y="42" text-anchor="middle" fill="#EDEBF2" font-size="10" font-weight="700">בחירת ממ"מ</text>
+                <text x="260" y="58" text-anchor="middle" fill="#9A96AB" font-size="9">ומהירות תכן</text>
+
+                <rect x="360" y="20" width="100" height="50" rx="6" fill="#22223a" stroke="#E8A33D" stroke-width="1.5"/>
+                <text x="410" y="47" text-anchor="middle" fill="#EDEBF2" font-size="10" font-weight="700">גיאומטריה</text>
+
+                <rect x="360" y="120" width="100" height="50" rx="6" fill="#22223a" stroke="#7AB8F5" stroke-width="1.5"/>
+                <text x="410" y="142" text-anchor="middle" fill="#EDEBF2" font-size="10" font-weight="700">חיזוי/הערכה</text>
+                <text x="410" y="158" text-anchor="middle" fill="#9A96AB" font-size="9">מהירות תפעול</text>
+
+                <rect x="190" y="200" width="140" height="50" rx="6" fill="#22223a" stroke="#F35B5B" stroke-width="1.5"/>
+                <text x="260" y="222" text-anchor="middle" fill="#EDEBF2" font-size="10" font-weight="700">שינוי מאפיינים</text>
+                <text x="260" y="238" text-anchor="middle" fill="#9A96AB" font-size="9">גיאומטריים</text>
+
+                <rect x="20" y="200" width="140" height="50" rx="6" fill="#22223a" stroke="#F35B5B" stroke-width="1.5"/>
+                <text x="90" y="222" text-anchor="middle" fill="#EDEBF2" font-size="10" font-weight="700">שינוי ממ"מ /</text>
+                <text x="90" y="238" text-anchor="middle" fill="#9A96AB" font-size="9">מהירות תכן</text>
+
+                <!-- arrows -->
+                <line x1="160" y1="45" x2="188" y2="45" stroke="#E8A33D" stroke-width="1.5" marker-end="url(#arT1)"/>
+                <line x1="330" y1="45" x2="358" y2="45" stroke="#E8A33D" stroke-width="1.5" marker-end="url(#arT1)"/>
+                <line x1="410" y1="70" x2="410" y2="118" stroke="#7AB8F5" stroke-width="1.5" marker-end="url(#arT1)"/>
+
+                <!-- decision diamond -->
+                <polygon points="410,190 460,215 410,240 360,215" fill="#22223a" stroke="#4ADE80" stroke-width="1.5"/>
+                <text x="410" y="218" text-anchor="middle" fill="#4ADE80" font-size="9" font-weight="700">מתאים?</text>
+
+                <line x1="410" y1="170" x2="410" y2="188" stroke="#7AB8F5" stroke-width="1.5" marker-end="url(#arT1)"/>
+                <line x1="360" y1="215" x2="332" y2="215" stroke="#F35B5B" stroke-width="1.5" marker-end="url(#arT1)"/>
+                <line x1="190" y1="215" x2="162" y2="215" stroke="#F35B5B" stroke-width="1.5" marker-end="url(#arT1)"/>
+                <line x1="90" y1="200" x2="90" y2="72" stroke="#F35B5B" stroke-width="1.5" marker-end="url(#arT1)"/>
+                <line x1="460" y1="215" x2="470" y2="215" stroke="#4ADE80" stroke-width="1.5"/>
+                <text x="474" y="218" fill="#4ADE80" font-size="9">סיום</text>
+                <text x="250" y="208" fill="#F35B5B" font-size="8">לא</text>
+                <text x="425" y="200" fill="#4ADE80" font-size="8">כן</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">תרשים 2.2 — קשרי גומלין בין סוגי המהירות בתהליך התכנון</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – סיווג ומהירויות</div>
+          <div class="card-body" id="t1_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 2: Lane & shoulder widths                                   -->
+  <!-- =============================================================== -->
+  <div id="tab2" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – רוחב נתיבים ושוליים</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_roadtype">סוג הדרך</label>
+                <select id="t2_roadtype">
+                  <option value="freeway">דרך מהירה בין-עירונית</option>
+                  <option value="urban_express">דרך מעויירת / פרברית מהירה</option>
+                  <option value="dual_major">דרך דו-מסלולית ראשית</option>
+                  <option value="dual_arterial">דרך דו-מסלולית אזורית</option>
+                  <option value="single_major">דרך חד-מסלולית ראשית</option>
+                  <option value="single_arterial" selected>דרך חד-מסלולית אזורית</option>
+                  <option value="local">דרך מקומית / גישה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t2_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                <select id="t2_vd">
+                  <option>60</option><option>70</option><option>80</option>
+                  <option selected>90</option><option>100</option><option>110</option><option>120</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_lanes_dir">מספר נתיבים לכיוון</label>
+                <select id="t2_lanes_dir">
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t2_shoulder_side">שול נבחן</label>
+                <select id="t2_shoulder_side">
+                  <option value="right" selected>שול ימני (חיצוני)</option>
+                  <option value="left">שול שמאלי (במפרדה)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה – חתך טיפוסי</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- pavement -->
+                <rect x="0" y="90" width="480" height="20" fill="#2c2c46"/>
+                <!-- left shoulder -->
+                <rect x="0" y="82" width="60" height="8" fill="#3a3a58"/>
+                <text x="30" y="76" text-anchor="middle" fill="#7AB8F5" font-size="10">שול</text>
+                <!-- right shoulder -->
+                <rect x="420" y="82" width="60" height="8" fill="#3a3a58"/>
+                <text x="450" y="76" text-anchor="middle" fill="#7AB8F5" font-size="10">שול</text>
+                <!-- median (center) -->
+                <rect x="220" y="75" width="40" height="15" fill="#22223a" stroke="#E8A33D" stroke-width="1"/>
+                <text x="240" y="68" text-anchor="middle" fill="#E8A33D" font-size="9">מפרדה</text>
+                <!-- lanes -->
+                <line x1="60" y1="90" x2="60" y2="110" stroke="#9A96AB" stroke-width="1.5" stroke-dasharray="3,2"/>
+                <line x1="140" y1="90" x2="140" y2="110" stroke="#EDEBF2" stroke-width="1.2" stroke-dasharray="8,5"/>
+                <line x1="220" y1="90" x2="220" y2="110" stroke="#F5C451" stroke-width="2"/>
+                <line x1="260" y1="90" x2="260" y2="110" stroke="#F5C451" stroke-width="2"/>
+                <line x1="340" y1="90" x2="340" y2="110" stroke="#EDEBF2" stroke-width="1.2" stroke-dasharray="8,5"/>
+                <line x1="420" y1="90" x2="420" y2="110" stroke="#9A96AB" stroke-width="1.5" stroke-dasharray="3,2"/>
+                <!-- lane labels -->
+                <text x="100" y="125" text-anchor="middle" fill="#9A96AB" font-size="9">נתיב 1</text>
+                <text x="180" y="125" text-anchor="middle" fill="#9A96AB" font-size="9">נתיב 2</text>
+                <text x="300" y="125" text-anchor="middle" fill="#9A96AB" font-size="9">נתיב 3</text>
+                <text x="380" y="125" text-anchor="middle" fill="#9A96AB" font-size="9">נתיב 4</text>
+                <!-- width dimensions -->
+                <line x1="0" y1="155" x2="480" y2="155" stroke="#E8A33D" stroke-width="1"/>
+                <text x="240" y="170" text-anchor="middle" fill="#E8A33D" font-size="11" font-weight="700" font-style="italic">רוחב כולל W<sub>total</sub></text>
+              </svg>
+            </div>
+            <div class="scheme-caption">תרשים — מרכיבי חתך רוחב: נתיבים, שוליים, מפרדה</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – רוחבים</div>
+          <div class="card-body" id="t2_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 3: Median & cross slopes                                    -->
+  <!-- =============================================================== -->
+  <div id="tab3" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – מפרדה ושיפועים</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="t3_case">נושא הבדיקה</label>
+              <select id="t3_case">
+                <option value="median" selected>רוחב מפרדה נדרש</option>
+                <option value="crossslope">שיפוע לרוחב הכביש</option>
+                <option value="slope">שיפוע מדרונות צד</option>
+              </select>
+            </div>
+
+            <div id="case_median" class="case-block">
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t3_nlanes">מספר נתיבים לכיוון</label>
+                  <select id="t3_nlanes">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="t3_vd3">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                  <select id="t3_vd3">
+                    <option>70</option><option>80</option><option>90</option>
+                    <option selected>100</option><option>110</option><option>120</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t3_lighting">תאורה</label>
+                  <select id="t3_lighting">
+                    <option value="none" selected>ללא תאורה</option>
+                    <option value="side">תאורה בצידי הדרך</option>
+                    <option value="median">תאורה במפרדה</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="t3_barrier_type">מעקה בטיחות</label>
+                  <select id="t3_barrier_type">
+                    <option value="single" selected>מעקה יחיד במפרדה</option>
+                    <option value="double_side">זוג מעקות משני צידי העמוד</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div id="case_crossslope" class="case-block" style="display:none;">
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t3_situation">מצב</label>
+                  <select id="t3_situation">
+                    <option value="straight_normal" selected>קטע ישר — שיפוע רגיל</option>
+                    <option value="straight_low">קטע ישר — שיפוע אורכי נמוך מ-1%</option>
+                    <option value="curve">בעקום אופקי / מעבר שיפועים</option>
+                    <option value="shoulder">שיפוע שול</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="t3_surface">סוג משטח</label>
+                  <select id="t3_surface">
+                    <option value="asphalt" selected>אספלט</option>
+                    <option value="concrete">בטון / ציפוי</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div id="case_slope" class="case-block" style="display:none;">
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t3_slope_type">סוג מדרון</label>
+                  <select id="t3_slope_type">
+                    <option value="fill" selected>מילוי (foreslope — יורד)</option>
+                    <option value="cut">חפירה (backslope — עולה)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="t3_barrier_req">מעקה בטיחות נדרש</label>
+                  <select id="t3_barrier_req">
+                    <option value="no" selected>לא נדרש מעקה</option>
+                    <option value="yes">נדרש מעקה בטיחות</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – מפרדה ושיפועים</div>
+          <div class="card-body" id="t3_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 4: Intermediate cross-sections                              -->
+  <!-- =============================================================== -->
+  <div id="tab4" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – חתכי ביניים</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="t4_kind">סוג הפתרון</label>
+              <select id="t4_kind">
+                <option value="passing" selected>נתיב עקיפה (Passing Lane)</option>
+                <option value="climbing">נתיב חזילה (Climbing Lane)</option>
+                <option value="split11">חתך 1+1 (אמצעי הפרדה)</option>
+              </select>
+            </div>
+
+            <div id="case_passing" class="case-block">
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t4_aadt">נפח יומי AADT <span class="unit">(כ"ר/יום)</span></label>
+                  <input type="number" id="t4_aadt" value="5000" step="500" min="0">
+                </div>
+                <div class="form-group">
+                  <label for="t4_hv">אחוז רכב כבד <span class="unit">(%)</span></label>
+                  <select id="t4_hv">
+                    <option value="5">5%</option>
+                    <option value="10" selected>10%</option>
+                    <option value="20">20%</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t4_pc">אחוז קטעי דרך המאפשרים עקיפה <span class="unit">(%)</span></label>
+                  <input type="number" id="t4_pc" value="20" step="5" min="0" max="100">
+                </div>
+                <div class="form-group">
+                  <label for="t4_length">אורך קטע נבחן <span class="unit">(ק"מ)</span></label>
+                  <input type="number" id="t4_length" value="15" step="1" min="1">
+                </div>
+              </div>
+            </div>
+
+            <div id="case_climbing" class="case-block" style="display:none;">
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t4_aadt_c">נפח יומי AADT <span class="unit">(כ"ר/יום)</span></label>
+                  <input type="number" id="t4_aadt_c" value="6000" step="500" min="0">
+                </div>
+                <div class="form-group">
+                  <label for="t4_hv_c">אחוז רכב כבד <span class="unit">(%)</span></label>
+                  <input type="number" id="t4_hv_c" value="15" step="1" min="0" max="50">
+                </div>
+              </div>
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t4_grade_c">שיפוע עלייה <span class="unit">(%)</span></label>
+                  <input type="number" id="t4_grade_c" value="5" step="0.5" min="2" max="10">
+                </div>
+                <div class="form-group">
+                  <label for="t4_prev_slope">שיפוע קטע קודם</label>
+                  <select id="t4_prev_slope">
+                    <option value="flat" selected>קטע אופקי לפני</option>
+                    <option value="descent">ירידה של 3% ומעלה</option>
+                    <option value="ascent">עלייה קודמת</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div id="case_split11" class="case-block" style="display:none;">
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t4_vd_11">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                  <select id="t4_vd_11">
+                    <option>60</option><option>70</option><option selected>80</option><option>90</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="t4_ar">שיעור תאונות AR <span class="unit">(למיליון כ"ר-ק"מ)</span></label>
+                  <input type="number" id="t4_ar" value="0.5" step="0.05" min="0">
+                </div>
+              </div>
+              <div class="row-2">
+                <div class="form-group">
+                  <label for="t4_ad">צפיפות תאונות AD <span class="unit">(לק"מ/שנה)</span></label>
+                  <input type="number" id="t4_ad" value="2.5" step="0.1" min="0">
+                </div>
+                <div class="form-group">
+                  <label for="t4_median_type">סוג אמצעי הפרדה</label>
+                  <select id="t4_median_type">
+                    <option value="rigid" selected>קשיח (מעקה)</option>
+                    <option value="soft">רך (רצועת חיי"ץ)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – חתכי ביניים</div>
+          <div class="card-body" id="t4_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 5: Emergency lay-by                                         -->
+  <!-- =============================================================== -->
+  <div id="tab5" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – מפרץ חירום</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t5_roadtype">סוג הדרך</label>
+                <select id="t5_roadtype">
+                  <option value="freeway" selected>דרך מהירה</option>
+                  <option value="major">דרך ראשית</option>
+                  <option value="arterial">דרך אזורית</option>
+                  <option value="single">דרך חד-מסלולית (ראשית / אזורית)</option>
+                  <option value="local">דרך מקומית / דלת-תנועה</option>
+                  <option value="urban">דרך מעויירת מהירה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t5_shoulder">רוחב שול ימני קיים <span class="unit">(מ')</span></label>
+                <select id="t5_shoulder">
+                  <option value="3.5">3.5</option>
+                  <option value="3.0" selected>3.0</option>
+                  <option value="2.5">2.5</option>
+                  <option value="2.0">2.0</option>
+                  <option value="1.5">1.5 (מופחת)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t5_hv">אחוז רכב כבד בנפח היומי <span class="unit">(%)</span></label>
+              <input type="number" id="t5_hv" value="8" step="1" min="0" max="40">
+            </div>
+            <div class="form-group">
+              <label for="t5_spacing">מרווח קיים בין מפרצים / יציאות מהדרך <span class="unit">(ק"מ)</span></label>
+              <input type="number" id="t5_spacing" value="3.0" step="0.5" min="0.5">
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה – מפרץ חירום</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg">
+                <!-- mainline -->
+                <rect x="0" y="50" width="480" height="30" fill="#2c2c46"/>
+                <line x1="0" y1="65" x2="480" y2="65" stroke="#6B6780" stroke-width="1" stroke-dasharray="6,6"/>
+                <!-- shoulder line 807 -->
+                <line x1="0" y1="80" x2="480" y2="80" stroke="#F5C451" stroke-width="2"/>
+                <text x="460" y="76" fill="#F5C451" font-size="9">807</text>
+                <!-- layby pavement -->
+                <path d="M 150,80 L 180,110 L 330,110 L 360,80" fill="#3a3a58" stroke="#E8A33D" stroke-width="1.5"/>
+                <text x="255" y="128" text-anchor="middle" fill="#E8A33D" font-size="10" font-weight="700">מפרץ חירום — 4.5 מ' × 30 מ'</text>
+                <!-- taper -->
+                <text x="165" y="98" fill="#7AB8F5" font-size="9">לוכסן 1:20</text>
+                <text x="345" y="98" fill="#7AB8F5" font-size="9">לוכסן 1:20</text>
+                <!-- sign -->
+                <rect x="160" y="30" width="22" height="22" rx="3" fill="#1a5fa8" stroke="#fff" stroke-width="1.5"/>
+                <text x="171" y="46" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">637</text>
+                <text x="200" y="42" fill="#4ADE80" font-size="9">תמרור מקדים</text>
+                <!-- layby dims -->
+                <line x1="180" y1="150" x2="330" y2="150" stroke="#E8A33D" stroke-width="1"/>
+                <text x="255" y="165" text-anchor="middle" fill="#E8A33D" font-size="10">30 מ'</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">סכימה תכנונית של מפרץ חירום (סעיף 3.10)</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – מפרץ חירום</div>
+          <div class="card-body" id="t5_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 6: Reference tables                                         -->
+  <!-- =============================================================== -->
+  <div id="tab6" class="tab-pane">
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 2.1 — סיווג דרכים לפי תמ"א 3</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג הדרך</th><th>הגדרה</th></tr></thead>
+          <tbody>
+            <tr><td>דרך מהירה</td><td>דרך שאינה עירונית, שני כבישים לפחות, שני נתיבים לפחות לכל כיוון, מפרדה, אין גישה לחצרים סמוכים, אין מפגשי מסילה או צמתים פרט להתמזגות, תמרור "דרך מהירה"</td></tr>
+            <tr><td>דרך פרברית מהירה</td><td>דרך המקשרת מוקדי פעילות בנפחי תנועה גדולים; אוספת תנועה מדרכים ראשיות ואזוריות</td></tr>
+            <tr><td>דרך ראשית</td><td>דרך המקשרת בין אזורים שונים בארץ, אוספת תנועה מדרכים ראשיות אחרות ומדרכים אזוריות ומקומיות</td></tr>
+            <tr><td>דרך אזורית</td><td>דרך המקשרת בין ישובים באזור אחד או יותר, אוספת תנועה מדרכים מקומיות</td></tr>
+            <tr><td>דרך מקומית</td><td>דרך המהווה חלק ממערכת הדרכים הכללית, אינה חלק מהרשת הארצית</td></tr>
+            <tr><td>דרך נופית</td><td>קטע דרך בתחום שמורת טבע / גן לאומי / אזור רגישות נופית</td></tr>
+            <tr><td>דרך עירונית</td><td>דרך בתחום שיפוט רשות מקומית</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 2.3 — מהירויות יעוד וממ"מ מומלצות (קמ"ש)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג הדרך</th><th class="c">מהירות יעוד מרבית</th><th class="c">תחום יעוד</th><th class="c">תחום תכן</th></tr></thead>
+          <tbody>
+            <tr><td>דרך מהירה</td><td class="c">110</td><td class="c">90–110</td><td class="c">100–120</td></tr>
+            <tr><td>דרך פרברית / מעויירת מהירה + דו-מסלולית ממוחלפת</td><td class="c">100</td><td class="c">80–100</td><td class="c">90–110</td></tr>
+            <tr><td>דרך דו-מסלולית אחרת</td><td class="c">90</td><td class="c">70–90</td><td class="c">80–100</td></tr>
+            <tr><td>דרך חד-מסלולית</td><td class="c">70</td><td class="c">50–70</td><td class="c">60–80</td></tr>
+          </tbody>
+        </table>
+        <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">
+          הערך העליון — מישורי; האמצעי — גבעי או הפחתה בדרגה אחת; התחתון — הררי או הפחתה בשתי דרגות.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 2.2 — מהירויות מרביות מותרות (ממ"מ) בדרכים בין-עירוניות</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג הרכב</th><th class="c">מהירה</th><th class="c">פרברית / מעויירת</th><th class="c">דו-מסלולית (ממוחלפת)</th><th class="c">חד-מסלולית</th></tr></thead>
+          <tbody>
+            <tr><td>מכונית נוסעים עד 3.5 טון</td><td class="c">110</td><td class="c">100</td><td class="c">90</td><td class="c">80</td></tr>
+            <tr><td>אוטובוס שאינו זעיר</td><td class="c">100</td><td class="c">100</td><td class="c">90</td><td class="c">80</td></tr>
+            <tr><td>רכב מסחרי שמשקלו הכולל המותר עולה על 12 טון</td><td class="c">80</td><td class="c">80</td><td class="c">80</td><td class="c">80</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 3.1 — רוחב הנתיב בקטע ישר לפי סיווג הדרך</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג הדרך</th><th class="c">מהירות תכן (קמ"ש)</th><th class="c">רוחב נתיב (מ')</th></tr></thead>
+          <tbody>
+            <tr><td>מהירה בין-עירונית</td><td class="c">100–120</td><td class="c">3.6–3.7</td></tr>
+            <tr><td>מהירה מעויירת / פרברית</td><td class="c">90–110</td><td class="c">3.6</td></tr>
+            <tr><td>דו-מסלולית ראשית / אזורית</td><td class="c">80–100</td><td class="c">3.6</td></tr>
+            <tr><td>חד-מסלולית ראשית</td><td class="c">60–80</td><td class="c">3.6</td></tr>
+            <tr><td>חד-מסלולית אזורית</td><td class="c">80</td><td class="c">3.6</td></tr>
+            <tr><td>חד-מסלולית אזורית</td><td class="c">70</td><td class="c">3.5</td></tr>
+            <tr><td>חד-מסלולית אזורית</td><td class="c">60</td><td class="c">3.3</td></tr>
+            <tr><td>חד-מסלולית מקומית וגישה</td><td class="c">60–80</td><td class="c">3.0–3.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 3.2 — רוחב השוליים לפי סיווג הדרך</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג הדרך</th><th class="c">מהירות תכן</th><th class="c">שול ימני (מ')</th><th class="c">שול שמאלי במפרדה (מ')</th></tr></thead>
+          <tbody>
+            <tr><td>מהירה בין-עירונית</td><td class="c">120</td><td class="c">3.5</td><td class="c">1.2 (עד 3.0 ל-3 נתיבים)</td></tr>
+            <tr><td>מהירה בין-עירונית</td><td class="c">100–110</td><td class="c">3.5</td><td class="c">1.2</td></tr>
+            <tr><td>מעויירת / פרברית מהירה</td><td class="c">90–110</td><td class="c">3.0</td><td class="c">1.2</td></tr>
+            <tr><td>דו-מסלולית ראשית</td><td class="c">80–100</td><td class="c">3.5</td><td class="c">1.2</td></tr>
+            <tr><td>דו-מסלולית אזורית</td><td class="c">80–100</td><td class="c">3.0</td><td class="c">1.2</td></tr>
+            <tr><td>חד-מסלולית ראשית</td><td class="c">60–80</td><td class="c">3.0</td><td class="c">—</td></tr>
+            <tr><td>חד-מסלולית אזורית</td><td class="c">80</td><td class="c">3.0</td><td class="c">—</td></tr>
+            <tr><td>חד-מסלולית מקומית וגישה</td><td class="c">60–80</td><td class="c">2.0</td><td class="c">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 3.3 — הצדק לנתיבי עקיפה</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr><th>AADT (כ"ר/יום)</th><th class="c">אחוז קטעי דרך המאפשרים עקיפה</th><th class="c">5% רכב כבד</th><th class="c">10% רכב כבד</th><th class="c">20% רכב כבד</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0–5</td><td class="c">30</td><td class="c">900</td><td class="c">300</td><td class="c">130</td></tr>
+            <tr><td>5–10</td><td class="c">30</td><td class="c">1,130</td><td class="c">1,300</td><td class="c">1,700</td></tr>
+            <tr><td>10–30</td><td class="c">30</td><td class="c">1,730</td><td class="c">2,000</td><td class="c">2,270</td></tr>
+            <tr><td>30–70</td><td class="c">30</td><td class="c">2,470</td><td class="c">2,800</td><td class="c">3,130</td></tr>
+            <tr><td>70–100</td><td class="c">30</td><td class="c">3,330</td><td class="c">3,670</td><td class="c">4,330</td></tr>
+            <tr><td>100–300</td><td class="c">30</td><td class="c">4,330</td><td class="c">5,000</td><td class="c">5,670</td></tr>
+          </tbody>
+        </table>
+        <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">ערכי סף — מתן נתיבי עקיפה כל 3–10 ק"מ (הערכים מוצגים לכל 30% Pc).</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 3.4 — מרווחים מומלצים בין נתיבי עקיפה</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>AADT (כ"ר/יום)</th><th class="c">מרווח מומלץ</th></tr></thead>
+          <tbody>
+            <tr><td>1,001–3,000</td><td class="c">8.0–10.0 ק"מ</td></tr>
+            <tr><td>3,001–5,000</td><td class="c">6.5–8.0 ק"מ</td></tr>
+            <tr><td>5,001–7,000</td><td class="c">4.5–6.4 ק"מ</td></tr>
+            <tr><td>7,001–9,000</td><td class="c">4.0–4.5 ק"מ</td></tr>
+            <tr><td>&gt;9,000</td><td class="c">3.0–4.0 ק"מ</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 3.7 — האורך הקריטי לשיפועים שונים</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>שיפוע (%)</th><th class="c">אורך קריטי לאחר קטע אופקי (מ')</th><th class="c">אורך קריטי לאחר ירידה של 3% לפחות (מ')</th></tr></thead>
+          <tbody>
+            <tr><td>4</td><td class="c">400</td><td class="c">270</td></tr>
+            <tr><td>5</td><td class="c">300</td><td class="c">200</td></tr>
+            <tr><td>6</td><td class="c">260</td><td class="c">170</td></tr>
+            <tr><td>7</td><td class="c">220</td><td class="c">150</td></tr>
+            <tr><td>8</td><td class="c">200</td><td class="c">140</td></tr>
+            <tr><td>9</td><td class="c">180</td><td class="c">120</td></tr>
+          </tbody>
+        </table>
+        <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">האורך הקריטי = המרחק בו יורדת מהירות המשאית ב-20 קמ"ש מתחת למהירות הכניסה לעלייה.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 3.11 — הצדק 1+1 לפי צפיפות תאונות (AD)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מספר תאונות לשנה בקטע</th><th class="c">אורך הקטע (ק"מ) — אמצעי הפרדה קשיח (AD=3.8)</th><th class="c">אורך הקטע (ק"מ) — אמצעי הפרדה רך (AD=2.8)</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="c">3.8</td><td class="c">2.8</td></tr>
+            <tr><td>2</td><td class="c">7.6</td><td class="c">5.6</td></tr>
+            <tr><td>3</td><td class="c">11.4</td><td class="c">8.4</td></tr>
+            <tr><td>4</td><td class="c">15.2</td><td class="c">11.2</td></tr>
+            <tr><td>5</td><td class="c">19.0</td><td class="c">14.0</td></tr>
+          </tbody>
+        </table>
+        <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">AD = Accidents / (T·L) ; T = 3 שנים, L = אורך הקטע בק"מ</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>מפרץ חירום — מאפיינים גיאומטריים (סעיף 3.10)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מרכיב</th><th class="c">ערך</th></tr></thead>
+          <tbody>
+            <tr><td>רוחב מפרץ חירום</td><td class="c">4.5 מ' (3.0 שול + 1.5 נוספים)</td></tr>
+            <tr><td>אורך קטע מקביל</td><td class="c">30 מ' (רכב תקול + גרר)</td></tr>
+            <tr><td>אורך לוכסן כניסה / יציאה</td><td class="c">30 מ' (היסט 1:20)</td></tr>
+            <tr><td>פס הרעדה בקדצוף משונן</td><td class="c">30 ס"מ, לאורך המפרץ + 150 מ' לפני</td></tr>
+            <tr><td>מרווח בין מפרצים</td><td class="c">2.0 ק"מ (בקטעים ללא יציאות)</td></tr>
+            <tr><td>תמרור מקדים</td><td class="c">637 (מפרץ לעצירה בחירום)</td></tr>
+            <tr><td>תמרורי מרחק</td><td class="c">500 מ' ו-1,000 מ' לפני הלוכסן</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>MAHALCO – מדיניות תכן וחתך רוחב (פרקים 2–3) · מבוסס על הנחיות התכן של דרכים בין-עירוניות, כרך 1</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ==================== Data tables ==================== */
+/* Table 2.3 — target and design speed ranges */
+const SPEEDS = {
+  freeway:     { target: 110, targetRange:[90,110], designRange:[100,120], maxDesign: 120 },
+  urban_express:{ target: 100, targetRange:[80,100], designRange:[90,110],  maxDesign: 110 },
+  dual_major:  { target: 100, targetRange:[80,100], designRange:[90,110],  maxDesign: 110 },
+  dual_other:  { target: 90,  targetRange:[70,90],  designRange:[80,100],  maxDesign: 100 },
+  single:      { target: 70,  targetRange:[50,70],  designRange:[60,80],   maxDesign: 80 },
+  local:       { target: 60,  targetRange:[50,60],  designRange:[60,80],   maxDesign: 80 }
+};
+
+/* Table 3.1 — lane widths */
+const LANE_WIDTH = {
+  freeway:       { 100:3.6, 110:3.6, 120:3.7 },
+  urban_express: { 90:3.6, 100:3.6, 110:3.6 },
+  dual_major:    { 80:3.6, 90:3.6, 100:3.6, 110:3.6 },
+  dual_arterial: { 80:3.6, 90:3.6, 100:3.6 },
+  single_major:  { 60:3.6, 70:3.6, 80:3.6 },
+  single_arterial:{ 60:3.3, 70:3.5, 80:3.6 },
+  local:         { 60:3.0, 70:3.5, 80:3.5 }
+};
+
+/* Table 3.2 — shoulder widths */
+const SHOULDER_WIDTH = {
+  freeway:        { 120:{r:3.5, l:1.2}, 110:{r:3.5,l:1.2}, 100:{r:3.5,l:1.2} },
+  urban_express:  { 110:{r:3.0, l:1.2}, 100:{r:3.0,l:1.2}, 90:{r:3.0,l:1.2} },
+  dual_major:     { 100:{r:3.5, l:1.2}, 90:{r:3.5,l:1.2}, 80:{r:3.5,l:1.2} },
+  dual_arterial:  { 100:{r:3.0, l:1.2}, 90:{r:3.0,l:1.2}, 80:{r:3.0,l:1.2} },
+  single_major:   { 80:{r:3.0, l:0}, 70:{r:3.0,l:0}, 60:{r:3.0,l:0} },
+  single_arterial:{ 80:{r:3.0, l:0}, 70:{r:2.5,l:0}, 60:{r:2.0,l:0} },
+  local:          { 80:{r:2.0, l:0}, 70:{r:2.0,l:0}, 60:{r:2.0,l:0} }
+};
+
+/* Table 3.3 — passing lane justification (Pc=30% baseline) */
+const PASS_JUSTIFY = {
+  5:  [ {aadt:5,   th:900},  {aadt:10,  th:1130}, {aadt:30,  th:1730},
+        {aadt:70,  th:2470}, {aadt:100, th:3330}, {aadt:300, th:4330} ],
+  10: [ {aadt:5,   th:300},  {aadt:10,  th:1300}, {aadt:30,  th:2000},
+        {aadt:70,  th:2800}, {aadt:100, th:3670}, {aadt:300, th:5000} ],
+  20: [ {aadt:5,   th:130},  {aadt:10,  th:1700}, {aadt:30,  th:2270},
+        {aadt:70,  th:3130}, {aadt:100, th:4330}, {aadt:300, th:5670} ]
+};
+
+/* Passing lane interval table 3.4 */
+const PASS_INTERVAL = [
+  { min: 1001, max: 3000, lo: 8.0, hi: 10.0 },
+  { min: 3001, max: 5000, lo: 6.5, hi: 8.0 },
+  { min: 5001, max: 7000, lo: 4.5, hi: 6.4 },
+  { min: 7001, max: 9000, lo: 4.0, hi: 4.5 },
+  { min: 9001, max: Infinity, lo: 3.0, hi: 4.0 }
+];
+
+/* Critical length for climbing lane (Table 3.7) */
+const CRIT_LEN = {
+  4: { flat: 400, descent: 270 },
+  5: { flat: 300, descent: 200 },
+  6: { flat: 260, descent: 170 },
+  7: { flat: 220, descent: 150 },
+  8: { flat: 200, descent: 140 },
+  9: { flat: 180, descent: 120 }
+};
+
+/* ==================== Utilities ==================== */
+const $ = id => document.getElementById(id);
+const fmt = (x, d=2) => isFinite(x) ? Number(x).toFixed(d) : '—';
+const numF = (x, d=0) => isFinite(x) ? Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
+function setHtml(id, html){ const e=$(id); if (e) e.innerHTML = html; }
+
+/* ==================== TAB 1 — Speeds ==================== */
+function calcTab1(){
+  const rt = $('t1_roadtype').value;
+  const terrain = $('t1_terrain').value;
+  const sens = $('t1_sensitivity').value;
+  const userTarget = parseFloat($('t1_target').value) || 0;
+
+  const S = SPEEDS[rt];
+  /* Select target speed from range based on terrain/sensitivity */
+  let target, targetIdx;
+  if (terrain === 'flat') targetIdx = 2;
+  else if (terrain === 'rolling') targetIdx = 1;
+  else targetIdx = 0;
+
+  /* environmental sensitivity can further reduce */
+  if (sens === 'high' && targetIdx > 0) targetIdx--;
+  else if (sens === 'medium' && terrain !== 'mountainous' && targetIdx === 2) targetIdx--;
+
+  target = userTarget > 0 ? userTarget : S.targetRange[targetIdx];
+
+  /* Design speed = target + ~10 km/h (safety margin), clamped to designRange */
+  const designMin = S.designRange[0];
+  const designMax = S.designRange[1];
+  let design = target + 10;
+  design = Math.max(designMin, Math.min(designMax, design));
+  /* Round to nearest 5 */
+  design = Math.round(design / 5) * 5;
+
+  /* Posted speed */
+  const posted = target;
+
+  /* Warnings */
+  const warn = [];
+  if (design < designMin) {
+    warn.push(['warn', `מהירות התכן המחושבת (${design} קמ"ש) נמוכה מהתחום המומלץ (${designMin}–${designMax}).`]);
+  } else if (design > designMax) {
+    warn.push(['warn', `מהירות התכן המחושבת (${design} קמ"ש) גבוהה מהתחום המומלץ (${designMin}–${designMax}).`]);
+  } else {
+    warn.push(['ok', `מהירות התכן (${design} קמ"ש) בתחום המומלץ (${designMin}–${designMax}).`]);
+  }
+  warn.push(['info', `מהירות היעוד תיקבע בטווח ${S.targetRange[0]}–${S.targetRange[1]} קמ"ש לפי רמת הרגישות.`]);
+  warn.push(['info', `ההפרש בין מהירות התכן למהירות היעוד צריך להיות כ-10 קמ"ש (מרווח בטיחות).`]);
+  if (rt === 'freeway') {
+    warn.push(['info', `דרך מהירה — בקרת גישות מלאה (מחלפים בלבד), תנועה של רכב מנועי בלבד.`]);
+  } else if (rt === 'single' || rt === 'local') {
+    warn.push(['info', `בדרך חד-מסלולית אין להחיל הפחתות מלאות על כל קריטריוני התכן.`]);
+  }
+  if (Math.abs(design - target) < 5) {
+    warn.push(['warn', `הפרש מהירויות תכן ויעוד קטן מ-5 קמ"ש — עלול לפגוע בבטיחות.`]);
+  }
+
+  /* Rank & function */
+  const rankTable = {
+    freeway: { func: 'ניידות אופטימלית, ללא גישות', access: 'מלאה', lanes: '2+ לכל כיוון', median: 'חובה' },
+    urban_express: { func: 'ניידות מרבית, ללא גישות ישירות', access: 'מלאה', lanes: '2+ לכל כיוון', median: 'חובה' },
+    dual_major: { func: 'ניידות עדיפה על גישות', access: 'מלאה או חלקית', lanes: '2+ לכל כיוון', median: 'חובה' },
+    dual_other: { func: 'ניידות שווה לגישות', access: 'חלקית או מצומצמת', lanes: '2 לכל כיוון', median: 'חובה' },
+    single: { func: 'גישות עדיפה על ניידות', access: 'מצומצמת', lanes: '1 לכל כיוון', median: 'אופציונלי (1+1)' },
+    local: { func: 'גישות עדיפה', access: 'מצומצמת', lanes: '1 לכל כיוון', median: 'לא' }
+  };
+  const rk = rankTable[rt];
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">קביעת מהירות יעוד</div>
+    <div class="formula">סוג דרך: ${rt}</div>
+    <div class="formula">תחום יעוד מומלץ: ${S.targetRange[0]}–${S.targetRange[1]} קמ"ש</div>
+    <div class="formula">טופוגרפיה: ${terrain} ; רגישות: ${sens}</div>
+    <div class="formula">מהירות יעוד נבחרת: ${target} קמ"ש</div>
+  `);
+  steps.push(`
+    <div class="ttl">קביעת מהירות תכן</div>
+    <div class="formula">מהירות תכן = מהירות יעוד + 10 קמ"ש (מרווח בטיחות)</div>
+    <div class="formula">${target} + 10 = ${target + 10} קמ"ש</div>
+    <div class="formula">מוגבל לתחום תכן: ${designMin}–${designMax} קמ"ש</div>
+    <div class="formula">מהירות תכן סופית: ${design} קמ"ש</div>
+  `);
+  steps.push(`
+    <div class="ttl">מהירות מרבית מותרת (ממ"מ)</div>
+    <div class="formula">ממ"מ ≈ מהירות יעוד = ${posted} קמ"ש</div>
+    <div class="formula">הממ"מ לא תעלה על מהירות התכן (${design} קמ"ש)</div>
+  `);
+
+  setHtml('t1_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">מהירות יעוד</div><div class="result-number highlight">${target}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">מהירות תכן</div><div class="result-number highlight">${design}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">ממ"מ</div><div class="result-number">${posted}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">מרווח בטיחות</div><div class="result-number">${design - target}</div><div class="result-sub">קמ"ש</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">מאפייני הדרך</h6>
+    <table class="table table-sm mb-0">
+      <tr><td>תפקוד</td><td>${rk.func}</td></tr>
+      <tr><td>בקרת גישות</td><td>${rk.access}</td></tr>
+      <tr><td>מספר נתיבים</td><td>${rk.lanes}</td></tr>
+      <tr><td>מפרדה</td><td>${rk.median}</td></tr>
+    </table>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 2 — Lane & shoulder widths ==================== */
+function calcTab2(){
+  const rt = $('t2_roadtype').value;
+  const vd = parseInt($('t2_vd').value);
+  const ndir = parseInt($('t2_lanes_dir').value);
+  const side = $('t2_shoulder_side').value;
+
+  const laneTbl = LANE_WIDTH[rt];
+  let laneW = laneTbl[vd];
+  if (!laneW) {
+    /* Interpolate or use nearest */
+    const keys = Object.keys(laneTbl).map(Number).sort((a,b)=>a-b);
+    let best = keys.reduce((p,c)=>Math.abs(c-vd)<Math.abs(p-vd)?c:p);
+    laneW = laneTbl[best];
+  }
+
+  const shTbl = SHOULDER_WIDTH[rt];
+  let shoulderW;
+  if (shTbl[vd]) shoulderW = side === 'right' ? shTbl[vd].r : shTbl[vd].l;
+  else {
+    const keys = Object.keys(shTbl).map(Number).sort((a,b)=>a-b);
+    let best = keys.reduce((p,c)=>Math.abs(c-vd)<Math.abs(p-vd)?c:p);
+    shoulderW = side === 'right' ? shTbl[best].r : shTbl[best].l;
+  }
+
+  /* Total per carriageway */
+  const carriageway = ndir * laneW + shoulderW;
+
+  const warn = [];
+  if (laneW < 3.0) {
+    warn.push(['bad', `רוחב נתיב ${laneW} מ' קטן מהמזערי (3.0 מ') — פוגע בבטיחות ובנוחות.`]);
+  } else if (laneW < 3.3) {
+    warn.push(['warn', `רוחב נתיב ${laneW} מ' קטן מהמומלץ (3.3 מ') — יש לשקול הרחבה.`]);
+  } else {
+    warn.push(['ok', `רוחב נתיב ${laneW} מ' תקין.`]);
+  }
+  if (shoulderW > 0 && side === 'right' && shoulderW < 3.0) {
+    warn.push(['warn', `שול ימני ${shoulderW} מ' קטן מהמומלץ (3.0–3.5 מ') — מוגבל לעצירת חירום ולתמרון.`]);
+  } else if (side === 'right') {
+    warn.push(['ok', `שול ימני ${shoulderW} מ' תקין.`]);
+  }
+  if (side === 'left') {
+    warn.push(['info', `שול שמאלי במפרדה: ${shoulderW} מ' (1.2 מ' בד"כ, 3.0 מ' ב-3 נתיבים ומעלה במהירות 120).`]);
+  }
+  if (ndir === 1 && side === 'left') {
+    warn.push(['warn', `בדרך חד-מסלולית אין שול שמאלי במפרדה — קו ההפרדה הוא סימון 803 / 807.`]);
+  }
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">רוחב נתיב (טבלה 3.1)</div>
+    <div class="formula">סוג דרך: ${rt} ; V_d = ${vd} קמ"ש</div>
+    <div class="formula">רוחב נתיב נדרש = ${laneW} מ'</div>
+    <div class="formula">סטייה מ-3.6 מ' (סטנדרטי) = ${fmt(laneW - 3.6, 2)} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">רוחב שול (טבלה 3.2)</div>
+    <div class="formula">צד: ${side === 'right' ? 'ימני (חיצוני)' : 'שמאלי (במפרדה)'}</div>
+    <div class="formula">רוחב שול נדרש = ${shoulderW} מ'</div>
+  `);
+  steps.push(`
+    <div class="ttl">רוחב מסלול (מנתיבים + שול)</div>
+    <div class="formula">${ndir} נתיבים × ${laneW} + שול ${shoulderW} = ${fmt(carriageway,2)} מ'</div>
+    <div class="formula">עבור דרך דו-מסלולית: ${fmt(carriageway * 2, 2)} מ' + מפרדה</div>
+  `);
+
+  setHtml('t2_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">רוחב נתיב</div><div class="result-number highlight">${laneW}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">רוחב שול ${side === 'right' ? 'ימני' : 'שמאלי'}</div><div class="result-number highlight">${shoulderW}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">רוחב מסלול</div><div class="result-number">${fmt(carriageway,2)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">${ndir} נתיבים + שול</div><div class="result-number">${fmt(carriageway * (rt === 'single_major' || rt === 'single_arterial' || rt === 'local' ? 1 : 2), 2)}</div><div class="result-sub">מ' כולל</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 3 — Median & cross slopes ==================== */
+function calcTab3(){
+  const c = $('t3_case').value;
+  document.querySelectorAll('#tab3 .case-block').forEach(b => b.style.display = 'none');
+  $('case_' + c).style.display = '';
+
+  const warn = [];
+  const steps = [];
+
+  if (c === 'median') {
+    const nl = parseInt($('t3_nlanes').value);
+    const vd = parseInt($('t3_vd3').value);
+    const lighting = $('t3_lighting').value;
+    const barrier = $('t3_barrier_type').value;
+
+    /* Median width based on shoulder + barrier + active */
+    /* Left shoulder: 1.2 m typical; 3.0 m for 3+ lanes @ 120 km/h */
+    let shoulderL = 1.2;
+    if (nl >= 3 && vd >= 120) shoulderL = 3.0;
+
+    /* Barrier: typical 0.8 m for a single barrier; ~2.0 m for double-side with pole */
+    let barrierW = 0.8;
+    if (lighting === 'median') {
+      if (barrier === 'double_side') barrierW = 2.0;
+      else barrierW = 1.6;
+    }
+
+    /* Median = 2 × left shoulder + barrier */
+    let median = 2 * shoulderL + barrierW;
+
+    /* Minimum medians from guidelines */
+    const minMedian = lighting === 'median' ? 4.40 : 3.20;
+
+    steps.push(`
+      <div class="ttl">רוחב מפרדה — מרכיבים</div>
+      <div class="formula">שול שמאלי (טבלה 3.2) = ${shoulderL} מ'</div>
+      <div class="formula">רוחב מעקה בטיחות פעיל = ${barrierW} מ'</div>
+      <div class="formula">סוג תאורה: ${lighting === 'none' ? 'ללא' : lighting === 'side' ? 'בצידי הדרך' : 'במפרדה'}</div>
+      <div class="formula">רוחב מפרדה = 2×${shoulderL} + ${barrierW} = ${fmt(median,2)} מ'</div>
+      <div class="formula">רף מזערי (הנחיות): ${minMedian} מ'</div>
+    `);
+
+    if (median < minMedian) {
+      warn.push(['warn', `רוחב המפרדה המחושב (${fmt(median,2)} מ') קטן מהמזערי המומלץ (${minMedian} מ').`]);
+    } else {
+      warn.push(['ok', `רוחב המפרדה המחושב (${fmt(median,2)} מ') ≥ המזערי (${minMedian} מ').`]);
+    }
+    if (vd >= 120 && nl >= 3) {
+      warn.push(['info', `בדרך מהירה V_d=120 קמ"ש עם 3 נתיבים ומעלה — שול שמאל 3.0 מ' לשמש כשול-חירום שמאל.`]);
+    }
+    if (lighting === 'median') {
+      warn.push(['info', `תאורה במפרדה — נדרש רוחב מעקה פעיל כפול + 0.80 מ' לעמוד תאורה (סה"כ ~4.40 מ').`]);
+    }
+
+    setHtml('t3_results', `
+      <div class="row g-2 mb-3">
+        <div class="col-6"><div class="result-box"><div class="result-label">רוחב מפרדה</div><div class="result-number highlight">${fmt(median,2)}</div><div class="result-sub">מ'</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">רף מזערי</div><div class="result-number">${minMedian}</div><div class="result-sub">מ'</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">שול שמאל</div><div class="result-number">${shoulderL}</div><div class="result-sub">מ'</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">רוחב מעקה פעיל</div><div class="result-number">${barrierW}</div><div class="result-sub">מ'</div></div></div>
+      </div>
+      <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+      <hr style="border-color:var(--line);margin:14px 0 10px;">
+      <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    `);
+  }
+  else if (c === 'crossslope') {
+    const sit = $('t3_situation').value;
+    const surf = $('t3_surface').value;
+
+    let slope;
+    if (sit === 'straight_normal') slope = '2.0–2.5%';
+    else if (sit === 'straight_low') slope = '2.5%';
+    else if (sit === 'curve') slope = 'לפי תכן הגבהה (סעיפים 5.2–5.3)';
+    else slope = '4.0% (מקסימלי 3-4%)';
+
+    steps.push(`
+      <div class="ttl">שיפוע לרוחב — מצב</div>
+      <div class="formula">מצב: ${sit}</div>
+      <div class="formula">משטח: ${surf === 'asphalt' ? 'אספלט' : 'בטון'}</div>
+      <div class="formula">שיפוע נדרש: ${slope}</div>
+    `);
+
+    if (sit === 'straight_low') {
+      warn.push(['info', `בשיפוע אורכי נמוך מ-1% יש להגדיל את השיפוע לרוחב ל-2.5% להבטחת ניקוז.`]);
+    } else if (sit === 'shoulder') {
+      warn.push(['info', `שיפוע השול: 4.0% באספלט (מותר 3-4% בבטון), גבוה מהשיפוע הרוחבי של הכביש כדי לסייע בניקוז.`]);
+    } else if (sit === 'curve') {
+      warn.push(['warn', `בעקום אופקי / מעבר שיפועים — יש לתכנן את ההגבה לפי פרק 5 (תוך שילוב עם רוחב הנתיב).`]);
+    } else {
+      warn.push(['ok', `שיפוע רוחבי תקני בקטע ישר: 2.0–2.5%.`]);
+    }
+
+    setHtml('t3_results', `
+      <div class="row g-2 mb-3">
+        <div class="col-12"><div class="result-box"><div class="result-label">שיפוע לרוחב</div><div class="result-number highlight" style="font-size:1.3rem;direction:rtl;text-align:center;">${slope}</div></div></div>
+      </div>
+      <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+      <hr style="border-color:var(--line);margin:14px 0 10px;">
+      <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    `);
+  }
+  else if (c === 'slope') {
+    const st = $('t3_slope_type').value;
+    const br = $('t3_barrier_req').value;
+
+    let rec, minV, maxV;
+    if (st === 'fill') {
+      rec = '1:4 עד 1:6 (יורד)';
+      minV = '1:6'; maxV = '1:4';
+    } else {
+      rec = '1:3 עד 1:6 (עולה)';
+      minV = '1:6'; maxV = '1:3';
+    }
+
+    steps.push(`
+      <div class="ttl">שיפוע מדרון צד</div>
+      <div class="formula">סוג: ${st === 'fill' ? 'מילוי (foreslope)' : 'חפירה (backslope)'}</div>
+      <div class="formula">שיפוע מומלץ: ${rec}</div>
+      <div class="formula">מעקה בטיחות: ${br === 'yes' ? 'נדרש' : 'לא נדרש'}</div>
+    `);
+
+    if (br === 'yes') {
+      warn.push(['info', `נדרש מעקה בטיחות — בשיפועי צד חריפים יותר מהמומלץ יש להציב מעקה בקצה השול הסמוך.`]);
+    } else {
+      warn.push(['ok', `שיפוע צד בטווח הבטיחותי ללא מעקה.`]);
+    }
+    warn.push(['info', `תכן סלחני — יש להרחיק מכשולים או לעשותם שכירים בעת ההתנגשות.`]);
+
+    setHtml('t3_results', `
+      <div class="row g-2 mb-3">
+        <div class="col-12"><div class="result-box"><div class="result-label">שיפוע מדרון מומלץ</div><div class="result-number highlight" style="font-size:1.3rem;direction:rtl;text-align:center;">${rec}</div></div></div>
+      </div>
+      <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+      <hr style="border-color:var(--line);margin:14px 0 10px;">
+      <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    `);
+  }
+}
+
+/* ==================== TAB 4 — Intermediate cross-sections ==================== */
+function calcTab4(){
+  const k = $('t4_kind').value;
+  document.querySelectorAll('#tab4 .case-block').forEach(b => b.style.display = 'none');
+  $('case_' + k).style.display = '';
+
+  const warn = [];
+  const steps = [];
+
+  if (k === 'passing') {
+    const aadt = parseFloat($('t4_aadt').value) || 0;
+    const hv = parseInt($('t4_hv').value);
+    const pc = parseFloat($('t4_pc').value) || 0;
+    const L = parseFloat($('t4_length').value) || 0;
+
+    /* Find threshold from table based on aadt range and hv */
+    const hvKey = Object.keys(PASS_JUSTIFY).map(Number).reduce((p,c)=>Math.abs(c-hv)<Math.abs(p-hv)?c:p);
+    const tbl = PASS_JUSTIFY[hvKey];
+    /* AADT in table is per 1000, our AADT is per total. Convert: aadt/1000 */
+    const aadtK = aadt / 1000;
+    let threshold = null;
+    let bestRange = null;
+    for (let i = 0; i < tbl.length - 1; i++) {
+      if (aadtK <= tbl[i+1].aadt) {
+        threshold = tbl[i].th;
+        bestRange = [tbl[i].aadt, tbl[i+1].aadt];
+        break;
+      }
+    }
+    if (threshold === null) threshold = tbl[tbl.length-1].th;
+
+    /* Passing lane interval */
+    let interval = null;
+    for (const iv of PASS_INTERVAL) {
+      if (aadt >= iv.min && aadt <= iv.max) { interval = iv; break; }
+    }
+    if (!interval) interval = PASS_INTERVAL[PASS_INTERVAL.length - 1];
+
+    const passCount = Math.ceil(L / ((interval.lo + interval.hi) / 2));
+
+    steps.push(`
+      <div class="ttl">הצדק לנתיבי עקיפה (טבלה 3.3)</div>
+      <div class="formula">AADT = ${numF(aadt)} כ"ר/יום ; אחוז רכב כבד = ${hv}%</div>
+      <div class="formula">אחוז קטעי דרך המאפשרים עקיפה: ${pc}% (בסיס 30%)</div>
+      <div class="formula">סף הצדק לטווח AADT ${bestRange ? bestRange[0]+'-'+bestRange[1] : ''} אלף = ${threshold} כ"ר/יום</div>
+      <div class="formula">${aadt > threshold ? '✓ מעל הסף — יש הצדק' : '✗ מתחת לסף — אין הצדק'}</div>
+    `);
+    steps.push(`
+      <div class="ttl">מרווחים מומלצים בין נתיבי עקיפה (טבלה 3.4)</div>
+      <div class="formula">AADT = ${numF(aadt)} → מרווח מומלץ ${interval.lo}–${interval.hi} ק"מ</div>
+      <div class="formula">מספר נתיבי עקיפה ב-${L} ק"מ ≈ ${passCount}</div>
+    `);
+    steps.push(`
+      <div class="ttl">אורך נתיב עקיפה (סעיף 3.9.2.2)</div>
+      <div class="formula">אורך מומלץ: 1500–2000 מ' (לא כולל לוכסנים)</div>
+      <div class="formula">אורך מזערי: 800 מ'</div>
+      <div class="formula">תכן גיאומטרי: התחלה וסיום עם חפיפה חלקית בין הכיוונים (X_ct = 0.833·V_d)</div>
+    `);
+
+    if (aadt > threshold) {
+      warn.push(['ok', `AADT (${numF(aadt)}) עולה על סף ההצדק (${threshold} כ"ר/יום) — מומלץ לשקול נתיב עקיפה.`]);
+    } else {
+      warn.push(['info', `AADT (${numF(aadt)}) מתחת לסף ההצדק (${threshold} כ"ר/יום) — לא נדרש נתיב עקיפה לפי הצדק זה.`]);
+    }
+    if (pc < 30) {
+      warn.push(['warn', `אחוז קטעי דרך המאפשרים עקיפה (${pc}%) נמוך מ-30% — מגביר את הסיכון לתאונות.`]);
+    } else {
+      warn.push(['ok', `אחוז קטעי דרך המאפשרים עקיפה (${pc}%) תקין (≥30%).`]);
+    }
+    if (L * 0.25 < passCount * 1.5) {
+      warn.push(['info', `רצוי שסך אורך נתיבי העקיפה לא יעלה על 25% מהקטע (${fmt(L*0.25,2)} ק"מ).`]);
+    }
+
+    setHtml('t4_results', `
+      <div class="row g-2 mb-3">
+        <div class="col-6"><div class="result-box"><div class="result-label">סף הצדק</div><div class="result-number highlight">${numF(threshold)}</div><div class="result-sub">כ"ר/יום</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">AADT בפועל</div><div class="result-number">${numF(aadt)}</div><div class="result-sub">כ"ר/יום</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">מרווח מומלץ</div><div class="result-number">${interval.lo}–${interval.hi}</div><div class="result-sub">ק"מ</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">מס' נתיבי עקיפה</div><div class="result-number">${passCount}</div><div class="result-sub">ב-${L} ק"מ</div></div></div>
+      </div>
+      <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+      <hr style="border-color:var(--line);margin:14px 0 10px;">
+      <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    `);
+  }
+  else if (k === 'climbing') {
+    const aadt = parseFloat($('t4_aadt_c').value) || 0;
+    const hv = parseFloat($('t4_hv_c').value) || 0;
+    const grade = parseFloat($('t4_grade_c').value) || 0;
+    const prev = $('t4_prev_slope').value;
+
+    /* Determine critical length */
+    let critLen = null;
+    const gradeInt = Math.round(grade);
+    if (CRIT_LEN[gradeInt]) {
+      critLen = prev === 'descent' ? CRIT_LEN[gradeInt].descent : CRIT_LEN[gradeInt].flat;
+    } else {
+      /* Interpolate */
+      const keys = Object.keys(CRIT_LEN).map(Number).sort((a,b)=>a-b);
+      let lo = keys[0], hi = keys[keys.length-1];
+      for (const kk of keys) { if (kk <= grade) lo = kk; if (kk >= grade) { hi = kk; break; } }
+      const cLo = prev === 'descent' ? CRIT_LEN[lo].descent : CRIT_LEN[lo].flat;
+      const cHi = prev === 'descent' ? CRIT_LEN[hi].descent : CRIT_LEN[hi].flat;
+      critLen = Math.round(cLo + (cHi - cLo) * (grade - lo) / (hi - lo));
+    }
+
+    steps.push(`
+      <div class="ttl">האורך הקריטי (טבלה 3.7)</div>
+      <div class="formula">שיפוע = ${grade}% ; קטע קודם: ${prev === 'flat' ? 'אופקי' : prev === 'descent' ? 'ירידה ≥3%' : 'עלייה'}</div>
+      <div class="formula">אורך קריטי = ${critLen} מ'</div>
+      <div class="formula">משמעות: המרחק בו יורדת מהירות משאית טיפוסית ב-20 קמ"ש מתחת למהירות הכניסה</div>
+    `);
+    steps.push(`
+      <div class="ttl">הצדק לנתיב חזילה</div>
+      <div class="formula">AADT = ${numF(aadt)} כ"ר/יום ; אחוז רכב כבד = ${hv}%</div>
+      <div class="formula">נדרש AADT > 8,000 כ"ר/יום ואורך עלייה > ${critLen} מ'</div>
+      <div class="formula">${aadt >= 8000 ? '✓ AADT עומד' : '✗ AADT נמוך מ-8,000'}</div>
+    `);
+    steps.push(`
+      <div class="ttl">תכן גיאומטרי של נתיב חזילה</div>
+      <div class="formula">תחילת נתיב בנקודת "אורך קריטי" (${critLen} מ')</div>
+      <div class="formula">סיום: לאחר 25 קמ"ש האצה מהמהירות בסוף העלייה</div>
+      <div class="formula">בדרך דו-מסלולית — רק אם מהירות הנתיב השמאלי יורדת לרמה D-E</div>
+    `);
+
+    if (aadt >= 8000) {
+      warn.push(['ok', `AADT (${numF(aadt)}) עולה על 8,000 — יש הצדק לנתיב חזילה (בהינתן אורך עלייה > ${critLen} מ').`]);
+    } else {
+      warn.push(['info', `AADT (${numF(aadt)}) נמוך מ-8,000 — נתיב חזילה בדרך דו-מסלולית מוצדק רק אם מהירות הנתיב השמאלי יורדת לרמה D-E.`]);
+    }
+    if (grade < 3) {
+      warn.push(['warn', `שיפוע ${grade}% נמוך — נתיב חזילה נדרש בעיקר לשיפועים 3% ומעלה.`]);
+    }
+    if (hv < 10) {
+      warn.push(['info', `אחוז רכב כבד ${hv}% — נתיב חזילה מוצדק בעיקר באחוז גבוה (15%+).`]);
+    }
+    warn.push(['info', `בדרך דו-מסלולית — נתיב חזילה בדרך כלל לא נדרש עקב האפשרות המתמדת לעקיפה.`]);
+
+    setHtml('t4_results', `
+      <div class="row g-2 mb-3">
+        <div class="col-6"><div class="result-box"><div class="result-label">אורך קריטי</div><div class="result-number highlight">${critLen}</div><div class="result-sub">מ'</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">שיפוע</div><div class="result-number">${grade}%</div><div class="result-sub">—</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">AADT</div><div class="result-number">${numF(aadt)}</div><div class="result-sub">כ"ר/יום</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">אחוז רכב כבד</div><div class="result-number">${hv}%</div><div class="result-sub">—</div></div></div>
+      </div>
+      <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+      <hr style="border-color:var(--line);margin:14px 0 10px;">
+      <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    `);
+  }
+  else if (k === 'split11') {
+    const vd = parseInt($('t4_vd_11').value);
+    const ar = parseFloat($('t4_ar').value) || 0;
+    const ad = parseFloat($('t4_ad').value) || 0;
+    const mt = $('t4_median_type').value;
+
+    const arThresh = 1.0;   /* typical AR threshold for soft barrier */
+    const adThresh = mt === 'rigid' ? 3.8 : 2.8;
+
+    steps.push(`
+      <div class="ttl">הצדק 1+1 — שיעור תאונות AR (נוסחה 3.7)</div>
+      <div class="formula">AR = (Accidents · 10⁶) / (AADT · 365 · T · L)</div>
+      <div class="formula">AR בפועל = ${ar} ; סף מומלץ לאמצעי הפרדה רך = ${arThresh}</div>
+    `);
+    steps.push(`
+      <div class="ttl">הצדק 1+1 — צפיפות תאונות AD</div>
+      <div class="formula">AD = Accidents / (T · L)</div>
+      <div class="formula">AD בפועל = ${ad} ; סף לאמצעי ${mt === 'rigid' ? 'קשיח' : 'רך'} = ${adThresh}</div>
+    `);
+    steps.push(`
+      <div class="ttl">בחירת אמצעי הפרדה</div>
+      <div class="formula">V_d = ${vd} קמ"ש</div>
+      <div class="formula">אמצעי קשיח — מתאים ל-V_d ≥ 80 קמ"ש</div>
+      <div class="formula">אמצעי רך — מתאים ל-V_d ≤ 70 קמ"ש</div>
+    `);
+
+    if (ar > arThresh && ad > adThresh) {
+      warn.push(['ok', `גם AR (${ar}) וגם AD (${ad}) עולים על הסף — מומלץ לשדרג לחתך 1+1.`]);
+    } else if (ar > arThresh || ad > adThresh) {
+      warn.push(['warn', `רק אחד מהמדדים עולה על הסף (AR=${ar}, AD=${ad}) — יש לשקול 1+1 בזהירות.`]);
+    } else {
+      warn.push(['info', `AR (${ar}) ו-AD (${ad}) מתחת לסף — 1+1 לא מוצדק לפי מדדים אלה.`]);
+    }
+    if (vd >= 80 && mt === 'soft') {
+      warn.push(['warn', `במהירות תכן ${vd} קמ"ש מומלץ אמצעי הפרדה קשיח ולא רך.`]);
+    }
+    if (vd <= 70 && mt === 'rigid') {
+      warn.push(['info', `במהירות תכן ${vd} קמ"ש ניתן להשתמש גם באמצעי הפרדה רך.`]);
+    }
+    warn.push(['info', `רוחב רצועת החיי"ץ: 60 ס"מ (0.60 מ') בין נתיבי הנסיעה.`]);
+
+    setHtml('t4_results', `
+      <div class="row g-2 mb-3">
+        <div class="col-6"><div class="result-box"><div class="result-label">AR</div><div class="result-number ${ar > arThresh ? 'highlight' : ''}">${fmt(ar,2)}</div><div class="result-sub">למיליון כ"ר-ק"מ (סף ${arThresh})</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">AD</div><div class="result-number ${ad > adThresh ? 'highlight' : ''}">${fmt(ad,2)}</div><div class="result-sub">לק"מ/שנה (סף ${adThresh})</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">מהירות תכן</div><div class="result-number">${vd}</div><div class="result-sub">קמ"ש</div></div></div>
+        <div class="col-6"><div class="result-box"><div class="result-label">סוג הפרדה</div><div class="result-number" style="font-size:1.2rem;">${mt === 'rigid' ? 'קשיח' : 'רך'}</div><div class="result-sub">מומלץ</div></div></div>
+      </div>
+      <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+      <hr style="border-color:var(--line);margin:14px 0 10px;">
+      <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    `);
+  }
+}
+
+/* ==================== TAB 5 — Emergency lay-by ==================== */
+function calcTab5(){
+  const rt = $('t5_roadtype').value;
+  const shoulder = parseFloat($('t5_shoulder').value);
+  const hv = parseFloat($('t5_hv').value) || 0;
+  const spacing = parseFloat($('t5_spacing').value) || 0;
+
+  /* Justification check */
+  const justified = (rt === 'freeway' || rt === 'major' || rt === 'arterial' || rt === 'single') && spacing >= 2.0;
+  /* Reduced spacing for high HV */
+  let recSpacing = hv > 10 ? 1.5 : 2.0;
+  if (rt === 'local' || rt === 'urban') recSpacing = null;
+
+  /* Widths */
+  const laybyWidth = 4.5;
+  const additional = laybyWidth - shoulder;
+  const parallelLength = 30;
+  const taperLength = 30;
+
+  const warn = [];
+  const steps = [];
+
+  steps.push(`
+    <div class="ttl">הצדק למפרץ חירום (סעיף 3.10.2)</div>
+    <div class="formula">סוג דרך: ${rt} ; אחוז רכב כבד: ${hv}%</div>
+    <div class="formula">מרווח בין יציאות מהדרך: ${spacing} ק"מ</div>
+    <div class="formula">הצדק: ${justified ? '✓ מתקיים' : '✗ לא מתקיים'}</div>
+  `);
+  steps.push(`
+    <div class="ttl">מאפיינים גיאומטריים (סעיף 3.10.3)</div>
+    <div class="formula">רוחב מפרץ = 4.5 מ' (3.0 מ' שול + 1.5 מ' תוספת)</div>
+    <div class="formula">רוחב שול קיים = ${shoulder} מ'</div>
+    <div class="formula">תוספת רוחב נדרשת = ${fmt(additional,2)} מ'</div>
+    <div class="formula">אורך קטע מקביל = ${parallelLength} מ'</div>
+    <div class="formula">אורך לוכסן = ${taperLength} מ' (היסט 1:20)</div>
+  `);
+  steps.push(`
+    <div class="ttl">מרווחים בין מפרצים</div>
+    <div class="formula">מרווח מומלץ: 2.0 ק"מ (או 1.5 ק"מ באחוז רכב כבד גבוה)</div>
+    <div class="formula">מרווח מומלץ במקרה זה: ${recSpacing ? recSpacing + ' ק"מ' : 'לא נדרש'}</div>
+  `);
+
+  if (rt === 'local' || rt === 'urban') {
+    warn.push(['info', `לא נדרש מפרץ חירום בדרך מקומית / מעויירת מהירה.`]);
+  } else if (justified) {
+    warn.push(['ok', `מוצדק להתקין מפרץ חירום (מרווח ≥ 2 ק"מ).`]);
+  } else {
+    warn.push(['info', `מרווח ${spacing} ק"מ קטן מ-2.0 ק"מ — יש לבחון מתקני דרך חלופיים (צומת, רמפה, תחנת אוטובוס, אזור מנוחה).`]);
+  }
+  if (hv > 10) {
+    warn.push(['info', `אחוז רכב כבד גבוה (${hv}%) — מומלץ להקטין את המרווח ל-1.5 ק"מ.`]);
+  }
+  if (shoulder >= 3.5) {
+    warn.push(['info', `שול קיים ${shoulder} מ' — ניתן להסתפק במפרץ מצומצם יותר.`]);
+  }
+
+  setHtml('t5_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">רוחב מפרץ</div><div class="result-number highlight">4.50</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">תוספת מעל השול</div><div class="result-number">${fmt(additional,2)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">אורך קטע מקביל</div><div class="result-number">30</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">אורך לוכסן</div><div class="result-number">30</div><div class="result-sub">מ' (1:20)</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    <div class="section-note mt-3">
+      <b>תמרור מקדים:</b> תמרור 637 יוצב בתחילת הלוכסן. תמרורי 360+637 יוצבו 500 מ' ו-1,000 מ' לפני הלוכסן. פס הרעדה בקדצוף משונן ברוחב 30 ס"מ לאורך המפרץ + 150 מ' לפני.
+    </div>
+  `);
+}
+
+/* ==================== Wire-up ==================== */
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(btn.dataset.tab);
+    if (target) target.classList.add('active');
+  });
+});
+
+/* Tab 1 */
+['t1_roadtype','t1_terrain','t1_sensitivity','t1_target'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab1); el.addEventListener('change', calcTab1); }
+});
+
+/* Tab 2 */
+['t2_roadtype','t2_vd','t2_lanes_dir','t2_shoulder_side'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab2); el.addEventListener('change', calcTab2); }
+});
+
+/* Tab 3 */
+['t3_case','t3_nlanes','t3_vd3','t3_lighting','t3_barrier_type',
+ 't3_situation','t3_surface','t3_slope_type','t3_barrier_req'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab3); el.addEventListener('change', calcTab3); }
+});
+
+/* Tab 4 */
+['t4_kind','t4_aadt','t4_hv','t4_pc','t4_length',
+ 't4_aadt_c','t4_hv_c','t4_grade_c','t4_prev_slope',
+ 't4_vd_11','t4_ar','t4_ad','t4_median_type'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab4); el.addEventListener('change', calcTab4); }
+});
+
+/* Tab 5 */
+['t5_roadtype','t5_shoulder','t5_hv','t5_spacing'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab5); el.addEventListener('change', calcTab5); }
+});
+
+/* Init */
+calcTab1();
+calcTab2();
+calcTab3();
+calcTab4();
+calcTab5();
+
+})();
+</script>
+</body>
+</html>

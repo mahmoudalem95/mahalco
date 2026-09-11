@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAHALCO – קיבולת ורמת שירות (פרק 8)</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<style>
+  :root {
+    --bg:#12121e; --card:#1a1a2e; --card-2:#22223a; --field:#0f0f1a;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.05);
+    --accent:#E8A33D; --accent-dim:rgba(232,163,61,.16); --green:#4ADE80;
+    --ink:#EDEBF2; --ink-2:#9A96AB; --ink-3:#6B6780;
+    --danger:#F35B5B; --warn:#F5C451; --info:#7AB8F5;
+  }
+  * { box-sizing: border-box; }
+  body { background:var(--bg); color:var(--ink); padding:20px; font-family:Arial, sans-serif; line-height:1.5; }
+  .container { max-width:1400px; }
+  h1 { font-size:clamp(1.6rem, 1.375rem + 1.5vw, 2.4rem); font-weight:700; margin:0 0 .5rem; color:var(--ink); line-height:1.2; }
+  h1 .bi { color:#ffc107; margin-left:.5rem; }
+  .subhead { color:var(--ink-3); margin:0 0 1.5rem; line-height:1.6; font-size:.95rem; }
+  .badge { display:inline-block; background:var(--card-2); color:var(--ink-2); font-size:.8rem;
+    font-weight:600; padding:.25em .6em; border-radius:6px; vertical-align:middle; margin-right:6px; }
+
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.3); margin-bottom:20px; }
+  .card-header { background:var(--accent); color:#1a1a2e; border-radius:12px 12px 0 0;
+    font-weight:600; padding:.5rem 1rem; border-bottom:1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left:.5rem; }
+  .card-body { padding:1rem; }
+  .section-note { font-size:.78rem; color:var(--ink-3); margin:0 0 12px; line-height:1.6; }
+
+  .form-group { margin-bottom:12px; }
+  .row-2, .row-3, .row-4 { display:grid; gap:12px; }
+  .row-2 { grid-template-columns:1fr 1fr; }
+  .row-3 { grid-template-columns:1fr 1fr 1fr; }
+  .row-4 { grid-template-columns:repeat(4,1fr); }
+  @media (max-width:720px) { .row-2,.row-3,.row-4 { grid-template-columns:1fr; gap:8px; } }
+  label { display:block; margin-bottom:.35rem; color:var(--ink-2); font-size:.9rem; }
+  label .unit { color:var(--ink-3); font-size:.8rem; }
+  input, select { width:100%; padding:.375rem .75rem; font-size:1rem; border:1px solid var(--line);
+    border-radius:6px; background:var(--field); color:var(--ink); font-family:inherit; }
+  select option { background:var(--field); color:var(--ink); }
+  input:focus, select:focus { border-color:var(--accent); outline:none; box-shadow:0 0 0 .2rem rgba(232,163,61,.2); }
+  input[type=number] { -moz-appearance:textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .form-text { color:var(--ink-3); font-size:.75rem; }
+
+  .tabs { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+  .tabs button { padding:.5rem 1rem; border-radius:8px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink-2); font-size:.88rem; font-weight:600; cursor:pointer;
+    font-family:inherit; transition:.15s; width:auto; }
+  .tabs button:hover { background:var(--card-2); color:var(--ink); }
+  .tabs button.active { background:var(--accent); color:#1a1a2e; border-color:var(--accent); }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+
+  .results-sticky { position:sticky; top:16px; }
+  @media (max-width:991px) { .results-sticky { position:static; } }
+  .result-box { background:var(--card-2); border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; height:100%; }
+  .result-label { font-size:.82rem; color:var(--ink-2); }
+  .result-number { font-size:1.7rem; font-weight:700; color:var(--ink); line-height:1.15;
+    font-variant-numeric:tabular-nums; direction:ltr; text-align:right; }
+  .result-number.highlight { color:var(--accent); }
+  .result-sub { font-size:.72rem; color:var(--ink-3); }
+
+  .los-big { display:flex; align-items:center; gap:16px; background:var(--card-2);
+    border:1px solid var(--line); border-radius:12px; padding:14px 18px; margin-bottom:14px; }
+  .los-letter { font-size:54px; font-weight:800; color:var(--accent); line-height:1; min-width:70px; text-align:center; }
+  .los-meta { font-size:.88rem; color:var(--ink-2); }
+  .los-meta b { font-size:1rem; color:var(--ink); }
+
+  ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+  ol.steps > li { counter-increment:st; position:relative; padding:12px 40px 12px 0; border-bottom:1px dashed var(--line); }
+  ol.steps > li:last-child { border-bottom:0; }
+  ol.steps > li::before { content:counter(st); position:absolute; right:0; top:12px;
+    background:var(--accent); color:#1a1a2e; width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800; }
+  .steps .ttl { font-weight:700; color:var(--ink); font-size:.93rem; margin-bottom:5px; }
+  .steps .formula { direction:ltr; text-align:left; background:var(--field); border:1px solid var(--line-2);
+    border-radius:6px; padding:6px 9px; font-family:Consolas,"Courier New",monospace;
+    font-size:.78rem; margin:5px 0; overflow-x:auto; white-space:nowrap; color:#d8d4e4; }
+  .steps .num { direction:ltr; display:inline-block; font-family:Consolas,monospace; font-weight:700; color:var(--accent); }
+
+  .table { --bs-table-bg:transparent; --bs-table-color:var(--ink); --bs-table-border-color:var(--line); font-size:.85rem; }
+  .table thead th { color:var(--ink-3); border-color:var(--line); font-weight:600; white-space:nowrap; font-size:.78rem; }
+  .table td, .table th { border-color:var(--line-2); vertical-align:middle; }
+  .table td.c { text-align:center; }
+  .table tfoot td { font-weight:700; color:var(--accent); border-top:1px solid var(--line); }
+  .table tr.highlight td { background:var(--accent-dim); }
+
+  .warn-list { list-style:none; padding:0; margin:0; }
+  .warn-list li { padding:9px 12px; border-radius:8px; margin-bottom:7px; font-size:.85rem;
+    line-height:1.55; border-right:4px solid; background:var(--field); }
+  .warn-list li.ok { border-color:var(--green); color:#a6efc0; }
+  .warn-list li.warn { border-color:var(--warn); color:#f2dca2; }
+  .warn-list li.bad { border-color:var(--danger); color:#f7a3a3; }
+  .warn-list li.info { border-color:var(--info); color:#bcd9fb; }
+
+  .btn-accent { background:var(--accent); border-color:var(--accent); color:#1a1a2e; font-weight:700;
+    padding:.55rem 1.4rem; border-radius:8px; border:1px solid transparent; width:100%; font-family:inherit; cursor:pointer; }
+  .btn-accent:hover { background:#c9862f; border-color:#c9862f; }
+
+  .scheme-box { background:var(--field); border:1px solid var(--line-2); border-radius:10px; padding:14px; overflow-x:auto; }
+  .scheme-box svg { display:block; margin:0 auto; width:100%; max-width:1000px; height:auto; }
+  .scheme-caption { font-size:.78rem; color:var(--ink-3); text-align:center; margin-top:8px; }
+
+  footer { text-align:center; color:var(--ink-3); font-size:.85rem; margin-top:1.5rem; padding-bottom:1rem; }
+  .col-help { font-size:.75rem; color:var(--ink-3); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1><i class="bi bi-speedometer2"></i>קיבולת ורמת שירות <span class="badge">פרק 8</span></h1>
+  <p class="subhead">
+    מחשבון קיבולת ורמת-שירות לדרכים בין-עירוניות לפי הנחיות התכן (כרך 1, פרק 8).
+    כולל דרכים דו-נתיביות (Type I & II), דרכים רב-נתיביות ודרכים מהירות.
+    חישוב FFS, Vp, מהירות זרימה, צפיפות, ATS ו-PTSF, וקביעת רמת שירות.
+    <br>החישוב מתבצע כולו בדפדפן. יחידות: קמ"ש, מטר, כלי-רכב/שעה, ית"ן/שעה.
+  </p>
+
+  <div class="tabs">
+    <button class="active" data-tab="tab1"><i class="bi bi-info-circle"></i> מבוא ועקרונות</button>
+    <button data-tab="tab2"><i class="bi bi-arrow-left-right"></i> דרכים דו-נתיביות</button>
+    <button data-tab="tab3"><i class="bi bi-lanes"></i> דרכים רב-נתיביות</button>
+    <button data-tab="tab4"><i class="bi bi-signpost-2"></i> דרכים מהירות</button>
+    <button data-tab="tab5"><i class="bi bi-arrows-expand"></i> הרחבת דרך דו-נתיבית</button>
+    <button data-tab="tab6"><i class="bi bi-table"></i> טבלאות עזר</button>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 1: Intro & principles                                       -->
+  <!-- =============================================================== -->
+  <div id="tab1" class="tab-pane active">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – עקרונות ומושגים</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="t1_roadtype">סוג הדרך</label>
+              <select id="t1_roadtype">
+                <option value="freeway">דרך מהירה / מעויירת מהירה</option>
+                <option value="multilane">דרך דו-מסלולית רב-נתיבית (לא מהירה)</option>
+                <option value="twolane" selected>דרך דו-נתיבית</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="t1_terrain">סיווג טופוגרפי (HCM)</label>
+              <select id="t1_terrain">
+                <option value="flat" selected>מישורי — שיפוע ≤ 2%</option>
+                <option value="rolling">גבעי — שיפוע 2–4%</option>
+                <option value="mountainous">הררי — שיפוע > 4%</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="t1_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+              <select id="t1_vd">
+                <option>60</option><option>70</option><option>80</option>
+                <option selected>90</option><option>100</option><option>110</option><option>120</option>
+              </select>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t1_phf">PHF</label>
+                <input type="number" id="t1_phf" value="0.92" step="0.01" min="0.7" max="1">
+              </div>
+              <div class="form-group">
+                <label for="t1_pt">% רכב כבד P<sub>T</sub></label>
+                <input type="number" id="t1_pt" value="10" step="1" min="0" max="60">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t1_v">נפח ביקוש בשעת שיא <span class="unit">(כ"ר/שעה, כיוון אחד)</span></label>
+              <input type="number" id="t1_v" value="1200" step="50" min="0">
+            </div>
+            <div class="form-group">
+              <label for="t1_dir">התפלגות כיוונית</label>
+              <select id="t1_dir">
+                <option value="50">50/50</option>
+                <option value="60">60/40</option>
+                <option value="70" selected>70/30</option>
+                <option value="80">80/20</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>תרשים — מושגי קיבולת</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- axes -->
+                <line x1="60" y1="180" x2="440" y2="180" stroke="#9A96AB" stroke-width="1.5"/>
+                <line x1="60" y1="180" x2="60" y2="30" stroke="#9A96AB" stroke-width="1.5"/>
+                <text x="250" y="205" text-anchor="middle" fill="#9A96AB" font-size="11">V<sub>p</sub> — שיעור זרימה (ית"ן/שעה/נתיב)</text>
+                <text x="30" y="105" text-anchor="middle" fill="#9A96AB" font-size="11" transform="rotate(-90 30,105)">S (קמ"ש)</text>
+                <!-- speed-flow curve -->
+                <path d="M 60,50 L 250,50 Q 320,55 370,80 Q 400,105 420,150 Q 425,165 425,180" stroke="#E8A33D" stroke-width="2.5" fill="none"/>
+                <!-- LOS boundaries -->
+                <line x1="130" y1="50" x2="130" y2="180" stroke="#4ADE80" stroke-width="1" stroke-dasharray="3,2"/>
+                <line x1="200" y1="50" x2="200" y2="180" stroke="#4ADE80" stroke-width="1" stroke-dasharray="3,2"/>
+                <line x1="270" y1="55" x2="270" y2="180" stroke="#4ADE80" stroke-width="1" stroke-dasharray="3,2"/>
+                <line x1="340" y1="65" x2="340" y2="180" stroke="#4ADE80" stroke-width="1" stroke-dasharray="3,2"/>
+                <line x1="400" y1="110" x2="400" y2="180" stroke="#4ADE80" stroke-width="1" stroke-dasharray="3,2"/>
+                <!-- LOS labels -->
+                <text x="95" y="43" text-anchor="middle" fill="#4ADE80" font-size="10" font-weight="700">A</text>
+                <text x="165" y="43" text-anchor="middle" fill="#4ADE80" font-size="10" font-weight="700">B</text>
+                <text x="235" y="43" text-anchor="middle" fill="#4ADE80" font-size="10" font-weight="700">C</text>
+                <text x="305" y="43" text-anchor="middle" fill="#4ADE80" font-size="10" font-weight="700">D</text>
+                <text x="370" y="43" text-anchor="middle" fill="#4ADE80" font-size="10" font-weight="700">E</text>
+                <text x="420" y="43" text-anchor="middle" fill="#F35B5B" font-size="10" font-weight="700">F</text>
+                <!-- FFS label -->
+                <text x="90" y="65" fill="#E8A33D" font-size="10" font-weight="700">FFS</text>
+                <!-- capacity marker -->
+                <text x="430" y="150" fill="#F35B5B" font-size="10">קיבולת</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">עקומת מהירות-זרימה וקריטריוני רמת שירות (סכימתי)</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – עקרונות ומושגים</div>
+          <div class="card-body" id="t1_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 2: Two-lane highways                                        -->
+  <!-- =============================================================== -->
+  <div id="tab2" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – דרך דו-נתיבית</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_type">סוג הדרך הדו-נתיבית</label>
+                <select id="t2_type">
+                  <option value="I" selected>סוג I — דרך עורקית</option>
+                  <option value="II">סוג II — דרך גישה / נופש</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t2_terrain">טופוגרפיה</label>
+                <select id="t2_terrain">
+                  <option value="flat" selected>מישורי (≤2%)</option>
+                  <option value="rolling">גבעי (2–4%)</option>
+                  <option value="mountainous">הררי (&gt;4%)</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_bffs">BFFS — מהירות זרימה חופשית בסיסית <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="t2_bffs" value="80" step="5" min="60" max="100">
+              </div>
+              <div class="form-group">
+                <label for="t2_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                <select id="t2_vd">
+                  <option>60</option><option>70</option><option selected>80</option><option>90</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_lane">רוחב נתיב <span class="unit">(מ')</span></label>
+                <select id="t2_lane">
+                  <option value="3.0">3.0</option>
+                  <option value="3.3">3.3</option>
+                  <option value="3.6" selected>3.6</option>
+                  <option value="3.9">3.9</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t2_shoulder">רוחב שול כולל <span class="unit">(מ')</span></label>
+                <select id="t2_shoulder">
+                  <option value="0">0</option>
+                  <option value="1.2">1.2</option>
+                  <option value="1.8" selected>1.8</option>
+                  <option value="2.4">2.4</option>
+                  <option value="3.0">3.0</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_ap">צפיפות נקודות גישה <span class="unit">(לקמ"ש)</span></label>
+                <select id="t2_ap">
+                  <option value="0" selected>0 (ללא)</option>
+                  <option value="6">6</option>
+                  <option value="12">12</option>
+                  <option value="18">18</option>
+                  <option value="24">24</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t2_v">נפח ביקוש דו-כיווני <span class="unit">(כ"ר/שעה)</span></label>
+                <input type="number" id="t2_v" value="900" step="50" min="0">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_phf">PHF</label>
+                <input type="number" id="t2_phf" value="0.92" step="0.01" min="0.7" max="1">
+              </div>
+              <div class="form-group">
+                <label for="t2_pt">% רכב כבד</label>
+                <input type="number" id="t2_pt" value="10" step="1" min="0" max="60">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_et">E<sub>T</sub> — מקדם ית"ן</label>
+                <input type="number" id="t2_et" value="2.5" step="0.1" min="1" max="8">
+                <div class="col-help">מישורי 1.5 ; גבעי 2.5 ; הררי 4.5</div>
+              </div>
+              <div class="form-group">
+                <label for="t2_np">איסור עקיפה <span class="unit">(%)</span></label>
+                <select id="t2_np">
+                  <option value="0" selected>0 (ללא איסור)</option>
+                  <option value="20">20%</option>
+                  <option value="40">40%</option>
+                  <option value="60">60%</option>
+                  <option value="80">80%</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>תרשים — דרך דו-נתיבית</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 130" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="55" width="480" height="40" fill="#2c2c46"/>
+                <line x1="0" y1="75" x2="480" y2="75" stroke="#F5C451" stroke-width="2" stroke-dasharray="10,6"/>
+                <line x1="0" y1="55" x2="480" y2="55" stroke="#9A96AB" stroke-width="1.5"/>
+                <line x1="0" y1="95" x2="480" y2="95" stroke="#9A96AB" stroke-width="1.5"/>
+                <!-- cars -->
+                <rect x="60" y="60" width="30" height="12" rx="2" fill="#E8A33D" opacity="0.7"/>
+                <rect x="180" y="60" width="30" height="12" rx="2" fill="#E8A33D" opacity="0.7"/>
+                <rect x="300" y="80" width="30" height="12" rx="2" fill="#7AB8F5" opacity="0.7"/>
+                <rect x="400" y="60" width="30" height="12" rx="2" fill="#E8A33D" opacity="0.7"/>
+                <!-- arrows -->
+                <polygon points="480,65 470,60 470,70" fill="#E8A33D"/>
+                <polygon points="0,85 10,80 10,90" fill="#7AB8F5"/>
+                <text x="240" y="40" text-anchor="middle" fill="#E8A33D" font-size="11">כיוון A</text>
+                <text x="240" y="120" text-anchor="middle" fill="#7AB8F5" font-size="11">כיוון B</text>
+                <text x="240" y="78" text-anchor="middle" fill="#F5C451" font-size="9" font-weight="700">קו מרכז (עקיפה מותרת/אסורה)</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">סכימה — דרך דו-נתיבית דו-סיטרית עם חלוקה למרווחי עקיפה</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – דרך דו-נתיבית</div>
+          <div class="card-body" id="t2_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 3: Multi-lane highways                                      -->
+  <!-- =============================================================== -->
+  <div id="tab3" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – דרך רב-נתיבית</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_vd">מהירות תכן / BFFS <span class="unit">(קמ"ש)</span></label>
+                <select id="t3_vd">
+                  <option>70</option><option>80</option><option selected>90</option><option>100</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t3_n">מספר נתיבים לכיוון</label>
+                <select id="t3_n">
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_lane">רוחב נתיב <span class="unit">(מ')</span></label>
+                <select id="t3_lane">
+                  <option value="3.0">3.0</option>
+                  <option value="3.3">3.3</option>
+                  <option value="3.6" selected>3.6</option>
+                  <option value="3.9">3.9</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t3_lc">מרווח צידי ימני פנוי <span class="unit">(מ')</span></label>
+                <select id="t3_lc">
+                  <option value="0.6">0.6</option>
+                  <option value="1.2">1.2</option>
+                  <option value="1.8" selected>1.8</option>
+                  <option value="2.4">2.4</option>
+                  <option value="3.0">3.0</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_phf">PHF</label>
+                <input type="number" id="t3_phf" value="0.92" step="0.01" min="0.7" max="1">
+              </div>
+              <div class="form-group">
+                <label for="t3_pt">% רכב כבד</label>
+                <input type="number" id="t3_pt" value="10" step="1" min="0" max="60">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_et">E<sub>T</sub> — מקדם ית"ן</label>
+                <input type="number" id="t3_et" value="2.5" step="0.1" min="1" max="8">
+              </div>
+              <div class="form-group">
+                <label for="t3_fp">f<sub>p</sub> — אוכלוסיית נהגים</label>
+                <input type="number" id="t3_fp" value="1.0" step="0.05" min="0.85" max="1">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t3_v">נפח ביקוש בשעת שיא <span class="unit">(כ"ר/שעה לכיוון)</span></label>
+              <input type="number" id="t3_v" value="1800" step="50" min="0">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – דרך רב-נתיבית</div>
+          <div class="card-body" id="t3_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 4: Freeways                                                 -->
+  <!-- =============================================================== -->
+  <div id="tab4" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – דרך מהירה</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t4_kind">סוג הדרך המהירה</label>
+                <select id="t4_kind">
+                  <option value="freeway" selected>דרך מהירה בין-עירונית</option>
+                  <option value="urban">דרך מעויירת / פרברית מהירה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t4_vd">מהירות תכן / BFFS <span class="unit">(קמ"ש)</span></label>
+                <select id="t4_vd">
+                  <option>90</option><option>100</option><option>110</option><option selected>120</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t4_n">מספר נתיבים לכיוון</label>
+                <select id="t4_n">
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t4_lane">רוחב נתיב <span class="unit">(מ')</span></label>
+                <select id="t4_lane">
+                  <option value="3.0">3.0</option>
+                  <option value="3.3">3.3</option>
+                  <option value="3.6" selected>3.6</option>
+                  <option value="3.9">3.9</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t4_lc">מרווח צידי ימני פנוי <span class="unit">(מ')</span></label>
+                <select id="t4_lc">
+                  <option value="0.6">0.6</option>
+                  <option value="1.2">1.2</option>
+                  <option value="1.8" selected>1.8</option>
+                  <option value="2.4">2.4</option>
+                  <option value="3.0">3.0</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t4_id">צפיפות מחלפים <span class="unit">(לקמ"ש)</span></label>
+                <select id="t4_id">
+                  <option value="0" selected>≤ 0.3</option>
+                  <option value="0.5">0.5</option>
+                  <option value="1.0">1.0</option>
+                  <option value="1.5">1.5</option>
+                  <option value="2.0">2.0</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t4_phf">PHF</label>
+                <input type="number" id="t4_phf" value="0.92" step="0.01" min="0.7" max="1">
+              </div>
+              <div class="form-group">
+                <label for="t4_pt">% רכב כבד</label>
+                <input type="number" id="t4_pt" value="10" step="1" min="0" max="60">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t4_et">E<sub>T</sub> — מקדם ית"ן</label>
+                <input type="number" id="t4_et" value="2.5" step="0.1" min="1" max="8">
+              </div>
+              <div class="form-group">
+                <label for="t4_fp">f<sub>p</sub> — אוכלוסיית נהגים</label>
+                <input type="number" id="t4_fp" value="1.0" step="0.05" min="0.85" max="1">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t4_v">נפח ביקוש בשעת שיא <span class="unit">(כ"ר/שעה לכיוון)</span></label>
+              <input type="number" id="t4_v" value="2500" step="50" min="0">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – דרך מהירה</div>
+          <div class="card-body" id="t4_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 5: Expansion check                                          -->
+  <!-- =============================================================== -->
+  <div id="tab5" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – הרחבה לדו-מסלולית</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t5_class">סיווג תפקודי</label>
+                <select id="t5_class">
+                  <option value="major" selected>דרך ראשית</option>
+                  <option value="arterial">דרך אזורית</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t5_terrain">טופוגרפיה</label>
+                <select id="t5_terrain">
+                  <option value="flat" selected>מישורי</option>
+                  <option value="rolling">גבעי</option>
+                  <option value="mountainous">הררי</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t5_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                <select id="t5_vd">
+                  <option>60</option><option>70</option><option selected>80</option><option>90</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t5_aadt">AADT קיים / חזוי <span class="unit">(כ"ר/יום דו-כיווני)</span></label>
+                <input type="number" id="t5_aadt" value="10000" step="500" min="0">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t5_pt">% רכב כבד</label>
+                <select id="t5_pt">
+                  <option value="10">10%</option>
+                  <option value="15" selected>15%</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t5_k">K = DHV/AADT</label>
+                <input type="number" id="t5_k" value="0.08" step="0.01" min="0.05" max="0.12">
+                <div class="col-help">ברירת מחדל ישראלית: 0.08</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>תרשים — הרחבה</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- existing two-lane -->
+                <text x="60" y="25" fill="#9A96AB" font-size="11" font-weight="700">קיים:</text>
+                <rect x="20" y="40" width="120" height="30" fill="#2c2c46"/>
+                <line x1="80" y1="40" x2="80" y2="70" stroke="#F5C451" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <text x="80" y="90" text-anchor="middle" fill="#9A96AB" font-size="10">דו-נתיבית</text>
+                <!-- arrow -->
+                <text x="180" y="60" fill="#E8A33D" font-size="20">→</text>
+                <!-- expanded dual -->
+                <text x="260" y="25" fill="#4ADE80" font-size="11" font-weight="700">מוצע:</text>
+                <rect x="220" y="35" width="220" height="18" fill="#2c2c46"/>
+                <rect x="220" y="61" width="220" height="18" fill="#2c2c46"/>
+                <rect x="220" y="53" width="220" height="8" fill="#22223a" stroke="#E8A33D" stroke-width="0.8"/>
+                <line x1="250" y1="35" x2="250" y2="79" stroke="#EDEBF2" stroke-width="1" stroke-dasharray="8,4"/>
+                <line x1="320" y1="35" x2="320" y2="79" stroke="#EDEBF2" stroke-width="1" stroke-dasharray="8,4"/>
+                <line x1="390" y1="35" x2="390" y2="79" stroke="#EDEBF2" stroke-width="1" stroke-dasharray="8,4"/>
+                <text x="330" y="100" text-anchor="middle" fill="#4ADE80" font-size="10">דו-מסלולית 4 נתיבים עם מפרדה</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">הרחבה מדרך דו-נתיבית לדרך דו-מסלולית</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – הרחבה</div>
+          <div class="card-body" id="t5_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 6: Reference tables                                         -->
+  <!-- =============================================================== -->
+  <div id="tab6" class="tab-pane">
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 8.1 — מהירויות תכן ורמות שירות לתכן</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג הדרך</th><th class="c">מהירות תכן (קמ"ש)</th><th class="c">רמת שירות לתכן</th><th class="c">מס' נתיבים לכיוון</th></tr></thead>
+          <tbody>
+            <tr><td>מהירה</td><td class="c">100–120 בין-עירוני / 90–110 מעויירת</td><td class="c">C באזור לא רגיש, D בשאר / D במעויירת</td><td class="c">2 ואילך</td></tr>
+            <tr><td>ראשית</td><td class="c">80–100 דו-מסלולית / 60–80 דו-נתיבית</td><td class="c">D</td><td class="c">2 (דו-מסלולית) / 1 לעתים (דו-נתיבית)</td></tr>
+            <tr><td>אזורית</td><td class="c">80–100 דו-מסלולית / 60–80 דו-נתיבית</td><td class="c">D באזור לא רגיש, E בשאר</td><td class="c">1 (דו-נתיבית) / 2 לעתים</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 8.2 — מקדם שעת-שיא (PHF)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג הדרך</th><th class="c">A</th><th class="c">B</th><th class="c">C</th><th class="c">D</th><th class="c">E</th></tr></thead>
+          <tbody>
+            <tr><td>דרך בין-עירונית מבוקשת</td><td class="c">0.88</td><td class="c">0.90</td><td class="c">0.92</td><td class="c">0.94</td><td class="c">0.95</td></tr>
+            <tr><td>דרך מעויירת / פרברית</td><td class="c">0.92</td><td class="c">0.92</td><td class="c">0.93</td><td class="c">0.94</td><td class="c">0.95</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 8.3 — קריטריוני רמת-שירות לדרכים דו-נתיביות</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr><th rowspan="2">רמת שירות</th><th colspan="2">סוג I</th><th>סוג II</th></tr>
+            <tr><th class="c">ATS (קמ"ש)</th><th class="c">PTSF (%)</th><th class="c">PTSF (%)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>A</b></td><td class="c">&gt; 90</td><td class="c">≤ 35</td><td class="c">≤ 40</td></tr>
+            <tr><td><b>B</b></td><td class="c">80–90</td><td class="c">&gt;35–50</td><td class="c">&gt;40–55</td></tr>
+            <tr><td><b>C</b></td><td class="c">70–80</td><td class="c">&gt;50–65</td><td class="c">&gt;55–70</td></tr>
+            <tr><td><b>D</b></td><td class="c">60–70</td><td class="c">&gt;65–80</td><td class="c">&gt;70–85</td></tr>
+            <tr><td><b>E</b></td><td class="c">≤ 60</td><td class="c">&gt; 80</td><td class="c">&gt; 85</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 8.10 / 8.15 — קריטריוני רמת-שירות רב-נתיביות ומהירות (צפיפות)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>רמת שירות</th><th class="c">צפיפות D (ית"ן/ק"מ/נתיב)</th><th class="c">Vp מקסימלי ב-FFS=100</th><th class="c">Vp מקסימלי ב-FFS=120</th></tr></thead>
+          <tbody>
+            <tr><td><b>A</b></td><td class="c">≤ 7</td><td class="c">700</td><td class="c">840</td></tr>
+            <tr><td><b>B</b></td><td class="c">&gt;7–11</td><td class="c">1100</td><td class="c">1320</td></tr>
+            <tr><td><b>C</b></td><td class="c">&gt;11–16</td><td class="c">1600</td><td class="c">1840</td></tr>
+            <tr><td><b>D</b></td><td class="c">&gt;16–22</td><td class="c">2000</td><td class="c">2200</td></tr>
+            <tr><td><b>E</b></td><td class="c">&gt;22–28</td><td class="c">2300</td><td class="c">2400</td></tr>
+            <tr><td><b>F</b></td><td class="c">&gt; 28</td><td class="c">—</td><td class="c">—</td></tr>
+          </tbody>
+        </table>
+        <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">Vp — ית"ן/שעה/נתיב. הקיבולת: מהירה 2250–2400, רב-נתיבית 2000–2200.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 8.9 — נפחי תכן מומלצים להרחבה מדו-נתיבית לדו-מסלולית (כ"ר/יום, K=0.08)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סיווג תפקודי</th><th class="c">טופוגרפיה</th><th class="c">נפח תכן מומלץ להרחבה</th><th class="c">רמת שירות להרחבה</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2">ראשית</td><td class="c">מישורית</td><td class="c">17,750</td><td class="c">D</td></tr>
+            <tr><td class="c">גבעת</td><td class="c">13,685</td><td class="c">D</td></tr>
+            <tr><td rowspan="3">אזורית</td><td class="c">מישורית</td><td class="c">25,600</td><td class="c">D–E (אמצע)</td></tr>
+            <tr><td class="c">גבעת</td><td class="c">22,460</td><td class="c">D–E (אמצע)</td></tr>
+            <tr><td class="c">הררית</td><td class="c">17,225</td><td class="c">E</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 8.5 / 8.6 / 8.7 — נפחי שירות לדו-נתיביות (כ"ר/שעה דו-כיווני, 10–15% רכב כבד)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr><th rowspan="2">טופוגרפיה</th><th rowspan="2">% רכב כבד</th><th colspan="5">רמת שירות</th></tr>
+            <tr><th class="c">A</th><th class="c">B</th><th class="c">C</th><th class="c">D</th><th class="c">E</th></tr>
+          </thead>
+          <tbody>
+            <tr><td rowspan="2">מישורית (FFS=90)</td><td class="c">10–15%</td><td class="c">—</td><td class="c">—</td><td class="c">900</td><td class="c">1,570</td><td class="c">2,675</td></tr>
+            <tr><td class="c">10–15% (FFS=80)</td><td class="c">—</td><td class="c">—</td><td class="c">490</td><td class="c">1,420</td><td class="c">2,675</td></tr>
+            <tr><td rowspan="2">גבעת</td><td class="c">10–15% (FFS=90)</td><td class="c">—</td><td class="c">260</td><td class="c">705</td><td class="c">1,490</td><td class="c">2,495</td></tr>
+            <tr><td class="c">10–15% (FFS=80)</td><td class="c">—</td><td class="c">—</td><td class="c">275</td><td class="c">1,095</td><td class="c">2,495</td></tr>
+            <tr><td rowspan="3">הררית</td><td class="c">10% (FFS=90)</td><td class="c">—</td><td class="c">175</td><td class="c">345</td><td class="c">565</td><td class="c">1,505</td></tr>
+            <tr><td class="c">10% (FFS=80)</td><td class="c">—</td><td class="c">—</td><td class="c">155</td><td class="c">500</td><td class="c">1,395</td></tr>
+            <tr><td class="c">15% (FFS=90)</td><td class="c">—</td><td class="c">175</td><td class="c">305</td><td class="c">500</td><td class="c">1,395</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 8.12 — נפחי שירות לדרך רב-נתיבית (כ"ר/שעה/נתיב, FFS=98)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>% רכב כבד</th><th>טופוגרפיה</th><th class="c">A</th><th class="c">B</th><th class="c">C</th><th class="c">D</th><th class="c">E</th></tr></thead>
+          <tbody>
+            <tr><td>10%</td><td>מישורית</td><td class="c">575</td><td class="c">925</td><td class="c">1,355</td><td class="c">1,775</td><td class="c">1,970</td></tr>
+            <tr><td>15%</td><td>מישורית</td><td class="c">560</td><td class="c">900</td><td class="c">1,325</td><td class="c">1,735</td><td class="c">1,925</td></tr>
+            <tr><td>10%</td><td>גבעת</td><td class="c">525</td><td class="c">845</td><td class="c">1,240</td><td class="c">1,620</td><td class="c">1,800</td></tr>
+            <tr><td>15%</td><td>גבעת</td><td class="c">495</td><td class="c">790</td><td class="c">1,160</td><td class="c">1,520</td><td class="c">1,690</td></tr>
+            <tr><td>10%</td><td>הררית</td><td class="c">445</td><td class="c">720</td><td class="c">1,055</td><td class="c">1,380</td><td class="c">1,535</td></tr>
+            <tr><td>15%</td><td>הררית</td><td class="c">395</td><td class="c">635</td><td class="c">935</td><td class="c">1,225</td><td class="c">1,360</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 8.16 / 8.17 — נפחי שירות שעתיים לדרך מהירה (כ"ר/שעה/נתיב)</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>% רכב כבד</th><th>טופוגרפיה</th><th class="c">A</th><th class="c">B</th><th class="c">C</th><th class="c">D</th><th class="c">E</th></tr></thead>
+          <tbody>
+            <tr><td colspan="7" class="c" style="background:var(--card-2);color:var(--accent);font-weight:700;">דרך מהירה בין-עירונית (FFS=120)</td></tr>
+            <tr><td>5%</td><td>מישורית</td><td class="c">720</td><td class="c">1,160</td><td class="c">1,650</td><td class="c">2,020</td><td class="c">2,225</td></tr>
+            <tr><td>10%</td><td>מישורית</td><td class="c">705</td><td class="c">1,130</td><td class="c">1,610</td><td class="c">1,970</td><td class="c">2,170</td></tr>
+            <tr><td>15%</td><td>מישורית</td><td class="c">690</td><td class="c">1,105</td><td class="c">1,575</td><td class="c">1,925</td><td class="c">2,120</td></tr>
+            <tr><td>5%</td><td>גבעת</td><td class="c">690</td><td class="c">1,105</td><td class="c">1,575</td><td class="c">1,925</td><td class="c">2,120</td></tr>
+            <tr><td>10%</td><td>גבעת</td><td class="c">645</td><td class="c">1,035</td><td class="c">1,470</td><td class="c">1,800</td><td class="c">1,980</td></tr>
+            <tr><td>15%</td><td>גבעת</td><td class="c">605</td><td class="c">970</td><td class="c">1,380</td><td class="c">1,670</td><td class="c">1,860</td></tr>
+            <tr><td colspan="7" class="c" style="background:var(--card-2);color:var(--accent);font-weight:700;">דרך מעויירת מהירה (FFS=105)</td></tr>
+            <tr><td>5%</td><td>מישורית</td><td class="c">660</td><td class="c">1,035</td><td class="c">1,515</td><td class="c">1,925</td><td class="c">2,155</td></tr>
+            <tr><td>10%</td><td>מישורית</td><td class="c">645</td><td class="c">1,015</td><td class="c">1,480</td><td class="c">1,880</td><td class="c">2,105</td></tr>
+            <tr><td>5%</td><td>גבעת</td><td class="c">630</td><td class="c">990</td><td class="c">1,445</td><td class="c">1,835</td><td class="c">2,055</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>MAHALCO – קיבולת ורמת שירות (פרק 8) · מבוסס על HCM 2000 / HCM ישראל (משרד התחבורה 2005)</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ==================== Utilities ==================== */
+const $ = id => document.getElementById(id);
+const fmt = (x, d=2) => isFinite(x) ? Number(x).toFixed(d) : '—';
+const numF = (x, d=0) => isFinite(x) ? Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
+function setHtml(id, html){ const e=$(id); if (e) e.innerHTML = html; }
+
+/* LOS by density */
+function losByDensity(D){
+  if (D <= 7) return 'A';
+  if (D <= 11) return 'B';
+  if (D <= 16) return 'C';
+  if (D <= 22) return 'D';
+  if (D <= 28) return 'E';
+  return 'F';
+}
+
+/* LOS class */
+function losClass(l){
+  return {A:'b-ok',B:'b-ok',C:'b-info',D:'b-warn',E:'b-warn',F:'b-bad'}[l] || 'b-info';
+}
+function losColor(l){
+  return {A:'rgba(74,222,128,.15);color:#a6efc0', B:'rgba(74,222,128,.15);color:#a6efc0',
+          C:'rgba(122,184,245,.15);color:#bcd9fb', D:'rgba(245,196,81,.15);color:#f2dca2',
+          E:'rgba(245,196,81,.15);color:#f2dca2', F:'rgba(243,91,91,.15);color:#f7a3a3'}[l];
+}
+
+/* ==================== TAB 1 — Intro ==================== */
+function calcTab1(){
+  const rt = $('t1_roadtype').value;
+  const terrain = $('t1_terrain').value;
+  const vd = parseFloat($('t1_vd').value);
+  const phf = parseFloat($('t1_phf').value);
+  const pt = parseFloat($('t1_pt').value) / 100;
+  const v = parseFloat($('t1_v').value);
+  const dir = parseFloat($('t1_dir').value) / 100;
+
+  /* ET depends on terrain */
+  const ET_MAP = { flat: 1.5, rolling: 2.5, mountainous: 4.5 };
+  const ET = ET_MAP[terrain];
+  const fHV = 1 / (1 + pt * (ET - 1));
+
+  /* Determine target LOS */
+  let targetLOS = 'D';
+  if (rt === 'freeway') targetLOS = terrain === 'flat' ? 'C' : 'D';
+  else if (rt === 'multilane') targetLOS = 'D';
+  else targetLOS = 'D';
+
+  /* Capacity by road type */
+  let capacityPerLane;
+  if (rt === 'freeway') capacityPerLane = 2400;
+  else if (rt === 'multilane') capacityPerLane = 2200;
+  else capacityPerLane = 1700;
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">מבוא — מושגי יסוד</div>
+    <div class="formula">קיבולת: מספר מרבי של כלי-רכב שיכולים לעבור בנקודה ביחידת זמן</div>
+    <div class="formula">רמת שירות (LOS): רמת התנאים התפעוליים של זרימת התנועה</div>
+    <div class="formula">רמות שירות: A (טוב ביותר) עד F (גרוע ביותר)</div>
+  `);
+  steps.push(`
+    <div class="ttl">מקדם הית"ן (PCE)</div>
+    <div class="formula">f_HV = 1 / [1 + P_T · (E_T − 1)]</div>
+    <div class="formula">P_T = ${(pt*100).toFixed(1)}% ; E_T = ${ET} (טופוגרפיה ${terrain})</div>
+    <div class="formula">f_HV = 1 / [1 + ${pt.toFixed(3)} · (${ET} − 1)] = ${fmt(fHV,4)}</div>
+  `);
+  steps.push(`
+    <div class="ttl">שיעור זרימה</div>
+    <div class="formula">V_p = V / (PHF · f_HV)</div>
+    <div class="formula">V_p = ${numF(v)} / (${phf} · ${fmt(fHV,4)}) = ${numF(v/(phf*fHV))} ית"ן/שעה</div>
+  `);
+  steps.push(`
+    <div class="ttl">קיבולת בסיסית</div>
+    <div class="formula">דרך מהירה: 2250–2400 ית"ן/שעה/נתיב</div>
+    <div class="formula">דרך רב-נתיבית: 2000–2200 ית"ן/שעה/נתיב</div>
+    <div class="formula">דרך דו-נתיבית: 1700 ית"ן/שעה/כיוון, 3200 לשני הכיוונים</div>
+    <div class="formula">קיבולת לפי סוג הדרך שנבחר: ${numF(capacityPerLane)} ית"ן/שעה/נתיב</div>
+  `);
+  steps.push(`
+    <div class="ttl">התפלגות כיוונית</div>
+    <div class="formula">פיצול כיווני: ${(dir*100).toFixed(0)}/${((1-dir)*100).toFixed(0)}</div>
+    <div class="formula">משפיע על חישוב ATS ו-PTSF בדרכים דו-נתיביות</div>
+  `);
+
+  const warn = [];
+  warn.push(['info', `סוג הדרך: ${rt === 'freeway' ? 'דרך מהירה' : rt === 'multilane' ? 'דרך רב-נתיבית' : 'דרך דו-נתיבית'}`]);
+  warn.push(['info', `טופוגרפיה: ${terrain} → E_T = ${ET}`]);
+  warn.push(['ok', `f_HV = ${fmt(fHV,4)} (${fHV < 0.9 ? 'השפעה משמעותית של רכב כבד' : 'השפעה מתונה'})`]);
+  if (phf < 0.85) warn.push(['warn', `PHF = ${phf} נמוך מהטיפוסי (0.88–0.95) — יש לבדוק את נתוני השיא.`]);
+  if (pt > 0.20) warn.push(['warn', `אחוז רכב כבד ${(pt*100).toFixed(0)}% גבוה — השפעה ניכרת על הקיבולת.`]);
+
+  setHtml('t1_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">f<sub>HV</sub> — מקדם רכב כבד</div><div class="result-number highlight">${fmt(fHV,4)}</div><div class="result-sub">ללא יחידות</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">V<sub>p</sub> — שיעור זרימה</div><div class="result-number highlight">${numF(v/(phf*fHV))}</div><div class="result-sub">ית"ן/שעה</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">E<sub>T</sub> — מקדם ית"ן</div><div class="result-number">${ET}</div><div class="result-sub">טופוגרפיה ${terrain}</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">קיבולת בסיס</div><div class="result-number">${numF(capacityPerLane)}</div><div class="result-sub">ית"ן/שעה/נתיב</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">הערות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 2 — Two-lane ==================== */
+function calcTab2(){
+  const type = $('t2_type').value;
+  const terrain = $('t2_terrain').value;
+  const bffs = parseFloat($('t2_bffs').value);
+  const vd = parseFloat($('t2_vd').value);
+  const lane = parseFloat($('t2_lane').value);
+  const shoulder = parseFloat($('t2_shoulder').value);
+  const ap = parseFloat($('t2_ap').value);
+  const v = parseFloat($('t2_v').value);
+  const phf = parseFloat($('t2_phf').value);
+  const pt = parseFloat($('t2_pt').value) / 100;
+  const ET = parseFloat($('t2_et').value);
+  const np = parseFloat($('t2_np').value) / 100;
+
+  /* FFS = BFFS - fLS - fA */
+  /* fLS — lane + shoulder correction */
+  let fLS = 0;
+  if (lane < 3.6) fLS += (3.6 - lane) * 3.0;
+  if (shoulder < 1.8) fLS += (1.8 - shoulder) * 2.5;
+  else if (shoulder > 1.8) fLS -= (shoulder - 1.8) * 0.5;
+  /* fA — access point density */
+  let fA = 0;
+  if (ap > 0) fA = Math.min(ap * 0.25, 10);
+
+  const FFS = Math.max(bffs - fLS - fA, 40);
+
+  /* fHV */
+  const fHV = 1 / (1 + pt * (ET - 1));
+
+  /* fG — grade adjustment. Simplified based on terrain. */
+  let fG = 1.0;
+  if (terrain === 'rolling') fG = 0.85;
+  else if (terrain === 'mountainous') fG = 0.70;
+
+  /* Vp = V / (PHF · fG · fHV) */
+  const Vp = v / (phf * fG * fHV);
+
+  /* ATS = FFS - 0.0125·Vp - fnp */
+  /* fnp — no passing zone adjustment: 0 for Type II, else approximated */
+  let fnp = 0;
+  if (type === 'I') fnp = np * 5.0;
+  const ATS = Math.max(FFS - 0.0125 * Vp - fnp, 10);
+
+  /* PTSF = BPTSF + fd/np */
+  const BPTSF = 100 * (1 - Math.exp(-0.000879 * Vp));
+  /* fd/np — passing zone demand adjustment. Approximated. */
+  let fdnp = 0;
+  if (type === 'I') fdnp = np * 15.0;
+  const PTSF = Math.min(BPTSF + fdnp, 100);
+
+  /* LOS determination */
+  let losATS, losPTSF, los;
+  if (type === 'I') {
+    if (ATS > 90) losATS = 'A'; else if (ATS > 80) losATS = 'B';
+    else if (ATS > 70) losATS = 'C'; else if (ATS > 60) losATS = 'D'; else losATS = 'E';
+    if (PTSF <= 35) losPTSF = 'A'; else if (PTSF <= 50) losPTSF = 'B';
+    else if (PTSF <= 65) losPTSF = 'C'; else if (PTSF <= 80) losPTSF = 'D'; else losPTSF = 'E';
+    /* worse of the two */
+    const order = {A:1,B:2,C:3,D:4,E:5,F:6};
+    los = order[losATS] >= order[losPTSF] ? losATS : losPTSF;
+  } else {
+    if (PTSF <= 40) los = 'A'; else if (PTSF <= 55) los = 'B';
+    else if (PTSF <= 70) los = 'C'; else if (PTSF <= 85) los = 'D'; else los = 'E';
+    losATS = '—'; losPTSF = los;
+  }
+
+  const warn = [];
+  if (type === 'I') {
+    warn.push(['info', `סוג I — נדרשים גם ATS וגם PTSF. LOS נקבע לפי הגרוע מביניהם.`]);
+  } else {
+    warn.push(['info', `סוג II — נקבע לפי PTSF בלבד (ATS לא נדרש).`]);
+  }
+  if (Vp > 3200) {
+    warn.push(['bad', `V_p = ${numF(Vp)} ית"ן/שעה עולה על הקיבולת הדו-כיוונית (3200) — הקטע מעל הקיבולת.`]);
+  } else if (Vp > 1700) {
+    warn.push(['warn', `V_p = ${numF(Vp)} ית"ן/שעה מעל 1700 לכיוון — מתקרב לקיבולת.`]);
+  } else {
+    warn.push(['ok', `V_p = ${numF(Vp)} ית"ן/שעה — בתחום הקיבולת.`]);
+  }
+  if (FFS < 60) warn.push(['warn', `FFS = ${fmt(FFS,1)} קמ"ש נמוך — בדוק רוחבי נתיב/שול ורמת גישות.`]);
+  if (np > 0.5) warn.push(['info', `אחוז איסור עקיפה ${(np*100).toFixed(0)}% גבוה — מגדיל PTSF ומקטין ATS.`]);
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">מהירות זרימה חופשית (FFS)</div>
+    <div class="formula">FFS = BFFS − f_LS − f_A</div>
+    <div class="formula">BFFS = ${bffs} קמ"ש ; f_LS = ${fmt(fLS,2)} ; f_A = ${fmt(fA,2)}</div>
+    <div class="formula">FFS = ${bffs} − ${fmt(fLS,2)} − ${fmt(fA,2)} = ${fmt(FFS,1)} קמ"ש</div>
+  `);
+  steps.push(`
+    <div class="ttl">שיעור זרימה (V_p)</div>
+    <div class="formula">V_p = V / (PHF · f_G · f_HV)</div>
+    <div class="formula">V = ${numF(v)} ; PHF = ${phf} ; f_G = ${fG} ; f_HV = ${fmt(fHV,4)}</div>
+    <div class="formula">V_p = ${numF(v)} / (${phf} · ${fG} · ${fmt(fHV,4)}) = ${numF(Vp)} ית"ן/שעה</div>
+  `);
+  steps.push(`
+    <div class="ttl">מהירות נסיעה ממוצעת (ATS)</div>
+    <div class="formula">ATS = FFS − 0.0125·V_p − f_np</div>
+    <div class="formula">ATS = ${fmt(FFS,1)} − 0.0125·${numF(Vp)} − ${fmt(fnp,1)} = ${fmt(ATS,1)} קמ"ש</div>
+  `);
+  steps.push(`
+    <div class="ttl">אחוז זמן עקיבה (PTSF)</div>
+    <div class="formula">BPTSF = 100·(1 − e^(−0.000879·V_p))</div>
+    <div class="formula">BPTSF = 100·(1 − e^(−0.000879·${numF(Vp)})) = ${fmt(BPTSF,1)}%</div>
+    <div class="formula">PTSF = BPTSF + f_d/np = ${fmt(BPTSF,1)} + ${fmt(fdnp,1)} = ${fmt(PTSF,1)}%</div>
+  `);
+  steps.push(`
+    <div class="ttl">קביעת רמת שירות</div>
+    <div class="formula">סוג ${type} — ${type === 'I' ? 'נדרשים גם ATS וגם PTSF' : 'נדרש רק PTSF'}</div>
+    ${type === 'I'
+      ? `<div class="formula">ATS = ${fmt(ATS,1)} → LOS(ATS) = ${losATS}</div>
+         <div class="formula">PTSF = ${fmt(PTSF,1)}% → LOS(PTSF) = ${losPTSF}</div>
+         <div class="formula">LOS = הגרוע מבין השניים = ${los}</div>`
+      : `<div class="formula">PTSF = ${fmt(PTSF,1)}% → LOS = ${los}</div>`}
+  `);
+
+  setHtml('t2_results', `
+    <div class="los-big">
+      <div class="los-letter">${los}</div>
+      <div class="los-meta">
+        <b>רמת שירות: ${los}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">ATS = ${fmt(ATS,1)} קמ"ש ; PTSF = ${fmt(PTSF,1)}%</span>
+      </div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">FFS</div><div class="result-number highlight">${fmt(FFS,1)}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">V<sub>p</sub></div><div class="result-number highlight">${numF(Vp)}</div><div class="result-sub">ית"ן/שעה</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">ATS</div><div class="result-number">${fmt(ATS,1)}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">PTSF</div><div class="result-number">${fmt(PTSF,1)}</div><div class="result-sub">%</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 3 — Multi-lane ==================== */
+function calcTab3(){
+  const vd = parseFloat($('t3_vd').value);
+  const n = parseInt($('t3_n').value);
+  const lane = parseFloat($('t3_lane').value);
+  const lc = parseFloat($('t3_lc').value);
+  const phf = parseFloat($('t3_phf').value);
+  const pt = parseFloat($('t3_pt').value) / 100;
+  const ET = parseFloat($('t3_et').value);
+  const fp = parseFloat($('t3_fp').value);
+  const v = parseFloat($('t3_v').value);
+
+  /* FFS = BFFS - fLW - fLC - fN */
+  const bffs = vd;
+  let fLW = 0;
+  if (lane < 3.6) fLW = (3.6 - lane) * 3.0;
+  let fLC = 0;
+  if (lc < 1.8) fLC = (1.8 - lc) * 2.5;
+  else if (lc > 1.8) fLC = -(lc - 1.8) * 0.3;
+  let fN = 0;
+  if (n === 1) fN = 3.0; else if (n === 2) fN = 0; else fN = -1.5;
+
+  const FFS = Math.max(bffs - fLW - fLC - fN, 40);
+
+  /* fHV */
+  const fHV = 1 / (1 + pt * (ET - 1));
+
+  /* Vp = V / (PHF · N · fHV · fp) */
+  const Vp = v / (phf * n * fHV * fp);
+
+  /* Speed-flow: if Vp ≤ 1400 → S = FFS; else compute */
+  let S;
+  if (Vp <= 1400) S = FFS;
+  else {
+    /* Simplified formula: use the piecewise relationship */
+    if (FFS > 90 && FFS <= 100) {
+      const c1 = (9.3/24)*FFS - (630/25);
+      const c2 = (Vp - 1400) / (15.7*FFS - 770);
+      S = FFS - Math.pow(c1 * c2, 1.31);
+    } else {
+      /* Approximate */
+      S = FFS * (1 - 0.0001 * (Vp - 1400));
+    }
+    S = Math.max(S, 40);
+  }
+
+  /* Density */
+  const D = Vp / S;
+
+  /* LOS by density */
+  const los = losByDensity(D);
+
+  /* Capacity */
+  const capacity = 2200 * n;
+
+  const warn = [];
+  if (Vp > capacity) warn.push(['bad', `V_p = ${numF(Vp)} ית"ן/שעה עולה על הקיבולת (${numF(capacity)}) — הקטע מעל הקיבולת.`]);
+  else if (Vp > 0.85 * capacity) warn.push(['warn', `V_p = ${numF(Vp)} ית"ן/שעה — מתקרב לקיבולת (${numF(capacity)}).`]);
+  else warn.push(['ok', `V_p = ${numF(Vp)} ית"ן/שעה — בתחום הקיבולת (${numF(capacity)}).`]);
+  if (FFS < 80) warn.push(['warn', `FFS = ${fmt(FFS,1)} קמ"ש — בדוק רוחב נתיב ומרווח צידי.`]);
+  if (los === 'E' || los === 'F') warn.push(['warn', `רמת שירות ${los} — נדרש שיפור (הוספת נתיב, שיפור גיאומטריה).`]);
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">מהירות זרימה חופשית (FFS)</div>
+    <div class="formula">FFS = BFFS − f_LW − f_LC − f_N</div>
+    <div class="formula">BFFS = ${bffs} ; f_LW = ${fmt(fLW,2)} ; f_LC = ${fmt(fLC,2)} ; f_N = ${fmt(fN,2)}</div>
+    <div class="formula">FFS = ${bffs} − ${fmt(fLW,2)} − ${fmt(fLC,2)} − ${fmt(fN,2)} = ${fmt(FFS,1)} קמ"ש</div>
+  `);
+  steps.push(`
+    <div class="ttl">שיעור זרימה (V_p)</div>
+    <div class="formula">V_p = V / (PHF · N · f_HV · f_p)</div>
+    <div class="formula">V_p = ${numF(v)} / (${phf} · ${n} · ${fmt(fHV,4)} · ${fp}) = ${numF(Vp)} ית"ן/שעה/נתיב</div>
+  `);
+  steps.push(`
+    <div class="ttl">מהירות זרימה (S)</div>
+    <div class="formula">${Vp <= 1400 ? 'V_p ≤ 1400 → S = FFS' : 'V_p > 1400 → חישוב לפי הנוסחה'}</div>
+    <div class="formula">S = ${fmt(S,1)} קמ"ש</div>
+  `);
+  steps.push(`
+    <div class="ttl">צפיפות ורמת שירות</div>
+    <div class="formula">D = V_p / S = ${numF(Vp)} / ${fmt(S,1)} = ${fmt(D,2)} ית"ן/ק"מ/נתיב</div>
+    <div class="formula">קריטריונים: A ≤7 ; B ≤11 ; C ≤16 ; D ≤22 ; E ≤28 ; F &gt;28</div>
+    <div class="formula">LOS = ${los}</div>
+  `);
+
+  setHtml('t3_results', `
+    <div class="los-big">
+      <div class="los-letter">${los}</div>
+      <div class="los-meta">
+        <b>רמת שירות: ${los}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">צפיפות = ${fmt(D,2)} ית"ן/ק"מ/נתיב ; S = ${fmt(S,1)} קמ"ש</span>
+      </div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">FFS</div><div class="result-number highlight">${fmt(FFS,1)}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">V<sub>p</sub></div><div class="result-number highlight">${numF(Vp)}</div><div class="result-sub">ית"ן/שעה/נתיב</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">S</div><div class="result-number">${fmt(S,1)}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">D — צפיפות</div><div class="result-number">${fmt(D,2)}</div><div class="result-sub">ית"ן/ק"מ/נתיב</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 4 — Freeways ==================== */
+function calcTab4(){
+  const kind = $('t4_kind').value;
+  const vd = parseFloat($('t4_vd').value);
+  const n = parseInt($('t4_n').value);
+  const lane = parseFloat($('t4_lane').value);
+  const lc = parseFloat($('t4_lc').value);
+  const id = parseFloat($('t4_id').value);
+  const phf = parseFloat($('t4_phf').value);
+  const pt = parseFloat($('t4_pt').value) / 100;
+  const ET = parseFloat($('t4_et').value);
+  const fp = parseFloat($('t4_fp').value);
+  const v = parseFloat($('t4_v').value);
+
+  /* BFFS: 120 freeway / 110 urban */
+  const bffs = kind === 'freeway' ? 120 : 110;
+  let fLW = 0;
+  if (lane < 3.6) fLW = (3.6 - lane) * 3.0;
+  let fLC = 0;
+  if (lc < 1.8) fLC = (1.8 - lc) * 2.5;
+  else if (lc > 1.8) fLC = -(lc - 1.8) * 0.3;
+  let fN = 0;
+  if (n === 2) fN = 0; else if (n === 3) fN = -1.5; else if (n >= 4) fN = -3.0;
+  let fID = 0;
+  if (id > 0.3) fID = (id - 0.3) * 3.0;
+
+  const FFS = Math.max(bffs - fLW - fLC - fN - fID, 50);
+
+  /* fHV */
+  const fHV = 1 / (1 + pt * (ET - 1));
+
+  /* Vp */
+  const Vp = v / (phf * n * fHV * fp);
+
+  /* Speed-flow: simplified piecewise */
+  let S;
+  if (Vp <= 1400) S = FFS;
+  else if (Vp <= (3100 - 15 * FFS)) {
+    S = FFS;
+  } else if (Vp <= (1800 + 5 * FFS)) {
+    /* Middle zone — approximate linear */
+    const vLo = 3100 - 15 * FFS;
+    const vHi = 1800 + 5 * FFS;
+    const f = (Vp - vLo) / Math.max(vHi - vLo, 1);
+    S = FFS * (1 - 0.15 * f);
+  } else {
+    /* Near capacity */
+    S = FFS * 0.65;
+  }
+  S = Math.max(S, 40);
+
+  const D = Vp / S;
+  const los = losByDensity(D);
+
+  /* Capacity */
+  const capacity = (kind === 'freeway' ? 2400 : 2250) * n;
+
+  const warn = [];
+  if (Vp > capacity) warn.push(['bad', `V_p = ${numF(Vp)} ית"ן/שעה עולה על הקיבולת (${numF(capacity)}).`]);
+  else if (Vp > 0.85 * capacity) warn.push(['warn', `V_p = ${numF(Vp)} ית"ן/שעה — מתקרב לקיבולת (${numF(capacity)}).`]);
+  else warn.push(['ok', `V_p = ${numF(Vp)} ית"ן/שעה — בתחום הקיבולת.`]);
+  if (id > 0.3) warn.push(['info', `צפיפות מחלפים ${id} לקמ"ש — מוחל מקדם הפחתה f_ID = ${fmt(fID,2)}.`]);
+  if (los === 'E' || los === 'F') warn.push(['warn', `רמת שירות ${los} — יש לשקול הוספת נתיבים או שיפור מחלפים.`]);
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">מהירות זרימה חופשית (FFS)</div>
+    <div class="formula">FFS = BFFS − f_LW − f_LC − f_N − f_ID</div>
+    <div class="formula">BFFS = ${bffs} ; f_LW = ${fmt(fLW,2)} ; f_LC = ${fmt(fLC,2)} ; f_N = ${fmt(fN,2)} ; f_ID = ${fmt(fID,2)}</div>
+    <div class="formula">FFS = ${fmt(FFS,1)} קמ"ש</div>
+  `);
+  steps.push(`
+    <div class="ttl">שיעור זרימה (V_p)</div>
+    <div class="formula">V_p = V / (PHF · N · f_HV · f_p)</div>
+    <div class="formula">V_p = ${numF(v)} / (${phf} · ${n} · ${fmt(fHV,4)} · ${fp}) = ${numF(Vp)} ית"ן/שעה/נתיב</div>
+  `);
+  steps.push(`
+    <div class="ttl">מהירות זרימה (S)</div>
+    <div class="formula">S = ${fmt(S,1)} קמ"ש</div>
+  `);
+  steps.push(`
+    <div class="ttl">צפיפות ורמת שירות</div>
+    <div class="formula">D = V_p / S = ${numF(Vp)} / ${fmt(S,1)} = ${fmt(D,2)} ית"ן/ק"מ/נתיב</div>
+    <div class="formula">LOS = ${los}</div>
+  `);
+
+  setHtml('t4_results', `
+    <div class="los-big">
+      <div class="los-letter">${los}</div>
+      <div class="los-meta">
+        <b>רמת שירות: ${los}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">צפיפות = ${fmt(D,2)} ית"ן/ק"מ/נתיב ; S = ${fmt(S,1)} קמ"ש</span>
+      </div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">FFS</div><div class="result-number highlight">${fmt(FFS,1)}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">V<sub>p</sub></div><div class="result-number highlight">${numF(Vp)}</div><div class="result-sub">ית"ן/שעה/נתיב</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">S</div><div class="result-number">${fmt(S,1)}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">D — צפיפות</div><div class="result-number">${fmt(D,2)}</div><div class="result-sub">ית"ן/ק"מ/נתיב</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== TAB 5 — Expansion ==================== */
+function calcTab5(){
+  const cls = $('t5_class').value;
+  const terrain = $('t5_terrain').value;
+  const vd = parseFloat($('t5_vd').value);
+  const aadt = parseFloat($('t5_aadt').value);
+  const pt = parseFloat($('t5_pt').value);
+  const k = parseFloat($('t5_k').value);
+
+  /* Threshold from Table 8.9 */
+  const thresholds = {
+    major:    { flat: 17750, rolling: 13685, mountainous: 13685 },
+    arterial: { flat: 25600, rolling: 22460, mountainous: 17225 }
+  };
+  const threshold = thresholds[cls][terrain];
+  const losThreshold = cls === 'major' ? 'D' : (terrain === 'mountainous' ? 'E' : 'D–E');
+
+  const ratio = aadt / threshold * 100;
+
+  const warn = [];
+  if (aadt >= threshold) {
+    warn.push(['bad', `AADT = ${numF(aadt)} ≥ סף ההרחבה (${numF(threshold)}) — מומלץ להרחיב לדרך דו-מסלולית.`]);
+  } else if (aadt >= 0.85 * threshold) {
+    warn.push(['warn', `AADT = ${numF(aadt)} מתקרב לסף ההרחבה (${numF(threshold)}) — יש לתכנן להרחבה עתידית.`]);
+  } else {
+    warn.push(['ok', `AADT = ${numF(aadt)} מתחת לסף ההרחבה (${numF(threshold)}) — אין צורך בהרחבה כעת.`]);
+  }
+
+  const dhv = aadt * k;
+
+  const steps = [];
+  steps.push(`
+    <div class="ttl">סף הרחבה (טבלה 8.9)</div>
+    <div class="formula">סיווג: ${cls === 'major' ? 'דרך ראשית' : 'דרך אזורית'} ; טופוגרפיה: ${terrain}</div>
+    <div class="formula">רמת שירות להרחבה: ${losThreshold}</div>
+    <div class="formula">סף AADT מומלץ = ${numF(threshold)} כ"ר/יום</div>
+  `);
+  steps.push(`
+    <div class="ttl">בדיקת AADT נוכחי</div>
+    <div class="formula">AADT = ${numF(aadt)} כ"ר/יום</div>
+    <div class="formula">יחס לסף = ${fmt(ratio,1)}%</div>
+    <div class="formula">${aadt >= threshold ? '✓ יש להרחיב' : '✗ אין צורך בהרחבה כעת'}</div>
+  `);
+  steps.push(`
+    <div class="ttl">נפח שעתי לתכן (DHV)</div>
+    <div class="formula">DHV = AADT · K = ${numF(aadt)} · ${k} = ${numF(dhv)} כ"ר/שעה</div>
+    <div class="formula">K אופייני לתנאי ישראל = 0.08</div>
+  `);
+
+  setHtml('t5_results', `
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">AADT נוכחי</div><div class="result-number">${numF(aadt)}</div><div class="result-sub">כ"ר/יום</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">סף הרחבה</div><div class="result-number highlight">${numF(threshold)}</div><div class="result-sub">כ"ר/יום</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">יחס לסף</div><div class="result-number">${fmt(ratio,1)}%</div><div class="result-sub">—</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">DHV</div><div class="result-number">${numF(dhv)}</div><div class="result-sub">כ"ר/שעה</div></div></div>
+    </div>
+    <ol class="steps">${steps.map(s=>`<li><div>${s}</div></li>`).join('')}</ol>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `);
+}
+
+/* ==================== Wire-up ==================== */
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(btn.dataset.tab);
+    if (target) target.classList.add('active');
+  });
+});
+
+/* Tab 1 */
+['t1_roadtype','t1_terrain','t1_vd','t1_phf','t1_pt','t1_v','t1_dir'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab1); el.addEventListener('change', calcTab1); }
+});
+
+/* Tab 2 */
+['t2_type','t2_terrain','t2_bffs','t2_vd','t2_lane','t2_shoulder','t2_ap','t2_v','t2_phf','t2_pt','t2_et','t2_np'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab2); el.addEventListener('change', calcTab2); }
+});
+$('t2_terrain').addEventListener('change', () => {
+  const t = $('t2_terrain').value;
+  const etMap = { flat: 1.5, rolling: 2.5, mountainous: 4.5 };
+  $('t2_et').value = etMap[t];
+  calcTab2();
+});
+
+/* Tab 3 */
+['t3_vd','t3_n','t3_lane','t3_lc','t3_phf','t3_pt','t3_et','t3_fp','t3_v'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab3); el.addEventListener('change', calcTab3); }
+});
+
+/* Tab 4 */
+['t4_kind','t4_vd','t4_n','t4_lane','t4_lc','t4_id','t4_phf','t4_pt','t4_et','t4_fp','t4_v'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab4); el.addEventListener('change', calcTab4); }
+});
+
+/* Tab 5 */
+['t5_class','t5_terrain','t5_vd','t5_aadt','t5_pt','t5_k'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcTab5); el.addEventListener('change', calcTab5); }
+});
+
+/* Init */
+calcTab1();
+calcTab2();
+calcTab3();
+calcTab4();
+calcTab5();
+
+})();
+</script>
+</body>
+</html>

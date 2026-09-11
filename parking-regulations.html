@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>תקנות חניה בישראל – חישוב מתקדם</title>
+  <title>תקנות חניה בישראל – מחשבון לפי התקנות והנחיות מינהל התכנון</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
   <style>
@@ -21,194 +21,70 @@
       --ink-2: #9A96AB;
       --ink-3: #6B6780;
       --danger: #F35B5B;
+      --warn: #F5C451;
+      --info: #7AB8F5;
     }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      padding: 20px;
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      max-width: 1400px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, .3);
-      margin-bottom: 20px;
-    }
-
-    .card-header {
-      background: var(--accent);
-      color: #1a1a2e;
-      border-radius: 12px 12px 0 0;
-      font-weight: 600;
-      border-bottom: 1px solid rgba(0,0,0,.1);
-    }
-
-    .result-number {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .result-label {
-      font-size: 0.85rem;
-      color: var(--ink-3);
-    }
-
-    .land-use-item {
-      background: var(--card-2);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-
-    .land-use-item .btn-close {
-      float: left;
-      filter: invert(1);
-    }
-
-    .debug-box {
-      background: var(--field);
-      padding: 10px;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 0.8rem;
-      max-height: 120px;
-      overflow-y: auto;
-      margin-top: 10px;
-      border: 1px solid var(--line);
-    }
-
-    /* Form controls dark */
-    .form-control,
-    .form-select {
-      background-color: var(--field);
-      border: 1px solid var(--line);
-      color: var(--ink);
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-      background-color: var(--field);
-      border-color: var(--accent);
-      box-shadow: 0 0 0 .2rem rgba(232, 163, 61, .2);
-      color: var(--ink);
-    }
-
-    .form-label {
-      color: var(--ink-2);
-    }
-
-    .form-control::placeholder {
-      color: var(--ink-3);
-    }
-
-    /* Table overrides */
-    .table {
-      --bs-table-bg: transparent;
-      --bs-table-color: var(--ink);
-      --bs-table-border-color: var(--line);
-    }
-
-    .table thead th {
-      color: var(--ink-3);
-      border-color: var(--line);
-    }
-
-    .table td,
-    .table th {
-      border-color: var(--line-2);
-    }
-
-    .table-hover tbody tr:hover {
-      --bs-table-hover-bg: rgba(255,255,255,.03);
-      --bs-table-hover-color: var(--ink);
-    }
-
-    /* Badge adjustments */
-    .bg-success {
-      background-color: var(--green) !important;
-      color: #04150E !important;
-    }
-
-    .bg-secondary {
-      background-color: var(--card-2) !important;
-      color: var(--ink-2) !important;
-    }
-
-    /* Result boxes in renderResults */
-    .result-box {
-      background: var(--card-2);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 1rem !important;
-    }
-
-    /* Buttons */
-    .btn-primary {
-      background-color: var(--accent);
-      border-color: var(--accent);
-      color: #1a1a2e;
-    }
-
-    .btn-primary:hover {
-      background-color: #c9862f;
-      border-color: #c9862f;
-      color: #1a1a2e;
-    }
-
-    .btn-outline-secondary {
-      color: var(--ink-2);
-      border-color: var(--line);
-    }
-
-    .btn-outline-secondary:hover {
-      background-color: rgba(255,255,255,.06);
-      color: var(--ink);
-      border-color: var(--ink-2);
-    }
-
-    /* Alert overrides */
-    .alert-danger {
-      background-color: rgba(243,91,91,.15);
-      color: var(--danger);
-      border-color: rgba(243,91,91,.3);
-    }
-
-    h1.display-6 {
-      color: var(--ink);
-    }
-
-    .text-muted {
-      color: var(--ink-3) !important;
-    }
-
-    footer {
-      color: var(--ink-3);
-    }
-
-    .btn-close {
-      color: var(--ink);
-    }
+    body { background: var(--bg); color: var(--ink); padding: 20px; font-family: Arial, sans-serif; }
+    .container { max-width: 1400px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+    .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,.1); }
+    .result-number { font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+    .result-label { font-size: .85rem; color: var(--ink-2); }
+    .result-sub { font-size: .75rem; color: var(--ink-3); }
+    .land-use-item { background: var(--card-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .land-use-item .btn-close { filter: invert(1); }
+    .land-use-item .ref { font-size: .75rem; color: var(--ink-3); }
+    .rule-hint { font-size: .78rem; color: var(--ink-2); background: var(--field); border: 1px solid var(--line-2); border-radius: 6px; padding: 6px 8px; margin-top: 8px; }
+    .rule-hint b { color: var(--accent); font-weight: 600; }
+    .form-control, .form-select { background-color: var(--field); border: 1px solid var(--line); color: var(--ink); }
+    .form-control:focus, .form-select:focus { background-color: var(--field); border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); color: var(--ink); }
+    .form-control:disabled { background-color: #15151f; color: var(--ink-3); }
+    .form-label { color: var(--ink-2); }
+    .form-text { color: var(--ink-3); font-size: .75rem; }
+    .form-control::placeholder { color: var(--ink-3); }
+    .form-check-input { background-color: var(--field); border-color: var(--ink-3); }
+    .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+    .form-range::-webkit-slider-thumb { background: var(--accent); }
+    .form-range::-moz-range-thumb { background: var(--accent); }
+    .table { --bs-table-bg: transparent; --bs-table-color: var(--ink); --bs-table-border-color: var(--line); font-size: .82rem; }
+    .table thead th { color: var(--ink-3); border-color: var(--line); font-weight: 600; white-space: nowrap; }
+    .table td, .table th { border-color: var(--line-2); vertical-align: top; }
+    .table-hover tbody tr:hover { --bs-table-hover-bg: rgba(255,255,255,.03); --bs-table-hover-color: var(--ink); }
+    .table tfoot td { font-weight: 700; color: var(--accent); border-top: 1px solid var(--line); }
+    .bg-success { background-color: var(--green) !important; color: #04150E !important; }
+    .bg-secondary { background-color: var(--card-2) !important; color: var(--ink-2) !important; }
+    .result-box { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: 1rem !important; height: 100%; }
+    .btn-primary { background-color: var(--accent); border-color: var(--accent); color: #1a1a2e; }
+    .btn-primary:hover { background-color: #c9862f; border-color: #c9862f; color: #1a1a2e; }
+    .btn-outline-secondary { color: var(--ink-2); border-color: var(--line); }
+    .btn-outline-secondary:hover { background-color: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+    .alert-danger { background-color: rgba(243,91,91,.15); color: var(--danger); border-color: rgba(243,91,91,.3); }
+    h1.display-6 { color: var(--ink); }
+    .text-muted { color: var(--ink-3) !important; }
+    footer { color: var(--ink-3); }
+    .zone-info { background: var(--accent-dim); border: 1px solid rgba(232,163,61,.35); border-radius: 8px; padding: 8px 10px; font-size: .85rem; }
+    .zone-info b { color: var(--accent); }
+    .notes { list-style: none; padding: 0; margin: 0; font-size: .8rem; }
+    .notes li { padding: 6px 8px; border-right: 3px solid var(--ink-3); margin-bottom: 6px; background: var(--field); border-radius: 4px; color: var(--ink-2); }
+    .notes li.danger { border-color: var(--danger); color: #f7a3a3; }
+    .notes li.warn { border-color: var(--warn); color: #f2dca2; }
+    .notes li.info { border-color: var(--info); }
+    .sticky-results { position: sticky; top: 16px; }
+    .small-muted { font-size: .75rem; color: var(--ink-3); }
+    @media (max-width: 991px) { .sticky-results { position: static; } }
   </style>
 </head>
 <body>
 <div class="container">
-  <h1 class="display-6 fw-bold mb-3"><i class="bi bi-car-front-fill text-warning ms-2"></i>תקנות חניה בישראל (2016) – מחשבון מתקדם</h1>
-  <p class="text-muted">לחץ על <strong>חשב תקן חניה</strong> – התוצאות יופיעו בצד שמאל. ניתן להיעזר בקונסולת הדפדפן (F12) ללוגים.</p>
+  <h1 class="display-6 fw-bold mb-2"><i class="bi bi-car-front-fill text-warning ms-2"></i>תקנות חניה בישראל – מחשבון לפי התקנות והנחיות מינהל התכנון</h1>
+  <p class="text-muted mb-4">מבוסס על תקנות התכנון והבנייה (התקנת מקומות חניה), התשמ"ג–1983 כתיקונן ב־2016, על הנחיות מינהל התכנון לתקנות החניה (4.7.2016) ועל המדריך המקצועי לחניות אופניים (אוקטובר 2020). כלי עזר בלבד: אינו מחליף את הוראות הדין, את מדיניות הוועדה המקומית ואת שיקול דעת רשות הרישוי.</p>
 
   <div class="row">
     <div class="col-lg-7">
+
       <!-- Project & Zone -->
       <div class="card">
-        <div class="card-header"><i class="bi bi-geo-alt ms-2"></i>פרויקט ואזור מתע"ן</div>
+        <div class="card-header"><i class="bi bi-geo-alt ms-2"></i>פרויקט, יישוב ואזור מתע"ן</div>
         <div class="card-body">
           <div class="row g-3">
             <div class="col-md-6">
@@ -216,30 +92,74 @@
               <input type="text" class="form-control" id="projectName" value="פרויקט מעורב שימושים">
             </div>
             <div class="col-md-6">
-              <label class="form-label">אזור מתע"ן (MMS Zone)</label>
-              <select class="form-select" id="zoneType">
-                <option value="A" selected>אזור א' (עד 300 מטר)</option>
-                <option value="B">אזור ב' (300–500 מטר)</option>
-                <option value="C">אזור ג' (מעל 500 מטר)</option>
+              <label class="form-label">סוג היישוב</label>
+              <select class="form-select" id="settle">
+                <option value="mts" selected>יישוב עם מתע"ן</option>
+                <option value="rail">יישוב שבו המתע"ן הוא רק רכבת שאינה עירונית</option>
+                <option value="none">יישוב בלא מתע"ן</option>
               </select>
             </div>
-            <div class="col-md-4">
-              <label class="form-label">מרחק למתע"ן (מטר)</label>
-              <input type="number" class="form-control" id="distanceMms" value="250" min="0">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">האם המתע"ן פעיל?</label>
-              <select class="form-select" id="mmsOperational">
-                <option value="true" selected>כן</option>
-                <option value="false">לא</option>
+            <div class="col-md-6 mts-only">
+              <label class="form-label">מצב המתע"ן (הוראות מעבר)</label>
+              <select class="form-select" id="mtsStatus">
+                <option value="operating" selected>המתע"ן פועל (לאחר מועד ההפעלה)</option>
+                <option value="planned">חלה תוכנית מפורטת לקו – טרם הופעל</option>
+                <option value="statutory">רק תמ"א / תמ"מ – טרם אושרה תוכנית מפורטת</option>
               </select>
             </div>
-            <div class="col-md-4">
-              <label class="form-label">שיתוף חניה בשימושים מעורבים</label>
-              <select class="form-select" id="mixedUseSharing">
-                <option value="true" selected>החל (הפחתה עד 25%)</option>
-                <option value="false">אל תחיל</option>
+            <div class="col-md-6 zone-field">
+              <label class="form-label">קביעת אזור</label>
+              <select class="form-select" id="zoneMode">
+                <option value="auto" selected>לפי מרחק אווירי</option>
+                <option value="A">אזור א' (לפי תשריט הוועדה)</option>
+                <option value="B">אזור ב' (לפי תשריט הוועדה)</option>
+                <option value="C">אזור ג' (לפי תשריט הוועדה)</option>
               </select>
+            </div>
+            <div class="col-md-6 zone-field">
+              <label class="form-label">מרחק אווירי (מ')</label>
+              <input type="number" class="form-control" id="distance" value="250" min="0">
+              <div class="form-text">מציר המתע"ן עד גבול המגרש; ברכבת שאינה עירונית – מכל יציאת הולכי רגל מהתחנה.</div>
+            </div>
+            <div class="col-md-6 zone-field">
+              <label class="form-label">הקטנת תחום אזורים א' ו־ב' (%)</label>
+              <input type="number" class="form-control" id="zoneReduce" value="0" min="0" max="40" step="5">
+              <div class="form-text">רק כשהוכחו קשיי טופוגרפיה או נגישות להולכי רגל (תוספת, חלק א' 2א). ככלל עד 20%; עד 40% במקרים חריגים (הנחיות 6).</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">אחוזי בנייה (שטח עיקרי מתוך שטח המגרש, %)</label>
+              <input type="number" class="form-control" id="rightsPct" value="100" min="0">
+              <div class="form-text">קובע את התקן למסחר, משרדים ותעשייה ביישוב בלא מתע"ן.</div>
+            </div>
+            <div class="col-md-6 none-only">
+              <label class="form-label">תוספת במחוזות הצפון והדרום (%)</label>
+              <input type="number" class="form-control" id="plus25" value="0" min="0" max="25">
+              <div class="form-text">ביישוב בצפון או בדרום שאין בו תוכנית למתע"ן רשות הרישוי רשאית להוסיף עד 25% (תקנה 2א(ג)).</div>
+            </div>
+            <div class="col-12"><div class="zone-info" id="zoneInfo"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Policy -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-sliders ms-2"></i>מדיניות הוועדה המקומית</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">מיקום בתוך "מספר טווח": <b id="posVal" class="text-warning">50%</b></label>
+              <input type="range" class="form-range" id="pos" min="0" max="100" step="5" value="50">
+              <div class="form-text">0% = מינימום חניות בטווח, 100% = מקסימום. יש לקבוע לשכונה או לאזור ולא לבניין בודד, בהתחשב באופי השכונה, ברמת התחבורה הציבורית, בטופוגרפיה ובעודף או מחסור בחניה (הנחיות 4.2–4.3). ב"מספר מרבי" מוצג המרבי; ניתן להזין תקן ידני נמוך יותר בכל ייעוד.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">חניית אורחים במגורים (% מיח"ד)</label>
+              <input type="number" class="form-control" id="guestPct" value="20" min="10" max="30" step="5">
+              <div class="form-text">נורמה מקובלת 10%–30%, כחלק מסך המקומות המותרים – לא תוספת (הנחיות 9).</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">הגדלת תקן האופניים מעבר למזערי (%)</label>
+              <input type="number" class="form-control" id="bikeExtra" value="0" min="0" step="10">
+              <div class="form-text">התקן לאופניים מזערי בלבד; הוועדה רשאית להגדיל (מדריך האופניים 1.2, 1.6).</div>
             </div>
           </div>
         </div>
@@ -247,237 +167,92 @@
 
       <!-- Land Uses -->
       <div class="card">
-        <div class="card-header"><i class="bi bi-building ms-2"></i>רכיבי ייעודי קרקע</div>
+        <div class="card-header"><i class="bi bi-building ms-2"></i>ייעודי ושימושי קרקע</div>
         <div class="card-body">
-          <div id="landUseContainer">
-            <!-- Residential -->
-            <div class="land-use-item" data-type="residential">
-              <div class="d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0"><i class="bi bi-house-door"></i> מגורים</h6>
-                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-4">
-                  <label class="form-label small">יחידות דיור</label>
-                  <input type="number" class="form-control land-use-input" data-field="units" value="24" min="0">
-                </div>
-                <div class="col-4">
-                  <label class="form-label small">דירות קטנות?</label>
-                  <select class="form-select land-use-input" data-field="smallApartments">
-                    <option value="false">לא</option>
-                    <option value="true">כן</option>
-                  </select>
-                </div>
-                <div class="col-4">
-                  <label class="form-label small">מעונות סטודנטים?</label>
-                  <select class="form-select land-use-input" data-field="studentHousing">
-                    <option value="false">לא</option>
-                    <option value="true">כן</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">תקן (מקומות/יח"ד)</label>
-                  <input type="number" class="form-control land-use-input" data-field="rate" value="1.0" step="0.1" min="0.5" max="2.0">
-                </div>
-                <div class="col-6">
-                  <label class="form-label small">דיור מוגן?</label>
-                  <select class="form-select land-use-input" data-field="elderlyHousing">
-                    <option value="false">לא</option>
-                    <option value="true">כן</option>
-                  </select>
-                </div>
-              </div>
+          <div id="landUseContainer"></div>
+          <div class="row g-2 align-items-end mt-1">
+            <div class="col-md-8">
+              <label class="form-label small">הוספת שימוש לפי התוספת לתקנות</label>
+              <select class="form-select" id="usePicker"></select>
             </div>
-
-            <!-- Commercial -->
-            <div class="land-use-item" data-type="commercial">
-              <div class="d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0"><i class="bi bi-shop"></i> מסחר (קמעונאות)</h6>
-                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-4">
-                  <label class="form-label small">שטח (מ"ר)</label>
-                  <input type="number" class="form-control land-use-input" data-field="area" value="1500" min="0">
-                </div>
-                <div class="col-4">
-                  <label class="form-label small">חזית רחוב?</label>
-                  <select class="form-select land-use-input" data-field="frontage">
-                    <option value="true">כן</option>
-                    <option value="false">לא</option>
-                  </select>
-                </div>
-                <div class="col-4">
-                  <label class="form-label small">מסחר שכונתי?</label>
-                  <select class="form-select land-use-input" data-field="neighborhood">
-                    <option value="false">לא</option>
-                    <option value="true">כן</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">תקן (מ"ר/חניה)</label>
-                  <input type="number" class="form-control land-use-input" data-field="rate" value="50" min="10" max="150">
-                </div>
-              </div>
-            </div>
-
-            <!-- Office -->
-            <div class="land-use-item" data-type="office">
-              <div class="d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0"><i class="bi bi-briefcase"></i> משרדים / תעסוקה עתירת ידע</h6>
-                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">שטח (מ"ר)</label>
-                  <input type="number" class="form-control land-use-input" data-field="area" value="2500" min="0">
-                </div>
-                <div class="col-6">
-                  <label class="form-label small">עתירת ידע?</label>
-                  <select class="form-select land-use-input" data-field="knowledge">
-                    <option value="true">כן</option>
-                    <option value="false">לא</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">תקן (מ"ר/חניה)</label>
-                  <input type="number" class="form-control land-use-input" data-field="rate" value="240" min="60" max="240">
-                </div>
-              </div>
-            </div>
-
-            <!-- Education -->
-            <div class="land-use-item" data-type="education">
-              <div class="d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0"><i class="bi bi-mortarboard"></i> חינוך והשכלה גבוהה</h6>
-                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">שטח (מ"ר)</label>
-                  <input type="number" class="form-control land-use-input" data-field="area" value="5000" min="0">
-                </div>
-                <div class="col-6">
-                  <label class="form-label small">סוג</label>
-                  <select class="form-select land-use-input" data-field="eduType">
-                    <option value="university">מוסד אקדמי / אוניברסיטה</option>
-                    <option value="school">בית ספר</option>
-                    <option value="library">ספרייה / מוזיאון</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">תקן (מ"ר/חניה)</label>
-                  <input type="number" class="form-control land-use-input" data-field="rate" value="200" min="50" max="200">
-                </div>
-              </div>
-            </div>
-
-            <!-- Culture -->
-            <div class="land-use-item" data-type="culture">
-              <div class="d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0"><i class="bi bi-film"></i> תרבות ואירועים</h6>
-                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">מספר מקומות ישיבה</label>
-                  <input type="number" class="form-control land-use-input" data-field="seats" value="450" min="0">
-                </div>
-                <div class="col-6">
-                  <label class="form-label small">סוג</label>
-                  <select class="form-select land-use-input" data-field="cultureType">
-                    <option value="theater">תיאטרון / קולנוע</option>
-                    <option value="events">אולם כנסים</option>
-                    <option value="restaurant">מסעדה / בית קפה</option>
-                    <option value="worship">בית תפילה</option>
-                    <option value="senior">מועדון קשישים</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">תקן (מקומות ישיבה/חניה)</label>
-                  <input type="number" class="form-control land-use-input" data-field="rate" value="15" min="5" max="50">
-                </div>
-              </div>
-            </div>
-
-            <!-- Health -->
-            <div class="land-use-item" data-type="health">
-              <div class="d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0"><i class="bi bi-heart-pulse"></i> בריאות ורפואה</h6>
-                <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">שטח (מ"ר)</label>
-                  <input type="number" class="form-control land-use-input" data-field="area" value="800" min="0">
-                </div>
-                <div class="col-6">
-                  <label class="form-label small">סוג</label>
-                  <select class="form-select land-use-input" data-field="healthType">
-                    <option value="clinic">מרפאה</option>
-                    <option value="hospital">בית חולים</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row g-2 mt-1">
-                <div class="col-6">
-                  <label class="form-label small">תקן (מ"ר/חניה)</label>
-                  <input type="number" class="form-control land-use-input" data-field="rate" value="40" min="10" max="50">
-                </div>
-              </div>
+            <div class="col-md-4">
+              <button type="button" class="btn btn-outline-secondary w-100" id="addLandUseBtn"><i class="bi bi-plus-circle"></i> הוסף שימוש</button>
             </div>
           </div>
-          <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addLandUseBtn"><i class="bi bi-plus-circle"></i> הוסף ייעוד קרקע</button>
+          <div class="form-text mt-2">הזינו שטחים עיקריים בלבד – שטחי שירות אינם נכללים (הנחיות 3.1). שימוש שאינו בתקנות: בחרו את השימוש הדומה ביותר או שילוב שימושים (הנחיות 5).</div>
         </div>
       </div>
 
-      <!-- Operational & Guest -->
+      <!-- Mixed use -->
       <div class="card">
-        <div class="card-header"><i class="bi bi-truck"></i> חניה תפעולית, אורחים ואחרים</div>
+        <div class="card-header"><i class="bi bi-intersect ms-2"></i>שימושים מעורבים – חפיפת חניה</div>
         <div class="card-body">
-          <div class="row g-2">
-            <div class="col-3">
-              <label class="form-label small">פריקה וטעינה מסחרית</label>
-              <input type="number" class="form-control" id="opLoading" value="1" min="0">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">החלת חפיפת חניה</label>
+              <select class="form-select" id="shareOn">
+                <option value="false" selected>לא</option>
+                <option value="true">כן – חניון משותף</option>
+              </select>
             </div>
-            <div class="col-3">
-              <label class="form-label small">גישת משאיות</label>
-              <input type="number" class="form-control" id="opStage" value="2" min="0">
+            <div class="col-md-4">
+              <label class="form-label">מרחק הליכה מרבי לכניסה (מ')</label>
+              <input type="number" class="form-control" id="shareWalk" value="150" min="0">
             </div>
-            <div class="col-3">
-              <label class="form-label small">חניית אוטובוסים (לכל 150 מושבים)</label>
-              <input type="number" class="form-control" id="opBus" value="3" min="0">
-            </div>
-            <div class="col-3">
-              <label class="form-label small">חניית אורחים (אוטומטי אם 0)</label>
-              <input type="number" class="form-control" id="guestParking" value="0" min="0">
+            <div class="col-md-4 d-flex align-items-end">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="sharePublic" checked>
+                <label class="form-check-label small" for="sharePublic">החניון ציבורי ואינו מוצמד לשימוש מסוים</label>
+              </div>
             </div>
           </div>
+          <div class="form-text mt-2">לפי תוספת, חלק א' פרט 5 וטבלת העזר בהנחיות 13.1: החישוב לפי ההצטברות המרבית בעת ובעונה אחת (לפני הצהריים / אחרי הצהריים / ערב ולילה). חניה המוצמדת ליח"ד אינה נכללת בחפיפה; מרחק ההליכה המרבי 250 מ'. יש לבחון מקרים חריגים כגון מסחר ומגורים בימי שישי (13.2).</div>
         </div>
       </div>
 
-      <!-- Calculate button -->
-      <button type="button" class="btn btn-primary btn-lg w-100 mt-3" id="calcBtn"><i class="bi bi-calculator"></i> חשב דרישות חניה</button>
+      <!-- Bicycle access -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-bicycle ms-2"></i>גישה לחניית האופניים</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">אופן הגישה</label>
+              <select class="form-select" id="bikeAccess">
+                <option value="street" selected>ישירה ממפלס הרחוב / שביל אופניים</option>
+                <option value="ramp">דרך רמפת החניון לרכב</option>
+                <option value="lift">במעלית</option>
+              </select>
+            </div>
+            <div class="col-md-4 access-ramp">
+              <label class="form-label">חניות רכב המשתמשות ברמפה</label>
+              <input type="number" class="form-control" id="rampCars" value="30" min="0">
+            </div>
+            <div class="col-md-4 access-ramp">
+              <label class="form-label">שיפוע אורכי של הרמפה (%)</label>
+              <input type="number" class="form-control" id="rampSlope" value="10" min="0" step="0.5">
+            </div>
+            <div class="col-md-4 access-lift">
+              <label class="form-label">אורך תא המעלית (מ')</label>
+              <input type="number" class="form-control" id="liftLen" value="2.1" min="0" step="0.1">
+            </div>
+          </div>
+          <div class="form-text mt-2">מדריך האופניים 4.2–4.3: ככלל אין להשתמש ברמפת רכב; מותר רק כשהיא משרתת עד 40 חניות ושיפועה קטן מ־11%. בגישה במעלית – לפחות מעלית אחת באורך 2 מ' לפחות.</div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-lg w-100 mt-1 mb-4" id="calcBtn"><i class="bi bi-calculator"></i> חשב דרישות חניה</button>
     </div>
 
-    <!-- Right: Results -->
+    <!-- Results -->
     <div class="col-lg-5">
-      <div class="card h-100">
-        <div class="card-header"><i class="bi bi-table"></i> תוצאות החישוב</div>
-        <div class="card-body" id="resultsArea">
-          <div class="text-center text-muted py-5">
-            <i class="bi bi-clipboard-data fs-1"></i>
-            <p class="mt-3">לחץ על <strong>חשב תקן חניה</strong> כדי להציג תוצאות.</p>
+      <div class="sticky-results">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-table ms-2"></i>תוצאות החישוב</div>
+          <div class="card-body" id="resultsArea">
+            <div class="text-center text-muted py-5">
+              <i class="bi bi-clipboard-data fs-1"></i>
+              <p class="mt-3">הוסיפו שימושי קרקע ולחצו על <strong>חשב דרישות חניה</strong>.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -485,409 +260,639 @@
   </div>
 
   <footer class="text-center small mt-4 pb-3">
-    מחשבון תקנות חניה בישראל (מבוסס רפורמת 2016)
+    מחשבון תקנות חניה בישראל – תקנות 2016, הנחיות מינהל התכנון (פרק 3) ומדריך חניות אופניים 2020
   </footer>
 </div>
 
 <script>
-(function() {
+(function () {
   'use strict';
 
-  console.log('Script loaded.');
+  /* ---------- helpers ---------- */
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmt = v => (Math.round(v * 100) / 100).toLocaleString('he-IL');
+  const up = v => Math.ceil(v - 1e-9); // תוספת, חלק א' פרט 6 – עיגול כלפי מעלה
+  const ZN = { A: "א'", B: "ב'", C: "ג'", N: 'יישוב בלא מתע"ן' };
+  const ZL = z => z === 'N' ? 'יישוב בלא מתע"ן' : `אזור ${ZN[z]}`;
 
-  const rates = {
-    residential: {
-      A: { min: 0.5, max: 1.5, student: { min: 0.1, max: 0.2 }, elderly: { min: 0.05, max: 0.1 } },
-      B: { min: 1.0, max: 1.5, student: { min: 0.1, max: 0.2 }, elderly: { min: 0.05, max: 0.1 } },
-      C: { min: 1.0, max: 2.0, student: { min: 0.1, max: 0.2 }, elderly: { min: 0.05, max: 0.1 } }
-    },
-    commercial: {
-      A: { under2000: 50, under2000_front: 25, 2000_10000: 100, over10000: 150, neighborhood: 50 },
-      B: { under2000: 30, under2000_front: 30, 2000_10000: 50, over10000: 150, neighborhood: 30 },
-      C: { under2000: 25, under2000_front: 25, 2000_10000: 45, over10000: 50, neighborhood: 50 }
-    },
-    office: {
-      A: { knowledge: 240, regular: 60 },
-      B: { knowledge: 120, regular: 60 },
-      C: { knowledge: 60, regular: 60 }
-    },
-    education: {
-      A: { university: 200, school: 200, library: 100 },
-      B: { university: 100, school: 60, library: 80 },
-      C: { university: 50, school: 50, library: 50 }
-    },
-    culture: {
-      A: { theater: 15, events: 15, restaurant: 10, worship: 30, senior: 50 },
-      B: { theater: 10, events: 10, restaurant: 10, worship: 30, senior: 50 },
-      C: { theater: 8, events: 8, restaurant: 10, worship: 50, senior: 50 }
-    },
-    health: {
-      A: { clinic: 40, hospital: 0.5 },
-      B: { clinic: 30, hospital: 0.5 },
-      C: { clinic: 25, hospital: 0.5 }
+  /* ---------- rate model ----------
+     kind 'div' : 1 space per x units (x in [a,b])
+     kind 'mul' : x spaces per `per` units (x in [a,b])
+     kind 'tot' : x spaces in total
+     t: range | max | min | fixed | disc                                   */
+  const R = (kind, a, b, t, per, txt, lbl) => ({ kind, a, b: (b == null ? a : b), t, per: per || 1, txt, lbl });
+  const DR = (a, b, txt, lbl) => R('div', a, b, 'range', 1, txt, lbl);
+  const DM = a => R('div', a, a, 'max');
+  const DMin = a => R('div', a, a, 'min');
+  const DF = a => R('div', a, a, 'fixed');
+  const PR = (a, b) => R('mul', a, b, 'range');
+  const PM = a => R('mul', a, a, 'min');
+  const PF = a => R('mul', a, a, 'fixed');
+  const NONE = txt => R('tot', 0, 0, 'fixed', 1, txt || 'בלא חניה');
+  const Z = (A, B, C, N) => ({ A, B, C, N });
+  const TL = { range: 'מספר טווח', max: 'מספר מרבי', min: 'מספר מזערי', fixed: 'תקן', disc: 'שיקול דעת' };
+
+  function policyX(r, pos) {
+    if (r.t === 'range') return r.kind === 'div' ? r.b - pos * (r.b - r.a) : r.a + pos * (r.b - r.a);
+    return r.a;
+  }
+  function applyR(r, q, x) {
+    if (r.kind === 'tot') return x;
+    if (r.kind === 'mul') return q / r.per * x;
+    return x > 0 ? q / x : 0;
+  }
+  function ruleTxt(r, unit) {
+    if (r.txt) return r.txt;
+    const ab = r.a === r.b ? fmt(r.a) : `${fmt(r.a)} עד ${fmt(r.b)}`;
+    if (r.kind === 'div') return `1 מקום לכל ${ab} ${unit}`;
+    return `${ab} מקומות לכל ${r.per !== 1 ? r.per + ' ' : ''}${unit}`;
+  }
+  function appliedTxt(r, x, unit) {
+    if (r.kind === 'tot') return `${fmt(x)} מקומות`;
+    if (r.kind === 'div') return `1 לכל ${fmt(x)} ${unit}`;
+    return `${fmt(x)} לכל ${r.per !== 1 ? r.per + ' ' : ''}${unit}`;
+  }
+  function ovUnit(r, unit) {
+    if (r.kind === 'tot') return 'מספר מקומות';
+    if (r.kind === 'div') return `${unit} למקום חניה`;
+    return `מקומות ל־${r.per !== 1 ? r.per + ' ' : ''}${unit}`;
+  }
+  // "spaces" measure – monotonic in number of spaces
+  const sp = (r, x) => r.kind === 'div' ? 1 / x : x;
+  function validate(r, x, def, warn) {
+    if (r.t === 'disc') return;
+    if (r.kind === 'div' && !(x > 0)) { warn.push(['danger', 'ערך תקן ידני לא חוקי (חייב להיות גדול מ־0) – חושב לפי מדיניות']); return false; }
+    const s = sp(r, x), lo = Math.min(sp(r, r.a), sp(r, r.b)), hi = Math.max(sp(r, r.a), sp(r, r.b)), e = 1e-9;
+    if ((r.t === 'range' || r.t === 'max') && s > hi + e) warn.push(['danger', 'התקן הידני מעל המספר המרבי שבתקנות – אינו מותר בהיתר']);
+    if (r.t === 'range' && s < lo - e) {
+      if (def.belowMin) warn.push(['info', 'התקן הידני מתחת לטווח – מותר בדיור מוגן / מעונות סטודנטים לפי תקנה 2א(ב), בהתחשב באוכלוסייה ובסביבה (הנחיות 7)']);
+      else warn.push(['warn', 'התקן הידני מתחת לטווח – מחייב קביעה בתוכנית (תקנה 2(ב)) ואינו בסמכות רשות הרישוי']);
     }
-  };
+    if (r.t === 'min' && s < lo - e) warn.push(['warn', 'התקן הידני מתחת למספר המזערי – מחייב קביעה בתוכנית (תקנה 2(ב))']);
+    if (r.t === 'fixed' && Math.abs(s - lo) > e) warn.push(['warn', 'התקן הידני שונה מהקבוע בתקנות']);
+    return true;
+  }
+  // tiered operational coefficients (הנחיות 8.6)
+  function tiered(area, steps) {
+    let prev = 0, v = 0; const parts = [];
+    for (const [lim, per] of steps) {
+      const seg = Math.max(0, Math.min(area, lim) - prev);
+      if (seg > 0) { v += seg / per; parts.push(`${fmt(seg)}÷${per}`); }
+      prev = lim;
+    }
+    return { v, txt: parts.join(' + ') };
+  }
 
+  /* ---------- field helpers ---------- */
+  const num = (k, label, def, step) => ({ k, label, type: 'num', def, step: step || 1 });
+  const sel = (k, label, opts, def) => ({ k, label, type: 'sel', opts, def });
+  const YN = [['true', 'כן'], ['false', 'לא']];
+  const AREA = def => num('area', 'שטח עיקרי (מ"ר)', def);
+
+  /* ---------- operational parking – הנחיות 8.6 ---------- */
+  const COM_OP = [[2000, 400], [10000, 2000], [Infinity, 4000]];
+  const IND_OP = [[2000, 500], [10000, 2000], [Infinity, 4000]];
+  function opCommerce(f) {
+    const t = tiered(f.area, COM_OP), op = up(t.v);
+    const w = [];
+    if (f.area > 0 && f.area < 400) w.push(['info', 'שטח מסחרי קטן מ־400 מ"ר ללא חניה תפעולית במגרש – יש לוודא אפשרות סבירה לחניה תפעולית בקרבת מקום, במיקום מסומן (הנחיות 8.5ד)']);
+    return { op, bus: 0, txt: t.txt ? `${t.txt} = ${fmt(t.v)}` : '—', warn: w };
+  }
+  function opIndustry(f) {
+    const t = tiered(f.area, IND_OP), op = f.area > 0 ? Math.max(1, up(t.v)) : 0;
+    return { op, bus: 0, txt: t.txt ? `${t.txt} = ${fmt(t.v)} (לפחות 1)` : '—' };
+  }
+  function opHotel(f) {
+    const r = f.rooms || 0; if (!r) return { op: 0, bus: 0, txt: '—' };
+    return { op: Math.max(1, up(r / 100)), bus: Math.max(1, up(r / 50)), txt: 'תפעולי 1/100 חדרים, אוטובוס 1/50 חדרים (לפחות 1 מכל סוג; אוטובוס רשאי ברחוב)' };
+  }
+
+  /* ---------- car rules with special structure ---------- */
+  const COM_T = { A: [DM(50), DM(100), DM(150)], B: [DM(30), DM(50), DM(70)], C: [DR(25, 50), DR(45, 100), DR(50, 150)] };
+  const COM_SEG = [[0, 2000, 'עד 2,000 מ"ר'], [2000, 10000, 'תוספת 2,000–10,000 מ"ר'], [10000, Infinity, 'תוספת מעל 10,000 מ"ר']];
+  function carCommerceN(f, ctx) {
+    const hi = ctx.rights > 100;
+    return [{ rate: hi ? DR(50, 150) : DR(25, 50), q: f.area, note: hi ? 'מעל 100% זכויות בנייה' : 'עד 100% זכויות בנייה' }];
+  }
+  function carCommerce(z, f, ctx) {
+    if (z === 'N') return carCommerceN(f, ctx);
+    return COM_SEG.map(([lo, hi, note], i) => ({ rate: COM_T[z][i], q: Math.max(0, Math.min(f.area, hi) - lo), note }))
+      .filter((s, i) => s.q > 0 || i === 0);
+  }
+
+  /* ---------- catalogue: תוספת, חלק ב' + חלק ג' + חלק ד' + הנחיות 8.6 ---------- */
+  const NOBIKE = { none: 'לא נקבע בחלק ג\' – ניתן לקבוע לפי שימוש דומה (מדריך האופניים 3.7.2)' };
+  const USES = [
+    // 1. מגורים
+    { id: 'res_detached', g: 'מגורים', icon: 'bi-house', name: 'מגורים צמודי קרקע (בודד / דו־משפחתי)', ref: 'חלק ב\' 1',
+      fields: [num('units', 'יחידות דיור', 2)], q: 'units', unit: 'יח"ד', res: true,
+      rates: Z(PR(1, 2), PR(1, 2), PM(2), PM(2)),
+      bike: { none: 'אין חובה – עד שתי יח"ד (מדריך האופניים 3.2.2)' } },
+    { id: 'res_building', g: 'מגורים', icon: 'bi-buildings', name: 'בניין מגורים (יותר משתי יח"ד, כניסה / חדר מדרגות משותף)', ref: 'חלק ב\' 1',
+      fields: [num('units', 'יחידות דיור', 24), num('storageUnits', 'מתוכן יח"ד עם מחסן ≥ 6 מ"ר נטו', 0), sel('assigned', 'חניה מוצמדת ליח"ד?', YN, 'true')],
+      q: 'units', unit: 'יח"ד', res: true,
+      rates: Z(PR(0.5, 1), PR(1, 1.5), PR(1, 2), PR(1, 2)),
+      bike: { q: 'units', per: 1, minus: 'storageUnits', out: 0.5, txt: '1 לכל יח"ד (מחסן דירתי ≥ 6 מ"ר נחשב חניית אופניים – מדריך 3.2.1)' },
+      moto: { q: 'units', rate: DR(5, 10), cond: f => f.units > 10, txt: 'מעל 10 יח"ד: 1 לכל 5–10 יח"ד' },
+      share: f => f.assigned === 'true' ? null : 'res' },
+    { id: 'res_small', g: 'מגורים', icon: 'bi-buildings', name: 'בניין מגורים שכל דירותיו קטנות (30–80 מ"ר)', ref: 'חלק ב\' 1',
+      fields: [num('units', 'יחידות דיור', 40), num('storageUnits', 'מתוכן יח"ד עם מחסן ≥ 6 מ"ר נטו', 0), sel('assigned', 'חניה מוצמדת ליח"ד?', YN, 'true')],
+      q: 'units', unit: 'יח"ד', res: true,
+      rates: Z(PR(0, 1), PR(0, 1.5), PR(0.5, 1.5), PR(0.5, 1.5)),
+      bike: { q: 'units', per: 1, minus: 'storageUnits', out: 0.5, txt: '1 לכל יח"ד (מחסן דירתי ≥ 6 מ"ר נחשב חניית אופניים – מדריך 3.2.1)' },
+      moto: { q: 'units', rate: DR(5, 10), cond: f => f.units > 10, txt: 'מעל 10 יח"ד: 1 לכל 5–10 יח"ד' },
+      share: f => f.assigned === 'true' ? null : 'res' },
+    { id: 'elderly', g: 'מגורים', icon: 'bi-person-heart', name: 'בית אבות ודיור מוגן', ref: 'חלק ב\' 1 (פרט 1.4)',
+      fields: [num('units', 'יחידות דיור', 60)], q: 'units', unit: 'יח"ד', belowMin: true,
+      rates: Z(DR(10, 20), DR(5, 10), DR(4, 8), DR(4, 8)), bike: NOBIKE },
+    { id: 'students', g: 'מגורים', icon: 'bi-mortarboard', name: 'מעונות סטודנטים', ref: 'חלק ב\' 1 (פרט 1.5)',
+      fields: [num('beds', 'מיטות', 200), num('rooms', 'חדרים', 100), num('students', 'סטודנטים', 200)], q: 'beds', unit: 'מיטות', belowMin: true,
+      rates: Z(DM(20), DM(10), DR(4, 20, '1 עד 5 מקומות לכל 20 מיטות'), DR(2, 10, '1 עד 5 מקומות לכל 10 מיטות')),
+      bike: { q: 'students', per: 5, out: 0.25, txt: '1 לכל 5 סטודנטים' },
+      moto: { q: 'rooms', rate: DR(3, 10), txt: '1 לכל 3–10 חדרים' } },
+
+    // 2. מסחר
+    { id: 'com_general', g: 'מסחר', icon: 'bi-shop', name: 'חנויות / מסחר כללי (כולל חזית מסחרית, במצטבר)', ref: 'חלק ב\' 2',
+      fields: [AREA(1500)], q: 'area', unit: 'מ"ר', car: carCommerce,
+      bike: { q: 'area', per: 300, out: 0.5, txt: '1 לכל 300 מ"ר' },
+      moto: { q: 'area', rate: DMin(200), txt: '1 לכל 200 מ"ר (מזערי)' },
+      op: opCommerce, share: () => 'com' },
+    { id: 'com_neighborhood', g: 'מסחר', icon: 'bi-shop-window', name: 'מסחר שכונתי (זכויות עיקרי עד 3,000 מ"ר)', ref: 'חלק ב\' 2',
+      fields: [AREA(600)], q: 'area', unit: 'מ"ר',
+      car: (z, f, ctx) => z === 'N' ? carCommerceN(f, ctx) : [{ rate: DR(25, 50), q: f.area }],
+      check: f => f.area > 3000 ? [['warn', 'מעל 3,000 מ"ר – אינו עונה להגדרת "מסחר שכונתי" (תקנה 1); יש לחשב כמסחר כללי']] : [],
+      bike: { q: 'area', per: 300, out: 0.5, txt: '1 לכל 300 מ"ר' },
+      moto: { q: 'area', rate: DMin(200), txt: '1 לכל 200 מ"ר (מזערי)' },
+      op: opCommerce, share: () => 'com' },
+
+    // 3–4. תעסוקה
+    { id: 'office', g: 'תעסוקה', icon: 'bi-briefcase', name: 'משרדים ותעשייה עתירת ידע', ref: 'חלק ב\' 3',
+      fields: [AREA(2500), sel('knowledge', 'תעשייה עתירת ידע?', YN, 'false')], q: 'area', unit: 'מ"ר',
+      car: (z, f, ctx) => [{ rate: z === 'N' ? (ctx.rights <= 120 ? DR(30, 50) : DM(60)) : { A: DM(240), B: DM(120), C: DM(60) }[z], q: f.area,
+        note: z === 'N' ? (ctx.rights <= 120 ? 'עד 120% זכויות בנייה' : 'מעל 120% זכויות בנייה') : '' }],
+      bike: { q: 'area', per: 250, out: 0.2, txt: '1 לכל 250 מ"ר' },
+      moto: { q: 'area', rate: DMin(200), txt: '1 לכל 200 מ"ר (מזערי)' },
+      op: f => f.knowledge === 'true' ? { op: f.area > 0 ? 1 : 0, bus: 0, txt: 'לפחות חניה תפעולית אחת במגרש' } : { op: 0, bus: 0, txt: 'לא נקבע מקדם למשרדים' },
+      share: () => 'off' },
+    { id: 'industry', g: 'תעסוקה', icon: 'bi-gear', name: 'תעשייה ומלאכה', ref: 'חלק ב\' 4',
+      fields: [AREA(4000)], q: 'area', unit: 'מ"ר',
+      car: (z, f, ctx) => [{ rate: z === 'N' ? (ctx.rights <= 80 ? DR(60, 100) : DM(120)) : { A: DM(240), B: DM(120), C: DR(60, 100) }[z], q: f.area,
+        note: z === 'N' ? (ctx.rights <= 80 ? 'עד 80% זכויות בנייה' : 'מעל 80% זכויות בנייה') : '' }],
+      bike: { q: 'area', per: 300, out: 0.5, txt: '1 לכל 300 מ"ר (חלק ג\': "מסחר ותעשייה קלה")' },
+      moto: { q: 'area', rate: DMin(200), txt: '1 לכל 200 מ"ר (מזערי)' },
+      op: opIndustry },
+    { id: 'storage', g: 'תעסוקה', icon: 'bi-box-seam', name: 'אחסנה ולוגיסטיקה', ref: 'חלק ב\' 4',
+      fields: [AREA(3000), num('opManual', 'חניות תפעוליות לפי פרוגרמה', 2)], q: 'area', unit: 'מ"ר',
+      rates: Z(DF(300), DF(300), DF(300), DF(300)),
+      check: () => [['info', 'אחסנה: בטבלת התקנות השורה מופיעה תחת "יישוב בלא מתע"ן" – הוחל 1 לכל 300 מ"ר בכל האזורים (הנחה לבדיקה מול הוועדה)']],
+      bike: NOBIKE,
+      op: f => ({ op: f.opManual || 0, bus: 0, txt: 'לפי החלטת רשות הרישוי, בהסתמך על פרוגרמה' }) },
+
+    // 5. חינוך
+    { id: 'school', g: 'חינוך', icon: 'bi-backpack', name: 'גני ילדים ובתי ספר', ref: 'חלק ב\' 5',
+      fields: [num('classes', 'כיתות', 24), num('students', 'תלמידים', 700)], q: 'classes', unit: 'כיתה',
+      rates: Z(PR(0, 2), PR(0, 2), PR(0, 3), PR(0.5, 3)),
+      check: () => [['info', 'בתי ספר: מומלץ מדיניות לכל מוסד לפי סוג המוסד, אזור השירות, שימושי ערב והיצע החניה בסביבה (הנחיות 18)']],
+      bike: { q: 'students', per: 10, out: 1, txt: '1 לכל 10 תלמידים' } },
+    { id: 'university', g: 'חינוך', icon: 'bi-bank', name: 'אוניברסיטה / מוסד על־תיכוני', ref: 'חלק ב\' 5',
+      fields: [AREA(5000), num('students', 'סטודנטים', 1500)], q: 'area', unit: 'מ"ר',
+      rates: Z(DM(200), DM(100), DM(60), DR(50, 70)),
+      bike: { q: 'students', per: 10, out: 1, txt: '1 לכל 10 סטודנטים ("מוסדות חינוך")' },
+      moto: { q: 'area', rate: DMin(100), txt: '1 לכל 100 מ"ר (מזערי)' } },
+    { id: 'library', g: 'חינוך', icon: 'bi-book', name: 'ספרייה, מוזיאון, מתנ"ס / מרכז קהילתי', ref: 'חלק ב\' 5',
+      fields: [AREA(1200)], q: 'area', unit: 'מ"ר',
+      rates: Z(DM(100), DM(80), DM(60), DR(40, 60)),
+      bike: { q: 'area', per: 100, out: 1, txt: '1 לכל 100 מ"ר' },
+      moto: { q: 'area', rate: DMin(100), txt: '1 לכל 100 מ"ר (מזערי)' } },
+
+    // 6. תרבות ופנאי
+    { id: 'theater', g: 'תרבות ופנאי', icon: 'bi-film', name: 'תיאטרון וקולנוע', ref: 'חלק ב\' 6',
+      fields: [num('seats', 'מקומות ישיבה', 450)], q: 'seats', unit: 'מקומות ישיבה',
+      rates: Z(DR(10, 20, null, 'מספר מרבי'), DR(10, 20, null, 'מספר מרבי'), DR(5, 10), DR(3, 6)), bike: NOBIKE,
+      op: (f, pos) => { const s = f.seats || 0; if (!s) return { op: 0, bus: 0, txt: '—' };
+        const st = Math.round(2 + pos * 3); return { op: st, bus: up(s / 150), txt: `${st} ליד הכניסה האחורית לבמה (2–5) + אוטובוס 1/150 מושבים` }; } },
+    { id: 'hall', g: 'תרבות ופנאי', icon: 'bi-people', name: 'אולם כנסים ואירועים', ref: 'חלק ב\' 6',
+      fields: [sel('basis', 'בסיס החישוב', [['seats', 'מקומות ישיבה'], ['area', 'שטח']], 'seats'), num('seats', 'מקומות ישיבה', 400), AREA(800)], q: 'seats', unit: 'מקומות ישיבה',
+      car: (z, f) => {
+        const bySeats = f.basis !== 'area';
+        const T = bySeats ? Z(DR(20, 30), DR(10, 20), DR(5, 10), DR(5, 10)) : Z(DR(250, 250), DR(125, 250), DR(75, 125), DR(20, 50));
+        return [{ rate: T[z], q: bySeats ? f.seats : f.area, unit: bySeats ? 'מקומות ישיבה' : 'מ"ר' }];
+      },
+      bike: NOBIKE, share: () => 'hall' },
+    { id: 'restaurant', g: 'תרבות ופנאי', icon: 'bi-cup-hot', name: 'מסעדה / בית קפה', ref: 'חלק ב\' 6',
+      fields: [AREA(200), sel('loc', 'מיקום (לחפיפת חניה)', [['ent', 'אזור בידור'], ['bus', 'אזור עסקים'], ['other', 'אחר']], 'ent')], q: 'area', unit: 'מ"ר',
+      rates: Z(DM(20), DM(20), DM(10), DM(10)), bike: NOBIKE,
+      op: () => ({ op: 0, bus: 0, txt: 'לפי היצע החניה התפעולית בסביבה (שאינה סמוכה לדרך ארצית)' }),
+      share: f => f.loc === 'ent' ? 'rest_ent' : f.loc === 'bus' ? 'rest_bus' : null },
+    { id: 'worship', g: 'תרבות ופנאי', icon: 'bi-house-heart', name: 'בית תפילה ומועדון שכונתי', ref: 'חלק ב\' 6',
+      fields: [AREA(300)], q: 'area', unit: 'מ"ר',
+      rates: Z(DM(150), DM(100), DM(60), DR(40, 60)),
+      bike: { q: 'area', per: 500, out: 1, txt: '1 לכל 500 מ"ר ("מוסדות ציבור אחרים")' } },
+    { id: 'senior', g: 'תרבות ופנאי', icon: 'bi-person-walking', name: 'מרכז לקשיש', ref: 'חלק ב\' 6',
+      fields: [AREA(400)], q: 'area', unit: 'מ"ר',
+      rates: Z(DM(75), DM(50), DM(30), DR(20, 50)),
+      bike: { q: 'area', per: 500, out: 1, txt: '1 לכל 500 מ"ר ("מוסדות ציבור אחרים")' } },
+
+    // 7. בריאות
+    { id: 'clinic', g: 'בריאות', icon: 'bi-heart-pulse', name: 'מרפאה / מרפאה עם אשפוז יום', ref: 'חלק ב\' 7',
+      fields: [AREA(800)], q: 'area', unit: 'מ"ר',
+      rates: Z(DR(30, 50), DR(30, 50), DR(30, 40), DM(30)),
+      bike: { q: 'area', per: 300, out: 1, txt: '1 לכל 300 מ"ר' } },
+    { id: 'hospital', g: 'בריאות', icon: 'bi-hospital', name: 'בית חולים', ref: 'חלק ב\' 7',
+      fields: [num('beds', 'מיטות', 300), AREA(30000)], q: 'beds', unit: 'מיטה',
+      rates: Z(PR(1, 2), PR(1, 2), PR(1, 2), PR(1.5, 2)),
+      bike: { q: 'area', per: 300, out: 1, txt: '1 לכל 300 מ"ר' } },
+    { id: 'hospital_special', g: 'בריאות', icon: 'bi-hospital', name: 'בית חולים גריאטרי / שיקומי / פסיכיאטרי', ref: 'חלק ב\' 7',
+      fields: [num('beds', 'מיטות', 150), AREA(12000)], q: 'beds', unit: 'מיטה',
+      rates: Z(PF(0.5), PF(0.5), PF(0.5), PF(0.5)),
+      bike: { q: 'area', per: 300, out: 1, txt: '1 לכל 300 מ"ר' } },
+
+    // 8. ספורט, שטחים פתוחים ובתי עלמין
+    { id: 'stadium', g: 'ספורט ושטחים פתוחים', icon: 'bi-trophy', name: 'אצטדיון', ref: 'חלק ב\' 8',
+      fields: [num('seats', 'מושבים', 5000)], q: 'seats', unit: 'מושבים',
+      rates: Z(DM(40), DM(20), DR(10, 15), DR(5, 10)), bike: NOBIKE,
+      moto: { q: 'seats', rate: DR(100, 500), txt: '1 לכל 100–500 מושבים' },
+      op: f => ({ op: 0, bus: up((f.seats || 0) / 150), txt: 'אוטובוס 1 לכל 150 מושבים' }) },
+    { id: 'sportclub', g: 'ספורט ושטחים פתוחים', icon: 'bi-dribbble', name: 'מועדון ספורט', ref: 'חלק ב\' 8',
+      fields: [AREA(1500)], q: 'area', unit: 'מ"ר',
+      rates: Z(DM(250), DR(100, 250), DR(40, 80), DR(40, 50)), bike: NOBIKE,
+      moto: { q: 'area', rate: DMin(200), txt: '1 לכל 200 מ"ר (מזערי)' } },
+    { id: 'cemetery', g: 'ספורט ושטחים פתוחים', icon: 'bi-flower1', name: 'בית עלמין', ref: 'חלק ב\' 8',
+      fields: [AREA(50000)], q: 'area', unit: 'מ"ר',
+      rates: Z(NONE('בלא חניה'), DR(500, 750), DR(300, 750), DR(300, 750)), bike: NOBIKE,
+      op: f => ({ op: 0, bus: up((f.area || 0) / 5000), txt: 'אוטובוס 1 לכל 5,000 מ"ר' }) },
+    { id: 'openspace', g: 'ספורט ושטחים פתוחים', icon: 'bi-tree', name: 'שטח ציבורי פתוח', ref: 'חלק ב\' 8',
+      fields: [num('area', 'שטח (מ"ר; 1 דונם = 1,000 מ"ר)', 20000)], q: 'area', unit: 'מ"ר',
+      car: (z, f) => {
+        const a = f.area;
+        if (a <= 10000) return [{ rate: R('tot', 0, 0, 'disc', 1, 'עד 10 דונם – לפי שיקול דעת רשות הרישוי'), q: a }];
+        if (a <= 100000) return [{ rate: DF(250), q: a }];
+        return [{ rate: R('tot', 400, a / 250, 'range', 1, `לפחות 400 ולא יותר מ־1 לכל 250 מ"ר (${fmt(a / 250)})`), q: a }];
+      }, bike: NOBIKE },
+
+    // 9. מלונאות
+    { id: 'hotel_urban', g: 'מלונאות', icon: 'bi-building', name: 'מלון עירוני', ref: 'חלק ב\' 9',
+      fields: [num('rooms', 'יחידות אירוח', 150)], q: 'rooms', unit: 'יחידות אירוח',
+      rates: Z(DM(4), DM(4), DR(2, 4), DR(2, 4)), bike: NOBIKE, op: opHotel, share: () => 'hotel' },
+    { id: 'hotel_resort', g: 'מלונאות', icon: 'bi-umbrella', name: 'מלון נופש', ref: 'חלק ב\' 9',
+      fields: [num('rooms', 'יחידות אירוח', 200)], q: 'rooms', unit: 'יחידות אירוח',
+      rates: Z(DM(3), DM(3), DR(1, 4), DR(1, 4)), bike: NOBIKE, op: opHotel, share: () => 'hotel' },
+    { id: 'zimmer', g: 'מלונאות', icon: 'bi-house-door', name: 'יחידות אירוח כפרי / עירוני (צימרים)', ref: 'חלק ב\' 9',
+      fields: [num('rooms', 'יחידות אירוח', 8)], q: 'rooms', unit: 'יחידות אירוח',
+      rates: Z(DM(4), DM(4), DR(1, 2), DR(1, 2)), bike: NOBIKE },
+    { id: 'hostel', g: 'מלונאות', icon: 'bi-backpack2', name: 'אכסניית נוער', ref: 'חלק ב\' 9',
+      fields: [num('beds', 'מיטות', 120)], q: 'beds', unit: 'מיטות',
+      rates: Z(DM(20), DM(20), DM(10), DM(10)), bike: NOBIKE },
+
+    // 10. מוסכים ותחנות תדלוק
+    { id: 'garage', g: 'מוסכים ותדלוק', icon: 'bi-wrench', name: 'מוסך (שירותי תחזוקה לרכב)', ref: 'חלק ב\' 10',
+      fields: [num('bays', 'עמדות טיפול', 6)], q: 'bays', unit: 'עמדת טיפול',
+      rates: Z(PR(2, 3), PR(2, 3), PR(2, 3), PR(2, 3)), bike: NOBIKE },
+    { id: 'gas_rest', g: 'מוסכים ותדלוק', icon: 'bi-fuel-pump', name: 'מסעדה, מזנון או חנות שירות בתחנת תדלוק', ref: 'חלק ב\' 10',
+      fields: [AREA(150)], q: 'area', unit: 'מ"ר',
+      rates: Z(DR(10, 20), DR(10, 20), DR(5, 10), DR(5, 10)), bike: NOBIKE,
+      op: (f, pos, z) => {
+        const r = (z === 'A' || z === 'B') ? DM(40) : DR(20, 40), x = policyX(r, pos);
+        return { op: 0, bus: up(applyR(r, f.area || 0, x)), txt: `אוטובוסים: ${ruleTxt(r, 'מ"ר')} (תקנות); בהנחיות 8.6 – 1/50 מ"ר בתחנה על דרך ארצית` };
+      } },
+
+    // תחבורה – חלק ג' ומדריך האופניים
+    { id: 'rail_station', g: 'תחבורה', icon: 'bi-train-front', name: 'תחנת רכבת שאינה עירונית / מרכז תחבורה משולב', ref: 'חלק ג\'',
+      fields: [num('stations', 'תחנות', 1)], q: 'stations', unit: 'תחנה',
+      rates: Z(NONE('אין תקן רכב בחלק ב\''), NONE('אין תקן רכב בחלק ב\''), NONE('אין תקן רכב בחלק ב\''), NONE('אין תקן רכב בחלק ב\'')),
+      bike: { q: 'stations', mul: 100, out: 1, txt: '100 מקומות לתחנה; מותר גם מחוץ למגרש, סמוך לכניסת הולכי הרגל (מדריך 3.5)' } },
+    { id: 'pr_lrt', g: 'תחבורה', icon: 'bi-p-square', name: 'חניון "חנה וסע" ליד רק"ל / ציר תח"צ', ref: 'מדריך האופניים 3.6.2',
+      fields: [num('cars', 'מקומות חניה לרכב בחניון', 300)], q: 'cars', unit: 'מקומות',
+      rates: Z(NONE('—'), NONE('—'), NONE('—'), NONE('—')),
+      bike: { q: 'cars', per: 10, out: 1, rec: true, txt: 'המלצה: לפחות 10% ממספר חניות הרכב' } },
+
+    // שימוש שאינו בתקנות
+    { id: 'custom', g: 'אחר', icon: 'bi-puzzle', name: 'שימוש שאינו כלול בתקנות', ref: 'תוספת, חלק א\' 7; הנחיות 5',
+      fields: [AREA(300), num('rate', 'תקן השימוש הדומה ביותר (מ"ר למקום)', 50)], q: 'area', unit: 'מ"ר',
+      car: (z, f) => [{ rate: R('div', f.rate || 50, f.rate || 50, 'fixed', 1, `1 מקום לכל ${fmt(f.rate || 50)} מ"ר (לפי שימוש דומה)`), q: f.area }],
+      bike: NOBIKE }
+  ];
+  const BY = Object.fromEntries(USES.map(u => [u.id, u]));
+
+  /* ---------- mixed-use table – הנחיות 13.1 ---------- */
+  const PCT = { res: [50, 80, 100], com: [30, 100, 70], off: [100, 70, 10], hall: [100, 80, 100], rest_ent: [30, 50, 100], rest_bus: [100, 80, 30], hotel: [50, 80, 100] };
+  const PCT_NAME = { res: 'מגורים (חניה לא מוצמדת)', com: 'מסחר', off: 'משרדים', hall: 'אולמות שמחות וכנסים', rest_ent: 'מסעדות – אזור בידור', rest_bus: 'מסעדות – אזור עסקים', hotel: 'בתי מלון' };
+  const PERIODS = ['לפני הצהריים', 'אחרי הצהריים', 'ערב ולילה'];
+
+  /* ---------- zone ---------- */
   function getZone() {
-    return document.getElementById('zoneType').value;
+    const settle = $('settle').value, status = $('mtsStatus').value, mode = $('zoneMode').value;
+    const d = parseFloat($('distance').value) || 0;
+    let red = parseFloat($('zoneReduce').value) || 0;
+    const warn = [];
+    if (red > 40) { warn.push(['danger', 'הקטנת תחום האזורים מעבר ל־40% אינה מומלצת בהנחיות – הוגבלה ל־40%']); red = 40; }
+    else if (red > 20) warn.push(['warn', `הקטנה של ${red}% – מעל 20% רק במקרים חריגים ומנומקים היטב (הנחיות 6.3). יש לשמור על רציפות האזורים ולא לקבוע טווח שונה לכל מגרש (6.5)`]);
+    else if (red > 0) warn.push(['info', `הקטנת תחום האזורים ב־${red}% – נדרשת הצדקה תכנונית (שיפועים מעל 8%, מכשול פיזי וכד', הנחיות 6.4)`]);
+    const rA = 300 * (1 - red / 100), rB = 600 * (1 - red / 100);
+    const geo = d <= rA ? 'A' : d <= rB ? 'B' : 'C';
+    let z, why;
+    if (settle === 'none') { z = 'N'; why = 'יישוב בלא מתע"ן'; }
+    else if (settle === 'rail') {
+      z = geo === 'C' ? 'N' : geo;
+      why = geo === 'C' ? `מרחק ${fmt(d)} מ' מיציאת התחנה – מעבר לאזור ב' (${fmt(rB)} מ'): חישוב כיישוב בלא מתע"ן (תקנה 1א(א))`
+        : `רכבת שאינה עירונית – אזור ${ZN[geo]} סביב התחנה (עד ${fmt(geo === 'A' ? rA : rB)} מ')`;
+    } else {
+      const base = mode === 'auto' ? geo : mode;
+      const baseWhy = mode === 'auto' ? `לפי מרחק ${fmt(d)} מ' (א' עד ${fmt(rA)} מ', ב' עד ${fmt(rB)} מ')` : 'לפי תשריט האזורים של הוועדה (הנחיות 2.2א)';
+      if (status === 'operating') { z = base; why = `אזור ${ZN[base]} ${baseWhy}`; }
+      else if (status === 'planned') {
+        z = base === 'A' ? 'B' : 'C';
+        why = `אזור ${ZN[base]} ${baseWhy}; חלה תוכנית מפורטת לקו מתע"ן שטרם הופעל – אזור א' מחושב כאזור ב' ושאר האזורים כאזור ג' (הוראות מעבר (2))`;
+      } else { z = 'C'; why = 'רק תוכנית ארצית / מחוזית ללא תוכנית מפורטת לקו – חישוב לפי אזור ג\' (הוראות מעבר (1))'; }
+    }
+    return { z, why, warn };
   }
 
-  function getLandUses() {
-    const items = document.querySelectorAll('.land-use-item');
-    const uses = [];
-    items.forEach(item => {
-      const type = item.dataset.type;
-      if (!type) return;
-      const fields = {};
-      const inputs = item.querySelectorAll('.land-use-input');
-      inputs.forEach(inp => {
-        const key = inp.dataset.field;
-        let val = inp.value;
-        if (inp.type === 'number') {
-          val = parseFloat(val) || 0;
-        } else if (inp.tagName === 'SELECT') {
-          if (val === 'true') val = true;
-          else if (val === 'false') val = false;
-        }
-        fields[key] = val;
+  /* ---------- read state ---------- */
+  function readItems() {
+    return [...document.querySelectorAll('.land-use-item')].map(el => {
+      const f = {};
+      el.querySelectorAll('[data-k]').forEach(inp => {
+        f[inp.dataset.k] = inp.type === 'number' ? (parseFloat(inp.value) || 0) : inp.value;
       });
-      uses.push({ type, fields });
+      const ovEl = el.querySelector('[data-ov]');
+      return { el, id: el.dataset.id, f, ov: ovEl ? ovEl.value.trim() : '' };
     });
-    return uses;
   }
 
-  function calculateParking(data) {
-    const zone = data.zone || 'A';
-    const landUses = data.landUses || [];
-    const mixedUse = data.mixedUseSharing !== false;
-    const opLoading = parseInt(data.opLoading) || 0;
-    const opStage = parseInt(data.opStage) || 0;
-    const opBus = parseInt(data.opBus) || 0;
-    const guestInput = parseInt(data.guestParking) || 0;
+  /* ---------- compute one land use ---------- */
+  function computeUse(item, z, ctx, useOverride) {
+    const def = BY[item.id], f = item.f, warn = [];
+    const segs = def.car ? def.car(z, f, ctx) : [{ rate: def.rates[z], q: f[def.q] || 0 }];
+    let ov = (useOverride && item.ov !== '' && isFinite(+item.ov)) ? +item.ov : null;
+    if (ov != null && segs.length > 1) { warn.push(['info', 'תקן ידני אינו חל על חישוב מדורג לפי מדרגות שטח – חושב לפי מדיניות']); ov = null; }
+    let raw = 0; const rows = [];
+    segs.forEach(s => {
+      const r = s.rate, unit = s.unit || def.unit;
+      let x;
+      if (r.t === 'disc') {
+        x = ov != null ? ov : 0;
+        if (ov == null && useOverride) warn.push(['warn', 'שצ"פ עד 10 דונם – לפי שיקול דעת רשות הרישוי; הזינו מספר מקומות בשדה "תקן ידני"']);
+      } else if (ov != null && validate(r, ov, def, warn) !== false) x = ov;
+      else x = policyX(r, ctx.pos);
+      const v = applyR(r, s.q, x);
+      raw += v;
+      rows.push({ rule: ruleTxt(r, unit), type: r.lbl || TL[r.t], applied: appliedTxt(r, x, unit), q: s.q, unit, v, note: s.note || '', r });
+    });
+    const cars = up(raw);
 
-    let totalVehicles = 0;
-    let totalBicycle = 0;
-    let totalMotorcycle = 0;
-    let details = [];
-    let hasResidential = false;
-    const landUseTypes = [];
+    // operational + bus – הנחיות 8.6 (+ תקנות חלק ב' 10)
+    let op = 0, bus = 0, opTxt = '—';
+    if (def.op) { const o = def.op(f, ctx.pos, z); op = o.op; bus = o.bus; opTxt = o.txt; if (o.warn) warn.push(...o.warn); }
 
-    for (const lu of landUses) {
-      const type = lu.type;
-      const f = lu.fields || {};
-      landUseTypes.push(type);
-      let veh = 0, bike = 0, moto = 0;
-      let calcDesc = '';
+    // bicycles – חלק ג'
+    let bike = 0, bikeOut = 0, bikeTxt = '', bikeRec = false, bikeNone = null;
+    if (def.bike && !def.bike.none) {
+      const b = def.bike, q = f[b.q] || 0, minus = b.minus ? Math.min(q, f[b.minus] || 0) : 0;
+      const base = b.mul ? q * b.mul : (q - minus) / b.per;
+      bike = up(base * (1 + ctx.bikeExtra / 100));
+      bikeOut = Math.floor(bike * b.out + 1e-9);
+      bikeTxt = b.txt + (minus ? ` (פחות ${minus} יח"ד עם מחסן)` : '');
+      bikeRec = !!b.rec;
+    } else bikeNone = (def.bike && def.bike.none) || NOBIKE.none;
 
-      switch (type) {
-        case 'residential': {
-          const units = parseInt(f.units) || 0;
-          const student = f.studentHousing === true;
-          const elderly = f.elderlyHousing === true;
-          let rate = parseFloat(f.rate) || 1.0;
-          if (student) {
-            veh = Math.round(units / 8);
-            calcDesc = `סטודנטים: ${units} יח"ד &divide; 8 = ${veh}`;
-          } else if (elderly) {
-            veh = Math.round(units / 10);
-            calcDesc = `דיור מוגן: ${units} יח"ד &divide; 10 = ${veh}`;
-          } else {
-            veh = Math.round(units * rate);
-            calcDesc = `${units} יח"ד &times; ${rate} = ${veh}`;
-          }
-          bike = units;
-          moto = Math.round(units / 8);
-          hasResidential = true;
-          break;
-        }
-        case 'commercial': {
-          const area = parseInt(f.area) || 0;
-          const front = f.frontage === true;
-          const neigh = f.neighborhood === true;
-          let rate = parseFloat(f.rate) || 0;
-          let baseRate = rate;
-          if (!rate || rate === 0) {
-            if (neigh) baseRate = rates.commercial[zone].neighborhood;
-            else if (area <= 2000) baseRate = front ? rates.commercial[zone].under2000_front : rates.commercial[zone].under2000;
-            else if (area <= 10000) baseRate = rates.commercial[zone]['2000_10000'];
-            else baseRate = rates.commercial[zone].over10000;
-          }
-          veh = Math.ceil(area / baseRate);
-          calcDesc = `${area} מ"ר &divide; ${baseRate} = ${veh}`;
-          bike = Math.ceil(veh * 0.5);
-          moto = Math.ceil(area / 200);
-          break;
-        }
-        case 'office': {
-          const area = parseInt(f.area) || 0;
-          const knowledge = f.knowledge === true;
-          let rate = parseFloat(f.rate) || 0;
-          let baseRate = rate;
-          if (!rate || rate === 0) {
-            baseRate = knowledge ? rates.office[zone].knowledge : rates.office[zone].regular;
-          }
-          veh = Math.ceil(area / baseRate);
-          calcDesc = `${area} מ"ר &divide; ${baseRate} = ${veh}`;
-          bike = Math.ceil(veh * 0.5);
-          moto = Math.ceil(area / 200);
-          break;
-        }
-        case 'education': {
-          const area = parseInt(f.area) || 0;
-          const eduType = f.eduType || 'university';
-          let rate = parseFloat(f.rate) || 0;
-          let baseRate = rate;
-          if (!rate || rate === 0) {
-            baseRate = rates.education[zone][eduType] || 200;
-          }
-          veh = Math.ceil(area / baseRate);
-          calcDesc = `${area} מ"ר &divide; ${baseRate} = ${veh}`;
-          bike = Math.ceil(veh * 0.5);
-          moto = Math.ceil(area / 100);
-          break;
-        }
-        case 'culture': {
-          const seats = parseInt(f.seats) || 0;
-          const cType = f.cultureType || 'theater';
-          let rate = parseFloat(f.rate) || 0;
-          let baseRate = rate;
-          if (!rate || rate === 0) {
-            baseRate = rates.culture[zone][cType] || 15;
-          }
-          if (cType === 'restaurant') {
-            const area = parseInt(f.area) || 0;
-            if (area > 0) {
-              veh = Math.ceil(area / baseRate);
-              calcDesc = `מסעדה: ${area} מ"ר &divide; ${baseRate} = ${veh}`;
-            } else {
-              veh = 0;
-              calcDesc = 'מסעדה: לא הוזן שטח';
-            }
-          } else {
-            if (seats > 0) {
-              veh = Math.ceil(seats / baseRate);
-              calcDesc = `${seats} מושבים &divide; ${baseRate} = ${veh}`;
-            } else {
-              veh = 0;
-              calcDesc = 'לא הוזנו מושבים';
-            }
-          }
-          bike = Math.ceil(veh * 0.5);
-          moto = Math.ceil(seats / 200) || 0;
-          break;
-        }
-        case 'health': {
-          const area = parseInt(f.area) || 0;
-          const hType = f.healthType || 'clinic';
-          let rate = parseFloat(f.rate) || 0;
-          let baseRate = rate;
-          if (!rate || rate === 0) {
-            baseRate = rates.health[zone][hType] || 40;
-          }
-          if (hType === 'hospital') {
-            const beds = parseInt(f.beds) || 0;
-            if (beds > 0) {
-              veh = Math.round(beds * baseRate);
-              calcDesc = `${beds} מיטות &times; ${baseRate} = ${veh}`;
-            } else {
-              veh = Math.ceil(area / 40);
-              calcDesc = `${area} מ"ר &divide; 40 = ${veh}`;
-            }
-          } else {
-            veh = Math.ceil(area / baseRate);
-            calcDesc = `${area} מ"ר &divide; ${baseRate} = ${veh}`;
-          }
-          bike = Math.ceil(veh * 0.5);
-          moto = Math.ceil(area / 200);
-          break;
-        }
-        default: {
-          const area = parseInt(f.area) || 0;
-          let rate = parseFloat(f.rate) || 50;
-          veh = Math.ceil(area / rate);
-          calcDesc = `מותאם אישית: ${area} מ"ר &divide; ${rate} = ${veh}`;
-          bike = Math.ceil(veh * 0.5);
-          moto = Math.ceil(area / 200);
-        }
-      }
-
-      totalVehicles += veh;
-      totalBicycle += bike;
-      totalMotorcycle += moto;
-      details.push({ type, veh, bike, moto, calcDesc });
+    // motorcycles – חלק ד'
+    let moto = 0, motoTxt = '';
+    if (def.moto && (!def.moto.cond || def.moto.cond(f))) {
+      const m = def.moto;
+      moto = up(applyR(m.rate, f[m.q] || 0, policyX(m.rate, ctx.pos)));
+      motoTxt = m.txt;
     }
 
-    let reduction = 0;
-    if (mixedUse && landUseTypes.length >= 2) {
-      reduction = 25;
-      totalVehicles = Math.ceil(totalVehicles * (1 - reduction / 100));
-    }
+    if (def.check) warn.push(...def.check(f));
+    const share = def.share ? def.share(f) : null;
+    const hint = segs.length === 1 ? `ערך ידני: ${ovUnit(segs[0].rate, segs[0].unit || def.unit)}` : 'חישוב מדורג – תקן ידני לא זמין';
+    return { def, f, cars, raw, rows, op, bus, opTxt, bike, bikeOut, bikeTxt, bikeRec, bikeNone, moto, motoTxt, share, warn, hint, segs };
+  }
 
-    const operational = opLoading + opStage + opBus;
-    let guest = guestInput;
-    if (guest === 0 && hasResidential) {
-      const res = landUses.find(lu => lu.type === 'residential');
-      if (res) {
-        const units = parseInt(res.fields.units) || 0;
-        guest = Math.ceil(units * 0.1);
+  /* ---------- main ---------- */
+  function calculate() {
+    const Zi = getZone(), z = Zi.z;
+    const ctx = {
+      pos: (parseFloat($('pos').value) || 0) / 100,
+      rights: parseFloat($('rightsPct').value) || 0,
+      bikeExtra: Math.max(0, parseFloat($('bikeExtra').value) || 0)
+    };
+    const items = readItems();
+    const res = items.map(it => {
+      const r = computeUse(it, z, ctx, true);
+      // update hint on card
+      const h = it.el.querySelector('[data-hint]');
+      if (h) h.innerHTML = r.rows.map(x => `<div>${esc(ZL(z))}${x.note ? ' – ' + esc(x.note) : ''}: <b>${esc(x.rule)}</b> (${esc(x.type)}) → הוחל ${esc(x.applied)}</div>`).join('') + `<div class="small-muted">${esc(r.hint)}</div>`;
+      const ovEl = it.el.querySelector('[data-ov]');
+      if (ovEl) { ovEl.disabled = r.segs.length > 1; }
+      return r;
+    });
+    const notes = [...Zi.warn];
+    res.forEach(r => r.warn.forEach(([lvl, t]) => notes.push([lvl, `${r.def.name}: ${t}`])));
+
+    const sumCars = res.reduce((s, r) => s + r.cars, 0);
+
+    // mixed-use sharing (חלק א' פרט 5 + הנחיות 13)
+    let shared = null;
+    if ($('shareOn').value === 'true') {
+      const walk = parseFloat($('shareWalk').value) || 0, pub = $('sharePublic').checked;
+      const shareable = res.filter(r => r.share && PCT[r.share] && r.cars > 0);
+      if (!pub) notes.push(['warn', 'חפיפת חניה לא הוחלה: החניון המשותף חייב להיות ציבורי ולא מוצמד לשימוש מסוים (חלק א\' 5(1))']);
+      else if (walk > 250) notes.push(['warn', 'חפיפת חניה לא הוחלה: מרחק ההליכה המרבי עולה על 250 מ\' (חלק א\' 5(3))']);
+      else if (new Set(shareable.map(r => r.share)).size < 2) notes.push(['info', 'חפיפת חניה: נדרשים לפחות שני שימושים מטבלת העזר (הנחיות 13.1) עם חניה לא מוצמדת']);
+      else {
+        const fixed = sumCars - shareable.reduce((s, r) => s + r.cars, 0);
+        const per = [0, 1, 2].map(p => shareable.reduce((s, r) => s + r.cars * PCT[r.share][p] / 100, 0));
+        const peakIdx = per.indexOf(Math.max(...per));
+        const total = up(per[peakIdx]) + fixed;
+        shared = { shareable, per, peakIdx, fixed, total };
+        notes.push(['info', 'חפיפת חניה היא הקלה שבשיקול דעת הוועדה המקומית; חניה המוצמדת ליח"ד ושימושים שאינם בטבלה נספרו במלואם']);
       }
     }
 
-    return {
-      totalVehicles,
-      totalBicycle,
-      totalMotorcycle,
-      operational,
-      guest,
-      reduction,
-      details,
-      zone,
-      mixedUse
-    };
+    let carsTotal = shared ? shared.total : sumCars;
+    let plus = 0;
+    if (z === 'N' && $('settle').value === 'none') {
+      plus = Math.min(25, Math.max(0, parseFloat($('plus25').value) || 0));
+      if (plus > 0) { carsTotal = up(carsTotal * (1 + plus / 100)); notes.push(['info', `הוחלה תוספת של ${plus}% (תקנה 2א(ג) – יישוב בצפון / בדרום בלא תוכנית למתע"ן)`]); }
+    }
+
+    const opTotal = res.reduce((s, r) => s + r.op, 0);
+    const busTotal = res.reduce((s, r) => s + r.bus, 0);
+    const bikeTotal = res.reduce((s, r) => s + r.bike, 0);
+    const bikeOut = res.reduce((s, r) => s + r.bikeOut, 0);
+    const bikeReq = res.filter(r => !r.bikeRec).reduce((s, r) => s + r.bike, 0);
+    const bikeRecTot = bikeTotal - bikeReq;
+    const motoTotal = res.reduce((s, r) => s + r.moto, 0);
+
+    // guests – הנחיות 9
+    const gp = Math.min(30, Math.max(10, parseFloat($('guestPct').value) || 0));
+    const resUnits = res.filter(r => r.def.res).reduce((s, r) => s + (r.f.units || 0), 0);
+    const guest = resUnits ? up(resUnits * gp / 100) : 0;
+
+    // accessible basis – חלק א' פרט 8
+    const nBasis = items.reduce((s, it) => s + computeUse(it, 'N', ctx, false).cars, 0);
+
+    // public parking – חלק א' פרט 4 + הנחיות 14.4
+    const nonRes = res.filter(r => !r.def.res && r.def.id !== 'elderly' && r.def.id !== 'students').reduce((s, r) => s + r.cars, 0);
+    if (nonRes > 40) notes.push(['info', `החניה לשימושים שאינם מגורים (${nonRes}) עולה על 40 – הוועדה רשאית ליעד את החניון, כולו או חלקו, כחניון ציבורי. מומלץ להגביל בהיתר חניות שמורות לכ־20% ומנויים לכ־30% (חלק א' 4; הנחיות 14.4)`]);
+
+    if (opTotal + busTotal > 0) notes.push(['info', 'חניה תפעולית ואוטובוסים – בנוסף לחניה לרכב פרטי (תקנה 2ד), בתחום המגרש, עם מרחב תמרון ולפי הנחיות משרד התחבורה; ללא חפיפה עם החניה הכללית (הנחיות 8.1–8.3). תמהיל הרכבים לפי השימוש המותר הדורש את ההיקף הרב ביותר (8.4)']);
+    if (guest) notes.push(['info', `חניית אורחים: ${guest} מקומות (${gp}% מ־${resUnits} יח"ד), רצוי בתחום הדרך הציבורית; מקומות שיוסדרו במגרש הם חלק מהמקומות המותרים ואינם תוספת (הנחיות 9)`]);
+    notes.push(['info', `מקומות חניה נגישים – בנוסף לסך הנדרש, לפי פרטים 8.110 ו־8.271 בתקנות הבקשה להיתר, ומחושבים על בסיס יישוב בלא מתע"ן (חלק א' 8). בסיס החישוב: ${nBasis} מקומות`]);
+    if (bikeTotal) notes.push(['info', `שטח שירות לחניית אופניים: ${fmt(bikeReq * 2)} מ"ר (2 מ"ר לכל מקום כולל תמרון, ללא קירות; מחסנים דירתיים אינם נכללים – מדריך 7.3). יש להציג בהיתר טבלת מאזן, היצע ומיקום (6.1)`]);
+
+    // bicycle access – מדריך 4.2–4.3
+    const acc = $('bikeAccess').value;
+    if (acc === 'ramp') {
+      const rc = parseFloat($('rampCars').value) || 0, sl = parseFloat($('rampSlope').value) || 0;
+      if (rc <= 40 && sl < 11) notes.push(['info', `גישת אופניים ברמפת רכב – מותרת: ${rc} חניות (עד 40) ושיפוע ${fmt(sl)}% (פחות מ־11%)`]);
+      else notes.push(['danger', `גישת אופניים ברמפת רכב – אינה עומדת במדריך (4.2): ${rc > 40 ? `הרמפה משרתת ${rc} חניות (מעל 40)` : ''}${rc > 40 && sl >= 11 ? '; ' : ''}${sl >= 11 ? `שיפוע ${fmt(sl)}% (נדרש פחות מ־11%)` : ''}`]);
+    } else if (acc === 'lift') {
+      const ll = parseFloat($('liftLen').value) || 0;
+      notes.push(ll >= 2 ? ['info', `גישה במעלית: אורך ${fmt(ll)} מ' – תקין (לפחות 2 מ', מדריך 4.3)`] : ['danger', `גישה במעלית: אורך ${fmt(ll)} מ' – נדרשת לפחות מעלית אחת באורך 2 מ' (מדריך 4.3)`]);
+    }
+
+    notes.push(['info', 'החישוב לפי שטחים עיקריים; כל חלק של מקום חניה עוגל כלפי מעלה לכל שימוש בנפרד (חלק א\' 6; הנחיות 3.1)']);
+
+    render({ Zi, z, res, sumCars, carsTotal, shared, plus, opTotal, busTotal, bikeTotal, bikeOut, bikeRecTot, motoTotal, guest, gp, nBasis, notes });
   }
 
-  function getHebrewTypeName(type) {
-    const names = {
-      residential: 'מגורים',
-      commercial: 'מסחר',
-      office: 'משרדים',
-      education: 'חינוך',
-      culture: 'תרבות',
-      health: 'בריאות',
-      custom: 'מותאם אישית'
-    };
-    return names[type] || type;
-  }
-
-  function renderResults(result) {
-    const area = document.getElementById('resultsArea');
-    if (!result) {
-      area.innerHTML = `<div class="alert alert-danger">אין נתוני תוצאה.</div>`;
+  /* ---------- render ---------- */
+  function render(o) {
+    $('zoneInfo').innerHTML = `חישוב לפי: <b>${esc(ZL(o.z))}</b> – ${esc(o.Zi.why)}`;
+    const area = $('resultsArea');
+    if (!o.res.length) {
+      area.innerHTML = `<div class="text-center text-muted py-5"><i class="bi bi-clipboard-data fs-1"></i><p class="mt-3">הוסיפו לפחות שימוש קרקע אחד.</p></div>`;
       return;
     }
+    const box = (label, val, sub) => `<div class="col-6"><div class="result-box"><div class="result-label">${label}</div><div class="result-number">${val}</div>${sub ? `<div class="result-sub">${sub}</div>` : ''}</div></div>`;
 
-    const detailRows = result.details.map(d => `
-      <tr>
-        <td>${getHebrewTypeName(d.type)}</td>
-        <td>${d.veh}</td>
-        <td>${d.bike}</td>
-        <td>${d.moto}</td>
-        <td><small class="text-muted">${d.calcDesc}</small></td>
-      </tr>
-    `).join('');
+    const rows = o.res.map(r => {
+      const rule = r.rows.map(x => `${esc(x.rule)} <span class="text-muted">(${esc(x.type)})</span>${x.note ? `<div class="small-muted">${esc(x.note)}: ${fmt(x.q)} ${esc(x.unit)}</div>` : ''}`).join('<hr class="my-1">');
+      const applied = r.rows.map(x => `${esc(x.applied)}<div class="small-muted">${fmt(x.q)} ${esc(x.unit)} → ${fmt(x.v)}</div>`).join('');
+      const opCell = (r.op || r.bus) ? `${r.op ? `תפעולי ${r.op}` : ''}${r.op && r.bus ? '<br>' : ''}${r.bus ? `אוטובוס ${r.bus}` : ''}<div class="small-muted">${esc(r.opTxt)}</div>` : (r.def.op ? `<span class="small-muted">${esc(r.opTxt)}</span>` : '—');
+      const bikeCell = r.bikeNone ? `<span class="small-muted">${esc(r.bikeNone)}</span>` : `${r.bike}${r.bikeRec ? ' <span class="small-muted">(המלצה)</span>' : ''}<div class="small-muted">${esc(r.bikeTxt)}${r.bikeOut ? `; עד ${r.bikeOut} מחוץ לבניין` : ''}</div>`;
+      const motoCell = r.moto ? `${r.moto}<div class="small-muted">${esc(r.motoTxt)}</div>` : '—';
+      return `<tr><td><b>${esc(r.def.name)}</b><div class="small-muted">${esc(r.def.ref)}</div></td><td>${rule}</td><td>${applied}</td><td class="fw-bold">${r.cars}</td><td>${opCell}</td><td>${bikeCell}</td><td>${motoCell}</td></tr>`;
+    }).join('');
+
+    let shareHtml = '';
+    if (o.shared) {
+      const s = o.shared;
+      const srows = s.shareable.map(r => `<tr><td>${esc(r.def.name)}<div class="small-muted">${esc(PCT_NAME[r.share])}</div></td><td>${r.cars}</td>${PCT[r.share].map(p => `<td>${p}%<div class="small-muted">${fmt(r.cars * p / 100)}</div></td>`).join('')}</tr>`).join('');
+      shareHtml = `<hr><h6 class="fw-bold">חפיפת חניה – הצטברות לפי חלקי היממה</h6>
+        <div class="table-responsive"><table class="table table-sm text-end"><thead><tr><th>שימוש</th><th>נדרש</th>${PERIODS.map(p => `<th>${p}</th>`).join('')}</tr></thead>
+        <tbody>${srows}</tbody><tfoot><tr><td>סה"כ משותף</td><td>${s.shareable.reduce((a, r) => a + r.cars, 0)}</td>${s.per.map((v, i) => `<td>${fmt(v)}${i === s.peakIdx ? ' ▲' : ''}</td>`).join('')}</tr></tfoot></table></div>
+        <div class="small-muted">שיא ב"${PERIODS[s.peakIdx]}": ${up(s.per[s.peakIdx])} + ${s.fixed} מקומות שאינם בחפיפה = ${s.total} (במקום ${o.sumCars}).</div>`;
+    }
+
+    const carSub = [o.shared ? `לאחר חפיפה (לפני: ${o.sumCars})` : '', o.plus ? `כולל תוספת ${o.plus}%` : '', o.guest ? `מתוכם מומלצים ${o.guest} לאורחים` : ''].filter(Boolean).join('<br>');
+    const bikeSub = [o.bikeOut ? `עד ${o.bikeOut} מחוץ לבניין, בתחום המגרש` : 'כולם בחדר סגור בבניין', o.bikeRecTot ? `כולל ${o.bikeRecTot} בהמלצה` : ''].filter(Boolean).join('<br>');
 
     area.innerHTML = `
+      <div class="d-flex flex-wrap gap-1 mb-3">
+        <span class="badge bg-secondary">${esc($('projectName').value || 'פרויקט')}</span>
+        <span class="badge bg-secondary">${esc(ZL(o.z))}</span>
+        <span class="badge bg-secondary">מיקום בטווח ${Math.round((parseFloat($('pos').value) || 0))}%</span>
+        ${o.shared ? '<span class="badge bg-success">חפיפת חניה הוחלה</span>' : ''}
+      </div>
       <div class="row g-3">
-        <div class="col-6">
-          <div class="result-box">
-            <div class="result-label">סה"כ חניות רכב</div>
-            <div class="result-number">${result.totalVehicles}</div>
-            ${result.reduction > 0 ? `<span class="badge bg-success">הפחתה של ${result.reduction}%</span>` : ''}
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="result-box">
-            <div class="result-label">חניות אופניים</div>
-            <div class="result-number">${result.totalBicycle}</div>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="result-box">
-            <div class="result-label">חניות אופנועים</div>
-            <div class="result-number">${result.totalMotorcycle}</div>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="result-box">
-            <div class="result-label">תפעולי + אורחים</div>
-            <div class="result-number">${result.operational + result.guest}</div>
-            <small class="text-muted">(תפעולי: ${result.operational}, אורחים: ${result.guest})</small>
-          </div>
-        </div>
+        ${box('חניה לרכב פרטי', o.carsTotal, carSub)}
+        ${box('חניה תפעולית (משאית / שירות)', o.opTotal, 'בנוסף לחניה הפרטית – תקנה 2ד')}
+        ${box('חניית אוטובוסים', o.busTotal, 'הנחיות 8.6 ותקנות חלק ב\' 10')}
+        ${box('חניות אופניים (מזערי)', o.bikeTotal, bikeSub)}
+        ${box('חניות אופנועים', o.motoTotal, 'בתחום המגרש, עם עוגן קשירה – תקנה 2ג')}
+        ${box('בסיס לחניות נגישות', o.nBasis, 'לפי יישוב בלא מתע"ן – נגישות בנוסף')}
       </div>
       <hr>
-      <h6 class="fw-bold">פירוט חישוב לפי ייעודים</h6>
+      <h6 class="fw-bold">פירוט לפי שימושי קרקע</h6>
       <div class="table-responsive">
         <table class="table table-sm table-hover text-end">
-          <thead><tr><th>ייעוד</th><th>רכב</th><th>אופניים</th><th>אופנוע</th><th>חישוב</th></tr></thead>
-          <tbody>${detailRows}</tbody>
+          <thead><tr><th>שימוש</th><th>כלל התקנות</th><th>תקן שהוחל</th><th>רכב</th><th>תפעולי / אוטובוס</th><th>אופניים</th><th>אופנוע</th></tr></thead>
+          <tbody>${rows}</tbody>
+          <tfoot><tr><td colspan="3">סה"כ (לפני חפיפה ותוספות)</td><td>${o.sumCars}</td><td>${o.opTotal} / ${o.busTotal}</td><td>${o.bikeTotal}</td><td>${o.motoTotal}</td></tr></tfoot>
         </table>
       </div>
-      <div class="mt-2">
-        <span class="badge bg-secondary">אזור ${result.zone}</span>
-        ${result.mixedUse ? '<span class="badge bg-success">יושם שיתוף חניה בשימושים מעורבים</span>' : ''}
-      </div>
+      ${shareHtml}
+      <hr>
+      <h6 class="fw-bold">הערות ובדיקות</h6>
+      <ul class="notes">${o.notes.map(([l, t]) => `<li class="${l}">${esc(t)}</li>`).join('')}</ul>
     `;
   }
 
-  function performCalculation() {
-    try {
-      const zone = getZone();
-      const mixedUse = document.getElementById('mixedUseSharing').value === 'true';
-      const landUses = getLandUses();
-      const opLoading = parseInt(document.getElementById('opLoading').value) || 0;
-      const opStage = parseInt(document.getElementById('opStage').value) || 0;
-      const opBus = parseInt(document.getElementById('opBus').value) || 0;
-      const guestParking = parseInt(document.getElementById('guestParking').value) || 0;
-
-      const data = {
-        zone,
-        mixedUseSharing: mixedUse,
-        landUses,
-        opLoading,
-        opStage,
-        opBus,
-        guestParking
-      };
-
-      const result = calculateParking(data);
-      renderResults(result);
-    } catch (err) {
-      console.error('שגיאה בחישוב:', err);
-      document.getElementById('resultsArea').innerHTML = `
-        <div class="alert alert-danger">שגיאה: ${err.message}</div>
-      `;
+  /* ---------- UI: land-use cards ---------- */
+  function fieldHtml(fd, val) {
+    const v = val != null ? val : fd.def;
+    if (fd.type === 'sel') {
+      return `<div class="col-6 col-md-4"><label class="form-label small">${esc(fd.label)}</label><select class="form-select form-select-sm" data-k="${fd.k}">${fd.opts.map(([ov, ol]) => `<option value="${ov}"${String(v) === ov ? ' selected' : ''}>${esc(ol)}</option>`).join('')}</select></div>`;
     }
+    return `<div class="col-6 col-md-4"><label class="form-label small">${esc(fd.label)}</label><input type="number" class="form-control form-control-sm" data-k="${fd.k}" value="${v}" min="0" step="${fd.step}"></div>`;
   }
-
-  document.getElementById('calcBtn').addEventListener('click', performCalculation);
-
-  document.getElementById('addLandUseBtn').addEventListener('click', function() {
-    const container = document.getElementById('landUseContainer');
-    const newItem = document.createElement('div');
-    newItem.className = 'land-use-item';
-    newItem.dataset.type = 'custom';
-    newItem.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center">
-        <h6 class="fw-bold mb-0"><i class="bi bi-puzzle"></i> מותאם אישית</h6>
+  function addUse(id, vals) {
+    const def = BY[id]; if (!def) return;
+    const el = document.createElement('div');
+    el.className = 'land-use-item'; el.dataset.id = id;
+    el.innerHTML = `
+      <div class="d-flex justify-content-between align-items-start gap-2">
+        <div><h6 class="fw-bold mb-0"><i class="bi ${def.icon} ms-1"></i>${esc(def.name)}</h6><div class="ref">${esc(def.g)}, ${esc(def.ref)}</div></div>
         <button type="button" class="btn-close remove-landuse" aria-label="הסר"></button>
       </div>
       <div class="row g-2 mt-1">
-        <div class="col-6">
-          <label class="form-label small">שטח (מ"ר)</label>
-          <input type="number" class="form-control land-use-input" data-field="area" value="300" min="0">
-        </div>
-        <div class="col-6">
-          <label class="form-label small">תקן (מ"ר/חניה)</label>
-          <input type="number" class="form-control land-use-input" data-field="rate" value="50" min="10">
-        </div>
+        ${def.fields.map(fd => fieldHtml(fd, vals && vals[fd.k])).join('')}
+        <div class="col-6 col-md-4"><label class="form-label small">תקן ידני לרכב</label><input type="number" class="form-control form-control-sm" data-ov step="any" min="0" placeholder="לפי מדיניות" value="${vals && vals.ov != null ? vals.ov : ''}"></div>
       </div>
-    `;
-    container.appendChild(newItem);
-    newItem.querySelector('.remove-landuse').addEventListener('click', function() {
-      this.closest('.land-use-item').remove();
-    });
-  });
+      <div class="rule-hint" data-hint></div>`;
+    $('landUseContainer').appendChild(el);
+    el.querySelector('.remove-landuse').addEventListener('click', () => { el.remove(); schedule(); });
+  }
 
-  document.querySelectorAll('.remove-landuse').forEach(btn => {
-    btn.addEventListener('click', function() {
-      this.closest('.land-use-item').remove();
-    });
-  });
+  // picker
+  (function buildPicker() {
+    const groups = {};
+    USES.forEach(u => (groups[u.g] = groups[u.g] || []).push(u));
+    $('usePicker').innerHTML = Object.entries(groups).map(([g, us]) => `<optgroup label="${esc(g)}">${us.map(u => `<option value="${u.id}">${esc(u.name)}</option>`).join('')}</optgroup>`).join('');
+  })();
 
-  window.addEventListener('load', function() {
-    setTimeout(performCalculation, 300);
-  });
+  function syncVisibility() {
+    const s = $('settle').value;
+    document.querySelectorAll('.mts-only').forEach(e => e.style.display = s === 'mts' ? '' : 'none');
+    document.querySelectorAll('.none-only').forEach(e => e.style.display = s === 'none' ? '' : 'none');
+    document.querySelectorAll('.zone-field').forEach(e => e.style.display = s === 'none' ? 'none' : '');
+    $('zoneMode').disabled = s !== 'mts';
+    if (s !== 'mts') $('zoneMode').value = 'auto';
+    const a = $('bikeAccess').value;
+    document.querySelectorAll('.access-ramp').forEach(e => e.style.display = a === 'ramp' ? '' : 'none');
+    document.querySelectorAll('.access-lift').forEach(e => e.style.display = a === 'lift' ? '' : 'none');
+    $('posVal').textContent = $('pos').value + '%';
+  }
+
+  let timer = null;
+  function schedule() { clearTimeout(timer); timer = setTimeout(run, 250); }
+  function run() {
+    syncVisibility();
+    try { calculate(); }
+    catch (err) {
+      console.error('שגיאה בחישוב:', err);
+      $('resultsArea').innerHTML = `<div class="alert alert-danger">שגיאה בחישוב: ${esc(err.message)}</div>`;
+    }
+  }
+
+  $('calcBtn').addEventListener('click', run);
+  $('addLandUseBtn').addEventListener('click', () => { addUse($('usePicker').value); run(); });
+  document.addEventListener('input', e => { if (e.target.closest('.container') && e.target.id !== 'usePicker') schedule(); });
+  document.addEventListener('change', e => { if (e.target.closest('.container') && e.target.id !== 'usePicker') schedule(); });
+
+  // demo project
+  addUse('res_building', { units: 24 });
+  addUse('com_general', { area: 1500 });
+  addUse('office', { area: 2500, knowledge: 'true' });
+  addUse('theater', { seats: 450 });
+  addUse('restaurant', { area: 200, loc: 'ent' });
+  addUse('clinic', { area: 800 });
+  run();
 })();
 </script>
 </body>

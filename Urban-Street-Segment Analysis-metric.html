@@ -233,7 +233,7 @@
             <h2><i class="bi bi-table"></i> תוצאות ניתוח המקטע <span>(יחידות מטריות)</span></h2>
 
             <div class="result-grid">
-                <div class="result-item"><span class="label">זמן ריצה</span><span class="value" id="outRunTime">-- שנ'</span></div>
+                <div class="result-item"><span class="label">זמן נסיעה</span><span class="value" id="outRunTime">-- שנ'</span></div>
                 <div class="result-item"><span class="label">מהירות נסיעה</span><span class="value highlight" id="outTravelSpeed">-- קמ"ש</span></div>
                 <div class="result-item"><span class="label">עצירות</span><span class="value" id="outStops">-- עצירות/ק"מ</span></div>
                 <div class="result-item"><span class="label">רמת שירות – רכב מנועי</span><span class="value highlight" id="outMlos">--</span></div>
@@ -416,7 +416,7 @@
                 if (vcApprox > 1.0) delayEnhance = 1.6;
 
                 const travelTime = runTimeFFS + totalInterDelay * delayEnhance + stopRate * 4;
-                const travelSpeed = (segLength / (travelTime / 3600));
+                const travelSpeed = (segLength / 1000) / (travelTime / 3600); // km/h (segLength is in metres)
 
                 // 6. Motorized LOS
                 const mlos = losFromSpeed(travelSpeed);

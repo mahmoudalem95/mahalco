@@ -1,818 +1,588 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MAHALCO — Typical urban cross section</title>
+<title>MAHALCO — חתך טיפוסי עירוני ובין-עירוני</title>
 <style>
   :root{
-    --desk:#23262a;        /* drafting table */
-    --desk-2:#2c3036;
-    --paper:#fbfaf6;
-    --ink:#14171a;
-    --ink-2:#585f66;
-    --hair:#c8c6bd;
-    --slate:#4c5560;       /* carriageway */
-    --moss:#5a7a4e;        /* landscape */
-    --blueprint:#2b5c8a;   /* annotation */
-    --alarm:#b03a2e;
-    --amber:#8a6d1f;
-    --rail:280px;
+    --desk:#23262a; --desk-2:#2c3036; --paper:#fbfaf6; --ink:#14171a; --ink-2:#585f66;
+    --hair:#c8c6bd; --slate:#4c5560; --moss:#5a7a4e; --blueprint:#2b5c8a; --alarm:#b03a2e; --amber:#b08a2a;
+    --rail:430px;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{
-    margin:0;background:var(--desk);color:#e7e6e1;
-    font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  }
-  a{color:#a9c6e6}
-
-  header.bar{
-    position:sticky;top:0;z-index:30;background:#191c1f;border-bottom:1px solid #383c42;
-    display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap;
-  }
-  .mark{display:flex;flex-direction:column;line-height:1.15;margin-right:auto}
+  body{margin:0;background:var(--desk);color:#e7e6e1;font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif}
+  header.bar{position:sticky;top:0;z-index:30;background:#191c1f;border-bottom:1px solid #383c42;display:flex;align-items:center;gap:10px;padding:10px 18px;flex-wrap:wrap}
+  .mark{display:flex;flex-direction:column;line-height:1.15;margin-left:auto}
   .mark b{font-size:15px;letter-spacing:.14em;font-weight:700}
-  .mark span{font-size:11px;color:#8d949b;letter-spacing:.02em}
-  .bar button{
-    background:#33383e;color:#e9e8e3;border:1px solid #4a5057;border-radius:6px;
-    padding:7px 12px;font:inherit;font-size:13px;cursor:pointer
-  }
-  .bar button:hover{background:#3d434a}
-  .bar button.key{background:#e9e8e3;color:#191c1f;border-color:#e9e8e3;font-weight:600}
-  .bar button:focus-visible,input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid #6fa3d8;outline-offset:2px}
-
-  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:0;align-items:start}
-
-  /* ---- parameter rail ---- */
-  aside{
-    position:sticky;top:53px;max-height:calc(100vh - 53px);overflow:auto;
-    background:var(--desk-2);border-right:1px solid #3a3f45;padding:14px 14px 40px
-  }
-  aside h2{
-    font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8d949b;
-    margin:18px 0 8px;font-weight:700
-  }
+  .mark span{font-size:11.5px;color:#8d949b}
+  button{background:#33383e;color:#e9e8e3;border:1px solid #4a5057;border-radius:6px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+  button:hover{background:#3d434a}
+  button.key{background:#e9e8e3;color:#191c1f;border-color:#e9e8e3;font-weight:600}
+  button.mini{padding:2px 7px;font-size:12px;min-width:26px}
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #6fa3d8;outline-offset:2px}
+  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-items:start}
+  aside{position:sticky;top:53px;max-height:calc(100vh - 53px);overflow:auto;background:var(--desk-2);border-left:1px solid #3a3f45;padding:12px 14px 40px}
+  aside h2{font-size:11px;letter-spacing:.12em;color:#8d949b;margin:16px 0 7px;font-weight:700}
   aside h2:first-child{margin-top:2px}
-  .row{display:grid;grid-template-columns:1fr 84px;align-items:center;gap:8px;padding:3px 0}
+  .row{display:grid;grid-template-columns:1fr 120px;align-items:center;gap:8px;padding:3px 0}
   .row label{font-size:13px;color:#cdd1d5}
-  .row input,.row select{
-    width:100%;background:#1c1f23;color:#f0efeb;border:1px solid #464c53;border-radius:5px;
-    padding:5px 6px;font:inherit;font-size:13px;text-align:right
-  }
-  .row select{text-align:left}
+  input,select{background:#1c1f23;color:#f0efeb;border:1px solid #464c53;border-radius:5px;padding:5px 6px;font:inherit;font-size:13px}
+  .row input,.row select{width:100%}
   .wide{grid-template-columns:1fr}
-  .wide select{text-align:left}
+  .edge{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:4px 0}
+  .edge label{font-size:11px;color:#9aa1a8;display:flex;flex-direction:column;gap:2px}
+  .edge input,.edge select{width:100%}
+  /* cells */
+  .cells{display:flex;flex-direction:column;gap:4px}
+  .cell{display:grid;grid-template-columns:14px 1fr 64px 52px auto;gap:4px;align-items:center;background:#22262a;border:1px solid #3a3f45;border-radius:5px;padding:4px}
+  .cell .sw{width:12px;height:22px;border-radius:2px}
+  .cell select,.cell input{width:100%;padding:3px 4px;font-size:12.5px}
+  .cell input{text-align:left;direction:ltr}
+  .cell .btns{display:flex;gap:2px}
+  .cell.bad{border-color:var(--alarm)} .cell.warn{border-color:var(--amber)}
+  .addbar{display:flex;gap:6px;margin-top:6px}
+  .addbar select{flex:1}
   .toggles{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-  .toggles label{
-    display:flex;align-items:center;gap:5px;font-size:12px;color:#cdd1d5;
-    background:#1c1f23;border:1px solid #464c53;border-radius:5px;padding:5px 8px;cursor:pointer
-  }
+  .toggles label{display:flex;align-items:center;gap:5px;font-size:12px;color:#cdd1d5;background:#1c1f23;border:1px solid #464c53;border-radius:5px;padding:5px 8px;cursor:pointer}
   .toggles input{accent-color:#6fa3d8}
-
-  /* ---- sheet ---- */
-  main{padding:20px}
-  .sheetwrap{background:#1b1e21;border:1px solid #3a3f45;border-radius:4px;padding:16px;overflow:auto}
-  #drawing{min-width:980px}
-  #drawing svg{display:block;width:100%;height:auto;background:var(--paper)}
-
-  .readouts{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
-  .box{background:var(--desk-2);border:1px solid #3a3f45;border-radius:4px;padding:14px}
-  .box h3{margin:0 0 10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8d949b}
+  main{padding:18px}
+  .tabs{display:flex;gap:6px;margin-bottom:10px}
+  .tab[aria-selected=true]{background:#e9e8e3;color:#191c1f}
+  .sheetwrap{background:#1b1e21;border:1px solid #3a3f45;border-radius:4px;padding:12px;overflow:auto}
+  #drawing svg{direction:ltr;display:block;width:100%;height:auto;background:var(--paper);box-shadow:0 4px 18px rgba(0,0,0,.35)}
+  .readouts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .box{background:var(--desk-2);border:1px solid #3a3f45;border-radius:4px;padding:12px}
+  .box h3{margin:0 0 9px;font-size:12px;letter-spacing:.08em;color:#8d949b}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .stat{border:1px solid #40454b;border-radius:4px;padding:8px 9px;background:#22262a}
+  .stat{border:1px solid #40454b;border-radius:4px;padding:7px 9px;background:#22262a}
   .stat span{display:block;font-size:11px;color:#8d949b}
-  .stat b{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .stat b{font-size:16px;font-weight:600}
   .stat b small{font-size:11px;font-weight:400;color:#9aa1a8}
-  .chk{border-left:3px solid var(--moss);background:#22262a;padding:8px 10px;border-radius:0 4px 4px 0;margin-bottom:7px;font-size:12.5px}
-  .chk.warn{border-color:var(--amber)}
-  .chk.bad{border-color:var(--alarm)}
-  .chk b{letter-spacing:.04em;font-size:11px;display:block;color:#b9bfc5}
-  .notes{margin-top:16px}
-  .notes ol{margin:0;padding-left:18px;font-size:12.5px;color:#b8bdc2;line-height:1.65}
-  .notes li{margin-bottom:5px}
-
-  #tip{
-    position:fixed;pointer-events:none;z-index:60;background:#111417;color:#f2f1ec;
-    border:1px solid #4a5057;border-radius:5px;padding:6px 9px;font-size:12px;opacity:0;
-    transition:opacity .1s;white-space:nowrap
-  }
-
-  @media(max-width:1080px){
-    .shell{grid-template-columns:1fr}
-    aside{position:static;max-height:none;border-right:0;border-bottom:1px solid #3a3f45}
-    .row{grid-template-columns:1fr 100px}
-    .readouts{grid-template-columns:1fr}
-  }
+  .chk{border-right:3px solid var(--moss);background:#22262a;padding:7px 10px;border-radius:4px 0 0 4px;margin-bottom:6px;font-size:12.5px}
+  .chk.warn{border-color:var(--amber)} .chk.bad{border-color:var(--alarm)}
+  .chk b{font-size:11px;display:block;color:#b9bfc5}
+  .sheetlist{display:flex;flex-direction:column;gap:5px}
+  .sheetlist div{display:flex;gap:6px;align-items:center;background:#22262a;border:1px solid #3a3f45;border-radius:4px;padding:5px 8px;font-size:12.5px}
+  .sheetlist div span{flex:1}
+  .hint{font-size:12px;color:#9aa1a8;margin:4px 0}
+  @media(max-width:1100px){.shell{grid-template-columns:1fr} aside{position:static;max-height:none;border-left:0;border-bottom:1px solid #3a3f45} .readouts{grid-template-columns:1fr}}
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-  @media print{
-    body{background:#fff;color:#000}
-    header.bar,aside,.readouts,.notes,#tip{display:none}
-    .shell{display:block}main{padding:0}
-    .sheetwrap{background:#fff;border:0;padding:0;overflow:visible}
-    #drawing{min-width:0}
-  }
 </style>
 </head>
 <body>
-
 <header class="bar">
-  <div class="mark"><b>MAHALCO</b><span>Typical urban cross section — preliminary design</span></div>
-  <button id="btnFit" class="key">Redraw</button>
-  <button id="btnSvg">Download SVG</button>
-  <button id="btnPng">Download PNG</button>
-  <button id="btnJson">Download JSON</button>
-  <button onclick="window.print()">Print</button>
+  <div class="mark"><b>MAHALCO</b><span>חתך טיפוסי – עירוני ובין-עירוני · גיליון A0 בקנה מידה אמיתי</span></div>
+  <button id="btnAddSheet">הוסף חתך לגיליון</button>
+  <button id="btnHtml" class="key">ייצוא גיליון A0 (HTML)</button>
+  <button id="btnSvg">הורד SVG</button>
+  <button id="btnPrint">הדפס</button>
+  <button id="btnJson">שמור JSON</button>
+  <label class="mini" style="cursor:pointer"><input type="file" id="fileJson" accept=".json" hidden><span style="border:1px solid #4a5057;border-radius:6px;padding:6px 11px;font-size:13px;background:#33383e">טען JSON</span></label>
 </header>
 
 <div class="shell">
-  <aside>
-    <h2>Corridor</h2>
-    <div class="row wide"><select id="class">
-      <option value="local">Local street</option>
-      <option value="collector" selected>Collector</option>
-      <option value="arterial">Urban arterial</option>
-    </select></div>
-    <div class="row wide"><select id="context">
-      <option>Urban</option><option>Suburban</option><option>Mixed use / main street</option>
-    </select></div>
+<aside>
+  <h2>תבנית פתיחה</h2>
+  <div class="row wide"><select id="preset"></select></div>
+  <p class="hint" id="presetSrc"></p>
 
-    <h2>Carriageway</h2>
-    <div class="row"><label for="lanes">Lanes each way</label><input id="lanes" type="number" min="1" max="6" step="1" value="1"></div>
-    <div class="row"><label for="lane">Lane width</label><input id="lane" type="number" step=".05" value="3.30"></div>
-    <div class="row"><label for="parking">Parking lane</label><input id="parking" type="number" step=".05" value="2.40"></div>
-    <div class="row"><label for="bike">Cycle lane</label><input id="bike" type="number" step=".05" value="1.80"></div>
-    <div class="row"><label for="median">Median</label><input id="median" type="number" step=".05" value="2.40"></div>
-    <div class="row"><label for="cross">Carriageway crossfall %</label><input id="cross" type="number" step=".1" min="0" max="8" value="2.0"></div>
+  <h2>פרטי החתך</h2>
+  <div class="row"><label for="title">כותרת החתך</label><input id="title" value="חתך טיפוסי"></div>
+  <div class="row"><label for="rowTarget">רוחב זכות דרך יעד (מ׳)</label><input id="rowTarget" type="number" step="0.1" value="0"></div>
+  <div class="row"><label for="ctx">הקשר</label><select id="ctx"><option value="urban">עירוני</option><option value="inter">בין-עירוני</option></select></div>
 
-    <h2>Pedestrian realm</h2>
-    <div class="row"><label for="par">Clear walking width</label><input id="par" type="number" step=".05" value="1.80"></div>
-    <div class="row"><label for="furn">Furnishing / planting</label><input id="furn" type="number" step=".05" value="0.60"></div>
-    <div class="row"><label for="front">Frontage</label><input id="front" type="number" step=".05" value="0.30"></div>
-    <div class="row"><label for="swcross">Footway crossfall %</label><input id="swcross" type="number" step=".1" min="0" max="5" value="2.0"></div>
+  <h2>תאים (משמאל לימין בשרטוט)</h2>
+  <div class="cells" id="cells"></div>
+  <div class="addbar"><select id="addType"></select><button id="btnAdd">+ הוסף</button></div>
+  <div class="addbar"><button id="btnMirror">שיקוף – השלם צד שני</button><button id="btnClear">נקה</button></div>
 
-    <h2>Kerbs</h2>
-    <div class="row"><label for="curb">Kerb width</label><input id="curb" type="number" step=".01" value="0.15"></div>
-    <div class="row"><label for="reveal">Kerb reveal</label><input id="reveal" type="number" step=".01" value="0.15"></div>
-    <div class="row"><label for="medrev">Median upstand</label><input id="medrev" type="number" step=".01" value="0.15"></div>
+  <h2>קצוות החתך</h2>
+  <div class="edge" id="edgeL"></div>
+  <div class="edge" id="edgeR"></div>
 
-    <h2>Construction depths <span title="Indicative only">(indicative)</span></h2>
-    <div class="row"><label for="dSurf">Surfacing</label><input id="dSurf" type="number" step=".01" value="0.06"></div>
-    <div class="row"><label for="dBase">Base</label><input id="dBase" type="number" step=".01" value="0.20"></div>
-    <div class="row"><label for="dSub">Sub-base</label><input id="dSub" type="number" step=".01" value="0.30"></div>
+  <h2>מבנה מסעה ושיפועים</h2>
+  <div class="row"><label for="dSurf">שכבות אספלט (מ׳)</label><input id="dSurf" type="number" step="0.01" value="0.10"></div>
+  <div class="row"><label for="dBase">מצע (מ׳)</label><input id="dBase" type="number" step="0.01" value="0.25"></div>
+  <div class="row"><label for="dSub">מצע תחתון / שתית (מ׳)</label><input id="dSub" type="number" step="0.01" value="0.30"></div>
+  <div class="row"><label for="cfRoad">שיפוע רוחבי כביש (%)</label><input id="cfRoad" type="number" step="0.1" value="2.0"></div>
+  <div class="row"><label for="cfSide">שיפוע מדרכה/שול (%)</label><input id="cfSide" type="number" step="0.1" value="2.0"></div>
+  <div class="row"><label for="curbH">גובה אבן שפה (מ׳)</label><input id="curbH" type="number" step="0.01" value="0.15"></div>
 
-    <h2>Sheet</h2>
-    <div class="row wide"><select id="mode">
-      <option value="illustrated" selected>Illustrated section</option>
-      <option value="technical">Technical line drawing</option>
-    </select></div>
-    <div class="row wide"><select id="relief">
-      <option value="140">Vertical relief — subtle</option>
-      <option value="210" selected>Vertical relief — normal</option>
-      <option value="290">Vertical relief — strong</option>
-    </select></div>
-    <div class="toggles">
-      <label><input type="checkbox" id="tPeople" checked> People &amp; vehicles</label>
-      <label><input type="checkbox" id="tStruct" checked> Construction</label>
-      <label><input type="checkbox" id="tDims" checked> Dimensions</label>
-      <label><input type="checkbox" id="tContext" checked> Building line</label>
-    </div>
-  </aside>
+  <h2>גיליון</h2>
+  <div class="row"><label for="scale">קנה מידה</label><select id="scale"><option value="100">1:100</option><option value="200" selected>1:200</option><option value="250">1:250</option><option value="500">1:500</option></select></div>
+  <div class="row"><label for="proj">פרויקט</label><input id="proj" value=""></div>
+  <div class="row"><label for="drawn">שורטט ע״י</label><input id="drawn" value=""></div>
+  <div class="row"><label for="dwg">מס׳ גיליון</label><input id="dwg" value="TS-01"></div>
+  <div class="toggles">
+    <label><input type="checkbox" id="tIcons" checked> כלי רכב ואנשים</label>
+    <label><input type="checkbox" id="tTrees" checked> עצים</label>
+    <label><input type="checkbox" id="tCf" checked> שיפועים</label>
+    <label><input type="checkbox" id="tPave" checked> מבנה מסעה</label>
+    <label><input type="checkbox" id="tNames" checked> שמות תאים</label>
+  </div>
+</aside>
 
-  <main>
-    <div class="sheetwrap"><div id="drawing"></div></div>
-
-    <div class="readouts">
-      <div class="box">
-        <h3>Calculated dimensions</h3>
-        <div id="stats" class="grid3"></div>
-      </div>
-      <div class="box">
-        <h3>Screening checks</h3>
-        <div id="checks"></div>
-      </div>
-    </div>
-
-    <div class="box notes">
-      <h3>Engineering notes</h3>
-      <ol>
-        <li>Generated dimensions are project-development parameters, not a universal agency standard.</li>
-        <li>Accessibility screening uses a 1.22 m continuous clear pedestrian-route check. Passing-space arrangements must be confirmed for the governing standard and project conditions.</li>
-        <li>The geometric framework is intended to be checked against the current adopted AASHTO Green Book edition, agency criteria, and project context. AASHTO does not impose one universal urban typical section.</li>
-        <li>Construction depths, kerb reveal, median upstand and footway crossfall drive the drawn geometry only. They are illustrative defaults and carry no pavement-design intent.</li>
-        <li>Vertical relief is exaggerated so kerbs and crossfalls read at plotting size. People, vehicles and trees are drawn at true horizontal scale and are not exaggerated.</li>
-        <li>Confirm drainage, kerb and channel, pavement structure, utilities, ROW, cycle treatment, parking, transit, landscaping and local standards before issuing drawings.</li>
-      </ol>
-    </div>
-  </main>
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-v="section">חתך מוגדל</button>
+    <button class="tab" role="tab" aria-selected="false" data-v="sheet">גיליון A0</button>
+  </div>
+  <div class="sheetwrap"><div id="drawing"></div></div>
+  <div class="readouts">
+    <div class="box"><h3>נתוני החתך</h3><div class="grid3" id="stats"></div></div>
+    <div class="box"><h3>בדיקות מול ההנחיות</h3><div id="checks"></div></div>
+  </div>
+  <div class="box" style="margin-top:14px"><h3>חתכים בגיליון (עד שלושה בגיליון A0 אחד)</h3><div class="sheetlist" id="sheetList"></div>
+    <p class="hint">אם הרשימה ריקה, הגיליון כולל את החתך הנוכחי בלבד. ייצוא ה-HTML מפיק דף בגודל A0 לרוחב (1189×841 מ״מ). יש להדפיס ב-100% ללא התאמה לגודל הדף; קנה המידה נבדק באמצעות סרגל קנה המידה שבגיליון.</p></div>
+</main>
 </div>
 
-<div id="tip" role="status" aria-live="polite"></div>
-
 <script>
-"use strict";
-const $ = id => document.getElementById(id);
-const num = id => Math.max(0, parseFloat($(id).value) || 0);
-const f2 = v => v.toFixed(2);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* ======================================================================
+   סוגי תאים – ברירות מחדל ומגבלות מתוך ספרי ההנחיות (אותם ערכים שבמחשבון)
+   lvl: 'road' = מפלס כביש, 'curb' = מפלס מדרכה (מעל אבן שפה)
+   ====================================================================== */
+const T = {
+  walk:   {n:'רצועת הליכה',        s:'הליכה', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'רצועת הליכה מזערית 1.5 מ׳ (מרחב הרחוב, תבנית 1)']},
+  aux:    {n:'רצועת עזר / עצים',   s:'עזר',   lvl:'curb', w:1.2,  col:'#cfd9bf', tree:true},
+  front:  {n:'רצועת דופן',         s:'דופן',  lvl:'curb', w:0.3,  col:'#ddd6c6'},
+  plaza:  {n:'שדירה / פעילות',     s:'שדירה', lvl:'curb', w:6.0,  col:'#d9e3c6', tree:true, ppl:true},
+  green:  {n:'גינון',              s:'גינון', lvl:'curb', w:2.0,  col:'#b9cfa3', tree:true},
+  bikeP:  {n:'שביל אופניים',       s:'אופניים',lvl:'curb', w:2.5, col:'#e8b9a8', dir:'up', bike:true,
+           min:[1.5,'שביל חד-סטרי מזערי 1.5 מ׳, דו-סטרי 3.0 מ׳ (כרך 1 פרק 9)']},
+  bikeL:  {n:'נתיב אופניים',       s:'נ. אופניים',lvl:'road', w:1.5, col:'#e39c86', dir:'up', bike:true, min:[1.5,'נתיב אופניים 1.5–2.0 מ׳']},
+  buf:    {n:'רצועת הפרדה',        s:'הפרדה', lvl:'road', w:0.5,  col:'#c9ced3'},
+  parkP:  {n:'חנייה מקבילה',       s:'חנייה', lvl:'road', w:2.0,  col:'#9aa4ad', car:'park', max:[2.25,'אין לתכנן מפרץ חנייה מקביל רחב מ-2.25 מ׳ (רכב מנועי 3.3.4)']},
+  parkX:  {n:'חנייה ניצבת',        s:'ח. ניצבת',lvl:'road', w:5.0, col:'#9aa4ad', car:'park'},
+  lane:   {n:'נתיב נסיעה',         s:'נתיב',  lvl:'road', w:3.25, col:'#6d7680', dir:'up', car:'car'},
+  bus:    {n:'נת״צ',               s:'נת״צ',  lvl:'road', w:3.6,  col:'#b5645a', dir:'up', car:'bus', min:[3.6,'נת״צ 3.6–4.0 מ׳ (כרך 1 פרק 10)']},
+  brt:    {n:'מת״צ (נתיב בודד)',   s:'מת״צ',  lvl:'road', w:3.6,  col:'#c0795f', dir:'up', car:'bus', min:[3.6,'נתיב במת״צ 3.6 מ׳ (כרך 1 פרק 10)']},
+  lrt:    {n:'מסילת רק״ל (לכיוון)',s:'רק״ל',  lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'ערך מוצע – רוחב רצועת רק״ל אינו בספרים המצורפים; לאמת מול תכנון הרכבת'},
+  median: {n:'מפרדה בנויה',        s:'מפרדה', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'מפרדה מזערית 2.5 מ׳ לצד נתיב שמאלה (תנועה בצמתים 5.5.4)']},
+  barrier:{n:'מעקה מפרדה (בין-עירוני)',s:'מעקה',lvl:'road', w:0.8, col:'#a8b0b8', rail:true},
+  shR:    {n:'שול ימני',           s:'שול',   lvl:'road', w:3.0,  col:'#8c949c', min:[2.0,'שול ימני 2.0–3.5 מ׳ לפי סוג הדרך (כרך 1 טבלה 3.2)']},
+  shL:    {n:'שול שמאלי',          s:'שול שמאלי',lvl:'road', w:1.2, col:'#8c949c'},
+  active: {n:'רוחב פעיל + מעקה',   s:'W',     lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'הרוחב הפעיל W נקבע לפי סוג המעקה ורמת התפקוד'},
+  kerbArea:{n:'שוליים עם אבן שפה', s:'שוליים', lvl:'curb', w:0.5, col:'#cfc8b6'}
+};
+const DIRS = [['up','↑'],['down','↓'],['both','⇅'],['none','–']];
 
-/* ------------------------------------------------------------------ *
- * Presets. Width fields are unchanged from the original tool so that
- * every computed number stays identical; the new fields only affect
- * the drawn geometry.
- * ------------------------------------------------------------------ */
+/* ---------------- תבניות ---------------- */
+const C = (t,w,dir)=>({t, w:(w===undefined?T[t].w:w), dir: dir || T[t].dir || 'none'});
+function mirror(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir==='up'?'down':c.dir==='down'?'up':c.dir})); }
+function sym(half){ return [...half, ...mirror(half)]; }  // half = מהקצה השמאלי עד הציר, בכיוון "down"
+const E_BLD = {type:'building'}, E_FILL = {type:'fill', n:4, h:1.5}, E_CUT = {type:'cut', n:3, h:1.5, dd:0.6, db:0.6}, E_NONE={type:'none'};
 const PRESETS = {
-  local:     {lanes:1, lane:3.00, parking:0.00, bike:1.50, par:1.80, furn:0.45, front:0.30, median:0.00, curb:0.15, cross:2.0, swcross:2.0, reveal:0.15, medrev:0.15},
-  collector: {lanes:1, lane:3.30, parking:2.40, bike:1.80, par:1.80, furn:0.60, front:0.30, median:2.40, curb:0.15, cross:2.0, swcross:2.0, reveal:0.15, medrev:0.15},
-  arterial:  {lanes:2, lane:3.30, parking:2.40, bike:1.80, par:1.83, furn:0.60, front:0.30, median:3.00, curb:0.15, cross:2.0, swcross:2.0, reveal:0.15, medrev:0.15}
+  mr1:{g:'עירוני – מרחב הרחוב',n:'תבנית 1 – מקומי, בינוי נמוך (15.0 מ׳)',ctx:'urban',row:15,src:'מרחב הרחוב 2020, תבנית 1 (עמ׳ 113 בקובץ)',
+       cells:sym([C('front',0.3),C('walk',1.5),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
+  mr2:{g:'עירוני – מרחב הרחוב',n:'תבנית 2 – מקומי, מדרכות אסימטריות (17.5 מ׳)',ctx:'urban',row:17.5,src:'מרחב הרחוב 2020, תבנית 2 (עמ׳ 115)',
+       cells:[C('front',0.3),C('walk',1.6),C('aux',1.2),C('parkX',5.0),C('lane',2.75,'down'),C('lane',2.75,'up'),C('parkP',2.0),C('walk',1.6),C('front',0.3)],eL:E_BLD,eR:E_BLD},
+  mr3:{g:'עירוני – מרחב הרחוב',n:'תבנית 3 – מקומי, בינוי בינוני (16.0 מ׳)',ctx:'urban',row:16,src:'מרחב הרחוב 2020, תבנית 3 (עמ׳ 117)',
+       cells:sym([C('front',0.3),C('walk',2.0),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
+  mr4:{g:'עירוני – מרחב הרחוב',n:'תבנית 4 – מקומי/מאסף 1, בינוני (22.0 מ׳)',ctx:'urban',row:22,src:'מרחב הרחוב 2020, תבנית 4 (עמ׳ 119)',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr5:{g:'עירוני – מרחב הרחוב',n:'תבנית 5 – מקומי, בינוי גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 5 (עמ׳ 121)',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkX',5.0),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr7:{g:'עירוני – מרחב הרחוב',n:'תבנית 7 – מקומי/מאסף 1, גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 7 (עמ׳ 125)',
+       cells:sym([C('front',0.5),C('walk',3.3),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr9:{g:'עירוני – מרחב הרחוב',n:'תבנית 9 – מאסף 2, חזית פעילה (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 9 (עמ׳ 129)',
+       cells:sym([C('front',2.5),C('walk',2.8),C('aux',1.2),C('bikeP',2.0,'down'),C('parkP',2.0),C('lane',3.0,'down'),C('lane',3.0,'down'),C('median',1.5)]),eL:E_BLD,eR:E_BLD},
+  mr10:{g:'עירוני – מרחב הרחוב',n:'תבנית 10 – עורק רמה 1 (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 10 (עמ׳ 131)',
+       cells:sym([C('walk',2.5),C('aux',1.5),C('bikeP',2.5,'down'),C('aux',1.5),C('lane',3.5,'down'),C('lane',3.5,'down'),C('median',3.0)]),eL:E_BLD,eR:E_BLD},
+  ex1:{g:'עירוני – דוגמאות',n:'שדרה + מת״צ BRT (42.0 מ׳)',ctx:'urban',row:42,src:'לפי השרטוט שהועלה (צילום 1)',
+       cells:[C('plaza',12.0),C('brt',3.5,'down'),C('brt',3.5,'up'),C('median',3.5),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.5),C('lane',3.25,'up'),C('lane',3.25,'up'),C('walk',4.0)],eL:E_NONE,eR:E_BLD},
+  ex2:{g:'עירוני – דוגמאות',n:'נת״צ ושבילי אופניים (44.0 מ׳)',ctx:'urban',row:44,src:'לפי השרטוט שהועלה (צילום 3)',
+       cells:sym([C('walk',7.7),C('bikeP',1.5,'down'),C('aux',2.0),C('bus',3.6,'down'),C('lane',3.1,'down'),C('lane',3.1,'down'),C('median',1.0)]),eL:E_BLD,eR:E_BLD},
+  ex3:{g:'עירוני – דוגמאות',n:'רק״ל במרכז + נת״צ (דוגמה)',ctx:'urban',row:0,src:'דוגמה סכמטית (צילום 8) – רוחבי הרק״ל מוצעים ויש לאמת',
+       cells:[C('green',2.0),C('bikeP',3.0,'both'),C('median',1.0),C('lrt',3.5,'up'),C('lrt',3.5,'down'),C('median',2.0),C('bus',3.6,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.0),C('lane',3.25,'up'),C('lane',3.25,'up'),C('lane',3.25,'up'),C('bus',3.6,'up'),C('walk',2.0),C('green',2.0),C('bikeP',3.0,'both'),C('walk',3.0)],eL:E_NONE,eR:E_BLD},
+  iuL:{g:'בין-עירוני – כרך 1',n:'חד-מסלולית מקומית וגישה',ctx:'inter',row:0,src:'כרך 1 טבלאות 3.1–3.2: נתיב 3.3, שול 2.0',
+       cells:[C('active',1.0),C('shR',2.0),C('lane',3.3,'down'),C('lane',3.3,'up'),C('shR',2.0),C('active',1.0)],eL:E_FILL,eR:E_CUT},
+  iuR:{g:'בין-עירוני – כרך 1',n:'חד-מסלולית ראשית/אזורית (80 קמ״ש)',ctx:'inter',row:0,src:'כרך 1 טבלאות 3.1–3.2: נתיב 3.6, שול 3.0',
+       cells:[C('active',1.0),C('shR',3.0),C('lane',3.6,'down'),C('lane',3.6,'up'),C('shR',3.0),C('active',1.0)],eL:E_FILL,eR:E_FILL},
+  iuD:{g:'בין-עירוני – כרך 1',n:'דו-מסלולית ראשית 2+2',ctx:'inter',row:0,src:'כרך 1: נתיב 3.6, שול ימני 3.5, שול שמאלי 1.2, מפרדה 2.4 + מעקה (סעיף 3.4.2)',
+       cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',1.2)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]),eL:E_FILL,eR:E_FILL},
+  iuF:{g:'בין-עירוני – כרך 1',n:'דרך מהירה 3+3',ctx:'inter',row:0,src:'כרך 1: נתיב 3.6–3.7, שול ימני 3.5, שול שמאלי 1.2; מפרדה 6.0 + מעקות ב-120 קמ״ש',
+       cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',3.0)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]),eL:E_CUT,eR:E_FILL},
+  ex4:{g:'בין-עירוני – דוגמאות',n:'חתך טיפוסי 5-5 (צילום 6)',ctx:'inter',row:0,src:'לפי השרטוט שהועלה (צילום 6)',
+       cells:[C('active',1.1),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',1.5),C('barrier',0.6),C('shL',1.5),C('lane',3.6,'up'),C('lane',3.6,'up'),C('shR',3.5),C('active',1.1)],eL:E_CUT,eR:E_FILL}
 };
 
-/* ---------------- dimension model (arithmetic preserved) ---------------- */
-function dims(){
-  const lanes = Math.max(1, Math.round(num("lanes")));
-  const lane = num("lane"), park = num("parking"), bike = num("bike"),
-        par = num("par"), furn = num("furn"), front = num("front"),
-        median = num("median"), curb = num("curb");
-  const sidewalk = par + furn + front;
-  const side = park + bike + lanes * lane + curb;   // one side, kerb included
-  const roadway = 2 * side + median;
-  const total = roadway + 2 * sidewalk;
-  return {
-    lanes, lane, park, bike, par, furn, front, median, curb,
-    side, roadway, sidewalk, total,
-    carr: park + bike + lanes * lane,               // kerb face to median / crown
-    cross: num("cross"), swcross: num("swcross"),
-    reveal: num("reveal"), medrev: num("medrev"),
-    dSurf: num("dSurf"), dBase: num("dBase"), dSub: num("dSub")
-  };
-}
+/* ---------------- מצב ---------------- */
+let S = { cells:[], eL:{...E_BLD}, eR:{...E_BLD} };
+let SHEET = [];   // חתכים שנשמרו לגיליון
+let VIEW = 'section';
+const $ = id => document.getElementById(id);
+const num = id => parseFloat($(id).value) || 0;
+const f2 = v => (Math.round(v*100)/100).toFixed(2);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-/* ---------------- element strip, left to right ---------------- */
-function strips(d){
-  const s = [];
-  const add = (w, key, name) => { if (w > 0.0001) s.push({w, key, name}); };
-  const foot = () => { add(d.front,'front','Frontage'); add(d.furn,'furn','Furnishing'); add(d.par,'par','Clear walking'); };
-  const road = () => { add(d.park,'park','Parking'); add(d.bike,'bike','Cycle lane');
-                       for (let i=0;i<d.lanes;i++) add(d.lane,'lane','Travel lane'); };
-  foot(); add(d.curb,'kerb','Kerb'); road();
-  if (d.median > 0.0001) add(d.median,'median','Median');
-  // mirror
-  const rl=[]; { const t=[]; add.call(null,0,'',''); }
-  (function(){
-    const mirrored=[];
-    const push=(w,key,name)=>{ if(w>0.0001) mirrored.push({w,key,name}); };
-    for (let i=d.lanes-1;i>=0;i--) push(d.lane,'lane','Travel lane');
-    push(d.bike,'bike','Cycle lane'); push(d.park,'park','Parking');
-    push(d.curb,'kerb','Kerb');
-    push(d.par,'par','Clear walking'); push(d.furn,'furn','Furnishing'); push(d.front,'front','Frontage');
-    mirrored.forEach(m => s.push(m));
-  })();
-  let x = 0;
-  s.forEach(z => { z.x0 = x; x += z.w; z.x1 = x; });
-  return s;
+/* ---------------- עורך התאים ---------------- */
+function renderCells(){
+  const box = $('cells');
+  box.innerHTML = S.cells.map((c,i)=>{
+    const t = T[c.t], lv = levelOf(c);
+    const hasDir = !!t.dir;
+    const st = cellCheck(c);
+    return `<div class="cell ${st?st.cls:''}" title="${esc(st?st.msg:t.n)}">
+      <span class="sw" style="background:${t.col}"></span>
+      <select data-i="${i}" data-k="t">${Object.keys(T).map(k=>`<option value="${k}" ${k===c.t?'selected':''}>${T[k].n}</option>`).join('')}</select>
+      <input data-i="${i}" data-k="w" type="number" step="0.05" min="0.05" value="${f2(c.w)}" aria-label="רוחב (מ׳)">
+      ${hasDir?`<select data-i="${i}" data-k="dir" aria-label="כיוון">${DIRS.map(d=>`<option value="${d[0]}" ${d[0]===c.dir?'selected':''}>${d[1]}</option>`).join('')}</select>`:'<span></span>'}
+      <span class="btns"><button class="mini" data-a="up" data-i="${i}" title="הזז שמאלה">▲</button><button class="mini" data-a="dn" data-i="${i}" title="הזז ימינה">▼</button><button class="mini" data-a="dup" data-i="${i}" title="שכפל">⧉</button><button class="mini" data-a="del" data-i="${i}" title="מחק">✕</button></span>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('[data-k]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',e=>{
+    const i=+el.dataset.i, k=el.dataset.k;
+    if(k==='w') S.cells[i].w = Math.max(0.05, parseFloat(el.value)||0.05);
+    else if(k==='t'){ S.cells[i].t = el.value; S.cells[i].w = T[el.value].w; S.cells[i].dir = T[el.value].dir || 'none'; renderCells(); }
+    else S.cells[i][k] = el.value;
+    if(k!=='t') update(false); else update();
+  }));
+  box.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i, a=b.dataset.a, arr=S.cells;
+    if(a==='up' && i>0) [arr[i-1],arr[i]]=[arr[i],arr[i-1]];
+    if(a==='dn' && i<arr.length-1) [arr[i+1],arr[i]]=[arr[i],arr[i+1]];
+    if(a==='dup') arr.splice(i+1,0,{...arr[i]});
+    if(a==='del') arr.splice(i,1);
+    renderCells(); update();
+  });
 }
+function edgeUI(side){
+  const e = side==='L'?S.eL:S.eR, id = side==='L'?'edgeL':'edgeR';
+  $(id).innerHTML = `
+    <label>${side==='L'?'קצה שמאלי':'קצה ימני'}<select data-e="type">
+      <option value="none" ${e.type==='none'?'selected':''}>ללא</option>
+      <option value="building" ${e.type==='building'?'selected':''}>קו בניין</option>
+      <option value="fill" ${e.type==='fill'?'selected':''}>סוללה (מילוי)</option>
+      <option value="cut" ${e.type==='cut'?'selected':''}>חפירה + תעלה</option></select></label>
+    <label>שיפוע 1:n<input data-e="n" type="number" step="0.5" value="${e.n??4}" ${e.type==='fill'||e.type==='cut'?'':'disabled'}></label>
+    <label>גובה (מ׳)<input data-e="h" type="number" step="0.1" value="${e.h??1.5}" ${e.type==='fill'||e.type==='cut'?'':'disabled'}></label>
+    <label>עומק תעלה<input data-e="dd" type="number" step="0.05" value="${e.dd??0.6}" ${e.type==='cut'?'':'disabled'}></label>`;
+  $(id).querySelectorAll('[data-e]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{
+    const k=el.dataset.e; e[k] = k==='type'? el.value : (parseFloat(el.value)||0);
+    if(k==='type'){ if(e.type==='fill'){e.n=e.n||4;e.h=e.h||1.5;} if(e.type==='cut'){e.n=e.n||3;e.h=e.h||1.5;e.dd=e.dd||0.6;e.db=0.6;} edgeUI(side); }
+    update(false);
+  }));
+}
+function levelOf(c){ return T[c.t].lvl; }
 
-/* ---------------- surface profile in metres ---------------- */
-function profile(d){
-  const zK = d.reveal;
-  const zSw = zK + (d.swcross/100) * d.sidewalk;
-  const zH = (d.cross/100) * d.carr;
-  const p = []; let x = 0;
-  p.push([0, zSw]);
-  x = d.sidewalk;         p.push([x, zK]);
-  x += d.curb;            p.push([x, zK]); p.push([x, 0]);
-  x += d.carr;            p.push([x, zH]);
-  const medL = x;
-  if (d.median > 0.0001){
-    p.push([x, zH + d.medrev]);
-    x += d.median;        p.push([x, zH + d.medrev]);
-    p.push([x, zH]);
+/* ---------------- בדיקות ---------------- */
+function cellCheck(c){
+  const t=T[c.t], ctx=$('ctx').value;
+  if(c.t==='bikeP' && c.dir==='both' && c.w<3.0) return {cls:'bad',msg:'שביל אופניים דו-סטרי – רוחב מזערי 3.0 מ׳ (כרך 1 פרק 9)'};
+  if(t.min && c.w < t.min[0]-1e-9) return {cls:'bad',msg:t.min[1]};
+  if(t.max && c.w > t.max[0]+1e-9) return {cls:'warn',msg:t.max[1]};
+  if(c.t==='lane'){
+    if(ctx==='urban' && (c.w<2.5-1e-9)) return {cls:'bad',msg:'נתיב עירוני שאינו יחיד – מזערי 2.50 מ׳ (רכב מנועי טבלה 3.3)'};
+    if(ctx==='urban' && c.w>3.5+1e-9) return {cls:'warn',msg:'נתיב עירוני – מרבי 3.50 מ׳ (דרך עורקית, רכב מנועי טבלה 3.3)'};
+    if(ctx==='inter' && c.w<3.0-1e-9) return {cls:'bad',msg:'נתיב בין-עירוני – 3.0–3.7 מ׳ (כרך 1 טבלה 3.1)'};
   }
-  const medR = x;
-  x += d.carr;            p.push([x, 0]);
-                          p.push([x, zK]);
-  x += d.curb;            p.push([x, zK]);
-  x += d.sidewalk;        p.push([x, zSw]);
-  return {pts:p, zK, zSw, zH, medL, medR,
-          gutterL: d.sidewalk + d.curb, gutterR: d.total - d.sidewalk - d.curb};
-}
-function zAt(pr, xm){
-  const p = pr.pts;
-  for (let i=0;i<p.length-1;i++){
-    const a=p[i], b=p[i+1];
-    if (b[0] > a[0] && xm >= a[0]-1e-9 && xm <= b[0]+1e-9)
-      return a[1] + (b[1]-a[1]) * (xm-a[0]) / (b[0]-a[0]);
-  }
-  return 0;
+  if(c.t==='shL' && c.w>1.2+1e-9 && c.w<3.0-1e-9) return {cls:'bad',msg:'אין לתכנן שול שמאלי ברוחב שבין 1.2 ל-3.0 מ׳ (כרך 1 טבלה 3.2)'};
+  return null;
 }
 
-/* ---------------- palette ---------------- */
-const IL = {
-  front:'#efeadf', furn:'#dfe7d6', par:'#f3f1ea', kerb:'#cfccc4',
-  park:'#e4e2da', bike:'#dbe8e0', lane:'#e6e5e0', median:'#d8e4d2'
-};
-function paint(mode){
-  return mode === 'technical'
-    ? {ink:'#111', hair:'#666', dim:'#111', note:'#333', tint:null,
-       surf:'#8f8f8f', base:'url(#hBase)', sub:'url(#hSub)', soil:'url(#hSoil)',
-       kerbFill:'#d6d6d6', medFill:'#eee', paperEdge:'#111'}
-    : {ink:'#1b1e21', hair:'#b9b6ad', dim:'#2b5c8a', note:'#585f66', tint:IL,
-       surf:'#4c5560', base:'#a49b8b', sub:'#c7bfae', soil:'#8d7b5f',
-       kerbFill:'#cfccc4', medFill:'#d8e4d2', paperEdge:'#4a4a44'};
+/* ======================================================================
+   שרטוט החתך – יחידות: מ״מ על הנייר. k = מ״מ למטר = 1000 / קנה המידה
+   ====================================================================== */
+const TXT = 'font-family:Arial,Helvetica,sans-serif';
+function tx(x,y,s,size,o={}){
+  const a=o.anchor||'middle', w=o.weight||400, c=o.color||'#14171a', r=o.rot?` transform="rotate(${o.rot} ${x} ${y})"`:'';
+  return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-size="${size}" text-anchor="${a}" font-weight="${w}" fill="${c}" style="${TXT}"${r}>${esc(s)}</text>`;
+}
+function arrowV(x,yTop,len,dir,col,wd){ // חץ כיוון תנועה
+  const h=len, head=Math.min(h*0.4, wd*1.6), sw=wd*0.45;
+  if(dir==='up') return `<path d="M${x} ${yTop} l${wd} ${head} h${-wd+sw} v${h-head} h${-sw*2} v${-(h-head)} h${-wd+sw} z" fill="${col}"/>`;
+  return `<path d="M${x} ${yTop+h} l${wd} ${-head} h${-wd+sw} v${-(h-head)} h${-sw*2} v${h-head} h${-wd+sw} z" fill="${col}"/>`;
+}
+/* פיקטוגרמות בקנה מידה אמיתי */
+function iCar(cx,yG,k,col){ const w=1.8*k,h=1.45*k; return `<g><rect x="${cx-w*.36}" y="${yG-h}" width="${w*.72}" height="${h*.42}" rx="${h*.1}" fill="${col}"/><rect x="${cx-w*.3}" y="${yG-h+h*.07}" width="${w*.6}" height="${h*.22}" fill="#dfe6ea"/><rect x="${cx-w/2}" y="${yG-h*.62}" width="${w}" height="${h*.44}" rx="${h*.09}" fill="${col}"/><rect x="${cx-w*.46}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/><rect x="${cx+w*.30}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/></g>`; }
+function iBus(cx,yG,k,col){ const w=2.55*k,h=3.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.93}" rx="${w*.08}" fill="${col}"/><rect x="${cx-w*.42}" y="${yG-h*.88}" width="${w*.84}" height="${h*.36}" fill="#e3eaee"/><rect x="${cx-w*.36}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx+w*.18}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx-w*.46}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/><rect x="${cx+w*.3}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/></g>`; }
+function iLrt(cx,yG,k,col){ const w=2.65*k,h=3.6*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.92}" rx="${w*.14}" fill="${col}"/><rect x="${cx-w*.4}" y="${yG-h*.86}" width="${w*.8}" height="${h*.4}" rx="${w*.05}" fill="#dfe8ef"/><path d="M${cx-w*.25} ${yG-h} l${w*.25} ${-h*.35} l${w*.25} ${h*.35}" fill="none" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><line x1="${cx-w*.5}" y1="${yG-h*1.35}" x2="${cx+w*.5}" y2="${yG-h*1.35}" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><rect x="${cx-w*.42}" y="${yG-k*.18}" width="${w*.84}" height="${k*.18}" fill="#555"/></g>`; }
+function iPerson(cx,yG,k,col){ const h=1.7*k,w=.46*k,hd=.2*k; return `<g fill="${col}" opacity=".85"><circle cx="${cx}" cy="${yG-h+hd}" r="${hd}"/><path d="M${cx-w/2} ${yG-h+hd*2.1} h${w} v${h*.42} l${-w*.28} 0 v${h*.44} h${-w*.16} v${-h*.44} h${-w*.12} v${h*.44} h${-w*.16} v${-h*.44} l${-w*.28} 0 z"/></g>`; }
+function iBike(cx,yG,k,col){ const w=.7*k,h=1.75*k,sw=Math.max(.15,k*.035); return `<g><circle cx="${cx}" cy="${yG-h*.16}" r="${h*.16}" fill="none" stroke="#3b3f44" stroke-width="${sw}"/><line x1="${cx-w/2}" y1="${yG-h*.52}" x2="${cx+w/2}" y2="${yG-h*.52}" stroke="#3b3f44" stroke-width="${sw}"/><circle cx="${cx}" cy="${yG-h*.9}" r="${h*.1}" fill="${col}"/><path d="M${cx-w*.34} ${yG-h*.76} h${w*.68} v${h*.34} h${-w*.68} z" fill="${col}"/></g>`; }
+function iTree(cx,yG,k,col){ const h=6*k,r=h*.28,tw=Math.max(.3,h*.04); return `<g><rect x="${cx-tw/2}" y="${yG-h*.58}" width="${tw}" height="${h*.58}" fill="#6b5a44"/><circle cx="${cx}" cy="${yG-h*.72}" r="${r}" fill="${col}" opacity=".9"/><circle cx="${cx-r*.6}" cy="${yG-h*.56}" r="${r*.7}" fill="${col}" opacity=".82"/><circle cx="${cx+r*.6}" cy="${yG-h*.57}" r="${r*.66}" fill="${col}" opacity=".82"/></g>`; }
+function iRail(cx,yG,k){ const h=.8*k,w=.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h}" fill="#555"/><rect x="${cx-w*1.6}" y="${yG-h*.95}" width="${w*3.2}" height="${h*.35}" fill="#8a9097"/></g>`; }
+function iBuilding(x,yG,k,dir){ const w=5*k,h=9*k, x0=dir>0?x:x-w; let win=''; for(let r=0;r<4;r++)for(let c=0;c<3;c++) win+=`<rect x="${x0+w*.12+c*w*.29}" y="${yG-h+h*.1+r*h*.21}" width="${w*.18}" height="${h*.1}" fill="#f0f3f6"/>`; return `<g><rect x="${x0}" y="${yG-h}" width="${w}" height="${h}" fill="#9aa1a7" opacity=".55"/>${win}</g>`; }
+
+function edgeExtent(e){ // מטרים אופקיים ומטרים אנכיים (עומק מתחת לכביש)
+  if(!e || e.type==='none') return {w:1.0, dep:0};
+  if(e.type==='building') return {w:5.5, dep:0};
+  if(e.type==='fill') return {w: e.h*e.n + 2.0, dep: e.h};
+  if(e.type==='cut') return {w: (e.dd||0.6)*3 + (e.db||0.6) + (e.h+(e.dd||0.6))*e.n + 2.0, dep: (e.dd||0.6)};
+  return {w:1,dep:0};
 }
 
-/* ---------------- small drawing helpers ---------------- */
-function txt(x,y,s,o={}){
-  return `<text x="${x}" y="${y}" text-anchor="${o.a||'middle'}" font-family="${o.ff||"'Arial Narrow',Arial,sans-serif"}"`
-       + ` font-size="${o.fs||11}" font-weight="${o.fw||400}" fill="${o.fill||'#1b1e21'}"`
-       + `${o.ls?` letter-spacing="${o.ls}"`:''}${o.rot?` transform="rotate(${o.rot} ${x} ${y})"`:''}>${esc(s)}</text>`;
-}
-function tick(x,y,c){ return `<line x1="${x-4}" y1="${y+4}" x2="${x+4}" y2="${y-4}" stroke="${c}" stroke-width="1.1"/>`; }
+function sectionSVG(sec, D, opt){
+  /* מחזיר {g, w, h} ביחידות מ״מ נייר; המקור (0,0) בפינה השמאלית-עליונה של בלוק החתך */
+  const k = 1000/D;
+  const cells = sec.cells.filter(c=>c.w>0);
+  const tot = cells.reduce((a,c)=>a+c.w,0);
+  const eL = edgeExtent(sec.eL), eR = edgeExtent(sec.eR);
+  const curbH = sec.curbH;
+  const topM = 9.5;                     // מ׳ מעל מפלס הכביש (עצים, רק״ל)
+  const titleH = 14;                    // מ״מ לכותרת
+  const xL = eL.w*k, yG = titleH + topM*k;
+  const pave = sec.pave ? (sec.dSurf+sec.dBase+sec.dSub) : 0;
+  const depth = Math.max(pave+0.2, eL.dep, eR.dep) * k;
+  let out = '';
+  const X = m => xL + m*k;
+  const Z = z => yG - z*k;
 
-/* tiered dimension chain with slash ticks */
-function chain(segs, y, c, opt={}){
-  if (!segs.length) return '';
-  let g = `<g class="dimchain">`;
-  const x0 = segs[0].x1, x1 = segs[segs.length-1].x2;
-  g += `<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="${c}" stroke-width="${opt.w||1}"/>`;
-  let alt = 0;
-  segs.forEach(s => {
-    g += tick(s.x1, y, c);
-    const wpx = s.x2 - s.x1, mid = (s.x1 + s.x2) / 2;
-    if (wpx >= (opt.min || 42)){
-      g += `<rect x="${mid-24}" y="${y-8.5}" width="48" height="13" fill="#fbfaf6"/>`;
-      g += txt(mid, y+2.5, s.label, {fs: opt.fs||10.5, fill:c, fw:600});
+  // מיקום תאים
+  let x = 0; const P = cells.map(c=>{ const o={...c, x0:x, x1:x+c.w, z:(levelOf(c)==='curb'?curbH:0)}; x+=c.w; return o; });
+
+  // כותרת החתך
+  out += tx(X(tot/2), 7, sec.title || 'חתך טיפוסי', 6, {weight:700});
+  out += tx(X(tot/2), 12.5, `קנה מידה 1:${D}`, 3.2, {color:'#585f66'});
+
+  // גוף הקרקע / מבנה מסעה
+  const baseZ = -(Math.max(pave,0.35)+0.15);
+  P.forEach(p=>{
+    const t=T[p.t];
+    if(levelOf(p)==='road' && sec.pave){
+      const ys = Z(0), a=sec.dSurf*k, b=sec.dBase*k, c=sec.dSub*k;
+      out += `<rect x="${X(p.x0)}" y="${ys}" width="${p.w*k}" height="${a}" fill="#3c4146"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys+a}" width="${p.w*k}" height="${b}" fill="#c9b98f"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys+a+b}" width="${p.w*k}" height="${c}" fill="#e0d6b8"/>`;
     } else {
-      const off = 18 + (alt % 2) * 15; alt++;
-      g += `<line x1="${mid}" y1="${y+2}" x2="${mid}" y2="${y+off-8}" stroke="${c}" stroke-width=".7"/>`;
-      g += `<rect x="${mid-22}" y="${y+off-8.5}" width="44" height="13" fill="#fbfaf6"/>`;
-      g += txt(mid, y+off+2, s.label, {fs: 9.5, fill:c, fw:600});
+      out += `<rect x="${X(p.x0)}" y="${Z(p.z)}" width="${p.w*k}" height="${(p.z-baseZ)*k}" fill="${levelOf(p)==='curb'?'#e6e1d4':'#d9d3c4'}"/>`;
     }
+    // פס צבע התא
+    out += `<rect x="${X(p.x0)}" y="${Z(p.z)-0.08*k}" width="${p.w*k}" height="${0.08*k}" fill="${t.col}"/>`;
   });
-  g += tick(x1, y, c);
-  return g + `</g>`;
-}
+  // קו פני השטח
+  let d = `M${X(0)} ${Z(P.length?P[0].z:0)}`;
+  P.forEach((p,i)=>{ d += ` L${X(p.x0)} ${Z(p.z)} L${X(p.x1)} ${Z(p.z)}`; if(i<P.length-1 && P[i+1].z!==p.z) d += ` L${X(p.x1)} ${Z(P[i+1].z)}`; });
+  out += `<path d="${d}" fill="none" stroke="#14171a" stroke-width="0.35"/>`;
+  // אבני שפה
+  P.forEach((p,i)=>{ const n=P[i+1]; if(n && n.z!==p.z){ const xx=X(p.x1), zz=Math.max(p.z,n.z), cw=0.15*k, sgn = p.z>n.z?-1:0; out += `<rect x="${xx + sgn*cw}" y="${Z(zz)}" width="${cw}" height="${(zz+0.25)*k}" fill="#b9b4a8" stroke="#14171a" stroke-width="0.15"/>`; } });
 
-/* pictograms — drawn at true horizontal scale, never exaggerated */
-function personIcon(cx, yG, s, col){
-  const h = 1.70*s, w = 0.46*s, head = 0.20*s;
-  return `<g fill="${col}" opacity=".82">
-    <circle cx="${cx}" cy="${yG-h+head}" r="${head}"/>
-    <path d="M${cx-w/2} ${yG-h+head*2.1} h${w} v${h*0.42} l${-w*0.28} 0 v${h*0.44} h${-w*0.16} v${-h*0.44}
-             h${-w*0.12} v${h*0.44} h${-w*0.16} v${-h*0.44} l${-w*0.28} 0 z"/></g>`;
-}
-function treeIcon(cx, yG, s, hM, col){
-  const h = hM*s, r = h*0.30, tw = Math.max(1.4, h*0.045);
-  return `<g><rect x="${cx-tw/2}" y="${yG-h*0.58}" width="${tw}" height="${h*0.58}" fill="#6b5a44"/>
-    <circle cx="${cx}" cy="${yG-h*0.70}" r="${r}" fill="${col}" opacity=".9"/>
-    <circle cx="${cx-r*0.62}" cy="${yG-h*0.55}" r="${r*0.72}" fill="${col}" opacity=".82"/>
-    <circle cx="${cx+r*0.62}" cy="${yG-h*0.56}" r="${r*0.68}" fill="${col}" opacity=".82"/></g>`;
-}
-function carIcon(cx, yG, s, col){          /* head-on view, 1.80 × 1.48 m */
-  const w = 1.80*s, h = 1.48*s;
-  return `<g>
-    <rect x="${cx-w*0.36}" y="${yG-h}" width="${w*0.72}" height="${h*0.40}" rx="${h*0.10}" fill="${col}"/>
-    <rect x="${cx-w*0.30}" y="${yG-h+h*0.07}" width="${w*0.60}" height="${h*0.22}" rx="${h*0.05}" fill="#cfd8de" opacity=".85"/>
-    <rect x="${cx-w*0.50}" y="${yG-h*0.62}" width="${w}" height="${h*0.42}" rx="${h*0.09}" fill="${col}"/>
-    <rect x="${cx-w*0.46}" y="${yG-h*0.24}" width="${w*0.16}" height="${h*0.24}" rx="2" fill="#2c2f33"/>
-    <rect x="${cx+w*0.30}" y="${yG-h*0.24}" width="${w*0.16}" height="${h*0.24}" rx="2" fill="#2c2f33"/></g>`;
-}
-function bikeIcon(cx, yG, s, col){         /* head-on cyclist, ~0.75 m envelope */
-  const w = 0.70*s, h = 1.75*s;
-  return `<g>
-    <circle cx="${cx}" cy="${yG-h*0.16}" r="${h*0.16}" fill="none" stroke="#3b3f44" stroke-width="${Math.max(1.2,s*0.035)}"/>
-    <line x1="${cx-w*0.5}" y1="${yG-h*0.52}" x2="${cx+w*0.5}" y2="${yG-h*0.52}" stroke="#3b3f44" stroke-width="${Math.max(1.2,s*0.035)}"/>
-    <circle cx="${cx}" cy="${yG-h*0.90}" r="${h*0.10}" fill="${col}"/>
-    <path d="M${cx-w*0.34} ${yG-h*0.76} h${w*0.68} v${h*0.34} h${-w*0.68} z" fill="${col}" opacity=".9"/></g>`;
-}
-function lampIcon(cx, yG, s, col){
-  const h = 5.2*s;
-  return `<g stroke="${col}" fill="none" stroke-width="${Math.max(1.2,s*0.03)}">
-    <line x1="${cx}" y1="${yG}" x2="${cx}" y2="${yG-h}"/>
-    <path d="M${cx} ${yG-h} q0 ${-h*0.06} ${h*0.13} ${-h*0.06}"/>
-    </g><ellipse cx="${cx+h*0.13}" cy="${yG-h*1.05}" rx="${h*0.05}" ry="${h*0.028}" fill="${col}"/>`;
-}
-function buildingBlock(xR, yG, s, dir, col){
-  /* dir = 1 draws to the right of xR, -1 to the left */
-  const w = 3.4*s, h = 9.0*s;
-  const x = dir === 1 ? xR : xR - w;
-  let win = '';
-  const cols = 3, rows = 4, mw = w*0.16, mh = h*0.10;
-  for (let r=0;r<rows;r++) for (let c=0;c<cols;c++){
-    win += `<rect x="${x + w*0.14 + c*(w*0.29)}" y="${yG - h + h*0.14 + r*(h*0.20)}" width="${mw}" height="${mh}" fill="#f0f3f6" opacity=".62"/>`;
-  }
-  return `<g><rect x="${x}" y="${yG-h}" width="${w}" height="${h}" fill="${col}" opacity=".55"/>${win}</g>`;
-}
+  // קצוות
+  const z0L = P.length?P[0].z:0, z0R = P.length?P[P.length-1].z:0;
+  out += edgeDraw(sec.eL, X(0), Z(z0L), k, -1);
+  out += edgeDraw(sec.eR, X(tot), Z(z0R), k, 1);
 
-/* ------------------------------------------------------------------ *
- *  the sheet
- * ------------------------------------------------------------------ */
-function draw(){
-  const d = dims(), pr = profile(d), zs = strips(d);
-  const mode = $("mode").value, P = paint(mode);
-  const showPeople = $("tPeople").checked && mode === 'illustrated';
-  const showStruct = $("tStruct").checked;
-  const showDims   = $("tDims").checked;
-  const showCtx    = $("tContext").checked;
-
-  const W = 1680, H = 1030, padL = 172, padR = 172;
-  const sx = (W - padL - padR) / d.total;
-
-  const dSurf = d.dSurf, dBase = d.dBase, dSub = d.dSub;
-  const roadDepth = showStruct ? dSurf + dBase + dSub : 0.10;
-  const footDepth = showStruct ? dSurf * 0.9 + dSub * 0.5 : 0.08;
-  const medDepth  = showStruct ? 0.40 : 0.10;
-
-  const zTop = Math.max(pr.zSw, pr.zH + (d.median > 0 ? d.medrev : 0));
-  const zBot = -(Math.max(roadDepth, footDepth, medDepth) + 0.14);
-  const span = Math.max(0.35, zTop - zBot);
-  const band = parseFloat($("relief").value);
-  const sz = band / span;
-  const exag = sz / sx;
-
-  const yDatum = 596;                        // z = 0, channel line
-  const X = m => padL + m * sx;
-  const Y = z => yDatum - z * sz;
-
-  const yColTop = 206;                       // top of tint columns
-  const yTagTop = 152;                       // zone tag band
-  const yGroup  = 122;
-  const yTotal  = 92;
-  const yFormMax = Y(zBot);
-  const yDim1 = Math.max(yFormMax + 56, 786);
-  const yDim2 = yDim1 + 58;
-  const yLeg  = yDim2 + 46;
-
-  let s = `<svg id="sectionSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img"
-      aria-label="Typical urban cross section, total corridor ${f2(d.total)} metres">
-  <defs>
-    <pattern id="hSub" width="7" height="7" patternUnits="userSpaceOnUse">
-      <rect width="7" height="7" fill="#fff"/><circle cx="2" cy="2" r="1" fill="#555"/><circle cx="5.5" cy="5.5" r="1" fill="#555"/></pattern>
-    <pattern id="hBase" width="6" height="6" patternUnits="userSpaceOnUse">
-      <rect width="6" height="6" fill="#fff"/><path d="M0 6 L6 0" stroke="#555" stroke-width=".7"/><path d="M0 0 L6 6" stroke="#555" stroke-width=".7"/></pattern>
-    <pattern id="hSoil" width="8" height="8" patternUnits="userSpaceOnUse">
-      <rect width="8" height="8" fill="#fff"/><path d="M0 8 L8 0" stroke="#666" stroke-width=".7"/></pattern>
-    <pattern id="hGrade" width="9" height="9" patternUnits="userSpaceOnUse">
-      <rect width="9" height="9" fill="#f2f0ea"/><path d="M-2 9 L9 -2 M4 11 L11 4" stroke="#a8a49a" stroke-width=".8"/></pattern>
-    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
-      <path d="M0 0 L8 3 L0 6 z" fill="${P.dim}"/></marker>
-    <clipPath id="sheetClip"><rect x="26" y="26" width="${W-52}" height="${H-52}"/></clipPath>
-  </defs>
-  <rect width="${W}" height="${H}" fill="#fbfaf6"/>
-  <rect x="18" y="18" width="${W-36}" height="${H-36}" fill="none" stroke="${P.paperEdge}" stroke-width="1.6"/>
-  <rect x="26" y="26" width="${W-52}" height="${H-52}" fill="none" stroke="${P.hair}" stroke-width=".7"/>`;
-
-  /* ---------- header ---------- */
-  const className = $("class").options[$("class").selectedIndex].text;
-  s += txt(padL, 56, 'TYPICAL CROSS SECTION', {a:'start', fs:21, fw:700, ls:'1.6', fill:P.ink});
-  s += txt(padL, 72, `${className.toUpperCase()}  ·  ${$("context").value.toUpperCase()}  ·  DIMENSIONS IN METRES`, {a:'start', fs:10.5, fill:P.note, ls:'.9'});
-  s += txt(W-padR, 56, `CORRIDOR ${f2(d.total)} m`, {a:'end', fs:15, fw:700, fill:P.ink});
-  s += txt(W-padR, 72, `VERTICAL RELIEF EXAGGERATED ×${exag.toFixed(1)}`, {a:'end', fs:10.5, fill:P.note, ls:'.9'});
-
-  /* ---------- right of way lines ---------- */
-  s += `<line x1="${X(0)}" y1="${yTotal-14}" x2="${X(0)}" y2="${yLeg-16}" stroke="${P.note}" stroke-width=".9" stroke-dasharray="9 4 2 4"/>
-        <line x1="${X(d.total)}" y1="${yTotal-14}" x2="${X(d.total)}" y2="${yLeg-16}" stroke="${P.note}" stroke-width=".9" stroke-dasharray="9 4 2 4"/>`;
-  s += txt(X(0)-7, yColTop-8, 'ROW', {a:'end', fs:10, fw:700, fill:P.note});
-  s += txt(X(d.total)+7, yColTop-8, 'ROW', {a:'start', fs:10, fw:700, fill:P.note});
-
-  /* ---------- total dimension ---------- */
-  if (showDims) s += chain([{x1:X(0), x2:X(d.total), label:`${f2(d.total)} m`}], yTotal, P.dim, {w:1.3, fs:12});
-
-  /* ---------- group bar ---------- */
-  const groups = [
-    {a:0, b:d.sidewalk, name:'Footway', tone:'#eae6da'},
-    {a:d.sidewalk, b:d.sidewalk+d.side, name:'Carriageway', tone:'#dcdcd6'},
-  ];
-  if (d.median > 0.0001) groups.push({a:d.sidewalk+d.side, b:d.sidewalk+d.side+d.median, name:'Median', tone:'#d8e4d2'});
-  groups.push({a:d.total-d.sidewalk-d.side, b:d.total-d.sidewalk, name:'Carriageway', tone:'#dcdcd6'});
-  groups.push({a:d.total-d.sidewalk, b:d.total, name:'Footway', tone:'#eae6da'});
-  groups.forEach(g => {
-    const gx = X(g.a), gw = X(g.b) - X(g.a);
-    s += `<rect x="${gx}" y="${yGroup}" width="${gw}" height="22" fill="${mode==='technical'?'#fff':g.tone}" stroke="${P.hair}" stroke-width=".8"/>`;
-    if (gw > 74) s += txt(gx+gw/2, yGroup+15, `${g.name.toUpperCase()}  ${f2(g.b-g.a)}`, {fs:10, fw:700, ls:'.7', fill:P.ink});
-    else if (gw > 30) s += txt(gx+gw/2, yGroup+15, f2(g.b-g.a), {fs:9.5, fw:700, fill:P.ink});
+  // קווי סימון ציר/נתיבים – קווקוו בין נתיבים באותו כיוון, רציף בין כיוונים
+  P.forEach((p,i)=>{ const n=P[i+1]; if(!n) return;
+    const road = t=>['lane','bus','brt'].includes(t);
+    if(road(p.t)&&road(n.t)){ const same = p.dir===n.dir; out += `<line x1="${X(p.x1)}" y1="${Z(0)-0.02*k}" x2="${X(p.x1)}" y2="${Z(0)-0.02*k}" stroke="#fff"/>`;
+      out += `<rect x="${X(p.x1)-0.06*k}" y="${Z(0)-0.05*k}" width="${0.12*k}" height="${0.05*k}" fill="${same?'#ffffff':'#f2c94c'}" stroke="#14171a" stroke-width="0.05"/>`; }
   });
 
-  /* ---------- tint columns + zone tags ---------- */
-  let tagAlt = 0;
-  zs.forEach((z, i) => {
-    const zx = X(z.x0), zw = X(z.x1) - X(z.x0);
-    const surfY = Y(Math.max(zAt(pr, z.x0), zAt(pr, z.x1)));
-    if (P.tint){
-      s += `<rect class="zone" data-name="${esc(z.name)}" data-w="${f2(z.w)}" x="${zx}" y="${yColTop}" width="${zw}"
-             height="${Math.max(4, surfY - yColTop)}" fill="${P.tint[z.key]}" opacity=".5"/>`;
+  // פיקטוגרמות
+  P.forEach(p=>{
+    const t=T[p.t], cx=X((p.x0+p.x1)/2), yS=Z(p.z);
+    if(opt.icons){
+      if(t.car==='car') out += iCar(cx,yS,k,'#5c6e82');
+      if(t.car==='park') out += iCar(cx,yS,k,'#9aa7b3');
+      if(t.car==='bus') out += iBus(cx,yS,k,'#c4574a');
+      if(t.car==='lrt') out += iLrt(cx,yS,k,'#2f6db3');
+      if(t.bike){ if(p.dir==='both' && p.w>=2){ out += iBike(X(p.x0+p.w*0.3),yS,k,'#b0503a')+iBike(X(p.x0+p.w*0.7),yS,k,'#b0503a'); } else out += iBike(cx,yS,k,'#b0503a'); }
+      if(p.t==='walk' || (t.ppl && p.w>=3)){ const n=Math.max(1,Math.min(4,Math.floor(p.w/1.2))); for(let j=0;j<n;j++) out += iPerson(X(p.x0+(j+0.5)*p.w/n),yS,k,'#3d4650'); }
     }
-    s += `<line x1="${zx}" y1="${yColTop}" x2="${zx}" y2="${surfY}" stroke="${P.hair}" stroke-width=".6" stroke-dasharray="3 3"/>`;
-    // tag
-    const mid = zx + zw/2;
-    if (zw >= 96){
-      s += txt(mid, yTagTop+22, z.name, {fs:10.5, fw:700, ls:'.5', fill:P.ink});
-      s += `<line x1="${mid}" y1="${yTagTop+28}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
-    } else if (zw >= 26){
-      s += txt(mid, yTagTop+42, z.name, {fs:9.5, fw:600, fill:P.ink, rot:-90, a:'start'});
-      s += `<line x1="${mid}" y1="${yTagTop+46}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
-    } else {
-      const ty = yTagTop + 6 + (tagAlt % 2) * 13; tagAlt++;
-      s += `<line x1="${mid}" y1="${ty+3}" x2="${mid}" y2="${yColTop-3}" stroke="${P.hair}" stroke-width=".7"/>`;
-      s += txt(mid, ty, z.name, {fs:8.5, fw:600, fill:P.note});
+    if(opt.trees && t.tree && p.w>=1.0){ const n=p.t==='plaza'?Math.max(1,Math.floor(p.w/6)):1; for(let j=0;j<n;j++) out += iTree(X(p.x0+(j+0.5)*p.w/n),yS,k,'#6f9a55'); }
+    if(t.rail) out += iRail(p.t==='barrier'?cx:X(p.x0+Math.min(0.5,p.w/2)),yS,k);
+    // חצי כיוון
+    if(t.dir && p.dir && p.dir!=='none' && (t.car||t.bike)){
+      const top = yS - (t.car==='lrt'?5.8:t.car==='bus'?4.4:t.bike?2.8:2.6)*k, len=1.4*k, wd=0.35*k;
+      if(p.dir==='both'){ out += arrowV(cx-wd*1.4,top-len,len,'up','#14171a',wd)+arrowV(cx+wd*1.4,top-len,len,'down','#14171a',wd); }
+      else out += arrowV(cx,top-len,len,p.dir,t.car==='bus'||t.car==='lrt'?'#c49a1a':'#14171a',wd);
     }
   });
 
-  /* ---------- context: building line, clipped by the sheet ---------- */
-  if (showCtx){
-    const gL = Y(pr.zSw), gR = Y(pr.zSw);
-    s += `<g clip-path="url(#sheetClip)">`;
-    s += buildingBlock(X(0), gL, sx, -1, '#5d7796');
-    s += buildingBlock(X(0) - 3.4*sx - 0.4*sx, gL, sx, -1, '#7a8ba3');
-    s += buildingBlock(X(d.total), gR, sx, 1, '#5d7796');
-    s += buildingBlock(X(d.total) + 3.4*sx + 0.4*sx, gR, sx, 1, '#7a8ba3');
-    s += `</g>`;
-  }
-
-  /* ---------- construction below the surface ---------- */
-  const slice = (x1, x2) => {
-    const out = [];
-    pr.pts.forEach(p => { if (p[0] > x1 + 1e-9 && p[0] < x2 - 1e-9) out.push(p.slice()); });
-    return [[x1, zAt(pr,x1)], ...out.filter((p,i,a)=> i===0 || p[0]!==a[i-1][0]), [x2, zAt(pr,x2)]];
-  };
-  const bandPoly = (pts, top, thick, fill, stroke) => {
-    const up = pts.map(p => `${X(p[0])},${Y(p[1]-top)}`).join(' ');
-    const dn = pts.slice().reverse().map(p => `${X(p[0])},${Y(p[1]-top-thick)}`).join(' ');
-    return `<polygon points="${up} ${dn}" fill="${fill}" stroke="${stroke||P.hair}" stroke-width=".7"/>`;
-  };
-
-  const footL = [[0, pr.zSw], [d.sidewalk, pr.zK], [d.sidewalk + d.curb, pr.zK]];
-  const footR = [[d.total - d.sidewalk - d.curb, pr.zK], [d.total - d.sidewalk, pr.zK], [d.total, pr.zSw]];
-  const roadL = [[pr.gutterL, 0], [pr.medL, pr.zH]];
-  const roadR = [[pr.medR, pr.zH], [pr.gutterR, 0]];
-  const medTop = d.median > 0.0001 ? [[pr.medL, pr.zH + d.medrev], [pr.medR, pr.zH + d.medrev]] : null;
-
-  if (showStruct){
-    // footways
-    [footL, footR].forEach(p => {
-      s += bandPoly(p, 0, dSurf*0.9, mode==='technical' ? '#ddd' : '#e2ded2');
-      s += bandPoly(p, dSurf*0.9, dSub*0.5, P.sub);
+  // שיפועים רוחביים
+  if(opt.cf){
+    const isRoad = p=>levelOf(p)==='road' && !['barrier','active'].includes(p.t);
+    // קבוצות כביש רציפות
+    let groups=[], cur=null;
+    P.forEach((p,i)=>{ if(isRoad(p)){ if(!cur){cur={a:i,b:i}; groups.push(cur);} else cur.b=i; } else cur=null; });
+    groups.forEach(g=>{
+      const x0=P[g.a].x0, x1=P[g.b].x1, mid=(x0+x1)/2;
+      [[x0,mid],[mid,x1]].forEach(([a,b],j)=>{ if(b-a<1.2) return; const cx=X((a+b)/2), y=yG+depth+2.2;
+        const dir = j===0?-1:1; // כלפי חוץ
+        out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a"/>`;
+        out += tx(cx, y-1.0, sec.cfRoad.toFixed(1)+'%', 2.5, {color:'#2b5c8a'}); });
     });
-    // carriageways
-    [roadL, roadR].forEach(p => {
-      s += bandPoly(p, 0, dSurf, P.surf, mode==='technical' ? '#111' : '#3c444d');
-      s += bandPoly(p, dSurf, dBase, P.base);
-      s += bandPoly(p, dSurf + dBase, dSub, P.sub);
+    P.forEach((p,i)=>{ if(levelOf(p)!=='curb' || p.w<2.0 || T[p.t].tree && p.t!=='plaza') return;
+      // כיוון לעבר הכביש הקרוב
+      let dL=1e9,dR=1e9; for(let j=i-1;j>=0;j--) if(levelOf(P[j])==='road'){dL=i-j;break;} for(let j=i+1;j<P.length;j++) if(levelOf(P[j])==='road'){dR=j-i;break;}
+      const dir = dR<dL?1:-1, cx=X((p.x0+p.x1)/2), y=yG+depth+2.2;
+      out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a"/>`;
+      out += tx(cx, y-1.0, sec.cfSide.toFixed(1)+'%', 2.5, {color:'#2b5c8a'}); });
+  }
+
+  // שרשראות מידות
+  let yD = yG + depth + (opt.cf?11:7);
+  const tick = (x,y)=>`<line x1="${x-0.9}" y1="${y+0.9}" x2="${x+0.9}" y2="${y-0.9}" stroke="#14171a" stroke-width="0.3"/>`;
+  function chain(segs, y, size, labels){
+    let s = `<line x1="${X(segs[0].a)}" y1="${y}" x2="${X(segs[segs.length-1].b)}" y2="${y}" stroke="#14171a" stroke-width="0.2"/>`;
+    segs.forEach(g=>{ const a=X(g.a), b=X(g.b), wmm=b-a, val=f2(g.b-g.a);
+      s += tick(a,y)+tick(b,y)+`<line x1="${a}" y1="${y-2.2}" x2="${a}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12"/><line x1="${b}" y1="${y-2.2}" x2="${b}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12"/>`;
+      const need = val.length*size*0.55;
+      if(wmm >= need+0.6) s += tx((a+b)/2, y-0.9, val, size);
+      else s += tx((a+b)/2+size*0.35, y-1.2, val, size*0.85, {anchor:'start', rot:-90});
+      if(labels && g.l){ const need2 = g.l.length*2.1*0.55; if(wmm>=need2+0.8) s += tx((a+b)/2, y+3.6, g.l, 2.1, {color:'#585f66'}); else s += tx((a+b)/2+0.8, y+2.2, g.l, 1.9, {anchor:'end', rot:-90, color:'#585f66'}); }
     });
-    if (medTop) s += bandPoly(medTop, 0, medDepth, P.soil);
-    // subgrade below the deepest formation
-    const gx0 = X(0), gx1 = X(d.total);
-    const yForm = Y(-(roadDepth));
-    s += `<rect x="${gx0}" y="${yForm}" width="${gx1-gx0}" height="${Math.max(10, Y(zBot)-yForm)}" fill="url(#hGrade)" stroke="${P.hair}" stroke-width=".7"/>`;
-    s += txt(gx0 + 12, Y(zBot) - 7, 'SUBGRADE / FORMATION', {a:'start', fs:9, fw:600, fill:P.note, ls:'.6'});
+    return s;
   }
+  // שורה 1 – כל תא
+  out += chain(P.map(p=>({a:p.x0,b:p.x1,l:opt.names?T[p.t].s:''})), yD, 2.7, opt.names);
+  // שורה 2 – קבוצות (מדרכה / כביש / מפרדה)
+  const cat = p => ['median','barrier'].includes(p.t)?'מפרדה' : (p.t==='lrt'?'רק״ל' : (levelOf(p)==='road'?(sec.ctx==='inter'?'מיסעה + שוליים':'כביש'):(p.t==='plaza'?'שדירה':'מדרכה')));
+  let G=[]; P.forEach(p=>{ const c=cat(p); const last=G[G.length-1]; if(last && last.l===c) last.b=p.x1; else G.push({a:p.x0,b:p.x1,l:c}); });
+  const row2Y = yD + (opt.names?14:9);
+  if(G.length>1) out += chain(G, row2Y, 2.9, true);
+  const row3Y = row2Y + (G.length>1?11:0);
+  out += chain([{a:0,b:tot,l:'רוחב כולל'}], row3Y, 3.3, true);
+  // גבולות זכות דרך
+  [0,tot].forEach(m=>{ out += `<line x1="${X(m)}" y1="${Z(4.5)}" x2="${X(m)}" y2="${row3Y+2}" stroke="#b03a2e" stroke-width="0.25" stroke-dasharray="3 1.2 0.6 1.2"/>`; });
+  out += tx(X(0)-1, Z(4.8), 'גבול ז.ד.', 2.3, {anchor:'end', color:'#b03a2e'}) + tx(X(tot)+1, Z(4.8), 'גבול ז.ד.', 2.3, {anchor:'start', color:'#b03a2e'});
 
-  /* ---------- kerbs ---------- */
-  const kerb = (xBack, xFace, dir) => {
-    const a = X(xBack), b = X(xFace);
-    return `<path d="M${a} ${Y(pr.zK)} L${b} ${Y(pr.zK)} L${b} ${Y(0)} L${a} ${Y(-0.12)} Z"
-              fill="${P.kerbFill}" stroke="${P.ink}" stroke-width="1"/>`;
-  };
-  s += kerb(d.sidewalk, d.sidewalk + d.curb, 1);
-  s += kerb(d.total - d.sidewalk, d.total - d.sidewalk - d.curb, -1);
-  if (d.median > 0.0001){
-    s += `<path d="M${X(pr.medL)} ${Y(pr.zH)} L${X(pr.medL)} ${Y(pr.zH + d.medrev)}
-                  L${X(pr.medR)} ${Y(pr.zH + d.medrev)} L${X(pr.medR)} ${Y(pr.zH)} Z"
-            fill="${P.medFill}" stroke="${P.ink}" stroke-width="1"/>`;
-  }
-
-  /* ---------- surface line ---------- */
-  s += `<polyline points="${pr.pts.map(p => `${X(p[0])},${Y(p[1])}`).join(' ')}"
-          fill="none" stroke="${P.ink}" stroke-width="2.1" stroke-linejoin="round"/>`;
-
-  /* ---------- crossfall annotation ---------- */
-  const fallArrow = (xa, xb) => {
-    const ya = Y(zAt(pr,xa)) - 26, yb = Y(zAt(pr,xb)) - 26;
-    return `<line x1="${X(xa)}" y1="${ya}" x2="${X(xb)}" y2="${yb}" stroke="${P.dim}" stroke-width="1.2" marker-end="url(#ar)"/>`
-         + txt((X(xa)+X(xb))/2, (ya+yb)/2 - 7, `${d.cross.toFixed(1)}%`, {fs:10.5, fw:700, fill:P.dim});
-  };
-  s += fallArrow(pr.medL - d.carr*0.18, pr.gutterL + d.carr*0.14);
-  s += fallArrow(pr.medR + d.carr*0.18, pr.gutterR - d.carr*0.14);
-  if (d.sidewalk > 0.6){
-    s += `<line x1="${X(0.15)}" y1="${Y(pr.zSw)-16}" x2="${X(d.sidewalk-0.1)}" y2="${Y(pr.zK)-16}" stroke="${P.dim}" stroke-width="1" marker-end="url(#ar)"/>`;
-    s += txt(X(d.sidewalk/2), Y((pr.zSw+pr.zK)/2)-22, `${d.swcross.toFixed(1)}%`, {fs:10, fw:700, fill:P.dim});
-    s += `<line x1="${X(d.total-0.15)}" y1="${Y(pr.zSw)-16}" x2="${X(d.total-d.sidewalk+0.1)}" y2="${Y(pr.zK)-16}" stroke="${P.dim}" stroke-width="1" marker-end="url(#ar)"/>`;
-    s += txt(X(d.total-d.sidewalk/2), Y((pr.zSw+pr.zK)/2)-22, `${d.swcross.toFixed(1)}%`, {fs:10, fw:700, fill:P.dim});
-  }
-
-  /* ---------- level callouts ---------- */
-  const level = (xm, zv, label, anchor) => {
-    const px = X(xm), py = Y(zv);
-    return `<circle cx="${px}" cy="${py}" r="2.6" fill="${P.dim}"/>`
-         + `<line x1="${px}" y1="${py}" x2="${px + (anchor==='start'?16:-16)}" y2="${py-16}" stroke="${P.dim}" stroke-width=".8"/>`
-         + txt(px + (anchor==='start'?19:-19), py-18, label, {a:anchor, fs:9.5, fw:600, fill:P.dim});
-  };
-  const cl = d.median > 0.0001 ? (pr.medL + pr.medR)/2 : pr.medL;
-  const clz = d.median > 0.0001 ? pr.zH + d.medrev : pr.zH;
-  s += level(cl, clz, d.median > 0.0001 ? `MEDIAN +${(clz).toFixed(3)}` : `CROWN +${clz.toFixed(3)}`, 'start');
-  s += level(d.sidewalk + d.curb, 0, `CHANNEL ±0.000`, 'start');
-  s += level(d.sidewalk, pr.zK, `TOP OF KERB +${pr.zK.toFixed(3)}`, 'end');
-  s += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(d.total)}" y2="${Y(0)}" stroke="${P.dim}" stroke-width=".6" stroke-dasharray="2 6" opacity=".8"/>`;
-
-  /* ---------- centreline symbol ---------- */
-  s += `<line x1="${X(d.total/2)}" y1="${yColTop-46}" x2="${X(d.total/2)}" y2="${Y(zBot)+18}" stroke="${P.ink}" stroke-width=".9" stroke-dasharray="18 5 4 5" opacity=".55"/>`;
-  s += txt(X(d.total/2), yColTop-52, 'CL', {fs:11, fw:700, fill:P.ink, ls:'1'});
-
-  /* ---------- people, vehicles, planting ---------- */
-  if (showPeople){
-    const onSurf = xm => Y(zAt(pr, xm));
-    // planting + lamp in the furnishing zone
-    if (d.furn > 0.4){
-      const fl = d.front + d.furn/2, frx = d.total - d.front - d.furn/2;
-      s += treeIcon(X(fl), onSurf(fl), sx, Math.min(6.4, d.furn*7), '#5a7a4e');
-      s += treeIcon(X(frx), onSurf(frx), sx, Math.min(5.8, d.furn*6.4), '#6b8a58');
-      s += lampIcon(X(d.front + d.furn*0.15), onSurf(d.front + d.furn*0.15), sx, '#5b6169');
-    }
-    // pedestrians in the clear walking zone
-    if (d.par > 0.7){
-      const pl = d.front + d.furn + d.par*0.45, pr2 = d.total - d.front - d.furn - d.par*0.5;
-      s += personIcon(X(pl), onSurf(pl), sx, '#3f4a55');
-      s += personIcon(X(pl + Math.min(0.62, d.par*0.34)), onSurf(pl + Math.min(0.62, d.par*0.34)), sx, '#6a5a4c');
-      s += personIcon(X(pr2), onSurf(pr2), sx, '#3f4a55');
-    }
-    // parked vehicle
-    if (d.park > 1.9){
-      const ax = d.sidewalk + d.curb + d.park/2;
-      s += carIcon(X(ax), onSurf(ax), sx, '#8a8f96');
-      const bx = d.total - d.sidewalk - d.curb - d.park/2;
-      s += carIcon(X(bx), onSurf(bx), sx, '#9aa0a6');
-    }
-    // cyclists
-    if (d.bike > 0.9){
-      const cx1 = d.sidewalk + d.curb + d.park + d.bike/2;
-      s += bikeIcon(X(cx1), onSurf(cx1), sx, '#b8763a');
-      const cx2 = d.total - d.sidewalk - d.curb - d.park - d.bike/2;
-      s += bikeIcon(X(cx2), onSurf(cx2), sx, '#7f9464');
-    }
-    // moving traffic — first lane each side
-    const t1 = d.sidewalk + d.curb + d.park + d.bike + d.lane/2;
-    s += carIcon(X(t1), onSurf(t1), sx, '#b0483a');
-    const t2 = d.total - d.sidewalk - d.curb - d.park - d.bike - d.lane/2;
-    s += carIcon(X(t2), onSurf(t2), sx, '#37536f');
-    // median planting
-    if (d.median > 1.2){
-      const mx = (pr.medL + pr.medR)/2;
-      s += treeIcon(X(mx), Y(pr.zH + d.medrev), sx, Math.min(7.2, d.median*2.4), '#4e7043');
-    }
-  }
-
-  /* ---------- dimension chains ---------- */
-  if (showDims){
-    // extension lines from the section down to the first chain
-    zs.forEach(z => {
-      s += `<line x1="${X(z.x0)}" y1="${Y(Math.min(0, zBot+0.05))}" x2="${X(z.x0)}" y2="${yDim1-6}" stroke="${P.hair}" stroke-width=".6"/>`;
-    });
-    s += `<line x1="${X(d.total)}" y1="${Y(Math.min(0, zBot+0.05))}" x2="${X(d.total)}" y2="${yDim1-6}" stroke="${P.hair}" stroke-width=".6"/>`;
-    s += chain(zs.map(z => ({x1:X(z.x0), x2:X(z.x1), label:f2(z.w)})), yDim1, P.dim);
-    s += txt(padL - 14, yDim1 + 3, 'ELEMENTS', {a:'end', fs:9, fw:700, fill:P.note, ls:'.6'});
-
-    const gseg = groups.map(g => ({x1:X(g.a), x2:X(g.b), label:`${f2(g.b-g.a)} m`}));
-    s += chain(gseg, yDim2, P.dim, {w:1.15, fs:11});
-    s += txt(padL - 14, yDim2 + 3, 'GROUPS', {a:'end', fs:9, fw:700, fill:P.note, ls:'.6'});
-  }
-
-  /* ---------- legend ---------- */
-  const legend = mode === 'technical'
-    ? [['url(#hBase)','Base'], ['url(#hSub)','Sub-base'], ['url(#hSoil)','Topsoil'], ['url(#hGrade)','Subgrade']]
-    : [[IL.par,'Footway'], [IL.bike,'Cycle lane'], [IL.lane,'Travel lane'], [IL.park,'Parking'],
-       [IL.median,'Median / planting'], [P.surf,'Surfacing'], [P.base,'Base'], [P.sub,'Sub-base']];
-  let lx = padL;
-  s += `<line x1="${padL}" y1="${yLeg-18}" x2="${W-padR}" y2="${yLeg-18}" stroke="${P.hair}" stroke-width=".7"/>`;
-  legend.forEach(([fill, name]) => {
-    s += `<rect x="${lx}" y="${yLeg-8}" width="16" height="11" fill="${fill}" stroke="${P.hair}" stroke-width=".6"/>`;
-    s += txt(lx+22, yLeg+1, name, {a:'start', fs:10, fill:P.note});
-    lx += 30 + name.length * 6.1;
-  });
-
-  /* ---------- title block ---------- */
-  const tbW = 470, tbH = 78, tbX = W - padR - tbW, tbY = H - 62 - tbH + 18;
-  s += `<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="none" stroke="${P.ink}" stroke-width="1.2"/>
-        <line x1="${tbX}" y1="${tbY+26}" x2="${tbX+tbW}" y2="${tbY+26}" stroke="${P.ink}" stroke-width=".8"/>
-        <line x1="${tbX}" y1="${tbY+52}" x2="${tbX+tbW}" y2="${tbY+52}" stroke="${P.hair}" stroke-width=".8"/>
-        <line x1="${tbX+240}" y1="${tbY+26}" x2="${tbX+240}" y2="${tbY+tbH}" stroke="${P.hair}" stroke-width=".8"/>
-        <line x1="${tbX+352}" y1="${tbY+26}" x2="${tbX+352}" y2="${tbY+tbH}" stroke="${P.hair}" stroke-width=".8"/>`;
-  s += txt(tbX+10, tbY+18, 'MAHALCO — TRANSPORTATION ENGINEERING', {a:'start', fs:11.5, fw:700, ls:'.9', fill:P.ink});
-  s += txt(tbX+10, tbY+44, 'DRAWING', {a:'start', fs:8.5, fw:700, fill:P.note, ls:'.6'});
-  s += txt(tbX+10, tbY+68, 'Typical cross section', {a:'start', fs:12, fill:P.ink});
-  s += txt(tbX+250, tbY+44, 'SCALE', {a:'start', fs:8.5, fw:700, fill:P.note, ls:'.6'});
-  s += txt(tbX+250, tbY+68, `H 1:${Math.round(1000/sx)} · V ×${exag.toFixed(1)}`, {a:'start', fs:11, fill:P.ink});
-  s += txt(tbX+362, tbY+44, 'STATUS', {a:'start', fs:8.5, fw:700, fill:P.note, ls:'.6'});
-  s += txt(tbX+362, tbY+68, 'Preliminary', {a:'start', fs:11, fill:P.alarm || '#b03a2e'});
-
-  s += txt(padL, H-46, 'NOT FOR CONSTRUCTION — parametric output, verify against governing criteria and project conditions.', {a:'start', fs:9.5, fill:P.note});
-  s += txt(padL, H-32, 'People, vehicles and planting are drawn at true horizontal scale. Construction depths are indicative.', {a:'start', fs:9.5, fill:P.note});
-
-  s += `</svg>`;
-  $("drawing").innerHTML = s;
-  wireHover();
-  return {d, exag, sx};
+  const W = (eL.w + tot + eR.w)*k;
+  return {g: out, w: W, h: row3Y + 6, tot};
+}
+function edgeDraw(e, x, y, k, dir){
+  if(!e || e.type==='none') return '';
+  if(e.type==='building') return iBuilding(x + dir*0.4*k, y, k, dir) + `<line x1="${x+dir*0.4*k}" y1="${y-9.5*k}" x2="${x+dir*0.4*k}" y2="${y+0.5*k}" stroke="#585f66" stroke-width="0.25" stroke-dasharray="2 1"/>`;
+  if(e.type==='fill'){ const run=e.h*e.n*k, dy=e.h*k;
+    return `<path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy} L${x+dir*(run+2*k)} ${y+dy+1*k} L${x} ${y+dy+1*k} Z" fill="#e4dcc6" stroke="none"/><path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+
+      tx(x+dir*run*0.5, y+dy*0.5-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a'}); }
+  if(e.type==='cut'){ const dd=(e.dd||0.6)*k, f=dd*3, b=(e.db||0.6)*k, up=(e.h+(e.dd||0.6))*k, br=up*e.n;
+    const p1=[x+dir*f, y+dd], p2=[x+dir*(f+b), y+dd], p3=[x+dir*(f+b+br), y+dd-up], p4=[x+dir*(f+b+br+2*k), y+dd-up];
+    return `<path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4} L${p4[0]} ${y+dd+1*k} L${x} ${y+dd+1*k} Z" fill="#e4dcc6"/><path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+
+      tx((p2[0]+p3[0])/2, (p2[1]+p3[1])/2-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a'})+tx((p1[0]+p2[0])/2, y+dd+3, 'תעלה', 2.2, {color:'#585f66'}); }
+  return '';
 }
 
-/* ---------------- hover readout ---------------- */
-function wireHover(){
-  const tip = $("tip");
-  document.querySelectorAll('#drawing .zone').forEach(el => {
-    el.style.cursor = 'crosshair';
-    el.addEventListener('mouseenter', e => {
-      tip.textContent = `${el.dataset.name} — ${el.dataset.w} m`;
-      tip.style.opacity = 1; el.setAttribute('opacity', '.78');
-    });
-    el.addEventListener('mousemove', e => {
-      tip.style.left = (e.clientX + 14) + 'px';
-      tip.style.top  = (e.clientY - 30) + 'px';
-    });
-    el.addEventListener('mouseleave', () => { tip.style.opacity = 0; el.setAttribute('opacity', '.5'); });
-  });
+/* ---------------- גיליון A0 ---------------- */
+const A0 = {w:1189, h:841};
+function curSec(){
+  return {title:$('title').value, ctx:$('ctx').value, cells:S.cells.map(c=>({...c})), eL:{...S.eL}, eR:{...S.eR},
+    curbH:num('curbH'), dSurf:num('dSurf'), dBase:num('dBase'), dSub:num('dSub'), cfRoad:num('cfRoad'), cfSide:num('cfSide'),
+    pave:$('tPave').checked, rowTarget:num('rowTarget')};
+}
+function opts(){ return {icons:$('tIcons').checked, trees:$('tTrees').checked, cf:$('tCf').checked, names:$('tNames').checked}; }
+function sheetSVG(){
+  const D = +$('scale').value, secs = SHEET.length? SHEET : [curSec()];
+  const frameL=20, frame=10, tbW=180, tbH=62;
+  const drawW = A0.w - frameL - frame - 10, availH = A0.h - 2*frame - tbH - 20;
+  const blocks = secs.map(s=>sectionSVG(s, D, opts()));
+  const totalH = blocks.reduce((a,b)=>a+b.h,0) + 12*(blocks.length-1);
+  let y = frame + 12 + Math.max(0,(availH-totalH)/2), body='', warn=[];
+  blocks.forEach((b,i)=>{ const x = frameL + 5 + Math.max(0,(drawW-b.w)/2); if(b.w>drawW) warn.push(`חתך ${i+1} רחב מהגיליון (${Math.round(b.w)} מ״מ)`);
+    body += `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">${b.g}</g>`; y += b.h + 12; });
+  if(totalH > availH) warn.push('גובה החתכים חורג מהשטח הפנוי בגיליון');
+  // סרגל קנה מידה
+  const k=1000/D, sbX=frameL+10, sbY=A0.h-frame-12; let sb='';
+  for(let i=0;i<5;i++) sb += `<rect x="${sbX+i*2*k}" y="${sbY}" width="${2*k}" height="2" fill="${i%2?'#fff':'#14171a'}" stroke="#14171a" stroke-width="0.2"/>`;
+  sb += tx(sbX, sbY-1.5, '0', 2.5)+tx(sbX+5*k, sbY-1.5, '5', 2.5)+tx(sbX+10*k, sbY-1.5, '10 מ׳', 2.5)+tx(sbX+5*k, sbY+6, `סרגל קנה מידה 1:${D} – 10 מ׳ = ${(10*k).toFixed(0)} מ״מ`, 2.5, {color:'#585f66'});
+  // מסגרת וטבלת כותרת
+  const tbX = A0.w-frame-tbW, tbY=A0.h-frame-tbH, today=new Date().toLocaleDateString('he-IL');
+  const cellT = (x,y,w,h,lab,val,big)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+tx(x+w-2,y+4,lab,2.3,{anchor:'end',color:'#585f66'})+tx(x+w-2,y+h-3,val,big?5:3.4,{anchor:'end',weight:big?700:400});
+  let tb = `<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="#fff" stroke="#14171a" stroke-width="0.6"/>`;
+  tb += cellT(tbX,tbY,tbW,16,'משרד','MAHALCO – הנדסה אזרחית ותחבורה',true);
+  tb += cellT(tbX,tbY+16,tbW,14,'פרויקט',$('proj').value||'—');
+  tb += cellT(tbX,tbY+30,tbW,14,'תוכן הגיליון', secs.map(s=>s.title).join(' | '));
+  tb += cellT(tbX+120,tbY+44,60,18,'קנה מידה',`1:${D}`,true)+cellT(tbX+80,tbY+44,40,18,'גיליון',$('dwg').value||'—')+cellT(tbX+40,tbY+44,40,18,'תאריך',today)+cellT(tbX,tbY+44,40,18,'שרטט',$('drawn').value||'—');
+  const notes = tx(frameL+10, A0.h-frame-26, 'הערות: המידות במטרים. גבהים ושיפועים מוצגים בקנה מידה אחיד (ללא הגזמה אנכית). מבנה המסעה אינדיקטיבי – לפי תכנון מבנה. חתך עקרוני – לא לביצוע.', 2.8, {anchor:'start'});
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${A0.w}mm" height="${A0.h}mm" viewBox="0 0 ${A0.w} ${A0.h}" id="sheetSVG" style="direction:ltr">
+<rect width="${A0.w}" height="${A0.h}" fill="#ffffff"/>
+<rect x="${frameL}" y="${frame}" width="${A0.w-frameL-frame}" height="${A0.h-2*frame}" fill="none" stroke="#14171a" stroke-width="0.7"/>
+${body}${sb}${notes}${tb}</svg>`;
+  return {svg, warn};
 }
 
-/* ---------------- readouts ---------------- */
-function render(){
-  const {d, exag} = draw();
-  const kerbToKerb = d.roadway;
-  $("stats").innerHTML = [
-    ['Total corridor', f2(d.total), 'm'],
-    ['Kerb to kerb', f2(kerbToKerb), 'm'],
-    ['Footway each side', f2(d.sidewalk), 'm'],
-    ['Lanes each way', String(d.lanes), ''],
-    ['Lane width', f2(d.lane), 'm'],
-    ['Median', f2(d.median), 'm']
-  ].map(r => `<div class="stat"><span>${r[0]}</span><b>${r[1]}<small> ${r[2]}</small></b></div>`).join('');
-
-  const par = d.par, cf = d.cross;
-  $("checks").innerHTML =
-    `<div class="chk ${par>=1.22?'':'bad'}"><b>${par>=1.22?'PASS':'FAIL'}</b>Clear walking width ${f2(par)} m against a 1.22 m continuous-route screening threshold.</div>
-     <div class="chk ${par>=1.525?'':'warn'}"><b>${par>=1.525?'PASS':'CHECK'}</b>${par>=1.525?'Width is at or above 1.525 m, so a passing-space arrangement is unlikely to govern.':'Below 1.525 m — the project may require a passing-space arrangement.'}</div>
-     <div class="chk ${cf>=1&&cf<=3?'':'warn'}"><b>${cf>=1&&cf<=3?'SCREENED':'CHECK'}</b>Carriageway crossfall ${cf.toFixed(1)}%. Verify drainage and accessibility criteria for the actual project.</div>
-     <div class="chk"><b>NOTE</b>Vertical relief on the drawing is exaggerated ×${exag.toFixed(1)}. Read levels from the callouts, not by scaling the sheet.</div>`;
-
-  window.current = {
-    functionalClass: $("class").value,
-    context: $("context").value,
-    widths_m: {
-      total: +f2(d.total), roadway: +f2(d.roadway), sidewalkEachSide: +f2(d.sidewalk),
-      lanesEachWay: d.lanes, laneWidth: +f2(d.lane), parking: +f2(d.park),
-      cycleLane: +f2(d.bike), median: +f2(d.median), kerb: +f2(d.curb),
-      clearWalking: +f2(d.par), furnishing: +f2(d.furn), frontage: +f2(d.front)
-    },
-    levels_m: {kerbReveal: d.reveal, medianUpstand: d.medrev},
-    crossfall_pct: {carriageway: d.cross, footway: d.swcross},
-    indicativeDepths_m: {surfacing: d.dSurf, base: d.dBase, subBase: d.dSub},
-    verticalExaggeration: +exag.toFixed(2),
-    disclaimer: 'Preliminary parametric output. Not for construction.'
-  };
+/* ---------------- תצוגה, סטטיסטיקה ובדיקות ---------------- */
+function update(rerenderCells=true){
+  if(rerenderCells) renderCells(); else document.querySelectorAll('#cells .cell').forEach((el,i)=>{ const st=cellCheck(S.cells[i]); el.className='cell '+(st?st.cls:''); el.title=st?st.msg:T[S.cells[i].t].n; });
+  const sec = curSec(), D = +$('scale').value;
+  let warn=[];
+  if(VIEW==='section'){
+    const b = sectionSVG(sec, D, opts()), pad=6;
+    $('drawing').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-pad} ${-pad} ${b.w+2*pad} ${b.h+2*pad}" id="secSVG" style="direction:ltr"><rect x="${-pad}" y="${-pad}" width="${b.w+2*pad}" height="${b.h+2*pad}" fill="#fbfaf6"/>${b.g}</svg>`;
+  } else {
+    const s = sheetSVG(); warn = s.warn;
+    $('drawing').innerHTML = s.svg;
+  }
+  // נתונים
+  const tot = sec.cells.reduce((a,c)=>a+c.w,0);
+  const road = sec.cells.filter(c=>levelOf(c)==='road').reduce((a,c)=>a+c.w,0);
+  const lanesDn = sec.cells.filter(c=>['lane'].includes(c.t)&&c.dir==='down').length, lanesUp = sec.cells.filter(c=>['lane'].includes(c.t)&&c.dir==='up').length;
+  const busN = sec.cells.filter(c=>['bus','brt'].includes(c.t)).length;
+  const walk = sec.cells.filter(c=>c.t==='walk').reduce((a,c)=>a+c.w,0);
+  const k = 1000/D;
+  $('stats').innerHTML = [['רוחב כולל',f2(tot),'מ׳'],['מפלס כביש (כולל שוליים)',f2(road),'מ׳'],['נתיבים ↓ / ↑',`${lanesDn} / ${lanesUp}`,''],['נתיבי תח״צ',busN,''],['רצועות הליכה',f2(walk),'מ׳'],[`רוחב על הנייר 1:${D}`,(tot*k).toFixed(0),'מ״מ']]
+    .map(r=>`<div class="stat"><span>${r[0]}</span><b>${r[1]}<small> ${r[2]}</small></b></div>`).join('');
+  const chk=[];
+  if(sec.rowTarget>0){ const df=tot-sec.rowTarget; chk.push(Math.abs(df)<0.005?['','זכות דרך',`סכום התאים ${f2(tot)} מ׳ תואם לרוחב היעד.`]:['bad','זכות דרך',`סכום התאים ${f2(tot)} מ׳ – ${df>0?'חורג ב-':'חסרים '}${f2(Math.abs(df))} מ׳ מול יעד ${f2(sec.rowTarget)} מ׳.`]); }
+  sec.cells.forEach((c,i)=>{ const st=cellCheck(c); if(st) chk.push([st.cls,`תא ${i+1} – ${T[c.t].n} ${f2(c.w)} מ׳`,st.msg]); });
+  sec.cells.forEach((c,i)=>{ if(T[c.t].note) chk.push(['warn',`תא ${i+1} – ${T[c.t].n}`,T[c.t].note]); });
+  for(let i=0;i<sec.cells.length-1;i++){ const a=sec.cells[i], b=sec.cells[i+1]; if(a.t==='lane'&&b.t==='lane'&&a.dir!==b.dir&&sec.ctx==='urban'&&!sec.cells.some(c=>c.t==='median')) {} }
+  if(sec.ctx==='inter' && sec.cells.some(c=>c.t==='barrier')){ const iB=sec.cells.findIndex(c=>c.t==='barrier'); const nb=sec.cells[iB-1], na=sec.cells[iB+1]; const med=(nb&&nb.t==='shL'?nb.w:0)+(na&&na.t==='shL'?na.w:0);
+    chk.push([med>=2.4-1e-9?'':'bad','מפרדה בין-עירונית',`שוליים שמאליים ${f2(med)} מ׳ + מעקה – מזערי 2.4 מ׳ + רוחב המעקות ב-2–3 נתיבים; 6.0 מ׳ ב-4 נתיבים או בדרך מהירה 120 (כרך 1 סעיף 3.4.2).`]); }
+  warn.forEach(w=>chk.push(['bad','גיליון',w]));
+  { const secs = SHEET.length?SHEET:[sec]; const maxW = Math.max(...secs.map(s=>s.cells.reduce((a,c)=>a+c.w,0)+edgeExtent(s.eL).w+edgeExtent(s.eR).w));
+    if(maxW*1000/D < 400) chk.push(['','גיליון',`בקנה מידה 1:${D} החתך תופס ${(maxW*1000/D).toFixed(0)} מ״מ מתוך כ-1,150 מ״מ ברוחב A0. אפשר להוסיף עד שלושה חתכים לגיליון, או לבחור 1:100 (${(maxW*10).toFixed(0)} מ״מ).`]); }
+  if(sec.eL.type==='fill'&&sec.eL.n<4 || sec.eR.type==='fill'&&sec.eR.n<4) chk.push(['warn','מדרון מילוי','שיפוע מילוי חריף מ-1:4 – נדרש מעקה בטיחות בקצה השול (כרך 1 סעיף 3.5.5: 1:4–1:6 במילוי, 1:3–1:6 בחפירה).']);
+  if(!chk.length) chk.push(['','תקין','לא נמצאו חריגות מול ערכי ההנחיות הכלולים בכלי.']);
+  $('checks').innerHTML = chk.map(c=>`<div class="chk ${c[0]}"><b>${esc(c[1])}</b>${esc(c[2])}</div>`).join('');
+  $('sheetList').innerHTML = SHEET.map((s,i)=>`<div><span>${i+1}. ${esc(s.title)} – ${f2(s.cells.reduce((a,c)=>a+c.w,0))} מ׳</span><button class="mini" data-s="${i}" data-a="load">ערוך</button><button class="mini" data-s="${i}" data-a="rm">✕</button></div>`).join('') || '<p class="hint">הגיליון יכלול את החתך הנוכחי.</p>';
+  $('sheetList').querySelectorAll('button').forEach(b=>b.onclick=()=>{ const i=+b.dataset.s; if(b.dataset.a==='rm') SHEET.splice(i,1); else loadSec(SHEET[i]); update(); });
 }
-
-/* ---------------- controls ---------------- */
+function loadSec(s){
+  S.cells = s.cells.map(c=>({...c})); S.eL={...s.eL}; S.eR={...s.eR};
+  $('title').value=s.title||''; $('ctx').value=s.ctx||'urban'; $('rowTarget').value=s.rowTarget||0;
+  ['curbH','dSurf','dBase','dSub','cfRoad','cfSide'].forEach(k=>{ if(s[k]!==undefined) $(k).value=s[k]; });
+  edgeUI('L'); edgeUI('R');
+}
 function applyPreset(){
-  const p = PRESETS[$("class").value];
-  for (const k in p){
-    const el = $(k === 'parking' ? 'parking' : k);
-    if (el) el.value = (k === 'lanes') ? p[k] : p[k].toFixed(2);
-  }
-  render();
+  const p = PRESETS[$('preset').value];
+  S.cells = p.cells.map(c=>({...c})); S.eL={...p.eL}; S.eR={...p.eR};
+  $('title').value = p.n.replace(/\s*\(.*\)$/,''); $('ctx').value=p.ctx; $('rowTarget').value=p.row||0;
+  $('presetSrc').textContent = 'מקור: '+p.src;
+  edgeUI('L'); edgeUI('R'); update();
 }
-$("class").addEventListener('change', applyPreset);
-document.querySelectorAll('aside input, aside select').forEach(el => {
-  if (el.id !== 'class') el.addEventListener('input', render);
-});
-$("btnFit").onclick = render;
 
-function save(blob, name){
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = name; a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+/* ---------------- ייצוא ---------------- */
+function save(blob, name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); }
+function a0Html(){
+  const {svg} = sheetSVG();
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><title>${esc(($('dwg').value||'TS')+' – '+(SHEET.length?SHEET.map(s=>s.title).join(', '):$('title').value))}</title>
+<style>
+@page{size:1189mm 841mm;margin:0}
+html,body{margin:0;padding:0;background:#fff}
+svg{display:block;width:1189mm;height:841mm}
+.noprint{position:fixed;top:8px;left:8px;background:#fffbe6;border:1px solid #c9a227;padding:8px 12px;font:13px Arial;direction:rtl}
+@media print{.noprint{display:none}}
+</style></head><body>
+<div class="noprint">גיליון A0 לרוחב (1189×841 מ״מ), קנה מידה 1:${$('scale').value}. להדפסה/PDF: גודל נייר A0, ״גודל בפועל / 100%״, ללא שוליים. בדקו את סרגל קנה המידה: 10 מ׳ = ${(10000/ +$('scale').value).toFixed(0)} מ״מ.</div>
+${svg}
+</body></html>`;
 }
-$("btnSvg").onclick = () => {
-  const svg = $("sectionSVG").outerHTML.replace('<svg ', '<svg xmlns:xlink="http://www.w3.org/1999/xlink" ');
-  save(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + svg], {type:'image/svg+xml;charset=utf-8'}),
-       'MAHALCO_typical_section.svg');
-};
-$("btnPng").onclick = () => {
-  const node = $("sectionSVG");
-  const vb = node.viewBox.baseVal, k = 2;
-  const img = new Image();
-  const blob = new Blob([node.outerHTML], {type:'image/svg+xml;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  img.onload = () => {
-    const c = document.createElement('canvas');
-    c.width = vb.width * k; c.height = vb.height * k;
-    const g = c.getContext('2d');
-    g.fillStyle = '#fbfaf6'; g.fillRect(0, 0, c.width, c.height);
-    g.drawImage(img, 0, 0, c.width, c.height);
-    c.toBlob(b => { save(b, 'MAHALCO_typical_section.png'); URL.revokeObjectURL(url); }, 'image/png');
-  };
-  img.onerror = () => { URL.revokeObjectURL(url); alert('PNG export failed in this browser. Use Download SVG instead.'); };
-  img.src = url;
-};
-$("btnJson").onclick = () => save(new Blob([JSON.stringify(window.current, null, 2)], {type:'application/json'}),
-                                  'MAHALCO_typical_section.json');
+$('btnHtml').onclick = ()=> save(new Blob([a0Html()],{type:'text/html;charset=utf-8'}), `MAHALCO_${$('dwg').value||'TS'}_A0_1-${$('scale').value}.html`);
+$('btnSvg').onclick = ()=> { const {svg}=sheetSVG(); save(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+svg],{type:'image/svg+xml;charset=utf-8'}), `MAHALCO_${$('dwg').value||'TS'}_A0.svg`); };
+$('btnPrint').onclick = ()=> { const w=window.open('','_blank'); w.document.write(a0Html()); w.document.close(); setTimeout(()=>w.print(),400); };
+$('btnJson').onclick = ()=> save(new Blob([JSON.stringify({version:1, sheet:SHEET, current:curSec(), scale:+$('scale').value, proj:$('proj').value, dwg:$('dwg').value},null,2)],{type:'application/json'}), 'typical-section.json');
+$('fileJson').onchange = e=>{ const f=e.target.files[0]; if(!f) return; f.text().then(t=>{ try{ const j=JSON.parse(t); SHEET=j.sheet||[]; if(j.current) loadSec(j.current); if(j.scale) $('scale').value=j.scale; if(j.proj!==undefined) $('proj').value=j.proj; if(j.dwg) $('dwg').value=j.dwg; update(); }catch(err){ alert('קובץ JSON לא תקין'); } }); };
+$('btnAddSheet').onclick = ()=>{ if(SHEET.length>=3){ alert('עד שלושה חתכים בגיליון A0 אחד'); return; } SHEET.push(curSec()); update(); };
+$('btnAdd').onclick = ()=>{ const t=$('addType').value; S.cells.push({t, w:T[t].w, dir:T[t].dir||'none'}); update(); };
+$('btnMirror').onclick = ()=>{ S.cells = [...S.cells, ...mirror(S.cells)]; const e=S.eL; S.eR={...e}; edgeUI('R'); update(); };
+$('btnClear').onclick = ()=>{ S.cells=[]; update(); };
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{ VIEW=b.dataset.v; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b)); update(false); });
+['title','rowTarget','ctx','dSurf','dBase','dSub','cfRoad','cfSide','curbH','scale','proj','drawn','dwg','tIcons','tTrees','tCf','tPave','tNames'].forEach(id=>$(id).addEventListener(id.startsWith('t')&&$(id).type==='checkbox'?'change':'input',()=>update(id==='ctx')));
+$('ctx').addEventListener('change',()=>update());
 
-render();
+/* ---------------- אתחול ---------------- */
+(function init(){
+  const groups={}; Object.entries(PRESETS).forEach(([k,p])=>{ (groups[p.g]=groups[p.g]||[]).push([k,p.n]); });
+  $('preset').innerHTML = Object.entries(groups).map(([g,a])=>`<optgroup label="${g}">${a.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('')}</optgroup>`).join('');
+  $('preset').onchange = applyPreset;
+  $('addType').innerHTML = Object.keys(T).map(k=>`<option value="${k}">${T[k].n}</option>`).join('');
+  $('preset').value='ex1'; applyPreset();
+})();
 </script>
 </body>
 </html>

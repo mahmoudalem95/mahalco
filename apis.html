@@ -18,11 +18,12 @@
     <meta name="robots" content="index, follow">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mahalco — API Catalogue | Urban & Rural Highways | Transit & Multi-Modal | HCM, AASHTO, HSM</title>
-    <meta name="description" content="Live APIs for transportation engineering: intersection analysis, level of service, safety, geometric design, transit planning and multi-modal infrastructure per HCM, AASHTO and HSM. Run in-browser or via API.">
-    <meta name="keywords" content="Highway Capacity Manual, HCM, AASHTO Green Book, HSM, Signalized Intersection, Level of Service, LOS, Queue Length, Roundabout, Two-Lane Highway, Freeway, Interchange, Signal Timing, Geometric Design, Traffic Impact, Parking, API, Transit Planning, TOD, Transit-Oriented Development, Bike Lane, Bicycle Path, Traffic Calming, Parking Terminals, Park and Ride, Pedestrian Crossings">
+    <title>Mahalco — Transportation Engineering Calculations: Intersection LOS, Queues, Sight Distance, Parking | HCM · AASHTO · HSM</title>
+    <meta name="description" content="Browser-based transportation engineering tools and APIs: signalized and unsignalized intersection level of service, roundabouts, queues, freeway and two-lane analysis, horizontal and vertical alignment, sight distance and parking. For traffic engineers, design offices, project managers, surveyors, developers and public authorities. Run in the browser or post the same inputs to the API.">
+    <meta name="keywords" content="Highway Capacity Manual, HCM, AASHTO Green Book, HSM, Signalized Intersection, Level of Service, LOS, Queue Length, Roundabout, Two-Lane Highway, Freeway, Interchange, Signal Timing, Geometric Design, Traffic Impact, Parking, API, Transit Planning, TOD, Transit-Oriented Development, Bike Lane, Bicycle Path, Traffic Calming, Parking Terminals, Park and Ride, Pedestrian Crossings, intersection level of service calculator, signalized intersection delay, critical lane volume calculator, 95th percentile queue length, turn bay length, signal cycle length optimisation, Webster cycle, roundabout capacity calculator, stopping sight distance, intersection sight triangle, parking standard calculator, traffic impact assessment, traffic engineer tools, design office, project manager, land surveyor, real estate developer feasibility, municipal review, transit lane justification, BRT busway justification, bicycle path design guidelines, high demand pedestrian crossing, traffic calming zone, target year forecast, saturation year, Israel design guidelines">
     <meta property="og:title" content="Mahalco — API Catalogue">
     <meta property="og:description" content="Live APIs for transportation engineering: capacity, safety, geometric design, transit and multi-modal infrastructure per HCM, AASHTO and HSM.">
+    <meta name="twitter:card" content="summary">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en">
     <meta property="og:url" content="https://mahmoudalem95.github.io/mahalco/apis.html">
@@ -43,6 +44,63 @@
                   "eligibleQuantity": { "@type": "QuantitativeValue", "value": "600 requests per hour" } }
             ]
         }
+    </script>
+    <script type="application/ld+json">
+{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "en",
+        "mainEntity": [
+                {
+                        "@type": "Question",
+                        "name": "Which standards do the calculations follow?",
+                        "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "HCM for capacity, level of service, delay and queues; the AASHTO Green Book for geometric design; the HSM for safety performance. Where an Israeli guideline governs — parking regulations, urban street guidelines, interurban design guidelines, roundabout guidelines — the tool follows it and says so."
+                        }
+                },
+                {
+                        "@type": "Question",
+                        "name": "Do I need to install anything or upload my files?",
+                        "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "No. Every tool runs in the browser, including reading a counts spreadsheet and marking up a plan. Nothing is uploaded to a server. The API exists separately, for embedding the same calculations in your own systems."
+                        }
+                },
+                {
+                        "@type": "Question",
+                        "name": "What is the difference between the in-browser pages and the API?",
+                        "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Identical methods, different interface. The pages are for a single intersection, segment or cross-section; the API is for batches — a corridor, a scenario matrix, or a nightly run against your own database."
+                        }
+                },
+                {
+                        "@type": "Question",
+                        "name": "How is a future-year level of service produced?",
+                        "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Every movement is grown at a compound annual rate and the whole chain is recomputed — critical volume, cycle length, green split, delay. The delay is never simply multiplied by the growth factor, because delay is not linear in volume and diverges around a volume-to-capacity ratio of 1.0."
+                        }
+                },
+                {
+                        "@type": "Question",
+                        "name": "Do the results replace a signed traffic report?",
+                        "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "No. The tools perform the calculation to the standard and expose the intermediate steps so they can be checked. A traffic impact assessment, a safety report or a submission to an authority requires a licensed traffic engineer who takes professional responsibility for the assumptions and the result."
+                        }
+                },
+                {
+                        "@type": "Question",
+                        "name": "Some tools open in Hebrew — why?",
+                        "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "A few of the newest tools were built for Israeli guidelines first: the counts-file import, the parking standard by locality, and the sight-distance sheet. They are marked HE in the catalogue. English versions follow the same methods and are being added."
+                        }
+                }
+        ]
+}
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,9 +134,16 @@
         .masthead nav { margin-inline-start: auto; display: flex; gap: 20px; font-size: 14.5px }
         .masthead nav a { color: var(--muted-dark); text-decoration: none; padding: 4px 0 }
         .masthead nav a:hover { color: var(--paper) }
-        @media (max-width:860px) { .masthead nav { display: none } }
+        @media (max-width:860px) {
+            .masthead .wrap { gap: 12px }
+            .masthead nav { margin-inline-start: auto; display: flex; gap: 16px; overflow-x: auto;
+                -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; max-width: 100%; padding-bottom: 2px }
+            .masthead nav::-webkit-scrollbar { display: none }
+            .masthead nav a { flex: none; font-size: 13.5px }
+        }
         .hero { background: var(--asphalt); color: var(--paper); padding: 58px 0 62px }
-        .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 48px; align-items: center }
+        .hero .wrap { display: grid; grid-template-columns: 1fr; gap: 32px; align-items: center }
+        @media (min-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 48px } }
         .hero h1 { margin: 0 0 18px; font-size: clamp(2.1rem, 4.6vw, 3.3rem); line-height: 1.12; letter-spacing: -.02em; font-weight: 800 }
         .hero p { margin: 0 0 24px; max-width: 48ch; color: var(--muted-dark); font-size: 1.02rem }
         .hero-actions { display: flex; flex-wrap: wrap; gap: 10px }
@@ -87,7 +152,8 @@
         .btn-solid:hover { background: #F3C455 }
         .btn-line { border: 1px solid var(--rule-dark); color: var(--paper) }
         .btn-line:hover { background: #2C3239 }
-        .plan { width: 100%; height: auto; display: block }
+        .plan { width: 100%; height: auto; display: block; max-width: 320px; margin: 0 auto }
+        @media (min-width: 900px) { .plan { max-width: none; margin: 0 } }
         .tally { display: flex; gap: 34px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--rule-dark); flex-wrap: wrap }
         .tally div { font-size: 13.5px; color: var(--muted-dark) }
         .tally b { display: block; font-size: 1.5rem; font-weight: 800; color: var(--paper); letter-spacing: -.01em; line-height: 1.3 }
@@ -239,6 +305,100 @@
         .limit-card li { margin-bottom: 7px }
         .limit-card a { color: #8a6a12 }
         .limit-card .card-foot { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted) }
+
+        /* ============ 2026-09 : audiences, flows, search, questions ============ */
+        .strip { background: var(--ink); color: var(--paper); padding: 22px 0 24px; border-bottom: 1px solid var(--rule-dark) }
+        .strip .wrap { display: grid; grid-template-columns: 1fr; gap: 12px }
+        @media (min-width:760px) { .strip .wrap { grid-template-columns: repeat(2, minmax(0,1fr)) } }
+        @media (min-width:1040px) { .strip .wrap { grid-template-columns: repeat(4, minmax(0,1fr)) } }
+        .strip-head { grid-column: 1/-1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px }
+        .strip-head h2 { font-size: 1.06rem; font-weight: 800; letter-spacing: -.01em }
+        .strip-head span { font-size: 13px; color: var(--muted-dark) }
+        a.fresh { display: block; text-decoration: none; color: var(--paper); background: #1B2126;
+            border: 1px solid var(--rule-dark); border-radius: 4px; padding: 13px 14px; transition: border-color .15s, background .15s }
+        a.fresh:hover { border-color: var(--marking); background: #20272D }
+        a.fresh b { display: block; font-size: 14.6px; font-weight: 700; margin-bottom: 4px }
+        a.fresh span { display: block; font-size: 13px; color: var(--muted-dark); line-height: 1.5 }
+        a.fresh em { font-style: normal; color: var(--marking); font-weight: 700; font-size: 11.5px;
+            letter-spacing: .04em; display: block; margin-bottom: 6px; text-transform: uppercase }
+        .he-tag { display: inline-block; font-size: 10.5px; font-weight: 800; letter-spacing: .04em;
+            border: 1px solid var(--marking); color: var(--marking); border-radius: 2px; padding: 0 5px; margin-inline-start: 6px; vertical-align: middle }
+
+        .routes { background: var(--paper-2); border-bottom: 1px solid var(--rule); padding: 34px 0 38px }
+        .r-head { margin-bottom: 18px }
+        .r-head h2 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); font-weight: 800; letter-spacing: -.015em; margin-bottom: 6px }
+        .r-head p { font-size: 15px; color: var(--muted); max-width: 68ch }
+        .r-grid { display: grid; grid-template-columns: 1fr; gap: 14px }
+        @media (min-width:700px) { .r-grid { grid-template-columns: repeat(2, minmax(0,1fr)) } }
+        @media (min-width:1040px) { .r-grid { grid-template-columns: repeat(3, minmax(0,1fr)) } }
+        .route { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px 15px; position: relative; overflow: hidden }
+        .route::before { content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 4px; background: var(--marking) }
+        .route h3 { font-size: 1.04rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 5px }
+        .route .who2 { font-size: 12.5px; color: var(--muted); display: block; margin-bottom: 9px }
+        .route p { font-size: 14px; color: var(--muted); line-height: 1.55; margin-bottom: 11px }
+        .route ul { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0 }
+        .route li a { display: flex; gap: 8px; align-items: baseline; font-size: 14px; font-weight: 600;
+            text-decoration: none; color: var(--ink); border-bottom: 1px solid transparent }
+        .route li a:hover { border-bottom-color: var(--marking) }
+        .route li a::before { content: "\2192"; color: var(--marking); font-weight: 800; flex: none }
+
+        .flow { border: 1px solid var(--rule); border-radius: 4px; background: var(--paper-2); padding: 18px 20px; margin-bottom: 14px }
+        .flow h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; letter-spacing: -.01em }
+        .flow > p { font-size: 14px; color: var(--muted); margin-bottom: 14px; max-width: 72ch }
+        .steps2 { list-style: none; display: grid; grid-template-columns: 1fr; gap: 10px; counter-reset: st; margin: 0; padding: 0 }
+        @media (min-width:820px) { .steps2 { grid-template-columns: repeat(4, minmax(0,1fr)) } .steps2.three { grid-template-columns: repeat(3, minmax(0,1fr)) } }
+        .steps2 li { counter-increment: st; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; padding: 11px 12px }
+        .steps2 li::before { content: counter(st); display: inline-flex; align-items: center; justify-content: center;
+            width: 20px; height: 20px; border-radius: 3px; background: var(--marking); color: var(--ink); font-size: 12px; font-weight: 800; margin-bottom: 7px }
+        .steps2 b { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px }
+        .steps2 span { display: block; font-size: 13px; color: var(--muted); line-height: 1.5 }
+        .steps2 a { color: var(--alert-ink); font-weight: 600 }
+        .flow-foot { margin-top: 13px; font-size: 13.5px; color: var(--muted) }
+        .flow-foot a { font-weight: 600; color: var(--alert-ink) }
+
+        .chain { background: var(--asphalt); color: var(--paper); border-radius: 4px; padding: 20px 22px }
+        .chain h3 { font-size: 1.08rem; font-weight: 800; margin-bottom: 6px }
+        .chain > p { font-size: 14.2px; color: var(--muted-dark); line-height: 1.6; max-width: 74ch; margin-bottom: 16px }
+        .chain-line { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px }
+        .chain-line a { display: inline-flex; align-items: center; min-height: 38px; padding: 7px 12px;
+            border: 1px solid var(--rule-dark); border-radius: 3px; font-size: 13.5px; font-weight: 600;
+            text-decoration: none; color: var(--paper); background: #1B2126 }
+        .chain-line a:hover { border-color: var(--marking) }
+        .chain-line i { font-style: normal; color: var(--marking); font-weight: 800 }
+        .chain ul { list-style: none; display: grid; grid-template-columns: 1fr; gap: 7px; font-size: 13.6px; color: var(--muted-dark); margin: 0; padding: 0 }
+        @media (min-width:820px) { .chain ul { grid-template-columns: 1fr 1fr; gap: 7px 26px } }
+        .chain ul li::before { content: "\00B7"; color: var(--marking); font-weight: 800; margin-inline-end: 7px }
+
+        .seek { display: grid; grid-template-columns: 1fr; gap: 14px }
+        @media (min-width:760px) { .seek { grid-template-columns: repeat(2, minmax(0,1fr)) } }
+        @media (min-width:1040px) { .seek { grid-template-columns: repeat(3, minmax(0,1fr)) } }
+        .seek section { border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; background: var(--paper-2) }
+        .seek h3 { font-size: 14.5px; font-weight: 800; margin-bottom: 9px }
+        .seek ul { list-style: none; display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0 }
+        .seek li a { font-size: 13.6px; color: var(--muted); text-decoration: none; line-height: 1.5; display: block }
+        .seek li a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 2px }
+        .seek li a b { color: var(--ink); font-weight: 600 }
+
+        .qa { border-top: 1px solid var(--rule) }
+        .qa details { border-bottom: 1px solid var(--rule) }
+        .qa summary { cursor: pointer; list-style: none; display: flex; gap: 12px; align-items: baseline;
+            padding: 14px 2px; font-size: 15.5px; font-weight: 700; letter-spacing: -.01em }
+        .qa summary::-webkit-details-marker { display: none }
+        .qa .a { padding: 0 2px 16px; font-size: 14.6px; color: var(--muted); line-height: 1.65; max-width: 78ch }
+
+        /* collapsed sections */
+        .foldable { border: 1px solid var(--rule); border-radius: 4px; background: var(--paper-2) }
+        .foldable[open] { background: var(--paper) }
+        .foldable > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 13px;
+            padding: 16px 18px; font-size: 1.12rem; font-weight: 800; letter-spacing: -.015em; border-inline-start: 4px solid transparent }
+        .foldable > summary::-webkit-details-marker { display: none }
+        .foldable[open] > summary { border-inline-start-color: var(--marking); border-bottom: 1px solid var(--rule) }
+        .foldable > summary:hover { background: #eceee8 }
+        .foldable .kw-hint { margin-inline-start: auto; font-size: 13px; font-weight: 500; color: var(--muted) }
+        .fold-body { padding: 16px 18px 20px }
+        .fold-lede { font-size: 15px; color: var(--muted); max-width: 72ch; margin-bottom: 18px }
+        .fold-body .flow:last-of-type { margin-bottom: 0 }
+        @media (max-width:600px) { .foldable > summary { font-size: 1.02rem; padding: 14px } .fold-body { padding: 14px } }
     </style>
 </head>
 <body>
@@ -247,9 +407,12 @@
     <div class="wrap">
         <a class="mark" href="#top"><span aria-hidden="true"></span>Mahalco</a>
         <nav>
+            <a href="#who">By role</a>
+            <a href="#flows">Workflows</a>
             <a href="#catalog">Catalogue</a>
+            <a href="#seek">What people search</a>
+            <a href="#faq">Questions</a>
             <a href="#access">Access</a>
-            <a href="#connect">Connect</a>
             <a href="tool.html">Junction Tool</a>
             <a href="apis-he.html">עברית</a>
         </nav>
@@ -259,18 +422,21 @@
 <section class="hero" id="top">
     <div class="wrap">
         <div>
-            <h1>Applications for transportation engineering services.</h1>
-            <p>Capacity, safety and geometric design from the Highway Capacity Manual, AASHTO Green Book, and Highway Safety Manual. Run a procedure in the browser, or post the same inputs to the API when the question becomes a corridor.</p>
+            <h1>Transportation engineering, open in your browser.</h1>
+            <p>Intersection level of service, queues, freeway and two-lane operations, alignment, sight distance and parking — from the Highway Capacity Manual, the AASHTO Green Book and the Highway Safety Manual. Run a procedure in the browser and see the intermediate steps, or post the same inputs to the API when the question becomes a corridor.</p>
             <div class="hero-actions">
-                <a class="btn btn-solid" href="#catalog">Browse the catalogue</a>
-                <a class="btn btn-line" href="tool.html">Open the junction tool</a>
+                <a class="btn btn-solid" href="#who">Find your tool by role</a>
+                <a class="btn btn-line" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Intersection LOS</a>
                 <a class="btn btn-line" href="critical-lane-v-english.html">Critical lane volume</a>
+                <a class="btn btn-line" href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Lanes &amp; queues</a>
+                <a class="btn btn-line" href="tool.html">Junction tool</a>
+                <a class="btn btn-line" href="#catalog">Full catalogue</a>
             </div>
             <div class="tally">
-                <div><b>22</b>Urban streets</div>
+                <div><b>17</b>Urban streets</div>
                 <div><b>14</b>Rural highways</div>
-                <div><b>12</b>Shared design</div>
-                <div><b>10</b>Transit &amp; multi-modal</div>
+                <div><b>11</b>Shared design</div>
+                <div><b>18</b>Sustainable mobility</div>
             </div>
         </div>
         <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="Plan view of a four-leg intersection">
@@ -300,12 +466,125 @@
     </div>
 </section>
 
+<section class="strip" aria-label="Recently added">
+    <div class="wrap">
+        <div class="strip-head">
+            <h2>Added this month</h2>
+            <span>Everything runs client-side — no install, no file uploads</span>
+        </div>
+        <a class="fresh" href="critical-lane-volume.html">
+            <em>Data import</em>
+            <b>Counts spreadsheet &rarr; critical lane volume<span class="he-tag">HE</span></b>
+            <span>Drop in the surveyor's XLSX. The tool finds the movement table, builds the hourly profile, picks the peak hour and feeds it into the calculation.</span>
+        </a>
+        <a class="fresh" href="critical-lane-volume.html#fcOut">
+            <em>Forecast</em>
+            <b>Level of service for target years<span class="he-tag">HE</span></b>
+            <span>Webster cycle, green split, HCM control delay and an LOS matrix across growth rates — including the saturation year.</span>
+        </a>
+        <a class="fresh" href="parking-regulations.html">
+            <em>Parking</em>
+            <b>Parking standard by locality<span class="he-tag">HE</span></b>
+            <span>Type the town name; settlement type, mass-transit status and district are resolved for you, with manual override.</span>
+        </a>
+        <a class="fresh" href="SD-tool.html">
+            <em>Sight distance</em>
+            <b>Guided walkthrough inside the tool<span class="he-tag">HE</span></b>
+            <span>Nine steps that tick themselves off: background image, scale calibration, axis and legs, through to an A0 sheet at true scale.</span>
+        </a>
+    </div>
+</section>
+
+<section class="routes" id="who" aria-label="By role">
+    <div class="wrap">
+        <div class="r-head">
+            <h2>What you need, by what you do</h2>
+            <p>The same calculations serve six groups who search for them in completely different words. Pick your row and get only the relevant tools.</p>
+        </div>
+        <div class="r-grid">
+
+            <div class="route">
+                <h3>Traffic engineers &amp; technicians</h3>
+                <span class="who2">Capacity, delay, queues, reports</span>
+                <p>The work usually done by hand or in HCS and Sidra: critical volume, cycle length, delay, queue and level of service — with the intermediate steps shown, not just a single number.</p>
+                <ul>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Signalized intersection LOS</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection">Unsignalized intersection LOS</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/roundabout">Roundabout capacity &amp; delay</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">95th percentile queue per lane</a></li>
+                </ul>
+            </div>
+
+            <div class="route">
+                <h3>Design offices</h3>
+                <span class="who2">Deliverables for submission</span>
+                <p>The checks that repeat on every project, in a form you can attach to a file: cross-section, sight distance, access intersection LOS and the parking standard.</p>
+                <ul>
+                    <li><a href="typical-section-en.html">Urban cross-section design</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance">Sight distance calculation</a></li>
+                    <li><a href="critical-lane-v-english.html">Critical lane volume</a></li>
+                    <li><a href="parking-regulations.html">Parking standard <span class="he-tag">HE</span></a></li>
+                </ul>
+            </div>
+
+            <div class="route">
+                <h3>Project managers</h3>
+                <span class="who2">Design review, decisions, schedule</span>
+                <p>An independent check on what the consultants hand over — before it enters the file or goes to a committee. Alternatives compared, and the gaps in a report made visible.</p>
+                <ul>
+                    <li><a href="tool.html">Junction analysis end to end</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility">Corridor facility analysis</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/freeway-reliability">Travel time reliability</a></li>
+                    <li><a href="#catalog">Every procedure by category</a></li>
+                </ul>
+            </div>
+
+            <div class="route">
+                <h3>Surveyors &amp; mapping</h3>
+                <span class="who2">Working on a plan, scale, sheets</span>
+                <p>Work that starts from an image: calibrate against a segment of known length, mark up over the background, and export an A0 sheet at true scale, SVG or JSON.</p>
+                <ul>
+                    <li><a href="SD-tool.html">Sight triangles over a plan <span class="he-tag">HE</span></a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/horizontal-curve">Horizontal curve design</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/vertical-curve">Vertical curve design</a></li>
+                    <li><a href="rural.html">Rural cross-section design</a></li>
+                </ul>
+            </div>
+
+            <div class="route">
+                <h3>Developers &amp; real estate</h3>
+                <span class="who2">Feasibility, parking, permitted use</span>
+                <p>Before you buy or promote a use: how many parking spaces the regulations require for that use in that locality, and whether the access intersection can carry the added trips.</p>
+                <ul>
+                    <li><a href="parking-regulations.html">Parking spaces required <span class="he-tag">HE</span></a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Access intersection LOS</a></li>
+                    <li><a href="critical-lane-v-english.html">Critical volume screening</a></li>
+                    <li><a href="#lead">What a signed report requires</a></li>
+                </ul>
+            </div>
+
+            <div class="route">
+                <h3>Authorities &amp; review bodies</h3>
+                <span class="who2">Checking what was submitted</span>
+                <p>An independent review of a submission: whether the calculation follows the standard, whether the assumptions are reasonable, and what changes when a volume or growth rate is updated.</p>
+                <ul>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Verify a submitted LOS</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Verify queues against bay lengths</a></li>
+                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los">Pedestrian level of service</a></li>
+                    <li><a href="parking-regulations.html">Verify a parking standard <span class="he-tag">HE</span></a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
 <section class="gates" aria-label="The four service areas">
     <div class="wrap">
-        <a class="gate" href="#urban" data-open="urban"><h3>Urban streets</h3><p>Signals, intersections, queues, multimodal level of service and cross-section geometry.</p><span class="g-n"><b>22</b> procedures &middot; 5 sub-topics</span></a>
+        <a class="gate" href="#urban" data-open="urban"><h3>Urban streets</h3><p>Signals, intersections, queues, multimodal level of service and cross-section geometry.</p><span class="g-n"><b>17</b> procedures &middot; 4 sub-topics</span></a>
         <a class="gate" href="#rural" data-open="rural"><h3>Rural highways</h3><p>Freeways, interchanges, weaving, horizontal and vertical alignment and sight distance.</p><span class="g-n"><b>14</b> procedures &middot; 3 sub-topics</span></a>
-        <a class="gate" href="#common" data-open="common"><h3>Common planning</h3><p>Impact studies, pavement, roadside safety, environment and project management.</p><span class="g-n"><b>12</b> procedures &middot; 4 sub-topics</span></a>
-        <a class="gate" href="#transit" data-open="transit"><h3>Transit &amp; Multi-Modal</h3><p>Transit routes and lanes, TOD, cycling, parking, terminals and traffic calming.</p><span class="g-n"><b>10</b> procedures &middot; 4 sub-topics</span></a>
+        <a class="gate" href="#common" data-open="common"><h3>Common planning</h3><p>Impact studies, pavement, roadside safety, environment and project management.</p><span class="g-n"><b>11</b> procedures &middot; 3 sub-topics</span></a>
+        <a class="gate" href="#transit" data-open="transit"><h3>Sustainable Mobility</h3><p>Transit lane justification, cycling infrastructure, high-demand pedestrian crossings, parking, terminals and traffic calming zones.</p><span class="g-n"><b>18</b> procedures &middot; 5 sub-topics</span></a>
     </div>
 </section>
 
@@ -320,13 +599,13 @@
             <button class="chip" data-cat="urban" aria-pressed="false">Urban</button>
             <button class="chip" data-cat="rural" aria-pressed="false">Rural</button>
             <button class="chip" data-cat="common" aria-pressed="false">Common</button>
-            <button class="chip" data-cat="transit" aria-pressed="false">Transit &amp; Multi-Modal</button>
+            <button class="chip" data-cat="transit" aria-pressed="false">Sustainable Mobility</button>
             <button class="chip chip-pending" id="chip-pending" type="button" aria-pressed="false">Not yet complete</button>
         </div>
         <p class="count" id="count" aria-live="polite">60 procedures</p>
             <div class="usage" id="usage" hidden>
                 <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
-                <span class="u-msg" id="usage-msg">Used today: <b>0</b> of 10 procedures</span>
+                <span class="u-msg" id="usage-msg">Procedures opened today: <b>0</b> of 10</span>
                 <span class="u-contact">Need a higher limit: <a href="mailto:mahmoudalem95@icloud.com?subject=Daily%20limit">mahmoudalem95@icloud.com</a> · <a href="tel:+972546528572">&lrm;+972-546-528572</a></span>
             </div>
     </div>
@@ -342,7 +621,7 @@
                 <span class="arrow" aria-hidden="true"></span>
                 <span class="b-title">Urban Streets</span>
                 <span class="b-sub">Signals, junctions, multimodal quality and cross-section geometry.</span>
-                <span class="b-n"><b data-groupcount>22</b> procedures</span>
+                <span class="b-n"><b data-groupcount>17</b> procedures</span>
             </summary>
             <div class="twigs">
 
@@ -368,15 +647,6 @@
                     </div>
                 </details>
 
-                <details class="twig">
-                    <summary><span class="arrow" aria-hidden="true"></span>Multimodal LOS<span class="t-n" data-twigcount>4</span></summary>
-                    <div class="leaves">
-                        <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los"><h3>Pedestrian LOS</h3><p>Walkability from footway width, separation from traffic, and crossing conditions.</p><span class="std">HCM Ch. 16</span></a>
-                        <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/bicycle-los"><h3>Bicycle LOS</h3><p>Cycling comfort from pavement condition, traffic volume, and heavy‑vehicle share.</p><span class="std">HCM Ch. 16</span></a>
-                        <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/transit-los"><h3>Transit LOS</h3><p>Service frequency, stop amenity, and reliability along a route.</p><span class="std">HCM Ch. 16</span></a>
-                        <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/multimodal-los"><h3>Multimodal LOS</h3><p>Pedestrian, bicycle, and transit scores combined into one corridor result.</p><span class="std">HCM Ch. 16</span></a>
-                    </div>
-                </details>
 
                 <details class="twig">
                     <summary><span class="arrow" aria-hidden="true"></span>Urban Geometric Design<span class="t-n" data-twigcount>4</span></summary>
@@ -389,12 +659,11 @@
                 </details>
 
                 <details class="twig">
-                    <summary><span class="arrow" aria-hidden="true"></span>Ancillary Infrastructure & Safety<span class="t-n" data-twigcount>4</span></summary>
+                    <summary><span class="arrow" aria-hidden="true"></span>Ancillary Infrastructure & Safety<span class="t-n" data-twigcount>3</span></summary>
                     <div class="leaves">
                         <div class="soon"><h3>Intersection Safety Performance Functions</h3><p>Expected crash frequency at urban intersections by control type and volume.</p><span class="std">HSM</span></div>
                         <div class="soon"><h3>Urban Drainage Design</h3><p>Design of channels, inlets, culverts, and storm‑water intakes.</p><span class="std">FHWA / AASHTO</span></div>
                         <div class="soon"><h3>Signing and Marking Guidelines</h3><p>Design of guide signs, warning, and regulatory signs per MUTCD.</p><span class="std">MUTCD</span></div>
-                        <div class="soon"><h3>Sidewalk & Pedestrian Design</h3><p>Footway width, street furniture, crossings, and accessibility.</p><span class="std">AASHTO / ADA</span></div>
                     </div>
                 </details>
 
@@ -452,7 +721,7 @@
                 <span class="arrow" aria-hidden="true"></span>
                 <span class="b-title">Shared Design</span>
                 <span class="b-sub">Procedures that apply wherever the project sits.</span>
-                <span class="b-n"><b data-groupcount>12</b> procedures</span>
+                <span class="b-n"><b data-groupcount>11</b> procedures</span>
             </summary>
             <div class="twigs">
 
@@ -476,12 +745,6 @@
                     </div>
                 </details>
 
-                <details class="twig">
-                    <summary><span class="arrow" aria-hidden="true"></span>Transit & Multimodal Analysis<span class="t-n" data-twigcount>1</span></summary>
-                    <div class="leaves">
-                        <div class="soon"><h3>Multi‑Modal Intersection Analysis</h3><p>Combining pedestrian, bicycle, transit, and car in a single junction.</p><span class="std">HCM Ch. 16 / 19</span></div>
-                    </div>
-                </details>
 
                 <details class="twig">
                     <summary><span class="arrow" aria-hidden="true"></span>Environment, Management & Technology<span class="t-n" data-twigcount>3</span></summary>
@@ -499,15 +762,17 @@
         <details class="branch" id="transit" data-group="transit">
             <summary>
                 <span class="arrow" aria-hidden="true"></span>
-                <span class="b-title">Transit &amp; Multi-Modal</span>
-                <span class="b-sub">Transit routes and lanes, transit-oriented development, cycling, parking and traffic calming.</span>
-                <span class="b-n"><b data-groupcount>10</b> procedures</span>
+                <span class="b-title">Sustainable Mobility</span>
+                <span class="b-sub">Transit, cycling, walking and traffic calming — what decides how the street behaves.</span>
+                <span class="b-n"><b data-groupcount>18</b> procedures</span>
             </summary>
             <div class="twigs">
 
                 <details class="twig">
-                    <summary><span class="arrow" aria-hidden="true"></span>Transit Routes &amp; Lanes<span class="t-n" data-twigcount>4</span></summary>
+                    <summary><span class="arrow" aria-hidden="true"></span>Justification, Routes &amp; Transit Lanes<span class="t-n" data-twigcount>6</span></summary>
                     <div class="leaves">
+                        <div class="soon"><h3>Urban Transit Lane Justification</h3><p>Justification criteria for an urban transit lane: peak hour passenger volume, service frequency, travel time saved and the width available in the cross-section.</p><span class="std">TCQSM / national guidelines</span></div>
+                        <div class="soon"><h3>Interurban Busway &amp; Transit Lane Justification</h3><p>Segregated busway and interurban transit lane: operational justification, cross-section and integration at intersections and interchanges.</p><span class="std">TCQSM / AASHTO</span></div>
                         <div class="soon"><h3>Transit Route and Lane Planning</h3><p>Planning of transit routes, dedicated lanes, stops and operational measures.</p><span class="std">AASHTO / APTA</span></div>
                         <div class="soon"><h3>Transit Routes &amp; Lanes — Urban &amp; Interurban</h3><p>Route and lane planning with justification criteria for urban and interurban contexts.</p><span class="std">AASHTO / HCM</span></div>
                         <div class="soon"><h3>Integrating Transit in Interurban Design</h3><p>Shifting the approach: considerations, justifications and design guidelines for interurban transit.</p><span class="std">AASHTO / NCHRP</span></div>
@@ -523,7 +788,7 @@
                 </details>
 
                 <details class="twig">
-                    <summary><span class="arrow" aria-hidden="true"></span>Bicycle Path Planning<span class="t-n" data-twigcount>2</span></summary>
+                    <summary><span class="arrow" aria-hidden="true"></span>Cycling Infrastructure<span class="t-n" data-twigcount>2</span></summary>
                     <div class="leaves">
                         <div class="soon"><h3>Bicycle Path Planning — Considerations &amp; Guidelines</h3><p>Warrants, justification and design guidelines for cycle infrastructure.</p><span class="std">AASHTO Guide</span></div>
                         <div class="soon"><h3>Bicycle Path Design — Urban &amp; Interurban</h3><p>Width, grade, separation, and pavement for bicycle paths in urban and interurban settings.</p><span class="std">AASHTO Guide</span></div>
@@ -531,19 +796,212 @@
                 </details>
 
                 <details class="twig">
-                    <summary><span class="arrow" aria-hidden="true"></span>Parking, Terminals &amp; Traffic Calming<span class="t-n" data-twigcount>3</span></summary>
+                    <summary><span class="arrow" aria-hidden="true"></span>Walking, Crossings, Parking &amp; Traffic Calming<span class="t-n" data-twigcount>5</span></summary>
                     <div class="leaves">
+                        <div class="soon"><h3>Sidewalk & Pedestrian Design</h3><p>Footway width, street furniture, crossings, and accessibility.</p><span class="std">AASHTO / ADA</span></div>
+                        <div class="soon"><h3>Multi‑Modal Intersection Analysis</h3><p>Combining pedestrian, bicycle, transit, and car in a single junction.</p><span class="std">HCM Ch. 16 / 19</span></div>
                         <div class="soon"><h3>Parking, Terminals &amp; Park-and-Ride</h3><p>On-street and multi-storey parking, terminals, parking standards and accessibility.</p><span class="std">ITE / AASHTO</span></div>
                         <div class="soon"><h3>High-Demand Intersections with Pedestrian Crossings</h3><p>Design of junctions with heavy pedestrian crossing demand and multimodal priority.</p><span class="std">HCM Ch. 16 / 19</span></div>
                         <div class="soon"><h3>Urban Traffic Calming Zones</h3><p>Traffic calming measures, zone design and speed management in cities.</p><span class="std">ITE / FHWA</span></div>
                     </div>
                 </details>
 
-            </div>
+                            <details class="twig">
+                    <summary><span class="arrow" aria-hidden="true"></span>Multimodal LOS<span class="t-n" data-twigcount>4</span></summary>
+                    <div class="leaves">
+                        <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los"><h3>Pedestrian LOS</h3><p>Walkability from footway width, separation from traffic, and crossing conditions.</p><span class="std">HCM Ch. 16</span></a>
+                        <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/bicycle-los"><h3>Bicycle LOS</h3><p>Cycling comfort from pavement condition, traffic volume, and heavy‑vehicle share.</p><span class="std">HCM Ch. 16</span></a>
+                        <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/transit-los"><h3>Transit LOS</h3><p>Service frequency, stop amenity, and reliability along a route.</p><span class="std">HCM Ch. 16</span></a>
+                        <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/multimodal-los"><h3>Multimodal LOS</h3><p>Pedestrian, bicycle, and transit scores combined into one corridor result.</p><span class="std">HCM Ch. 16</span></a>
+                    </div>
+                </details>
+</div>
         </details>
 
         <p class="empty" id="empty" hidden>No procedure matches that search. Try a standard — HCM, AASHTO, or HSM — or <button type="button" id="reset" style="font:inherit;background:none;border:0;color:#8a6a12;text-decoration:underline;cursor:pointer;padding:0">clear search</button>.</p>
     </div>
+
+    <section class="block" id="flows">
+        <details class="foldable">
+            <summary><span class="arrow" aria-hidden="true"></span>Three complete workflows<span class="kw-hint">Open the full sequences</span></summary>
+            <div class="fold-body">
+                <p class="fold-lede">Not a single tool, but the path from raw input to the thing you submit. Every step links to the tool that performs it.</p>
+
+                <div class="flow">
+                    <h3>From turning movements to level of service and target years</h3>
+                    <p>Input: peak hour turning movements. Output: delay and level of service now, and an LOS matrix for the forecast years.</p>
+                    <ol class="steps2">
+                        <li><b>Critical volume</b><span>Enter the twelve movements in <a href="critical-lane-v-english.html">critical lane volume</a>; three phasing methods are computed in parallel and the lowest is selected.</span></li>
+                        <li><b>Intersection LOS</b><span>Post the same inputs to <a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">signalized intersection analysis</a> for delay, v/c and LOS per approach.</span></li>
+                        <li><b>Queues and bays</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Lane and queue analysis</a> gives the 95th percentile queue against the turn bay you actually drew.</span></li>
+                        <li><b>Target years</b><span>Grow the movements and rerun the chain — cycle, split, delay — to find the year the intersection saturates. <span class="he-tag">HE</span></span></li>
+                    </ol>
+                    <p class="flow-foot">Working from an Israeli counts file? The <a href="critical-lane-volume.html">Hebrew calculator</a> reads the XLSX directly and picks the peak hour for you.</p>
+                </div>
+
+                <div class="flow">
+                    <h3>Corridor rather than intersection</h3>
+                    <p>Input: a sequence of signals along an arterial. Output: travel speed, level of service and a coordination plan for the corridor.</p>
+                    <ol class="steps2 three">
+                        <li><b>Segment</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-segment">Urban street segment analysis</a> for running speed and LOS between two signals.</span></li>
+                        <li><b>Facility</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility">Urban street facility analysis</a> aggregates consecutive segments into one corridor result.</span></li>
+                        <li><b>Coordination</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/signal-timing">Signal coordination and timing</a> for offsets, splits and a common cycle length.</span></li>
+                    </ol>
+                    <p class="flow-foot">Segment results depend heavily on the assumed arrival type — state it explicitly in any submission.</p>
+                </div>
+
+                <div class="flow">
+                    <h3>Freeway and interchange, end to end</h3>
+                    <p>Input: mainline and ramp volumes with a geometric layout. Output: density, level of service and reliability across the whole facility.</p>
+                    <ol class="steps2">
+                        <li><b>Basic segments</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/basic-freeway">Basic freeway segment analysis</a> for density and LOS on uninterrupted sections.</span></li>
+                        <li><b>Ramps and weaving</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/ramp-merge-diverge">Merge and diverge</a> plus <a href="https://junction-los-api.onrender.com/api/v1/pages/weaving-segment">weaving segment</a> analysis at the junctions.</span></li>
+                        <li><b>Facility</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/freeway-facility">Freeway facility analysis</a> combines the segments into one LOS for the corridor.</span></li>
+                        <li><b>Reliability</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/freeway-reliability">Travel time reliability</a> shows how the facility behaves on a bad day, not an average one.</span></li>
+                    </ol>
+                    <p class="flow-foot">For the interchange itself, <a href="https://junction-los-api.onrender.com/api/v1/pages/interchange-los">interchange LOS</a> covers the ramp terminals.</p>
+                </div>
+
+                <div class="chain">
+                    <h3>Why chaining the tools is the interesting part</h3>
+                    <p>One set of counts feeds an entire sequence. Each link adds a layer that normally means copying numbers between programs by hand — and every such copy is a chance to be wrong.</p>
+                    <div class="chain-line">
+                        <a href="critical-lane-v-english.html">Counts</a><i>&rarr;</i>
+                        <a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Intersection LOS</a><i>&rarr;</i>
+                        <a href="https://junction-los-api.onrender.com/api/v1/pages/signal-timing">Signal timing</a><i>&rarr;</i>
+                        <a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Queues</a><i>&rarr;</i>
+                        <a href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance">Sight distance</a><i>&rarr;</i>
+                        <a href="parking-regulations.html">Parking</a>
+                    </div>
+                    <ul>
+                        <li>The peak hour is established once and serves every check downstream.</li>
+                        <li>Queue length is tested against the turn bay that was actually designed.</li>
+                        <li>The growth forecast reruns the whole sequence for each target year.</li>
+                        <li>Heavy vehicle share and PCU conversion are applied once, not per tool.</li>
+                    </ul>
+                    <p class="flow-foot" style="color:var(--muted-dark);margin-top:14px">Today the sequence runs by manual hand-off between tools. A shared data layer is in development — <a href="mailto:mahmoudalem95@icloud.com?subject=Shared%20data%20layer%20between%20tools" style="color:var(--marking)">want early access?</a></p>
+                </div>
+            </div>
+        </details>
+    </section>
+
+    <section class="block" id="seek">
+        <details class="foldable">
+            <summary><span class="arrow" aria-hidden="true"></span>How people search for this<span class="kw-hint">Open the list of phrasings</span></summary>
+            <div class="fold-body">
+                <p class="fold-lede">Every role asks the same engineering question in different words. If you arrived from one of these phrasings, the link goes straight to the tool.</p>
+                <div class="seek">
+
+                    <section>
+                        <h3>Capacity &amp; operations</h3>
+                        <ul>
+                            <li><a href="critical-lane-v-english.html">How to <b>calculate critical lane volume</b></a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><b>Signalized intersection delay</b> and LOS per HCM</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><b>Stop-controlled intersection</b> capacity and gap acceptance</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/roundabout"><b>Roundabout capacity</b> and entry delay</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis"><b>95th percentile queue</b> and turn bay length</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signal-timing"><b>Optimum cycle length</b> and offsets</a></li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Freeways &amp; rural</h3>
+                        <ul>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/basic-freeway"><b>Freeway density</b> and level of service</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/weaving-segment"><b>Weaving segment</b> analysis</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/ramp-merge-diverge"><b>Ramp merge</b> and diverge influence area</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/two-lane-highway"><b>Two-lane highway</b> follower density</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/climbing-lane-justification">When is a <b>climbing lane</b> justified</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/freeway-reliability"><b>Travel time reliability</b> index</a></li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Geometry &amp; sight distance</h3>
+                        <ul>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance"><b>Stopping sight distance</b> calculation</a></li>
+                            <li><a href="SD-tool.html"><b>Intersection sight triangle</b> over a plan <span class="he-tag">HE</span></a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/horizontal-curve"><b>Minimum radius</b> and superelevation</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/vertical-curve"><b>Crest curve</b> K value</a></li>
+                            <li><a href="typical-section-en.html"><b>Urban cross-section</b> lane and verge widths</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/typical-sections-interurban"><b>Interurban typical sections</b></a></li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Development &amp; property</h3>
+                        <ul>
+                            <li><a href="parking-regulations.html"><b>How many parking spaces</b> are required <span class="he-tag">HE</span></a></li>
+                            <li><a href="parking-regulations.html"><b>Parking standard</b> for offices and retail <span class="he-tag">HE</span></a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Will the <b>access intersection</b> hold the added trips</a></li>
+                            <li><a href="critical-lane-v-english.html"><b>Traffic screening</b> before purchase</a></li>
+                            <li><a href="#lead">Who <b>signs a traffic report</b></a></li>
+                            <li><a href="#access">Embedding the calculations in <b>our own system</b></a></li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Multimodal &amp; streets</h3>
+                        <ul>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los"><b>Pedestrian level of service</b> on a sidewalk</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/bicycle-los"><b>Bicycle level of service</b></a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/transit-los"><b>Transit level of service</b> and headway</a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/multimodal-los"><b>Multimodal LOS</b> for a corridor</a></li>
+                            <li><a href="#transit"><b>Transit lane justification</b> — urban and interurban</a></li>
+                            <li><a href="#transit"><b>Traffic calming zone</b> planning</a></li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Review &amp; management</h3>
+                        <ul>
+                            <li><a href="tool.html">Checking a <b>traffic consultant's report</b></a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility">Comparing <b>design alternatives</b> for a corridor</a></li>
+                            <li><a href="critical-lane-volume.html"><b>Target year forecast</b> and saturation year <span class="he-tag">HE</span></a></li>
+                            <li><a href="https://junction-los-api.onrender.com/api/v1/pages/interchange-los"><b>Interchange ramp terminal</b> LOS</a></li>
+                            <li><a href="#access"><b>API rate limits</b> and pricing</a></li>
+                            <li><a href="#connect"><b>API key</b> and a sample request</a></li>
+                        </ul>
+                    </section>
+
+                </div>
+            </div>
+        </details>
+    </section>
+
+    <section class="block" id="lead">
+        <div class="block-head">
+            <h2>What the tools give you, and what still needs an engineer</h2>
+            <p>A clean line between what you get here on your own and what requires professional sign-off — so you don't submit something that comes back.</p>
+        </div>
+        <div class="tier">
+            <div><h3>Yours immediately, at no cost</h3><p>The calculation to the standard with its intermediate steps exposed: critical volume, phase times, delay, queue, level of service, sight distance, cross-sections and target-year forecasts. Everything runs in the browser; your files stay on your machine.</p></div>
+            <span class="rate">Self-service</span>
+            <a class="price" href="#flows">See the workflows</a>
+        </div>
+        <div class="tier">
+            <div><h3>Requires a licensed traffic engineer</h3><p>A signed traffic impact assessment, a safety report, submissions to an authority or committee, and the choice of design scenarios. The tools produce the numbers; professional responsibility and the signature belong to a licensed engineer.</p></div>
+            <span class="rate">Consulting</span>
+            <a class="price buy" href="mailto:mahmoudalem95@icloud.com?subject=Traffic%20report%20%2F%20engineering%20support">Talk to us</a>
+        </div>
+        <p class="note">Transportation engineer, Technion graduate. Professional enquiries: <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a> &middot; <a href="tel:+972546528572">&lrm;+972-546-528572</a></p>
+    </section>
+
+    <section class="block" id="faq">
+        <details class="foldable">
+            <summary><span class="arrow" aria-hidden="true"></span>Questions that keep coming up<span class="kw-hint">Open the answers</span></summary>
+            <div class="fold-body">
+                <div class="qa">
+                    <details><summary><span class="arrow" aria-hidden="true"></span>Which standards do the calculations follow?</summary><div class="a">HCM for capacity, level of service, delay and queues; the AASHTO Green Book for geometric design; the HSM for safety performance. Where an Israeli guideline governs — parking regulations, urban street guidelines, interurban design guidelines, roundabout guidelines — the tool follows it and says so.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>Do I need to install anything or upload my files?</summary><div class="a">No. Every tool runs in the browser, including reading a counts spreadsheet and marking up a plan. Nothing is uploaded to a server. The API exists separately, for embedding the same calculations in your own systems.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>What is the difference between the in-browser pages and the API?</summary><div class="a">Identical methods, different interface. The pages are for a single intersection, segment or cross-section; the API is for batches — a corridor, a scenario matrix, or a nightly run against your own database.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>How is a future-year level of service produced?</summary><div class="a">Every movement is grown at a compound annual rate and the whole chain is recomputed — critical volume, cycle length, green split, delay. The delay is never simply multiplied by the growth factor, because delay is not linear in volume and diverges around a volume-to-capacity ratio of 1.0.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>Do the results replace a signed traffic report?</summary><div class="a">No. The tools perform the calculation to the standard and expose the intermediate steps so they can be checked. A traffic impact assessment, a safety report or a submission to an authority requires a licensed traffic engineer who takes professional responsibility for the assumptions and the result.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>Some tools open in Hebrew — why?</summary><div class="a">A few of the newest tools were built for Israeli guidelines first: the counts-file import, the parking standard by locality, and the sight-distance sheet. They are marked HE in the catalogue. English versions follow the same methods and are being added.</div></details>
+                </div>
+            </div>
+        </details>
+    </section>
 
     <section class="block" id="access">
         <div class="block-head">
@@ -635,10 +1093,14 @@
             <div><h4>How to pay</h4><ul><li><a class="pay-link" href="https://paypal.me/MahmoudAlem" target="_blank" rel="noopener">PayPal</a></li><li>Email from the paying address</li><li>Key returned manually within a business day</li><li><a href="#access">All plans and prices</a></li></ul></div>
         </div>
         <div class="f-bottom">
+            <a href="#who">By role</a>
+            <a href="#flows">Workflows</a>
             <a href="#catalog">Catalogue</a>
             <a href="tool.html">Junction Tool</a>
             <a href="critical-lane-v-english.html">Critical Lane Volume</a>
+            <a href="typical-section-en.html">Cross-Sections</a>
             <a href="parking-regulations.html">Parking Regulations</a>
+            <a href="#faq">Questions</a>
             <a href="apis-he.html">עברית</a>
             <a href="english-policy.html">Policy</a>
             <span class="who">Mahmoud Alem &copy; 2026</span>
@@ -666,7 +1128,8 @@
 (function() {
     const LIMIT = 10;
     const KEY = 'mahalco_daily_use_v1';
-    const REPEAT_GRACE = 30000;
+    /* distinct procedures per day, not clicks: returning to the same one is free.
+       To restore click counting, bring back the 30-second check that was here. */
 
     let mem = null;
     const stamp = () => {
@@ -742,7 +1205,7 @@
         if (s.count >= LIMIT) { ev.preventDefault(); lock(); return; }
         const id = a.getAttribute('href');
         const now = Date.now();
-        if (s.last[id] && now - s.last[id] < REPEAT_GRACE) { s.last[id] = now; writeState(s); return; }
+        if (s.last[id]) { s.last[id] = now; writeState(s); return; }
         s.last[id] = now;
         s.count += 1;
         writeState(s);

@@ -114,6 +114,30 @@ textarea#pasteBox{width:100%;min-height:130px;font-family:var(--mono);font-size:
 textarea#pasteBox:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
 @media (max-width:820px){.imp-grid{grid-template-columns:1fr}}
 
+/* ---- LOS & forecast ---- */
+.los{display:inline-block;min-width:22px;text-align:center;font-weight:700;font-size:12.5px;
+  border-radius:3px;padding:1px 7px;font-family:var(--mono)}
+.los-A{background:#34D399;color:#04150E}.los-B{background:#A3E635;color:#101A02}
+.los-C{background:#FACC15;color:#1A1403}.los-D{background:#FB923C;color:#1A0D02}
+.los-E{background:#F35B5B;color:#210505}.los-F{background:#E11D48;color:#fff}
+.fc-inputs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 14px;margin-bottom:16px}
+.fc-inputs .f{display:flex;flex-direction:column;gap:5px;font-family:inherit}
+.fc-inputs label{font-size:12.5px;color:var(--ink2)}
+.fc-inputs input[type="text"],.fc-inputs input[type="number"]{width:100%;font-family:var(--mono);font-size:13px;
+  padding:6px 8px;border:1px solid var(--rule2);border-radius:4px;background:var(--sunk);color:var(--ink)}
+.fc-inputs input:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+.fc-inputs .chk{flex-direction:row;align-items:center;gap:7px;font-size:12.5px;color:var(--ink2);align-self:end;padding-bottom:6px}
+@media (max-width:820px){.fc-inputs{grid-template-columns:1fr 1fr}}
+.fc-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.fc-cards .c{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:11px 13px}
+.fc-cards .k{font-size:12px;color:var(--ink2);margin-bottom:3px}
+.fc-cards .v{font-family:var(--mono);font-size:21px;font-weight:500;line-height:1.15}
+.fc-cards .v small{font-size:12px;color:var(--ink3);font-family:'Assistant',sans-serif}
+@media (max-width:820px){.fc-cards{grid-template-columns:1fr 1fr}}
+table.fc td.cell{text-align:center;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+table.fc td.cell .sub2{display:block;color:var(--ink3);font-size:11px;margin-top:3px}
+table.fc th.yr{text-align:center}
+
 /* ---- tables ---- */
 .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:20px;border-radius:var(--r)}
 table{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);
@@ -278,6 +302,43 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
   </section>
 
   <div id="results" tabindex="-1"></div>
+
+  <section>
+    <div class="sec-head"><h2>רמת שירות ותחזית לשנים עתידיות</h2>
+      <span class="meta">צומת מרומזר — מחזור Webster, עיכוב לפי HCM</span></div>
+    <p class="lede" style="margin-bottom:16px">הנפחים הקריטיים שחושבו למעלה מתורגמים כאן לזמני מופע, יחס ביקוש/קיבולת, עיכוב ורמת שירות.
+      אותו חישוב חוזר על נפחים שגדלו בשיעור שנתי קבוע, וכך מתקבלת מטריצת רמות שירות לשנות התחזית.
+      החישוב מתעדכן בזמן אמת יחד עם שאר הדף.</p>
+    <div class="fc-inputs">
+      <div class="f"><label for="fcMethod">שיטת פאזות לחישוב</label>
+        <select id="fcMethod">
+          <option value="best">הנמוכה ביותר (אוטומטי)</option>
+          <option value="1">שיטה 1 — זרועות מפוצלות</option>
+          <option value="2">שיטה 2 — הפרדת שמאלות</option>
+          <option value="3">שיטה 3 — פאזה מתמשכת</option>
+        </select></div>
+      <div class="f"><label for="fcSat">זרימת רוויה בסיסית (רכ/ש/נתיב ירוק)</label>
+        <input type="number" id="fcSat" value="1900" min="1200" max="2200" step="50" inputmode="numeric"></div>
+      <div class="f"><label for="fcLost">זמן אבוד למופע (שנ')</label>
+        <input type="number" id="fcLost" value="4" min="0" max="10" step="0.5" inputmode="decimal"></div>
+      <div class="f"><label for="fcCycle">אורך מחזור (שנ') — ריק = Webster</label>
+        <input type="number" id="fcCycle" placeholder="אופטימלי" min="30" max="200" step="5" inputmode="numeric"></div>
+      <div class="f"><label for="fcGmin">ירוק מינימלי למופע (שנ')</label>
+        <input type="number" id="fcGmin" value="7" min="0" max="30" step="1" inputmode="numeric"></div>
+      <div class="f"><label for="fcHV">רכב כבד (%)</label>
+        <input type="number" id="fcHV" value="0" min="0" max="50" step="0.5" inputmode="decimal"></div>
+      <div class="f chk"><label class="chk" style="display:flex;align-items:center;gap:7px;cursor:pointer">
+        <input type="checkbox" id="fcPCU"> הנפחים כבר ביר״מ — לא להחיל מקדם רכב כבד</label></div>
+      <div class="f"><label for="fcBase">שנת בסיס</label>
+        <input type="number" id="fcBase" value="2026" min="1990" max="2100" step="1" inputmode="numeric"></div>
+      <div class="f"><label for="fcRates">שיעורי צמיחה (%/שנה)</label>
+        <input type="text" id="fcRates" value="1, 2, 3" inputmode="decimal"></div>
+      <div class="f"><label for="fcYears">שנות תחזית</label>
+        <input type="text" id="fcYears" value="2031, 2036, 2041" inputmode="numeric"></div>
+    </div>
+    <div id="fcOut"></div>
+  </section>
+
 
   <section>
     <div class="sec-head"><h2>גבולות השיטה</h2></div>
@@ -1055,6 +1116,7 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     var res = recompute();
     renderLive(res, cache.volMap);
     renderResults(res, cache.volMap);
+    renderForecast();
     updateJson();
     save();
   }
@@ -1573,6 +1635,8 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     if (!t) return;
     var hh = t.data.hours[imp.hourIx];
     if (!hh) return;
+    var pcuBox = document.getElementById('fcPCU');
+    if (pcuBox && t.unit === 'pcu') pcuBox.checked = true;
     ARMS.forEach(function (a) {
       var st = state[a];
       st.exists = !!t.data.present[a];
@@ -1800,6 +1864,273 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     });
   }
 
+
+  /* ============================================================
+     6c. Signal timing, delay, LOS and growth forecast
+     ------------------------------------------------------------
+     Planning-level signalised analysis built on the critical lane
+     volumes above: Webster optimum cycle, green split proportional
+     to the critical flow ratios, HCM control delay (uniform +
+     incremental) per critical lane group, volume-weighted to an
+     intersection delay and LOS.
+     ============================================================ */
+  var LOS_BOUNDS = [[10, 'A'], [20, 'B'], [35, 'C'], [55, 'D'], [80, 'E']];
+  function losOf(delay) {
+    for (var i = 0; i < LOS_BOUNDS.length; i++) if (delay <= LOS_BOUNDS[i][0]) return LOS_BOUNDS[i][1];
+    return 'F';
+  }
+  function losChip(l) { return '<span class="los los-' + l + '">' + l + '</span>'; }
+
+  function fcNum(id, dflt) {
+    var el = document.getElementById(id);
+    if (!el) return dflt;
+    var v = parseFloat(el.value);
+    return isFinite(v) ? v : dflt;
+  }
+  function fcList(id) {
+    var el = document.getElementById(id);
+    if (!el) return [];
+    return el.value.split(/[,;\s]+/).map(parseFloat).filter(function (v) { return isFinite(v); });
+  }
+  function fcOpts() {
+    var cyc = document.getElementById('fcCycle');
+    var cycVal = cyc && cyc.value !== '' ? parseFloat(cyc.value) : null;
+    var pcu = document.getElementById('fcPCU');
+    return {
+      method: (document.getElementById('fcMethod') || { value: 'best' }).value,
+      sat: Math.max(1000, fcNum('fcSat', 1900)),
+      lost: Math.max(0, fcNum('fcLost', 4)),
+      gmin: Math.max(0, fcNum('fcGmin', 7)),
+      cycle: (cycVal && isFinite(cycVal) && cycVal > 0) ? cycVal : null,
+      hv: Math.min(50, Math.max(0, fcNum('fcHV', 0))),
+      alreadyPcu: !!(pcu && pcu.checked),
+      base: Math.round(fcNum('fcBase', 2026)),
+      rates: fcList('fcRates'),
+      years: fcList('fcYears').map(Math.round)
+    };
+  }
+
+  // the phases of one method, as {label, value (critical q), moves}
+  function phasesForMethod(res, method) {
+    if (method === '1') {
+      return { name: 'שיטה 1', phases: res.table1.phases.map(function (p) {
+        return { label: 'זרוע ' + p.he, value: p.value, moves: p.moves }; }) };
+    }
+    if (method === '2') {
+      var out = [];
+      res.table2.axes.forEach(function (ax) {
+        ax.phases.forEach(function (p) { out.push({ label: p.label, value: p.value, moves: p.moves }); });
+      });
+      return { name: 'שיטה 2', phases: out };
+    }
+    if (method === '3' && !res.table3.hidden) {
+      return { name: 'שיטה 3', phases: res.table3.phases.map(function (p) {
+        return { label: p.label, value: p.value, moves: p.moves }; }) };
+    }
+    // best available
+    var cands = [{ k: '1', t: res.table1.total }, { k: '2', t: res.table2.totalBest }];
+    if (!res.table3.hidden) cands.push({ k: '3', t: res.table3.total });
+    var bestK = cands.reduce(function (a, b) { return b.t < a.t ? b : a; }).k;
+    return phasesForMethod(res, bestK);
+  }
+
+  function volOfMoves(cfg, moves) {
+    var seen = {}, v = 0;
+    (moves || []).forEach(function (m) {
+      if (seen[m]) return;
+      seen[m] = 1;
+      var arm = cfg[m.charAt(0)];
+      if (arm) v += arm[m.charAt(1)] || 0;
+    });
+    return v;
+  }
+
+  // HCM control delay for one critical lane group, per lane
+  function hcmDelay(q, sat, C, g) {
+    var gc = C > 0 ? g / C : 0;
+    var cap = sat * gc;                       // capacity per lane, veh/h
+    if (cap <= 0) return 999;
+    var X = q / cap;
+    var d1 = 0.5 * C * Math.pow(1 - gc, 2) / Math.max(0.05, 1 - Math.min(1, X) * gc);
+    var T = 0.25, k = 0.5, I = 1;
+    var d2 = 900 * T * ((X - 1) + Math.sqrt(Math.pow(X - 1, 2) + (8 * k * I * X) / (cap * T)));
+    return { X: X, cap: cap, d: Math.min(999, d1 + d2), d1: d1, d2: d2 };
+  }
+
+  function signalAnalysis(cfgRaw, o) {
+    var res = compute(cfgRaw);
+    var cfg = cloneCfg(cfgRaw);
+    var pack = phasesForMethod(res, o.method);
+    var phases = pack.phases.filter(function (p) { return p.value > 0 || (p.moves && p.moves.length); });
+    var n = phases.length;
+    var fHV = o.alreadyPcu ? 1 : (100 / (100 + o.hv * (2 - 1)));   // HCM heavy-vehicle factor, E_T = 2.0
+    var sat = o.sat * fHV;
+    var Vc = phases.reduce(function (s, p) { return s + p.value; }, 0);
+    var Y = Vc / sat;
+    var L = n * o.lost;
+
+    var C;
+    if (o.cycle) C = o.cycle;
+    else if (Y < 0.95) C = Math.min(150, Math.max(40, Math.round(((1.5 * L + 5) / (1 - Y)) / 5) * 5));
+    else C = 150;
+
+    // split the effective green proportionally to the critical flow ratios, then raise any
+    // phase that falls below the minimum green — if that no longer fits, the cycle is extended
+    var eff = Math.max(1, C - L);
+    var greens = phases.map(function (p) {
+      var raw = (Y > 0) ? eff * (p.value / sat) / Y : eff / Math.max(1, n);
+      return Math.max(o.gmin, raw);
+    });
+    var sumG = greens.reduce(function (a, b) { return a + b; }, 0);
+    var stretched = false;
+    if (sumG > eff + 0.01) { C = Math.min(200, L + sumG); stretched = true; }
+
+    var totalVol = 0, wDelay = 0;
+    var rows = phases.map(function (p, ix) {
+      var y = p.value / sat;
+      var g = greens[ix];
+      var dd = hcmDelay(p.value, sat, C, g);
+      var vol = volOfMoves(cfg, p.moves);
+      totalVol += vol;
+      wDelay += dd.d * vol;
+      return {
+        label: p.label, q: p.value, y: y, g: g, gc: g / C, X: dd.X, cap: dd.cap,
+        delay: dd.d, los: losOf(dd.d), vol: vol, moves: p.moves
+      };
+    });
+
+    var delay = totalVol > 0 ? wDelay / totalVol : (rows.length ? rows[0].delay : 0);
+    var Xc = (C > L) ? Y * C / (C - L) : 99;
+
+    return {
+      res: res, method: pack.name, phases: rows, n: n, sat: sat, fHV: fHV,
+      Vc: Vc, Y: Y, L: L, C: C, Xc: Xc, delay: delay, los: losOf(delay),
+      stretched: stretched, gmin: o.gmin, totalVol: totalVol
+    };
+  }
+
+  function grownCfg(cfg, factor) {
+    var out = cloneCfg(cfg);
+    ARMS.forEach(function (a) {
+      ['L', 'S', 'R'].forEach(function (m) { out[a][m] = Math.round((out[a][m] || 0) * factor); });
+    });
+    return out;
+  }
+
+  function renderForecast() {
+    var box = document.getElementById('fcOut');
+    if (!box) return;
+    var o = fcOpts();
+    var base = signalAnalysis(state, o);
+    var h = '';
+
+    if (!base.n) {
+      box.innerHTML = '<div class="warnbox">אין מופעים לחישוב — הפעל לפחות שלוש זרועות והזן נפחים.</div>';
+      return;
+    }
+
+    h += '<div class="fc-cards">';
+    h += '<div class="c"><div class="k">נפח קריטי V<sub>c</sub></div><div class="v">' + Math.round(base.Vc) +
+         ' <small>רכ/ש</small></div></div>';
+    h += '<div class="c"><div class="k">מחזור' + (o.cycle ? ' (נקבע)' : ' (Webster)') + '</div><div class="v">' +
+         Math.round(base.C) + ' <small>שנ׳ · ' + base.n + ' מופעים</small></div></div>';
+    h += '<div class="c"><div class="k">יחס ביקוש/קיבולת קריטי X<sub>c</sub></div><div class="v">' +
+         base.Xc.toFixed(2) + '</div></div>';
+    h += '<div class="c"><div class="k">עיכוב בקרה ממוצע</div><div class="v">' + base.delay.toFixed(1) +
+         ' <small>שנ׳/רכב</small></div></div>';
+    h += '<div class="c"><div class="k">רמת שירות — ' + o.base + '</div><div class="v">' + losChip(base.los) +
+         '</div></div>';
+    h += '</div>';
+
+    /* --- base-year timing --- */
+    h += '<div class="tblwrap"><table><caption>תכנון זמנים לשנת הבסיס לפי ' + esc(base.method) +
+         ' — ירוק אפקטיבי מחולק ביחס לזרימות הקריטיות (Webster), עיכוב לפי HCM.</caption>' +
+         '<thead><tr><th>מופע</th><th class="val">q קריטי</th><th class="val">y = q/s</th>' +
+         '<th class="val">ירוק (שנ׳)</th><th class="val">g/C</th><th class="val">קיבולת/נתיב</th>' +
+         '<th class="val">v/c</th><th class="val">עיכוב</th><th class="val">רמת שירות</th></tr></thead><tbody>';
+    base.phases.forEach(function (p) {
+      h += '<tr><td>' + esc(p.label) + '<span class="sub">' + esc(movesLabel(p.moves)) + '</span></td>' +
+        '<td class="val">' + Math.round(p.q) + '</td>' +
+        '<td class="val">' + p.y.toFixed(3) + '</td>' +
+        '<td class="val">' + p.g.toFixed(1) + '</td>' +
+        '<td class="val">' + p.gc.toFixed(2) + '</td>' +
+        '<td class="val">' + Math.round(p.cap) + '</td>' +
+        '<td class="val">' + p.X.toFixed(2) + '</td>' +
+        '<td class="val">' + p.delay.toFixed(1) + '</td>' +
+        '<td class="val">' + losChip(p.los) + '</td></tr>';
+    });
+    h += '<tr class="total"><td>הצומת כולו</td><td class="val">' + Math.round(base.Vc) + '</td>' +
+      '<td class="val">' + base.Y.toFixed(3) + '</td><td class="val">' + Math.round(base.C - base.L) + '</td>' +
+      '<td class="val">—</td><td class="val">—</td><td class="val">' + base.Xc.toFixed(2) + '</td>' +
+      '<td class="val">' + base.delay.toFixed(1) + '</td><td class="val">' + losChip(base.los) + '</td></tr>';
+    h += '</tbody></table></div>';
+
+    /* --- forecast grid --- */
+    var rates = o.rates.length ? o.rates : [2];
+    var years = o.years.filter(function (y) { return y >= o.base; }).sort(function (a, b) { return a - b; });
+    if (years.length) {
+      h += '<div class="tblwrap"><table class="fc"><caption>רמת שירות לפי שיעור צמיחה ושנת תחזית — הנפחים גדלים בריבית דריבית ' +
+        'והחישוב כולו (נפח קריטי, מחזור, זמנים, עיכוב) מבוצע מחדש לכל תרחיש.</caption>';
+      h += '<thead><tr><th>צמיחה</th><th class="yr">' + o.base + ' (בסיס)</th>' +
+        years.map(function (y) { return '<th class="yr">' + y + '</th>'; }).join('') + '</tr></thead><tbody>';
+
+      var saturation = [];
+      rates.forEach(function (r) {
+        h += '<tr><td><strong>' + r + '%</strong> לשנה</td>';
+        h += '<td class="cell">' + losChip(base.los) + '<span class="sub2">' + base.delay.toFixed(0) + ' שנ׳ · V<sub>c</sub> ' +
+             Math.round(base.Vc) + '</span></td>';
+        years.forEach(function (y) {
+          var f = Math.pow(1 + r / 100, y - o.base);
+          var a = signalAnalysis(grownCfg(state, f), o);
+          h += '<td class="cell">' + losChip(a.los) + '<span class="sub2">' + a.delay.toFixed(0) +
+               ' שנ׳ · V<sub>c</sub> ' + Math.round(a.Vc) + '<br>X<sub>c</sub> ' + a.Xc.toFixed(2) + '</span></td>';
+        });
+        h += '</tr>';
+
+        // first year in which the intersection passes LOS D / v/c 1.0
+        var yr = null, cap = null;
+        for (var k = 1; k <= 40 && (!yr || !cap); k++) {
+          var aa = signalAnalysis(grownCfg(state, Math.pow(1 + r / 100, k)), o);
+          if (!yr && 'EF'.indexOf(aa.los) > -1) yr = o.base + k;
+          if (!cap && aa.Xc >= 1) cap = o.base + k;
+        }
+        saturation.push({ r: r, losYear: yr, capYear: cap });
+      });
+      h += '</tbody></table></div>';
+
+      h += '<p class="note"><strong>שנת הרוויה.</strong> ' + saturation.map(function (s) {
+        return 'בצמיחה ' + s.r + '%: ' + (s.losYear ? 'ירידה לרמת שירות E בשנת ' + s.losYear : 'לא יורד מרמת שירות D בטווח 40 שנה') +
+          ' · ' + (s.capYear ? 'X<sub>c</sub> מגיע ל‑1.00 בשנת ' + s.capYear : 'X<sub>c</sub> נשאר מתחת ל‑1.00');
+      }).join('<br>') + '</p>';
+    }
+
+    var notes = [];
+    notes.push('שיטת הפאזות בשימוש: ' + base.method + ' · ' + base.n + ' מופעים · זמן אבוד כולל ' +
+               Math.round(base.L) + ' שנ׳ למחזור.');
+    notes.push('זרימת רוויה בפועל ' + Math.round(base.sat) + ' רכ/ש/נתיב' +
+               (o.alreadyPcu ? ' (הנפחים ביר״מ — לא הוחל מקדם רכב כבד).' :
+                ' (מקדם רכב כבד f_HV = ' + base.fHV.toFixed(3) + ' לפי ' + o.hv + '% ו‑E_T = 2.0).'));
+    if (base.stretched) notes.push('המחזור הוארך ל‑' + Math.round(base.C) + ' שנ׳ כדי לאפשר ירוק מינימלי של ' +
+      base.gmin + ' שנ׳ בכל מופע.');
+    notes.push('החלוקה בין המופעים פרופורציונלית לזרימות הקריטיות, ולכן כל המופעים מגיעים לאותו v/c — זהו תכנון זמנים אופטימלי, לא בהכרח התוכנית הקיימת בשטח.');
+    notes.push('העיכוב הוא עיכוב בקרה לפי HCM (רכיב אחיד + רכיב תוספתי, T=15 דק׳, k=0.5, PF=1). לא נכללים תיאום בין צמתים, הולכי רגל, תח״צ, חסימת מפרצים או שמאלה מותנית.');
+    notes.push('התחזית מניחה צמיחה אחידה בכל התנועות ובכל הזרועות, ללא שינוי בגיאומטריה, במספר הנתיבים או בשיטת הפאזות.');
+    h += '<p class="note">' + notes.map(esc).join('<br>') + '</p>';
+
+    box.innerHTML = h;
+  }
+
+  function initForecast() {
+    ['fcMethod', 'fcSat', 'fcLost', 'fcCycle', 'fcGmin', 'fcHV', 'fcPCU', 'fcBase', 'fcRates', 'fcYears']
+      .forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener(el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'input', function () {
+          renderForecast();
+        });
+      });
+  }
+
   /* ============================================================
      7. Boot
      ============================================================ */
@@ -1807,6 +2138,7 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
   document.getElementById('threshold').value = threshold;
   initEvents();
   initImport();
+  initForecast();
   initApiDoc();
   refreshAll();
 })();

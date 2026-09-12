@@ -130,6 +130,15 @@
     <div id="rArms"></div>
   </div>
 
+  <h2>הדפסה – גיליון A0</h2>
+  <div class="row"><label for="prScale">קנה מידה</label><select id="prScale">
+    <option value="500">1:500</option><option value="1000" selected>1:1000</option><option value="2000">1:2000</option></select></div>
+  <div class="row"><label for="prProj">פרויקט</label><input id="prProj" value=""></div>
+  <div class="row"><label for="prDwg">מס׳ גיליון</label><input id="prDwg" value="SD-01"></div>
+  <div class="row"><label for="prBy">שרטט</label><input id="prBy" value=""></div>
+  <div class="tools"><button id="btnSheet" class="key">פתח גיליון A0</button><button id="btnSheetDl">הורד HTML</button></div>
+  <p class="hint" id="prInfo">להדפסה: נייר A0, ״גודל בפועל / 100%״, ללא שוליים.</p>
+
   <h2>תצוגה</h2>
   <div class="row"><label for="man">תמרון להצגה</label><select id="man">
     <option value="left">פנייה שמאלה מהמשני</option>
@@ -260,11 +269,11 @@ function roundCalc(){
 /* ============================ שרטוט ============================ */
 function draw(){ try{ draw_(); $('err').style.display='none'; }
   catch(e){ const el=$('err'); el.style.display='block'; el.textContent='שגיאה בשרטוט: '+e.message; console.error(e); } }
-function draw_(){
-  renderArms(); updateInfo();
-  const svg=$('plan'); if(!S.img){ report([],[]); return; }
+function draw_(pr){
+  if(!pr){ renderArms(); updateInfo(); }
+  const svg=$('plan'); if(!S.img){ if(!pr) report([],[]); return null; }
   const W=S.iw,H=S.ih, shown=svg.getBoundingClientRect().width||W, u=W/shown;
-  const sw=Math.max(1.2,1.6*u), fs=Math.max(11,14*u), op=(+$('opac').value)/100;
+  const sw=pr?pr.sw:Math.max(1.2,1.6*u), fs=pr?pr.fs:Math.max(11,14*u), op=(+$('opac').value)/100;
   const lbl=$('tLbl').checked, chord=$('tChord').checked;
   const T=(x,y,s,col,size)=>`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" fill="${col}" font-size="${size||fs}" font-family="Arial" font-weight="700" text-anchor="middle" paint-order="stroke" stroke="#0b101c" stroke-width="${(size||fs)*0.24}" stroke-linejoin="round">${esc(s)}</text>`;
   const dot=(p,col,r)=>`<g><circle cx="${p.x}" cy="${p.y}" r="${(r||sw*3)*1.9}" fill="${col}" opacity=".2"/><circle cx="${p.x}" cy="${p.y}" r="${r||sw*3}" fill="${col}" stroke="#0b101c" stroke-width="${sw*0.8}"/></g>`;
@@ -284,8 +293,12 @@ function draw_(){
       if(S.pxPerM){
         const rP=Math.max(2,Rout-M2P(2));
         g+=`<circle cx="${C.x}" cy="${C.y}" r="${rP}" fill="none" stroke="#2dd4a0" stroke-width="${sw*0.8}" stroke-dasharray="${sw*2} ${sw*2}"/>`;
-        S.round.arms.forEach((A,i)=>{
-          const uu=unit(sub(A,C)), ent=add(C,mul(uu,Rout)), eye=add(ent,mul(uu,M2P(R_APPROACH)));
+        S.round.arms.forEach((AR,i)=>{
+          const A=AR.p||AR;
+          const uu=unit(sub(A,C)), ent=add(C,mul(uu,Rout));
+          let appM=R_APPROACH, eye;
+          if(AR.stop){ const rr=Math.max(Rout+1, dot2(sub(AR.stop,C),uu)); appM=(rr-Rout)/S.pxPerM; eye=add(C,mul(uu,rr)); }
+          else eye=add(ent,mul(uu,M2P(R_APPROACH)));
           const a0=Math.atan2(uu.y,uu.x), sb=M2P(R.b)/rP, sd=M2P(R.d)/rP, P=[],Q=[];
           for(let j=0;j<=40;j++){const a=a0+sb*j/40;P.push(add(C,V(Math.cos(a)*rP,Math.sin(a)*rP)));}
           for(let j=0;j<=40;j++){const a=a0-sd*j/40;Q.push(add(C,V(Math.cos(a)*rP,Math.sin(a)*rP)));}
@@ -293,9 +306,13 @@ function draw_(){
           if(chord) g+=`<line x1="${eye.x}" y1="${eye.y}" x2="${P[40].x}" y2="${P[40].y}" stroke="#f5b82e" stroke-width="${sw*0.9}" stroke-dasharray="${sw*3} ${sw*2}"/>`;
           g+=`<path d="${path(Q)}" fill="none" stroke="#2dd4a0" stroke-width="${sw*2.2}" stroke-linecap="round" opacity=".9"/>`;
           g+=dot(ent,'#f5b82e',sw*2.2)+dot(eye,'#ff9d6a');
-          if(lbl){ g+=T(eye.x,eye.y-fs*0.8,`זרוע ${i+1} · ${R_APPROACH} מ׳`,'#ff9d6a')
+          if(AR.stop){ const nn=V(uu.y,-uu.x), wdt=M2P(4);
+            g+=`<line x1="${(eye.x-nn.x*wdt/2).toFixed(1)}" y1="${(eye.y-nn.y*wdt/2).toFixed(1)}" x2="${(eye.x+nn.x*wdt/2).toFixed(1)}" y2="${(eye.y+nn.y*wdt/2).toFixed(1)}" stroke="#ffffff" stroke-width="${sw*2.4}"/>`;
+            if(appM>R_APPROACH+0.5) notes.push(['warn',`זרוע ${i+1} – צלע הגישה`,`קו העצירה נמצא ${f1(appM)} מ׳ מהשפה החיצונית. ההנחיות ממליצות להגביל את צלע הגישה ל-15 מ׳ (סעיף 2.14.3).`]);
+          } else notes.push(['',`זרוע ${i+1} – קו עצירה`,'לא סומן קו עצירה; המשולש נמדד מ-15 מ׳ לפני השפה החיצונית.']);
+          if(lbl){ g+=T(eye.x,eye.y-fs*0.8,`זרוע ${i+1} · ${f1(appM)} מ׳`+(AR.stop?' מקו העצירה':''),'#ff9d6a')
             +T(P[20].x,P[20].y,`b = ${f1(R.b)} מ׳`,'#f5b82e')+T(Q[20].x,Q[20].y,`d = ${f1(R.d)} מ׳`,'#2dd4a0'); }
-          rows.push([`זרוע ${i+1}`,`<b>${f1(R.b)}</b>`,`<b>${f1(R.d)}</b>`,R_APPROACH,'—']);
+          rows.push([`זרוע ${i+1}`,`<b>${f1(R.b)}</b>`,`<b>${f1(R.d)}</b>`,`<b>${f1(appM)}</b>`,AR.stop?'קו עצירה':'ברירת מחדל']);
         });
         if(lbl) g+=T(C.x,C.y-Rout-fs*0.6,`Dc = ${f1(2*Rout/S.pxPerM)} מ׳`,'#5fa8ff');
       }
@@ -383,8 +400,10 @@ function draw_(){
     for(let i=0;i<4;i++) bar+=`<rect x="${x0+i*L/4}" y="${y0}" width="${L/4}" height="${sw*3}" fill="${i%2?'#fff':'#0b101c'}" stroke="#0b101c" stroke-width="${sw*0.5}"/>`;
     g+=`<g opacity=".95">${bar}${T(x0+L/2,y0-sw*4,'20 מ׳','#fff',fs*0.8)}</g>`; }
 
+  const imgTag=`<image href="${S.img}" xlink:href="${S.img}" x="0" y="0" width="${W}" height="${H}" style="pointer-events:none;-webkit-user-drag:none"/>`;
+  if(pr) return {g:imgTag+g,W,H,rows,notes};
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  svg.innerHTML=`<image href="${S.img}" xlink:href="${S.img}" x="0" y="0" width="${W}" height="${H}" style="pointer-events:none;-webkit-user-drag:none"/>${g}`;
+  svg.innerHTML=imgTag+g;
   report(rows,notes);
 }
 
@@ -392,7 +411,7 @@ function draw_(){
 function report(rows,notes){
   notes=notes||[];
   const round=$('kind').value==='round';
-  const head=round?['זרוע','b (מ׳)','d (מ׳)','צלע גישה (מ׳)','']:['זרוע','תמרון','ראות שמאלה','ראות ימינה','L2 / קו עצירה','שמאלה מהראשי','זווית'];
+  const head=round?['זרוע','b (מ׳)','d (מ׳)','צלע גישה (מ׳)','מקור']:['זרוע','תמרון','ראות שמאלה','ראות ימינה','L2 / קו עצירה','שמאלה מהראשי','זווית'];
   $('res').innerHTML=rows.length
     ? `<table class="t"><thead><tr>${head.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${
         rows.map(r=>`<tr>${r.map(c=>`<td>${String(c).indexOf('<b')>=0?c:esc(String(c))}</td>`).join('')}</tr>`).join('')}</tbody></table>`
@@ -427,7 +446,8 @@ function updateInfo(){
            arm:'לוחצים לאורך הזרוע – מהצומת החוצה. סיום: ״סיום סימון״.',
            cal:'לוחצים שתי נקודות שהמרחק ביניהן ידוע.',
            stop:'לוחצים על קו העצירה בזרוע – ממנו נמדד L2 ומשם מתחיל המשולש.',
-           rc:'לוחצים על מרכז המעגל.',re:'לוחצים על השפה החיצונית.',ra:'כל לחיצה מוסיפה זרוע גישה.'}[S.tool];
+           rc:'לוחצים על מרכז המעגל.',re:'לוחצים על השפה החיצונית.',ra:'כל לחיצה מוסיפה זרוע גישה.',
+           rstop:'לוחצים על קו העצירה / קו תן-זכות-קדימה בזרוע.'}[S.tool];
   $('drawHint').textContent=h||'סמנו את ציר הדרך הראשית (גם מעוקל), ואז הוסיפו זרוע לכל גישה. אפשר לגרור כל נקודה.';
   [['axis','tAxis'],['arm','tArm'],['rc','tC'],['re','tE'],['ra','tRA']].forEach(([k,id])=>{
     const el=$(id); if(el) el.classList.toggle('on',S.tool===k); });
@@ -435,9 +455,12 @@ function updateInfo(){
 }
 function renderArms(){
   if($('kind').value==='round'){
-    $('rArms').innerHTML=S.round.arms.map((a,i)=>`<div class="arm"><div class="hd"><b>זרוע ${i+1}</b><button class="mini" data-ra="${i}">✕</button></div></div>`).join('')
+    $('rArms').innerHTML=S.round.arms.map((a,i)=>`<div class="arm ${i===S.cur?'sel':''}"><div class="hd"><b>זרוע ${i+1}</b>
+      <button class="mini" data-rs="${i}">${a.stop?'✓ קו עצירה':'קו עצירה'}</button>
+      <button class="mini" data-ra="${i}">✕</button></div></div>`).join('')
       ||'<p class="hint">הוסיפו זרועות גישה.</p>';
-    $('rArms').querySelectorAll('[data-ra]').forEach(b=>b.onclick=()=>{S.round.arms.splice(+b.dataset.ra,1);draw();});
+    $('rArms').querySelectorAll('[data-ra]').forEach(b=>b.onclick=()=>{S.round.arms.splice(+b.dataset.ra,1);S.cur=-1;draw();});
+    $('rArms').querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{S.cur=+b.dataset.rs;S.tool='rstop';toast('סמנו את קו העצירה בזרוע');draw();});
     return;
   }
   const urban=$('kind').value==='urban';
@@ -476,7 +499,7 @@ function allHandles(){
   S.arms.forEach(a=>{ a.pts.forEach((p,i)=>h.push({p,set:q=>a.pts[i]=q})); if(a.stop) h.push({p:a.stop,set:q=>a.stop=q}); });
   if(S.round.C) h.push({p:S.round.C,set:q=>S.round.C=q});
   if(S.round.E) h.push({p:S.round.E,set:q=>S.round.E=q});
-  S.round.arms.forEach((p,i)=>h.push({p,set:q=>S.round.arms[i]=q}));
+  S.round.arms.forEach((a,i)=>{ h.push({p:a.p,set:q=>S.round.arms[i].p=q}); if(a.stop) h.push({p:a.stop,set:q=>S.round.arms[i].stop=q}); });
   S.cal.forEach((p,i)=>h.push({p,set:q=>{S.cal[i]=q;
     if(S.cal.length===2){const d=nrm(sub(S.cal[0],S.cal[1])),L=+$('calLen').value; if(L>0)S.pxPerM=d/L;}}}));
   return h;
@@ -497,7 +520,8 @@ $('plan').addEventListener('pointerdown',e=>{
     case 'stop': if(S.cur>=0&&S.arms[S.cur]){ S.arms[S.cur].stop=p; S.tool=null; toast('קו העצירה סומן'); } break;
     case 'rc': S.round.C=p; S.tool='re'; toast('כעת סמנו את השפה החיצונית'); break;
     case 're': S.round.E=p; S.tool=null; toast('קוטר המעגל נקבע'); break;
-    case 'ra': S.round.arms.push(p); toast(`זרוע ${S.round.arms.length}`); break;
+    case 'ra': S.round.arms.push({p,stop:null}); toast(`זרוע ${S.round.arms.length}`); break;
+    case 'rstop': if(S.cur>=0&&S.round.arms[S.cur]){ S.round.arms[S.cur].stop=p; S.tool=null; toast('קו העצירה סומן'); } break;
     default: toast('בחרו כלי סימון בלוח שמשמאל');
   }
   draw();
@@ -550,9 +574,65 @@ function fillKind(){
   S.tool=null; draw();
 }
 $('kind').onchange=fillKind;
-['vMain','dual','curb','showLeft','opac','tLbl','tChord','tGrid','rLanes','rDc','man','armSel']
+['vMain','dual','curb','showLeft','opac','tLbl','tChord','tGrid','rLanes','rDc','man','armSel','prScale']
   .forEach(id=>$(id).addEventListener($(id).type==='checkbox'||$(id).tagName==='SELECT'?'change':'input',draw));
 
+function sheetSVG(){
+  const N=+$('prScale').value, k=(1000/N)/S.pxPerM;          /* מ״מ נייר לכל פיקסל תמונה */
+  const c=draw_({sw:0.40/k, fs:3.3/k});
+  if(!c) return null;
+  const A0={w:1189,h:841}, fl=20, fr=10, tbW=200, tbH=56;
+  const area={x:fl+6,y:fr+8,w:A0.w-fl-fr-12,h:A0.h-2*fr-tbH-24};
+  /* מרכוז על הגיאומטריה שסומנה */
+  const all=[...S.axis]; S.arms.forEach(a=>{all.push(...a.pts); if(a.stop) all.push(a.stop);});
+  if(S.round.C) all.push(S.round.C); if(S.round.E) all.push(S.round.E);
+  S.round.arms.forEach(a=>{ all.push(a.p||a); if(a.stop) all.push(a.stop); });
+  const cx=all.length?all.reduce((s,p)=>s+p.x,0)/all.length:c.W/2,
+        cy=all.length?all.reduce((s,p)=>s+p.y,0)/all.length:c.H/2;
+  const tx=area.x+area.w/2-cx*k, ty=area.y+area.h/2-cy*k;
+  const esc2=esc;
+  const T=(x,y,s,size,anchor,w)=>`<text x="${x}" y="${y}" font-size="${size}" text-anchor="${anchor||'middle'}" font-weight="${w||400}" font-family="Arial" fill="#14171a">${esc2(s)}</text>`;
+  const mm=20*1000/N; let bar='';
+  const bx=fl+10, by=A0.h-fr-14;
+  for(let i=0;i<4;i++) bar+=`<rect x="${bx+i*mm/4}" y="${by}" width="${mm/4}" height="2" fill="${i%2?'#fff':'#14171a'}" stroke="#14171a" stroke-width="0.25"/>`;
+  bar+=T(bx+mm/2,by-1.6,`20 מ׳ = ${mm.toFixed(0)} מ״מ · 1:${N}`,2.8);
+  const cell=(x,y,w,hh,lab,val,big)=>`<rect x="${x}" y="${y}" width="${w}" height="${hh}" fill="none" stroke="#14171a" stroke-width="0.35"/>`
+    +T(x+w-2,y+4,lab,2.3,'end')+T(x+w-2,y+hh-3,val,big?5:3.4,'end',big?700:400);
+  const tbX=A0.w-fr-tbW, tbY=A0.h-fr-tbH, today=new Date().toLocaleDateString('he-IL');
+  let tb=`<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="#fff" stroke="#14171a" stroke-width="0.6"/>`
+    +cell(tbX,tbY,tbW,15,'משרד','MAHALCO – הנדסה אזרחית ותחבורה',true)
+    +cell(tbX,tbY,tbW*0.0,0,'','')
+    +cell(tbX,tbY+15,tbW,13,'פרויקט',$('prProj').value||'—')
+    +cell(tbX,tbY+28,tbW,13,'תוכן',{urban:'בדיקת מרחבי ראות – צומת עירוני',inter:'בדיקת מרחבי ראות – צומת בין-עירוני',round:'בדיקת מרחבי ראות – מעגל תנועה'}[$('kind').value])
+    +cell(tbX+140,tbY+41,60,15,'קנה מידה',`1:${N}`,true)+cell(tbX+95,tbY+41,45,15,'גיליון',$('prDwg').value||'—')
+    +cell(tbX+48,tbY+41,47,15,'תאריך',today)+cell(tbX,tbY+41,48,15,'שרטט',$('prBy').value||'—');
+  /* טבלת ערכים */
+  const round=$('kind').value==='round';
+  const strip=s=>String(s).replace(/<[^>]*>/g,'');
+  let tbl=T(fl+10,A0.h-fr-tbH+6,round?'זרוע · b · d · צלע גישה':'זרוע · תמרון · ראות שמאלה · ראות ימינה · L2/קו עצירה',3,'start',700);
+  (c.rows||[]).slice(0,6).forEach((r,i)=>{ tbl+=T(fl+10,A0.h-fr-tbH+11+i*4.4, r.map(strip).join(' · '),3,'start'); });
+  const note=T(fl+10,A0.h-fr-tbH-4,'המידות במטרים. המשולשים נמדדים לאורך ציר הדרך ומקו העצירה. בדיקה עקרונית – אין בה כדי לאשר שהשדה פנוי ממכשולים בגובה הנדרש.',2.8,'start');
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${A0.w}mm" height="${A0.h}mm" viewBox="0 0 ${A0.w} ${A0.h}" style="direction:ltr">
+<rect width="${A0.w}" height="${A0.h}" fill="#ffffff"/>
+<defs><clipPath id="cp"><rect x="${area.x}" y="${area.y}" width="${area.w}" height="${area.h}"/></clipPath></defs>
+<g clip-path="url(#cp)"><g transform="translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${k})">${c.g}</g></g>
+<rect x="${area.x}" y="${area.y}" width="${area.w}" height="${area.h}" fill="none" stroke="#8a9099" stroke-width="0.3"/>
+<rect x="${fl}" y="${fr}" width="${A0.w-fl-fr}" height="${A0.h-2*fr}" fill="none" stroke="#14171a" stroke-width="0.7"/>
+${bar}${note}${tbl}${tb}</svg>`;
+}
+function sheetHTML(){
+  const s=sheetSVG(); if(!s){ toast('טענו תכנית וסמנו גיאומטריה'); return null; }
+  const N=$('prScale').value;
+  return `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>${esc($('prDwg').value||'SD')} · 1:${N}</title>
+<style>@page{size:1189mm 841mm;margin:0}html,body{margin:0;padding:0;background:#fff}svg{display:block;width:1189mm;height:841mm}
+.noprint{position:fixed;top:8px;left:8px;background:#fffbe6;border:1px solid #c9a227;padding:8px 12px;font:13px Arial;direction:rtl}
+@media print{.noprint{display:none}}</style></head><body>
+<div class="noprint">גיליון A0 (1189×841 מ״מ), קנה מידה 1:${N}. הדפסה/PDF: נייר A0, ״גודל בפועל / 100%״, ללא שוליים. בדקו את סרגל קנה המידה.</div>
+${s}</body></html>`;
+}
+$('btnSheet').onclick=()=>{ const t=sheetHTML(); if(!t) return; const w=window.open('','_blank'); w.document.write(t); w.document.close(); };
+$('btnSheetDl').onclick=()=>{ const t=sheetHTML(); if(!t) return;
+  save(new Blob([t],{type:'text/html;charset=utf-8'}),`MAHALCO_${$('prDwg').value||'SD'}_A0_1-${$('prScale').value}.html`); };
 function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
 function svgText(){return '<?xml version="1.0" encoding="UTF-8"?>\n'+$('plan').outerHTML;}
 $('btnSvg').onclick=()=>{if(S.img)save(new Blob([svgText()],{type:'image/svg+xml;charset=utf-8'}),'MAHALCO_sight.svg');};

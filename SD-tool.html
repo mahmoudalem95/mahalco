@@ -60,6 +60,37 @@
   .sw{width:14px;height:10px;border-radius:2px;display:inline-block}
   #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--amber);color:#161b2b;font-weight:700;padding:8px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .18s;pointer-events:none;z-index:60}
   @media(max-width:1100px){.shell{grid-template-columns:1fr}aside{position:static;max-height:none;border-left:0;border-bottom:1px solid var(--line)}.out{grid-template-columns:1fr}}
+
+  /* ===== guided walkthrough ===== */
+  #coach{position:fixed;left:14px;bottom:14px;width:330px;max-width:calc(100vw - 28px);z-index:60;
+    background:var(--panel);border:1px solid var(--line2);border-radius:10px;
+    box-shadow:0 14px 40px #0009;display:none;direction:rtl}
+  #coach.show{display:block}
+  #coach .ch{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line)}
+  #coach .ch b{flex:1;font-size:13px}
+  #coach .ch .no{font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+  #coach .prog{height:3px;background:#243149}
+  #coach .prog i{display:block;height:100%;background:var(--amber);transition:width .2s}
+  #coach .cb{padding:11px 12px;max-height:46vh;overflow:auto}
+  #coach h4{margin:0 0 6px;font-size:14px;color:var(--amber2)}
+  #coach p{margin:0 0 8px;font-size:12.7px;color:#cdd6e6;line-height:1.6}
+  #coach ul{margin:0 0 8px;padding-right:17px;font-size:12.5px;color:#cdd6e6;line-height:1.65}
+  #coach .st{display:flex;align-items:center;gap:7px;font-size:12.5px;padding:6px 8px;border-radius:5px;
+    background:var(--panel2);border:1px solid var(--line);margin-bottom:8px}
+  #coach .st.done{border-color:var(--ok);color:#bdf0df}
+  #coach .st .ic{font-weight:700}
+  #coach .st.done .ic{color:var(--ok)}
+  #coach .cf{display:flex;gap:6px;padding:9px 11px;border-top:1px solid var(--line);flex-wrap:wrap}
+  #coach .cf .sp{flex:1}
+  #coach .steps{display:flex;gap:3px;padding:0 11px 9px;flex-wrap:wrap}
+  #coach .steps b{width:17px;height:17px;border-radius:4px;background:#243149;color:var(--dim);
+    font-size:10.5px;display:grid;place-items:center;cursor:pointer;font-weight:600}
+  #coach .steps b.on{background:var(--amber);color:#161b2b}
+  #coach .steps b.ok{background:#1f5e4c;color:#9defcd}
+  .coach-hl{outline:2px solid var(--amber)!important;outline-offset:2px;border-radius:6px;
+    animation:coachPulse 1.3s ease-in-out 2}
+  @keyframes coachPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,184,46,.0)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.18)}}
+  @media(max-width:760px){#coach{left:8px;right:8px;width:auto}}
 </style>
 </head>
 <body>
@@ -70,6 +101,7 @@
   <button id="btnPng" class="key">הורד PNG</button>
   <button id="btnSvg">הורד SVG</button>
   <button id="btnJson">שמור JSON</button>
+  <button id="btnGuide">? מדריך</button>
 </header>
 
 <div class="shell">
@@ -166,6 +198,20 @@
     <div class="box"><h3>בדיקות והערות</h3><div id="checks"></div></div>
   </div>
 </main>
+</div>
+<div id="coach" role="dialog" aria-label="מדריך מודרך לכלי">
+  <div class="ch"><b>מדריך מודרך</b><span class="no" id="cNo">1 / 9</span>
+    <button class="mini" id="cClose" title="סגירה">✕</button></div>
+  <div class="prog"><i id="cBar" style="width:11%"></i></div>
+  <div class="cb" id="cBody"></div>
+  <div class="steps" id="cDots"></div>
+  <div class="cf">
+    <button class="mini" id="cPrev">→ הקודם</button>
+    <button class="mini key" id="cDo">בצע</button>
+    <span class="sp"></span>
+    <button class="mini" id="cSkip">אל תציג בפתיחה</button>
+    <button class="mini" id="cNext">הבא ←</button>
+  </div>
 </div>
 <div id="toast"></div>
 
@@ -646,6 +692,143 @@ $('btnJson').onclick=()=>save(new Blob([JSON.stringify({kind:$('kind').value,pxP
   note:'ערכים עקרוניים לבדיקה מוקדמת – לא לביצוע.'},null,2)],{type:'application/json'}),'sight-distance.json');
 
 fillKind();
+
+/* ============================ מדריך מודרך ============================
+   הצעדים משקפים את זרימת העבודה בכלי עצמו: רקע → כיול → נתוני בדיקה →
+   סימון → בדיקות → ייצוא. כל צעד יודע לבדוק בעצמו אם הושלם (מתוך S),
+   מדגיש את החלק הרלוונטי בלוח הצד, ו״בצע״ מפעיל את הכלי הנכון.
+   ==================================================================== */
+(function(){
+  const SEEN='mahalco_sd_guide_v1';
+  const isRound=()=>$('kind').value==='round';
+
+  const armPts=()=>S.arms.filter(a=>a.pts.length>=2).length;
+
+  const STEPS=[
+    { t:'תכנית הרקע',
+      hl:'#file',
+      html:`<p>הכול מתחיל מתמונה של התכנית: צילום מסך, PDF שהומר לתמונה או קובץ סריקה. גררו את הקובץ לאזור התצוגה או בחרו אותו בשדה שבלוח הצד.</p>
+            <ul><li>ככל שהתמונה חדה יותר, הסימון מדויק יותר.</li><li>אחרי הטעינה יוצגו ממדי התמונה בפיקסלים.</li></ul>`,
+      chk:()=>!!S.img, chkT:'תמונת רקע נטענה',
+      doT:'בחר קובץ', run:()=>$('file').click() },
+
+    { t:'כיול קנה המידה',
+      hl:'#calLine',
+      html:`<p>בלי כיול אין מטרים — רק פיקסלים. השיטה המומלצת: סמנו קטע שאורכו ידוע בתכנית (רוחב כביש, מרווח בין קווי רשת, סרגל קנה מידה), הזינו את אורכו במטרים ולחצו על שתי נקודות הקצה שלו.</p>
+            <ul><li>קטע ארוך מקטין את שגיאת הכיול.</li><li>לחלופין עברו ל״לפי קנה מידה ורזולוציה״ והזינו 1:N ו־DPI.</li></ul>`,
+      chk:()=>S.pxPerM>0, chkT:'קנה מידה מוגדר',
+      doT:'סמן קטע כיול', run:()=>$('btnCal').click() },
+
+    { t:'סוג הבדיקה וערכי התכן',
+      hl:'#kind',
+      html:`<p>בחרו את סוג הצומת — עירוני (רחובות בערים 2020), בין-עירוני (כרך 2, 2023) או מעגל תנועה. הבחירה קובעת מאיזו טבלה נשלפים ערכי הראות.</p>
+            <ul><li>בצומת: מהירות בדרך הראשית, חד/דו-מסלולית, ומרחק מציר הראשי לאבן השפה.</li><li>במעגל: טיפוס המעגל וקוטר חיצוני Dc.</li></ul>
+            <p>עצרו כאן ואמתו את הערכים מול התכנית — כל מה שיחושב בהמשך נשען עליהם.</p>`,
+      chk:()=>true, chkT:'הערכים נבדקו ידנית',
+      doT:'הדגש', run:()=>{} },
+
+    { t:()=>isRound()?'מרכז המעגל והשפה':'ציר הדרך הראשית',
+      hl:'#jTools', roundHl:'#rTools',
+      html:()=>isRound()
+        ? `<p>במעגל תנועה מסמנים תחילה את <b>מרכז המעגל</b> ואז נקודה על <b>השפה החיצונית</b> — משתי אלה נגזר הקוטר בפועל ונבדק מול Dc שהוזן.</p>`
+        : `<p>לחצו על ״ציר הדרך הראשית״ וסמנו נקודות לאורך הכביש. בציר ישר די בשתי נקודות; <b>בציר מעוקל סמנו 4–8 נקודות</b>, כדי שצלע המשולש תימדד לאורך הכביש ולא באוויר.</p>
+             <ul><li>״בטל נקודה אחרונה״ מתקן טעות נקודתית.</li><li>אפשר לגרור נקודה קיימת כדי לדייק.</li></ul>`,
+      chk:()=>isRound() ? !!(S.round.C&&S.round.E) : S.axis.length>=2,
+      chkT:()=>isRound()?'מרכז ושפה סומנו':'הציר סומן',
+      doT:()=>isRound()?'סמן מרכז':'צייר ציר',
+      run:()=>isRound()?$('tC').click():$('tAxis').click() },
+
+    { t:()=>isRound()?'זרועות הגישה':'הזרועות',
+      hl:'#arms', roundHl:'#rArms',
+      html:()=>isRound()
+        ? `<p>הוסיפו זרוע גישה לכל כניסה למעגל. לכל זרוע אפשר לסמן גם את קו תן-זכות-קדימה, וממנו יימדד המשולש.</p>`
+        : `<p>״+ הוסף זרוע״, ואז לחצו לאורך ציר הזרוע המשנית — מהכניסה לצומת כלפי חוץ. כל זרוע מקבלת את שני משולשי הראות שלה.</p>
+           <ul><li>לכל זרוע קבעו בקרה (עצור / האט), רכב תכן, נתיבים נוספים ובעירוני גם שיפוע.</li><li>״המשך סימון״ מוסיף נקודות לזרוע קיימת.</li></ul>`,
+      chk:()=>isRound() ? S.round.arms.length>=1 : armPts()>=1,
+      chkT:'זרוע אחת לפחות סומנה',
+      doT:'הוסף זרוע',
+      run:()=>isRound()?$('tRA').click():$('tArm').click() },
+
+    { t:()=>isRound()?'קו תן-זכות-קדימה':'קו העצירה',
+      hl:'#arms', roundHl:'#rArms',
+      html:`<p>זהו הצעד שמשנה את התוצאה יותר מכל אחר. בלי סימון קו עצירה הכלי מניח את עין הנהג לפי L2 שבטבלה — הנחה שמרנית שאינה בהכרח המצב בשטח.</p>
+            <ul><li>בכרטיס הזרוע לחצו ״קו עצירה״ ואז לחצו על הקו בתכנית.</li><li>ודאו שהקו מעבר למעבר החצייה ולאבן השפה.</li></ul>`,
+      chk:()=>isRound()? S.round.arms.some(a=>a.stop) : S.arms.some(a=>a.stop),
+      chkT:'קו עצירה סומן בזרוע אחת לפחות', opt:true,
+      doT:'הדגש', run:()=>{} },
+
+    { t:'תצוגה ובקרה חזותית',
+      hl:'#man',
+      html:`<p>עברו בין התמרונים — פנייה שמאלה מהמשני, חצייה, פנייה ימינה או הכול יחד — וּודאו שהמשולשים יושבים היכן שציפיתם.</p>
+            <ul><li>״זרוע להצגה״ מבודד זרוע אחת כשהתמונה צפופה.</li><li>רשת 10 מ׳ היא בדיקת שפיות מהירה לכיול.</li></ul>`,
+      chk:()=>true, chkT:'נבדק ויזואלית',
+      doT:'הדגש', run:()=>{} },
+
+    { t:'בדיקות והערות',
+      hl:'#checks',
+      html:`<p>הלוח התחתון מרכז את מה שהכלי מצא: חוסרים בסימון, ערכים חריגים והנחות שננקטו. אדום = חסר קריטי, כתום = לבדיקה.</p>
+            <p>אל תייצאו גיליון כל עוד יש פריט אדום פתוח.</p>`,
+      chk:()=>true, chkT:'ההערות נקראו',
+      doT:'הדגש', run:()=>{} },
+
+    { t:'ייצוא הגיליון',
+      hl:'#btnSheet',
+      html:`<p>מלאו שם פרויקט, מספר גיליון ושם השרטט, בחרו קנה מידה להדפסה ופתחו גיליון A0. בהדפסה: נייר A0, ״גודל בפועל / 100%״, ללא שוליים — ואז בדקו את סרגל קנה המידה על הנייר.</p>
+            <ul><li>PNG לתמונה מהירה, SVG לווקטור, JSON לשמירת העבודה להמשך.</li></ul>`,
+      chk:()=>true, chkT:'מוכן לייצוא',
+      doT:'פתח גיליון A0', run:()=>$('btnSheet').click() }
+  ];
+
+  let ix=0, tmr=null, lastHl=null;
+  const val=(v)=>typeof v==='function'?v():v;
+
+  function highlight(sel){
+    if(lastHl){ lastHl.classList.remove('coach-hl'); lastHl=null; }
+    const el=sel?document.querySelector(sel):null;
+    if(!el) return;
+    el.classList.add('coach-hl'); lastHl=el;
+    if(typeof el.scrollIntoView==='function'){
+      try{ el.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){}
+    }
+  }
+
+  function render(){
+    const s=STEPS[ix], done=!!val(s.chk);
+    $('cNo').textContent=(ix+1)+' / '+STEPS.length;
+    $('cBar').style.width=((ix+1)/STEPS.length*100)+'%';
+    $('cBody').innerHTML='<h4>'+(ix+1)+'. '+val(s.t)+'</h4>'+val(s.html)+
+      '<div class="st'+(done?' done':'')+'"><span class="ic">'+(done?'✓':'○')+'</span><span>'+
+      val(s.chkT)+(s.opt&&!done?' · רשות':'')+'</span></div>';
+    $('cDo').textContent=val(s.doT);
+    $('cDots').innerHTML=STEPS.map((st,i)=>'<b class="'+(i===ix?'on':(val(st.chk)?'ok':''))+'" data-i="'+i+'">'+(i+1)+'</b>').join('');
+    $('cDots').querySelectorAll('b').forEach(b=>b.onclick=()=>{ix=+b.dataset.i;render();highlight(target());});
+    $('cPrev').disabled=ix===0;
+  }
+  function target(){ const s=STEPS[ix]; return (isRound()&&s.roundHl)?s.roundHl:s.hl; }
+
+  function open(){
+    $('coach').classList.add('show');
+    render(); highlight(target());
+    clearInterval(tmr); tmr=setInterval(render,500);
+  }
+  function close(){ $('coach').classList.remove('show'); clearInterval(tmr);
+    if(lastHl){lastHl.classList.remove('coach-hl');lastHl=null;} }
+
+  $('btnGuide').onclick=()=>$('coach').classList.contains('show')?close():open();
+  $('cClose').onclick=close;
+  $('cNext').onclick=()=>{ if(ix<STEPS.length-1){ix++;render();highlight(target());} else close(); };
+  $('cPrev').onclick=()=>{ if(ix>0){ix--;render();highlight(target());} };
+  $('cDo').onclick=()=>{ highlight(target()); val(STEPS[ix].run); };
+  $('cSkip').onclick=()=>{ try{localStorage.setItem(SEEN,'1');}catch(e){} close(); toast('המדריך לא ייפתח אוטומטית. כפתור ״? מדריך״ תמיד זמין'); };
+  document.addEventListener('keydown',e=>{
+    if(e.key==='?'||(e.key==='/'&&e.shiftKey)){ e.preventDefault(); $('coach').classList.contains('show')?close():open(); }
+    else if(e.key==='Escape'&&$('coach').classList.contains('show')) close();
+  });
+
+  let seen=false; try{ seen=localStorage.getItem(SEEN)==='1'; }catch(e){}
+  if(!seen) setTimeout(open,400);
+})();
+
 </script>
 </body>
 </html>

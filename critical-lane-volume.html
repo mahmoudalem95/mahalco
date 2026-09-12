@@ -83,7 +83,7 @@ button.solid:hover{background:#c9862f}
   border-radius:var(--r);padding:5px 10px}
 .thr input{width:88px}
 
-/* ---- xlsx import ---- */
+/* ---- count-file import ---- */
 .drop{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);
   border:1px dashed var(--rule);border-radius:var(--r);padding:14px 16px;transition:border-color .15s,background .15s}
 .drop.over{border-color:var(--pick);background:var(--pick-bg)}
@@ -94,7 +94,7 @@ button.solid:hover{background:#c9862f}
 .kv{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:13px;color:var(--ink2);margin:14px 0 10px}
 .kv b{color:var(--ink);font-weight:600}
 select{font-family:inherit;font-size:13.5px;padding:6px 8px;border-radius:4px;
-  background:var(--sunk);color:var(--ink);border:1px solid var(--rule2)}
+  background:var(--sunk);color:var(--ink);border:1px solid var(--rule2);max-width:100%}
 select:focus-visible{outline:2px solid var(--pick);outline-offset:1px}
 .imp-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
 .imp-ctl label{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px}
@@ -105,6 +105,13 @@ svg.hist g:hover rect{opacity:.85}
 .imp-grid{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
 .imp-scheme{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px;text-align:center}
 .imp-scheme .cap{font-size:12px;color:var(--ink3);margin-top:6px}
+.paste{margin-top:12px}
+.paste ol{margin:8px 0 10px;padding-right:20px;font-size:13.5px;color:var(--ink2)}
+.paste li{margin-bottom:5px}
+textarea#pasteBox{width:100%;min-height:130px;font-family:var(--mono);font-size:12px;direction:ltr;
+  text-align:left;padding:10px;border-radius:var(--r);background:var(--sunk);color:var(--ink);
+  border:1px solid var(--rule2);resize:vertical}
+textarea#pasteBox:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
 @media (max-width:820px){.imp-grid{grid-template-columns:1fr}}
 
 /* ---- tables ---- */
@@ -192,7 +199,7 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     --rule:#ccc;--rule2:#e2e2e2;--pick-bg:#f6ecd9}
   body{background:#fff;color:#111}
   .bar,.movement-hint,.skip,details,#jsonOut{display:none!important}
-  .drop,.imp-ctl,.imp-status,.chartwrap{display:none!important}
+  .drop,.imp-ctl,.imp-status,.chartwrap,.paste{display:none!important}
   .imp-scheme{border-color:#ccc}
   .wrap{max-width:none;padding:0}
   table{min-width:0}
@@ -210,10 +217,10 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
 
   <section>
     <div class="sec-head"><h2>ייבוא נפחים מקובץ ספירה</h2>
-      <span class="meta">לוח 2.4 — התפלגות התנועה לפי זרועות היציאה (יר״מ)</span></div>
-    <p class="lede" style="margin-bottom:14px">טען קובץ ‎XLSX‎ של ספירת נפחים בצומת (פורמט הדוחות המקובל). הדף מאתר את לוח 2.4,
-      בונה את פרופיל התנועה השעתי, מציג את נפחי שעת השיא על סכמת הצומת, ומזין אותם ישירות לחישוב הנפח הקריטי.
-      אפשר לבחור כל שעה אחרת מהפרופיל, וגם לעבור ללוח 2.2 (כניסה, יר״מ) או ללוחות כלי הרכב 2.1 / 2.3.</p>
+      <span class="meta">לוח 2.4 / 2.2 — התפלגות התנועה לפי זרועות</span></div>
+    <p class="lede" style="margin-bottom:14px">טען קובץ ‎XLSX‎ של ספירת נפחים בצומת. הדף מאתר את לוח 2.4 (ואם קיימים, גם 2.2 / 2.3 / 2.1),
+      בונה את פרופיל התנועה השעתי, מציג את נפחי שעת השיא על סכמת הצומת ומזין אותם לחישוב הנפח הקריטי.
+      אם מבנה הקובץ שונה ממה שהקורא מזהה — אפשר להדביק את התאים ידנית בתחתית המקטע.</p>
     <div class="drop" id="dropZone">
       <input type="file" id="xlsFile" accept=".xlsx,.xlsm,.xls" hidden>
       <button class="solid" id="btnPick">בחר קובץ ספירה</button>
@@ -221,6 +228,28 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     </div>
     <div class="imp-status" id="impStatus" role="status"></div>
     <div id="impPanel" hidden></div>
+
+    <details class="paste">
+      <summary>הקובץ לא נקרא? הדבק את התאים ידנית</summary>
+      <p class="note" style="margin-top:10px">מבנה הדוחות משתנה בין מבצעי ספירה. אם הקריאה האוטומטית נכשלה, העתק את הלוח מהאקסל והדבק כאן:</p>
+      <ol>
+        <li>פתח באקסל את הגיליון שבו לוח 2.4 (או 2.2).</li>
+        <li>סמן את הבלוק המלא: <b>שורת שמות הדרכים</b> (מס׳ הדרך/רחוב … לצפון/מצפון), <b>שורת הכיוונים</b> (צפון / דרום / מזרח / מערב),
+          <b>שורת התנועות</b> (ימינה / ישר / שמאלה, או ‎&lt; ^ &gt;‎), וכל שורות השעות שמתחתן.</li>
+        <li>‎Ctrl+C‎ באקסל, ואז ‎Ctrl+V‎ בתיבה שלמטה, ולחץ "קרא נתונים מודבקים".</li>
+      </ol>
+      <p class="note">שלוש שורות הכותרת הכרחיות: בלעדיהן אי אפשר לדעת לאיזו זרוע ולאיזו תנועה שייכת כל עמודה.
+        שורת השעות צריכה להתחיל בתא בפורמט ‎07:00-08:00‎. עמודות הסיכום ("סה״כ") נסרקות ונבלעות מעצמן.</p>
+      <pre style="direction:ltr;text-align:left">מס' הדרך/רחוב   דרך 444            לצפון   דרך 444            לדרום ...
+כיוון מ -        צפון  צפון  צפון   סה"כ    דרום  דרום  דרום   סה"כ  ...
+שעה              ימינה ישר   שמאלה          ימינה ישר   שמאלה        ...
+07:00-08:00      0     952   304    1256    107   1032  0      1139  ...</pre>
+      <textarea id="pasteBox" placeholder="הדבק כאן את התאים שהועתקו מאקסל…" aria-label="הדבקת תאים מהאקסל"></textarea>
+      <div class="bar">
+        <button class="solid" id="btnPaste">קרא נתונים מודבקים</button>
+        <button id="btnPasteClear">נקה</button>
+      </div>
+    </details>
   </section>
 
   <section>
@@ -1179,18 +1208,23 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     ];
     var ARMS4 = ['N', 'S', 'E', 'W'];
     // In an RTL sheet the angle brackets are bidi-mirrored: a stored '<' is drawn as a right
-    // arrow. MAP_A is that reading (correct for this house format); MAP_B is the literal one.
-    // pickMapping() scores both against the junction geometry and keeps the one that does not
-    // send traffic into an arm that does not exist.
+    // arrow. MAP_A is that reading; MAP_B is the literal one. pickMapping() scores both against
+    // the junction geometry and keeps the one that does not feed an arm that does not exist.
     var MAP_A = { '<': 'R', '^': 'S', '>': 'L' };
     var MAP_B = { '<': 'L', '^': 'S', '>': 'R' };
-    var SYMS = { '<': 1, '>': 1, '^': 1, '\u02c4': 1, '\u2227': 1 };
+    var SYMS = { '<': 1, '>': 1, '^': 1, '\u02c4': 1, '\u2227': 1, '\u2191': 1 };
+    var TURN_WORDS = {
+      'ימינה': 'R', 'ימין': 'R', 'פניה ימינה': 'R', 'פנייה ימינה': 'R',
+      'שמאלה': 'L', 'שמאל': 'L', 'פניה שמאלה': 'L', 'פנייה שמאלה': 'L',
+      'ישר': 'S', 'ישיר': 'S', 'המשך ישר': 'S'
+    };
     var DESTI = {
       N: { S: 'S', L: 'E', R: 'W' },
       S: { S: 'N', L: 'W', R: 'E' },
       E: { S: 'W', L: 'S', R: 'N' },
       W: { S: 'E', L: 'N', R: 'S' }
     };
+    var TITLE_RE = /התפלגות\s+התנועה\s+לפי\s+זרוע/;
 
     function isDate(v) { return Object.prototype.toString.call(v) === '[object Date]'; }
     function txt(v) {
@@ -1201,7 +1235,7 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     function num(v) {
       if (typeof v === 'number') return isFinite(v) ? v : 0;
       if (v === null || v === undefined) return 0;
-      var n = parseFloat(String(v).replace(/,/g, '').trim());
+      var n = parseFloat(String(v).replace(/[,\s]/g, '').trim());
       return isFinite(n) ? n : 0;
     }
     function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -1225,50 +1259,66 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
       var m = /(\d{1,2}):(\d{2})/.exec(label);
       return m ? (+m[1]) * 60 + (+m[2]) : null;
     }
+    // a turn cell is either an arrow glyph (ambiguous under RTL mirroring) or a Hebrew word
+    function turnCell(s) {
+      if (!s) return null;
+      if (SYMS[s]) return { sym: s };
+      var t = s.replace(/["'׳״.]/g, '').replace(/\s+/g, ' ').trim();
+      if (TURN_WORDS[t]) return { turn: TURN_WORDS[t] };
+      return null;
+    }
+    function rowText(row) { return (row || []).map(txt).join(' ').replace(/\s{2,}/g, ' ').trim(); }
 
-    /* --- find the tables ---------------------------------------------------- */
+    /* --- locate tables ------------------------------------------------------ */
     function findTables(rows, sheetName) {
-      var out = [];
-      for (var r = 0; r < rows.length; r++) {
-        var line = (rows[r] || []).map(txt).join(' ');
-        if (!line || !/התפלגות/.test(line)) continue;
-        var m = /לוח\s*מס['׳"]?\s*(2\.[1-4])/.exec(line);
-        if (!m) continue;
-        out.push({
-          sheet: sheetName,
-          row: r,
-          id: m[1],
-          kind: /יציא/.test(line) ? 'exit' : 'entry',
-          unit: /יר["׳']?\s*מ/.test(line) ? 'pcu' : 'veh',
-          title: line.replace(/\s{2,}/g, ' ').trim()
-        });
-      }
+      var out = [], titleRows = [];
+      for (var r = 0; r < rows.length; r++) if (TITLE_RE.test(rowText(rows[r]))) titleRows.push(r);
+
+      titleRows.forEach(function (r, ix) {
+        var line = rowText(rows[r]);
+        var stop = (ix + 1 < titleRows.length) ? titleRows[ix + 1] : rows.length;
+        var id = null;
+        var m = /לוח\s*מס['׳"]?\s*:?\s*(2\.[1-4])/.exec(line);
+        if (m) id = m[1];
+        // some vendors put "לוח מס'" and the number on their own row below the title
+        for (var k = r + 1; !id && k < Math.min(stop, r + 10); k++) {
+          var m2 = /לוח\s*מס['׳"]?\s*:?\s*(2\.[1-4])/.exec(rowText(rows[k]));
+          if (m2) id = m2[1];
+        }
+        var kind = /יציא/.test(line) ? 'exit' : 'entry';
+        var unit = /יר["׳']?\s*מ/.test(line) ? 'pcu' : 'veh';
+        if (!id) id = (kind === 'exit' ? (unit === 'pcu' ? '2.4' : '2.3') : (unit === 'pcu' ? '2.2' : '2.1'));
+        out.push({ sheet: sheetName, row: r, stop: stop, id: id, kind: kind, unit: unit, title: line });
+      });
       return out;
     }
 
-    /* --- read one table ----------------------------------------------------- */
-    function readTable(rows, startRow) {
-      var r, c, symRow = -1;
-      for (r = startRow + 1; r < Math.min(startRow + 12, rows.length); r++) {
-        var hits = 0, row = rows[r] || [];
-        for (c = 0; c < row.length; c++) if (SYMS[txt(row[c])]) hits++;
-        if (hits >= 3) { symRow = r; break; }
+    function findTurnRow(rows, from, to) {
+      for (var r = Math.max(0, from); r < Math.min(to, rows.length); r++) {
+        var row = rows[r] || [], hits = 0;
+        for (var c = 0; c < row.length; c++) if (turnCell(txt(row[c]))) hits++;
+        if (hits >= 3) return r;
       }
-      if (symRow < 2) throw new Error('לא נמצאה שורת סמלי התנועות (חצים) מתחת לכותרת הלוח.');
+      return -1;
+    }
 
-      var dirRow = rows[symRow - 1] || [];
-      var headRow = rows[symRow - 2] || [];
-      var symRowArr = rows[symRow] || [];
+    /* --- read one table, given the row that holds the turn labels ------------ */
+    function readTableAt(rows, turnRow) {
+      if (turnRow < 1) throw new Error('חסרה שורת הכיוונים (צפון / דרום / מזרח / מערב) מעל שורת התנועות.');
+      var c, i, r;
+      var turnRowArr = rows[turnRow] || [];
+      var dirRow = rows[turnRow - 1] || [];
+      var headRow = (turnRow >= 2 ? rows[turnRow - 2] : []) || [];
 
       var cols = [];
-      for (c = 0; c < symRowArr.length; c++) {
-        var sym = txt(symRowArr[c]);
-        if (!SYMS[sym]) continue;
+      for (c = 0; c < turnRowArr.length; c++) {
+        var tc = turnCell(txt(turnRowArr[c]));
+        if (!tc) continue;
         var arm = armOf(txt(dirRow[c]));
         if (!arm) continue;
-        cols.push({ col: c, arm: arm, sym: sym });
+        cols.push({ col: c, arm: arm, sym: tc.sym || null, turn: tc.turn || null });
       }
-      if (!cols.length) throw new Error('לא זוהו עמודות תנועה בלוח.');
+      if (!cols.length) throw new Error('לא זוהו עמודות תנועה — ודא שהשורה שמעל התנועות מכילה את כיווני הזרועות.');
 
       // road name per arm — the group label ("מצפון" / "לצפון") sits on the group total column
       var roads = {};
@@ -1279,23 +1329,30 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
         if (!a || roads[a]) continue;
         for (var k = c - 1; k >= Math.max(0, c - 4); k--) {
           var nm = txt(headRow[k]);
-          if (nm) { roads[a] = nm; break; }
+          if (nm && !/^[למ]?\s*(צפון|דרום|מזרח|מערב)$/.test(nm) && !/מס['׳"]?\s*הדרך|רחוב|כיוון/.test(nm)) {
+            roads[a] = nm; break;
+          }
         }
       }
 
-      // raw hourly rows, still keyed by column
+      // hourly rows, still keyed by column
       var raw = [];
-      for (r = symRow + 1; r < rows.length; r++) {
+      for (r = turnRow + 1; r < rows.length; r++) {
         var row2 = rows[r] || [];
-        var label = fmtTime(row2[0]);
-        if (/סה["׳']?\s*כ/.test(label)) break;
+        var label = '';
+        for (c = 0; c < Math.min(row2.length, 3) && !label; c++) {
+          var cand = fmtTime(row2[c]);
+          if (/\d{1,2}:\d{2}/.test(cand)) label = cand;
+          else if (/סה["׳']?\s*כ/.test(cand)) { label = 'TOTAL'; }
+        }
+        if (label === 'TOTAL') break;
         var rng = /(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/.exec(label);
         if (!rng) { if (raw.length) break; else continue; }
         var vals = [];
-        for (var i = 0; i < cols.length; i++) vals.push(num(row2[cols[i].col]));
+        for (i = 0; i < cols.length; i++) vals.push(num(row2[cols[i].col]));
         raw.push({ label: rng[1] + '\u2013' + rng[2], from: rng[1], to: rng[2], start: minutesOf(rng[1]), vals: vals });
       }
-      if (!raw.length) throw new Error('לא נמצאו שורות שעתיות בלוח.');
+      if (!raw.length) throw new Error('לא נמצאו שורות שעתיות (בפורמט 07:00-08:00) מתחת לשורת התנועות.');
 
       // which arms exist at all
       var dayByCol = [];
@@ -1309,28 +1366,29 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
         var road = roads[a] || '';
         var sum = 0;
         cols.forEach(function (cc, ix) { if (cc.arm === a) sum += dayByCol[ix]; });
-        present[a] = sum > 0 || (!!road && road !== '0' && !/^0+$/.test(road));
+        present[a] = sum > 0;
+        if (!present[a] && road && road !== '0' && !/^0+$/.test(road)) present[a] = true;
       });
 
-      // choose the arrow mapping that does not feed non-existent arms
+      // arrow columns are ambiguous — pick the mapping that keeps traffic inside the junction
       function score(map) {
         var bad = 0;
         cols.forEach(function (cc, ix) {
+          if (!cc.sym) return;
           var turn = map[cc.sym];
-          if (!turn) return;
-          if (!present[DESTI[cc.arm][turn]]) bad += dayByCol[ix];
+          if (turn && !present[DESTI[cc.arm][turn]]) bad += dayByCol[ix];
         });
         return bad;
       }
       var sA = score(MAP_A), sB = score(MAP_B);
       var map = (sB < sA) ? MAP_B : MAP_A;
-      var mapName = (map === MAP_A) ? 'mirrored' : 'literal';
+      var hasSyms = cols.some(function (cc) { return !!cc.sym; });
 
       var hours = raw.map(function (rw) {
         var rec = { label: rw.label, from: rw.from, to: rw.to, start: rw.start, total: 0, arms: {} };
         ARMS4.forEach(function (a) { rec.arms[a] = { L: 0, S: 0, R: 0, tot: 0 }; });
         cols.forEach(function (cc, ix) {
-          var turn = map[cc.sym];
+          var turn = cc.turn || map[cc.sym];
           if (!turn) return;
           rec.arms[cc.arm][turn] += rw.vals[ix];
           rec.arms[cc.arm].tot += rw.vals[ix];
@@ -1341,50 +1399,66 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
 
       return {
         hours: hours, roads: roads, present: present,
-        mapping: mapName, mapScore: { mirrored: sA, literal: sB }
+        turnLabels: hasSyms ? 'arrows' : 'words',
+        mapping: hasSyms ? ((map === MAP_A) ? 'mirrored' : 'literal') : 'explicit',
+        mapScore: { mirrored: sA, literal: sB }
       };
     }
 
     /* --- workbook-level metadata -------------------------------------------- */
+    var META_KEYS = [
+      ['name', /שם\s*הצומת/],
+      ['junction', /מס['׳"]?\s*הצומת/],
+      ['survey', /מס['׳"]?\s*סקר/],
+      ['date', /תאריך\s*הספירה/],
+      ['day', /יום\s*הספירה/],
+      ['by', /מבצע\s*הספירה/]
+    ];
+    function isLabel(t) {
+      for (var i = 0; i < META_KEYS.length; i++) if (META_KEYS[i][1].test(t)) return true;
+      return false;
+    }
     function readMeta(sheets) {
       var meta = {};
-      var pairs = [
-        ['junction', /מס['׳"]?\s*הצומת/],
-        ['survey', /מס['׳"]?\s*סקר/],
-        ['date', /תאריך\s*הספירה/],
-        ['by', /מבצע\s*הספירה/]
-      ];
-      for (var s = 0; s < sheets.length; s++) {
-        var rows = sheets[s].rows;
-        for (var r = 0; r < Math.min(rows.length, 25); r++) {
+      sheets.forEach(function (sh) {
+        var rows = sh.rows;
+        for (var r = 0; r < Math.min(rows.length, 30); r++) {
           var row = rows[r] || [];
-          for (var c = 0; c < Math.min(row.length, 4); c++) {
+          for (var c = 0; c < row.length; c++) {
             var t = txt(row[c]);
             if (!t) continue;
-            if (!meta.name && /שם\s*הצומת/.test(t) && t.indexOf(':') > -1) {
-              meta.name = t.split(':').slice(1).join(':').trim();
-            }
-            for (var p = 0; p < pairs.length; p++) {
-              var key = pairs[p][0];
-              if (meta[key] || !pairs[p][1].test(t)) continue;
-              for (var k = c + 1; k < Math.min(row.length, c + 4); k++) {
+            for (var p = 0; p < META_KEYS.length; p++) {
+              var key = META_KEYS[p][0];
+              if (meta[key] || !META_KEYS[p][1].test(t)) continue;
+              // value inside the same cell, after the colon
+              var inline = t.indexOf(':') > -1 ? t.split(':').slice(1).join(':').trim() : '';
+              if (inline) { meta[key] = inline; break; }
+              var v = null;
+              for (var k = c + 1; k < Math.min(row.length, c + 5) && v === null; k++) {
                 if (row[k] === null || row[k] === undefined || txt(row[k]) === '') continue;
-                meta[key] = (key === 'date') ? fmtDate(row[k]) : txt(row[k]);
-                if (key === 'date') {
-                  for (var j = k + 1; j < Math.min(row.length, k + 6); j++) {
-                    if (/^יום/.test(txt(row[j]))) { meta.day = txt(row[j]); break; }
-                  }
-                }
-                break;
+                if (isLabel(txt(row[k]))) break;      // ran into the next field's label
+                v = row[k];
               }
+              if (v === null && rows[r + 1] && rows[r + 1][c] !== null && rows[r + 1][c] !== undefined &&
+                  txt(rows[r + 1][c]) !== '' && !META_KEYS[p][1].test(txt(rows[r + 1][c]))) v = rows[r + 1][c];
+              if (v === null) break;
+              meta[key] = (key === 'date') ? fmtDate(v) : txt(v);
+              if (key === 'date' && !meta.day) {
+                for (var j = 0; j < row.length; j++) {
+                  var dt = txt(row[j]);
+                  if (/^יום\s*[א-ו']/.test(dt)) { meta.day = dt; break; }
+                }
+              }
+              break;
             }
           }
         }
-      }
+      });
+      if (meta.day && !/^יום/.test(meta.day)) meta.day = 'יום ' + meta.day;
       return meta;
     }
 
-    // peak hours as reported by the counting firm (15-minute based), if the summary sheet has them
+    // peak hours as reported by the counting firm (15-minute based), where the file states them
     function readReportedPeaks(sheets) {
       var out = [];
       for (var s = 0; s < sheets.length; s++) {
@@ -1403,16 +1477,14 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
             if (isDate(v) || (typeof v === 'number' && v > 0 && v < 1)) times.push(fmtTime(v));
             else if (typeof v === 'number') { vol = v; break; }
           }
-          if (times.length === 2) {
-            times.sort();
-            out.push({ label: lbl, range: times[0] + '\u2013' + times[1], vol: vol });
-          }
+          if (times.length === 2) { times.sort(); out.push({ label: lbl, range: times[0] + '\u2013' + times[1], vol: vol }); }
         }
         if (out.length) break;
       }
       return out;
     }
 
+    /* --- public: workbook --------------------------------------------------- */
     function parseCountWorkbook(wb, XLSX) {
       var sheets = wb.SheetNames.map(function (n) {
         return { name: n, rows: XLSX.utils.sheet_to_json(wb.Sheets[n], { header: 1, raw: true, defval: null, blankrows: true }) };
@@ -1427,24 +1499,48 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
         return oa - ob;
       });
 
-      var seen = {}, tables = [];
+      var seen = {}, tables = [], firstErr = null;
       found.forEach(function (t) {
         if (seen[t.id]) return;
         var rows = null;
         for (var i = 0; i < sheets.length; i++) if (sheets[i].name === t.sheet) rows = sheets[i].rows;
         try {
-          t.data = readTable(rows, t.row);
+          var tr = findTurnRow(rows, t.row + 1, Math.min(t.stop, t.row + 20));
+          if (tr < 0) throw new Error('לא נמצאה שורת התנועות (ימינה / ישר / שמאלה או חצים) מתחת לכותרת הלוח.');
+          t.data = readTableAt(rows, tr);
           seen[t.id] = 1;
           tables.push(t);
-        } catch (e) { t.error = e.message; }
+        } catch (e) { if (!firstErr) firstErr = e.message; }
       });
-      if (!tables.length) throw new Error('הלוח אותר בקובץ אך לא ניתן היה לקרוא ממנו נתונים.');
+      if (!tables.length) throw new Error('הלוח אותר בקובץ אך לא ניתן היה לקרוא ממנו נתונים' + (firstErr ? ' — ' + firstErr : '.'));
 
       return { meta: readMeta(sheets), reportedPeaks: readReportedPeaks(sheets), tables: tables };
     }
 
+    /* --- public: pasted cells ----------------------------------------------- */
+    function parsePastedCells(text) {
+      var lines = String(text).replace(/\r/g, '').split('\n');
+      while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+      var rows = lines.map(function (ln) {
+        return ln.split(ln.indexOf('\t') > -1 ? '\t' : /\s{2,}|,/).map(function (x) { return x.trim(); });
+      });
+      if (rows.length < 3) throw new Error('הדבק לפחות שלוש שורות: שמות הדרכים, כיווני הזרועות, שורת התנועות והשעות.');
+      var tr = findTurnRow(rows, 0, rows.length);
+      if (tr < 0) throw new Error('לא נמצאה שורת התנועות. ודא שהעתקת גם את השורה שבה כתוב ימינה / ישר / שמאלה (או < ^ >).');
+      var data = readTableAt(rows, tr);
+      var title = rowText(rows[0]);
+      return {
+        meta: {},
+        reportedPeaks: [],
+        tables: [{
+          sheet: 'הדבקה', row: 0, id: 'הדבקה', kind: /^ל/.test(title) ? 'exit' : 'entry',
+          unit: 'unknown', title: 'נתונים שהודבקו', data: data
+        }]
+      };
+    }
+
   /* ============================================================
-     6b. XLSX import — UI
+     6b. Count-file import — UI
      ============================================================ */
   var imp = { book: null, tableIx: 0, hourIx: 0 };
 
@@ -1455,6 +1551,12 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
   }
   function curTable() { return imp.book ? imp.book.tables[imp.tableIx] : null; }
   function curHours() { var t = curTable(); return t ? t.data.hours : []; }
+  function unitOf(t) { return t.unit === 'pcu' ? 'יר״מ' : (t.unit === 'veh' ? 'כ״ר' : 'יח׳'); }
+  function tableLabel(t) {
+    if (t.id === 'הדבקה') return 'נתונים שהודבקו';
+    return 'לוח ' + t.id + ' — ' + (t.kind === 'exit' ? 'זרועות יציאה' : 'זרועות כניסה') +
+           ', ' + (t.unit === 'pcu' ? 'יר״מ' : 'כלי רכב');
+  }
 
   function peakIndex(hours, lo, hi) {
     var best = -1, bv = -1;
@@ -1508,23 +1610,26 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
   function renderImport() {
     var panel = document.getElementById('impPanel');
     if (!imp.book) { panel.hidden = true; panel.innerHTML = ''; return; }
-    var t = curTable(), d = t.data, hours = d.hours, hh = hours[imp.hourIx], m = imp.book.meta;
-    var unit = t.unit === 'pcu' ? 'יר״מ' : 'כ״ר';
+    var t = curTable(), d = t.data, hours = d.hours, hh = hours[imp.hourIx], m = imp.book.meta || {};
+    var unit = unitOf(t);
     var res = cache.res || recompute();
     var h = '';
 
-    h += '<div class="kv">';
-    if (m.name) h += '<span>צומת: <b>' + esc(m.name) + '</b></span>';
-    if (m.junction) h += '<span>מס׳ צומת: <b>' + esc(m.junction) + '</b></span>';
-    if (m.date) h += '<span>תאריך ספירה: <b>' + esc(m.date) + (m.day ? ' · ' + esc(m.day) : '') + '</b></span>';
-    if (m.by) h += '<span>מבצע: <b>' + esc(m.by) + '</b></span>';
-    h += '</div>';
+    if (m.name || m.date || m.by || m.junction) {
+      h += '<div class="kv">';
+      if (m.name) h += '<span>צומת: <b>' + esc(m.name) + '</b></span>';
+      if (m.junction) h += '<span>מס׳ צומת: <b>' + esc(m.junction) + '</b></span>';
+      if (m.date) h += '<span>תאריך ספירה: <b>' + esc(m.date) + (m.day ? ' · ' + esc(m.day) : '') + '</b></span>';
+      if (m.by) h += '<span>מבצע: <b>' + esc(m.by) + '</b></span>';
+      h += '</div>';
+    }
 
     h += '<div class="imp-ctl">';
-    h += '<label>לוח מקור: <select id="impTable">' + imp.book.tables.map(function (tb, i) {
-      return '<option value="' + i + '"' + (i === imp.tableIx ? ' selected' : '') + '>לוח ' + tb.id + ' — ' +
-        (tb.kind === 'exit' ? 'זרועות יציאה' : 'זרועות כניסה') + ', ' + (tb.unit === 'pcu' ? 'יר״מ' : 'כלי רכב') + '</option>';
-    }).join('') + '</select></label>';
+    if (imp.book.tables.length > 1) {
+      h += '<label>לוח מקור: <select id="impTable">' + imp.book.tables.map(function (tb, i) {
+        return '<option value="' + i + '"' + (i === imp.tableIx ? ' selected' : '') + '>' + esc(tableLabel(tb)) + '</option>';
+      }).join('') + '</select></label>';
+    }
     h += '<label>שעה: <select id="impHour">' + hours.map(function (x, i) {
       return '<option value="' + i + '"' + (i === imp.hourIx ? ' selected' : '') + '>' + esc(x.label) +
         ' — ' + Math.round(x.total) + ' ' + unit + '</option>';
@@ -1560,22 +1665,24 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     var off = ARMS.filter(function (a) { return !d.present[a]; });
     var notes = [];
     notes.push('הנפחים הוזנו למחשבון. מספר הנתיבים, נתיב משותף ישר+ימינה וימין חופשית נשארים כפי שהגדרת בטופס — הייבוא לא נוגע בהם.');
-    if (off.length) notes.push('זרוע ' + off.map(function (a) { return HE[a]; }).join(', ') + ' לא מופיעה בקובץ (ללא נפח וללא שם דרך) וסומנה כזרוע לא פעילה.');
-    if (t.unit === 'pcu') notes.push('הערכים ביר״מ (יחידות רכב מנועי) — כלומר כבר כוללים המרה לרכב כבד; מעוגלים למספר שלם.');
-    else notes.push('הערכים בכלי רכב בפועל (ללא המרה ליר״מ). לחישוב נפח קריטי עדיף לרוב לעבוד ביר״מ — לוח 2.2 או 2.4.');
-    if (imp.book.reportedPeaks.length) {
+    if (off.length) notes.push('זרוע ' + off.map(function (a) { return HE[a]; }).join(', ') + ' לא נושאת תנועה בלוח וסומנה כזרוע לא פעילה.');
+    if (t.unit === 'pcu') notes.push('הערכים ביר״מ (יחידות רכב מנועי) — כלומר כוללים כבר את המרת הרכב הכבד; מעוגלים למספר שלם.');
+    else if (t.unit === 'veh') notes.push('הערכים בכלי רכב בפועל, ללא המרה ליר״מ. לחישוב נפח קריטי עדיף לרוב לוח 2.4 או 2.2 (יר״מ).');
+    else notes.push('היחידות הן כפי שהודבקו — יר״מ או כלי רכב, לפי הלוח שממנו הועתקו.');
+    if (d.turnLabels === 'arrows') {
+      notes.push('עמודות התנועה בקובץ מסומנות בחצים. בגיליון RTL החצים נשמרים הפוך ממה שהם נראים, ולכן הכיוון נקבע לפי בדיקת עקביות מול הזרועות הקיימות (‎' +
+                 (d.mapping === 'mirrored' ? '\u003c = ימינה' : '\u003c = שמאלה') + '‎). כדאי להשוות מול הסכמה שבקובץ.');
+    }
+    if (imp.book.reportedPeaks && imp.book.reportedPeaks.length) {
       notes.push('שעות השיא לפי מבצע הספירה (מבוססות רבעי שעה): ' +
         imp.book.reportedPeaks.map(function (p) {
           return p.label + ' ' + p.range + (p.vol ? ' · ' + Math.round(p.vol) + ' יר״מ' : '');
-        }).join(' · ') +
-        '. הלוח כאן הוא בשעות עגולות בלבד, ולכן ייתכן הפרש קטן מול שעת השיא המתגלגלת.');
+        }).join(' · ') + '. הלוח כאן בשעות עגולות, ולכן ייתכן הפרש קטן מול שעת השיא המתגלגלת.');
     }
     var badDest = 0;
     ARMS.forEach(function (a) {
       if (!d.present[a]) return;
-      ['L', 'S', 'R'].forEach(function (mv) {
-        if (hh.arms[a][mv] > 0 && !d.present[DEST[a][mv]]) badDest++;
-      });
+      ['L', 'S', 'R'].forEach(function (mv) { if (hh.arms[a][mv] > 0 && !d.present[DEST[a][mv]]) badDest++; });
     });
     if (badDest) notes.push('שים לב: יש תנועות שיעדן זרוע שאינה פעילה — בדוק את מבנה הלוח בקובץ.');
     h += '<p class="note">' + notes.map(esc).join('<br>') + '</p></div>';
@@ -1584,7 +1691,8 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     panel.innerHTML = h;
     panel.hidden = false;
 
-    document.getElementById('impTable').addEventListener('change', function () {
+    var selT = document.getElementById('impTable');
+    if (selT) selT.addEventListener('change', function () {
       var prev = curHours()[imp.hourIx];
       imp.tableIx = parseInt(this.value, 10) || 0;
       var hrs = curHours(), ix = 0;
@@ -1619,14 +1727,31 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     var chart = panel.querySelector('svg.hist');
     if (chart) {
       chart.addEventListener('click', pickBar);
-      chart.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickBar(e); } });
+      chart.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickBar(e); }
+      });
     }
+  }
+
+  function adoptBook(book, okMsg) {
+    imp.book = book;
+    imp.tableIx = 0;
+    imp.hourIx = peakIndex(curHours(), null, null);
+    applyImportedHour();
+    renderImport();
+    impStatus(okMsg + ' · ' + curHours().length + ' שעות ספירה · הוזנה שעת השיא ' + curHours()[imp.hourIx].label, 'ok');
+  }
+  function importFailed(err) {
+    imp.book = null;
+    renderImport();
+    impStatus((err && err.message ? err.message : String(err)) +
+              ' — אפשר להדביק את התאים ידנית (הכפתור "הקובץ לא נקרא?" למטה).', 'err');
   }
 
   function handleImportFile(file) {
     if (!file) return;
     if (typeof XLSX === 'undefined') {
-      impStatus('ספריית קריאת קבצי אקסל לא נטענה. בדוק את החיבור לאינטרנט ורענן את הדף.', 'err');
+      impStatus('ספריית קריאת קבצי אקסל לא נטענה. בדוק את החיבור לאינטרנט ורענן את הדף, או הדבק את התאים ידנית.', 'err');
       return;
     }
     impStatus('קורא את ' + file.name + '…');
@@ -1634,21 +1759,21 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     fr.onload = function () {
       try {
         var wb = XLSX.read(new Uint8Array(fr.result), { type: 'array', cellDates: true });
-        imp.book = parseCountWorkbook(wb, XLSX);
-        imp.tableIx = 0;
-        imp.hourIx = peakIndex(curHours(), null, null);
-        applyImportedHour();
-        renderImport();
-        impStatus('נטען: ' + file.name + ' · לוח ' + curTable().id + ' · ' + curHours().length +
-                  ' שעות ספירה · הוזנה שעת השיא ' + curHours()[imp.hourIx].label, 'ok');
-      } catch (err) {
-        imp.book = null;
-        renderImport();
-        impStatus('לא ניתן לייבא את הקובץ — ' + (err && err.message ? err.message : err), 'err');
-      }
+        var book = parseCountWorkbook(wb, XLSX);
+        adoptBook(book, 'נטען: ' + file.name + ' · ' + tableLabel(book.tables[0]));
+      } catch (err) { importFailed(err); }
     };
     fr.onerror = function () { impStatus('קריאת הקובץ נכשלה.', 'err'); };
     fr.readAsArrayBuffer(file);
+  }
+
+  function handlePaste() {
+    var raw = document.getElementById('pasteBox').value;
+    if (!raw.trim()) { impStatus('התיבה ריקה — הדבק תחילה את התאים מהאקסל.', 'err'); return; }
+    try {
+      var book = parsePastedCells(raw);
+      adoptBook(book, 'נקראו נתונים מודבקים');
+    } catch (err) { importFailed(err); }
   }
 
   function initImport() {
@@ -1668,6 +1793,10 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
       e.preventDefault();
       zone.classList.remove('over');
       if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) handleImportFile(e.dataTransfer.files[0]);
+    });
+    document.getElementById('btnPaste').addEventListener('click', handlePaste);
+    document.getElementById('btnPasteClear').addEventListener('click', function () {
+      document.getElementById('pasteBox').value = '';
     });
   }
 

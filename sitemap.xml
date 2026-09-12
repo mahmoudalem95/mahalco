@@ -1,207 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
-  <!-- ============================================================
-       🆕 NEW KEYWORD LANDING PAGES (8 pages)
-       ============================================================ -->
-
-  <!-- 1. Transportation Engineering -->
-  <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/transportation-engineering.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/handasa-tahbura.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/transportation-engineering.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/transportation-engineering.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/transportation-engineering.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/transportation-engineering.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/transportation-engineering.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/handasa-tahbura.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- 2. Level of Service (LOS) -->
-  <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/level-of-service-los.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/ramat-sherut.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/level-of-service-los.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/level-of-service-los.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/level-of-service-los.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/level-of-service-los.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/level-of-service-los.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/ramat-sherut.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- 3. Planning Guidelines -->
-  <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/transportation-planning-guidelines.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/hanchayot-tihnun.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/transportation-planning-guidelines.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/transportation-planning-guidelines.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/transportation-planning-guidelines.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/transportation-planning-guidelines.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/transportation-planning-guidelines.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/hanchayot-tihnun.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- 4. Netivei Israel -->
-  <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/netivei-israel.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/netivei-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/netivei-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/netivei-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/netivei-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/netivei-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/netivei-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/netivei-israel.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- 5. Trans Israel (Chotze Israel) -->
-  <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/trans-israel.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/chotze-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/trans-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/trans-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/trans-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/trans-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/trans-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/chotze-israel.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- 6. Israel Railways -->
-  <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/israel-railways.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/rakevet-israel.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/israel-railways.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/israel-railways.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/israel-railways.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/israel-railways.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/israel-railways.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/rakevet-israel.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- 7. Road Planner Jobs / Careers -->
-  <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/road-planner-jobs.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/drushim-mehandes.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/road-planner-jobs.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/road-planner-jobs.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/road-planner-jobs.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/road-planner-jobs.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/road-planner-jobs.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/drushim-mehandes.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- 8. Civil Engineering Road Design -->
-  <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/civil-engineering-road-design.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/handasa-ezraheet.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/civil-engineering-road-design.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/civil-engineering-road-design.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/civil-engineering-road-design.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/civil-engineering-road-design.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/civil-engineering-road-design.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/handasa-ezraheet.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- ============================================================
-       📌 ORIGINAL PAGES (Homepage, API, 38 procedures)
-       ============================================================ -->
-
-  <!-- HOMEPAGE -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://mahmoudalem95.github.io/mahalco/</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-12</lastmod>
     <priority>1.0</priority>
   </url>
-
-  <!-- API PAGE -->
   <url>
-    <loc>https://mahmoudalem95.github.io/mahalco/apis.html</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/apis.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/apis.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/apis.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/apis.html"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/apis.html"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/apis.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/apis.html"/>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://mahmoudalem95.github.io/mahalco/apis-he.html</loc>
+    <lastmod>2026-09-12</lastmod>
     <priority>0.9</priority>
   </url>
-
-  <!-- URBAN STREETS (18) -->
-  <url><loc>https://mahmoudalem95.github.io/mahalco/critical-lane-volume.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/critical-lane-volume.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/critical-lane-volume.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/critical-lane-volume.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/critical-lane-volume.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/critical-lane-volume.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/critical-lane-volume.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/critical-lane-volume.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/tool.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/tool.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/tool.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/tool.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/tool.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/tool.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/tool.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/tool.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/signalized.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/signalized.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/signalized.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/signalized.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/signalized.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/signalized.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/signalized.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/signalized.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/unsignalized.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/unsignalized.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/unsignalized.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/unsignalized.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/unsignalized.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/unsignalized.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/unsignalized.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/unsignalized.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/roundabout.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/roundabout.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/roundabout.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/roundabout.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/roundabout.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/roundabout.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/roundabout.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/roundabout.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/signal-timing.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/signal-timing.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/signal-timing.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/signal-timing.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/signal-timing.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/signal-timing.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/signal-timing.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/signal-timing.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/lane-queue.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/lane-queue.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/lane-queue.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/lane-queue.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/lane-queue.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/lane-queue.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/lane-queue.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/lane-queue.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/urban-segment.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/urban-segment.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/urban-segment.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/urban-segment.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/urban-segment.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/urban-segment.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/urban-segment.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/urban-segment.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/urban-facility.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/urban-facility.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/urban-facility.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/urban-facility.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/urban-facility.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/urban-facility.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/urban-facility.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/urban-facility.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/pedestrian-los.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/pedestrian-los.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/pedestrian-los.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/pedestrian-los.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/pedestrian-los.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/pedestrian-los.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/pedestrian-los.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/pedestrian-los.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/bicycle-los.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/bicycle-los.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/bicycle-los.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/bicycle-los.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/bicycle-los.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/bicycle-los.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/bicycle-los.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/bicycle-los.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/transit-los.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/transit-los.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/transit-los.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/transit-los.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/transit-los.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/transit-los.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/transit-los.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/transit-los.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/multimodal-los.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/multimodal-los.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/multimodal-los.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/multimodal-los.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/multimodal-los.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/multimodal-los.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/multimodal-los.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/multimodal-los.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/intersection-spf.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/intersection-spf.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/intersection-spf.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/intersection-spf.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/intersection-spf.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/intersection-spf.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/intersection-spf.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/intersection-spf.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/urban-intersection-design.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/urban-intersection-design.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/urban-intersection-design.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/urban-intersection-design.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/urban-intersection-design.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/urban-intersection-design.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/urban-intersection-design.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/urban-intersection-design.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/typical-section.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/typical-section.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/typical-section.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/typical-section.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/typical-section.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/typical-section.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/typical-section.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/typical-section.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/interchange-design.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/interchange-design.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/interchange-design.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/interchange-design.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/interchange-design.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/interchange-design.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/interchange-design.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/interchange-design.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/frontage-road-design.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/frontage-road-design.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/frontage-road-design.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/frontage-road-design.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/frontage-road-design.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/frontage-road-design.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/frontage-road-design.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/frontage-road-design.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-  <!-- INTERCITY HIGHWAYS (13) -->
-  <url><loc>https://mahmoudalem95.github.io/mahalco/basic-freeway.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/basic-freeway.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/basic-freeway.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/basic-freeway.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/basic-freeway.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/basic-freeway.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/basic-freeway.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/basic-freeway.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/freeway-facility.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/freeway-facility.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/freeway-facility.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/freeway-facility.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/freeway-facility.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/freeway-facility.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/freeway-facility.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/freeway-facility.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/ramp-merge-diverge.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/ramp-merge-diverge.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/ramp-merge-diverge.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/ramp-merge-diverge.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/ramp-merge-diverge.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/ramp-merge-diverge.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/ramp-merge-diverge.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/ramp-merge-diverge.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/weaving-segment.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/weaving-segment.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/weaving-segment.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/weaving-segment.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/weaving-segment.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/weaving-segment.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/weaving-segment.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/weaving-segment.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/interchange-los.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/interchange-los.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/interchange-los.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/interchange-los.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/interchange-los.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/interchange-los.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/interchange-los.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/interchange-los.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/two-lane-highway.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/two-lane-highway.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/two-lane-highway.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/two-lane-highway.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/two-lane-highway.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/two-lane-highway.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/two-lane-highway.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/two-lane-highway.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/freeway-reliability.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/freeway-reliability.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/freeway-reliability.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/freeway-reliability.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/freeway-reliability.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/freeway-reliability.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/freeway-reliability.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/freeway-reliability.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/climbing-lane.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/climbing-lane.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/climbing-lane.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/climbing-lane.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/climbing-lane.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/climbing-lane.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/climbing-lane.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/climbing-lane.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/horizontal-curve.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/horizontal-curve.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/horizontal-curve.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/horizontal-curve.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/horizontal-curve.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/horizontal-curve.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/horizontal-curve.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/horizontal-curve.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/vertical-curve.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/vertical-curve.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/vertical-curve.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/vertical-curve.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/vertical-curve.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/vertical-curve.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/vertical-curve.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/vertical-curve.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/sight-distance.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/sight-distance.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/sight-distance.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/sight-distance.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/sight-distance.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/sight-distance.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/sight-distance.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/sight-distance.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/rural-cross-section.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/rural-cross-section.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/rural-cross-section.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/rural-cross-section.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/rural-cross-section.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/rural-cross-section.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/rural-cross-section.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/rural-cross-section.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/typical-sections-interurban.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/typical-sections-interurban.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/typical-sections-interurban.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/typical-sections-interurban.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/typical-sections-interurban.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/typical-sections-interurban.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/typical-sections-interurban.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/typical-sections-interurban.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-  <!-- SHARED / CROSS‑CUTTING (7) -->
-  <url><loc>https://mahmoudalem95.github.io/mahalco/tia.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/tia.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/tia.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/tia.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/tia.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/tia.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/tia.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/tia.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/capacity-library.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/capacity-library.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/capacity-library.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/capacity-library.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/capacity-library.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/capacity-library.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/capacity-library.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/capacity-library.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/vehicle-swept-path.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/vehicle-swept-path.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/vehicle-swept-path.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/vehicle-swept-path.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/vehicle-swept-path.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/vehicle-swept-path.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/vehicle-swept-path.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/vehicle-swept-path.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/pavement-design.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/pavement-design.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/pavement-design.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/pavement-design.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/pavement-design.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/pavement-design.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/pavement-design.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/pavement-design.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/roadside-safety.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/roadside-safety.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/roadside-safety.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/roadside-safety.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/roadside-safety.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/roadside-safety.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/roadside-safety.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/roadside-safety.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/bridge-scour.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/bridge-scour.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/bridge-scour.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/bridge-scour.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/bridge-scour.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/bridge-scour.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/bridge-scour.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/bridge-scour.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://mahmoudalem95.github.io/mahalco/bca.html</loc><xhtml:link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/bca.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/en/bca.html"/><xhtml:link rel="alternate" hreflang="fr" href="https://mahmoudalem95.github.io/mahalco/fr/bca.html"/><xhtml:link rel="alternate" hreflang="ar" href="https://mahmoudalem95.github.io/mahalco/ar/bca.html"/><xhtml:link rel="alternate" hreflang="hi" href="https://mahmoudalem95.github.io/mahalco/hi/bca.html"/><xhtml:link rel="alternate" hreflang="zh" href="https://mahmoudalem95.github.io/mahalco/zh/bca.html"/><xhtml:link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/bca.html"/><lastmod>2026-09-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/apis.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/htool.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/tool.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/critical-lane-volume.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/critical-lane-v-english.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/roundabout-analysis-metric.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/optimizes-signal-timing%20plans-metric.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/lane-queue-metric.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/Urban-Street-Segment%20Analysis-metric.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/Urban-interchange-Design.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/Urban-intersection-Design.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/Frontage-Road-Design.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/Interchange-Ramp-Terminal%20Analysis.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/interchange-los.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/LOS_nat.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/typical-section.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/typical-section-en.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/parking-regulations.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/calculator_dark_ui.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/SD-tool.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/SD.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/TRAFFIC-IMPACT.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/horizontal.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/vertical.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/rural.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/policy.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/policy_sec.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://mahmoudalem95.github.io/mahalco/english-policy.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <priority>0.4</priority>
+  </url>
 </urlset>

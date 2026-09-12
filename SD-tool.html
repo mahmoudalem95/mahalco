@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MAHALCO — משולשי ראות על תכנית צומת / מעגל תנועה</title>
+<style>
+  :root{--bg:#121624;--panel:#1b2236;--panel2:#222b42;--line:#2e3a55;--line2:#42517a;
+        --txt:#e8ecf5;--dim:#9aa6bf;--amber:#f5b82e;--amber2:#ffd166;--bad:#ff7d6a;--ok:#2dd4a0;--rail:410px}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif}
+  header{position:sticky;top:0;z-index:30;background:#141a2b;border-bottom:1px solid var(--line);display:flex;gap:9px;align-items:center;padding:9px 16px;flex-wrap:wrap}
+  .mark{display:flex;flex-direction:column;line-height:1.15;margin-left:auto}
+  .mark b{font-size:15px;letter-spacing:.14em}
+  .mark span{font-size:11.5px;color:var(--dim)}
+  button{background:#28314a;color:var(--txt);border:1px solid var(--line2);border-radius:6px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+  button:hover{background:#313c5a}
+  button.key{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+  button.on{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+  button.mini{padding:2px 7px;font-size:12px}
+  input,select{background:#131a2c;color:var(--txt);border:1px solid var(--line2);border-radius:5px;padding:5px 7px;font:inherit;font-size:13px}
+  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-items:start}
+  aside{position:sticky;top:51px;max-height:calc(100vh - 51px);overflow:auto;background:var(--panel);border-left:1px solid var(--line);padding:12px 14px 40px}
+  aside h2{font-size:11px;letter-spacing:.12em;color:var(--dim);margin:16px 0 7px;font-weight:700}
+  aside h2:first-child{margin-top:2px}
+  .row{display:grid;grid-template-columns:1fr 128px;gap:8px;align-items:center;padding:3px 0}
+  .row label{font-size:13px;color:#cdd6e6}
+  .row input,.row select{width:100%}
+  .wide{grid-template-columns:1fr}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .arm{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 8px;margin-bottom:6px}
+  .arm.sel{border-color:var(--amber)}
+  .arm .hd{display:flex;gap:6px;align-items:center;font-size:12.5px;margin-bottom:5px}
+  .arm .hd b{flex:1}
+  .arm .g{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .arm .g label{font-size:11px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+  .arm select,.arm input{width:100%;padding:3px 5px;font-size:12px}
+  main{padding:16px}
+  .bar2{display:flex;gap:8px;align-items:center;margin-bottom:9px;flex-wrap:wrap}
+  #err{display:none;background:#3a1d1d;border:1px solid var(--bad);color:#ffd9d2;border-radius:6px;padding:8px 11px;margin-bottom:8px;font-size:12.5px}
+  .stage{background:#0e1422;border:1px solid var(--line);border-radius:6px;padding:8px;overflow:auto;position:relative}
+  #plan{display:block;width:100%;height:auto;direction:ltr;cursor:crosshair;background:#0b101c;touch-action:none;user-select:none;-webkit-user-select:none}
+  #plan *{-webkit-user-drag:none}
+  .drop{display:grid;place-items:center;min-height:420px;border:2px dashed var(--line2);border-radius:8px;color:var(--dim);text-align:center;padding:24px}
+  .drop[hidden]{display:none!important}
+  .out{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px}
+  .box h3{margin:0 0 9px;font-size:12px;letter-spacing:.08em;color:var(--dim)}
+  table.t{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.t th{color:var(--dim);font-weight:600;text-align:right;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+  table.t td{padding:5px 6px;border-bottom:1px solid #243149;color:#cfd8e9}
+  table.t td b{color:var(--amber2)}
+  .chk{border-right:3px solid var(--ok);background:var(--panel2);padding:7px 10px;border-radius:4px 0 0 4px;margin-bottom:6px;font-size:12.5px}
+  .chk.warn{border-color:var(--amber)} .chk.bad{border-color:var(--bad)}
+  .chk b{display:block;font-size:11px;color:#b9c3d6}
+  .hint{font-size:12px;color:var(--dim);margin:5px 0}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#cfd8e9;margin-top:8px}
+  .legend span{display:flex;gap:5px;align-items:center}
+  .sw{width:14px;height:10px;border-radius:2px;display:inline-block}
+  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--amber);color:#161b2b;font-weight:700;padding:8px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .18s;pointer-events:none;z-index:60}
+  @media(max-width:1100px){.shell{grid-template-columns:1fr}aside{position:static;max-height:none;border-left:0;border-bottom:1px solid var(--line)}.out{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark"><b>MAHALCO</b><span>משולשי ראות – ציר מעוקל וכל הזרועות</span></div>
+  <button id="btnUndo">בטל נקודה אחרונה</button>
+  <button id="btnReset">אפס גיאומטריה</button>
+  <button id="btnPng" class="key">הורד PNG</button>
+  <button id="btnSvg">הורד SVG</button>
+  <button id="btnJson">שמור JSON</button>
+</header>
+
+<div class="shell">
+<aside>
+  <h2>1 · תכנית הרקע</h2>
+  <div class="row wide"><input id="file" type="file" accept="image/*"></div>
+  <p class="hint" id="imgInfo">טענו תמונה או צילום מסך של התכנית.</p>
+
+  <h2>2 · קנה מידה</h2>
+  <div class="row wide"><select id="calMode">
+    <option value="line">כיול לפי קטע במידה ידועה (מומלץ)</option>
+    <option value="scale">לפי קנה מידה ורזולוציית הסריקה</option></select></div>
+  <div id="calLine">
+    <div class="row"><label for="calLen">אורך הקטע שסומן (מ׳)</label><input id="calLen" type="number" step="0.1" value="50"></div>
+    <button id="btnCal">סמן קטע כיול</button>
+    <p class="hint">ככל שהקטע ארוך יותר, כך שגיאת הכיול קטנה יותר.</p>
+  </div>
+  <div id="calScale" hidden>
+    <div class="row"><label for="scDen">קנה מידה 1:</label><input id="scDen" type="number" step="50" value="1000"></div>
+    <div class="row"><label for="dpi">DPI של התמונה</label><input id="dpi" type="number" step="1" value="150"></div>
+  </div>
+  <p class="hint" id="scaleInfo">קנה מידה: —</p>
+
+  <h2>3 · סוג הבדיקה</h2>
+  <div class="row wide"><select id="kind">
+    <option value="urban">צומת עירוני – רחובות בערים 2020</option>
+    <option value="inter">צומת בין-עירוני – כרך 2, 2023</option>
+    <option value="round">מעגל תנועה – הנחיות מעגלי תנועה</option></select></div>
+  <div id="pJunction">
+    <div class="row"><label for="vMain">מהירות בדרך הראשית</label><select id="vMain"></select></div>
+    <div class="row"><label for="dual">הדרך הראשית</label><select id="dual">
+      <option value="0">חד-מסלולית (נתיב לכיוון)</option><option value="1">דו-מסלולית (2 נתיבים לכיוון)</option></select></div>
+    <div class="row"><label for="curb">מציר הראשי לאבן השפה (מ׳)</label><input id="curb" type="number" step="0.5" value="7"></div>
+    <div class="row"><label><input type="checkbox" id="showLeft" checked> ראות לפנייה שמאלה מהראשי</label><span></span></div>
+  </div>
+  <div id="pRound" hidden>
+    <div class="row"><label for="rLanes">טיפוס המעגל</label><select id="rLanes">
+      <option value="1">חד-נתיבי</option><option value="2">דו-נתיבי</option></select></div>
+    <div class="row"><label for="rDc">קוטר חיצוני Dc (מ׳)</label><input id="rDc" type="number" step="1" value="40"></div>
+    <p class="hint" id="rInfo">—</p>
+  </div>
+
+  <h2>4 · סימון על התכנית</h2>
+  <div id="jTools">
+    <div class="tools">
+      <button id="tAxis">✎ ציר הדרך הראשית</button>
+      <button id="tArm">+ הוסף זרוע</button>
+      <button id="tDone">סיום סימון</button>
+    </div>
+    <p class="hint" id="drawHint"></p>
+    <div id="arms"></div>
+  </div>
+  <div id="rTools" hidden>
+    <div class="tools">
+      <button id="tC">מרכז המעגל</button><button id="tE">שפה חיצונית</button>
+      <button id="tRA">+ זרוע גישה</button><button id="tDone2">סיום</button>
+    </div>
+    <div id="rArms"></div>
+  </div>
+
+  <h2>תצוגה</h2>
+  <div class="row"><label for="man">תמרון להצגה</label><select id="man">
+    <option value="left">פנייה שמאלה מהמשני</option>
+    <option value="cross">חצייה</option>
+    <option value="right">פנייה ימינה</option>
+    <option value="all">הכול יחד</option></select></div>
+  <div class="row"><label for="armSel">זרוע להצגה</label><select id="armSel"><option value="-1">כל הזרועות</option></select></div>
+  <div class="row"><label for="opac">שקיפות המשולשים</label><input id="opac" type="range" min="10" max="80" value="34"></div>
+  <div class="row"><label><input type="checkbox" id="tLbl" checked> תוויות מידה</label><span></span></div>
+  <div class="row"><label><input type="checkbox" id="tChord" checked> קו הראות (יתר המשולש)</label><span></span></div>
+  <div class="row"><label><input type="checkbox" id="tGrid"> רשת 10 מ׳</label><span></span></div>
+</aside>
+
+<main>
+  <div class="bar2"><button id="zIn">+</button><button id="zOut">−</button><button id="zFit">התאם למסך</button>
+    <span class="hint" id="cursorInfo"></span></div>
+  <div id="err"></div>
+  <div class="stage" id="stage">
+    <div class="drop" id="drop">גררו לכאן תמונה של התכנית, או בחרו קובץ בלוח שמשמאל</div>
+    <svg id="plan" hidden xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="out">
+    <div class="box"><h3>ערכי התכן לפי זרוע</h3><div id="res"></div></div>
+    <div class="box"><h3>בדיקות והערות</h3><div id="checks"></div></div>
+  </div>
+</main>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ============================ נתוני ההנחיות ============================ */
+const U_NOSTOP={calm:{L2:15,cross:15,turn:15,add:0},30:{L2:12,cross:55,turn:65,add:4,alt:'45 / 45'},
+  50:{L2:12,cross:90,turn:110,add:7,alt:'75 / 75'},70:{L2:12,cross:125,turn:155,add:10,alt:'100 / 100'}};
+const U_STOP={calm:{L2:3,cross:25,left:30,add:0},30:{L2:3,cross:55,left:60,add:4},
+  50:{L2:3,cross:90,left:105,add:7},70:{L2:3,cross:125,left:145,add:10}};
+const U_LEFTMAIN={50:{d:75,add:7},70:{d:105,add:10}};
+const U_GRADE={calm:{u4:1.1,u5:1.1,u6:1.1,d4:1.0,d5:1.0,d6:1.0},30:{u4:1.1,u5:1.1,u6:1.1,d4:1.0,d5:1.0,d6:1.0},
+  50:{u4:1.1,u5:1.1,u6:1.1,d4:1.0,d5:0.9,d6:0.9},70:{u4:1.1,u5:1.1,u6:1.1,d4:0.9,d5:0.9,d6:0.9}};
+const I_GAPS={0:{car:{cross:6.5,left:7.5},truck:{cross:8.5,left:9.5}},
+              1:{car:{cross:7.0,left:8.0},truck:{cross:9.2,left:10.2}}};
+const I_LEFTMAIN={car:{near:5.5,far:6.0},truck:{near:6.5,far:7.5}};
+const I_L2={'302':2.0,'301':12.0};
+const R_SSD={10:8.1,20:18.5,30:31.2,40:46.2,50:63.4,60:83.0,70:104.9};
+const R_T27={1:[[30,11,21,54,41],[35,13,23,61,43],[40,16,25,69,45],[45,19,26,73,46]],
+             2:[[45,15,24,65,44],[50,17,25,69,45],[55,20,27,78,47],[60,23,28,83,48],[65,25,29,88,49],[70,28,30,93,50]]};
+const R_TC=6.5, R_APPROACH=15;
+
+/* ============================ מצב ============================ */
+const $=id=>document.getElementById(id);
+const S={img:null,iw:0,ih:0,pxPerM:0,axis:[],arms:[],round:{C:null,E:null,arms:[]},tool:null,cur:-1,cal:[],drag:null};
+const f1=v=>(Math.round(v*10)/10).toFixed(1);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const V=(x,y)=>({x,y}), sub=(a,b)=>V(a.x-b.x,a.y-b.y), add=(a,b)=>V(a.x+b.x,a.y+b.y), mul=(a,s)=>V(a.x*s,a.y*s);
+const nrm=a=>Math.hypot(a.x,a.y), unit=a=>{const l=nrm(a)||1;return V(a.x/l,a.y/l);};
+const dot2=(a,b)=>a.x*b.x+a.y*b.y;
+const angDeg=(a,b)=>Math.acos(Math.max(-1,Math.min(1,dot2(unit(a),unit(b)))))*180/Math.PI;
+const M2P=m=>m*S.pxPerM;
+let toastT; function toast(m){const t=$('toast');t.textContent=m;t.style.opacity='1';clearTimeout(toastT);toastT=setTimeout(()=>t.style.opacity='0',1500);}
+
+/* ===================== גיאומטריה על קו שבור ===================== */
+function meta(poly){
+  const segs=[]; let tot=0;
+  for(let i=0;i<poly.length-1;i++){ const d=nrm(sub(poly[i+1],poly[i])); segs.push({a:poly[i],b:poly[i+1],len:d,s0:tot}); tot+=d; }
+  return {poly,segs,total:tot};
+}
+function ptAt(M,s){
+  if(!M.segs.length) return M.poly[0];
+  s=Math.max(0,Math.min(M.total,s));
+  for(const g of M.segs) if(s<=g.s0+g.len+1e-9){ const t=g.len?(s-g.s0)/g.len:0; return add(g.a,mul(sub(g.b,g.a),t)); }
+  return M.poly[M.poly.length-1];
+}
+function tanAt(M,s){
+  if(!M.segs.length) return V(1,0);
+  s=Math.max(0,Math.min(M.total,s));
+  for(const g of M.segs) if(s<=g.s0+g.len+1e-9) return unit(sub(g.b,g.a));
+  const g=M.segs[M.segs.length-1]; return unit(sub(g.b,g.a));
+}
+function proj(M,p){
+  let best={s:0,d:1e18,pt:M.poly[0]};
+  for(const g of M.segs){
+    const ab=sub(g.b,g.a), L2=dot2(ab,ab)||1;
+    let t=dot2(sub(p,g.a),ab)/L2; t=Math.max(0,Math.min(1,t));
+    const q=add(g.a,mul(ab,t)), d=nrm(sub(p,q));
+    if(d<best.d) best={s:g.s0+t*g.len,d,pt:q};
+  }
+  return best;
+}
+function walk(M,s0,dist,dir){
+  const out=[ptAt(M,s0)]; const tgt=s0+dir*dist;
+  const lo=Math.min(s0,tgt), hi=Math.max(s0,tgt), verts=[];
+  for(const g of M.segs){ const sv=g.s0+g.len; if(sv>lo+1e-6 && sv<hi-1e-6) verts.push(sv); }
+  if(dir<0) verts.reverse();
+  verts.forEach(sv=>out.push(ptAt(M,sv)));
+  out.push(ptAt(M,Math.max(0,Math.min(M.total,tgt))));
+  return {pts:out,end:out[out.length-1],clipped:tgt<-1e-6||tgt>M.total+1e-6,
+          got:Math.min(Math.abs(tgt-s0), dir>0?M.total-s0:s0)};
+}
+
+/* ============================ חישוב ============================ */
+function armCalc(arm){
+  const kind=$('kind').value, dual=+$('dual').value, sp=$('vMain').value;
+  const veh=arm.veh||'car', xtra=Math.max(0,+arm.xtra||0), ctrl=arm.ctrl||'302';
+  if(kind==='urban'){
+    const gf=(!arm.grade||arm.grade==='0')?1:(U_GRADE[sp]||U_GRADE[50])[arm.grade];
+    if(ctrl==='301'){ const t=U_NOSTOP[sp];
+      return {L2:t.L2,left:(t.cross+t.add*xtra)*gf,right:(t.turn+t.add*xtra)*gf,gf,
+        nLeft:'L1 לחצייה',nRight:'L1 לפנייה',
+        leftMain:$('showLeft').checked&&U_LEFTMAIN[sp]?U_LEFTMAIN[sp].d+U_LEFTMAIN[sp].add*xtra:0}; }
+    const t=U_STOP[sp];
+    return {L2:t.L2,left:(t.cross+t.add*xtra)*gf,right:(t.left+t.add*xtra)*gf,gf,
+      nLeft:'L1 לחצייה ולפנייה ימינה',nRight:'L1 לפנייה שמאלה',
+      leftMain:$('showLeft').checked&&U_LEFTMAIN[sp]?U_LEFTMAIN[sp].d+U_LEFTMAIN[sp].add*xtra:0};
+  }
+  const V0=+sp, G=I_GAPS[dual][veh], k=(veh==='truck'?1.0:0.5)*xtra;
+  const tcL=G.cross+k, tcR=G.left+k, lm=I_LEFTMAIN[veh], tcLM=(dual?lm.far:lm.near)+k;
+  return {L2:I_L2[ctrl],left:0.278*V0*tcL,right:0.278*V0*tcR,tcL,tcR,
+    nLeft:'L1 לחצייה / ימינה',nRight:'L1 לפנייה שמאלה',
+    leftMain:$('showLeft').checked?0.278*V0*tcLM:0,tcLM};
+}
+function roundCalc(){
+  const lanes=+$('rLanes').value, Dc=+$('rDc').value, T=R_T27[lanes];
+  let row=T[0]; for(const r of T) if(Dc>=r[0]) row=r;
+  const Vc=row[2], ssdV=Object.keys(R_SSD).map(Number).reduce((a,b)=>Math.abs(b-Vc)<Math.abs(a-Vc)?b:a);
+  return {Dc,exact:T.some(r=>r[0]===Dc),R4:row[1],Vc,R1:row[3],Ve:row[4],d:R_SSD[ssdV],ssdV,b:0.278*Vc*R_TC,row};
+}
+
+/* ============================ שרטוט ============================ */
+function draw(){ try{ draw_(); $('err').style.display='none'; }
+  catch(e){ const el=$('err'); el.style.display='block'; el.textContent='שגיאה בשרטוט: '+e.message; console.error(e); } }
+function draw_(){
+  renderArms(); updateInfo();
+  const svg=$('plan'); if(!S.img){ report([],[]); return; }
+  const W=S.iw,H=S.ih, shown=svg.getBoundingClientRect().width||W, u=W/shown;
+  const sw=Math.max(1.2,1.6*u), fs=Math.max(11,14*u), op=(+$('opac').value)/100;
+  const lbl=$('tLbl').checked, chord=$('tChord').checked;
+  const T=(x,y,s,col,size)=>`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" fill="${col}" font-size="${size||fs}" font-family="Arial" font-weight="700" text-anchor="middle" paint-order="stroke" stroke="#0b101c" stroke-width="${(size||fs)*0.24}" stroke-linejoin="round">${esc(s)}</text>`;
+  const dot=(p,col,r)=>`<g><circle cx="${p.x}" cy="${p.y}" r="${(r||sw*3)*1.9}" fill="${col}" opacity=".2"/><circle cx="${p.x}" cy="${p.y}" r="${r||sw*3}" fill="${col}" stroke="#0b101c" stroke-width="${sw*0.8}"/></g>`;
+  const path=pts=>pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+  let g='', rows=[], notes=[];
+  if($('tGrid').checked&&S.pxPerM){ const st=M2P(10); let gr='';
+    for(let x=0;x<W;x+=st) gr+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`;
+    for(let y=0;y<H;y+=st) gr+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`;
+    g+=`<g stroke="#5fa8ff" stroke-width="${sw*0.35}" opacity=".3">${gr}</g>`; }
+
+  if($('kind').value==='round'){
+    const R=roundCalc(), C=S.round.C, E=S.round.E;
+    if(C) g+=dot(C,'#5fa8ff');
+    if(C&&E){
+      const Rout=nrm(sub(E,C));
+      g+=`<circle cx="${C.x}" cy="${C.y}" r="${Rout}" fill="none" stroke="#5fa8ff" stroke-width="${sw}" stroke-dasharray="${sw*4} ${sw*3}"/>`+dot(E,'#5fa8ff');
+      if(S.pxPerM){
+        const rP=Math.max(2,Rout-M2P(2));
+        g+=`<circle cx="${C.x}" cy="${C.y}" r="${rP}" fill="none" stroke="#2dd4a0" stroke-width="${sw*0.8}" stroke-dasharray="${sw*2} ${sw*2}"/>`;
+        S.round.arms.forEach((A,i)=>{
+          const uu=unit(sub(A,C)), ent=add(C,mul(uu,Rout)), eye=add(ent,mul(uu,M2P(R_APPROACH)));
+          const a0=Math.atan2(uu.y,uu.x), sb=M2P(R.b)/rP, sd=M2P(R.d)/rP, P=[],Q=[];
+          for(let j=0;j<=40;j++){const a=a0+sb*j/40;P.push(add(C,V(Math.cos(a)*rP,Math.sin(a)*rP)));}
+          for(let j=0;j<=40;j++){const a=a0-sd*j/40;Q.push(add(C,V(Math.cos(a)*rP,Math.sin(a)*rP)));}
+          g+=`<path d="M${eye.x.toFixed(1)} ${eye.y.toFixed(1)} ${path(P).slice(1)} Z" fill="#f5b82e" fill-opacity="${op}" stroke="#f5b82e" stroke-width="${sw}"/>`;
+          if(chord) g+=`<line x1="${eye.x}" y1="${eye.y}" x2="${P[40].x}" y2="${P[40].y}" stroke="#f5b82e" stroke-width="${sw*0.9}" stroke-dasharray="${sw*3} ${sw*2}"/>`;
+          g+=`<path d="${path(Q)}" fill="none" stroke="#2dd4a0" stroke-width="${sw*2.2}" stroke-linecap="round" opacity=".9"/>`;
+          g+=dot(ent,'#f5b82e',sw*2.2)+dot(eye,'#ff9d6a');
+          if(lbl){ g+=T(eye.x,eye.y-fs*0.8,`זרוע ${i+1} · ${R_APPROACH} מ׳`,'#ff9d6a')
+            +T(P[20].x,P[20].y,`b = ${f1(R.b)} מ׳`,'#f5b82e')+T(Q[20].x,Q[20].y,`d = ${f1(R.d)} מ׳`,'#2dd4a0'); }
+          rows.push([`זרוע ${i+1}`,`<b>${f1(R.b)}</b>`,`<b>${f1(R.d)}</b>`,R_APPROACH,'—']);
+        });
+        if(lbl) g+=T(C.x,C.y-Rout-fs*0.6,`Dc = ${f1(2*Rout/S.pxPerM)} מ׳`,'#5fa8ff');
+      }
+    }
+    notes.push(['','נתוני המעגל',`R4 = ${R.R4} מ׳ · סיבוב ${R.Vc} קמ״ש · R1 = ${R.R1} מ׳ · כניסה ${R.Ve} קמ״ש`+(R.exact?'':` (לפי Dc = ${R.row[0]} מ׳ בטבלה)`)],
+      ['','מה מסומן','הצהוב – משולש הראות לשמאל מכניסת הזרוע (b, פער 6.5 שנ׳, צלע גישה 15 מ׳). הירוק – מרחק ראות לעצירה d לאורך מסלול הנסיעה, 2 מ׳ משפת האי.']);
+  } else {
+    const A=meta(S.axis);
+    if(S.axis.length>1) g+=`<path d="${path(S.axis)}" fill="none" stroke="#5fa8ff" stroke-width="${sw*1.1}" stroke-dasharray="${sw*6} ${sw*4}"/>`;
+    S.axis.forEach(p=>g+=dot(p,'#5fa8ff',sw*2));
+
+    const only=+($('armSel')?$('armSel').value:-1);
+    S.arms.forEach((arm,ai)=>{
+      arm.pts.forEach(p=>g+=dot(p,'#c9b6ff',sw*2));
+      if(arm.stop) g+=dot(arm.stop,'#ffffff',sw*2.2);
+      if(only>=0 && only!==ai) return;
+      if(!arm.pts.length||S.axis.length<2||!S.pxPerM) return;
+      const J=proj(A,arm.pts[0]);
+      const AP=meta([J.pt,...arm.pts]);
+      const C=armCalc(arm);
+      /* עין הנהג: אם סומן קו עצירה – 1.5 מ' מאחוריו; אחרת לפי L2 מקו אבן השפה */
+      let eyeS, stopS=null;
+      if(arm.stop){ stopS=proj(AP,arm.stop).s; eyeS=Math.min(AP.total, stopS+M2P(1.5)); }
+      else eyeS=Math.min(AP.total, M2P(+$('curb').value+C.L2));
+      const eye=ptAt(AP,eyeS);
+      /* קו הזרוע – מלא עד קו העצירה, דהוי מעבר לו */
+      const solid=walk(AP,0,eyeS,1).pts;
+      g+=`<path d="${path(solid)}" fill="none" stroke="#c9b6ff" stroke-width="${sw*1.1}"/>`;
+      if(AP.total>eyeS) g+=`<path d="${path(walk(AP,eyeS,AP.total-eyeS,1).pts)}" fill="none" stroke="#c9b6ff" stroke-width="${sw*0.7}" stroke-dasharray="${sw*4} ${sw*4}" opacity=".45"/>`;
+      if(arm.stop){ const tg=tanAt(AP,stopS), nn=V(tg.y,-tg.x), sp=ptAt(AP,stopS), wdt=M2P(3.5);
+        g+=`<line x1="${(sp.x-nn.x*wdt/2).toFixed(1)}" y1="${(sp.y-nn.y*wdt/2).toFixed(1)}" x2="${(sp.x+nn.x*wdt/2).toFixed(1)}" y2="${(sp.y+nn.y*wdt/2).toFixed(1)}" stroke="#ffffff" stroke-width="${sw*2.4}" stroke-linecap="butt"/>`;
+        if(lbl) g+=T(sp.x,sp.y+fs*0.9,'קו עצירה','#ffffff',fs*0.8); }
+      const head=unit(sub(J.pt,eye));                 // מהעין אל הצומת
+      const leftV=V(head.y,-head.x);                  // שמאל הנהג (מסך y כלפי מטה)
+      const t=tanAt(A,J.s);
+      const dirLeft=dot2(t,leftV)>=0?1:-1;
+      const man=$('man').value;
+      const LGS={
+        right:[{v:C.left,dir:dirLeft,col:'#f5b82e',n:'ראות שמאלה – פנייה ימינה'}],
+        cross:[{v:C.left,dir:dirLeft,col:'#f5b82e',n:'ראות שמאלה – חצייה'},
+               {v:C.left,dir:-dirLeft,col:'#ff9d6a',n:'ראות ימינה – חצייה'}],
+        left:[{v:C.left,dir:dirLeft,col:'#f5b82e',n:'ראות שמאלה – חציית הנתיב הקרוב'},
+              {v:C.right,dir:-dirLeft,col:'#ff9d6a',n:'ראות ימינה – פנייה שמאלה'}],
+        all:[{v:C.left,dir:dirLeft,col:'#f5b82e',n:C.nLeft},{v:C.right,dir:-dirLeft,col:'#ff9d6a',n:C.nRight}]
+      };
+      const legs=LGS[man]||LGS.all;
+      const cells=[];
+      legs.forEach((L,i)=>{
+        const w=walk(A,J.s,M2P(L.v),L.dir);
+        g+=`<path d="M${eye.x.toFixed(1)} ${eye.y.toFixed(1)} ${path(w.pts).slice(1)} Z" fill="${L.col}" fill-opacity="${op}" stroke="${L.col}" stroke-width="${sw}"/>`;
+        if(chord) g+=`<line x1="${eye.x}" y1="${eye.y}" x2="${w.end.x}" y2="${w.end.y}" stroke="${L.col}" stroke-width="${sw*0.9}" stroke-dasharray="${sw*3} ${sw*2}"/>`;
+        g+=dot(w.end,L.col,sw*2.2);
+        if(lbl){ const mp=w.pts[Math.max(1,Math.min(w.pts.length-1,Math.floor(w.pts.length*(i?0.75:0.45))))];
+          g+=T(mp.x,mp.y-fs*(i?1.7:0.7)+ai*fs*1.25,`${L.n} = ${f1(L.v)} מ׳`,L.col); }
+        cells.push(w.clipped?`<b style="color:#ff7d6a">${f1(L.v)} ✕</b>`:`<b>${f1(L.v)}</b>`);
+        if(w.clipped) notes.push(['warn',`זרוע ${ai+1} – ${L.n}`,`נדרש ${f1(L.v)} מ׳, ורק ${f1(w.got/S.pxPerM)} מ׳ מסומנים על הציר. הארכת הציר תראה אם יש מכשול בקטע החסר.`]);
+      });
+      if(C.leftMain){
+        [1,-1].forEach(dr=>{ const w=walk(A,J.s,M2P(C.leftMain),dr);
+          g+=`<path d="${path(w.pts)}" fill="none" stroke="#2dd4a0" stroke-width="${sw*2.2}" stroke-linecap="round" opacity=".85"/>`; });
+        if(lbl){ const w=walk(A,J.s,M2P(C.leftMain),dirLeft);
+          const mp=w.pts[Math.max(1,Math.floor(w.pts.length/2))];
+          g+=T(mp.x,mp.y+fs*(1.5+ai*1.25),`פנייה שמאלה מהראשי = ${f1(C.leftMain)} מ׳`,'#2dd4a0'); }
+      }
+      g+=dot(eye,'#ff5fa8',sw*3.2);
+      if(lbl) g+=T(eye.x,eye.y+fs*(1.4+ai*1.25), arm.stop
+        ? `זרוע ${ai+1} · עין הנהג, 1.5 מ׳ מקו העצירה`
+        : `זרוע ${ai+1} · L2 = ${f1(C.L2)} מ׳ (ללא קו עצירה)`,'#ff5fa8');
+      const armDir=sub(ptAt(AP,Math.min(AP.total,Math.max(M2P(10),AP.total*0.3))),J.pt);
+      let ang=angDeg(armDir,t); if(ang>90) ang=180-ang;
+      const manN={right:'פנייה ימינה',cross:'חצייה',left:'פנייה שמאלה',all:'הכול'}[man];
+      rows.push([`זרוע ${ai+1}`,manN,cells[0]||'—',cells[1]||'—',
+        arm.stop? f1(stopS/S.pxPerM)+' *' : f1(C.L2),
+        C.leftMain?f1(C.leftMain):'—',Math.round(ang)+'°']);
+      if(ang<75) notes.push(['warn',`זרוע ${ai+1} – זווית`,`הזווית לציר הראשי כ-${Math.round(ang)}°. מתחת ל-75° יש להאריך את L1 בכ-3 מ׳ לכל 5° (סעיף 5.10.9) – התוספת אינה מחושבת כאן.`]);
+      if(!arm.stop) notes.push(['','זרוע '+(ai+1)+' – קו עצירה','לא סומן קו עצירה. העין הונחה '+f1(+$('curb').value+C.L2)+' מ׳ מציר הדרך הראשית לפי L2 שבטבלה. סמנו את קו העצירה בפועל כדי למדוד את המשולש ממנו.']);
+      if(arm.stop && stopS/S.pxPerM < +$('curb').value) notes.push(['warn','זרוע '+(ai+1)+' – קו עצירה','קו העצירה קרוב מאוד לציר הדרך הראשית ('+f1(stopS/S.pxPerM)+' מ׳) – בדקו שהוא מעבר למעבר החצייה ולאבן השפה.']);
+      if(J.d>M2P(3)) notes.push(['warn',`זרוע ${ai+1} – מיקום`,'הנקודה הראשונה של הזרוע רחוקה מהציר הראשי. סמנו את הזרוע מהצומת החוצה.']);
+    });
+  }
+  if(S.cal.length){ const a=S.cal[0],b=S.cal[1]; g+=dot(a,'#ff5fa8',sw*2.4);
+    if(b) g+=dot(b,'#ff5fa8',sw*2.4)+`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#ff5fa8" stroke-width="${sw*1.6}"/>`
+      +T((a.x+b.x)/2,(a.y+b.y)/2-fs*0.5,`${f1(+$('calLen').value)} מ׳`,'#ff5fa8'); }
+  if(S.pxPerM){ const L=M2P(20), x0=W*0.02, y0=H-Math.max(18,H*0.03); let bar='';
+    for(let i=0;i<4;i++) bar+=`<rect x="${x0+i*L/4}" y="${y0}" width="${L/4}" height="${sw*3}" fill="${i%2?'#fff':'#0b101c'}" stroke="#0b101c" stroke-width="${sw*0.5}"/>`;
+    g+=`<g opacity=".95">${bar}${T(x0+L/2,y0-sw*4,'20 מ׳','#fff',fs*0.8)}</g>`; }
+
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML=`<image href="${S.img}" xlink:href="${S.img}" x="0" y="0" width="${W}" height="${H}" style="pointer-events:none;-webkit-user-drag:none"/>${g}`;
+  report(rows,notes);
+}
+
+/* ============================ פלט ============================ */
+function report(rows,notes){
+  notes=notes||[];
+  const round=$('kind').value==='round';
+  const head=round?['זרוע','b (מ׳)','d (מ׳)','צלע גישה (מ׳)','']:['זרוע','תמרון','ראות שמאלה','ראות ימינה','L2 / קו עצירה','שמאלה מהראשי','זווית'];
+  $('res').innerHTML=rows.length
+    ? `<table class="t"><thead><tr>${head.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${
+        rows.map(r=>`<tr>${r.map(c=>`<td>${String(c).indexOf('<b')>=0?c:esc(String(c))}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+      +`<p class="hint">${round?'טבלאות 2.6–2.7 · פער 6.5 שנ׳ · גובה עין 1.08 מ׳':($('kind').value==='urban'?'טבלאות 5.13–5.15 · גובה עין ועצם 1.05 מ׳':'טבלאות 4.3–4.5 · L1 = 0.278·V·tc')} · * מרחק קו העצירה שסומן מציר הדרך הראשית; עין הנהג 1.5 מ׳ מאחוריו</p>`
+    : '<p class="hint">סמנו את הציר ואת הזרועות כדי לקבל ערכים.</p>';
+  const c=[...notes];
+  if(!S.img) c.unshift(['bad','תכנית','טענו תמונה של התכנית.']);
+  else if(!S.pxPerM) c.unshift(['bad','קנה מידה','בצעו כיול – בלי קנה מידה אי אפשר לשרטט.']);
+  else { const mpp=1/S.pxPerM;
+    if(mpp>0.5) c.push(['warn','דיוק',`פיקסל ≈ ${f1(mpp)} מ׳ – שגיאת סימון של 2 פיקסלים היא כ-${f1(2*mpp)} מ׳.`]);
+    if(S.cal.length===2){ const d=nrm(sub(S.cal[0],S.cal[1]))/S.pxPerM;
+      if(d<15) c.push(['warn','קטע הכיול',`הכיול בוצע על ${f1(d)} מ׳ בלבד – קטע קצר מגדיל את שגיאת קנה המידה בכל המרחקים.`]); } }
+  if(!round){
+    if(S.axis.length<2) c.push(['bad','ציר ראשי','סמנו לפחות שתי נקודות לאורך ציר הדרך הראשית.']);
+    else if(S.axis.length<4) c.push(['','עיקול','בציר מעוקל סמנו 4–8 נקודות לאורכו, כדי שהצלע תימדד לאורך הכביש ולא באוויר.']);
+    if(!S.arms.length) c.push(['bad','זרועות','הוסיפו זרוע אחת לפחות – כל זרוע מקבלת את שני משולשי הראות שלה.']);
+    c.push(['','שטח פנוי','בתחום המשולש אין להציב מכשולי ראות. יש לבדוק גם את קרן הרחוב ואת אזור הראות במפרדה (10 / 20 / 30 מ׳, טבלה 5.11).']);
+  }
+  if(!c.length) c.push(['','מוכן','סמנו את הגיאומטריה.']);
+  $('checks').innerHTML=c.map(x=>`<div class="chk ${x[0]}"><b>${esc(x[1])}</b>${esc(x[2])}</div>`).join('');
+  $('legend').innerHTML=(round
+    ? [['#f5b82e','משולש ראות בכניסה (b)'],['#2dd4a0','מרחק ראות לעצירה (d)'],['#ff9d6a','עין הנהג'],['#5fa8ff','גיאומטריית המעגל']]
+    : [['#f5b82e','ראות שמאלה – חצייה / ימינה'],['#ff9d6a','ראות ימינה – פנייה שמאלה'],['#2dd4a0','פנייה שמאלה מהראשי'],['#5fa8ff','ציר ראשי'],['#c9b6ff','ציר הזרוע'],['#ff5fa8','עין הנהג / כיול']]
+  ).map(x=>`<span><i class="sw" style="background:${x[0]}"></i>${esc(x[1])}</span>`).join('');
+}
+function updateInfo(){
+  $('scaleInfo').textContent=S.pxPerM?`קנה מידה: ${f1(S.pxPerM)} פיקסלים למטר · פיקסל ≈ ${(1/S.pxPerM).toFixed(2)} מ׳`:'קנה מידה: —';
+  $('imgInfo').textContent=S.img?`תמונה ${S.iw}×${S.ih} פיקסלים`+(S.pxPerM?` · ${f1(S.iw/S.pxPerM)}×${f1(S.ih/S.pxPerM)} מ׳`:''):'טענו תמונה או צילום מסך של התכנית.';
+  if($('kind').value==='round'){ const R=roundCalc();
+    $('rInfo').textContent=`R4 = ${R.R4} מ׳ · סיבוב ${R.Vc} קמ״ש · R1 = ${R.R1} מ׳ · כניסה ${R.Ve} קמ״ש · d = ${f1(R.d)} מ׳ · b = ${f1(R.b)} מ׳`; }
+  const h={axis:'לוחצים לאורך ציר הדרך הראשית – גם בעיקולים. סיום: כפתור ״סיום סימון״ או Esc.',
+           arm:'לוחצים לאורך הזרוע – מהצומת החוצה. סיום: ״סיום סימון״.',
+           cal:'לוחצים שתי נקודות שהמרחק ביניהן ידוע.',
+           stop:'לוחצים על קו העצירה בזרוע – ממנו נמדד L2 ומשם מתחיל המשולש.',
+           rc:'לוחצים על מרכז המעגל.',re:'לוחצים על השפה החיצונית.',ra:'כל לחיצה מוסיפה זרוע גישה.'}[S.tool];
+  $('drawHint').textContent=h||'סמנו את ציר הדרך הראשית (גם מעוקל), ואז הוסיפו זרוע לכל גישה. אפשר לגרור כל נקודה.';
+  [['axis','tAxis'],['arm','tArm'],['rc','tC'],['re','tE'],['ra','tRA']].forEach(([k,id])=>{
+    const el=$(id); if(el) el.classList.toggle('on',S.tool===k); });
+  $('btnCal').classList.toggle('on',S.tool==='cal');
+}
+function renderArms(){
+  if($('kind').value==='round'){
+    $('rArms').innerHTML=S.round.arms.map((a,i)=>`<div class="arm"><div class="hd"><b>זרוע ${i+1}</b><button class="mini" data-ra="${i}">✕</button></div></div>`).join('')
+      ||'<p class="hint">הוסיפו זרועות גישה.</p>';
+    $('rArms').querySelectorAll('[data-ra]').forEach(b=>b.onclick=()=>{S.round.arms.splice(+b.dataset.ra,1);draw();});
+    return;
+  }
+  const urban=$('kind').value==='urban';
+  $('arms').innerHTML=S.arms.map((a,i)=>`<div class="arm ${i===S.cur?'sel':''}">
+    <div class="hd"><b>זרוע ${i+1} (${a.pts.length} נק׳)</b>
+      <button class="mini" data-s="${i}">${a.stop?'✓ קו עצירה':'קו עצירה'}</button>
+      <button class="mini" data-e="${i}">המשך סימון</button><button class="mini" data-d="${i}">✕</button></div>
+    <div class="g">
+      <label>בקרה<select data-i="${i}" data-k="ctrl">
+        <option value="302" ${a.ctrl==='302'?'selected':''}>עצור / מעצירה</option>
+        <option value="301" ${a.ctrl==='301'?'selected':''}>האט (301)</option></select></label>
+      <label>רכב תכן<select data-i="${i}" data-k="veh">
+        <option value="car" ${a.veh==='car'?'selected':''}>פרטי</option>
+        <option value="truck" ${a.veh==='truck'?'selected':''}>משאית/אוטובוס</option></select></label>
+      <label>נתיבים נוספים<input data-i="${i}" data-k="xtra" type="number" min="0" max="6" value="${a.xtra||0}"></label>
+      ${urban?`<label>שיפוע<select data-i="${i}" data-k="grade">${
+        [['0','עד 3%'],['u4','עלייה 4%'],['u5','עלייה 5%'],['u6','עלייה 6%'],['d4','ירידה 4%'],['d5','ירידה 5%'],['d6','ירידה 6%']]
+        .map(o=>`<option value="${o[0]}" ${a.grade===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></label>`:'<span></span>'}
+    </div></div>`).join('')||'<p class="hint">אין זרועות. לחצו ״+ הוסף זרוע״.</p>';
+  $('arms').querySelectorAll('[data-k]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{
+    S.arms[+el.dataset.i][el.dataset.k]=el.type==='number'?+el.value:el.value; draw(); }));
+  $('arms').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{S.arms.splice(+b.dataset.d,1);S.cur=-1;draw();});
+  $('arms').querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{S.cur=+b.dataset.e;S.tool='arm';draw();});
+  $('arms').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{S.cur=+b.dataset.s;S.tool='stop';toast('סמנו את קו העצירה בזרוע');draw();});
+  const sel=$('armSel'); if(sel){ const v=sel.value;
+    sel.innerHTML='<option value="-1">כל הזרועות</option>'+S.arms.map((a,i)=>`<option value="${i}">זרוע ${i+1}</option>`).join('');
+    sel.value = (+v<S.arms.length)? v : '-1'; }
+}
+
+/* ============================ אינטראקציה ============================ */
+function svgPt(ev){ const svg=$('plan'),r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;
+  return V((ev.clientX-r.left)/r.width*vb.width,(ev.clientY-r.top)/r.height*vb.height); }
+function allHandles(){
+  const h=[];
+  S.axis.forEach((p,i)=>h.push({p,set:q=>S.axis[i]=q}));
+  S.arms.forEach(a=>{ a.pts.forEach((p,i)=>h.push({p,set:q=>a.pts[i]=q})); if(a.stop) h.push({p:a.stop,set:q=>a.stop=q}); });
+  if(S.round.C) h.push({p:S.round.C,set:q=>S.round.C=q});
+  if(S.round.E) h.push({p:S.round.E,set:q=>S.round.E=q});
+  S.round.arms.forEach((p,i)=>h.push({p,set:q=>S.round.arms[i]=q}));
+  S.cal.forEach((p,i)=>h.push({p,set:q=>{S.cal[i]=q;
+    if(S.cal.length===2){const d=nrm(sub(S.cal[0],S.cal[1])),L=+$('calLen').value; if(L>0)S.pxPerM=d/L;}}}));
+  return h;
+}
+$('plan').addEventListener('dragstart',e=>e.preventDefault());
+$('plan').addEventListener('pointerdown',e=>{
+  if(!S.img) return; e.preventDefault(); const p=svgPt(e);
+  const shown=$('plan').getBoundingClientRect().width||S.iw, R=Math.max(10,14*S.iw/shown);
+  let best=null,bd=1e18; allHandles().forEach(h=>{const d=nrm(sub(h.p,p)); if(d<bd){bd=d;best=h;}});
+  if(!S.tool && best && bd<R){ S.drag=best; try{$('plan').setPointerCapture(e.pointerId);}catch(_){} return; }
+  switch(S.tool){
+    case 'cal': S.cal.push(p);
+      if(S.cal.length===2){ const d=nrm(sub(S.cal[0],S.cal[1])),L=+$('calLen').value;
+        if(d>2&&L>0) S.pxPerM=d/L; S.tool=null; toast('קנה מידה עודכן'); } break;
+    case 'axis': S.axis.push(p); toast(`ציר ראשי · ${S.axis.length} נקודות`); break;
+    case 'arm': if(S.cur<0){ S.arms.push({pts:[],ctrl:'302',veh:'car',xtra:0,grade:'0'}); S.cur=S.arms.length-1; }
+      S.arms[S.cur].pts.push(p); toast(`זרוע ${S.cur+1} · ${S.arms[S.cur].pts.length} נקודות`); break;
+    case 'stop': if(S.cur>=0&&S.arms[S.cur]){ S.arms[S.cur].stop=p; S.tool=null; toast('קו העצירה סומן'); } break;
+    case 'rc': S.round.C=p; S.tool='re'; toast('כעת סמנו את השפה החיצונית'); break;
+    case 're': S.round.E=p; S.tool=null; toast('קוטר המעגל נקבע'); break;
+    case 'ra': S.round.arms.push(p); toast(`זרוע ${S.round.arms.length}`); break;
+    default: toast('בחרו כלי סימון בלוח שמשמאל');
+  }
+  draw();
+});
+$('plan').addEventListener('pointermove',e=>{ if(!S.img) return; const p=svgPt(e);
+  if(S.drag){ S.drag.set(p); draw(); }
+  if(S.pxPerM) $('cursorInfo').textContent=`X ${f1(p.x/S.pxPerM)} מ׳ · Y ${f1(p.y/S.pxPerM)} מ׳`; });
+addEventListener('pointerup',()=>{S.drag=null;});
+addEventListener('keydown',e=>{ if(e.key==='Escape'){S.tool=null;S.cur=-1;draw();} });
+$('tAxis').onclick=()=>{S.tool='axis';S.cur=-1;draw();};
+$('tArm').onclick=()=>{ if(S.axis.length<2){toast('סמנו קודם את ציר הדרך הראשית');return;}
+  S.arms.push({pts:[],ctrl:'302',veh:'car',xtra:0,grade:'0'}); S.cur=S.arms.length-1; S.tool='arm'; draw(); };
+$('tDone').onclick=()=>{S.tool=null;S.cur=-1;draw();};
+$('tC').onclick=()=>{S.tool='rc';draw();}; $('tE').onclick=()=>{S.tool='re';draw();};
+$('tRA').onclick=()=>{S.tool='ra';draw();}; $('tDone2').onclick=()=>{S.tool=null;draw();};
+$('btnCal').onclick=()=>{S.tool=S.tool==='cal'?null:'cal';S.cal=[];draw();};
+$('btnUndo').onclick=()=>{
+  if(S.tool==='arm'&&S.cur>=0&&S.arms[S.cur].pts.length) S.arms[S.cur].pts.pop();
+  else if(S.tool==='axis'&&S.axis.length) S.axis.pop();
+  else if(S.arms.length&&S.arms[S.arms.length-1].pts.length) S.arms[S.arms.length-1].pts.pop();
+  else if(S.axis.length) S.axis.pop();
+  draw(); };
+$('btnReset').onclick=()=>{S.axis=[];S.arms=[];S.round={C:null,E:null,arms:[]};S.cal=[];S.cur=-1;S.tool=null;draw();};
+$('zIn').onclick=()=>zoom(1.25); $('zOut').onclick=()=>zoom(1/1.25);
+$('zFit').onclick=()=>{$('plan').style.width='100%';draw();};
+function zoom(f){const el=$('plan');const w=parseFloat(el.style.width)||100;el.style.width=Math.max(30,Math.min(1500,w*f))+'%';draw();}
+$('plan').addEventListener('wheel',e=>{ if(!e.ctrlKey) return; e.preventDefault(); zoom(e.deltaY<0?1.1:1/1.1); },{passive:false});
+addEventListener('resize',()=>{ if(S.img) draw(); });
+
+function loadFile(f){ if(!f||!f.type.startsWith('image/'))return;
+  const rd=new FileReader();
+  rd.onload=()=>{const im=new Image(); im.onload=()=>{ S.img=rd.result;S.iw=im.naturalWidth;S.ih=im.naturalHeight;
+    S.axis=[];S.arms=[];S.round={C:null,E:null,arms:[]};S.cal=[];S.cur=-1;S.tool=null;
+    if($('calMode').value==='scale') applyScaleDpi();
+    $('drop').hidden=true; $('plan').removeAttribute('hidden'); draw(); }; im.src=rd.result; };
+  rd.readAsDataURL(f); }
+$('file').onchange=e=>loadFile(e.target.files[0]);
+['dragover','drop'].forEach(t=>$('stage').addEventListener(t,e=>{e.preventDefault(); if(t==='drop') loadFile(e.dataTransfer.files[0]);}));
+function applyScaleDpi(){const den=+$('scDen').value,dpi=+$('dpi').value; if(den>0&&dpi>0) S.pxPerM=dpi/0.0254/den;}
+$('calMode').onchange=()=>{const m=$('calMode').value;$('calLine').hidden=m!=='line';$('calScale').hidden=m!=='scale';if(m==='scale')applyScaleDpi();draw();};
+['scDen','dpi'].forEach(id=>$(id).addEventListener('input',()=>{if($('calMode').value==='scale'){applyScaleDpi();draw();}}));
+$('calLen').addEventListener('input',()=>{if(S.cal.length===2){const d=nrm(sub(S.cal[0],S.cal[1])),L=+$('calLen').value;if(L>0)S.pxPerM=d/L;}draw();});
+function fillKind(){
+  const k=$('kind').value;
+  $('pJunction').hidden=k==='round'; $('pRound').hidden=k!=='round';
+  $('jTools').hidden=k==='round'; $('rTools').hidden=k!=='round';
+  $('vMain').innerHTML=k==='urban'
+    ?`<option value="calm">אזור מיתון תנועה</option><option value="30">30 קמ״ש</option><option value="50" selected>50 קמ״ש</option><option value="70">70 קמ״ש</option>`
+    :[30,40,50,60,70,80,90,100].map(s=>`<option value="${s}" ${s===80?'selected':''}>${s} קמ״ש</option>`).join('');
+  S.tool=null; draw();
+}
+$('kind').onchange=fillKind;
+['vMain','dual','curb','showLeft','opac','tLbl','tChord','tGrid','rLanes','rDc','man','armSel']
+  .forEach(id=>$(id).addEventListener($(id).type==='checkbox'||$(id).tagName==='SELECT'?'change':'input',draw));
+
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+function svgText(){return '<?xml version="1.0" encoding="UTF-8"?>\n'+$('plan').outerHTML;}
+$('btnSvg').onclick=()=>{if(S.img)save(new Blob([svgText()],{type:'image/svg+xml;charset=utf-8'}),'MAHALCO_sight.svg');};
+$('btnPng').onclick=()=>{ if(!S.img)return; const img=new Image();
+  const url=URL.createObjectURL(new Blob([svgText()],{type:'image/svg+xml;charset=utf-8'}));
+  img.onload=()=>{const c=document.createElement('canvas');c.width=S.iw;c.height=S.ih;
+    c.getContext('2d').drawImage(img,0,0,S.iw,S.ih);URL.revokeObjectURL(url);c.toBlob(b=>save(b,'MAHALCO_sight.png'));};
+  img.src=url; };
+$('btnJson').onclick=()=>save(new Blob([JSON.stringify({kind:$('kind').value,pxPerM:S.pxPerM,axis:S.axis,arms:S.arms,round:S.round,
+  main:{speed:$('vMain').value,dual:$('dual').value,curb:$('curb').value},
+  note:'ערכים עקרוניים לבדיקה מוקדמת – לא לביצוע.'},null,2)],{type:'application/json'}),'sight-distance.json');
+
+fillKind();
+</script>
+</body>
+</html>

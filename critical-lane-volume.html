@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
+        onerror="this.onerror=null;var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';document.head.appendChild(s);"></script>
 <style>
 :root{
   --bg:#12121e; --surface:#1a1a2e; --sunk:#22223a;
@@ -80,6 +82,30 @@ button.solid:hover{background:#c9862f}
   margin-inline-start:auto;background:var(--surface);border:1px solid var(--rule);
   border-radius:var(--r);padding:5px 10px}
 .thr input{width:88px}
+
+/* ---- xlsx import ---- */
+.drop{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:var(--r);padding:14px 16px;transition:border-color .15s,background .15s}
+.drop.over{border-color:var(--pick);background:var(--pick-bg)}
+.drop .meta{color:var(--ink3);font-size:13px}
+.imp-status{margin-top:10px;font-size:13px;color:var(--ink2);min-height:20px}
+.imp-status.err{color:var(--warn)}
+.imp-status.ok{color:var(--ok)}
+.kv{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:13px;color:var(--ink2);margin:14px 0 10px}
+.kv b{color:var(--ink);font-weight:600}
+select{font-family:inherit;font-size:13.5px;padding:6px 8px;border-radius:4px;
+  background:var(--sunk);color:var(--ink);border:1px solid var(--rule2)}
+select:focus-visible{outline:2px solid var(--pick);outline-offset:1px}
+.imp-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+.imp-ctl label{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.chartwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:4px 0 18px}
+svg.hist{display:block}
+svg.hist g{cursor:pointer}
+svg.hist g:hover rect{opacity:.85}
+.imp-grid{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.imp-scheme{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px;text-align:center}
+.imp-scheme .cap{font-size:12px;color:var(--ink3);margin-top:6px}
+@media (max-width:820px){.imp-grid{grid-template-columns:1fr}}
 
 /* ---- tables ---- */
 .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:20px;border-radius:var(--r)}
@@ -166,6 +192,8 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     --rule:#ccc;--rule2:#e2e2e2;--pick-bg:#f6ecd9}
   body{background:#fff;color:#111}
   .bar,.movement-hint,.skip,details,#jsonOut{display:none!important}
+  .drop,.imp-ctl,.imp-status,.chartwrap{display:none!important}
+  .imp-scheme{border-color:#ccc}
   .wrap{max-width:none;padding:0}
   table{min-width:0}
   section{break-inside:avoid}
@@ -179,6 +207,21 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
 
   <h1>נפח נתיב קריטי</h1>
   <p class="lede">מחשבון פאזות לצומת מרומזר. הזן נפחים ומספרי נתיבים לכל זרוע וקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלות, ופאזה מתמשכת (שילוב שתי השיטות). עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בנתיב משותף ישר+ימינה ובימין חופשית לכל זרוע בנפרד. <strong>החישוב והסכמה מתעדכנים בזמן אמת — אין צורך ללחוץ "חשב".</strong></p>
+
+  <section>
+    <div class="sec-head"><h2>ייבוא נפחים מקובץ ספירה</h2>
+      <span class="meta">לוח 2.4 — התפלגות התנועה לפי זרועות היציאה (יר״מ)</span></div>
+    <p class="lede" style="margin-bottom:14px">טען קובץ ‎XLSX‎ של ספירת נפחים בצומת (פורמט הדוחות המקובל). הדף מאתר את לוח 2.4,
+      בונה את פרופיל התנועה השעתי, מציג את נפחי שעת השיא על סכמת הצומת, ומזין אותם ישירות לחישוב הנפח הקריטי.
+      אפשר לבחור כל שעה אחרת מהפרופיל, וגם לעבור ללוח 2.2 (כניסה, יר״מ) או ללוחות כלי הרכב 2.1 / 2.3.</p>
+    <div class="drop" id="dropZone">
+      <input type="file" id="xlsFile" accept=".xlsx,.xlsm,.xls" hidden>
+      <button class="solid" id="btnPick">בחר קובץ ספירה</button>
+      <span class="meta">או גרור לכאן קובץ ‎.xlsx‎ — הקובץ נקרא בדפדפן בלבד ואינו נשלח לשום שרת</span>
+    </div>
+    <div class="imp-status" id="impStatus" role="status"></div>
+    <div id="impPanel" hidden></div>
+  </section>
 
   <section>
     <div class="sec-head"><h2>נתוני הצומת</h2><span class="meta">הזרועות מסודרות לפי מיקומן בשטח</span></div>
@@ -1127,12 +1170,514 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
     ].join('\n');
   }
 
+
+    var DIR_WORDS = [
+      { re: /צפון/, arm: 'N' },
+      { re: /דרום/, arm: 'S' },
+      { re: /מזרח/, arm: 'E' },
+      { re: /מערב/, arm: 'W' }
+    ];
+    var ARMS4 = ['N', 'S', 'E', 'W'];
+    // In an RTL sheet the angle brackets are bidi-mirrored: a stored '<' is drawn as a right
+    // arrow. MAP_A is that reading (correct for this house format); MAP_B is the literal one.
+    // pickMapping() scores both against the junction geometry and keeps the one that does not
+    // send traffic into an arm that does not exist.
+    var MAP_A = { '<': 'R', '^': 'S', '>': 'L' };
+    var MAP_B = { '<': 'L', '^': 'S', '>': 'R' };
+    var SYMS = { '<': 1, '>': 1, '^': 1, '\u02c4': 1, '\u2227': 1 };
+    var DESTI = {
+      N: { S: 'S', L: 'E', R: 'W' },
+      S: { S: 'N', L: 'W', R: 'E' },
+      E: { S: 'W', L: 'S', R: 'N' },
+      W: { S: 'E', L: 'N', R: 'S' }
+    };
+
+    function isDate(v) { return Object.prototype.toString.call(v) === '[object Date]'; }
+    function txt(v) {
+      if (v === null || v === undefined) return '';
+      if (isDate(v)) return fmtTime(v);
+      return String(v).trim();
+    }
+    function num(v) {
+      if (typeof v === 'number') return isFinite(v) ? v : 0;
+      if (v === null || v === undefined) return 0;
+      var n = parseFloat(String(v).replace(/,/g, '').trim());
+      return isFinite(n) ? n : 0;
+    }
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function fmtTime(d) {
+      if (isDate(d)) return pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes());
+      if (typeof d === 'number' && d >= 0 && d < 1) {
+        var m = Math.round(d * 1440);
+        return pad(Math.floor(m / 60) % 24) + ':' + pad(m % 60);
+      }
+      return (d === null || d === undefined) ? '' : String(d).trim();
+    }
+    function fmtDate(d) {
+      if (isDate(d)) return pad(d.getUTCDate()) + '/' + pad(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear();
+      return txt(d);
+    }
+    function armOf(s) {
+      for (var i = 0; i < DIR_WORDS.length; i++) if (DIR_WORDS[i].re.test(s)) return DIR_WORDS[i].arm;
+      return null;
+    }
+    function minutesOf(label) {
+      var m = /(\d{1,2}):(\d{2})/.exec(label);
+      return m ? (+m[1]) * 60 + (+m[2]) : null;
+    }
+
+    /* --- find the tables ---------------------------------------------------- */
+    function findTables(rows, sheetName) {
+      var out = [];
+      for (var r = 0; r < rows.length; r++) {
+        var line = (rows[r] || []).map(txt).join(' ');
+        if (!line || !/התפלגות/.test(line)) continue;
+        var m = /לוח\s*מס['׳"]?\s*(2\.[1-4])/.exec(line);
+        if (!m) continue;
+        out.push({
+          sheet: sheetName,
+          row: r,
+          id: m[1],
+          kind: /יציא/.test(line) ? 'exit' : 'entry',
+          unit: /יר["׳']?\s*מ/.test(line) ? 'pcu' : 'veh',
+          title: line.replace(/\s{2,}/g, ' ').trim()
+        });
+      }
+      return out;
+    }
+
+    /* --- read one table ----------------------------------------------------- */
+    function readTable(rows, startRow) {
+      var r, c, symRow = -1;
+      for (r = startRow + 1; r < Math.min(startRow + 12, rows.length); r++) {
+        var hits = 0, row = rows[r] || [];
+        for (c = 0; c < row.length; c++) if (SYMS[txt(row[c])]) hits++;
+        if (hits >= 3) { symRow = r; break; }
+      }
+      if (symRow < 2) throw new Error('לא נמצאה שורת סמלי התנועות (חצים) מתחת לכותרת הלוח.');
+
+      var dirRow = rows[symRow - 1] || [];
+      var headRow = rows[symRow - 2] || [];
+      var symRowArr = rows[symRow] || [];
+
+      var cols = [];
+      for (c = 0; c < symRowArr.length; c++) {
+        var sym = txt(symRowArr[c]);
+        if (!SYMS[sym]) continue;
+        var arm = armOf(txt(dirRow[c]));
+        if (!arm) continue;
+        cols.push({ col: c, arm: arm, sym: sym });
+      }
+      if (!cols.length) throw new Error('לא זוהו עמודות תנועה בלוח.');
+
+      // road name per arm — the group label ("מצפון" / "לצפון") sits on the group total column
+      var roads = {};
+      for (c = 0; c < headRow.length; c++) {
+        var t = txt(headRow[c]);
+        if (!/^[למ]?\s*(צפון|דרום|מזרח|מערב)$/.test(t)) continue;
+        var a = armOf(t);
+        if (!a || roads[a]) continue;
+        for (var k = c - 1; k >= Math.max(0, c - 4); k--) {
+          var nm = txt(headRow[k]);
+          if (nm) { roads[a] = nm; break; }
+        }
+      }
+
+      // raw hourly rows, still keyed by column
+      var raw = [];
+      for (r = symRow + 1; r < rows.length; r++) {
+        var row2 = rows[r] || [];
+        var label = fmtTime(row2[0]);
+        if (/סה["׳']?\s*כ/.test(label)) break;
+        var rng = /(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/.exec(label);
+        if (!rng) { if (raw.length) break; else continue; }
+        var vals = [];
+        for (var i = 0; i < cols.length; i++) vals.push(num(row2[cols[i].col]));
+        raw.push({ label: rng[1] + '\u2013' + rng[2], from: rng[1], to: rng[2], start: minutesOf(rng[1]), vals: vals });
+      }
+      if (!raw.length) throw new Error('לא נמצאו שורות שעתיות בלוח.');
+
+      // which arms exist at all
+      var dayByCol = [];
+      for (i = 0; i < cols.length; i++) {
+        var s = 0;
+        for (r = 0; r < raw.length; r++) s += raw[r].vals[i];
+        dayByCol.push(s);
+      }
+      var present = {};
+      ARMS4.forEach(function (a) {
+        var road = roads[a] || '';
+        var sum = 0;
+        cols.forEach(function (cc, ix) { if (cc.arm === a) sum += dayByCol[ix]; });
+        present[a] = sum > 0 || (!!road && road !== '0' && !/^0+$/.test(road));
+      });
+
+      // choose the arrow mapping that does not feed non-existent arms
+      function score(map) {
+        var bad = 0;
+        cols.forEach(function (cc, ix) {
+          var turn = map[cc.sym];
+          if (!turn) return;
+          if (!present[DESTI[cc.arm][turn]]) bad += dayByCol[ix];
+        });
+        return bad;
+      }
+      var sA = score(MAP_A), sB = score(MAP_B);
+      var map = (sB < sA) ? MAP_B : MAP_A;
+      var mapName = (map === MAP_A) ? 'mirrored' : 'literal';
+
+      var hours = raw.map(function (rw) {
+        var rec = { label: rw.label, from: rw.from, to: rw.to, start: rw.start, total: 0, arms: {} };
+        ARMS4.forEach(function (a) { rec.arms[a] = { L: 0, S: 0, R: 0, tot: 0 }; });
+        cols.forEach(function (cc, ix) {
+          var turn = map[cc.sym];
+          if (!turn) return;
+          rec.arms[cc.arm][turn] += rw.vals[ix];
+          rec.arms[cc.arm].tot += rw.vals[ix];
+          rec.total += rw.vals[ix];
+        });
+        return rec;
+      });
+
+      return {
+        hours: hours, roads: roads, present: present,
+        mapping: mapName, mapScore: { mirrored: sA, literal: sB }
+      };
+    }
+
+    /* --- workbook-level metadata -------------------------------------------- */
+    function readMeta(sheets) {
+      var meta = {};
+      var pairs = [
+        ['junction', /מס['׳"]?\s*הצומת/],
+        ['survey', /מס['׳"]?\s*סקר/],
+        ['date', /תאריך\s*הספירה/],
+        ['by', /מבצע\s*הספירה/]
+      ];
+      for (var s = 0; s < sheets.length; s++) {
+        var rows = sheets[s].rows;
+        for (var r = 0; r < Math.min(rows.length, 25); r++) {
+          var row = rows[r] || [];
+          for (var c = 0; c < Math.min(row.length, 4); c++) {
+            var t = txt(row[c]);
+            if (!t) continue;
+            if (!meta.name && /שם\s*הצומת/.test(t) && t.indexOf(':') > -1) {
+              meta.name = t.split(':').slice(1).join(':').trim();
+            }
+            for (var p = 0; p < pairs.length; p++) {
+              var key = pairs[p][0];
+              if (meta[key] || !pairs[p][1].test(t)) continue;
+              for (var k = c + 1; k < Math.min(row.length, c + 4); k++) {
+                if (row[k] === null || row[k] === undefined || txt(row[k]) === '') continue;
+                meta[key] = (key === 'date') ? fmtDate(row[k]) : txt(row[k]);
+                if (key === 'date') {
+                  for (var j = k + 1; j < Math.min(row.length, k + 6); j++) {
+                    if (/^יום/.test(txt(row[j]))) { meta.day = txt(row[j]); break; }
+                  }
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+      return meta;
+    }
+
+    // peak hours as reported by the counting firm (15-minute based), if the summary sheet has them
+    function readReportedPeaks(sheets) {
+      var out = [];
+      for (var s = 0; s < sheets.length; s++) {
+        var rows = sheets[s].rows;
+        for (var r = 0; r < rows.length; r++) {
+          var row = rows[r] || [], lbl = null, idx = -1;
+          for (var c = 0; c < row.length; c++) {
+            var t = txt(row[c]);
+            if (/שעת\s*שיא/.test(t) && !/חצי/.test(t)) { lbl = t.replace(/[:\s]+$/, ''); idx = c; break; }
+          }
+          if (!lbl) continue;
+          var times = [], vol = null;
+          for (var k = idx + 1; k < row.length; k++) {
+            var v = row[k];
+            if (v === null || v === undefined || txt(v) === '' || txt(v) === '-') continue;
+            if (isDate(v) || (typeof v === 'number' && v > 0 && v < 1)) times.push(fmtTime(v));
+            else if (typeof v === 'number') { vol = v; break; }
+          }
+          if (times.length === 2) {
+            times.sort();
+            out.push({ label: lbl, range: times[0] + '\u2013' + times[1], vol: vol });
+          }
+        }
+        if (out.length) break;
+      }
+      return out;
+    }
+
+    function parseCountWorkbook(wb, XLSX) {
+      var sheets = wb.SheetNames.map(function (n) {
+        return { name: n, rows: XLSX.utils.sheet_to_json(wb.Sheets[n], { header: 1, raw: true, defval: null, blankrows: true }) };
+      });
+      var found = [];
+      sheets.forEach(function (s) { found = found.concat(findTables(s.rows, s.name)); });
+      if (!found.length) throw new Error('לא נמצא בקובץ לוח "התפלגות התנועה לפי זרועות" (לוחות 2.1–2.4).');
+
+      var order = { '2.4': 0, '2.2': 1, '2.3': 2, '2.1': 3 };
+      found.sort(function (a, b) {
+        var oa = order[a.id] === undefined ? 9 : order[a.id], ob = order[b.id] === undefined ? 9 : order[b.id];
+        return oa - ob;
+      });
+
+      var seen = {}, tables = [];
+      found.forEach(function (t) {
+        if (seen[t.id]) return;
+        var rows = null;
+        for (var i = 0; i < sheets.length; i++) if (sheets[i].name === t.sheet) rows = sheets[i].rows;
+        try {
+          t.data = readTable(rows, t.row);
+          seen[t.id] = 1;
+          tables.push(t);
+        } catch (e) { t.error = e.message; }
+      });
+      if (!tables.length) throw new Error('הלוח אותר בקובץ אך לא ניתן היה לקרוא ממנו נתונים.');
+
+      return { meta: readMeta(sheets), reportedPeaks: readReportedPeaks(sheets), tables: tables };
+    }
+
+  /* ============================================================
+     6b. XLSX import — UI
+     ============================================================ */
+  var imp = { book: null, tableIx: 0, hourIx: 0 };
+
+  function impStatus(msg, cls) {
+    var el = document.getElementById('impStatus');
+    el.className = 'imp-status' + (cls ? ' ' + cls : '');
+    el.textContent = msg || '';
+  }
+  function curTable() { return imp.book ? imp.book.tables[imp.tableIx] : null; }
+  function curHours() { var t = curTable(); return t ? t.data.hours : []; }
+
+  function peakIndex(hours, lo, hi) {
+    var best = -1, bv = -1;
+    hours.forEach(function (hh, i) {
+      if (lo !== null && hh.start < lo) return;
+      if (hi !== null && hh.start >= hi) return;
+      if (hh.total > bv) { bv = hh.total; best = i; }
+    });
+    return best < 0 ? 0 : best;
+  }
+
+  function applyImportedHour() {
+    var t = curTable();
+    if (!t) return;
+    var hh = t.data.hours[imp.hourIx];
+    if (!hh) return;
+    ARMS.forEach(function (a) {
+      var st = state[a];
+      st.exists = !!t.data.present[a];
+      st.L = Math.round(hh.arms[a].L);
+      st.S = Math.round(hh.arms[a].S);
+      st.R = Math.round(hh.arms[a].R);
+    });
+    selectedKey = null; selectedMoves = null;
+    refreshAll();
+  }
+
+  function histogram(hours, sel) {
+    var bw = 27, w = hours.length * bw + 14, ht = 78, max = 1;
+    hours.forEach(function (hh) { if (hh.total > max) max = hh.total; });
+    var s = '<svg class="hist" viewBox="0 0 ' + w + ' ' + ht + '" width="' + Math.max(w, 300) +
+            '" height="' + ht + '" role="img" aria-label="פרופיל התנועה השעתי בצומת">';
+    hours.forEach(function (hh, i) {
+      var bh = Math.max(2, 46 * hh.total / max), x = 7 + i * bw, y = 60 - bh, on = (i === sel);
+      s += '<g data-hour="' + i + '" tabindex="0" role="button" aria-label="' + esc(hh.label) + '">';
+      s += '<rect x="' + x + '" y="' + y + '" width="' + (bw - 7) + '" height="' + bh + '" rx="2" fill="' +
+           (on ? '#E8A33D' : 'rgba(232,163,61,.3)') + '"><title>' + esc(hh.label) + ' — ' +
+           Math.round(hh.total) + '</title></rect>';
+      s += '<text x="' + (x + (bw - 7) / 2) + '" y="70" text-anchor="middle" font-size="7.5" font-family="monospace" fill="' +
+           (on ? '#E8A33D' : '#6B6780') + '">' + esc(hh.from.slice(0, 2)) + '</text>';
+      if (on) {
+        s += '<text x="' + (x + (bw - 7) / 2) + '" y="' + Math.max(7, y - 3) +
+             '" text-anchor="middle" font-size="8" font-weight="600" font-family="monospace" fill="#E8A33D">' +
+             Math.round(hh.total) + '</text>';
+      }
+      s += '</g>';
+    });
+    return s + '</svg>';
+  }
+
+  function renderImport() {
+    var panel = document.getElementById('impPanel');
+    if (!imp.book) { panel.hidden = true; panel.innerHTML = ''; return; }
+    var t = curTable(), d = t.data, hours = d.hours, hh = hours[imp.hourIx], m = imp.book.meta;
+    var unit = t.unit === 'pcu' ? 'יר״מ' : 'כ״ר';
+    var res = cache.res || recompute();
+    var h = '';
+
+    h += '<div class="kv">';
+    if (m.name) h += '<span>צומת: <b>' + esc(m.name) + '</b></span>';
+    if (m.junction) h += '<span>מס׳ צומת: <b>' + esc(m.junction) + '</b></span>';
+    if (m.date) h += '<span>תאריך ספירה: <b>' + esc(m.date) + (m.day ? ' · ' + esc(m.day) : '') + '</b></span>';
+    if (m.by) h += '<span>מבצע: <b>' + esc(m.by) + '</b></span>';
+    h += '</div>';
+
+    h += '<div class="imp-ctl">';
+    h += '<label>לוח מקור: <select id="impTable">' + imp.book.tables.map(function (tb, i) {
+      return '<option value="' + i + '"' + (i === imp.tableIx ? ' selected' : '') + '>לוח ' + tb.id + ' — ' +
+        (tb.kind === 'exit' ? 'זרועות יציאה' : 'זרועות כניסה') + ', ' + (tb.unit === 'pcu' ? 'יר״מ' : 'כלי רכב') + '</option>';
+    }).join('') + '</select></label>';
+    h += '<label>שעה: <select id="impHour">' + hours.map(function (x, i) {
+      return '<option value="' + i + '"' + (i === imp.hourIx ? ' selected' : '') + '>' + esc(x.label) +
+        ' — ' + Math.round(x.total) + ' ' + unit + '</option>';
+    }).join('') + '</select></label>';
+    h += '<button data-peak="am">שיא בוקר</button>';
+    h += '<button data-peak="pm">שיא אחה״צ</button>';
+    h += '<button data-peak="day">שיא יומי</button>';
+    h += '</div>';
+
+    h += '<div class="chartwrap">' + histogram(hours, imp.hourIx) + '</div>';
+
+    h += '<div class="imp-grid">';
+    h += '<div class="imp-scheme">' +
+         schematic(res.present, allMoves(res.present), cache.volMap, null, 230,
+                   { label: 'נפחי שעת ' + hh.label + ' על סכמת הצומת' }) +
+         '<div class="cap">' + esc(hh.label) + ' · ' + Math.round(hh.total) + ' ' + unit + ' בצומת</div></div>';
+
+    h += '<div><div class="tblwrap"><table><caption>נפחי התנועה בשעה ' + esc(hh.label) +
+         ' לפי זרוע כניסה (' + unit + '), כפי שהוזנו למחשבון.</caption>' +
+         '<thead><tr><th>זרוע</th><th>דרך / רחוב</th><th>שמאלה</th><th>ישר</th><th>ימינה</th><th>סה״כ</th></tr></thead><tbody>';
+    ARMS.forEach(function (a) {
+      if (!d.present[a]) return;
+      h += '<tr><td><strong>' + HE[a] + ' (' + a + ')</strong></td>' +
+           '<td>' + esc(d.roads[a] || '—') + '</td>' +
+           '<td class="val">' + Math.round(hh.arms[a].L) + '</td>' +
+           '<td class="val">' + Math.round(hh.arms[a].S) + '</td>' +
+           '<td class="val">' + Math.round(hh.arms[a].R) + '</td>' +
+           '<td class="val">' + Math.round(hh.arms[a].tot) + '</td></tr>';
+    });
+    h += '<tr class="total"><td colspan="5">סה״כ בצומת</td><td class="val">' + Math.round(hh.total) + '</td></tr>';
+    h += '</tbody></table></div>';
+
+    var off = ARMS.filter(function (a) { return !d.present[a]; });
+    var notes = [];
+    notes.push('הנפחים הוזנו למחשבון. מספר הנתיבים, נתיב משותף ישר+ימינה וימין חופשית נשארים כפי שהגדרת בטופס — הייבוא לא נוגע בהם.');
+    if (off.length) notes.push('זרוע ' + off.map(function (a) { return HE[a]; }).join(', ') + ' לא מופיעה בקובץ (ללא נפח וללא שם דרך) וסומנה כזרוע לא פעילה.');
+    if (t.unit === 'pcu') notes.push('הערכים ביר״מ (יחידות רכב מנועי) — כלומר כבר כוללים המרה לרכב כבד; מעוגלים למספר שלם.');
+    else notes.push('הערכים בכלי רכב בפועל (ללא המרה ליר״מ). לחישוב נפח קריטי עדיף לרוב לעבוד ביר״מ — לוח 2.2 או 2.4.');
+    if (imp.book.reportedPeaks.length) {
+      notes.push('שעות השיא לפי מבצע הספירה (מבוססות רבעי שעה): ' +
+        imp.book.reportedPeaks.map(function (p) {
+          return p.label + ' ' + p.range + (p.vol ? ' · ' + Math.round(p.vol) + ' יר״מ' : '');
+        }).join(' · ') +
+        '. הלוח כאן הוא בשעות עגולות בלבד, ולכן ייתכן הפרש קטן מול שעת השיא המתגלגלת.');
+    }
+    var badDest = 0;
+    ARMS.forEach(function (a) {
+      if (!d.present[a]) return;
+      ['L', 'S', 'R'].forEach(function (mv) {
+        if (hh.arms[a][mv] > 0 && !d.present[DEST[a][mv]]) badDest++;
+      });
+    });
+    if (badDest) notes.push('שים לב: יש תנועות שיעדן זרוע שאינה פעילה — בדוק את מבנה הלוח בקובץ.');
+    h += '<p class="note">' + notes.map(esc).join('<br>') + '</p></div>';
+    h += '</div>';
+
+    panel.innerHTML = h;
+    panel.hidden = false;
+
+    document.getElementById('impTable').addEventListener('change', function () {
+      var prev = curHours()[imp.hourIx];
+      imp.tableIx = parseInt(this.value, 10) || 0;
+      var hrs = curHours(), ix = 0;
+      if (prev) hrs.forEach(function (x, i) { if (x.label === prev.label) ix = i; });
+      imp.hourIx = ix;
+      applyImportedHour(); renderImport();
+    });
+    document.getElementById('impHour').addEventListener('change', function () {
+      imp.hourIx = parseInt(this.value, 10) || 0;
+      applyImportedHour(); renderImport();
+    });
+    panel.querySelectorAll('button[data-peak]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = this.getAttribute('data-peak');
+        imp.hourIx = k === 'am' ? peakIndex(curHours(), 0, 720)
+                   : k === 'pm' ? peakIndex(curHours(), 720, null)
+                   : peakIndex(curHours(), null, null);
+        applyImportedHour(); renderImport();
+      });
+    });
+    function pickBar(e) {
+      var n = e.target;
+      for (var i = 0; i < 4 && n; i++) {
+        if (n.getAttribute && n.getAttribute('data-hour') !== null) {
+          imp.hourIx = parseInt(n.getAttribute('data-hour'), 10) || 0;
+          applyImportedHour(); renderImport();
+          return;
+        }
+        n = n.parentNode;
+      }
+    }
+    var chart = panel.querySelector('svg.hist');
+    if (chart) {
+      chart.addEventListener('click', pickBar);
+      chart.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickBar(e); } });
+    }
+  }
+
+  function handleImportFile(file) {
+    if (!file) return;
+    if (typeof XLSX === 'undefined') {
+      impStatus('ספריית קריאת קבצי אקסל לא נטענה. בדוק את החיבור לאינטרנט ורענן את הדף.', 'err');
+      return;
+    }
+    impStatus('קורא את ' + file.name + '…');
+    var fr = new FileReader();
+    fr.onload = function () {
+      try {
+        var wb = XLSX.read(new Uint8Array(fr.result), { type: 'array', cellDates: true });
+        imp.book = parseCountWorkbook(wb, XLSX);
+        imp.tableIx = 0;
+        imp.hourIx = peakIndex(curHours(), null, null);
+        applyImportedHour();
+        renderImport();
+        impStatus('נטען: ' + file.name + ' · לוח ' + curTable().id + ' · ' + curHours().length +
+                  ' שעות ספירה · הוזנה שעת השיא ' + curHours()[imp.hourIx].label, 'ok');
+      } catch (err) {
+        imp.book = null;
+        renderImport();
+        impStatus('לא ניתן לייבא את הקובץ — ' + (err && err.message ? err.message : err), 'err');
+      }
+    };
+    fr.onerror = function () { impStatus('קריאת הקובץ נכשלה.', 'err'); };
+    fr.readAsArrayBuffer(file);
+  }
+
+  function initImport() {
+    var input = document.getElementById('xlsFile'), zone = document.getElementById('dropZone');
+    document.getElementById('btnPick').addEventListener('click', function () { input.click(); });
+    input.addEventListener('change', function () {
+      if (this.files && this.files[0]) handleImportFile(this.files[0]);
+      this.value = '';
+    });
+    ['dragenter', 'dragover'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('over'); });
+    });
+    ['dragleave', 'dragend'].forEach(function (ev) {
+      zone.addEventListener(ev, function () { zone.classList.remove('over'); });
+    });
+    zone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      zone.classList.remove('over');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) handleImportFile(e.dataTransfer.files[0]);
+    });
+  }
+
   /* ============================================================
      7. Boot
      ============================================================ */
   load();
   document.getElementById('threshold').value = threshold;
   initEvents();
+  initImport();
   initApiDoc();
   refreshAll();
 })();

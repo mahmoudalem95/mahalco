@@ -18,11 +18,11 @@
     <meta name="robots" content="index, follow">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mahalco — API Catalogue | Urban & Rural Highways | HCM, AASHTO, HSM</title>
-    <meta name="description" content="Live APIs for transportation engineering: intersection analysis, level of service, safety, and geometric design per HCM, AASHTO and HSM. Run in-browser or via API.">
-    <meta name="keywords" content="Highway Capacity Manual, HCM, AASHTO Green Book, HSM, Signalized Intersection, Level of Service, LOS, Queue Length, Roundabout, Two-Lane Highway, Freeway, Interchange, Signal Timing, Geometric Design, Traffic Impact, Parking, API">
+    <title>Mahalco — API Catalogue | Urban & Rural Highways | Transit & Multi-Modal | HCM, AASHTO, HSM</title>
+    <meta name="description" content="Live APIs for transportation engineering: intersection analysis, level of service, safety, geometric design, transit planning and multi-modal infrastructure per HCM, AASHTO and HSM. Run in-browser or via API.">
+    <meta name="keywords" content="Highway Capacity Manual, HCM, AASHTO Green Book, HSM, Signalized Intersection, Level of Service, LOS, Queue Length, Roundabout, Two-Lane Highway, Freeway, Interchange, Signal Timing, Geometric Design, Traffic Impact, Parking, API, Transit Planning, TOD, Transit-Oriented Development, Bike Lane, Bicycle Path, Traffic Calming, Parking Terminals, Park and Ride, Pedestrian Crossings">
     <meta property="og:title" content="Mahalco — API Catalogue">
-    <meta property="og:description" content="Live APIs for transportation engineering: capacity, safety and geometric design per HCM, AASHTO and HSM.">
+    <meta property="og:description" content="Live APIs for transportation engineering: capacity, safety, geometric design, transit and multi-modal infrastructure per HCM, AASHTO and HSM.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en">
     <meta property="og:url" content="https://mahmoudalem95.github.io/mahalco/apis.html">
@@ -35,7 +35,7 @@
             "inLanguage": "en",
             "operatingSystem": "Web Browser",
             "applicationCategory": "EngineeringApplication",
-            "description": "Applications for transportation engineering services based on HCM, AASHTO and HSM \u2014 intersection analysis, freeways, geometric design and safety.",
+            "description": "Applications for transportation engineering services based on HCM, AASHTO and HSM \u2014 intersection analysis, freeways, geometric design, safety, transit and multi-modal infrastructure.",
             "offers": [
                 { "@type": "Offer", "name": "Developer", "price": "19", "priceCurrency": "USD",
                   "eligibleQuantity": { "@type": "QuantitativeValue", "value": "120 requests per hour" } },
@@ -88,12 +88,12 @@
         .btn-line { border: 1px solid var(--rule-dark); color: var(--paper) }
         .btn-line:hover { background: #2C3239 }
         .plan { width: 100%; height: auto; display: block }
-        .tally { display: flex; gap: 34px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--rule-dark) }
+        .tally { display: flex; gap: 34px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--rule-dark); flex-wrap: wrap }
         .tally div { font-size: 13.5px; color: var(--muted-dark) }
         .tally b { display: block; font-size: 1.5rem; font-weight: 800; color: var(--paper); letter-spacing: -.01em; line-height: 1.3 }
         @media (max-width:860px) { .hero { padding: 44px 0 46px } .hero .wrap { grid-template-columns: 1fr; gap: 32px } .plan { max-width: 320px; margin: 0 auto } }
         .gates { background: var(--paper-2); border-bottom: 1px solid var(--rule); padding: 26px 0 }
-        .gates .wrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px }
+        .gates .wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px }
         .gate { display: block; text-decoration: none; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px 15px; position: relative; overflow: hidden; transition: border-color .15s ease, transform .15s ease }
         .gate::before { content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 4px; background: var(--marking); transform: scaleY(0); transform-origin: top; transition: transform .18s ease }
         .gate:hover { border-color: var(--muted) }
@@ -267,9 +267,10 @@
                 <a class="btn btn-line" href="critical-lane-v-english.html">Critical lane volume</a>
             </div>
             <div class="tally">
-                <div><b>23</b>Urban streets</div>
+                <div><b>22</b>Urban streets</div>
                 <div><b>14</b>Rural highways</div>
-                <div><b>14</b>Shared design</div>
+                <div><b>12</b>Shared design</div>
+                <div><b>10</b>Transit &amp; multi-modal</div>
             </div>
         </div>
         <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="Plan view of a four-leg intersection">
@@ -299,11 +300,12 @@
     </div>
 </section>
 
-<section class="gates" aria-label="The three service areas">
+<section class="gates" aria-label="The four service areas">
     <div class="wrap">
-        <a class="gate" href="#urban" data-open="urban"><h3>Urban streets</h3><p>Signals, intersections, queues, multimodal level of service and cross-section geometry.</p><span class="g-n"><b>23</b> procedures &middot; 5 sub-topics</span></a>
+        <a class="gate" href="#urban" data-open="urban"><h3>Urban streets</h3><p>Signals, intersections, queues, multimodal level of service and cross-section geometry.</p><span class="g-n"><b>22</b> procedures &middot; 5 sub-topics</span></a>
         <a class="gate" href="#rural" data-open="rural"><h3>Rural highways</h3><p>Freeways, interchanges, weaving, horizontal and vertical alignment and sight distance.</p><span class="g-n"><b>14</b> procedures &middot; 3 sub-topics</span></a>
-        <a class="gate" href="#common" data-open="common"><h3>Common planning</h3><p>Impact studies, pavement, roadside safety, parking, environment and project management.</p><span class="g-n"><b>14</b> procedures &middot; 4 sub-topics</span></a>
+        <a class="gate" href="#common" data-open="common"><h3>Common planning</h3><p>Impact studies, pavement, roadside safety, environment and project management.</p><span class="g-n"><b>12</b> procedures &middot; 4 sub-topics</span></a>
+        <a class="gate" href="#transit" data-open="transit"><h3>Transit &amp; Multi-Modal</h3><p>Transit routes and lanes, TOD, cycling, parking, terminals and traffic calming.</p><span class="g-n"><b>10</b> procedures &middot; 4 sub-topics</span></a>
     </div>
 </section>
 
@@ -318,9 +320,10 @@
             <button class="chip" data-cat="urban" aria-pressed="false">Urban</button>
             <button class="chip" data-cat="rural" aria-pressed="false">Rural</button>
             <button class="chip" data-cat="common" aria-pressed="false">Common</button>
+            <button class="chip" data-cat="transit" aria-pressed="false">Transit &amp; Multi-Modal</button>
             <button class="chip chip-pending" id="chip-pending" type="button" aria-pressed="false">Not yet complete</button>
         </div>
-        <p class="count" id="count" aria-live="polite">51 procedures</p>
+        <p class="count" id="count" aria-live="polite">60 procedures</p>
             <div class="usage" id="usage" hidden>
                 <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
                 <span class="u-msg" id="usage-msg">Used today: <b>0</b> of 10 procedures</span>
@@ -339,16 +342,14 @@
                 <span class="arrow" aria-hidden="true"></span>
                 <span class="b-title">Urban Streets</span>
                 <span class="b-sub">Signals, junctions, multimodal quality and cross-section geometry.</span>
-                <span class="b-n"><b data-groupcount>23</b> procedures</span>
+                <span class="b-n"><b data-groupcount>22</b> procedures</span>
             </summary>
             <div class="twigs">
 
                 <details class="twig">
                     <summary><span class="arrow" aria-hidden="true"></span>Signals & Intersections<span class="t-n" data-twigcount>7</span></summary>
                     <div class="leaves">
-                        <!-- Updated: Critical Lane Volume -->
                         <a class="leaf" href="critical-lane-v-english.html"><h3>Critical Lane Volume<span class="tool-flag">Live Tool</span></h3><p>Calculate critical volume using three phase methods: split arms, left-turn separation, and double ring.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                        <!-- Updated: Junction Analysis Tool -->
                         <a class="leaf" href="tool.html"><h3>Junction Analysis Tool<span class="tool-flag">Live Tool</span></h3><p>Interactive interface for calculating and analyzing a signalized junction via the API.</p><span class="std">HCM Ch. 19</span></a>
                         <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>Signalized Intersection Analysis</h3><p>Control delay, queue length, v/c ratio and LOS per approach and whole junction.</p><span class="std">HCM Ch. 19</span></a>
                         <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>Unsignalized Intersection Analysis</h3><p>Two-way and all-way stop control, with gap acceptance by movement.</p><span class="std">HCM Ch. 20</span></a>
@@ -388,12 +389,11 @@
                 </details>
 
                 <details class="twig">
-                    <summary><span class="arrow" aria-hidden="true"></span>Ancillary Infrastructure & Safety<span class="t-n" data-twigcount>5</span></summary>
+                    <summary><span class="arrow" aria-hidden="true"></span>Ancillary Infrastructure & Safety<span class="t-n" data-twigcount>4</span></summary>
                     <div class="leaves">
                         <div class="soon"><h3>Intersection Safety Performance Functions</h3><p>Expected crash frequency at urban intersections by control type and volume.</p><span class="std">HSM</span></div>
                         <div class="soon"><h3>Urban Drainage Design</h3><p>Design of channels, inlets, culverts, and storm‑water intakes.</p><span class="std">FHWA / AASHTO</span></div>
                         <div class="soon"><h3>Signing and Marking Guidelines</h3><p>Design of guide signs, warning, and regulatory signs per MUTCD.</p><span class="std">MUTCD</span></div>
-                        <div class="soon"><h3>Bike Lane Design</h3><p>Width, grade, separation, and pavement for urban bike lanes.</p><span class="std">AASHTO Guide</span></div>
                         <div class="soon"><h3>Sidewalk & Pedestrian Design</h3><p>Footway width, street furniture, crossings, and accessibility.</p><span class="std">AASHTO / ADA</span></div>
                     </div>
                 </details>
@@ -452,7 +452,7 @@
                 <span class="arrow" aria-hidden="true"></span>
                 <span class="b-title">Shared Design</span>
                 <span class="b-sub">Procedures that apply wherever the project sits.</span>
-                <span class="b-n"><b data-groupcount>14</b> procedures</span>
+                <span class="b-n"><b data-groupcount>12</b> procedures</span>
             </summary>
             <div class="twigs">
 
@@ -477,10 +477,8 @@
                 </details>
 
                 <details class="twig">
-                    <summary><span class="arrow" aria-hidden="true"></span>Public Transport, Parking & Multi‑Modal<span class="t-n" data-twigcount>3</span></summary>
+                    <summary><span class="arrow" aria-hidden="true"></span>Transit & Multimodal Analysis<span class="t-n" data-twigcount>1</span></summary>
                     <div class="leaves">
-                        <div class="soon"><h3>Public Transport Lane Analysis</h3><p>Design of bus lanes, stops, safety measures, and upgrades.</p><span class="std">AASHTO / APTA</span></div>
-                        <div class="soon"><h3>Parking Layout & Regulations</h3><p>On‑street and multi‑storey parking, parking standards, and accessibility.</p><span class="std">ITE / AASHTO</span></div>
                         <div class="soon"><h3>Multi‑Modal Intersection Analysis</h3><p>Combining pedestrian, bicycle, transit, and car in a single junction.</p><span class="std">HCM Ch. 16 / 19</span></div>
                     </div>
                 </details>
@@ -491,6 +489,53 @@
                         <div class="soon"><h3>Environmental Impact Assessment</h3><p>Air pollution, noise, landscape, and open‑space fragmentation.</p><span class="std">FHWA / NEPA</span></div>
                         <div class="soon"><h3>Transportation Project Management</h3><p>Planning, execution, cost control, and scheduling of infrastructure projects.</p><span class="std">PMCM / AASHTO</span></div>
                         <div class="soon"><h3>Smart Infrastructure Planning</h3><p>Sensors, IoT, vehicle‑infrastructure communication, and smart traffic management.</p><span class="std">FHWA / ITS</span></div>
+                    </div>
+                </details>
+
+            </div>
+        </details>
+
+        <!-- TRANSIT & MULTI-MODAL -->
+        <details class="branch" id="transit" data-group="transit">
+            <summary>
+                <span class="arrow" aria-hidden="true"></span>
+                <span class="b-title">Transit &amp; Multi-Modal</span>
+                <span class="b-sub">Transit routes and lanes, transit-oriented development, cycling, parking and traffic calming.</span>
+                <span class="b-n"><b data-groupcount>10</b> procedures</span>
+            </summary>
+            <div class="twigs">
+
+                <details class="twig">
+                    <summary><span class="arrow" aria-hidden="true"></span>Transit Routes &amp; Lanes<span class="t-n" data-twigcount>4</span></summary>
+                    <div class="leaves">
+                        <div class="soon"><h3>Transit Route and Lane Planning</h3><p>Planning of transit routes, dedicated lanes, stops and operational measures.</p><span class="std">AASHTO / APTA</span></div>
+                        <div class="soon"><h3>Transit Routes &amp; Lanes — Urban &amp; Interurban</h3><p>Route and lane planning with justification criteria for urban and interurban contexts.</p><span class="std">AASHTO / HCM</span></div>
+                        <div class="soon"><h3>Integrating Transit in Interurban Design</h3><p>Shifting the approach: considerations, justifications and design guidelines for interurban transit.</p><span class="std">AASHTO / NCHRP</span></div>
+                        <div class="soon"><h3>Public Transport Lane Analysis</h3><p>Design of bus lanes, stops, safety measures, and upgrades.</p><span class="std">AASHTO / APTA</span></div>
+                    </div>
+                </details>
+
+                <details class="twig">
+                    <summary><span class="arrow" aria-hidden="true"></span>Transit-Oriented Development<span class="t-n" data-twigcount>1</span></summary>
+                    <div class="leaves">
+                        <div class="soon"><h3>Strengthening TOD in the Urban Realm</h3><p>Transit-oriented development principles, densities and street design around transit nodes.</p><span class="std">ITE / AASHTO</span></div>
+                    </div>
+                </details>
+
+                <details class="twig">
+                    <summary><span class="arrow" aria-hidden="true"></span>Bicycle Path Planning<span class="t-n" data-twigcount>2</span></summary>
+                    <div class="leaves">
+                        <div class="soon"><h3>Bicycle Path Planning — Considerations &amp; Guidelines</h3><p>Warrants, justification and design guidelines for cycle infrastructure.</p><span class="std">AASHTO Guide</span></div>
+                        <div class="soon"><h3>Bicycle Path Design — Urban &amp; Interurban</h3><p>Width, grade, separation, and pavement for bicycle paths in urban and interurban settings.</p><span class="std">AASHTO Guide</span></div>
+                    </div>
+                </details>
+
+                <details class="twig">
+                    <summary><span class="arrow" aria-hidden="true"></span>Parking, Terminals &amp; Traffic Calming<span class="t-n" data-twigcount>3</span></summary>
+                    <div class="leaves">
+                        <div class="soon"><h3>Parking, Terminals &amp; Park-and-Ride</h3><p>On-street and multi-storey parking, terminals, parking standards and accessibility.</p><span class="std">ITE / AASHTO</span></div>
+                        <div class="soon"><h3>High-Demand Intersections with Pedestrian Crossings</h3><p>Design of junctions with heavy pedestrian crossing demand and multimodal priority.</p><span class="std">HCM Ch. 16 / 19</span></div>
+                        <div class="soon"><h3>Urban Traffic Calming Zones</h3><p>Traffic calming measures, zone design and speed management in cities.</p><span class="std">ITE / FHWA</span></div>
                     </div>
                 </details>
 

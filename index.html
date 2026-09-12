@@ -20,8 +20,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מהאלco — ממשקי API להנדסת תחבורה | ניתוח צמתים, סימולציות, בטיחות, תכנון כבישים, פרויקטים ומכרזים</title>
-    <meta name="description" content="אפליקציות לשירותי הנדסת תחבורה: ניתוח צמתים, כבישים מהירים, בטיחות בדרכים, תכנון גיאומטרי ורמת שירות — לפי HCM, AASHTO ו‑HSM. כלים חיים בעברית למהנדסי תנועה בישראל.">
-    <meta name="keywords" content="הנדסת תחבורה, מהנדס תנועה, מהנדס כבישים, נתיבי ישראל, הנחיות תכנון כבישים, הנחיות תכנון בערים, הנחיות תנועה בצמתים, הסדרה הירוקה, הצבת מעקות, רמזורים, ניתוח צמתים, תכנית תנועה, תכנית כבישים, תכנית גבהים, חתכים טיפוסים, HCM, HCS, Highway Capacity Software, Queue Length, Level of Service, LOS, AASHTO, Geometric Design, Traffic Safety, HSM, Signal Timing, Corridor Analysis, PTV Vissim, PTV Visum, Synchro, SimTraffic, TransModeler, Aimsun, SIDRA, סקרי תנועה, סקר נפחים, סקר מהירויות, סקר חניה, RSA, Safety Road Audit, נקודות שחורות, PHF, מפרט 3, מפרט 35, MUTCD, ספר אדום, אדם רחוב, נת&quot;ע, רכבת ישראל, חוצה ישראל, מוריה, נתיבי איילון, כרמלית, תב&quot;ע, תמ&quot;א, הס&quot;פ, Civil 3D, InRoads, MX, PMCM, GIS, מכרזי תשתית, דרושים מהנדס תנועה, מנהל פרויקט תשתיות, יועץ בטיחות בדרכים, סופר-אלוויישן, קלואיד, נת&quot;צ, שבילי אופניים, שילוט דרכים, תמרורים, חניה, נהלי חניה, מחשבון תקנות חניה, חניות נכים">
+    <meta name="description" content="אפליקציות לשירותי הנדסת תחבורה: ניתוח צמתים, כבישים מהירים, בטיחות בדרכים, תכנון גיאומטרי, רמת שירות, תחבורה ציבורית ורב-אמצעי — לפי HCM, AASHTO ו‑HSM. כלים חיים בעברית למהנדסי תנועה בישראל.">
+    <meta name="keywords" content="הנדסת תחבורה, מהנדס תנועה, מהנדס כבישים, נתיבי ישראל, הנחיות תכנון כבישים, הנחיות תכנון בערים, הנחיות תנועה בצמתים, הסדרה הירוקה, הצבת מעקות, רמזורים, ניתוח צמתים, תכנית תנועה, תכנית כבישים, תכנית גבהים, חתכים טיפוסים, HCM, HCS, Highway Capacity Software, Queue Length, Level of Service, LOS, AASHTO, Geometric Design, Traffic Safety, HSM, Signal Timing, Corridor Analysis, PTV Vissim, PTV Visum, Synchro, SimTraffic, TransModeler, Aimsun, SIDRA, סקרי תנועה, סקר נפחים, סקר מהירויות, סקר חניה, RSA, Safety Road Audit, נקודות שחורות, PHF, מפרט 3, מפרט 35, MUTCD, ספר אדום, אדם רחוב, נת&quot;ע, רכבת ישראל, חוצה ישראל, מוריה, נתיבי איילון, כרמלית, תב&quot;ע, תמ&quot;א, הס&quot;פ, Civil 3D, InRoads, MX, PMCM, GIS, מכרזי תשתית, דרושים מהנדס תנועה, מנהל פרויקט תשתיות, יועץ בטיחות בדרכים, סופר-אלוויישן, קלואיד, נת&quot;צ, שבילי אופניים, שילוט דרכים, תמרורים, חניה, נהלי חניה, מחשבון תקנות חניה, חניות נכים, תכנון מוטה תחבורה ציבורית, TOD, מיתון תנועה, מעברי חצייה, מסופים, חניוני חנה וסע">
     <meta property="og:title" content="מהאלco — ממשקי API להנדסת תחבורה">
     <meta property="og:description" content="אפליקציות לשירותי הנדסת תחבורה: ניתוח צמתים, תכנון כבישים, חתכים טיפוסים, הנחיות רמזורים, מעקות, הסדרה הירוקה – תואם להנחיות נתיבי ישראל.">
     <meta property="og:type" content="website">
@@ -91,12 +91,12 @@
         .btn-line { border: 1px solid var(--rule-dark); color: var(--paper) }
         .btn-line:hover { background: #2C3239 }
         .plan { width: 100%; height: auto; display: block }
-        .tally { display: flex; gap: 34px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--rule-dark) }
+        .tally { display: flex; gap: 34px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--rule-dark); flex-wrap: wrap }
         .tally div { font-size: 13.5px; color: var(--muted-dark) }
         .tally b { display: block; font-size: 1.5rem; font-weight: 800; color: var(--paper); letter-spacing: -.01em; line-height: 1.3 }
         @media (max-width:860px) { .hero { padding: 44px 0 46px } .hero .wrap { grid-template-columns: 1fr; gap: 32px } .plan { max-width: 320px; margin: 0 auto } }
         .gates { background: var(--paper-2); border-bottom: 1px solid var(--rule); padding: 26px 0 }
-        .gates .wrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px }
+        .gates .wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px }
         .gate { display: block; text-decoration: none; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px 15px; position: relative; overflow: hidden; transition: border-color .15s ease, transform .15s ease }
         .gate::before { content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 4px; background: var(--marking); transform: scaleY(0); transform-origin: top; transition: transform .18s ease }
         .gate:hover { border-color: var(--muted) }
@@ -278,9 +278,10 @@
                     <a class="btn btn-line" href="SD-tool.html">מחולל מרחקי ראייה אוטומטי</a>
                 </div>
                 <div class="tally">
-                    <div><b>23</b>רחובות עירוניים</div>
+                    <div><b>22</b>רחובות עירוניים</div>
                     <div><b>16</b>כבישים בין-עירוניים</div>
-                    <div><b>14</b>תכנון משותף</div>
+                    <div><b>12</b>תכנון משותף</div>
+                    <div><b>10</b>תחבורה ציבורית ורב-אמצעי</div>
                 </div>
             </div>
             <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="מבט על של צומת בעל ארבע זרועות עם סימוני דרך">
@@ -310,11 +311,12 @@
         </div>
     </section>
 
-    <section class="gates" aria-label="שלושת תחומי השירות">
+    <section class="gates" aria-label="ארבעת תחומי השירות">
         <div class="wrap">
-            <a class="gate" href="#urban" data-open="urban"><h3>רחובות עירוניים</h3><p>רמזורים, צמתים, תורים, רמת שירות רב-אמצעית וגיאומטריית חתך.</p><span class="g-n"><b>23</b> נהלים · 5 תתי-נושאים</span></a>
+            <a class="gate" href="#urban" data-open="urban"><h3>רחובות עירוניים</h3><p>רמזורים, צמתים, תורים, רמת שירות רב-אמצעית וגיאומטריית חתך.</p><span class="g-n"><b>22</b> נהלים · 5 תתי-נושאים</span></a>
             <a class="gate" href="#rural" data-open="rural"><h3>כבישים בין-עירוניים</h3><p>כבישים מהירים, מחלפים, שזירה, תוואי אופקי ואנכי ומרחקי ראייה.</p><span class="g-n"><b>16</b> נהלים · 3 תתי-נושאים</span></a>
-            <a class="gate" href="#common" data-open="common"><h3>תכנון משותף</h3><p>תסקירים, מיסעה, בטיחות שוליים, חניה, סביבה וניהול פרויקטים.</p><span class="g-n"><b>14</b> נהלים · 4 תתי-נושאים</span></a>
+            <a class="gate" href="#common" data-open="common"><h3>תכנון משותף</h3><p>תסקירים, מיסעה, בטיחות שוליים, סביבה וניהול פרויקטים.</p><span class="g-n"><b>12</b> נהלים · 4 תתי-נושאים</span></a>
+            <a class="gate" href="#transit" data-open="transit"><h3>תחבורה ציבורית ורב-אמצעי</h3><p>מסלולים ונתיבים לתחבורה ציבורית, תכנון מוטה תחבצ, שבילי אופניים, חניונים ומיתון תנועה.</p><span class="g-n"><b>10</b> נהלים · 4 תתי-נושאים</span></a>
         </div>
     </section>
 
@@ -329,9 +331,10 @@
                 <button class="chip" data-cat="urban" aria-pressed="false">עירוני</button>
                 <button class="chip" data-cat="rural" aria-pressed="false">בין-עירוני</button>
                 <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
+                <button class="chip" data-cat="transit" aria-pressed="false">תחבצ ורב-אמצעי</button>
                 <button class="chip chip-pending" id="chip-pending" type="button" aria-pressed="false">טרם הושלמו</button>
             </div>
-            <p class="count" id="count" aria-live="polite">53 נהלים</p>
+            <p class="count" id="count" aria-live="polite">60 נהלים</p>
 
             <div class="usage" id="usage" hidden>
                 <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
@@ -350,7 +353,7 @@
                     <span class="arrow" aria-hidden="true"></span>
                     <span class="b-title">רחובות עירוניים</span>
                     <span class="b-sub">רמזורים, צמתים, איכות רב-אמצעית וגיאומטריית חתך.</span>
-                    <span class="b-n"><b data-groupcount>23</b> נהלים</span>
+                    <span class="b-n"><b data-groupcount>22</b> נהלים</span>
                 </summary>
                 <div class="twigs">
 
@@ -397,12 +400,11 @@
                     </details>
 
                     <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>תשתיות נלוות ובטיחות<span class="t-n" data-twigcount>5</span></summary>
+                        <summary><span class="arrow" aria-hidden="true"></span>תשתיות נלוות ובטיחות<span class="t-n" data-twigcount>4</span></summary>
                         <div class="leaves">
                             <div class="soon"><h3>פונקציות ביצועי בטיחות בצמתים</h3><p>תדירות תאונות צפויה בצמתים עירוניים לפי סוג בקרה ונפח תנועה.</p><span class="std">HSM</span></div>
                             <div class="soon"><h3>תכנון מערכות ניקוז עירוני</h3><p>תכנון תעלות, ספיגה, תולעים וספל קולטי מי גשמים.</p><span class="std">FHWA / AASHTO</span></div>
                             <div class="soon"><h3>הנחיות שילוט ותמרורים</h3><p>תכנון שלטי הכוונה, תמרורי אזהרה וחובה לפי MUTCD.</p><span class="std">MUTCD</span></div>
-                            <div class="soon"><h3>תכנון שבילי אופניים</h3><p>רוחב, שיפוע, הפרדה מתנועה וריצוף לשבילי אופניים עירוניים.</p><span class="std">AASHTO Guide</span></div>
                             <div class="soon"><h3>תכנון מדרכות והולכי רגל</h3><p>רוחב מדרכה, ריהוט רחוב, מעברי חצייה ונגישות.</p><span class="std">AASHTO / ADA</span></div>
                         </div>
                     </details>
@@ -461,7 +463,7 @@
                     <span class="arrow" aria-hidden="true"></span>
                     <span class="b-title">תכנון משותף</span>
                     <span class="b-sub">נהלים שרלוונטיים בכל מקום שבו הפרויקט יושב.</span>
-                    <span class="b-n"><b data-groupcount>14</b> נהלים</span>
+                    <span class="b-n"><b data-groupcount>12</b> נהלים</span>
                 </summary>
                 <div class="twigs">
 
@@ -486,10 +488,8 @@
                     </details>
 
                     <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>תחבורה ציבורית, חניה ורב-אמצעי<span class="t-n" data-twigcount>3</span></summary>
+                        <summary><span class="arrow" aria-hidden="true"></span>תחבורה ציבורית וניתוח רב-אמצעי<span class="t-n" data-twigcount>1</span></summary>
                         <div class="leaves">
-                            <div class="soon"><h3>ניתוח נתיבי תחבורה ציבורית</h3><p>תכנון נת"צ, תחנות, אמצעי בטיחות ושדרוג.</p><span class="std">AASHTO / APTA</span></div>
-                            <a class="leaf" href="parking-regulations.html"><h3>תכנון חניונים ותקנות חניה<span class="tool-flag">כלי חי</span></h3><p>חניוני צד, חניוני קומות, תקני חניה ונגישות.</p><span class="std">ITE / AASHTO</span></a>
                             <div class="soon"><h3>ניתוח צמתים רב-אמצעי</h3><p>שילוב הולכי רגל, אופניים, תחבורה ציבורית ורכב פרטי בצומת אחד.</p><span class="std">HCM Ch. 16 / 19</span></div>
                         </div>
                     </details>
@@ -500,6 +500,52 @@
                             <div class="soon"><h3>הערכת השפעה על הסביבה</h3><p>הערכת זיהום אוויר, רעש, נוף וחיתוך שטחים פתוחים.</p><span class="std">FHWA / NEPA</span></div>
                             <div class="soon"><h3>ניהול פרויקטים תחבורתיים</h3><p>תכנון, ביצוע, בקרת עלויות ולוחות זמנים לפרויקטי תשתית.</p><span class="std">PMCM / AASHTO</span></div>
                             <div class="soon"><h3>תכנון תשתיות חכמות</h3><p>חיישנים, IoT, תקשורת רכב-תשתית וניהול תנועה חכם.</p><span class="std">FHWA / ITS</span></div>
+                        </div>
+                    </details>
+
+                </div>
+            </details>
+
+            <details class="branch" id="transit" data-group="transit">
+                <summary>
+                    <span class="arrow" aria-hidden="true"></span>
+                    <span class="b-title">תחבורה ציבורית ורב-אמצעי</span>
+                    <span class="b-sub">מסלולים ונתיבים לתחבורה ציבורית, תכנון מוטה תחבצ, שבילי אופניים, חניונים ומיתון תנועה.</span>
+                    <span class="b-n"><b data-groupcount>10</b> נהלים</span>
+                </summary>
+                <div class="twigs">
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>מסלולים ונתיבי תחבורה ציבורית<span class="t-n" data-twigcount>4</span></summary>
+                        <div class="leaves">
+                            <div class="soon"><h3>תכנון מסלולים ונתיבים לתחבורה ציבורית</h3><p>תכנון מסלולים, נת"צ, תחנות ואמצעים תפעוליים לתחבורה ציבורית.</p><span class="std">AASHTO / APTA</span></div>
+                            <div class="soon"><h3>מסלולים ונתיבים לתחבורה ציבורית – עירוני ובין-עירוני</h3><p>תכנון מסלולים ונתיבים עם קריטריונים להצדקה בהקשר עירוני ובין-עירוני.</p><span class="std">AASHTO / HCM</span></div>
+                            <div class="soon"><h3>שילוב תחב"צ בתכנון בין-עירוני</h3><p>שינוי הגישה: שיקולים, הצדקות והנחיות תכנון לשילוב תחבורה ציבורית בין-עירונית.</p><span class="std">AASHTO / NCHRP</span></div>
+                            <div class="soon"><h3>ניתוח נתיבי תחבורה ציבורית</h3><p>תכנון נת"צ, תחנות, אמצעי בטיחות ושדרוג.</p><span class="std">AASHTO / APTA</span></div>
+                        </div>
+                    </details>
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>תכנון מוטה תחבורה ציבורית<span class="t-n" data-twigcount>1</span></summary>
+                        <div class="leaves">
+                            <div class="soon"><h3>חיזוק תכנון מוטה תחב"צ במרחב העירוני</h3><p>עקרונות תכנון מוטה תחבורה ציבורית, צפיפויות ותכנון רחוב סביב צמתי תחבצ.</p><span class="std">ITE / AASHTO</span></div>
+                        </div>
+                    </details>
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>תכנון שבילי אופניים<span class="t-n" data-twigcount>2</span></summary>
+                        <div class="leaves">
+                            <div class="soon"><h3>תכנון שבילי אופניים – שיקולים והנחיות</h3><p>הצדקות, שיקולים והנחיות תכנון לתשתיות אופניים.</p><span class="std">AASHTO Guide</span></div>
+                            <div class="soon"><h3>תכנון שבילי אופניים – עירוני ובין-עירוני</h3><p>רוחב, שיפוע, הפרדה וריצוף לשבילי אופניים בהקשר עירוני ובין-עירוני.</p><span class="std">AASHTO Guide</span></div>
+                        </div>
+                    </details>
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>חניונים, מסופים ומיתון תנועה<span class="t-n" data-twigcount>3</span></summary>
+                        <div class="leaves">
+                            <a class="leaf" href="parking-regulations.html"><h3>תכנון חניונים, מסופים וחנה-וסע<span class="tool-flag">כלי חי</span></h3><p>חניוני צד, חניוני קומות, מסופים, תקני חניה ונגישות.</p><span class="std">ITE / AASHTO</span></a>
+                            <div class="soon"><h3>תכנון צמתים עם מעברי חצייה עתירי ביקוש</h3><p>תכנון צמתים עם ביקוש גבוה לחצייה ותעדוף רב-אמצעי.</p><span class="std">HCM Ch. 16 / 19</span></div>
+                            <div class="soon"><h3>תכנון אזורי מיתון תנועה בערים</h3><p>אמצעי מיתון תנועה, תכנון אזורים וניהול מהירויות בערים.</p><span class="std">ITE / FHWA</span></div>
                         </div>
                     </details>
 

@@ -400,6 +400,30 @@
         .fold-lede { font-size: 15px; color: var(--muted); max-width: 72ch; margin-bottom: 18px }
         .fold-body .flow:last-of-type { margin-bottom: 0 }
         @media (max-width:600px) { .foldable > summary { font-size: 1.02rem; padding: 14px } .fold-body { padding: 14px } }
+
+        /* --- Share CTA (WhatsApp) --- */
+        .app-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+        .app-cta {
+            display: flex; align-items: center; gap: 14px; flex: 0 1 auto;
+            padding: 12px 16px;
+            background: linear-gradient(90deg, rgba(233,177,47,.20), rgba(233,177,47,.05));
+            border: 1px solid var(--marking); border-radius: 6px;
+            box-shadow: 0 0 0 3px rgba(233,177,47,.10);
+            text-decoration: none; color: var(--paper);
+            transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+            cursor: pointer; font-family: inherit; text-align: start; max-width: 100%;
+        }
+        .app-cta:hover, .app-cta:focus-visible { background: rgba(233,177,47,.26); box-shadow: 0 0 0 4px rgba(233,177,47,.18) }
+        .app-cta:active { transform: translateY(1px) }
+        .app-cta-badge { flex: none; background: var(--marking); color: var(--ink); font-size: 12px; font-weight: 800; letter-spacing: .02em; padding: 4px 9px; border-radius: 3px }
+        .app-cta-text { display: flex; flex-direction: column; line-height: 1.35; min-width: 0 }
+        .app-cta-text b { font-size: 15.5px; font-weight: 800 }
+        .app-cta-text span { font-size: 13px; color: var(--muted-dark) }
+        .app-cta-go { flex: none; margin-inline-start: auto; font-size: 20px; line-height: 1; color: var(--marking) }
+        .share-cta { background: linear-gradient(90deg, rgba(37,211,102,.18), rgba(37,211,102,.04)); border-color: #25D366; box-shadow: 0 0 0 3px rgba(37,211,102,.10) }
+        .share-cta:hover, .share-cta:focus-visible { background: rgba(37,211,102,.24); box-shadow: 0 0 0 4px rgba(37,211,102,.18) }
+        .share-cta .app-cta-badge { background: #25D366; color: #062814 }
+        @media (max-width: 599px) { .app-actions { flex-direction: column; } .app-cta { width: 100%; } }
     </style>
 </head>
 <body>
@@ -425,7 +449,19 @@
         <div>
             <h1>Transportation engineering, open in your browser.</h1>
             <p>Intersection level of service, queues, freeway and two-lane operations, alignment, sight distance and parking — from the Highway Capacity Manual, the AASHTO Green Book and the Highway Safety Manual. Run a procedure in the browser and see the intermediate steps, or post the same inputs to the API when the question becomes a corridor.</p>
-            <div class="hero-actions">
+            <div class="app-actions">
+                    <a class="app-cta share-cta" href="https://wa.me/?text=Help%20improve%20the%20profession%20%E2%80%94%20sharing%20matters%21%20https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2Fapis.html" target="_blank" rel="noopener"
+                       data-share-text="Help improve the profession — sharing matters!" data-share-url="https://mahmoudalem95.github.io/mahalco/apis.html">
+                        <span class="app-cta-badge">Share</span>
+                        <span class="app-cta-text">
+                            <b>Share these tools</b>
+                            <span>Help improve the profession — sharing matters!</span>
+                        </span>
+                        <span class="app-cta-go" aria-hidden="true"><svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true" style="flex:none"><circle cx="16" cy="16" r="15" fill="#25D366"/><path d="M16 6.6c-5.2 0-9.4 4.2-9.4 9.4 0 1.7.4 3.2 1.2 4.6L6.6 25.4l5-1.3c1.3.7 2.8 1.1 4.4 1.1 5.2 0 9.4-4.2 9.4-9.4S21.2 6.6 16 6.6z" fill="#fff" opacity=".14"/><path d="M12.6 11.3c-.25-.56-.5-.57-.74-.58h-.63c-.22 0-.57.08-.87.4-.3.33-1.14 1.11-1.14 2.7 0 1.6 1.17 3.14 1.33 3.36.16.22 2.26 3.6 5.58 4.91 2.76 1.09 3.32.87 3.92.82.6-.06 1.94-.79 2.21-1.56.27-.76.27-1.42.19-1.56-.08-.13-.3-.22-.63-.38-.33-.17-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.25-.71.08-.33-.16-1.39-.51-2.64-1.63-.98-.87-1.63-1.94-1.83-2.27-.19-.33-.02-.5.14-.67.15-.15.33-.38.49-.57.16-.19.22-.33.33-.55.11-.22.05-.41-.03-.57-.08-.16-.72-1.76-1-2.4z" fill="#fff"/></svg></span>
+                    </a>
+                </div>
+
+                <div class="hero-actions">
                 <a class="btn btn-solid" href="#who">Find your tool by role</a>
                 <a class="btn btn-line" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Intersection LOS</a>
                 <a class="btn btn-line" href="critical-lane-v-english.html">Critical lane volume</a>
@@ -1315,5 +1351,20 @@
 })();
 </script>
 
+
+<script>
+/* שיתוף: במכשירים שתומכים בשיתוף מערכת — תפריט השיתוף; אחרת ווטסאב */
+document.querySelectorAll('a.share-cta').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+        if (!navigator.share) return;                 // נשאר קישור ווטסאב רגיל
+        e.preventDefault();
+        navigator.share({
+            title: document.title,
+            text: a.getAttribute('data-share-text'),
+            url: a.getAttribute('data-share-url')
+        }).catch(function () { window.open(a.href, '_blank', 'noopener'); });
+    });
+});
+</script>
 </body>
 </html>

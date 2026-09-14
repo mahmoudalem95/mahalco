@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניתוח נתיבי נת"צ, תחנות, בטיחות ושדרוג — AASHTO / APTA</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<style>
+  :root{--bg:#12121e;--card:#1a1a2e;--card-2:#22223a;--field:#0f0f1a;--line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.05);--accent:#E8A33D;--green:#4ADE80;--ink:#EDEBF2;--ink-2:#9A96AB;--ink-3:#6B6780;--danger:#F35B5B;--warn:#F5C451;--info:#7AB8F5;}
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);padding:20px;font-family:Arial,sans-serif;line-height:1.5;}
+  .container{max-width:1300px;}
+  h1{font-size:clamp(1.5rem,1.3rem+1.5vw,2.1rem);font-weight:700;margin:0 0 .5rem;color:var(--ink);}
+  h1 .bi{color:#ffc107;margin-left:.5rem;}
+  .subhead{color:var(--ink-3);margin:0 0 1.5rem;line-height:1.6;font-size:.92rem;}
+  .badge{display:inline-block;background:var(--card-2);color:var(--ink-2);font-size:.78rem;font-weight:600;padding:.25em .6em;border-radius:6px;vertical-align:middle;margin-right:6px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.3);margin-bottom:20px;}
+  .card-header{background:var(--accent);color:#1a1a2e;border-radius:12px 12px 0 0;font-weight:600;padding:.5rem 1rem;}
+  .card-header .bi{margin-left:.5rem;}
+  .card-body{padding:1rem;}
+  .section-note{font-size:.78rem;color:var(--ink-3);margin:0 0 12px;line-height:1.6;}
+  .form-group{margin-bottom:12px;}
+  .row-2{display:grid;gap:12px;grid-template-columns:1fr 1fr;}
+  .row-3{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr;}
+  @media(max-width:720px){.row-2,.row-3{grid-template-columns:1fr;gap:8px;}}
+  label{display:block;margin-bottom:.35rem;color:var(--ink-2);font-size:.9rem;}
+  label .unit{color:var(--ink-3);font-size:.8rem;}
+  input,select{width:100%;padding:.375rem .75rem;font-size:1rem;border:1px solid var(--line);border-radius:6px;background:var(--field);color:var(--ink);font-family:inherit;}
+  select option{background:var(--field);color:var(--ink);}
+  input:focus,select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 .2rem rgba(232,163,61,.2);}
+  .result-box{background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;height:100%;}
+  .result-label{font-size:.82rem;color:var(--ink-2);}
+  .result-number{font-size:1.6rem;font-weight:700;color:var(--ink);line-height:1.15;font-variant-numeric:tabular-nums;direction:ltr;text-align:right;}
+  .result-number.highlight{color:var(--accent);}
+  .result-sub{font-size:.72rem;color:var(--ink-3);}
+  .verdict-big{display:flex;align-items:center;gap:16px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:14px;}
+  .verdict-icon{font-size:44px;line-height:1;min-width:70px;text-align:center;}
+  .verdict-meta{font-size:.88rem;color:var(--ink-2);}
+  .verdict-meta b{font-size:1rem;color:var(--ink);}
+  .warn-list{list-style:none;padding:0;margin:0;}
+  .warn-list li{padding:9px 12px;border-radius:8px;margin-bottom:7px;font-size:.85rem;line-height:1.55;border-right:4px solid;background:var(--field);}
+  .warn-list li.ok{border-color:var(--green);color:#a6efc0;}
+  .warn-list li.warn{border-color:var(--warn);color:#f2dca2;}
+  .warn-list li.bad{border-color:var(--danger);color:#f7a3a3;}
+  .warn-list li.info{border-color:var(--info);color:#bcd9fb;}
+  .table{--bs-table-bg:transparent;--bs-table-color:var(--ink);--bs-table-border-color:var(--line);font-size:.85rem;}
+  .table thead th{color:var(--ink-3);border-color:var(--line);font-weight:600;font-size:.78rem;}
+  .table td,.table th{border-color:var(--line-2);}
+  .table td.c{text-align:center;}
+  footer{text-align:center;color:var(--ink-3);font-size:.85rem;margin-top:1.5rem;padding-bottom:1rem;}
+  .col-help{font-size:.75rem;color:var(--ink-3);margin-top:2px;}
+  .results-sticky{position:sticky;top:16px;}
+  @media(max-width:991px){.results-sticky{position:static;}}
+  .tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+  .tabs button{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;width:auto;}
+  .tabs button:hover{background:var(--card-2);color:var(--ink);}
+  .tabs button.active{background:var(--accent);color:#1a1a2e;border-color:var(--accent);}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
+  .scheme-box{background:var(--field);border:1px solid var(--line-2);border-radius:10px;padding:14px;overflow-x:auto;}
+  .scheme-box svg{display:block;margin:0 auto;width:100%;max-width:700px;height:auto;}
+  .scheme-caption{font-size:.78rem;color:var(--ink-3);text-align:center;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1><i class="bi bi-cone-striped"></i>נתיבי נת"צ, תחנות ובטיחות <span class="badge">AASHTO / APTA</span></h1>
+  <p class="subhead">
+    כלי מקיף לניתוח נתיבי תחבורה ציבורית: רוחב נתיבים, תכן תחנות, אמצעי בטיחות,
+    הערכת שדרוג תשתית וקביעת חתך רוחב. מבוסס על AASHTO (A Policy on Geometric Design)
+    ו-APTA (Transit Street Design Guide).
+  </p>
+
+  <div class="tabs">
+    <button class="active" data-tab="lane"><i class="bi bi-lanes"></i> נתיבי נת"צ</button>
+    <button data-tab="station"><i class="bi bi-signpost-split"></i> תחנות</button>
+    <button data-tab="safety"><i class="bi bi-shield-check"></i> אמצעי בטיחות</button>
+    <button data-tab="upgrade"><i class="bi bi-arrow-up-circle"></i> שדרוג תשתית</button>
+    <button data-tab="tables"><i class="bi bi-table"></i> טבלאות עזר</button>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 1: Transit lane analysis                                    -->
+  <!-- =============================================================== -->
+  <div id="lane" class="tab-pane active">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט — נתיב נת"צ</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="l_type">סוג הנת"צ</label>
+                <select id="l_type">
+                  <option value="exclusive" selected>בלעדי לתח"צ (Exclusive)</option>
+                  <option value="semi">חצי-בלעדי (Semi-exclusive)</option>
+                  <option value="mixed">משותף עם HOV (Mixed)</option>
+                  <option value="curb">צדדי (Curbside)</option>
+                  <option value="median">מרכזי (Median)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="l_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                <select id="l_vd">
+                  <option>40</option><option>50</option><option>60</option>
+                  <option selected>70</option><option>80</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="l_width">רוחב נת"צ מתוכנן <span class="unit">(מ')</span></label>
+                <input type="number" id="l_width" value="3.5" step="0.1" min="2.5" max="5">
+              </div>
+              <div class="form-group">
+                <label for="l_lanes">מספר נתיבי נת"צ לכיוון</label>
+                <select id="l_lanes">
+                  <option value="1" selected>1</option>
+                  <option value="2">2</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="l_barrier">הפרדה פיזית</label>
+                <select id="l_barrier">
+                  <option value="none">ללא (סימון בלבד)</option>
+                  <option value="markers" selected>עמודונים (Markers)</option>
+                  <option value="curb">אבן שפה (Curb)</option>
+                  <option value="barrier">מעקה בטיחות (Barrier)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="l_buses">נפח אוטובוסים <span class="unit">(אוטובוסים/שעה)</span></label>
+                <input type="number" id="l_buses" value="25" step="1" min="0">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="l_pax">נפח נוסעים <span class="unit">(נוסעים/שעה)</span></label>
+                <input type="number" id="l_pax" value="1200" step="50" min="0">
+              </div>
+              <div class="form-group">
+                <label for="l_speed_limit">מהירות מותרת בציר <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="l_speed_limit" value="60" step="5" min="30" max="110">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה — חתך נת"צ</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="60" width="480" height="40" fill="#2c2c46"/>
+                <line x1="0" y1="80" x2="480" y2="80" stroke="#6B6780" stroke-width="1" stroke-dasharray="6,4"/>
+                <rect x="40" y="60" width="160" height="40" fill="rgba(74,222,128,.15)" stroke="#4ADE80" stroke-width="1.5"/>
+                <text x="120" y="85" text-anchor="middle" fill="#4ADE80" font-size="11" font-weight="700">נת"צ</text>
+                <text x="250" y="85" text-anchor="middle" fill="#9A96AB" font-size="10">נתיב רגיל</text>
+                <text x="400" y="85" text-anchor="middle" fill="#9A96AB" font-size="10">נתיב רגיל</text>
+                <line x1="40" y1="55" x2="200" y2="55" stroke="#E8A33D" stroke-width="1"/>
+                <text x="120" y="50" text-anchor="middle" fill="#E8A33D" font-size="9">רוחב נת"צ</text>
+                <text x="240" y="130" text-anchor="middle" fill="#9A96AB" font-size="10">חתך רוחב טיפוסי — נת"צ צדדי</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="results-sticky">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — ניתוח נת"צ</div>
+            <div class="card-body" id="laneResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 2: Station design                                           -->
+  <!-- =============================================================== -->
+  <div id="station" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט — תכן תחנה</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="s_type">סוג התחנה</label>
+                <select id="s_type">
+                  <option value="curb" selected>תחנת רחוב (Curbside)</option>
+                  <option value="bay">מפרץ איסוף (Bay)</option>
+                  <option value="bulb">Bulb-out (הבלטה)</option>
+                  <option value="island">אי תחנה (Boarding Island)</option>
+                  <option value="brt">תחנת BRT מלאה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="s_buses">אוטובוסים בשעת שיא <span class="unit">(אוטובוסים/שעה)</span></label>
+                <input type="number" id="s_buses" value="25" step="1" min="1">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="s_boarding">נוסעים עולים בשעת שיא <span class="unit">(נוסעים/שעה)</span></label>
+                <input type="number" id="s_boarding" value="400" step="25" min="0">
+              </div>
+              <div class="form-group">
+                <label for="s_alighting">נוסעים יורדים בשעת שיא <span class="unit">(נוסעים/שעה)</span></label>
+                <input type="number" id="s_alighting" value="300" step="25" min="0">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="s_dwell">זמן שהייה בתחנה <span class="unit">(שניות)</span></label>
+                <input type="number" id="s_dwell" value="20" step="1" min="5">
+              </div>
+              <div class="form-group">
+                <label for="s_platform_h">גובה רציף <span class="unit">(מ')</span></label>
+                <select id="s_platform_h">
+                  <option value="0.15">0.15 (תקני)</option>
+                  <option value="0.18">0.18</option>
+                  <option value="0.30" selected>0.30 (גבוה — קליטה מהירה)</option>
+                  <option value="0.90">0.90 (BRT)</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="s_doors">מספר דלתות לאוטובוס</label>
+                <select id="s_doors">
+                  <option value="2">2 דלתות</option>
+                  <option value="3" selected>3 דלתות</option>
+                  <option value="4">4 דלתות (BRT)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="s_payment">שיטת תשלום</label>
+                <select id="s_payment">
+                  <option value="driver" selected>אצל הנהג</option>
+                  <option value="offboard">מחוץ לרכב (Off-board)</option>
+                  <option value="all_doors">עלייה מכל הדלתות</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="results-sticky">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — תכן תחנה</div>
+            <div class="card-body" id="stationResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 3: Safety measures                                          -->
+  <!-- =============================================================== -->
+  <div id="safety" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט — אמצעי בטיחות</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="sf_vd">מהירות מותרת <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="sf_vd" value="60" step="5" min="30" max="120">
+              </div>
+              <div class="form-group">
+                <label for="sf_lanes">מספר נתיבים לכיוון</label>
+                <select id="sf_lanes">
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="sf_shoulder">רוחב שול קיים <span class="unit">(מ')</span></label>
+                <input type="number" id="sf_shoulder" value="2.0" step="0.1" min="0" max="5">
+              </div>
+              <div class="form-group">
+                <label for="sf_median">רוחב מפרדה <span class="unit">(מ')</span></label>
+                <input type="number" id="sf_median" value="4.0" step="0.5" min="0" max="20">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="sf_lighting">תאורה</label>
+                <select id="sf_lighting">
+                  <option value="none">ללא</option>
+                  <option value="partial">חלקית</option>
+                  <option value="full" selected>מלאה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sf_ped">הולכי רגל באזור</label>
+                <select id="sf_ped">
+                  <option value="low" selected>נמוכה</option>
+                  <option value="medium">בינונית</option>
+                  <option value="high">גבוהה</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="sf_bikes">אופניים באזור</label>
+                <select id="sf_bikes">
+                  <option value="low" selected>נמוכה</option>
+                  <option value="medium">בינונית</option>
+                  <option value="high">גבוהה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sf_accidents">תאונות ב-3 שנים אחרונות</label>
+                <input type="number" id="sf_accidents" value="2" step="1" min="0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="results-sticky">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — אמצעי בטיחות</div>
+            <div class="card-body" id="safetyResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 4: Upgrade analysis                                         -->
+  <!-- =============================================================== -->
+  <div id="upgrade" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט — שדרוג תשתית</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="u_scope">היקף השדרוג</label>
+              <select id="u_scope">
+                <option value="point" selected>נקודתי (תחנה / צומת)</option>
+                <option value="segment">קטע (100–1,000 מ')</option>
+                <option value="corridor">ציר שלם (מעל 1 ק"מ)</option>
+              </select>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="u_length">אורך הקטע <span class="unit">(מ')</span></label>
+                <input type="number" id="u_length" value="500" step="50" min="10">
+              </div>
+              <div class="form-group">
+                <label for="u_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="u_vd" value="60" step="5" min="30" max="120">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="u_cur_width">רוחב קיים <span class="unit">(מ')</span></label>
+                <input type="number" id="u_cur_width" value="7.0" step="0.1" min="3">
+              </div>
+              <div class="form-group">
+                <label for="u_target_width">רוחב יעד <span class="unit">(מ')</span></label>
+                <input type="number" id="u_target_width" value="10.5" step="0.1" min="3">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="u_pavement">מצב סלילה קיים</label>
+                <select id="u_pavement">
+                  <option value="good" selected>טוב</option>
+                  <option value="fair">בינוני</option>
+                  <option value="poor">גרוע</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="u_drainage">ניקוז</label>
+                <select id="u_drainage">
+                  <option value="good" selected>תקין</option>
+                  <option value="partial">חלקי</option>
+                  <option value="poor">לא תקין</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="u_sidewalk">מדרכות</label>
+                <select id="u_sidewalk">
+                  <option value="both" selected>משני הצדדים</option>
+                  <option value="one">צד אחד</option>
+                  <option value="none">ללא</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="u_priority">עדיפות הפרויקט</label>
+                <select id="u_priority">
+                  <option value="high" selected>גבוהה</option>
+                  <option value="medium">בינונית</option>
+                  <option value="low">נמוכה</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="results-sticky">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — שדרוג</div>
+            <div class="card-body" id="upgradeResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 5: Reference tables                                         -->
+  <!-- =============================================================== -->
+  <div id="tables" class="tab-pane">
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>AASHTO — רוחב נתיבים לתחבורה ציבורית</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג נתיב</th><th class="c">רוחב מזערי (מ')</th><th class="c">רוחב מומלץ (מ')</th><th>הערות</th></tr></thead>
+          <tbody>
+            <tr><td>נת"צ בלעדי</td><td class="c">3.0</td><td class="c">3.5</td><td>ללא תנועה מעורבת</td></tr>
+            <tr><td>נת"צ צדדי</td><td class="c">3.3</td><td class="c">3.6</td><td>דורש אכיפה</td></tr>
+            <tr><td>נת"צ מרכזי</td><td class="c">3.5</td><td class="c">3.6</td><td>עם שול תפעולי</td></tr>
+            <tr><td>נתיב משותף HOV</td><td class="c">3.6</td><td class="c">3.9</td><td>רוחב מוגבר</td></tr>
+            <tr><td>שול מורחב לתח"צ</td><td class="c">3.0</td><td class="c">3.5</td><td>לשימוש בשעת שיא</td></tr>
+            <tr><td>מפרץ תחנה</td><td class="c">2.7</td><td class="c">3.0</td><td>להורדה / העלאה</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>APTA — מאפייני תחנות</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג תחנה</th><th class="c">קיבולת (אוטובוסים/שעה)</th><th class="c">גובה רציף (מ')</th><th class="c">רוחב רציף (מ')</th></tr></thead>
+          <tbody>
+            <tr><td>תחנת רחוב</td><td class="c">15–20</td><td class="c">0.15</td><td class="c">1.5–2.0</td></tr>
+            <tr><td>מפרץ איסוף</td><td class="c">20–25</td><td class="c">0.15</td><td class="c">2.0–2.5</td></tr>
+            <tr><td>Bulb-out</td><td class="c">25–30</td><td class="c">0.15–0.30</td><td class="c">2.5–3.0</td></tr>
+            <tr><td>אי תחנה</td><td class="c">30–45</td><td class="c">0.30</td><td class="c">3.0–4.0</td></tr>
+            <tr><td>תחנת BRT</td><td class="c">45–90</td><td class="c">0.90</td><td class="c">3.0–5.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>אמצעי בטיחות — מפתח החלטה</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מהירות</th><th class="c">מעקה</th><th class="c">אבן שפה</th><th class="c">עמודונים</th><th class="c">סימון בלבד</th></tr></thead>
+          <tbody>
+            <tr><td>≤50 קמ"ש</td><td class="c">—</td><td class="c">✓</td><td class="c">✓</td><td class="c">✓</td></tr>
+            <tr><td>51–70 קמ"ש</td><td class="c">מומלץ</td><td class="c">✓</td><td class="c">מומלץ</td><td class="c">—</td></tr>
+            <tr><td>71–90 קמ"ש</td><td class="c">✓</td><td class="c">—</td><td class="c">✓</td><td class="c">—</td></tr>
+            <tr><td>&gt;90 קמ"ש</td><td class="c">חובה</td><td class="c">—</td><td class="c">—</td><td class="c">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>שדרוג — קריטריונים להחלטה</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מצב קיים</th><th>פעולה מומלצת</th></tr></thead>
+          <tbody>
+            <tr><td>רוחב &lt; 3.0 מ'</td><td>שדרוג דחוף — הרחבה</td></tr>
+            <tr><td>רוחב 3.0–3.3 מ'</td><td>שדרוג מומלץ — התאמה לתקן</td></tr>
+            <tr><td>רוחב 3.3–3.6 מ'</td><td>תקין — ללא שדרוג</td></tr>
+            <tr><td>סלילה גרועה</td><td>שיקום שכבת אספלט</td></tr>
+            <tr><td>ניקוז לא תקין</td><td>שיפור מערכת ניקוז</td></tr>
+            <tr><td>ללא מדרכות</td><td>הוספת מדרכות + נגישות</td></tr>
+            <tr><td>תאונות מרובות</td><td>אמצעי בטיחות + תמרורים</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>MAHALCO · כלי 4 — נתיבי נת"צ, תחנות ובטיחות · AASHTO + APTA</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const fmt = (x,d=2) => isFinite(x) ? Number(x).toFixed(d) : '—';
+const numF = (x,d=0) => isFinite(x) ? Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
+
+/* Tabs */
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    const t = document.getElementById(btn.dataset.tab);
+    if (t) t.classList.add('active');
+  });
+});
+
+/* ============================================================
+   TAB 1 — Lane analysis
+   ============================================================ */
+function calcLane(){
+  const type = $('l_type').value;
+  const vd = parseFloat($('l_vd').value);
+  const width = parseFloat($('l_width').value);
+  const lanes = parseInt($('l_lanes').value);
+  const barrier = $('l_barrier').value;
+  const buses = parseFloat($('l_buses').value);
+  const pax = parseFloat($('l_pax').value);
+  const speedLimit = parseFloat($('l_speed_limit').value);
+
+  /* Required width by type */
+  const widthReq = {
+    exclusive: 3.0, semi: 3.0, mixed: 3.6,
+    curb: 3.3, median: 3.5
+  }[type];
+  const widthRec = {
+    exclusive: 3.5, semi: 3.5, mixed: 3.9,
+    curb: 3.6, median: 3.6
+  }[type];
+
+  /* Capacity estimate: ~1800 pphpd per lane; ~60 buses/h theoretical max */
+  const capPerLane = type === 'exclusive' ? 60 : type === 'semi' ? 45 : 30;
+  const totalCap = capPerLane * lanes;
+  const utilization = totalCap > 0 ? (buses / totalCap) * 100 : 0;
+
+  /* Passenger throughput */
+  const paxThroughput = buses * (pax / Math.max(buses, 1));
+
+  /* Verdict */
+  const widthOK = width >= widthReq;
+  const utilOK = utilization <= 80;
+
+  let verdict, icon, color, badge;
+  if (widthOK && utilOK) {
+    verdict = 'נת"צ תקין — תכנון מאושר';
+    icon = '✅'; color = '#4ADE80'; badge = 'ok';
+  } else if (widthOK || utilOK) {
+    verdict = 'נת"צ עם הסתייגויות — בדוק פרמטרים';
+    icon = '⚠️'; color = '#F5C451'; badge = 'warn';
+  } else {
+    verdict = 'נת"צ אינו עומד בדרישות';
+    icon = '❌'; color = '#F35B5B'; badge = 'bad';
+  }
+
+  /* Barrier compatibility */
+  let barrierWarn = '';
+  if (speedLimit > 90 && barrier !== 'barrier') {
+    barrierWarn = 'במהירות מעל 90 קמ"ש חובה מעקה בטיחות';
+  } else if (speedLimit > 70 && (barrier === 'none' || barrier === 'markers')) {
+    barrierWarn = 'במהירות 71–90 קמ"ש מומלץ אבן שפה או מעקה';
+  }
+
+  const warn = [];
+  warn.push([badge, verdict]);
+
+  if (widthOK) {
+    warn.push(['ok', `רוחב נת"צ ${width} מ' ≥ דרישה (${widthReq} מ')`]);
+  } else {
+    warn.push(['bad', `רוחב ${width} מ' < דרישה (${widthReq} מ') — נדרשת הרחבה`]);
+  }
+  if (width < widthRec) {
+    warn.push(['info', `מומלץ להרחיב ל-${widthRec} מ' לתכן מיטבי`]);
+  }
+
+  if (utilization <= 60) {
+    warn.push(['ok', `ניצולת ${fmt(utilization,0)}% — קיבולת פנויה`]);
+  } else if (utilization <= 80) {
+    warn.push(['info', `ניצולת ${fmt(utilization,0)}% — בטווח סביר`]);
+  } else if (utilization <= 100) {
+    warn.push(['warn', `ניצולת ${fmt(utilization,0)}% — מתקרב לקיבולת`]);
+  } else {
+    warn.push(['bad', `ניצולת ${fmt(utilization,0)}% — מעל הקיבולת`]);
+  }
+
+  if (barrierWarn) {
+    warn.push(['warn', barrierWarn]);
+  } else {
+    const barrierLabel = {none:'סימון בלבד', markers:'עמודונים', curb:'אבן שפה', barrier:'מעקה בטיחות'}[barrier];
+    warn.push(['ok', `אמצעי הפרדה: ${barrierLabel} — מתאים למהירות ${speedLimit} קמ"ש`]);
+  }
+
+  if (type === 'exclusive') {
+    warn.push(['info', 'נת"צ בלעדי: אכיפה קריטית — יש לתכנן מצלמות / פיקוח']);
+  } else if (type === 'curb') {
+    warn.push(['info', 'נת"צ צדדי: הפרעות צפויות מחניה ופריקה — דרושה אכיפה']);
+  }
+
+  $('laneResults').innerHTML = `
+    <div class="verdict-big">
+      <div class="verdict-icon">${icon}</div>
+      <div class="verdict-meta">
+        <b style="color:${color};">${verdict}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">רוחב ${width} מ' · ניצולת ${fmt(utilization,0)}%</span>
+      </div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">רוחב נדרש</div><div class="result-number highlight">${widthReq}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">קיבולת כוללת</div><div class="result-number">${totalCap}</div><div class="result-sub">אוטובוסים/שעה</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">ניצולת</div><div class="result-number">${fmt(utilization,0)}%</div><div class="result-sub">מהקיבולת</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">תפוקת נוסעים</div><div class="result-number">${numF(paxThroughput)}</div><div class="result-sub">נוסעים/שעה</div></div></div>
+    </div>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `;
+}
+
+/* ============================================================
+   TAB 2 — Station design
+   ============================================================ */
+function calcStation(){
+  const type = $('s_type').value;
+  const buses = parseFloat($('s_buses').value);
+  const boarding = parseFloat($('s_boarding').value);
+  const alighting = parseFloat($('s_alighting').value);
+  const dwell = parseFloat($('s_dwell').value);
+  const platformH = parseFloat($('s_platform_h').value);
+  const doors = parseInt($('s_doors').value);
+  const payment = $('s_payment').value;
+
+  /* Capacity per station type */
+  const capTable = {
+    curb: 20, bay: 25, bulb: 30, island: 45, brt: 90
+  };
+  const cap = capTable[type];
+
+  /* Dwell time adjustment */
+  let dwellAdj = 0;
+  if (payment === 'driver') dwellAdj = 5;
+  else if (payment === 'all_doors') dwellAdj = -3;
+  else if (payment === 'offboard') dwellAdj = -5;
+
+  if (doors >= 3) dwellAdj -= 2;
+  if (platformH >= 0.30) dwellAdj -= 2;
+
+  const effDwell = Math.max(5, dwell + dwellAdj);
+
+  /* Total platform time per bus */
+  const platformTimePerBus = effDwell; /* seconds */
+  const busesPerHour = 3600 / platformTimePerBus;
+  const totalCapacity = Math.min(cap, busesPerHour);
+
+  /* Utilization */
+  const utilization = totalCapacity > 0 ? (buses / totalCapacity) * 100 : 0;
+
+  /* Passenger throughput */
+  const paxThrough = boarding + alighting;
+
+  /* Verdict */
+  let verdict, icon, color, badge;
+  if (utilization <= 60 && paxThrough <= 500) {
+    verdict = 'תחנה תקינה — קיבולת מספקת';
+    icon = '✅'; color = '#4ADE80'; badge = 'ok';
+  } else if (utilization <= 85) {
+    verdict = 'תחנה סבירה — עקוב אחר עומסים';
+    icon = '⚠️'; color = '#F5C451'; badge = 'warn';
+  } else {
+    verdict = 'תחנה בעומס — נדרש שדרוג';
+    icon = '❌'; color = '#F35B5B'; badge = 'bad';
+  }
+
+  const warn = [];
+  warn.push([badge, verdict]);
+  warn.push(['info', `קיבולת תחנה: ${totalCapacity} אוטובוסים/שעה (סוג: ${type})`]);
+
+  if (utilization > 80) {
+    warn.push(['bad', `ניצולת ${fmt(utilization,0)}% — נדרשת הרחבה / תחנה נוספת`]);
+  } else if (utilization > 60) {
+    warn.push(['warn', `ניצולת ${fmt(utilization,0)}% — מתקרבת לקיבולת`]);
+  } else {
+    warn.push(['ok', `ניצולת ${fmt(utilization,0)}% — תקינה`]);
+  }
+
+  warn.push(['info', `זמן שהייה אפקטיבי: ${fmt(effDwell,1)} שנ' (מקורי ${dwell})`]);
+
+  if (payment === 'driver') {
+    warn.push(['warn', 'תשלום אצל הנהג — מגביל קיבולת. שקול תשלום מחוץ לרכב']);
+  } else if (payment === 'offboard') {
+    warn.push(['ok', 'תשלום מחוץ לרכב — מאיץ קליטה ומגביר קיבולת']);
+  }
+
+  if (platformH >= 0.30) {
+    warn.push(['ok', `גובה רציף ${platformH} מ' — מאפשר קליטה מהירה`]);
+  } else if (platformH >= 0.15) {
+    warn.push(['info', `גובה רציף ${platformH} מ' — תקני`]);
+  }
+
+  if (doors >= 3) {
+    warn.push(['ok', `${doors} דלתות — קליטה מהירה`]);
+  } else {
+    warn.push(['warn', `${doors} דלתות — מוגבל. מומלץ 3 דלתות ומעלה`]);
+  }
+
+  if (paxThrough > 600) {
+    warn.push(['warn', `תפוקת נוסעים ${numF(paxThrough)}/שעה — גבוהה. שקול תחנה משודרגת`]);
+  }
+
+  $('stationResults').innerHTML = `
+    <div class="verdict-big">
+      <div class="verdict-icon">${icon}</div>
+      <div class="verdict-meta">
+        <b style="color:${color};">${verdict}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">ניצולת ${fmt(utilization,0)}% · זמן שהייה ${fmt(effDwell,1)} שנ'</span>
+      </div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">קיבולת תחנה</div><div class="result-number highlight">${totalCapacity}</div><div class="result-sub">אוטובוסים/שעה</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">ניצולת</div><div class="result-number">${fmt(utilization,0)}%</div><div class="result-sub">מהקיבולת</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">זמן שהייה אפקטיבי</div><div class="result-number">${fmt(effDwell,1)}</div><div class="result-sub">שניות</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">תפוקת נוסעים</div><div class="result-number">${numF(paxThrough)}</div><div class="result-sub">נוסעים/שעה</div></div></div>
+    </div>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `;
+}
+
+/* ============================================================
+   TAB 3 — Safety measures
+   ============================================================ */
+function calcSafety(){
+  const vd = parseFloat($('sf_vd').value);
+  const lanes = parseInt($('sf_lanes').value);
+  const shoulder = parseFloat($('sf_shoulder').value);
+  const median = parseFloat($('sf_median').value);
+  const lighting = $('sf_lighting').value;
+  const ped = $('sf_ped').value;
+  const bikes = $('sf_bikes').value;
+  const accidents = parseFloat($('sf_accidents').value);
+
+  /* Clear zone requirement by speed */
+  const cz = vd <= 60 ? 3.0 : vd <= 80 ? 5.0 : vd <= 100 ? 7.0 : 9.0;
+
+  /* Barrier requirement */
+  let barrierReq;
+  if (vd <= 50) barrierReq = 'אבן שפה / עמודונים';
+  else if (vd <= 70) barrierReq = 'אבן שפה / עמודונים / מעקה';
+  else if (vd <= 90) barrierReq = 'מעקה בטיחות';
+  else barrierReq = 'מעקה בטיחות חובה';
+
+  /* Accidents threshold */
+  const accidentsPerKm = accidents; /* per 3 years assumed for segment */
+  let accidentLevel;
+  if (accidents <= 1) accidentLevel = 'ok';
+  else if (accidents <= 3) accidentLevel = 'info';
+  else if (accidents <= 6) accidentLevel = 'warn';
+  else accidentLevel = 'bad';
+
+  /* Risk score */
+  let riskScore = 0;
+  if (vd > 80) riskScore += 3;
+  else if (vd > 60) riskScore += 2;
+  else riskScore += 1;
+
+  if (lanes >= 3) riskScore += 2;
+  else if (lanes === 2) riskScore += 1;
+
+  if (shoulder < 1.5) riskScore += 2;
+  else if (shoulder < 2.0) riskScore += 1;
+
+  if (median < 3.0) riskScore += 2;
+  else if (median < 5.0) riskScore += 1;
+
+  if (lighting === 'none') riskScore += 3;
+  else if (lighting === 'partial') riskScore += 1;
+
+  if (ped === 'high') riskScore += 2;
+  else if (ped === 'medium') riskScore += 1;
+
+  if (bikes === 'high') riskScore += 2;
+  else if (bikes === 'medium') riskScore += 1;
+
+  if (accidents >= 6) riskScore += 3;
+  else if (accidents >= 3) riskScore += 1;
+
+  /* Risk level */
+  let riskLevel, icon, color, badge;
+  if (riskScore <= 4) { riskLevel = 'סיכון נמוך'; icon = '✅'; color = '#4ADE80'; badge = 'ok'; }
+  else if (riskScore <= 8) { riskLevel = 'סיכון בינוני'; icon = 'ℹ️'; color = '#7AB8F5'; badge = 'info'; }
+  else if (riskScore <= 12) { riskLevel = 'סיכון גבוה'; icon = '⚠️'; color = '#F5C451'; badge = 'warn'; }
+  else { riskLevel = 'סיכון גבוה מאוד'; icon = '❌'; color = '#F35B5B'; badge = 'bad'; }
+
+  const warn = [];
+  warn.push([badge, riskLevel + ' — ציון סיכון ' + riskScore]);
+  warn.push(['info', `אזור פנוי נדרש (Clear Zone): ${cz} מ'`]);
+  warn.push(['info', `מעקה מומלץ: ${barrierReq}`]);
+
+  if (shoulder < 1.5) warn.push(['bad', `שול ${shoulder} מ' — צר מאוד`]);
+  else if (shoulder < 2.0) warn.push(['warn', `שול ${shoulder} מ' — צר`]);
+  else warn.push(['ok', `שול ${shoulder} מ' — תקין`]);
+
+  if (median < 3.0) warn.push(['warn', `מפרדה ${median} מ' — צרה, שקול מעקה`]);
+  else warn.push(['ok', `מפרדה ${median} מ' — תקינה`]);
+
+  if (lighting === 'none') warn.push(['warn', 'אין תאורה — שקול התקנה']);
+  else if (lighting === 'partial') warn.push(['info', 'תאורה חלקית — שקול הרחבה']);
+  else warn.push(['ok', 'תאורה מלאה']);
+
+  warn.push([accidentLevel, `תאונות ב-3 שנים: ${accidents}`]);
+  if (accidents >= 6) warn.push(['bad', 'רמת תאונות גבוהה — דרוש שיפור מיידי']);
+
+  if (ped === 'high') warn.push(['warn', 'הולכי רגל מרובים — דרושים מעברי חציה מוגנים, תמרורים, תאורה']);
+  if (bikes === 'high') warn.push(['warn', 'אופניים מרובים — דרושים שבילי אופניים מופרדים']);
+
+  $('safetyResults').innerHTML = `
+    <div class="verdict-big">
+      <div class="verdict-icon">${icon}</div>
+      <div class="verdict-meta">
+        <b style="color:${color};">${riskLevel}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">ציון סיכון: ${riskScore} · אזור פנוי: ${cz} מ'</span>
+      </div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">ציון סיכון</div><div class="result-number highlight">${riskScore}</div><div class="result-sub">0–20</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">אזור פנוי נדרש</div><div class="result-number">${cz}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">מעקה מומלץ</div><div class="result-number" style="font-size:.95rem;direction:rtl;text-align:center;">${barrierReq}</div><div class="result-sub">—</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">תאונות ב-3 שנים</div><div class="result-number">${accidents}</div><div class="result-sub">—</div></div></div>
+    </div>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">המלצות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `;
+}
+
+/* ============================================================
+   TAB 4 — Upgrade analysis
+   ============================================================ */
+function calcUpgrade(){
+  const scope = $('u_scope').value;
+  const length = parseFloat($('u_length').value);
+  const vd = parseFloat($('u_vd').value);
+  const curW = parseFloat($('u_cur_width').value);
+  const tgtW = parseFloat($('u_target_width').value);
+  const pav = $('u_pavement').value;
+  const drain = $('u_drainage').value;
+  const side = $('u_sidewalk').value;
+  const priority = $('u_priority').value;
+
+  /* Width change */
+  const widthDelta = tgtW - curW;
+  const widthOK = curW >= 3.0;
+
+  /* Compute area */
+  const areaM = length * Math.abs(widthDelta);
+  const areaDunam = areaM / 1000;
+
+  /* Cost estimate (relative) */
+  let costLevel = 0;
+  if (widthDelta > 0) costLevel += widthDelta * 3;
+  if (pav === 'poor') costLevel += 5;
+  else if (pav === 'fair') costLevel += 2;
+  if (drain === 'poor') costLevel += 4;
+  else if (drain === 'partial') costLevel += 2;
+  if (side === 'none') costLevel += 4;
+  else if (side === 'one') costLevel += 2;
+
+  /* Priority multiplier */
+  const priorityMult = {high: 1.5, medium: 1.2, low: 0.8}[priority];
+  const score = costLevel * priorityMult;
+
+  /* Scope multiplier */
+  const scopeMult = {point: 1.0, segment: 2.0, corridor: 4.0}[scope];
+  const totalScore = score * scopeMult;
+
+  /* Verdict */
+  let verdict, icon, color, badge;
+  if (totalScore <= 15) {
+    verdict = 'שדרוג בהיקף קטן — כדאי לבצע';
+    icon = '✅'; color = '#4ADE80'; badge = 'ok';
+  } else if (totalScore <= 35) {
+    verdict = 'שדרוג בינוני — לתכנן לפי עדיפות';
+    icon = 'ℹ️'; color = '#7AB8F5'; badge = 'info';
+  } else if (totalScore <= 60) {
+    verdict = 'שדרוג מורכב — לתכנן בהדרגה';
+    icon = '⚠️'; color = '#F5C451'; badge = 'warn';
+  } else {
+    verdict = 'שדרוג מקיף — פרויקט עתיר משאבים';
+    icon = '❌'; color = '#F35B5B'; badge = 'bad';
+  }
+
+  const warn = [];
+  warn.push([badge, verdict]);
+  warn.push(['info', `היקף עבודות: ${numF(areaM)} מ"ר (${fmt(areaDunam,2)} דונם)`]);
+  warn.push(['info', `ציון מורכבות: ${fmt(totalScore,1)}`]);
+
+  if (!widthOK) {
+    warn.push(['bad', `רוחב קיים ${curW} מ' — מתחת לסף המינימלי. הרחבה דחופה`]);
+  } else {
+    warn.push(['ok', `רוחב קיים ${curW} מ' — עומד בדרישות`]);
+  }
+
+  if (widthDelta > 0) {
+    warn.push(['info', `נדרשת הרחבה של ${fmt(widthDelta,2)} מ'`]);
+  } else if (widthDelta < 0) {
+    warn.push(['info', `ניתן לצמצם רוחב ב-${fmt(Math.abs(widthDelta),2)} מ'`]);
+  }
+
+  if (pav === 'poor') warn.push(['bad', 'סלילה גרועה — נדרש שיקום שכבת אספלט']);
+  if (drain === 'poor') warn.push(['warn', 'ניקוז לא תקין — נדרש שיפור']);
+  if (side === 'none') warn.push(['warn', 'ללא מדרכות — נדרשות מדרכות ונגישות']);
+  else if (side === 'one') warn.push(['info', 'מדרכות בצד אחד — שקול הוספת מדרכות בצד שני']);
+
+  if (priority === 'high') warn.push(['warn', 'עדיפות גבוהה — יש לתכנן ולתקצב בהתאם']);
+
+  $('upgradeResults').innerHTML = `
+    <div class="verdict-big">
+      <div class="verdict-icon">${icon}</div>
+      <div class="verdict-meta">
+        <b style="color:${color};">${verdict}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">ציון מורכבות: ${fmt(totalScore,1)} · שטח: ${fmt(areaDunam,2)} דונם</span>
+      </div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-6"><div class="result-box"><div class="result-label">הפרש רוחב</div><div class="result-number highlight">${fmt(widthDelta,2)}</div><div class="result-sub">מ'</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">שטח עבודות</div><div class="result-number">${numF(areaM)}</div><div class="result-sub">מ"ר</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">ציון מורכבות</div><div class="result-number">${fmt(totalScore,1)}</div><div class="result-sub">—</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">מכפיל היקף</div><div class="result-number">${scopeMult}x</div><div class="result-sub">${scope}</div></div></div>
+    </div>
+    <hr style="border-color:var(--line);margin:14px 0 10px;">
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">המלצות</h6>
+    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+  `;
+}
+
+/* Bind */
+['l_type','l_vd','l_width','l_lanes','l_barrier','l_buses','l_pax','l_speed_limit'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcLane); el.addEventListener('change', calcLane); }
+});
+['s_type','s_buses','s_boarding','s_alighting','s_dwell','s_platform_h','s_doors','s_payment'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcStation); el.addEventListener('change', calcStation); }
+});
+['sf_vd','sf_lanes','sf_shoulder','sf_median','sf_lighting','sf_ped','sf_bikes','sf_accidents'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcSafety); el.addEventListener('change', calcSafety); }
+});
+['u_scope','u_length','u_vd','u_cur_width','u_target_width','u_pavement','u_drainage','u_sidewalk','u_priority'].forEach(id=>{
+  const el = $(id); if (el) { el.addEventListener('input', calcUpgrade); el.addEventListener('change', calcUpgrade); }
+});
+
+/* Init */
+calcLane();
+calcStation();
+calcSafety();
+calcUpgrade();
+
+})();
+</script>
+</body>
+</html>

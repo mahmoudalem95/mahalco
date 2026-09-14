@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>רמת שירות לתחבורה ציבורית — HCM Ch. 16</title>
+<title>עמידה בתקני שירות תח"צ — הנחיות משרד התחבורה</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 <style>
@@ -11,19 +11,17 @@
   *{box-sizing:border-box;}
   body{background:var(--bg);color:var(--ink);padding:20px;font-family:Arial,sans-serif;line-height:1.5;}
   .container{max-width:1300px;}
-  h1{font-size:clamp(1.5rem,1.3rem+1.5vw,2.1rem);font-weight:700;margin:0 0 .5rem;color:var(--ink);}
+  h1{font-size:clamp(1.4rem,1.2rem+1.3vw,2rem);font-weight:700;margin:0 0 .5rem;color:var(--ink);}
   h1 .bi{color:#ffc107;margin-left:.5rem;}
-  .subhead{color:var(--ink-3);margin:0 0 1.5rem;line-height:1.6;font-size:.92rem;}
+  .subhead{color:var(--ink-3);margin:0 0 1.5rem;line-height:1.6;font-size:.9rem;}
   .badge{display:inline-block;background:var(--card-2);color:var(--ink-2);font-size:.78rem;font-weight:600;padding:.25em .6em;border-radius:6px;vertical-align:middle;margin-right:6px;}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.3);margin-bottom:20px;}
   .card-header{background:var(--accent);color:#1a1a2e;border-radius:12px 12px 0 0;font-weight:600;padding:.5rem 1rem;}
   .card-header .bi{margin-left:.5rem;}
   .card-body{padding:1rem;}
-  .section-note{font-size:.78rem;color:var(--ink-3);margin:0 0 12px;line-height:1.6;}
   .form-group{margin-bottom:12px;}
   .row-2{display:grid;gap:12px;grid-template-columns:1fr 1fr;}
-  .row-3{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr;}
-  @media(max-width:720px){.row-2,.row-3{grid-template-columns:1fr;gap:8px;}}
+  @media(max-width:720px){.row-2{grid-template-columns:1fr;gap:8px;}}
   label{display:block;margin-bottom:.35rem;color:var(--ink-2);font-size:.9rem;}
   label .unit{color:var(--ink-3);font-size:.8rem;}
   input,select{width:100%;padding:.375rem .75rem;font-size:1rem;border:1px solid var(--line);border-radius:6px;background:var(--field);color:var(--ink);font-family:inherit;}
@@ -31,7 +29,7 @@
   input:focus,select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 .2rem rgba(232,163,61,.2);}
   .result-box{background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;height:100%;}
   .result-label{font-size:.82rem;color:var(--ink-2);}
-  .result-number{font-size:1.6rem;font-weight:700;color:var(--ink);line-height:1.15;font-variant-numeric:tabular-nums;direction:ltr;text-align:right;}
+  .result-number{font-size:1.5rem;font-weight:700;color:var(--ink);line-height:1.15;font-variant-numeric:tabular-nums;direction:ltr;text-align:right;}
   .result-number.highlight{color:var(--accent);}
   .result-sub{font-size:.72rem;color:var(--ink-3);}
   .verdict-big{display:flex;align-items:center;gap:16px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:14px;}
@@ -55,107 +53,102 @@
   .col-help{font-size:.75rem;color:var(--ink-3);margin-top:2px;}
   .results-sticky{position:sticky;top:16px;}
   @media(max-width:991px){.results-sticky{position:static;}}
-  .los-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px;}
-  .los-cell{background:var(--card-2);border:1px solid var(--line);border-radius:8px;padding:8px 4px;text-align:center;}
-  .los-cell .l{font-weight:800;font-size:1.1rem;color:var(--accent);}
-  .los-cell .v{font-size:.7rem;color:var(--ink-3);}
-  .los-cell.active{background:rgba(232,163,61,.15);border-color:var(--accent);}
+  .src-note{font-size:.72rem;color:var(--ink-3);margin-top:10px;line-height:1.6;}
+  .area-desc{background:var(--field);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-size:.8rem;color:var(--ink-2);margin-top:8px;line-height:1.6;}
 </style>
 </head>
 <body>
 <div class="container">
 
-  <h1><i class="bi bi-speedometer"></i>רמת שירות לתחבורה ציבורית <span class="badge">HCM Ch. 16</span></h1>
+  <h1><i class="bi bi-speedometer"></i>עמידה בתקני שירות תח"צ <span class="badge">משרד התחבורה</span></h1>
   <p class="subhead">
-    כלי לחישוב רמת שירות (LOS) לתחבורה ציבורית לפי HCM Chapter 16 ו-TCQSM:
-    תדירות שירות, אמינות מרווחים, עומס נוסעים, שעות שירות, מרחק הליכה לתחנה,
-    וזמן נסיעה. כולל חישוב LOS לפי כל מדד וקביעת LOS כולל.
+    כלי לבחינת עמידה בתקני שירות לתחבורה ציבורית באוטובוסים, לפי "הנחיות לתכנון ותפעול שירות תחבורה ציבורית
+    באוטובוסים" (משרד התחבורה) — תקני זמינות, נגישות ושעות פעילות לפי סוג מרחב התכנון; מהירות מסחרית
+    לפי סוג קו; ואמינות שירות (מדד Cvh) לפי "הנחיות לבחינת הצדקה להסדרי העדפה" (טבלה 6.1).
   </p>
 
   <div class="row g-4">
     <div class="col-lg-5">
       <div class="card">
-        <div class="card-header"><i class="bi bi-gear"></i>קלט — נתוני השירות</div>
+        <div class="card-header"><i class="bi bi-geo-alt"></i>סוג מרחב התכנון</div>
         <div class="card-body">
-          <h6 style="color:var(--accent);font-weight:700;font-size:.85rem;margin-top:0;">תדירות שירות</h6>
+          <div class="form-group">
+            <label for="area_type">סוג המרחב הנבדק</label>
+            <select id="area_type">
+              <option value="low">שכונת מגורים בצפיפות נמוכה (מתחת ל-3.5 יח"ד/דונם)</option>
+              <option value="high" selected>שכונת מגורים בצפיפות גבוהה (3.5 יח"ד/דונם ומעלה)</option>
+              <option value="employment">אזור תעסוקה במרחב עירוני</option>
+              <option value="mid">מרחב עירוני בינוני (20,000–100,000 תושבים)</option>
+              <option value="large">מרחב עירוני גדול (100,000 תושבים ומעלה)</option>
+            </select>
+            <div class="area-desc" id="area_desc"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="bi bi-clock-history"></i>נתוני השירות בפועל</div>
+        <div class="card-body">
           <div class="row-2">
             <div class="form-group">
-              <label for="freq">תדירות בשעת שיא <span class="unit">(אוטובוסים/שעה)</span></label>
-              <input type="number" id="freq" value="12" step="1" min="0.5">
+              <label for="freq">תדירות בשעות הפעילות העיקריות <span class="unit">(דקות בין נסיעות)</span></label>
+              <input type="number" id="freq" value="12" step="1" min="1">
             </div>
             <div class="form-group">
-              <label for="freq_offpeak">תדירות בשעות שפל <span class="unit">(אוטובוסים/שעה)</span></label>
-              <input type="number" id="freq_offpeak" value="6" step="1" min="0.5">
+              <label for="walk">מרחק הליכה ממוצע לתחנה <span class="unit">(מ')</span></label>
+              <input type="number" id="walk" value="380" step="10" min="0">
             </div>
           </div>
-
-          <hr style="border-color:var(--line);margin:14px 0 10px;">
-
-          <h6 style="color:var(--accent);font-weight:700;font-size:.85rem;">אמינות מרווחים (Headway Regularity)</h6>
           <div class="row-2">
             <div class="form-group">
-              <label for="hd_mean">מרווח ממוצע <span class="unit">(דקות)</span></label>
-              <input type="number" id="hd_mean" value="5" step="0.5" min="0.5">
+              <label for="h_start">תחילת שעות פעילות</label>
+              <input type="number" id="h_start" value="6" step="0.5" min="0" max="24">
             </div>
             <div class="form-group">
-              <label for="hd_std">סטיית תקן מרווחים <span class="unit">(דקות)</span></label>
-              <input type="number" id="hd_std" value="1.2" step="0.1" min="0">
+              <label for="h_end">סיום שעות פעילות</label>
+              <input type="number" id="h_end" value="21" step="0.5" min="0" max="28">
             </div>
           </div>
-          <div class="col-help">CV<sub>hd</sub> = σ<sub>hd</sub> / μ<sub>hd</sub></div>
-
-          <hr style="border-color:var(--line);margin:14px 0 10px;">
-
-          <h6 style="color:var(--accent);font-weight:700;font-size:.85rem;">עומס נוסעים</h6>
           <div class="row-2">
             <div class="form-group">
-              <label for="load">נוסעים בשעת שיא <span class="unit">(נוסעים/אוטובוס)</span></label>
-              <input type="number" id="load" value="55" step="1" min="0">
-            </div>
-            <div class="form-group">
-              <label for="capacity">תפוסה מרבית <span class="unit">(נוסעים/אוטובוס)</span></label>
-              <input type="number" id="capacity" value="80" step="1" min="10">
-            </div>
-          </div>
-          <div class="col-help">עומס = נוסעים בפועל / תפוסה מרבית × 100%</div>
-
-          <hr style="border-color:var(--line);margin:14px 0 10px;">
-
-          <h6 style="color:var(--accent);font-weight:700;font-size:.85rem;">שירות ומרחב</h6>
-          <div class="row-2">
-            <div class="form-group">
-              <label for="h_service">שעות שירות ביום <span class="unit">(שעות)</span></label>
-              <input type="number" id="h_service" value="18" step="0.5" min="0" max="24">
-            </div>
-            <div class="form-group">
-              <label for="days">ימי שירות בשבוע</label>
-              <select id="days">
-                <option value="7" selected>7 ימים</option>
-                <option value="6">6 ימים</option>
-                <option value="5">5 ימים (ימי חול)</option>
+              <label for="line_type">סוג הקו (למהירות מסחרית — טבלה 9)</label>
+              <select id="line_type">
+                <option value="local">קו מקומי (יעד: 16 קמ"ש)</option>
+                <option value="arterial" selected>קו עורקי (יעד: 20 קמ"ש)</option>
+                <option value="fast">קו עורקי מהיר / תאו"מ (יעד: 25 קמ"ש)</option>
               </select>
             </div>
-          </div>
-          <div class="row-2">
             <div class="form-group">
-              <label for="walk_stop">מרחק הליכה לתחנה <span class="unit">(מ')</span></label>
-              <input type="number" id="walk_stop" value="350" step="25" min="50">
-            </div>
-            <div class="form-group">
-              <label for="stop_spacing">מרווח בין תחנות <span class="unit">(מ')</span></label>
-              <input type="number" id="stop_spacing" value="400" step="25" min="100">
+              <label for="speed">מהירות מסחרית בפועל <span class="unit">(קמ"ש)</span></label>
+              <input type="number" id="speed" value="18" step="0.5" min="1">
             </div>
           </div>
           <div class="row-2">
             <div class="form-group">
-              <label for="trip_time">זמן נסיעה כולל <span class="unit">(דקות)</span></label>
-              <input type="number" id="trip_time" value="30" step="1" min="1">
+              <label for="transfers">מספר עליות ממוצע לנסיעה</label>
+              <input type="number" id="transfers" value="1.3" step="0.1" min="1">
             </div>
             <div class="form-group">
-              <label for="trip_dist">אורך מסלול <span class="unit">(ק"מ)</span></label>
-              <input type="number" id="trip_dist" value="10" step="0.5" min="0.5">
+              <label for="none2"></label>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="bi bi-graph-up-arrow"></i>אמינות שירות — מדד Cvh (טבלה 6.1)</div>
+        <div class="card-body">
+          <div class="row-2">
+            <div class="form-group">
+              <label for="cv_mean">משך נסיעה ממוצע בקטע <span class="unit">(דק')</span></label>
+              <input type="number" id="cv_mean" value="20" step="0.5" min="0.1">
+            </div>
+            <div class="form-group">
+              <label for="cv_std">סטיית תקן משך נסיעה <span class="unit">(דק')</span></label>
+              <input type="number" id="cv_std" value="3" step="0.1" min="0">
+            </div>
+          </div>
+          <div class="col-help">Cvh = סטיית התקן חלקי הממוצע. LOS C ומעלה (Cvh ≤ 0.39) נדרש לקווי תאו"מ.</div>
         </div>
       </div>
     </div>
@@ -163,7 +156,7 @@
     <div class="col-lg-7">
       <div class="results-sticky">
         <div class="card">
-          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — רמת שירות</div>
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — עמידה בתקנים</div>
           <div class="card-body" id="results"></div>
         </div>
       </div>
@@ -171,27 +164,24 @@
   </div>
 
   <div class="card">
-    <div class="card-header"><i class="bi bi-table"></i>הסבר — LOS לפי כל מדד</div>
+    <div class="card-header"><i class="bi bi-table"></i>טבלת אמינות שירות (Cvh) — LOS</div>
     <div class="card-body p-0">
       <table class="table mb-0">
-        <thead><tr><th>מדד</th><th class="c">A</th><th class="c">B</th><th class="c">C</th><th class="c">D</th><th class="c">E</th><th class="c">F</th></tr></thead>
+        <thead><tr><th>LOS</th><th class="c">Cvh</th><th>משמעות תפעולית</th></tr></thead>
         <tbody>
-          <tr><td>תדירות (אוטובוסים/שעה)</td><td class="c">&gt;6</td><td class="c">5–6</td><td class="c">3–4</td><td class="c">2</td><td class="c">1</td><td class="c">&lt;1</td></tr>
-          <tr><td>מרווח (דקות)</td><td class="c">&lt;10</td><td class="c">10–14</td><td class="c">15–20</td><td class="c">21–30</td><td class="c">31–60</td><td class="c">&gt;60</td></tr>
-          <tr><td>CV<sub>hd</sub> (אמינות)</td><td class="c">≤0.21</td><td class="c">≤0.30</td><td class="c">≤0.39</td><td class="c">≤0.52</td><td class="c">≤0.74</td><td class="c">&gt;0.74</td></tr>
-          <tr><td>עומס (% מתפוסה)</td><td class="c">≤50</td><td class="c">51–65</td><td class="c">66–80</td><td class="c">81–100</td><td class="c">101–120</td><td class="c">&gt;120</td></tr>
-          <tr><td>שעות שירות ביום</td><td class="c">≥20</td><td class="c">18–19</td><td class="c">15–17</td><td class="c">12–14</td><td class="c">9–11</td><td class="c">&lt;9</td></tr>
-          <tr><td>מרחק הליכה לתחנה (מ')</td><td class="c">&lt;250</td><td class="c">250–300</td><td class="c">301–400</td><td class="c">401–500</td><td class="c">501–750</td><td class="c">&gt;750</td></tr>
+          <tr><td><span class="los-chip los-A">A</span></td><td class="c">0.00–0.21</td><td>שירות סדיר כמו שעון</td></tr>
+          <tr><td><span class="los-chip los-B">B</span></td><td class="c">0.22–0.30</td><td>סטייה קלה במרווחים</td></tr>
+          <tr><td><span class="los-chip los-C">C</span></td><td class="c">0.31–0.39</td><td>סטייה תכופה במרווחים</td></tr>
+          <tr><td><span class="los-chip los-D">D</span></td><td class="c">0.40–0.52</td><td>מרווחים לא סדירים, נטייה להתגבשות</td></tr>
+          <tr><td><span class="los-chip los-E">E</span></td><td class="c">0.53–0.74</td><td>התגבשות תכופה</td></tr>
+          <tr><td><span class="los-chip los-F">F</span></td><td class="c">0.75+</td><td>רוב כלי הרכב מתגבשים</td></tr>
         </tbody>
       </table>
-      <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">
-        מבוסס על: TCQSM (Transit Capacity and Quality of Service Manual) 3rd Edition, Kittelson & Associates,
-        ו-HCM Chapter 16 — Transit LOS.
-      </div>
+      <div class="src-note p-2">מקור: Kittelson &amp; Associates / KFH Group, TCQSM 2nd ed., כפי שאומץ בטבלה 6.1 ל"הנחיות לבחינת הצדקה להסדרי העדפה לתחבורה ציבורית באוטובוסים" (משרד התחבורה, תשפ"ה־2024).</div>
     </div>
   </div>
 
-  <footer>MAHALCO · כלי 3 — רמת שירות לתחבורה ציבורית · HCM Ch. 16 + TCQSM</footer>
+  <footer>MAHALCO · כלי 3 — עמידה בתקני שירות תח"צ · מבוסס הנחיות משרד התחבורה לתכנון ותפעול שירות תח"צ באוטובוסים</footer>
 </div>
 
 <script>
@@ -201,36 +191,44 @@ const $ = id => document.getElementById(id);
 const fmt = (x,d=2) => isFinite(x) ? Number(x).toFixed(d) : '—';
 const numF = (x,d=0) => isFinite(x) ? Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
 
-/* LOS grading */
-function losFromThresholds(v, thresholds) {
-  /* thresholds = [t1,t2,t3,t4,t5] — upper bounds for A,B,C,D,E */
-  if (v <= thresholds[0]) return 'A';
-  if (v <= thresholds[1]) return 'B';
-  if (v <= thresholds[2]) return 'C';
-  if (v <= thresholds[3]) return 'D';
-  if (v <= thresholds[4]) return 'E';
-  return 'F';
-}
+/* Area-type standards, digitized from "הנחיות לתכנון ותפעול שירות תחבורה ציבורית באוטובוסים",
+   פרק 2 — טבלאות 4–8. Frequencies are given as maximum headway (minutes) required during the
+   stated core hours; walkDist is the standard's distance-to-stop figure (meters). */
+const AREAS = {
+  low: {
+    label: 'שכונת מגורים בצפיפות נמוכה',
+    desc: 'שכונה עם פחות מ-3.5 יח"ד/דונם ברוטו, במרחב עירוני הכולל 20,000 תושבים ומעלה.',
+    freqMax: 15, walkDist: 500, hStart: 6, hEnd: 19, hStartLoose:6, hEndLoose:22,
+    note: 'תקן: הגעה לתחנה בתדירות של 15 דק\' לכל היותר, כך ש-80% מהאוכלוסייה נמצאים עד 500 מ\' מהתחנה, בין 6:00–19:00 לפחות (שעות פעילות רצויות: 6:00–22:00).'
+  },
+  high: {
+    label: 'שכונת מגורים בצפיפות גבוהה',
+    desc: 'שכונה עם 3.5 יח"ד/דונם ומעלה ו-750 יח"ד לפחות, במרחב עירוני הכולל 20,000 תושבים ומעלה.',
+    freqMax: 12, walkDist: 500, hStart: 6, hEnd: 19, hStartLoose:5.5, hEndLoose:22.5,
+    note: 'תקן: הגעה לתחנה בתדירות של 12 דק\' לכל היותר, כך ש-80% מהאוכלוסייה נמצאים עד 500 מ\' מהתחנה, בין 6:00–19:00 לפחות (שעות פעילות רצויות: 5:30–22:30).'
+  },
+  employment: {
+    label: 'אזור תעסוקה במרחב עירוני',
+    desc: 'אזור תעסוקה המיועד לשרת עובדים במרחב עירוני.',
+    freqMax: 12, walkDist: 400, hStart: 6, hEnd: 19, hStartLoose:6, hEndLoose:21,
+    note: 'תקן: הגעה לתחנה בתדירות של 12 דק\', כך ש-90% ממקומות העבודה נמצאים עד 400 מ\' מהתחנה, בין 6:00–19:00 (שעות פעילות רצויות: 6:00–21:00).'
+  },
+  mid: {
+    label: 'מרחב עירוני בינוני (20–100 אלף תושבים)',
+    desc: 'מרחב עירוני המבוסס על רשת קווים עורקיים המשרתת את השכונות ומוקדי המשיכה הכלל-עירוניים.',
+    freqMax: 15, walkDist: 400, hStart: 6, hEnd: 19, hStartLoose:6, hEndLoose:22,
+    note: 'תקן: 60% מהאוכלוסייה במרחק עד 400 מ\' מתחנת קו עורקי הפועל בתדירות גבוהה. יעד מהירות מסחרית לקו עורקי: 20 קמ"ש.'
+  },
+  large: {
+    label: 'מרחב עירוני גדול (100,000 תושבים ומעלה)',
+    desc: 'מרחב עירוני גדול המחייב רשת היררכית הכוללת רובד קווים עורקיים מהירים / תאו"מ.',
+    freqMax: 15, walkDist: 500, hStart: 6, hEnd: 19, hStartLoose:6, hEndLoose:22,
+    note: 'תקן: 40% מהאוכלוסייה במרחק עד 500 מ\' מתחנת קו עורקי מהיר/תאו"מ (66% עד 400 מ\'). זמן המתנה ממוצע ≤7.5 דק\' (מרווח ≤15 דק\'). מספר עליות ממוצע לנסיעה ≤1.5.'
+  }
+};
+const LINE_SPEED_TARGET = {local:16, arterial:20, fast:25};
 
-function losFreq(f) {
-  /* buses/hour — higher is better */
-  if (f >= 6) return 'A';
-  if (f >= 5) return 'B';
-  if (f >= 3) return 'C';
-  if (f >= 2) return 'D';
-  if (f >= 1) return 'E';
-  return 'F';
-}
-function losHeadway(h) {
-  /* minutes — lower is better */
-  if (h <= 10) return 'A';
-  if (h <= 14) return 'B';
-  if (h <= 20) return 'C';
-  if (h <= 30) return 'D';
-  if (h <= 60) return 'E';
-  return 'F';
-}
-function losCV(cv) {
+function cvhLOS(cv){
   if (cv <= 0.21) return 'A';
   if (cv <= 0.30) return 'B';
   if (cv <= 0.39) return 'C';
@@ -238,191 +236,88 @@ function losCV(cv) {
   if (cv <= 0.74) return 'E';
   return 'F';
 }
-function losLoad(pct) {
-  if (pct <= 50) return 'A';
-  if (pct <= 65) return 'B';
-  if (pct <= 80) return 'C';
-  if (pct <= 100) return 'D';
-  if (pct <= 120) return 'E';
-  return 'F';
-}
-function losHours(h) {
-  if (h >= 20) return 'A';
-  if (h >= 18) return 'B';
-  if (h >= 15) return 'C';
-  if (h >= 12) return 'D';
-  if (h >= 9) return 'E';
-  return 'F';
-}
-function losWalk(d) {
-  if (d <= 250) return 'A';
-  if (d <= 300) return 'B';
-  if (d <= 400) return 'C';
-  if (d <= 500) return 'D';
-  if (d <= 750) return 'E';
-  return 'F';
-}
+const LOS_COLOR = {A:'#4ADE80',B:'#4ADE80',C:'#7AB8F5',D:'#F5C451',E:'#F5C451',F:'#F35B5B'};
+const LOS_ICON = {A:'✅',B:'✅',C:'ℹ️',D:'⚠️',E:'⚠️',F:'❌'};
 
-const ORDER = {A:1,B:2,C:3,D:4,E:5,F:6};
-function worstLos(list) {
-  let worst = 'A';
-  list.forEach(l => { if (ORDER[l] > ORDER[worst]) worst = l; });
-  return worst;
+function refreshAreaDesc(){
+  const a = AREAS[$('area_type').value];
+  $('area_desc').textContent = a.desc + ' ' + a.note;
 }
-function avgLos(list) {
-  /* Average numeric score, rounded up (conservative) */
-  let sum = 0;
-  list.forEach(l => sum += ORDER[l]);
-  const avg = sum / list.length;
-  /* Round down for conservatism? Actually let's report actual average */
-  const idx = Math.min(6, Math.max(1, Math.round(avg)));
-  return Object.keys(ORDER).find(k => ORDER[k] === idx);
-}
+$('area_type').addEventListener('change', () => { refreshAreaDesc(); calc(); });
 
 function calc(){
+  const area = AREAS[$('area_type').value];
   const freq = parseFloat($('freq').value)||0;
-  const freqOp = parseFloat($('freq_offpeak').value)||0;
-  const hdMean = parseFloat($('hd_mean').value)||0;
-  const hdStd = parseFloat($('hd_std').value)||0;
-  const load = parseFloat($('load').value)||0;
-  const cap = parseFloat($('capacity').value)||1;
-  const hSrv = parseFloat($('h_service').value)||0;
-  const days = parseInt($('days').value)||7;
-  const walk = parseFloat($('walk_stop').value)||0;
-  const spacing = parseFloat($('stop_spacing').value)||0;
-  const tripTime = parseFloat($('trip_time').value)||0;
-  const tripDist = parseFloat($('trip_dist').value)||0;
+  const walk = parseFloat($('walk').value)||0;
+  const hStart = parseFloat($('h_start').value)||0;
+  const hEnd = parseFloat($('h_end').value)||0;
+  const lineType = $('line_type').value;
+  const speed = parseFloat($('speed').value)||0;
+  const transfers = parseFloat($('transfers').value)||0;
+  const cvMean = parseFloat($('cv_mean').value)||0;
+  const cvStd = parseFloat($('cv_std').value)||0;
 
-  /* Compute */
-  const cvHd = hdMean > 0 ? hdStd / hdMean : 0;
-  const loadPct = cap > 0 ? (load / cap) * 100 : 0;
-  const commercialSpeed = tripTime > 0 ? (tripDist / (tripTime / 60)) : 0;
+  const cv = cvMean>0 ? cvStd/cvMean : 0;
+  const los = cvhLOS(cv);
 
-  /* LOS for each metric */
-  const losFreqV = losFreq(freq);
-  const losFreqOpV = losFreq(freqOp);
-  const losHeadwayV = losHeadway(hdMean);
-  const losCVV = losCV(cvHd);
-  const losLoadV = losLoad(loadPct);
-  const losHoursV = losHours(hSrv);
-  const losWalkV = losWalk(walk);
+  const checks = [];
+  let fails = 0, warns = 0;
 
-  /* Overall LOS — worst of key metrics (frequency, headway, CV, load) */
-  const keyLos = [losFreqV, losHeadwayV, losCVV, losLoadV];
-  const overallWorst = worstLos(keyLos);
-  const overallAvg = avgLos(keyLos);
+  /* Frequency */
+  if (freq <= area.freqMax){ checks.push(['ok', `תדירות: מרווח של ${fmt(freq,0)} דק\' — עומד בתקן (עד ${area.freqMax} דק\') עבור ${area.label}.`]); }
+  else { fails++; checks.push(['bad', `תדירות: מרווח של ${fmt(freq,0)} דק\' — חורג מהתקן הנדרש (עד ${area.freqMax} דק\') עבור ${area.label}.`]); }
 
-  /* Critical metrics — worst */
-  const metricsList = [
-    {name:'תדירות (שעת שיא)', los: losFreqV, val: `${freq} אוטובוסים/שעה`},
-    {name:'תדירות (שפל)', los: losFreqOpV, val: `${freqOp} אוטובוסים/שעה`},
-    {name:'מרווח ממוצע', los: losHeadwayV, val: `${fmt(hdMean,1)} דקות`},
-    {name:'אמינות (CV)', los: losCVV, val: `CV = ${fmt(cvHd,3)}`},
-    {name:'עומס נוסעים', los: losLoadV, val: `${fmt(loadPct,0)}%`},
-    {name:'שעות שירות', los: losHoursV, val: `${fmt(hSrv,1)} שעות`},
-    {name:'הליכה לתחנה', los: losWalkV, val: `${numF(walk)} מ'`}
-  ];
+  /* Walk distance */
+  if (walk <= area.walkDist){ checks.push(['ok', `מרחק הליכה לתחנה: ${numF(walk)} מ\' — בתוך התקן (${numF(area.walkDist)} מ\').`]); }
+  else { fails++; checks.push(['bad', `מרחק הליכה לתחנה: ${numF(walk)} מ\' — חורג מהתקן (${numF(area.walkDist)} מ\').`]); }
 
-  /* Verdict */
-  const overallLos = overallWorst;
-  const losColorMap = {A:'#4ADE80',B:'#4ADE80',C:'#7AB8F5',D:'#F5C451',E:'#F5C451',F:'#F35B5B'};
-  const overallColor = losColorMap[overallLos];
-  const iconMap = {A:'✅',B:'✅',C:'ℹ️',D:'⚠️',E:'⚠️',F:'❌'};
-  const icon = iconMap[overallLos];
+  /* Hours */
+  if (hStart <= area.hStart && hEnd >= area.hEnd){ checks.push(['ok', `שעות פעילות ${fmt(hStart,1)}–${fmt(hEnd,1)} — מכסות את חלון הליבה הנדרש (${area.hStart}:00–${area.hEnd}:00).`]); }
+  else { warns++; checks.push(['warn', `שעות פעילות ${fmt(hStart,1)}–${fmt(hEnd,1)} — אינן מכסות במלואן את חלון הליבה הנדרש (${area.hStart}:00–${area.hEnd}:00).`]); }
+  if (hStart <= area.hStartLoose && hEnd >= area.hEndLoose){ checks.push(['ok', `שעות פעילות מכסות גם את הטווח הרצוי (${area.hStartLoose}:00–${area.hEndLoose}:00).`]); }
+  else { checks.push(['info', `שעות פעילות רצויות: ${area.hStartLoose}:00–${area.hEndLoose}:00.`]); }
 
-  /* Warnings */
-  const warn = [];
-  warn.push([overallLos === 'A' || overallLos === 'B' ? 'ok' : overallLos === 'C' ? 'info' : overallLos === 'D' ? 'warn' : 'bad',
-    `רמת שירות כוללת (worst-of): LOS ${overallLos}`]);
+  /* Commercial speed vs line type target */
+  const target = LINE_SPEED_TARGET[lineType];
+  if (speed >= target){ checks.push(['ok', `מהירות מסחרית ${fmt(speed,1)} קמ"ש — עומדת ביעד לקו ${lineType==='local'?'מקומי':lineType==='arterial'?'עורקי':'עורקי מהיר / תאו"מ'} (${target} קמ"ש, טבלה 9).`]); }
+  else { warns++; checks.push(['warn', `מהירות מסחרית ${fmt(speed,1)} קמ"ש — מתחת ליעד לקו זה (${target} קמ"ש, טבלה 9).`]); }
 
-  if (losFreqV === 'E' || losFreqV === 'F') {
-    warn.push(['bad', `תדירות ${freq} אוטובוסים/שעה — נמוכה מאוד, פוגעת באטרקטיביות`]);
-  } else if (losFreqV === 'C' || losFreqV === 'D') {
-    warn.push(['warn', `תדירות ${freq} אוטובוסים/שעה — סבירה, יש לשקול הגברה`]);
-  } else {
-    warn.push(['ok', `תדירות ${freq} אוטובוסים/שעה — גבוהה`]);
-  }
+  /* Transfers (only meaningfully targeted for large urban areas) */
+  if (transfers <= 1.5){ checks.push(['ok', `עליות ממוצע לנסיעה: ${fmt(transfers,2)} — בתוך היעד (≤1.5).`]); }
+  else { warns++; checks.push(['warn', `עליות ממוצע לנסיעה: ${fmt(transfers,2)} — מעל היעד (≤1.5), רלוונטי בעיקר למרחבים עירוניים גדולים.`]); }
 
-  if (losCVV === 'D' || losCVV === 'E' || losCVV === 'F') {
-    warn.push(['bad', `CV = ${fmt(cvHd,3)} — אמינות ירודה, נדרש שיפור תפעולי`]);
-  } else if (losCVV === 'C') {
-    warn.push(['warn', `CV = ${fmt(cvHd,3)} — אמינות בינונית`]);
-  } else {
-    warn.push(['ok', `CV = ${fmt(cvHd,3)} — אמינות טובה`]);
-  }
+  /* Reliability LOS */
+  checks.push([los==='A'||los==='B'?'ok':los==='C'?'info':los==='D'||los==='E'?'warn':'bad',
+    `אמינות שירות: Cvh = ${fmt(cv,3)} → LOS ${los}.`]);
+  if (los==='D'||los==='E'||los==='F') warns++;
 
-  if (loadPct > 120) {
-    warn.push(['bad', `עומס ${fmt(loadPct,0)}% — מעל התפוסה המרבית`]);
-  } else if (loadPct > 100) {
-    warn.push(['warn', `עומס ${fmt(loadPct,0)}% — עומדים, יש להגביר תדירות`]);
-  } else if (loadPct > 80) {
-    warn.push(['warn', `עומס ${fmt(loadPct,0)}% — צפוף`]);
-  } else {
-    warn.push(['ok', `עומס ${fmt(loadPct,0)}% — נוח`]);
-  }
-
-  if (walk > 500) {
-    warn.push(['warn', `הליכה לתחנה ${numF(walk)} מ' — ארוכה מהמומלץ (עד 400 מ')`]);
-  } else {
-    warn.push(['ok', `הליכה לתחנה ${numF(walk)} מ' — תקינה`]);
-  }
-
-  if (spacing < 250) {
-    warn.push(['info', `מרווח תחנות ${numF(spacing)} מ' — קצר, מאט את השירות`]);
-  } else if (spacing > 700) {
-    warn.push(['warn', `מרווח תחנות ${numF(spacing)} מ' — ארוך, מגדיל הליכה`]);
-  } else {
-    warn.push(['ok', `מרווח תחנות ${numF(spacing)} מ' — תקין`]);
-  }
-
-  if (commercialSpeed < 15) {
-    warn.push(['warn', `מהירות מסחרית ${fmt(commercialSpeed,1)} קמ"ש — נמוכה`]);
-  } else if (commercialSpeed >= 25) {
-    warn.push(['ok', `מהירות מסחרית ${fmt(commercialSpeed,1)} קמ"ש — טובה`]);
-  } else {
-    warn.push(['info', `מהירות מסחרית ${fmt(commercialSpeed,1)} קמ"ש — סבירה`]);
-  }
-
-  /* LOS grid */
-  const losCells = ['A','B','C','D','E','F'].map(l =>
-    `<div class="los-cell ${l === overallLos ? 'active' : ''}"><div class="l">${l}</div><div class="v">${l === overallLos ? 'נוכחי' : ''}</div></div>`
-  ).join('');
-
-  const metricsRows = metricsList.map(m =>
-    `<tr><td>${m.name}</td><td class="c">${m.val}</td><td class="c"><span class="los-chip los-${m.los}">${m.los}</span></td></tr>`
-  ).join('');
+  let overall, icon, color;
+  if (fails>0){ overall='אינו עומד בתקני השירות'; icon='❌'; color='#F35B5B'; }
+  else if (warns>0){ overall='עומד חלקית — נדרשת התייחסות'; icon='⚠️'; color='#F5C451'; }
+  else { overall='עומד בתקני השירות'; icon='✅'; color='#4ADE80'; }
 
   const html = `
     <div class="verdict-big">
       <div class="verdict-icon">${icon}</div>
       <div class="verdict-meta">
-        <b style="color:${overallColor};">רמת שירות כוללת: LOS ${overallLos}</b><br>
-        <span style="font-size:.82rem;color:var(--ink-3);">ממוצע משוקלל: LOS ${overallAvg}</span>
+        <b style="color:${color};">${overall}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">${area.label}</span>
       </div>
     </div>
-
-    <div class="los-grid">${losCells}</div>
-
     <div class="row g-2 mb-3">
-      <div class="col-6"><div class="result-box"><div class="result-label">תדירות שעת שיא</div><div class="result-number highlight">${freq}</div><div class="result-sub">אוטובוסים/שעה → LOS ${losFreqV}</div></div></div>
-      <div class="col-6"><div class="result-box"><div class="result-label">CV<sub>hd</sub></div><div class="result-number highlight">${fmt(cvHd,3)}</div><div class="result-sub">→ LOS ${losCVV}</div></div></div>
-      <div class="col-6"><div class="result-box"><div class="result-label">עומס נוסעים</div><div class="result-number">${fmt(loadPct,0)}%</div><div class="result-sub">→ LOS ${losLoadV}</div></div></div>
-      <div class="col-6"><div class="result-box"><div class="result-label">מהירות מסחרית</div><div class="result-number">${fmt(commercialSpeed,1)}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">תדירות בפועל</div><div class="result-number highlight">${fmt(freq,0)}</div><div class="result-sub">דק\' (תקן: עד ${area.freqMax})</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">הליכה לתחנה</div><div class="result-number highlight">${numF(walk)}</div><div class="result-sub">מ\' (תקן: עד ${numF(area.walkDist)})</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">מהירות מסחרית</div><div class="result-number">${fmt(speed,1)}</div><div class="result-sub">קמ"ש (יעד: ${target})</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">אמינות (Cvh)</div><div class="result-number">${fmt(cv,3)}</div><div class="result-sub">LOS <span class="los-chip los-${los}" style="font-size:.8rem;padding:1px 8px;">${los}</span></div></div></div>
     </div>
-
-    <h6 style="font-weight:700;font-size:.9rem;margin:14px 0 8px;">פירוט LOS לפי מדד</h6>
-    <table class="table table-sm">
-      <thead><tr><th>מדד</th><th class="c">ערך</th><th class="c">LOS</th></tr></thead>
-      <tbody>${metricsRows}</tbody>
-    </table>
-
     <hr style="border-color:var(--line);margin:14px 0 10px;">
-    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות והערות</h6>
-    <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
+    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות מול תקני השירות</h6>
+    <ul class="warn-list">${checks.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
   `;
   $('results').innerHTML = html;
 }
 
+refreshAreaDesc();
 document.querySelectorAll('input,select').forEach(el => {
   el.addEventListener('input', calc);
   el.addEventListener('change', calc);

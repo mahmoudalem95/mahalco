@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>הצדקה נת"צ עירוני — TCQSM / תחצ"צ</title>
+<title>הצדקה כמותית לנת"צ עירוני — הנחיות משרד התחבורה 2024</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 <style>
@@ -11,27 +11,33 @@
   *{box-sizing:border-box;}
   body{background:var(--bg);color:var(--ink);padding:20px;font-family:Arial,sans-serif;line-height:1.5;}
   .container{max-width:1300px;}
-  h1{font-size:clamp(1.5rem,1.3rem+1.5vw,2.1rem);font-weight:700;margin:0 0 .5rem;color:var(--ink);}
+  h1{font-size:clamp(1.4rem,1.2rem+1.3vw,2rem);font-weight:700;margin:0 0 .5rem;color:var(--ink);}
   h1 .bi{color:#ffc107;margin-left:.5rem;}
-  .subhead{color:var(--ink-3);margin:0 0 1.5rem;line-height:1.6;font-size:.92rem;}
+  .subhead{color:var(--ink-3);margin:0 0 1.5rem;line-height:1.6;font-size:.9rem;}
   .badge{display:inline-block;background:var(--card-2);color:var(--ink-2);font-size:.78rem;font-weight:600;padding:.25em .6em;border-radius:6px;vertical-align:middle;margin-right:6px;}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.3);margin-bottom:20px;}
   .card-header{background:var(--accent);color:#1a1a2e;border-radius:12px 12px 0 0;font-weight:600;padding:.5rem 1rem;}
   .card-header .bi{margin-left:.5rem;}
   .card-body{padding:1rem;}
-  .section-note{font-size:.78rem;color:var(--ink-3);margin:0 0 12px;line-height:1.6;}
   .form-group{margin-bottom:12px;}
   .row-2{display:grid;gap:12px;grid-template-columns:1fr 1fr;}
-  .row-3{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr;}
-  @media(max-width:720px){.row-2,.row-3{grid-template-columns:1fr;gap:8px;}}
+  @media(max-width:720px){.row-2{grid-template-columns:1fr;gap:8px;}}
   label{display:block;margin-bottom:.35rem;color:var(--ink-2);font-size:.9rem;}
   label .unit{color:var(--ink-3);font-size:.8rem;}
   input,select{width:100%;padding:.375rem .75rem;font-size:1rem;border:1px solid var(--line);border-radius:6px;background:var(--field);color:var(--ink);font-family:inherit;}
   select option{background:var(--field);color:var(--ink);}
   input:focus,select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 .2rem rgba(232,163,61,.2);}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .seg button{flex:1;padding:.5rem;background:var(--field);color:var(--ink-2);border:none;font-family:inherit;font-weight:600;font-size:.88rem;cursor:pointer;}
+  .seg button.active{background:var(--accent);color:#1a1a2e;}
+  .toggle-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line-2);}
+  .toggle-row input[type=checkbox]{width:auto;accent-color:var(--accent);}
+  .toggle-row label{margin:0;color:var(--ink);font-size:.88rem;flex:1;cursor:pointer;}
+  .sub-panel{background:var(--field);border-radius:8px;padding:10px;margin-top:8px;display:none;}
+  .sub-panel.show{display:block;}
   .result-box{background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;height:100%;}
   .result-label{font-size:.82rem;color:var(--ink-2);}
-  .result-number{font-size:1.6rem;font-weight:700;color:var(--ink);line-height:1.15;font-variant-numeric:tabular-nums;direction:ltr;text-align:right;}
+  .result-number{font-size:1.5rem;font-weight:700;color:var(--ink);line-height:1.15;font-variant-numeric:tabular-nums;direction:ltr;text-align:right;}
   .result-number.highlight{color:var(--accent);}
   .result-sub{font-size:.72rem;color:var(--ink-3);}
   .verdict-big{display:flex;align-items:center;gap:16px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:14px;}
@@ -49,81 +55,94 @@
   .table td,.table th{border-color:var(--line-2);}
   .table td.c{text-align:center;}
   footer{text-align:center;color:var(--ink-3);font-size:.85rem;margin-top:1.5rem;padding-bottom:1rem;}
-  .col-help{font-size:.75rem;color:var(--ink-3);margin-top:2px;}
   .results-sticky{position:sticky;top:16px;}
   @media(max-width:991px){.results-sticky{position:static;}}
+  .chart-box{background:var(--field);border:1px solid var(--line-2);border-radius:10px;padding:14px;overflow-x:auto;}
+  .chart-box svg{display:block;margin:0 auto;width:100%;max-width:640px;height:auto;}
+  .chart-caption{font-size:.78rem;color:var(--ink-3);text-align:center;margin-top:8px;}
+  .qual-list{list-style:none;padding:0;margin:0;}
+  .qual-list li{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line-2);font-size:.85rem;}
+  .qual-list li:last-child{border-bottom:none;}
+  .qual-list input{width:auto;margin-top:3px;accent-color:var(--accent);}
+  .src-note{font-size:.72rem;color:var(--ink-3);margin-top:10px;line-height:1.6;}
 </style>
 </head>
 <body>
 <div class="container">
 
-  <h1><i class="bi bi-bus-front"></i>הצדקה נת"צ עירוני <span class="badge">TCQSM / תחצ"צ</span></h1>
+  <h1><i class="bi bi-bus-front"></i>הצדקה כמותית לנת"צ עירוני <span class="badge">משרד התחבורה 2024</span></h1>
   <p class="subhead">
-    כלי לבחינת הצדקה לנתיב תחבורה ציבורית עירוני, לפי TCQSM (Transit Capacity and Quality of Service Manual)
-    והנחיות תחצ"צ. כולל נפח נוסעים, תדירות, זמן נסיעה שנחסך ורוחב זמין בחתך.
+    כלי לבחינת הצדקה כמותית ואיכותנית לנתיב העדפה לתחבורה ציבורית בציר עירוני, לפי "הנחיות לבחינת הצדקה
+    להסדרי העדפה לתחבורה ציבורית באוטובוסים" (מהדורה שנייה, תשפ"ה־2024) — פרק 5.
+    בחר האם הסף שבידך הוא נפח נוסעים ממשיכים או נפח אוטובוסים, והכלי יטמיע את התרשים המתאים (איור 5.2 / 5.3).
   </p>
 
   <div class="row g-4">
     <div class="col-lg-5">
       <div class="card">
-        <div class="card-header"><i class="bi bi-gear"></i>קלט — נתוני ציר עירוני</div>
+        <div class="card-header"><i class="bi bi-gear"></i>קלט</div>
         <div class="card-body">
-          <div class="row-2">
-            <div class="form-group">
-              <label for="pax">נפח נוסעים בשעת שיא <span class="unit">(נוסעים/שעה/כיוון)</span></label>
-              <input type="number" id="pax" value="900" step="50" min="0">
-              <div class="col-help">סף הצדקה: 2,000 נוסעים/שעה/כיוון</div>
-            </div>
-            <div class="form-group">
-              <label for="buses">נפח אוטובוסים בשעת שיא <span class="unit">(אוטובוסים/שעה/כיוון)</span></label>
-              <input type="number" id="buses" value="20" step="1" min="0">
-              <div class="col-help">סף הצדקה: 40 אוטובוסים/שעה/כיוון</div>
-            </div>
-          </div>
-          <div class="row-2">
-            <div class="form-group">
-              <label for="v_cur">מהירות מסחרית קיימת <span class="unit">(קמ"ש)</span></label>
-              <input type="number" id="v_cur" value="14" step="0.5" min="5" max="30">
-            </div>
-            <div class="form-group">
-              <label for="v_new">מהירות מסחרית צפויה עם נת"צ <span class="unit">(קמ"ש)</span></label>
-              <input type="number" id="v_new" value="20" step="0.5" min="5" max="40">
-            </div>
-          </div>
+
           <div class="form-group">
-            <label for="len">אורך הציר הנבחן <span class="unit">(ק"מ)</span></label>
-            <input type="number" id="len" value="5" step="0.5" min="0.5">
+            <label>סוג הסף הכמותי הזמין</label>
+            <div class="seg">
+              <button type="button" id="btn_pax" class="active">נוסעים ממשיכים</button>
+              <button type="button" id="btn_bus">נפח אוטובוסים</button>
+            </div>
           </div>
+
           <div class="row-2">
             <div class="form-group">
-              <label for="lanes">נתיבים לכיוון (קיים)</label>
-              <select id="lanes">
-                <option value="1">1</option>
-                <option value="2" selected>2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
+              <label id="lbl_metric" for="metric">נפח נוסעים ממשיכים בשעת שיא <span class="unit">(נוסעים/שעה/כיוון)</span></label>
+              <input type="number" id="metric" value="900" step="10" min="0">
+              <div class="col-help" id="cap_help" style="font-size:.75rem;color:var(--ink-3);margin-top:2px;">סף הצדקה ודאי (ללא תלות במהירות): 2,000 נוסעים/שעה/כיוון</div>
             </div>
             <div class="form-group">
-              <label for="width">רוחב פנוי בחתך <span class="unit">(מ')</span></label>
-              <input type="number" id="width" value="7.0" step="0.1" min="3">
-              <div class="col-help">רוחב כולל פנוי להקצאת נת"צ</div>
+              <label for="speed">מהירות מסחרית ממוצעת בשעת שיא לכיוון <span class="unit">(קמ"ש)</span></label>
+              <input type="number" id="speed" value="13" step="0.5" min="0" max="30">
             </div>
           </div>
-          <div class="row-2">
-            <div class="form-group">
-              <label for="lane_type">סוג נת"צ מבוקש</label>
-              <select id="lane_type">
-                <option value="curbside" selected>צדדי (Curbside)</option>
-                <option value="median">מרכזי (Median)</option>
-                <option value="mixed">משותף עם HOV</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="npass">מספר נוסעים ברכב פרטי (ממוצע)</label>
-              <input type="number" id="npass" value="1.2" step="0.1" min="1" max="4">
+
+          <div class="toggle-row">
+            <input type="checkbox" id="cv_on">
+            <label for="cv_on">הפעל בחינת מדד אמינות (CV) — סעיף 5.2.1.1</label>
+          </div>
+          <div class="sub-panel" id="cv_panel">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="cv_mean">משך נסיעה ממוצע בקטע <span class="unit">(דק')</span></label>
+                <input type="number" id="cv_mean" value="17" step="0.5" min="0.1">
+              </div>
+              <div class="form-group">
+                <label for="cv_std">סטיית תקן משך נסיעה <span class="unit">(דק')</span></label>
+                <input type="number" id="cv_std" value="3.4" step="0.1" min="0">
+              </div>
             </div>
           </div>
+
+          <div class="toggle-row">
+            <input type="checkbox" id="prox_on">
+            <label for="prox_on">הפעל בחינת מדד קרבה לנתיב העדפה — סעיף 5.2.1.2</label>
+          </div>
+          <div class="sub-panel" id="prox_panel">
+            <div class="form-group">
+              <label for="prox_type">מיקום הציר ביחס לנתיב העדפה קיים / מתוכנן</label>
+              <select id="prox_type">
+                <option value="none">אינו סמוך (מעל 500 מ')</option>
+                <option value="near">סמוך — עד 500 מ' (ומזין את הציר)</option>
+                <option value="junction">בצומת עם נתיב העדפה (0 מ')</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="bi bi-list-check"></i>הצדקה איכותנית — סעיף 5.1</div>
+        <div class="card-body">
+          <p class="src-note" style="margin-top:0;">אם מתקיים תנאי אחד או יותר, קיימת הצדקה לנתיב העדפה ללא קשר לנתונים הכמותיים.</p>
+          <ul class="qual-list" id="qual_list"></ul>
         </div>
       </div>
     </div>
@@ -131,8 +150,15 @@
     <div class="col-lg-7">
       <div class="results-sticky">
         <div class="card">
-          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — הצדקה</div>
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — הצדקה כמותית</div>
           <div class="card-body" id="results"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-graph-up"></i>מיקום הציר על תרשים ההצדקה</div>
+          <div class="card-body">
+            <div class="chart-box" id="chart"></div>
+            <div class="chart-caption" id="chart-caption"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -142,18 +168,20 @@
     <div class="card-header"><i class="bi bi-table"></i>ספי הצדקה — תזכורת</div>
     <div class="card-body p-0">
       <table class="table mb-0">
-        <thead><tr><th>קריטריון</th><th class="c">סף הצדקה</th></tr></thead>
+        <thead><tr><th>קריטריון</th><th class="c">סף ודאי (ללא תלות במהירות)</th></tr></thead>
         <tbody>
           <tr><td>נפח נוסעים ממשיכים בשעת שיא</td><td class="c">2,000 נוסעים/שעה/כיוון</td></tr>
           <tr><td>נפח אוטובוסים בשעת שיא</td><td class="c">40 אוטובוסים/שעה/כיוון</td></tr>
-          <tr><td>מהירות מסחרית מינימלית בציר עירוני חדש</td><td class="c">20 קמ"ש</td></tr>
-          <tr><td>שיפור מזערי בציר קיים</td><td class="c">30% במהירות המסחרית</td></tr>
         </tbody>
       </table>
+      <div class="src-note p-2">
+        מתחת לסף הוודאי, ההצדקה נבחנת מול עקומת נפח־מהירות (איור 5.2 לנפח אוטובוסים, איור 5.3 לנוסעים ממשיכים).
+        נקודות העוגן של העקומות דוגמו מהתרשימים המקוריים; מומלץ לאמת מול האיורים המקוריים במקרי גבול.
+      </div>
     </div>
   </div>
 
-  <footer>MAHALCO · כלי 1 — הצדקה נת"צ עירוני · מבוסס TCQSM + הנחיות תחצ"צ</footer>
+  <footer>MAHALCO · כלי 1 — הצדקה כמותית לנת"צ עירוני · מבוסס הנחיות משרד התחבורה, תשפ"ה־2024, פרק 5</footer>
 </div>
 
 <script>
@@ -163,109 +191,234 @@ const $ = id => document.getElementById(id);
 const fmt = (x,d=2) => isFinite(x) ? Number(x).toFixed(d) : '—';
 const numF = (x,d=0) => isFinite(x) ? Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
 
+/* ---- Digitized anchor points from Figures 5.2 (buses) & 5.3 (passengers), urban axis ---- */
+/* L = lower boundary (top of "אין הצדק" / bottom of yellow review band)                    */
+/* U = upper boundary (bottom of "קיים הצדק" / top of yellow review band)                   */
+const BUS_L = [[8,10],[9,11],[10,12],[11,14],[12,15],[13,16],[14,19],[16,24],[18,32],[20,40]];
+const BUS_U = [[8,18],[9,20],[10,24],[11,25],[12,30],[13,32],[14,36],[15,40]];
+const PAX_SCALE = 2000/40; /* the pax cap / bus cap ratio — figure 5.3 tracks figure 5.2 scaled by this factor */
+const scaleCurve = (curve,f) => curve.map(([x,y])=>[x, y*f]);
+const PAX_L = scaleCurve(BUS_L, PAX_SCALE);
+const PAX_U = scaleCurve(BUS_U, PAX_SCALE);
+
+function interp(points, x){
+  if (x <= points[0][0]) return points[0][1];
+  if (x >= points[points.length-1][0]) return points[points.length-1][1];
+  for (let i=0;i<points.length-1;i++){
+    const [x1,y1]=points[i], [x2,y2]=points[i+1];
+    if (x>=x1 && x<=x2) return y1 + (y2-y1)*(x-x1)/(x2-x1);
+  }
+  return points[points.length-1][1];
+}
+
+function cvBoostPct(cv){
+  if (cv < 0.10) return 0;
+  if (cv < 0.15) return 5;
+  if (cv < 0.25) return 10;
+  if (cv < 0.35) return 15;
+  if (cv < 0.50) return 25;
+  return 30;
+}
+function proxBoostPct(type){
+  if (type==='junction') return 20;
+  if (type==='near') return 10;
+  return 0;
+}
+
+let metricType = 'pax'; /* 'pax' | 'bus' */
+
+$('btn_pax').addEventListener('click', () => setMetric('pax'));
+$('btn_bus').addEventListener('click', () => setMetric('bus'));
+function setMetric(t){
+  metricType = t;
+  $('btn_pax').classList.toggle('active', t==='pax');
+  $('btn_bus').classList.toggle('active', t==='bus');
+  if (t==='pax'){
+    $('lbl_metric').innerHTML = 'נפח נוסעים ממשיכים בשעת שיא <span class="unit">(נוסעים/שעה/כיוון)</span>';
+    $('metric').value = 900; $('metric').step = 10;
+    $('cap_help').textContent = 'סף הצדקה ודאי (ללא תלות במהירות): 2,000 נוסעים/שעה/כיוון';
+  } else {
+    $('lbl_metric').innerHTML = 'נפח אוטובוסים בשעת שיא <span class="unit">(אוטובוסים/שעה/כיוון)</span>';
+    $('metric').value = 20; $('metric').step = 1;
+    $('cap_help').textContent = 'סף הצדקה ודאי (ללא תלות במהירות): 40 אוטובוסים/שעה/כיוון';
+  }
+  calc();
+}
+
+$('cv_on').addEventListener('change', function(){ $('cv_panel').classList.toggle('show', this.checked); calc(); });
+$('prox_on').addEventListener('change', function(){ $('prox_panel').classList.toggle('show', this.checked); calc(); });
+
+/* Qualitative criteria — section 5.1 */
+const QUAL_ITEMS = [
+  'צירים שלאורכם מתוכננת מערכת הסעת המונים (רק"ל / תאו"מ) עם רציפות העדפה של 2 ק"מ לפחות',
+  'צירים שבהם פועלים קווים עורקיים',
+  'צירי גישה למתקני תשתית לתחבורה ציבורית (מסופים וחניונים)',
+  'צירי גישה לתכניות מועדפות לדיור (תמ"ל) או לתכנית עם 4,000 יח"ד לפחות',
+  'צירי גישה בתחבורה ציבורית לתחנות רכבת כבדה או תחנות עיקריות של מערכות הסעת המונים'
+];
+$('qual_list').innerHTML = QUAL_ITEMS.map((t,i)=>`<li><input type="checkbox" id="q${i}"><label for="q${i}">${t}</label></li>`).join('');
+
+function qualitativeMet(){
+  return QUAL_ITEMS.some((_,i)=>$('q'+i).checked);
+}
+
+function evalPoint(value, speed){
+  const cap = metricType==='bus' ? 40 : 2000;
+  const Lc = metricType==='bus' ? BUS_L : PAX_L;
+  const Uc = metricType==='bus' ? BUS_U : PAX_U;
+  const L = interp(Lc, speed), U = interp(Uc, speed);
+  let status;
+  if (value >= cap) status = 'ok';
+  else if (value >= U) status = 'ok';
+  else if (value >= L) status = 'review';
+  else status = 'bad';
+  return {status, L, U, cap};
+}
+
 function calc(){
-  const pax = parseFloat($('pax').value)||0;
-  const buses = parseFloat($('buses').value)||0;
-  const vCur = parseFloat($('v_cur').value)||0;
-  const vNew = parseFloat($('v_new').value)||0;
-  const len = parseFloat($('len').value)||0;
-  const lanes = parseInt($('lanes').value)||1;
-  const width = parseFloat($('width').value)||0;
-  const laneType = $('lane_type').value;
-  const npass = parseFloat($('npass').value)||1.2;
+  const value = parseFloat($('metric').value)||0;
+  const speed = parseFloat($('speed').value)||0;
+  const cvOn = $('cv_on').checked;
+  const proxOn = $('prox_on').checked;
+  const cvMean = parseFloat($('cv_mean').value)||0;
+  const cvStd = parseFloat($('cv_std').value)||0;
+  const proxType = $('prox_type').value;
 
-  /* Thresholds */
-  const PAX_TH = 2000, BUS_TH = 40;
-  const paxRatio = pax / PAX_TH;
-  const busRatio = buses / BUS_TH;
+  const base = evalPoint(value, speed);
 
-  /* Time savings */
-  const tCur = vCur > 0 ? (len / vCur) * 60 : 0;   /* minutes */
-  const tNew = vNew > 0 ? (len / vNew) * 60 : 0;
-  const saving = tCur - tNew;                       /* minutes per trip */
-  const savingPct = tCur > 0 ? (saving / tCur) * 100 : 0;
-
-  /* Width check */
-  const laneWidthRequired = laneType === 'curbside' ? 3.5 : 3.5;
-  const widthOK = width >= laneWidthRequired + (lanes >= 1 ? 3.0 : 0);
-
-  /* Capacity benefit — passenger throughput */
-  const paxThroughput = pax;                       /* already pax/h/dir */
-  const carsThroughput = (vCur > 0) ? (lanes * 1800 * npass) : 0;  /* rough */
-  const laneRatio = carsThroughput > 0 ? paxThroughput / (paxThroughput + carsThroughput) : 0;
-
-  /* Verdict logic */
-  let verdict, icon, color, badge;
-  if (paxRatio >= 1 || busRatio >= 1) {
-    verdict = 'קיימת הצדקה מובהקת לנת"צ';
-    icon = '✅'; color = '#4ADE80'; badge = 'ok';
-  } else if (paxRatio >= 0.7 || busRatio >= 0.7) {
-    verdict = 'בטווח הבחינה — נדרשים מדדי אמינות וקרבה';
-    icon = '⚠️'; color = '#F5C451'; badge = 'warn';
-  } else {
-    verdict = 'אין הצדקה כמותית';
-    icon = '❌'; color = '#F35B5B'; badge = 'bad';
+  /* Reliability / proximity boost — section 5.2.1 — only meaningful when base is not already "ok" */
+  let boostPct = 0, cv = null;
+  const notes = [];
+  if (cvOn){
+    cv = cvMean>0 ? cvStd/cvMean : 0;
+    const p = cvBoostPct(cv);
+    boostPct += p;
+    notes.push(`מדד אמינות CV = ${fmt(cv,3)} → תוספת נפח ${p}%`);
   }
+  if (proxOn){
+    const p = proxBoostPct(proxType);
+    boostPct += p;
+    const lbl = proxType==='junction' ? 'בצומת עם נתיב העדפה (0 מ\')' : proxType==='near' ? 'סמוך לנתיב העדפה (עד 500 מ\')' : 'אינו סמוך';
+    notes.push(`מדד קרבה — ${lbl} → תוספת נפח ${p}%`);
+  }
+  const adjValue = boostPct>0 ? Math.ceil(value*(1+boostPct/100)) : value;
+  const adjusted = boostPct>0 ? evalPoint(adjValue, speed) : null;
 
-  /* Warnings */
+  const finalStatus = adjusted ? adjusted.status : base.status;
+  const qual = qualitativeMet();
+
+  const STATUS_MAP = {
+    ok:    {text:'קיימת הצדקה כמותית',            icon:'✅', color:'#4ADE80'},
+    review:{text:'נמצא בטווח בחינה — נדרשים מדדי אמינות/קרבה', icon:'⚠️', color:'#F5C451'},
+    bad:   {text:'אין הצדקה כמותית',               icon:'❌', color:'#F35B5B'}
+  };
+  let sv = STATUS_MAP[finalStatus];
+  let headline = sv.text;
+  if (qual){ headline = 'קיימת הצדקה (איכותנית)'; sv = STATUS_MAP.ok; }
+
   const warn = [];
-  warn.push([badge, `${verdict} — נפח נוסעים ${numF(pax)} (${fmt(paxRatio*100,0)}% מהסף), נפח אוטובוסים ${buses} (${fmt(busRatio*100,0)}% מהסף)`]);
+  if (qual) warn.push(['ok', 'מתקיים תנאי איכותני מסעיף 5.1 — קיימת הצדקה לנתיב העדפה ללא קשר לנתונים הכמותיים.']);
 
-  if (saving > 3) {
-    warn.push(['ok', `חיסכון בזמן נסיעה: ${fmt(saving,1)} דקות לנסיעה (${fmt(savingPct,0)}% שיפור)`]);
-  } else if (saving > 1) {
-    warn.push(['info', `חיסכון מתון: ${fmt(saving,1)} דקות לנסיעה`]);
-  } else {
-    warn.push(['warn', `חיסכון מינימלי: ${fmt(saving,1)} דקות — שקול אם ההשקעה מוצדקת`]);
-  }
+  const unit = metricType==='bus' ? 'אוטובוסים/שעה/כיוון' : 'נוסעים/שעה/כיוון';
+  warn.push([base.status, `נתון בסיס: ${numF(value)} ${unit} במהירות ${fmt(speed,1)} קמ"ש → ${STATUS_MAP[base.status].text} (טווח הבחינה בנקודה זו: ${numF(base.L,0)}–${numF(base.U,0)})`]);
 
-  if (vCur < 12) {
-    warn.push(['bad', `מהירות מסחרית קיימת ${vCur} קמ"ש — נמוכה מהסף העירוני (12 קמ"ש)`]);
-  } else if (vCur < 15) {
-    warn.push(['warn', `מהירות מסחרית קיימת ${vCur} קמ"ש — בטווח הביניים`]);
-  } else {
-    warn.push(['ok', `מהירות מסחרית קיימת ${vCur} קמ"ש — מעל הסף העירוני`]);
-  }
-
-  if (vNew >= 20) {
-    warn.push(['ok', `מהירות מסחרית צפויה ${vNew} קמ"ש — עומד ביעד הציר העירוני החדש (20 קמ"ש)`]);
-  } else if (vNew >= 15) {
-    warn.push(['info', `מהירות מסחרית צפויה ${vNew} קמ"ש — שיפור משמעותי`]);
-  }
-
-  if (!widthOK) {
-    warn.push(['bad', `רוחב פנוי ${width} מ' אינו מספיק לנת"צ ${laneType === 'curbside' ? 'צדדי' : 'מרכזי'} עם ${lanes} נתיבים`]);
-  } else {
-    warn.push(['ok', `רוחב פנוי ${width} מ' מאפשר נת"צ ${laneType === 'curbside' ? 'צדדי' : 'מרכזי'}`]);
-  }
-
-  if (laneType === 'curbside') {
-    warn.push(['info', 'נת"צ צדדי: מתאים לצירים בהם קיימת הפרעה מתנועה חונה — דורש אכיפה']);
-  } else if (laneType === 'median') {
-    warn.push(['info', 'נת"צ מרכזי: פחות הפרעות מתנועה חונה, דורש תחנות במרכז']);
-  } else {
-    warn.push(['info', 'נת"צ משותף עם HOV: מגדיל את תפוסת הנתיב אך פחות מושך נוסעים']);
+  notes.forEach(n => warn.push(['info', n]));
+  if (boostPct>0){
+    warn.push([adjusted.status, `לאחר תוספת ${boostPct}%: ${numF(adjValue)} ${unit} → ${STATUS_MAP[adjusted.status].text}`]);
   }
 
   const html = `
     <div class="verdict-big">
-      <div class="verdict-icon">${icon}</div>
+      <div class="verdict-icon">${sv.icon}</div>
       <div class="verdict-meta">
-        <b style="color:${color};">${verdict}</b><br>
-        <span style="font-size:.82rem;color:var(--ink-3);">נפח נוסעים ${numF(pax)} (${fmt(paxRatio*100,0)}%) · נפח אוטובוסים ${buses} (${fmt(busRatio*100,0)}%)</span>
+        <b style="color:${sv.color};">${headline}</b><br>
+        <span style="font-size:.82rem;color:var(--ink-3);">${numF(value)} ${unit} · ${fmt(speed,1)} קמ"ש${boostPct>0?` · לאחר תוספת: ${numF(adjValue)} ${unit}`:''}</span>
       </div>
     </div>
     <div class="row g-2 mb-3">
-      <div class="col-6"><div class="result-box"><div class="result-label">נפח נוסעים</div><div class="result-number highlight">${numF(pax)}</div><div class="result-sub">נוסעים/שעה/כיוון</div></div></div>
-      <div class="col-6"><div class="result-box"><div class="result-label">נפח אוטובוסים</div><div class="result-number highlight">${buses}</div><div class="result-sub">אוטובוסים/שעה/כיוון</div></div></div>
-      <div class="col-6"><div class="result-box"><div class="result-label">חיסכון בזמן</div><div class="result-number">${fmt(saving,1)}</div><div class="result-sub">דקות/נסיעה (${fmt(savingPct,0)}%)</div></div></div>
-      <div class="col-6"><div class="result-box"><div class="result-label">מהירות מסחרית חדשה</div><div class="result-number">${vNew}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">${metricType==='bus'?'נפח אוטובוסים':'נפח נוסעים'}</div><div class="result-number highlight">${numF(value)}</div><div class="result-sub">${unit}</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">מהירות מסחרית</div><div class="result-number highlight">${fmt(speed,1)}</div><div class="result-sub">קמ"ש</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">גבול תחתון בנקודה זו</div><div class="result-number">${numF(base.L,0)}</div><div class="result-sub">${unit} (איור ${metricType==='bus'?'5.2':'5.3'})</div></div></div>
+      <div class="col-6"><div class="result-box"><div class="result-label">גבול עליון בנקודה זו</div><div class="result-number">${numF(base.U,0)}</div><div class="result-sub">${unit} (איור ${metricType==='bus'?'5.2':'5.3'})</div></div></div>
     </div>
     <hr style="border-color:var(--line);margin:14px 0 10px;">
     <h6 style="font-weight:700;font-size:.9rem;margin-bottom:8px;">בדיקות</h6>
     <ul class="warn-list">${warn.map(w=>`<li class="${w[0]}">${w[1]}</li>`).join('')}</ul>
   `;
   $('results').innerHTML = html;
+
+  drawChart(speed, value, adjValue, boostPct>0);
+}
+
+function drawChart(speed, value, adjValue, showAdj){
+  const W = 560, H = 340;
+  const padL = 60, padR = 20, padT = 20, padB = 44;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+  const xMax = 25;
+  const cap = metricType==='bus' ? 40 : 2000;
+  const yMax = cap * 1.15;
+  const Lc = metricType==='bus' ? BUS_L : PAX_L;
+  const Uc = metricType==='bus' ? BUS_U : PAX_U;
+  const xScale = v => padL + (v/xMax)*plotW;
+  const yScale = v => padT + plotH - (Math.min(v,yMax)/yMax)*plotH;
+
+  function pathFor(curve){
+    let d = '';
+    const xs = [];
+    for (let x=0; x<=xMax; x+=0.5) xs.push(x);
+    xs.forEach((x,i) => {
+      const y = interp(curve, x);
+      d += (i===0?'M':'L') + xScale(x).toFixed(1) + ',' + yScale(y).toFixed(1) + ' ';
+    });
+    return d;
+  }
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+
+  /* grid */
+  for (let i=0;i<=5;i++){
+    const y = yScale((yMax/5)*i);
+    svg += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>`;
+    svg += `<text x="${padL-6}" y="${y+3}" text-anchor="end" fill="#9A96AB" font-size="9">${numF((yMax/5)*i,0)}</text>`;
+  }
+  for (let i=0;i<=5;i++){
+    const x = xScale((xMax/5)*i);
+    svg += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT+plotH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`;
+    svg += `<text x="${x}" y="${padT+plotH+16}" text-anchor="middle" fill="#9A96AB" font-size="9">${(xMax/5)*i}</text>`;
+  }
+
+  /* cap line */
+  const yCap = yScale(cap);
+  svg += `<line x1="${padL}" y1="${yCap}" x2="${W-padR}" y2="${yCap}" stroke="rgba(232,163,61,.5)" stroke-width="1.5" stroke-dasharray="5,4"/>`;
+
+  /* band fill between L and U, approximated with polygon */
+  let bandPts = '';
+  for (let x=0;x<=xMax;x+=0.5) bandPts += `${xScale(x).toFixed(1)},${yScale(interp(Uc,x)).toFixed(1)} `;
+  for (let x=xMax;x>=0;x-=0.5) bandPts += `${xScale(x).toFixed(1)},${yScale(interp(Lc,x)).toFixed(1)} `;
+  svg += `<polygon points="${bandPts}" fill="rgba(245,196,81,.18)"/>`;
+
+  svg += `<path d="${pathFor(Lc)}" fill="none" stroke="#F35B5B" stroke-width="1.6"/>`;
+  svg += `<path d="${pathFor(Uc)}" fill="none" stroke="#4ADE80" stroke-width="1.6"/>`;
+
+  /* current point */
+  const cx = xScale(Math.min(speed,xMax));
+  const cy = yScale(value);
+  svg += `<circle cx="${cx}" cy="${cy}" r="7" fill="#E8A33D" stroke="#1a1a2e" stroke-width="2"/>`;
+  if (showAdj){
+    const acy = yScale(adjValue);
+    svg += `<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${acy}" stroke="#E8A33D" stroke-width="1.2" stroke-dasharray="3,3"/>`;
+    svg += `<circle cx="${cx}" cy="${acy}" r="6" fill="#7AB8F5" stroke="#1a1a2e" stroke-width="2"/>`;
+  }
+
+  svg += `<text x="${padL+plotW/2}" y="${H-6}" text-anchor="middle" fill="#9A96AB" font-size="10">מהירות מסחרית ממוצעת בשעת שיא לכיוון (קמ"ש)</text>`;
+  svg += `<text x="14" y="${padT+plotH/2}" text-anchor="middle" fill="#9A96AB" font-size="10" transform="rotate(-90 14 ${padT+plotH/2})">${metricType==='bus'?'נפח אוטובוסים':'נוסעים ממשיכים'} לכיוון</text>`;
+
+  svg += '</svg>';
+  $('chart').innerHTML = svg;
+  $('chart-caption').textContent = metricType==='bus'
+    ? 'ירוק = קיים הצדק · צהוב = טווח בחינה · אדום = אין הצדק (איור 5.2) · הנקודה הכתומה = הציר הנבחן'
+    : 'ירוק = קיים הצדק · צהוב = טווח בחינה · אדום = אין הצדק (איור 5.3) · הנקודה הכתומה = הציר הנבחן';
 }
 
 document.querySelectorAll('input,select').forEach(el => {

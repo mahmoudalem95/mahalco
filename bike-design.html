@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מהאלco — שיקולים והנחיות לתכנון שבילי אופניים</title>
+<meta name="description" content="קביעת רמת הפרדה לתנועת אופניים, רוחבים ומרווחי בטיחות — עירוני, בין-עירוני, מחלפים ומעברים עיליים ותחתיים. לפי הנחיות משרד התחבורה ונת״י, עם הפניה לעמוד המקור.">
+<meta name="theme-color" content="#12121e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#12121e;--panel:#1a1a2e;--sunk:#22223a;--ink:#EDEBF2;--ink2:#9A96AB;--ink3:#6B6780;
+ --rule:rgba(255,255,255,.09);--rule2:rgba(255,255,255,.16);--pick:#E8A33D;--pick-bg:rgba(232,163,61,.14);
+ --ok:#4ADE80;--ok-bg:rgba(74,222,128,.12);--warn:#F5C451;--warn-bg:rgba(245,196,81,.12);
+ --bad:#F35B5B;--bad-bg:rgba(243,91,91,.13);--mono:'IBM Plex Mono',ui-monospace,monospace;--r:8px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Assistant',system-ui,sans-serif;font-size:14.5px;line-height:1.55}
+header{background:var(--panel);border-bottom:1px solid var(--rule);padding:14px max(14px,env(safe-area-inset-right))}
+header h1{font-size:17px;font-weight:800;letter-spacing:-.01em}
+header p{font-size:12.8px;color:var(--ink3);margin-top:4px;max-width:78ch}
+main{max-width:1080px;margin:0 auto;padding:16px max(14px,env(safe-area-inset-right)) 60px}
+.tabs{display:flex;gap:4px;background:var(--sunk);border-radius:9px;padding:3px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{flex:1;min-width:140px;background:none;border:0;color:var(--ink2);font:inherit;font-size:13.5px;
+ font-weight:700;padding:9px 12px;border-radius:7px;cursor:pointer;min-height:42px}
+.tabs button.on{background:var(--pick);color:#151424}
+.grid{display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r);padding:14px;margin-bottom:14px}
+.card h2{font-size:14px;font-weight:800;color:var(--pick);margin-bottom:10px}
+.f{margin-bottom:11px}
+.f2{display:grid;gap:11px;grid-template-columns:1fr 1fr}
+@media(max-width:520px){.f2{grid-template-columns:1fr}}
+label{display:block;font-size:12.5px;color:var(--ink2);margin-bottom:4px}
+label .u{color:var(--ink3);font-size:11.5px}
+input,select{width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:var(--sunk);
+ border:1px solid var(--rule2);border-radius:6px;padding:9px 10px;min-height:42px}
+input:focus,select:focus{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+.verdict{display:flex;gap:14px;align-items:center;background:var(--sunk);border:1px solid var(--rule);
+ border-radius:var(--r);padding:13px 15px;margin-bottom:12px}
+.vi{font-size:34px;line-height:1;min-width:46px;text-align:center}
+.vt b{display:block;font-size:16.5px;font-weight:800}
+.vt span{display:block;font-size:12.7px;color:var(--ink2);margin-top:2px}
+.kv{display:grid;gap:9px;grid-template-columns:1fr 1fr;margin-bottom:12px}
+.kv div{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:9px 11px}
+.kv .k{font-size:11.8px;color:var(--ink2)}
+.kv .v{font-family:var(--mono);font-size:19px;font-weight:600;line-height:1.2}
+.kv .s{font-size:11.3px;color:var(--ink3)}
+ul.chk{list-style:none}
+ul.chk li{border-inline-start:4px solid;border-radius:6px;padding:8px 11px;margin-bottom:7px;font-size:13px;line-height:1.55}
+li.ok{border-color:var(--ok);background:var(--ok-bg)}
+li.warn{border-color:var(--warn);background:var(--warn-bg)}
+li.bad{border-color:var(--bad);background:var(--bad-bg)}
+li.info{border-color:#7AB8F5;background:rgba(122,184,245,.1)}
+li .src{display:block;font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:3px}
+svg.chart{width:100%;height:auto;display:block;background:var(--sunk);border-radius:6px}
+.note{font-size:12.3px;color:var(--ink3);line-height:1.6;margin-top:10px}
+.hide{display:none}
+@media print{.tabs,header p{display:none}body{background:#fff;color:#000}.card{border-color:#bbb;background:#fff}}
+</style>
+</head>
+<body>
+<header>
+  <h1>שיקולים והנחיות לתכנון שבילי אופניים</h1>
+  <p>קביעת רמת ההפרדה, רוחבים ומרווחי בטיחות — עירוני, בין-עירוני ומחלפים. מיישם את הנחיות משרד התחבורה ונת״י; ליד כל ערך מופיע העמוד שממנו נלקח.</p>
+</header>
+
+<main>
+<div class="tabs">
+  <button data-t="urb" class="on">רחוב עירוני</button>
+  <button data-t="int">דרך בין-עירונית</button>
+  <button data-t="ic">מחלף · גשר · מעבר תחתי</button>
+</div>
+
+<!-- ============ עירוני ============ -->
+<section id="t-urb" class="grid">
+  <div>
+    <div class="card">
+      <h2>נתוני הרחוב</h2>
+      <div class="f2">
+        <div class="f"><label for="u_sp">מהירות ייעוד <span class="u">(קמ״ש)</span></label>
+          <select id="u_sp"><option>20</option><option>30</option><option selected>40</option>
+          <option>50</option><option>60</option><option>70</option></select></div>
+        <div class="f"><label for="u_mode">בסיס הנפח</label>
+          <select id="u_mode"><option value="day" selected>כ״ר למסלול ביממה</option>
+          <option value="peak">כ״ר למסלול בשעת שיא</option></select></div>
+      </div>
+      <div class="f"><label for="u_vol">נפח תנועה <span class="u" id="u_volU">(כ״ר למסלול ביממה)</span></label>
+        <input type="number" id="u_vol" value="4000" step="100" min="0" inputmode="numeric"></div>
+      <div class="f2">
+        <div class="f"><label for="u_adj">נפח בנתיב הסמוך בשעת שיא <span class="u">(כ״ר)</span></label>
+          <input type="number" id="u_adj" value="600" step="50" min="0" inputmode="numeric"></div>
+        <div class="f"><label for="u_calm">אזור מיתון תנועה / רחוב משולב</label>
+          <select id="u_calm"><option value="0" selected>לא</option><option value="1">כן</option></select></div>
+      </div>
+      <div class="f2">
+        <div class="f"><label for="u_park">חניה מקבילה לצד הנתיב</label>
+          <select id="u_park"><option value="0" selected>אין</option><option value="1">יש</option></select></div>
+        <div class="f"><label for="u_parkw">רוחב נתיב החניה <span class="u">(מ׳)</span></label>
+          <input type="number" id="u_parkw" value="2.0" step="0.1" min="1.5"></div>
+      </div>
+      <div class="f"><label for="u_w">רוחב מתוכנן לרצועת האופניים <span class="u">(מ׳)</span></label>
+        <input type="number" id="u_w" value="1.8" step="0.05" min="0"></div>
+    </div>
+    <div class="card">
+      <h2>תרשים 4.1 — ההסדר המומלץ</h2>
+      <div id="chart"></div>
+      <p class="note">הצירים והאזורים לפי תרשים 4.1, עמ׳ 67. מיקום הנקודה הוא קריאה מהתרשים ולא ערך מספרי שמופיע בספר — בגבולות האזורים יש לאמת מול התרשים עצמו.</p>
+    </div>
+  </div>
+  <div><div class="card"><h2>תוצאה</h2><div id="urbOut"></div></div></div>
+</section>
+
+<!-- ============ בין-עירוני ============ -->
+<section id="t-int" class="grid hide">
+  <div><div class="card">
+    <h2>נתוני הדרך</h2>
+    <div class="f"><label for="i_side">מה נמצא בין השביל לכביש</label>
+      <select id="i_side">
+        <option value="barrier">מעקה בטיחות</option>
+        <option value="clear" selected>אזור מפלט (L)</option>
+        <option value="ditch">תעלה או סוללה (L*)</option>
+        <option value="walk">מדרכה (באזור הצומת)</option>
+      </select></div>
+    <div class="f2">
+      <div class="f"><label for="i_w">רוחב מתוכנן לשביל <span class="u">(מ׳)</span></label>
+        <input type="number" id="i_w" value="3.5" step="0.1" min="1"></div>
+      <div class="f"><label for="i_obst">גובה מכשול בצד השביל <span class="u">(מ׳)</span></label>
+        <input type="number" id="i_obst" value="0.8" step="0.1" min="0"></div>
+    </div>
+    <div class="f"><label for="i_gap">מרווח מתוכנן עד המכשול <span class="u">(מ׳)</span></label>
+      <input type="number" id="i_gap" value="0.2" step="0.05" min="0"></div>
+  </div></div>
+  <div><div class="card"><h2>תוצאה</h2><div id="intOut"></div></div></div>
+</section>
+
+<!-- ============ מחלף ומעברים ============ -->
+<section id="t-ic" class="grid hide">
+  <div><div class="card">
+    <h2>סוג המעבר</h2>
+    <div class="f"><label for="c_kind">המצב הנבדק</label>
+      <select id="c_kind">
+        <option value="under" selected>מעבר תחתי (מנהרה)</option>
+        <option value="over">מעבר עילי (גשר ייעודי)</option>
+        <option value="bridge">לאורך גשר כביש</option>
+        <option value="ramp">חצייה בצומת בקצה רמפה</option>
+      </select></div>
+    <div class="f2">
+      <div class="f"><label for="c_share">משותף להולכי רגל</label>
+        <select id="c_share"><option value="0">לא — אופניים בלבד</option><option value="1" selected>כן</option></select></div>
+      <div class="f"><label for="c_bikes">נפח אופניים בשעת שיא</label>
+        <input type="number" id="c_bikes" value="40" step="5" min="0" inputmode="numeric"></div>
+    </div>
+    <div class="f2">
+      <div class="f"><label for="c_w">רוחב מתוכנן <span class="u">(מ׳)</span></label>
+        <input type="number" id="c_w" value="4.4" step="0.1" min="1"></div>
+      <div class="f"><label for="c_h">גבריט מתוכנן <span class="u">(מ׳)</span></label>
+        <input type="number" id="c_h" value="3.0" step="0.1" min="1.5"></div>
+    </div>
+    <div class="f"><label for="c_ped">רוחב מעבר חצייה להולכי רגל <span class="u">(מ׳)</span></label>
+      <input type="number" id="c_ped" value="3.0" step="0.1" min="1"></div>
+  </div></div>
+  <div><div class="card"><h2>תוצאה</h2><div id="icOut"></div></div></div>
+</section>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const f1=v=>(Math.round(v*10)/10).toFixed(1);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* מקורות */
+const OF='הנחיות לתכנון תנועת אופניים (רחובות בערים)';
+const IC='נת״י, תכן גיאומטרי בין-עירוני, כרך 3 פרק 10 (10/2018)';
+const S=(b,p)=>`<span class="src">${b} · עמ׳ ${p}</span>`;
+
+/* ============ עירוני ============
+   ערכים אופייניים לגבולות האזורים בתרשים 4.1 (עמ׳ 67):
+   נפח כ״ר למסלול ביממה שמעליו עוברים לרמה הבאה, לפי מהירות ייעוד. */
+const ZONES={20:{a:5000,b:7000,x:9000},30:{a:4000,b:6000,x:8500},40:{a:2500,b:5000,x:8000},
+             50:{a:1500,b:4000,x:8000},60:{a:0,b:2500,x:7000},70:{a:0,b:0,x:6000}};
+const LV={A:{n:'רמה א׳ — תנועה מעורבת',i:'🚲',d:'האופניים נעים בכביש יחד עם הרכב המנועי'},
+          B:{n:'רמה ב׳ — נתיב אופניים',i:'🛣️',d:'נתיב צמוד לנתיב התנועה, מופרד בסימון 804'},
+          C:{n:'רמה ג׳ — שביל אופניים',i:'🛤️',d:'הפרדה פיזית או מרחבית מנתיבי התנועה'},
+          X:{n:'מצב לא סביר',i:'⛔',d:'השילוב של המהירות והנפח אינו מאפשר תנועת אופניים בחתך זה'}};
+
+function urbVol(){ const v=+$('u_vol').value||0; return $('u_mode').value==='peak'? v*10 : v; }
+function urbLevel(){
+  const sp=+$('u_sp').value, z=ZONES[sp]||ZONES[70], d=urbVol();
+  if(d>z.x) return 'X';
+  if(d<=z.a) return 'A';
+  if(d<=z.b) return 'B';
+  return 'C';
+}
+function chart(){
+  const sp=+$('u_sp').value, d=urbVol()/1000;
+  const W=440,H=260,L=44,B=34,R=14,T=12;
+  const px=v=>L+(v/70)*(W-L-R), py=v=>H-B-(Math.min(v,10)/10)*(H-B-T);
+  let g=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="תרשים 4.1 — רמת ההפרדה לפי מהירות ונפח">`;
+  // אזורים לפי הערכים האופייניים
+  const SP=[0,20,30,40,50,60,70];
+  const band=(key,col)=>{
+    let top=[],bot=[];
+    SP.forEach(s=>{ const z=ZONES[s]||ZONES[20]; const lo=key==='a'?0:(key==='b'?z.a:z.b), hi=key==='a'?z.a:(key==='b'?z.b:z.x);
+      top.push([px(s),py(hi/1000)]); bot.push([px(s),py(lo/1000)]); });
+    const pts=top.concat(bot.reverse()).map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+    return `<polygon points="${pts}" fill="${col}" stroke="none"/>`;
+  };
+  g+=`<rect x="${L}" y="${T}" width="${W-L-R}" height="${H-B-T}" fill="rgba(243,91,91,.10)"/>`;
+  g+=band('c','rgba(232,163,61,.16)')+band('b','rgba(122,184,245,.16)')+band('a','rgba(74,222,128,.16)');
+  // רשת וצירים
+  for(let v=0;v<=10;v+=2) g+=`<line x1="${L}" y1="${py(v)}" x2="${W-R}" y2="${py(v)}" stroke="rgba(255,255,255,.07)"/>
+     <text x="${L-6}" y="${py(v)+3}" text-anchor="end" font-size="8" fill="#6B6780" font-family="monospace">${v}</text>`;
+  for(let s=0;s<=70;s+=10) g+=`<line x1="${px(s)}" y1="${T}" x2="${px(s)}" y2="${H-B}" stroke="rgba(255,255,255,.05)"/>
+     <text x="${px(s)}" y="${H-B+13}" text-anchor="middle" font-size="8" fill="#6B6780" font-family="monospace">${s}</text>`;
+  g+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle" font-size="9" fill="#9A96AB">מהירות ייעוד (קמ״ש)</text>`;
+  g+=`<text transform="translate(11,${(T+H-B)/2}) rotate(-90)" text-anchor="middle" font-size="8.5" fill="#9A96AB">נפח כ״ר למסלול ×1000 ביממה</text>`;
+  g+=`<text x="${px(12)}" y="${py(1)}" font-size="9" fill="#4ADE80">רמה א׳</text>`;
+  g+=`<text x="${px(34)}" y="${py(3.4)}" font-size="9" fill="#7AB8F5">רמה ב׳</text>`;
+  g+=`<text x="${px(56)}" y="${py(4.6)}" font-size="9" fill="#E8A33D">רמה ג׳</text>`;
+  g+=`<text x="${px(30)}" y="${py(9.2)}" font-size="9" fill="#F35B5B">מצב לא סביר</text>`;
+  // הנקודה
+  const X=px(sp), Y=py(d);
+  g+=`<line x1="${X}" y1="${T}" x2="${X}" y2="${H-B}" stroke="#fff" stroke-dasharray="3 3" opacity=".35"/>`;
+  g+=`<circle cx="${X}" cy="${Y}" r="6" fill="#fff" stroke="#151424" stroke-width="2"/>`;
+  return g+'</svg>';
+}
+function urb(){
+  $('u_volU').textContent = $('u_mode').value==='peak' ? '(כ״ר למסלול בשעת שיא)' : '(כ״ר למסלול ביממה)';
+  const lvRaw=urbLevel(), calm=$('u_calm').value==='1';
+  const lv = calm ? 'A' : lvRaw;
+  const sp=+$('u_sp').value, adj=+$('u_adj').value||0, w=+$('u_w').value||0;
+  const park=$('u_park').value==='1', pw=+$('u_parkw').value||0;
+  const L=LV[lv], c=[];
+
+  c.push(['info','רמת ההפרדה נקבעת מנפח התנועה למסלול וממהירות הייעוד. הנפח הוא ממוצע שלוש השעות העמוסות ביותר ביממה.'+S(OF,67)]);
+  if(calm) c.push(['ok','רחוב באזור מיתון תנועה או רחוב משולב — תנועה מעורבת (רמה א׳).'+S(OF,66)]);
+  if(calm && adj>750) c.push(['bad','באזור מיתון תנועה הנפח המרבי בשעת שיא הוא 750 כ״ר. כאן '+adj+'.'+S(OF,67)]);
+
+  if(lv==='B'){
+    if(adj>750) c.push(['bad','נתיב אופניים (רמה ב׳) מוגבל ל‑750 כ״ר בנתיב התנועה הסמוך בשעת שיא. כאן '+adj+' — נדרשת רמה ג׳.'+S(OF,67)]);
+    else c.push(['ok','הנפח בנתיב הסמוך '+adj+' כ״ר — בתוך המגבלה של 750.'+S(OF,67)]);
+    c.push(['warn','נתיב אופניים הוא חד-סיטרי תמיד. אין לתכנן נתיב דו-סיטרי — תנועה דו-סיטרית מופרדת מבוצעת רק בשביל.'+S(OF,68)]);
+  }
+  if(lv==='X') c.push(['bad','הנקודה נופלת באזור «מצב לא סביר» — יש לשנות את החתך, את המהירות או את הנפח לפני שמשלבים אופניים.'+S(OF,67)]);
+  if(lv==='A'&&!calm) c.push(['warn','ברמה א׳ האופניים בכביש עם הרכב המנועי — יעיל בנגישות, בעייתי בבטיחות. בכל טווח מהירות ונפח מותר לשקול שביל.'+S(OF,67)]);
+  if(lv!=='C') c.push(['info','בכל טווח של מהירויות או נפחי תנועה ניתן לשקול ביצוע שביל (רמה ג׳).'+S(OF,67)]);
+
+  // רוחב
+  let need=0, needTxt='';
+  if(lv==='B'){
+    if(park){ need=2.30; needTxt='נתיב בין נתיב התנועה לחניה מקבילה — מזערי 2.30 מ׳, ורוחב משותף של הנתיב והחניה לפחות 4.30 מ׳.';
+      const tot=w+pw;
+      if(tot<4.30) c.push(['bad','רוחב משותף '+f1(tot)+' מ׳ — פחות מ‑4.30 מ׳ הנדרשים.'+S(OF,69)]);
+      else c.push(['ok','רוחב משותף '+f1(tot)+' מ׳ — עומד בדרישה.'+S(OF,69)]);
+      if(w<1.80) c.push(['bad','רוחב הנתיב לא יפחת מ‑1.80 מ׳ — הרוחב ההכרחי כדי להתחמק מדלת רכב חונה.'+S(OF,69)]);
+    } else { need=1.80; needTxt='נתיב אופניים ללא חניה סמוכה.'; }
+  } else if(lv==='C'){ need=2.50; needTxt='שביל אופניים — הרוחב נקבע לפי הכיווניות והנפח; בדרך בין-עירונית 3.5 מ׳ לדו-סיטרי.'; }
+  if(need && w<need) c.push(['bad','הרוחב המתוכנן '+f1(w)+' מ׳ קטן מהנדרש '+f1(need)+' מ׳.'+S(OF,69)]);
+  else if(need) c.push(['ok','הרוחב המתוכנן '+f1(w)+' מ׳ עומד במזערי '+f1(need)+' מ׳.'+S(OF,69)]);
+  if(lv==='B') c.push(['info','ההפרדה מנתיב התנועה בסימון 804, עם דמות אופניים על המיסעה. באזורי ניגוד — חובה הגוונה ירוקה לכל רוחב הרצועה.'+S(OF,68)]);
+
+  $('urbOut').innerHTML=`
+    <div class="verdict"><div class="vi">${L.i}</div><div class="vt"><b>${esc(L.n)}</b><span>${esc(L.d)}</span></div></div>
+    <div class="kv">
+      <div><div class="k">נפח למסלול</div><div class="v">${(urbVol()).toLocaleString('en-US')}</div><div class="s">כ״ר ליממה</div></div>
+      <div><div class="k">מהירות ייעוד</div><div class="v">${sp}</div><div class="s">קמ״ש</div></div>
+      <div><div class="k">רוחב נדרש</div><div class="v">${need?f1(need):'—'}</div><div class="s">${need?'מ׳ מזערי':'לא רלוונטי ברמה א׳'}</div></div>
+      <div><div class="k">בנתיב הסמוך</div><div class="v">${adj}</div><div class="s">כ״ר בשעת שיא · מגבלה 750</div></div>
+    </div>
+    <ul class="chk">${c.map(x=>`<li class="${x[0]}">${x[1]}</li>`).join('')}</ul>`;
+  $('chart').innerHTML=chart();
+}
+
+/* ============ בין-עירוני ============ */
+function inter(){
+  const side=$('i_side').value, w=+$('i_w').value||0, oh=+$('i_obst').value||0, gap=+$('i_gap').value||0;
+  const c=[];
+  const need=3.5;
+  c.push([w>=need?'ok':'bad','הרוחב המומלץ לשביל דו-סיטרי לאורך דרך בין-עירונית הוא 3.5 מ׳. מתוכנן '+f1(w)+' מ׳.'+S(IC,'10-3')]);
+  let m=0,txt='';
+  if(side==='barrier'){ m=0.20; txt='מעקה בטיחות צמוד לשביל — מרווח 20 ס״מ בין קצה השביל למעקה. מומלץ מעקה ידידותי לאופניים (קורה חלקה) או מגן אחורי.'; }
+  else if(side==='clear'){ m=0.20; txt='אזור מפלט (L) עד קצה השביל — מרווח 20 ס״מ עד קצה אזור המפלט.'; }
+  else if(side==='ditch'){ m=0.50; txt='סוללה או תעלה (L*) — נדרשת תוספת מרווח בטיחות של 0.5 מ׳ להפרדה פיזית רכה בצמוד לשביל.'; }
+  else { m=0; txt='בצמוד למדרכה באזור הצומת — ניתן ליישם 3.5 מ׳ ללא תוספות מרווח.'; }
+  c.push([gap>=m?'ok':'bad',txt+' מתוכנן '+f1(gap)+' מ׳'+(m?', נדרש '+f1(m)+' מ׳':'')+'.'+S(IC,'10-3')]);
+  const hm = oh<=0.80?0.20:0.50;
+  c.push([gap>=hm?'ok':'warn','מרווח אופקי מקצה רצועת האופניים למכשול: 20 ס״מ למכשול עד 80 ס״מ, 50 ס״מ למכשול גבוה יותר. כאן המכשול '+f1(oh)+' מ׳ → נדרש '+f1(hm)+' מ׳.'+S(IC,'10-5')]);
+  c.push(['info','סימון שביל האופניים (804) כל 50 מ׳.'+S(IC,'10-18')]);
+  c.push(['info','אין לאפשר חציות רמפות מחלפים באותו מפלס, למעט בצמתים שבקצה הרמפה בשילוב עם פתרון להולכי הרגל.'+S(IC,'10-1')]);
+  $('intOut').innerHTML=`
+    <div class="kv">
+      <div><div class="k">רוחב נדרש</div><div class="v">3.5</div><div class="s">מ׳ · דו-סיטרי</div></div>
+      <div><div class="k">מרווח נדרש</div><div class="v">${f1(Math.max(m,hm))}</div><div class="s">מ׳ מהצד</div></div>
+    </div>
+    <ul class="chk">${c.map(x=>`<li class="${x[0]}">${x[1]}</li>`).join('')}</ul>`;
+}
+
+/* ============ מחלף ומעברים ============ */
+function ic(){
+  const k=$('c_kind').value, share=$('c_share').value==='1', bikes=+$('c_bikes').value||0,
+        w=+$('c_w').value||0, h=+$('c_h').value||0, ped=+$('c_ped').value||0;
+  const c=[]; let need=0, lbl='';
+  if(k==='under'){
+    if(!share){ need=3.0; lbl='מעבר תחתי לאופניים בלבד — 3.0 מ׳ מומלץ, 2.4 מ׳ מזערי.';
+      if(w<2.4) c.push(['bad','רוחב '+f1(w)+' מ׳ — מתחת למזערי 2.4 מ׳.'+S(IC,'10-5')]);
+    } else {
+      need=6.0; lbl='מעבר תחתי משותף — 6.0 או 7.0 מ׳ לפי אורכו.';
+      if(bikes<50){ c.push(['info','נפח אופניים '+bikes+' בשעת שיא — פחות מ‑50. במקרים חריגים ניתן לאפשר שביל משותף ברוחב מזערי 4.4 מ׳ באזור דרך בין-עירונית.'+S(IC,'10-5')]);
+        if(w>=4.4&&w<6) need=4.4; }
+    }
+  } else if(k==='over'){ need=share?5.0:3.0; lbl=share?'מעבר עילי משותף — לפי הנחיות הגשר.':'מעבר עילי לאופניים בלבד — 3.0 מ׳ מומלץ, 2.4 מזערי.'; }
+  else if(k==='bridge'){ need=5.0;
+    lbl='לאורך גשר — עדיף לפצל: 2.0 מ׳ לשביל אופניים דו-סיטרי, 2.5 מ׳ להולכי רגל, והפרדה 50 ס״מ. סה״כ 5.0 מ׳.';
+    c.push(['info','ניתן לתכנן מעבר מאחורי מעקה הבטיחות לרכב, עם מעקה הגנה להולכי רגל ולאופניים בצד השני.'+S(IC,'10-4')]); }
+  else { need=2.5; lbl='חצייה בצומת בקצה הרמפה — מעבר חצייה לאופניים 2.5 מ׳, להולכי רגל 3.0 מ׳.';
+    c.push([ped>=3.0?'ok':'warn','רוחב מעבר החצייה להולכי רגל '+f1(ped)+' מ׳ (מומלץ 3.0). באילוץ ניתן להצר את שני המעברים ל‑2.0 מ׳ כל אחד.'+S(IC,'10-4')]);
+    c.push(['info','רצוי מעבר חצייה לאופניים צמוד למעבר החצייה להולכי רגל (תמרורים 811 + 812). אם לא צפויה כמות הולכי רגל משמעותית — ניתן מעבר משותף ולבטל את 812.'+S(IC,'10-3')]);
+    c.push(['info','באי התנועה יש להבטיח לאופניים אורך המתנה של 2.20 מ׳ לפחות.'+S(IC,'10-4')]); }
+  c.unshift([w>=need?'ok':'bad',lbl+' מתוכנן '+f1(w)+' מ׳, נדרש '+f1(need)+' מ׳.'+S(IC,'10-4')]);
+  if(k==='under'||k==='over'){
+    c.push([h>=2.5?(h>=3.0?'ok':'warn'):'bad','גבריט: 3.0 מ׳ רצוי, 2.5 מ׳ מזערי — נמדד מהנקודה הגבוהה במיסעת השביל עד הנקודה הנמוכה בתקרה. מתוכנן '+f1(h)+' מ׳.'+S(IC,'10-5')]);
+    if(k==='under') c.push(['info','לרוכבי האופניים צריכה להיות ראות טובה במעבר התחתי.'+S(IC,'10-5')]);
+  }
+  if(share) c.push(['warn','בחיבור לאזורים עירוניים לא מומלץ הפתרון של שביל משותף לאופניים והולכי רגל.'+S(IC,'10-5')]);
+  $('icOut').innerHTML=`
+    <div class="kv">
+      <div><div class="k">רוחב נדרש</div><div class="v">${f1(need)}</div><div class="s">מ׳</div></div>
+      <div><div class="k">רוחב מתוכנן</div><div class="v">${f1(w)}</div><div class="s">${w>=need?'תקין':'חסר '+f1(need-w)+' מ׳'}</div></div>
+    </div>
+    <ul class="chk">${c.map(x=>`<li class="${x[0]}">${x[1]}</li>`).join('')}</ul>`;
+}
+
+/* ---------- אירועים ---------- */
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  ['urb','int','ic'].forEach(t=>$('t-'+t).classList.toggle('hide',t!==b.dataset.t));
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+});
+document.addEventListener('input',()=>{ urb(); inter(); ic(); });
+document.addEventListener('change',()=>{ urb(); inter(); ic(); });
+urb(); inter(); ic();
+})();
+</script>
+</body>
+</html>

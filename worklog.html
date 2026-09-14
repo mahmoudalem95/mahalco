@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מהאלco — יומן עבודה לביצוע כבישים</title>
+<meta name="description" content="יומן עבודה יומי לאתרי כבישים: כוח אדם, ציוד, כמויות לפי סעיף, בדיקות מעבדה, עיכובים וליקויים. לוח מנהל מחלקת פרויקטים. הנתונים נשמרים במכשיר בלבד.">
+<meta name="theme-color" content="#12121e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#12121e;--panel:#1a1a2e;--sunk:#22223a;--ink:#EDEBF2;--ink2:#9A96AB;--ink3:#6B6780;
+ --rule:rgba(255,255,255,.09);--rule2:rgba(255,255,255,.16);--pick:#E8A33D;--pick-bg:rgba(232,163,61,.14);
+ --ok:#4ADE80;--ok-bg:rgba(74,222,128,.12);--warn:#F35B5B;--warn-bg:rgba(243,91,91,.13);
+ --mono:'IBM Plex Mono',ui-monospace,monospace;--r:7px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Assistant',system-ui,sans-serif;font-size:14.5px;line-height:1.5}
+header{position:sticky;top:0;z-index:30;background:var(--panel);border-bottom:1px solid var(--rule);
+ padding:10px max(14px,env(safe-area-inset-right)) 10px max(14px,env(safe-area-inset-left));
+ display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+header h1{font-size:16px;font-weight:800;letter-spacing:-.01em}
+header .sp{flex:1}
+.tabs{display:flex;gap:4px;background:var(--sunk);border-radius:8px;padding:3px;flex-wrap:wrap}
+.tabs button{background:none;border:0;color:var(--ink2);font:inherit;font-size:13.5px;font-weight:600;
+ padding:7px 13px;border-radius:6px;cursor:pointer;min-height:40px}
+.tabs button.on{background:var(--pick);color:#151424}
+main{max-width:1120px;margin:0 auto;padding:16px max(14px,env(safe-area-inset-right)) 60px max(14px,env(safe-area-inset-left))}
+button,select,input,textarea{font-family:inherit;font-size:14px;color:var(--ink);background:var(--sunk);
+ border:1px solid var(--rule2);border-radius:6px;padding:9px 11px;min-height:42px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--pick)}
+button.key{background:var(--pick);color:#151424;border-color:var(--pick)}
+button.mini{min-height:34px;padding:5px 10px;font-size:12.5px}
+button.danger{color:var(--warn);border-color:rgba(243,91,91,.4)}
+input,select,textarea{width:100%}
+textarea{min-height:70px;resize:vertical;line-height:1.5}
+label{display:block;font-size:12.5px;color:var(--ink2);margin-bottom:4px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card h2{font-size:15px;font-weight:800;margin-bottom:10px;color:var(--pick)}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.grid.g2{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--rule)}
+th{color:var(--ink2);font-size:12px;font-weight:600}
+td.n,th.n{font-family:var(--mono);text-align:center;white-space:nowrap}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.rowset{display:grid;gap:6px}
+.rowline{display:grid;grid-template-columns:1fr 1fr 90px 34px;gap:6px;align-items:center}
+.rowline.acts{grid-template-columns:1.4fr 1fr .8fr .8fr 34px}
+@media(max-width:640px){.rowline,.rowline.acts{grid-template-columns:1fr 1fr;}.rowline .x,.rowline.acts .x{grid-column:2}}
+.chip{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:var(--mono)}
+.c-open{background:var(--pick-bg);color:var(--pick)}
+.c-sign{background:var(--ok-bg);color:var(--ok)}
+.c-warn{background:var(--warn-bg);color:var(--warn)}
+.kpi{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.kpi div{background:var(--sunk);border:1px solid var(--rule);border-radius:var(--r);padding:11px 12px}
+.kpi .k{font-size:12px;color:var(--ink2)}
+.kpi .v{font-family:var(--mono);font-size:21px;font-weight:600}
+.note{font-size:12.5px;color:var(--ink3);line-height:1.55;margin-top:8px}
+.empty{color:var(--ink3);font-size:13.5px;padding:14px 0;text-align:center}
+.privacy{background:var(--ok-bg);border:1px solid rgba(74,222,128,.3);border-radius:var(--r);padding:10px 12px;
+ font-size:12.5px;color:#bdf0df;margin-bottom:12px}
+.hide{display:none}
+@media print{
+ header,.tabs,.bar,.no-print{display:none!important}
+ body{background:#fff;color:#000}
+ .card{border-color:#bbb;background:#fff;break-inside:avoid}
+ .card h2{color:#000}
+ th,td{border-color:#999}
+ .kpi div{background:#fff;border-color:#bbb}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>יומן עבודה — ביצוע כבישים</h1>
+  <div class="tabs">
+    <button data-t="day" class="on">יומן יומי</button>
+    <button data-t="list">רשומות</button>
+    <button data-t="mgr">לוח מנהל</button>
+    <button data-t="proj">פרויקטים</button>
+    <button data-t="data">גיבוי</button>
+  </div>
+  <span class="sp"></span>
+  <button class="mini" id="btnPrint">הדפסה</button>
+</header>
+
+<main>
+<div class="privacy">הנתונים נשמרים במכשיר הזה בלבד — לא נשלחים לשום שרת ואין לאיש גישה אליהם מלבדכם. גבו את הקובץ מדי שבוע בלשונית «גיבוי».</div>
+
+<!-- ============ יומן יומי ============ -->
+<section id="tab-day">
+  <div class="card">
+    <h2>פרטי היום</h2>
+    <div class="grid">
+      <div><label for="d_pid">פרויקט</label><select id="d_pid"></select></div>
+      <div><label for="d_date">תאריך</label><input type="date" id="d_date"></div>
+      <div><label for="d_shift">משמרת</label><select id="d_shift">
+        <option>יום</option><option>לילה</option><option>סופ״ש</option></select></div>
+      <div><label for="d_weather">מזג אוויר</label><select id="d_weather">
+        <option>בהיר</option><option>מעונן</option><option>גשם קל</option><option>גשם</option><option>שרב</option><option>רוחות</option></select></div>
+      <div><label for="d_temp">טמפ׳ (°C)</label><input type="number" id="d_temp" step="1" inputmode="numeric"></div>
+      <div><label for="d_hours">שעות עבודה</label><input type="number" id="d_hours" step="0.5" inputmode="decimal"></div>
+      <div><label for="d_from">מפיקט / ק״מ</label><input type="text" id="d_from" placeholder="0+000"></div>
+      <div><label for="d_to">עד פיקט / ק״מ</label><input type="text" id="d_to" placeholder="0+250"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>כוח אדם וציוד</h2>
+    <div class="grid g2">
+      <div>
+        <label>צוותים בשטח</label>
+        <div class="rowset" id="crewRows"></div>
+        <button class="mini" data-add="crew" style="margin-top:6px">+ צוות</button>
+      </div>
+      <div>
+        <label>ציוד מכני</label>
+        <div class="rowset" id="equipRows"></div>
+        <button class="mini" data-add="equip" style="margin-top:6px">+ ציוד</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>עבודות שבוצעו וכמויות</h2>
+    <div class="rowset" id="actRows"></div>
+    <button class="mini" data-add="act" style="margin-top:6px">+ עבודה</button>
+    <p class="note">הכמויות מצטברות אוטומטית לפי סעיף בלוח המנהל, ומשמשות בסיס לחשבון חלקי.</p>
+  </div>
+
+  <div class="card">
+    <h2>בדיקות מעבדה</h2>
+    <div class="rowset" id="testRows"></div>
+    <button class="mini" data-add="test" style="margin-top:6px">+ בדיקה</button>
+  </div>
+
+  <div class="card">
+    <h2>עיכובים, ליקויים וביקורים</h2>
+    <div class="rowset" id="delayRows"></div>
+    <button class="mini" data-add="delay" style="margin-top:6px">+ עיכוב</button>
+    <div class="grid g2" style="margin-top:12px">
+      <div><label for="d_issues">אי-התאמות והוראות שניתנו</label><textarea id="d_issues"></textarea></div>
+      <div><label for="d_visits">ביקורים באתר</label><textarea id="d_visits" placeholder="מפקח, מתכנן, רשות מקומית, מעבדה…"></textarea></div>
+      <div><label for="d_safety">בטיחות והסדרי תנועה זמניים</label><textarea id="d_safety"></textarea></div>
+      <div><label for="d_notes">הערות כלליות</label><textarea id="d_notes"></textarea></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>סגירת היומן</h2>
+    <div class="grid">
+      <div><label for="d_by">נרשם על ידי</label><input type="text" id="d_by"></div>
+      <div><label for="d_signed">סטטוס</label><select id="d_signed">
+        <option value="0">פתוח</option><option value="1">נחתם</option></select></div>
+    </div>
+    <div class="bar" style="margin-top:12px;margin-bottom:0">
+      <button class="key" id="btnSave">שמור יומן</button>
+      <button id="btnNew">יומן חדש</button>
+      <button class="danger mini" id="btnDel">מחק רשומה</button>
+      <span id="saveMsg" class="note" style="align-self:center;margin:0"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ רשומות ============ -->
+<section id="tab-list" class="hide">
+  <div class="card">
+    <div class="grid">
+      <div><label for="f_pid">פרויקט</label><select id="f_pid"><option value="">הכול</option></select></div>
+      <div><label for="f_from">מתאריך</label><input type="date" id="f_from"></div>
+      <div><label for="f_to">עד תאריך</label><input type="date" id="f_to"></div>
+      <div><label for="f_st">סטטוס</label><select id="f_st">
+        <option value="">הכול</option><option value="0">פתוח</option><option value="1">נחתם</option></select></div>
+    </div>
+    <div class="bar" style="margin-top:12px;margin-bottom:0">
+      <button class="mini" id="btnCsvEntries">ייצוא רשומות ל‑CSV</button>
+      <button class="mini" id="btnCsvQty">ייצוא כמויות ל‑CSV</button>
+    </div>
+  </div>
+  <div class="card"><div class="tw"><table id="tblList"></table></div></div>
+</section>
+
+<!-- ============ לוח מנהל ============ -->
+<section id="tab-mgr" class="hide">
+  <div class="card">
+    <div class="grid">
+      <div><label for="m_pid">פרויקט</label><select id="m_pid"><option value="">כל הפרויקטים</option></select></div>
+      <div><label for="m_days">טווח</label><select id="m_days">
+        <option value="7">7 ימים אחרונים</option><option value="30" selected>30 ימים</option>
+        <option value="90">רבעון</option><option value="0">הכול</option></select></div>
+    </div>
+  </div>
+  <div class="card"><h2>תמונת מצב</h2><div class="kpi" id="mgrKpi"></div></div>
+  <div class="card"><h2>כמויות מצטברות לפי סעיף</h2><div class="tw"><table id="tblQty"></table></div></div>
+  <div class="card"><h2>עיכובים לפי סיבה</h2><div class="tw"><table id="tblDelay"></table></div></div>
+  <div class="card"><h2>דורש טיפול</h2><div id="mgrAlerts"></div></div>
+</section>
+
+<!-- ============ פרויקטים ============ -->
+<section id="tab-proj" class="hide">
+  <div class="card">
+    <h2>פרויקט חדש / עריכה</h2>
+    <div class="grid">
+      <div><label for="p_name">שם הפרויקט</label><input type="text" id="p_name"></div>
+      <div><label for="p_client">מזמין</label><input type="text" id="p_client" placeholder="נתיבי ישראל / עירייה"></div>
+      <div><label for="p_contr">קבלן מבצע</label><input type="text" id="p_contr"></div>
+      <div><label for="p_eng">מהנדס ביצוע</label><input type="text" id="p_eng"></div>
+      <div><label for="p_sec">מקטע</label><input type="text" id="p_sec" placeholder="כביש 444, ק״מ 3+200–5+700"></div>
+      <div><label for="p_start">תחילת עבודה</label><input type="date" id="p_start"></div>
+      <div><label for="p_status">סטטוס</label><select id="p_status">
+        <option>פעיל</option><option>מושהה</option><option>הסתיים</option></select></div>
+    </div>
+    <div class="bar" style="margin-top:12px;margin-bottom:0">
+      <button class="key" id="btnPSave">שמור פרויקט</button>
+      <button id="btnPNew">חדש</button>
+    </div>
+  </div>
+  <div class="card"><div class="tw"><table id="tblProj"></table></div></div>
+</section>
+
+<!-- ============ גיבוי ============ -->
+<section id="tab-data" class="hide">
+  <div class="card">
+    <h2>גיבוי ושחזור</h2>
+    <p class="note" style="margin-top:0">הכול יושב ב‑localStorage של הדפדפן הזה. ניקוי היסטוריית הדפדפן או החלפת מכשיר ימחקו את היומן — ולכן גיבוי שבועי הוא לא המלצה אלא תנאי.</p>
+    <div class="bar" style="margin-top:12px">
+      <button class="key" id="btnExport">ייצוא גיבוי מלא (JSON)</button>
+      <label class="mini" style="margin:0"><input type="file" id="fileImp" accept=".json" hidden>
+        <span style="display:inline-flex;align-items:center;min-height:42px;padding:9px 11px;border:1px solid var(--rule2);border-radius:6px;background:var(--sunk);cursor:pointer">שחזור מגיבוי</span></label>
+      <button class="danger" id="btnWipe">מחיקת הכול</button>
+    </div>
+    <div id="dataStats" class="kpi" style="margin-top:12px"></div>
+  </div>
+</section>
+</main>
+
+<script>
+/* =====================================================================
+   יומן עבודה — ביצוע כבישים · כל הנתונים במכשיר בלבד (localStorage)
+   ===================================================================== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const KEY='mahalco_worklog_v1';
+
+const ACTS=['עבודות עפר — חפירה','עבודות עפר — מילוי מובא','יישור ועיבוד שתית',
+ 'מצע סוג א׳','מצע סוג ב׳','ריסוס ביטומני (פריים/טאק)','אספלט — שכבת תשתית',
+ 'אספלט — שכבת מקשר','אספלט — שכבה נושאת','קרצוף אספלט','אבני שפה','מדרכות וריצוף',
+ 'ניקוז — צנרת','ניקוז — שוחות וקולטנים','קירות תומכים','מעקות בטיחות',
+ 'תמרור וסימון','תאורת רחוב','צנרת תת-קרקעית','גינון והשקיה','עבודות שונות'];
+const UNITS=['מ״ק','טון','מ״ר','מ״א','יח׳','קומפ׳'];
+const EQUIP=['מחפר','שופל','דחפור','מפלסת','מכבש ויברציוני','מכבש פנאומטי','פינישר',
+ 'משאית','ביובית','מנוף','מקרצפת','מפזר אמולסיה','גנרטור','אחר'];
+const CREW=['צוות עפר','צוות מצעים','צוות אספלט','צוות ניקוז','צוות אבני שפה','צוות תמרור',
+ 'צוות חשמל','מודד','מפקח','אחר'];
+const TESTS=['צפיפות שדה — מודיפייד AASHTO','CBR','טמפ׳ אספלט בפריסה','גלילי אספלט (קורים)',
+ 'דגימת אספלט','בטון — קוביות','מישוריות','גבהים — מדידה','אחר'];
+const DELAYS=['מזג אוויר','תשתיות קיימות','אישור מזמין','חוסר חומר','תקלת ציוד',
+ 'כוח אדם','הסדרי תנועה','מעבדה','אחר'];
+
+let DB={v:1,projects:[],entries:[]};
+let curEntry=null, curProj=null;
+
+/* ---------- אחסון ---------- */
+function load(){
+  try{ const raw=localStorage.getItem(KEY); if(raw) DB=JSON.parse(raw); }catch(e){}
+  DB.projects=DB.projects||[]; DB.entries=DB.entries||[];
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(DB)); return true; }
+  catch(e){ alert('השמירה נכשלה — ייתכן שאחסון הדפדפן מלא. ייצאו גיבוי ופנו מקום.'); return false; }
+}
+
+/* ---------- שורות דינמיות ---------- */
+const ROWDEF={
+  crew:{el:'crewRows', cols:[['sel','role',CREW],['num','n','מס׳ עובדים'],['num','h','שעות']]},
+  equip:{el:'equipRows', cols:[['sel','kind',EQUIP],['num','n','כמות'],['num','h','שעות']]},
+  act:{el:'actRows', cls:'acts', cols:[['sel','code',ACTS],['txt','loc','מיקום / פיקטים'],['num','qty','כמות'],['sel','unit',UNITS]]},
+  test:{el:'testRows', cols:[['sel','kind',TESTS],['txt','loc','מיקום'],['txt','res','תוצאה']]},
+  delay:{el:'delayRows', cols:[['sel','reason',DELAYS],['txt','note','פירוט'],['num','h','שעות']]}
+};
+function rowHtml(kind,r,i){
+  const d=ROWDEF[kind];
+  const cells=d.cols.map(([t,f,opt])=>{
+    const v=r[f]==null?'':r[f];
+    if(t==='sel') return `<select data-k="${kind}" data-i="${i}" data-f="${f}">`+
+      opt.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('')+`</select>`;
+    if(t==='num') return `<input type="number" step="0.01" inputmode="decimal" placeholder="${esc(opt)}" value="${esc(v)}" data-k="${kind}" data-i="${i}" data-f="${f}">`;
+    return `<input type="text" placeholder="${esc(opt)}" value="${esc(v)}" data-k="${kind}" data-i="${i}" data-f="${f}">`;
+  }).join('');
+  return `<div class="rowline ${d.cls||''}">${cells}<button class="mini x" data-del="${kind}" data-i="${i}" title="מחיקה">✕</button></div>`;
+}
+function renderRows(kind){
+  const arr=curEntry[kind]||[];
+  $(ROWDEF[kind].el).innerHTML = arr.length? arr.map((r,i)=>rowHtml(kind,r,i)).join('')
+    : '<p class="empty">אין שורות</p>';
+}
+function blankEntry(){
+  const today=new Date().toISOString().slice(0,10);
+  return {id:uid(), pid:(DB.projects[0]||{}).id||'', date:today, shift:'יום', weather:'בהיר',
+    temp:'', hours:'', from:'', to:'', crew:[], equip:[], act:[], test:[], delay:[],
+    issues:'', visits:'', safety:'', notes:'', by:'', signed:0};
+}
+function entryToForm(e){
+  curEntry=JSON.parse(JSON.stringify(e));
+  ['pid','date','shift','weather','temp','hours','from','to','issues','visits','safety','notes','by']
+    .forEach(f=>{ const el=$('d_'+f); if(el) el.value=curEntry[f]||''; });
+  $('d_signed').value=curEntry.signed?'1':'0';
+  ['crew','equip','act','test','delay'].forEach(renderRows);
+}
+function formToEntry(){
+  ['pid','date','shift','weather','temp','hours','from','to','issues','visits','safety','notes','by']
+    .forEach(f=>{ const el=$('d_'+f); if(el) curEntry[f]=el.value; });
+  curEntry.signed = $('d_signed').value==='1' ? 1 : 0;
+  return curEntry;
+}
+
+/* ---------- פרויקטים ---------- */
+function projName(id){ const p=DB.projects.find(x=>x.id===id); return p?p.name:'—'; }
+function fillProjSelects(){
+  const opts=DB.projects.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  $('d_pid').innerHTML = opts || '<option value="">— הגדירו פרויקט —</option>';
+  $('f_pid').innerHTML = '<option value="">הכול</option>'+opts;
+  $('m_pid').innerHTML = '<option value="">כל הפרויקטים</option>'+opts;
+  if(curEntry && curEntry.pid) $('d_pid').value=curEntry.pid;
+}
+function renderProjects(){
+  const t=$('tblProj');
+  if(!DB.projects.length){ t.innerHTML='<tr><td class="empty">עדיין אין פרויקטים.</td></tr>'; return; }
+  t.innerHTML='<thead><tr><th>שם</th><th>מזמין</th><th>קבלן</th><th>מקטע</th><th class="n">יומנים</th><th>סטטוס</th><th></th></tr></thead><tbody>'+
+    DB.projects.map(p=>{
+      const n=DB.entries.filter(e=>e.pid===p.id).length;
+      return `<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.client||'—')}</td><td>${esc(p.contr||'—')}</td>
+        <td>${esc(p.sec||'—')}</td><td class="n">${n}</td>
+        <td><span class="chip ${p.status==='פעיל'?'c-open':'c-sign'}">${esc(p.status||'')}</span></td>
+        <td class="n"><button class="mini" data-ped="${p.id}">עריכה</button></td></tr>`;
+    }).join('')+'</tbody>';
+  t.querySelectorAll('[data-ped]').forEach(b=>b.onclick=()=>{
+    const p=DB.projects.find(x=>x.id===b.dataset.ped); if(!p) return;
+    curProj=p.id;
+    ['name','client','contr','eng','sec','start','status'].forEach(f=>{ const el=$('p_'+f); if(el) el.value=p[f]||''; });
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+}
+
+/* ---------- רשימת רשומות ---------- */
+function filtered(){
+  const pid=$('f_pid').value, a=$('f_from').value, b=$('f_to').value, st=$('f_st').value;
+  return DB.entries.filter(e=>{
+    if(pid && e.pid!==pid) return false;
+    if(a && e.date<a) return false;
+    if(b && e.date>b) return false;
+    if(st!=='' && String(e.signed?1:0)!==st) return false;
+    return true;
+  }).sort((x,y)=>y.date.localeCompare(x.date));
+}
+function sumQty(e){ return (e.act||[]).reduce((s,r)=>s+(parseFloat(r.qty)||0),0); }
+function renderList(){
+  const rows=filtered(), t=$('tblList');
+  if(!rows.length){ t.innerHTML='<tr><td class="empty">אין רשומות בטווח שנבחר.</td></tr>'; return; }
+  t.innerHTML='<thead><tr><th class="n">תאריך</th><th>פרויקט</th><th>מקטע</th><th class="n">עבודות</th>'+
+    '<th class="n">שעות</th><th class="n">עיכוב</th><th>סטטוס</th><th></th></tr></thead><tbody>'+
+    rows.map(e=>{
+      const dh=(e.delay||[]).reduce((s,d)=>s+(parseFloat(d.h)||0),0);
+      return `<tr><td class="n">${esc(e.date)}</td><td>${esc(projName(e.pid))}</td>
+        <td>${esc(e.from||'')}${e.to?' – '+esc(e.to):''}</td>
+        <td class="n">${(e.act||[]).length}</td><td class="n">${esc(e.hours||'')}</td>
+        <td class="n">${dh?dh.toFixed(1):''}</td>
+        <td><span class="chip ${e.signed?'c-sign':'c-open'}">${e.signed?'נחתם':'פתוח'}</span></td>
+        <td class="n"><button class="mini" data-ed="${e.id}">פתח</button></td></tr>`;
+    }).join('')+'</tbody>';
+  t.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{
+    const e=DB.entries.find(x=>x.id===b.dataset.ed); if(!e) return;
+    entryToForm(e); showTab('day'); window.scrollTo({top:0});
+  });
+}
+
+/* ---------- לוח מנהל ---------- */
+function mgrSet(){
+  const pid=$('m_pid').value, days=+$('m_days').value;
+  let rows=DB.entries.filter(e=>!pid||e.pid===pid);
+  if(days){ const lim=new Date(Date.now()-days*864e5).toISOString().slice(0,10);
+    rows=rows.filter(e=>e.date>=lim); }
+  return rows;
+}
+function renderMgr(){
+  const rows=mgrSet();
+  const open=rows.filter(e=>!e.signed).length;
+  const hrs=rows.reduce((s,e)=>s+(parseFloat(e.hours)||0),0);
+  const dh=rows.reduce((s,e)=>s+(e.delay||[]).reduce((a,d)=>a+(parseFloat(d.h)||0),0),0);
+  const act=DB.projects.filter(p=>p.status==='פעיל').length;
+  const last=rows.map(e=>e.date).sort().slice(-1)[0]||'—';
+  $('mgrKpi').innerHTML=[
+    ['פרויקטים פעילים',act],['יומנים בטווח',rows.length],['יומנים פתוחים',open],
+    ['שעות עבודה',hrs.toFixed(1)],['שעות עיכוב',dh.toFixed(1)],['יומן אחרון',last]
+  ].map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${esc(v)}</div></div>`).join('');
+
+  // כמויות לפי סעיף ויחידה
+  const q={};
+  rows.forEach(e=>(e.act||[]).forEach(r=>{
+    const v=parseFloat(r.qty)||0; if(!v) return;
+    const k=(r.code||'—')+'|'+(r.unit||'');
+    q[k]=(q[k]||0)+v;
+  }));
+  const qk=Object.keys(q).sort();
+  $('tblQty').innerHTML = qk.length
+    ? '<thead><tr><th>סעיף</th><th class="n">כמות</th><th class="n">יחידה</th></tr></thead><tbody>'+
+      qk.map(k=>{const [c,u]=k.split('|');
+        return `<tr><td>${esc(c)}</td><td class="n">${q[k].toFixed(2)}</td><td class="n">${esc(u)}</td></tr>`;}).join('')+'</tbody>'
+    : '<tr><td class="empty">לא נרשמו כמויות בטווח.</td></tr>';
+
+  // עיכובים
+  const dmap={};
+  rows.forEach(e=>(e.delay||[]).forEach(r=>{
+    const h=parseFloat(r.h)||0; const k=r.reason||'אחר';
+    dmap[k]=dmap[k]||{h:0,n:0}; dmap[k].h+=h; dmap[k].n++;
+  }));
+  const dk=Object.keys(dmap).sort((a,b)=>dmap[b].h-dmap[a].h);
+  $('tblDelay').innerHTML = dk.length
+    ? '<thead><tr><th>סיבה</th><th class="n">מקרים</th><th class="n">שעות</th><th class="n">% מהעיכוב</th></tr></thead><tbody>'+
+      dk.map(k=>`<tr><td>${esc(k)}</td><td class="n">${dmap[k].n}</td><td class="n">${dmap[k].h.toFixed(1)}</td>
+        <td class="n">${dh?((dmap[k].h/dh)*100).toFixed(0)+'%':'—'}</td></tr>`).join('')+'</tbody>'
+    : '<tr><td class="empty">לא נרשמו עיכובים בטווח.</td></tr>';
+
+  // התראות
+  const al=[];
+  const openOld=rows.filter(e=>!e.signed && e.date < new Date(Date.now()-3*864e5).toISOString().slice(0,10));
+  if(openOld.length) al.push(['c-warn', openOld.length+' יומנים פתוחים מעל שלושה ימים — לא נחתמו.']);
+  DB.projects.filter(p=>p.status==='פעיל').forEach(p=>{
+    const last=DB.entries.filter(e=>e.pid===p.id).map(e=>e.date).sort().slice(-1)[0];
+    const lim=new Date(Date.now()-7*864e5).toISOString().slice(0,10);
+    if(!last) al.push(['c-warn','«'+p.name+'» פעיל אך אין בו אף יומן.']);
+    else if(last<lim) al.push(['c-warn','«'+p.name+'» — היומן האחרון מ‑'+last+'.']);
+  });
+  const fail=rows.reduce((s,e)=>s+(e.test||[]).filter(t=>/נכשל|לא עבר|fail/i.test(t.res||'')).length,0);
+  if(fail) al.push(['c-warn', fail+' בדיקות מעבדה שסומנו ככישלון.']);
+  $('mgrAlerts').innerHTML = al.length
+    ? al.map(([c,t])=>`<p style="margin-bottom:7px"><span class="chip ${c}">בדקו</span> ${esc(t)}</p>`).join('')
+    : '<p class="note" style="margin:0">אין פריטים פתוחים בטווח שנבחר.</p>';
+}
+
+/* ---------- CSV ---------- */
+function dl(text,name,type){
+  const b=new Blob(['\ufeff'+text],{type:type||'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+const csvCell=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+function csvEntries(){
+  const rows=filtered();
+  const head=['תאריך','פרויקט','משמרת','מזג אוויר','טמפ','שעות','מפיקט','עד פיקט','עבודות','שעות עיכוב','נרשם','סטטוס','הערות'];
+  const body=rows.map(e=>[e.date,projName(e.pid),e.shift,e.weather,e.temp,e.hours,e.from,e.to,
+    (e.act||[]).map(a=>a.code+' '+(a.qty||'')+(a.unit||'')).join('; '),
+    (e.delay||[]).reduce((s,d)=>s+(parseFloat(d.h)||0),0), e.by, e.signed?'נחתם':'פתוח', e.notes]);
+  dl([head,...body].map(r=>r.map(csvCell).join(',')).join('\n'),'worklog-entries.csv');
+}
+function csvQty(){
+  const rows=filtered(), out=[['תאריך','פרויקט','סעיף','מיקום','כמות','יחידה']];
+  rows.forEach(e=>(e.act||[]).forEach(a=>out.push([e.date,projName(e.pid),a.code,a.loc,a.qty,a.unit])));
+  dl(out.map(r=>r.map(csvCell).join(',')).join('\n'),'worklog-quantities.csv');
+}
+
+/* ---------- לשוניות ---------- */
+function showTab(t){
+  ['day','list','mgr','proj','data'].forEach(x=>$('tab-'+x).classList.toggle('hide',x!==t));
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  if(t==='list') renderList();
+  if(t==='mgr') renderMgr();
+  if(t==='proj') renderProjects();
+  if(t==='data') renderStats();
+}
+function renderStats(){
+  const bytes=(localStorage.getItem(KEY)||'').length;
+  $('dataStats').innerHTML=[['פרויקטים',DB.projects.length],['רשומות יומן',DB.entries.length],
+    ['שורות עבודה',DB.entries.reduce((s,e)=>s+(e.act||[]).length,0)],
+    ['גודל הנתונים',(bytes/1024).toFixed(1)+' ק״ב']]
+    .map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${esc(v)}</div></div>`).join('');
+}
+
+/* ---------- אירועים ---------- */
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
+$('btnPrint').onclick=()=>window.print();
+
+document.addEventListener('input',ev=>{
+  const el=ev.target, k=el.dataset.k;
+  if(!k||!curEntry) return;
+  const i=+el.dataset.i, f=el.dataset.f;
+  (curEntry[k]=curEntry[k]||[])[i]=curEntry[k][i]||{};
+  curEntry[k][i][f]=el.value;
+});
+document.addEventListener('click',ev=>{
+  const add=ev.target.dataset&&ev.target.dataset.add;
+  if(add&&curEntry){ (curEntry[add]=curEntry[add]||[]).push({}); renderRows(add); return; }
+  const del=ev.target.dataset&&ev.target.dataset.del;
+  if(del&&curEntry){ curEntry[del].splice(+ev.target.dataset.i,1); renderRows(del); }
+});
+
+$('btnSave').onclick=()=>{
+  if(!DB.projects.length){ alert('הגדירו קודם פרויקט בלשונית «פרויקטים».'); return; }
+  const e=formToEntry();
+  const ix=DB.entries.findIndex(x=>x.id===e.id);
+  if(ix>=0) DB.entries[ix]=e; else DB.entries.push(e);
+  if(save()){ $('saveMsg').textContent='נשמר · '+new Date().toLocaleTimeString('he-IL'); }
+};
+$('btnNew').onclick=()=>{ entryToForm(blankEntry()); fillProjSelects(); $('saveMsg').textContent=''; };
+$('btnDel').onclick=()=>{
+  if(!curEntry) return;
+  if(!confirm('למחוק את רשומת היומן?')) return;
+  DB.entries=DB.entries.filter(x=>x.id!==curEntry.id); save();
+  entryToForm(blankEntry()); fillProjSelects();
+};
+
+$('btnPSave').onclick=()=>{
+  const name=$('p_name').value.trim();
+  if(!name){ alert('צריך שם פרויקט.'); return; }
+  const o={id:curProj||uid()};
+  ['name','client','contr','eng','sec','start','status'].forEach(f=>o[f]=$('p_'+f).value);
+  const ix=DB.projects.findIndex(p=>p.id===o.id);
+  if(ix>=0) DB.projects[ix]=o; else DB.projects.push(o);
+  curProj=null; save(); fillProjSelects(); renderProjects();
+  ['name','client','contr','eng','sec','start'].forEach(f=>$('p_'+f).value='');
+};
+$('btnPNew').onclick=()=>{ curProj=null; ['name','client','contr','eng','sec','start'].forEach(f=>$('p_'+f).value=''); };
+
+['f_pid','f_from','f_to','f_st'].forEach(id=>$(id).addEventListener('input',renderList));
+['m_pid','m_days'].forEach(id=>$(id).addEventListener('input',renderMgr));
+$('btnCsvEntries').onclick=csvEntries;
+$('btnCsvQty').onclick=csvQty;
+
+$('btnExport').onclick=()=>{
+  const name='worklog-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  dl(JSON.stringify(DB,null,1),name,'application/json');
+};
+$('fileImp').onchange=ev=>{
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const o=JSON.parse(r.result);
+      if(!o.entries||!o.projects) throw new Error('קובץ שאינו גיבוי של היומן');
+      if(!confirm('שחזור יחליף את הנתונים הקיימים. להמשיך?')) return;
+      DB=o; save(); fillProjSelects(); entryToForm(blankEntry()); renderStats();
+      alert('שוחזר: '+DB.projects.length+' פרויקטים, '+DB.entries.length+' רשומות.');
+    }catch(err){ alert('שחזור נכשל — '+err.message); }
+  };
+  r.readAsText(f); ev.target.value='';
+};
+$('btnWipe').onclick=()=>{
+  if(!confirm('למחוק את כל היומן מהמכשיר? פעולה בלתי הפיכה.')) return;
+  if(!confirm('בטוחים? ייצאו גיבוי קודם.')) return;
+  DB={v:1,projects:[],entries:[]}; save(); fillProjSelects(); entryToForm(blankEntry()); renderStats(); renderProjects();
+};
+
+/* ---------- אתחול ---------- */
+load();
+entryToForm(blankEntry());
+fillProjSelects();
+renderStats();
+</script>
+</body>
+</html>

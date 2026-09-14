@@ -18,7 +18,7 @@
     <link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/">
     <meta name="robots" content="index, follow">
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Mahalco — Transportation Engineering Calculations: Intersection LOS, Queues, Sight Distance, Parking | HCM · AASHTO · HSM</title>
     <meta name="description" content="Browser-based transportation engineering tools and APIs: signalized and unsignalized intersection level of service, roundabouts, queues, freeway and two-lane analysis, horizontal and vertical alignment, sight distance and parking. For traffic engineers, design offices, project managers, surveyors, developers and public authorities. Run in the browser or post the same inputs to the API.">
     <meta name="keywords" content="Highway Capacity Manual, HCM, AASHTO Green Book, HSM, Signalized Intersection, Level of Service, LOS, Queue Length, Roundabout, Two-Lane Highway, Freeway, Interchange, Signal Timing, Geometric Design, Traffic Impact, Parking, API, Transit Planning, TOD, Transit-Oriented Development, Bike Lane, Bicycle Path, Traffic Calming, Parking Terminals, Park and Ride, Pedestrian Crossings, intersection level of service calculator, signalized intersection delay, critical lane volume calculator, 95th percentile queue length, turn bay length, signal cycle length optimisation, Webster cycle, roundabout capacity calculator, stopping sight distance, intersection sight triangle, parking standard calculator, traffic impact assessment, traffic engineer tools, design office, project manager, land surveyor, real estate developer feasibility, municipal review, transit lane justification, BRT busway justification, bicycle path design guidelines, high demand pedestrian crossing, traffic calming zone, target year forecast, saturation year, Israel design guidelines">
@@ -103,6 +103,17 @@
         ]
 }
     </script>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#23272C">
+    <meta name="color-scheme" content="dark light">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="מהאלco">
+    <meta name="application-name" content="מהאלco">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
@@ -424,6 +435,127 @@
         .share-cta:hover, .share-cta:focus-visible { background: rgba(37,211,102,.24); box-shadow: 0 0 0 4px rgba(37,211,102,.18) }
         .share-cta .app-cta-badge { background: #25D366; color: #062814 }
         @media (max-width: 599px) { .app-actions { flex-direction: column; } .app-cta { width: 100%; } }
+
+        /* --- phone reliability --- */
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100% }
+        body { overflow-x: hidden; overscroll-behavior-y: contain; -webkit-tap-highlight-color: rgba(233,177,47,.25) }
+        img, svg, table { max-width: 100% }
+        .wrap { padding-inline: max(16px, env(safe-area-inset-inline, 0px)) }
+        .masthead { padding-top: env(safe-area-inset-top, 0px) }
+        footer { padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)) }
+        a, button, select, summary { touch-action: manipulation }
+        .tblwrap, .seek, .r-grid { -webkit-overflow-scrolling: touch }
+        @media (display-mode: standalone) {
+            .masthead { position: sticky; top: 0; z-index: 40 }
+        }
+        dialog.install-dialog {
+            border: none;
+            border-radius: 12px;
+            padding: 0;
+            max-width: 520px;
+            width: 92%;
+            box-shadow: 0 24px 48px rgba(0,0,0,.25);
+            background: #f8f9fa;
+            color: var(--ink);
+            font-family: inherit;
+        }
+        dialog.install-dialog::backdrop {
+            background: rgba(20,26,31,.75);
+            backdrop-filter: blur(2px);
+        }
+        .install-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--rule);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-radius: 12px 12px 0 0;
+        }
+        .install-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+        .install-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--muted);
+            line-height: 1;
+            padding: 0 4px;
+        }
+        .install-close:hover { color: var(--ink); }
+        .install-body {
+            padding: 24px;
+        }
+        .install-intro {
+            margin: 0 0 20px;
+            font-size: 14.5px;
+            color: var(--muted);
+        }
+        .platform-block {
+            margin-bottom: 28px;
+        }
+        .platform-block:last-child {
+            margin-bottom: 0;
+        }
+        .platform-tag {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--rule);
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            color: var(--ink);
+        }
+        .install-step {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+        .install-step:last-child {
+            margin-bottom: 0;
+        }
+        .step-num {
+            background: var(--marking);
+            color: var(--ink);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex: none;
+            margin-top: 2px;
+        }
+        .step-text {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .step-text b {
+            display: block;
+            font-size: 15.5px;
+            margin-bottom: 2px;
+        }
+        .step-text span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .install-divider {
+            border: 0;
+            border-top: 1px solid var(--rule);
+            margin: 24px 0;
+        }
+        @media (max-width: 480px) {
+            .install-body { padding: 18px; }
+            .install-header { padding: 16px 18px; }
+        }
     </style>
 </head>
 <body>
@@ -450,6 +582,14 @@
             <h1>Transportation engineering, open in your browser.</h1>
             <p>Intersection level of service, queues, freeway and two-lane operations, alignment, sight distance and parking — from the Highway Capacity Manual, the AASHTO Green Book and the Highway Safety Manual. Run a procedure in the browser and see the intermediate steps, or post the same inputs to the API when the question becomes a corridor.</p>
             <div class="app-actions">
+                    <button class="app-cta" data-install onclick="installApp()" style="margin-bottom:0;">
+                        <span class="app-cta-badge" style="background:#fff;color:var(--ink);border:1px solid var(--rule);">Install</span>
+                        <span class="app-cta-text">
+                            <b>Install as an app</b>
+                            <span>Add to your home screen</span>
+                        </span>
+                        <span class="app-cta-go" aria-hidden="true">📲</span>
+                    </button>
                     <a class="app-cta share-cta" href="https://wa.me/?text=Help%20improve%20the%20profession%20%E2%80%94%20sharing%20matters%21%20https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2Fapis.html" target="_blank" rel="noopener"
                        data-share-text="Help improve the profession — sharing matters!" data-share-url="https://mahmoudalem95.github.io/mahalco/apis.html">
                         <span class="app-cta-badge">Share</span>
@@ -1365,6 +1505,85 @@ document.querySelectorAll('a.share-cta').forEach(function (a) {
         }).catch(function () { window.open(a.href, '_blank', 'noopener'); });
     });
 });
+</script>
+<dialog id="install-dialog" class="install-dialog">
+    <div class="install-header">
+        <h3>Install the app</h3>
+        <button class="install-close" onclick="document.getElementById('install-dialog').close()" aria-label="Close">&times;</button>
+    </div>
+    <div class="install-body">
+        <p class="install-intro">Add Mahalco to your home screen for an app-like experience.</p>
+
+        <div class="platform-block">
+            <span class="platform-tag">iOS / Safari</span>
+            <div class="install-step">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                    <b>לחצו על כפתור השיתוף</b>
+                    <span>הכפתור נמצא בתחתית המסך (ריבוע עם חץ למעלה).</span>
+                </div>
+            </div>
+            <div class="install-step">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                    <b>גללו ובחרו "הוסף למסך הבית"</b>
+                    <span>אשרו את ההוספה.</span>
+                </div>
+            </div>
+        </div>
+
+        <hr class="install-divider">
+
+        <div class="platform-block">
+            <span class="platform-tag">Android / Chrome</span>
+            <div class="install-step">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                    <b>לחצו על תפריט שלוש הנקודות</b>
+                    <span>התפריט נמצא בפינה הימנית העליונה.</span>
+                </div>
+            </div>
+            <div class="install-step">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                    <b>בחרו "הוסף למסך הבית"</b>
+                    <span>או "התקן אפליקציה".</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<script>
+/* התקנה כאפליקציה: קולטים את ההצעה של הדפדפן ומשתמשים בה בכפתור.
+   בדפדפן שלא תומך (בעיקר iOS) נפתחות ההוראות הידניות. */
+(function () {
+    var deferred = null;
+    window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault(); deferred = e;
+        document.querySelectorAll('.app-cta[data-install]').forEach(function (b) {
+            var t = b.querySelector('.app-cta-text span');
+            if (t) t.textContent = 'התקנה בלחיצה אחת';
+        });
+    });
+    window.installApp = function () {
+        if (deferred) {
+            deferred.prompt();
+            deferred.userChoice.finally(function () { deferred = null; });
+            return;
+        }
+        var dlg = document.getElementById('install-dialog');
+        if (dlg && dlg.showModal) dlg.showModal(); else if (dlg) dlg.setAttribute('open', '');
+    };
+    window.addEventListener('appinstalled', function () {
+        document.querySelectorAll('.app-cta[data-install]').forEach(function (b) { b.style.display = 'none'; });
+    });
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('sw.js').catch(function () {});
+        });
+    }
+})();
 </script>
 </body>
 </html>

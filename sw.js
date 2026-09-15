@@ -1,50 +1,87 @@
-/* מהאלco — service worker
-   מטרה: שהאתר ייפתח מהר, יעבוד גם ברשת חלשה, וייתן להתקין אותו כאפליקציה.
-   אסטרטגיה: ניווטים — רשת קודם עם נפילה למטמון; שאר הקבצים — מטמון קודם. */
-const VER   = 'mahalco-v1';
-const SHELL = [
-  './', './index.html', './apis-he.html', './apis.html',
-  './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'
+// מהאלco — Service Worker
+// גרסת המטמון: מעלים ב-1 בכל פעם שמפרסמים גרסה חדשה של האתר,
+// כדי לאלץ דפדפנים לרענן את הקבצים השמורים.
+const CACHE_VERSION = "mahalco-v2";
+
+// נשמרים מראש (זמינים גם ללא אינטרנט) רק כפתורי ה-hero בעמוד הבית.
+// כדי להוסיף כלי נוסף לרשימה — פשוט מוסיפים שורה נוספת כאן.
+const PRECACHE_URLS = [
+  "./",
+  "./index.html",
+  "./manifest.webmanifest",
+  "./critical-lane-volume.html",
+  "./parking-regulations.html",
+  "./SD-tool.html",
+  "./typical-section.html",
+  "./calculator_dark_ui.html",
+  "./worklog.html",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./apple-touch-icon.png",
 ];
 
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(VER).then(c => Promise.allSettled(SHELL.map(u => c.add(u))))
-          .then(() => self.skipWaiting())
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE_URLS))
   );
+  self.skipWaiting();
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(ks => Promise.all(ks.filter(k => k !== VER).map(k => caches.delete(k))))
-          .then(() => self.clients.claim())
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => key !== CACHE_VERSION)
+          .map((key) => caches.delete(key))
+      )
+    )
   );
+  self.clients.claim();
 });
 
-self.addEventListener('fetch', e => {
-  const req = e.request;
-  if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;          // צד שלישי — לא נוגעים
+self.addEventListener("fetch", (event) => {
+  const { request } = event;
 
-  if (req.mode === 'navigate') {                            // דף
-    e.respondWith(
-      fetch(req).then(res => {
-        const copy = res.clone();
-        caches.open(VER).then(c => c.put(req, copy));
-        return res;
-      }).catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
+  // רק בקשות GET מטופלות על ידי ה-Service Worker.
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+
+  // בקשות API (Render / api.mahalco.com) תמיד יוצאות לרשת –
+  // אין טעם וגם לא נכון לשמור חישובים במטמון.
+  const isApi =
+    url.hostname.endsWith("onrender.com") ||
+    url.hostname === "api.mahalco.com";
+  if (isApi) return;
+
+  // ניווט לדף HTML: קודם רשת (לתוכן עדכני), נפילה למטמון כשאין רשת,
+  // ואם גם זה לא קיים - נופלים לעמוד הבית.
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match(request).then((r) => r || caches.match("./index.html")))
     );
     return;
   }
 
-  e.respondWith(                                            // נכס
-    caches.match(req).then(hit => hit || fetch(req).then(res => {
-      if (res && res.status === 200 && res.type === 'basic') {
-        const copy = res.clone();
-        caches.open(VER).then(c => c.put(req, copy));
-      }
-      return res;
-    }).catch(() => hit))
+  // קבצים סטטיים (CSS/JS/תמונות/גופנים): מטמון קודם, רשת כגיבוי,
+  // ועדכון המטמון ברקע לפעם הבאה.
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      const network = fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => cached);
+      return cached || network;
+    })
   );
 });

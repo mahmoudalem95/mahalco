@@ -1,20 +1,15 @@
 {
   "name": "מהאלco — הנדסת תנועה ותחבורה",
   "short_name": "מהאלco",
-  "description": "כלי חישוב להנדסת תנועה: רמת שירות, תקן חניה, מרחקי ראות, תורים וחתכים טיפוסיים.",
+  "description": "כלי חישוב להנדסת תנועה ותחבורה: רמת שירות ונפח קריטי, תקן חניה, מרחקי ראות, אורכי תור וחתכים טיפוסיים — לפי HCM, AASHTO ו-HSM.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "he",
   "background_color": "#23272C",
   "theme_color": "#23272C",
-  "lang": "he",
-  "dir": "rtl",
-  "categories": [
-    "productivity",
-    "utilities",
-    "education"
-  ],
   "icons": [
     {
       "src": "icon-192.png",
@@ -29,7 +24,7 @@
       "purpose": "any"
     },
     {
-      "src": "icon-maskable-512.png",
+      "src": "icon-512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -38,15 +33,39 @@
   "shortcuts": [
     {
       "name": "רמת שירות ונפח קריטי",
-      "url": "./critical-lane-volume.html"
+      "short_name": "נפח קריטי",
+      "url": "./critical-lane-volume.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "תקן חניה",
-      "url": "./parking-regulations.html"
+      "name": "תקן חניה לפי יישוב",
+      "short_name": "תקן חניה",
+      "url": "./parking-regulations.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "משולשי ראות",
-      "url": "./SD-tool.html"
+      "name": "משולשי ראות על תכנית",
+      "short_name": "משולשי ראות",
+      "url": "./SD-tool.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "חתך טיפוסי",
+      "short_name": "חתך טיפוסי",
+      "url": "./typical-section.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "חיפוש ערכי תכן",
+      "short_name": "ערכי תכן",
+      "url": "./calculator_dark_ui.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "יומן עבודה לאתר",
+      "short_name": "יומן עבודה",
+      "url": "./worklog.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

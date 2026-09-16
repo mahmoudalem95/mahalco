@@ -1,149 +1,393 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-   <meta name="description" content="Typical road section design resource covering lane widths, medians, shoulders, sidewalks, and cross-section standards.">
-
-   <meta name="description" content="Typical road cross-section design guide in English, covering lanes, medians, shoulders, sidewalks, and urban and rural section standards.">
-
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="חתך טיפוסי עירוני ובין-עירוני – בניית חתך רוחב לפי ההנחיות, בדיקות חיות וגיליון A0 בקנה מידה אמיתי.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <title>MAHALCO — חתך טיפוסי עירוני ובין-עירוני</title>
 <style>
-  :root{
-    --desk:#23262a; --desk-2:#2c3036; --paper:#fbfaf6; --ink:#14171a; --ink-2:#585f66;
-    --hair:#c8c6bd; --slate:#4c5560; --moss:#5a7a4e; --blueprint:#2b5c8a; --alarm:#b03a2e; --amber:#b08a2a;
-    --rail:430px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{margin:0;background:var(--desk);color:#e7e6e1;font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif}
-  header.bar{position:sticky;top:0;z-index:30;background:#191c1f;border-bottom:1px solid #383c42;display:flex;align-items:center;gap:10px;padding:10px 18px;flex-wrap:wrap}
-  .mark{display:flex;flex-direction:column;line-height:1.15;margin-left:auto}
-  .mark b{font-size:15px;letter-spacing:.14em;font-weight:700}
-  .mark span{font-size:11.5px;color:#8d949b}
-  button{background:#33383e;color:#e9e8e3;border:1px solid #4a5057;border-radius:6px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
-  button:hover{background:#3d434a}
-  button.key{background:#e9e8e3;color:#191c1f;border-color:#e9e8e3;font-weight:600}
-  button.mini{padding:2px 7px;font-size:12px;min-width:26px}
-  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #6fa3d8;outline-offset:2px}
-  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-items:start}
-  aside{position:sticky;top:53px;max-height:calc(100vh - 53px);overflow:auto;background:var(--desk-2);border-left:1px solid #3a3f45;padding:12px 14px 40px}
-  aside h2{font-size:11px;letter-spacing:.12em;color:#8d949b;margin:16px 0 7px;font-weight:700}
-  aside h2:first-child{margin-top:2px}
-  .row{display:grid;grid-template-columns:1fr 120px;align-items:center;gap:8px;padding:3px 0}
-  .row label{font-size:13px;color:#cdd1d5}
-  input,select{background:#1c1f23;color:#f0efeb;border:1px solid #464c53;border-radius:5px;padding:5px 6px;font:inherit;font-size:13px}
-  .row input,.row select{width:100%}
-  .wide{grid-template-columns:1fr}
-  .edge{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:4px 0}
-  .edge label{font-size:11px;color:#9aa1a8;display:flex;flex-direction:column;gap:2px}
-  .edge input,.edge select{width:100%}
-  /* cells */
-  .cells{display:flex;flex-direction:column;gap:4px}
-  .cell{display:grid;grid-template-columns:14px 1fr 64px 52px auto;gap:4px;align-items:center;background:#22262a;border:1px solid #3a3f45;border-radius:5px;padding:4px}
-  .cell .sw{width:12px;height:22px;border-radius:2px}
-  .cell select,.cell input{width:100%;padding:3px 4px;font-size:12.5px}
-  .cell input{text-align:left;direction:ltr}
-  .cell .btns{display:flex;gap:2px}
-  .cell.bad{border-color:var(--alarm)} .cell.warn{border-color:var(--amber)}
-  .addbar{display:flex;gap:6px;margin-top:6px}
-  .addbar select{flex:1}
-  .toggles{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-  .toggles label{display:flex;align-items:center;gap:5px;font-size:12px;color:#cdd1d5;background:#1c1f23;border:1px solid #464c53;border-radius:5px;padding:5px 8px;cursor:pointer}
-  .toggles input{accent-color:#6fa3d8}
-  main{padding:18px}
-  .tabs{display:flex;gap:6px;margin-bottom:10px}
-  .tab[aria-selected=true]{background:#e9e8e3;color:#191c1f}
-  .sheetwrap{background:#1b1e21;border:1px solid #3a3f45;border-radius:4px;padding:12px;overflow:auto}
-  #drawing svg{direction:ltr;display:block;width:100%;height:auto;background:var(--paper);box-shadow:0 4px 18px rgba(0,0,0,.35)}
-  .readouts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
-  .box{background:var(--desk-2);border:1px solid #3a3f45;border-radius:4px;padding:12px}
-  .box h3{margin:0 0 9px;font-size:12px;letter-spacing:.08em;color:#8d949b}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .stat{border:1px solid #40454b;border-radius:4px;padding:7px 9px;background:#22262a}
-  .stat span{display:block;font-size:11px;color:#8d949b}
-  .stat b{font-size:16px;font-weight:600}
-  .stat b small{font-size:11px;font-weight:400;color:#9aa1a8}
-  .chk{border-right:3px solid var(--moss);background:#22262a;padding:7px 10px;border-radius:4px 0 0 4px;margin-bottom:6px;font-size:12.5px}
-  .chk.warn{border-color:var(--amber)} .chk.bad{border-color:var(--alarm)}
-  .chk b{font-size:11px;display:block;color:#b9bfc5}
-  .sheetlist{display:flex;flex-direction:column;gap:5px}
-  .sheetlist div{display:flex;gap:6px;align-items:center;background:#22262a;border:1px solid #3a3f45;border-radius:4px;padding:5px 8px;font-size:12.5px}
-  .sheetlist div span{flex:1}
-  .hint{font-size:12px;color:#9aa1a8;margin:4px 0}
-  @media(max-width:1100px){.shell{grid-template-columns:1fr} aside{position:static;max-height:none;border-left:0;border-bottom:1px solid #3a3f45} .readouts{grid-template-columns:1fr}}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF; --fill:#EFEFF4; --fill-2:#E4E4EA; --label:#1C1C1E; --label-2:#6C6C70; --label-3:#9A9AA0;
+  --sep:rgba(60,60,67,.16); --tint:#1F5FA8; --tint-soft:rgba(31,95,168,.12); --hi:#E9A21F; --hi-soft:rgba(233,162,31,.18);
+  --red:#D93A2B; --red-soft:rgba(217,58,43,.10); --amber:#B97A08; --amber-soft:rgba(233,162,31,.14); --green:#2E9D55; --green-soft:rgba(46,157,85,.12);
+  --paper:#fbfaf6; --bar:rgba(242,242,247,.82); --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06);
+  --r-l:14px; --r-m:10px; --r-s:8px; --insp:420px; --ease:cubic-bezier(.2,.8,.2,1);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#000; --card:#1C1C1E; --fill:#2C2C2E; --fill-2:#3A3A3C; --label:#F2F2F7; --label-2:#AEAEB2; --label-3:#7C7C80;
+    --sep:rgba(84,84,88,.55); --tint:#5AA0F2; --tint-soft:rgba(90,160,242,.16); --bar:rgba(18,18,20,.8);
+    --red:#FF6B5E; --red-soft:rgba(255,107,94,.14); --amber:#F2B53A; --green:#4CD27B; --shadow:none }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--label);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Heebo",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--tint);outline-offset:2px;border-radius:6px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- navigation bar ---------- */
+.nav{position:sticky;top:0;z-index:40;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--sep);padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+.nav-in{display:flex;align-items:center;gap:10px;min-height:56px}
+.nav h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.nav h1 small{display:block;font-size:12.5px;font-weight:500;color:var(--label-2);letter-spacing:0}
+.nav .sp{flex:1}
+.nbtn{min-width:44px;height:40px;padding:0 12px;border:0;border-radius:20px;background:var(--fill);color:var(--tint);font-size:15px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.nbtn:disabled{color:var(--label-3);cursor:default}
+.nbtn.primary{background:var(--tint);color:#fff}
+.nbtn svg{width:19px;height:19px}
+.pill{white-space:nowrap;flex:none;height:32px;padding:0 12px;border:0;border-radius:16px;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:background .3s,color .3s}
+.pill.ok{background:var(--green-soft);color:var(--green)}
+.pill.bad{background:var(--red-soft);color:var(--red)}
+.pill.warn{background:var(--amber-soft);color:var(--amber)}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
+
+/* ---------- layout ---------- */
+.shell{display:grid;grid-template-columns:minmax(0,1fr) var(--insp);gap:18px;padding:16px max(16px,env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  max-width:1500px;margin:0 auto;align-items:start}
+.stage{grid-column:1;grid-row:1;position:sticky;top:74px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.insp{grid-column:2;grid-row:1;min-width:0}
+@media (max-width:1023px){
+  .shell{grid-template-columns:1fr;gap:12px}
+  .stage{grid-column:1;grid-row:1;top:62px;z-index:20}
+  .insp{grid-column:1;grid-row:2}
+}
+
+/* ---------- canvas card ---------- */
+.canvas{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);overflow:hidden}
+.canvas-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:.5px solid var(--sep)}
+.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;position:relative;isolation:isolate}
+.seg button{position:relative;z-index:1;border:0;background:none;min-height:32px;padding:0 13px;border-radius:7px;font-size:14px;font-weight:500;color:var(--label);white-space:nowrap}
+.seg .knob{position:absolute;z-index:0;top:2px;bottom:2px;border-radius:7px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);transition:left .32s var(--ease),width .32s var(--ease)}
+@media (prefers-color-scheme: dark){ .seg .knob{background:#636366} }
+.seg button[aria-pressed="true"]{font-weight:600}
+.seg.full{display:flex}
+.seg.full button{flex:1;padding:0 6px}
+.zoom{margin-inline-start:auto;display:flex;gap:4px}
+.zoom button{width:36px;height:32px;border:0;border-radius:8px;background:var(--fill);color:var(--tint);font-size:17px;font-weight:600}
+.zoom output{min-width:48px;text-align:center;font-size:13px;color:var(--label-2);align-self:center;font-variant-numeric:tabular-nums}
+.sheetwrap{background:var(--paper);overflow:auto;touch-action:pan-x pan-y;max-height:58vh;-webkit-overflow-scrolling:touch}
+@media (max-width:1023px){ .sheetwrap{max-height:34vh} }
+#drawing{padding:8px;min-width:100%;transition:width .25s var(--ease)}
+#drawing svg{direction:ltr;display:block;width:100%;height:auto;background:var(--paper)}
+#drawing .selrect{fill:var(--hi-soft);stroke:var(--hi);stroke-width:.6;transition:x .25s var(--ease),width .25s var(--ease)}
+
+/* ---------- ribbon (the live strip) ---------- */
+.ribbon-wrap{padding:10px 12px 12px;border-top:.5px solid var(--sep)}
+.ribbon-head{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;font-size:13px;color:var(--label-2)}
+.ribbon-head b{color:var(--label);font-size:15px;font-variant-numeric:tabular-nums}
+.ribbon-head .gap{margin-inline-start:auto;font-weight:600}
+.ribbon-head .gap.bad{color:var(--red)} .ribbon-head .gap.ok{color:var(--green)}
+.ribbon{direction:ltr;display:flex;height:46px;border-radius:9px;overflow:hidden;background:var(--fill);position:relative;user-select:none;-webkit-user-select:none;touch-action:none}
+.rb{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:rgba(0,0,0,.72);
+  transition:flex-grow .28s var(--ease),box-shadow .2s;overflow:hidden;white-space:nowrap;cursor:pointer;border-right:1px solid rgba(255,255,255,.7)}
+.rb:last-child{border-right:0}
+.rb span{pointer-events:none;padding:0 2px;text-overflow:clip;overflow:hidden}
+.rb.sel{box-shadow:inset 0 0 0 3px var(--hi)}
+.rb.bad::after,.rb.warn::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.rb.warn::after{background:var(--hi)}
+.ribbon.dragging .rb{transition:none}
+.grip{position:absolute;top:0;bottom:0;width:26px;margin-left:-13px;z-index:2;cursor:ew-resize;display:flex;align-items:center;justify-content:center}
+.grip::before{content:"";width:4px;height:22px;border-radius:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.22),0 1px 4px rgba(0,0,0,.25);transition:transform .15s,height .15s}
+.grip.on::before{height:34px;transform:scaleX(1.4);background:var(--hi)}
+.ribbon-hint{font-size:12px;color:var(--label-3);margin-top:6px}
+.tip{position:fixed;z-index:80;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;font-size:13px;font-weight:600;padding:6px 10px;border-radius:9px;transform:translate(-50%,-120%);direction:ltr;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ---------- readouts ---------- */
+.readouts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:1023px){ .readouts{grid-template-columns:1fr} }
+.box{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:14px 16px}
+.box h3{margin:0 0 10px;font-size:15px;font-weight:700}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--fill);border-radius:var(--r-m);padding:9px 11px}
+.stat span{display:block;font-size:12px;color:var(--label-2);line-height:1.25}
+.stat b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat b small{font-size:12px;font-weight:500;color:var(--label-2)}
+.stat.pulse{animation:pulse .5s var(--ease)}
+@keyframes pulse{40%{background:var(--tint-soft)}}
+.chk{position:relative;padding:9px 12px 9px 12px;padding-inline-start:34px;border-radius:var(--r-m);background:var(--green-soft);margin-bottom:6px;font-size:14px;line-height:1.4}
+.chk::before{content:"✓";position:absolute;inset-inline-start:10px;top:9px;width:17px;height:17px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.chk.warn{background:var(--amber-soft)} .chk.warn::before{content:"!";background:var(--hi)}
+.chk.bad{background:var(--red-soft)} .chk.bad::before{content:"!";background:var(--red)}
+.chk b{display:block;font-size:12.5px;color:var(--label-2)}
+.chk.new{animation:chkin .4s var(--ease)}
+@keyframes chkin{from{opacity:0;transform:translateY(-4px)}}
+.sheetlist{display:flex;flex-direction:column;gap:6px}
+.sheetlist div{display:flex;gap:8px;align-items:center;background:var(--fill);border-radius:var(--r-m);padding:6px 6px 6px 12px;padding-inline-start:12px;font-size:14px}
+.sheetlist div span{flex:1}
+.sheetlist button{border:0;min-height:36px;padding:0 12px;border-radius:9px;background:var(--card);color:var(--tint);font-weight:600;font-size:14px}
+.sheetlist button[data-a="rm"]{color:var(--red)}
+.hint{font-size:13px;color:var(--label-2);margin:6px 0 0;line-height:1.45}
+
+/* ---------- inspector ---------- */
+.tabs{position:sticky;top:74px;z-index:15;background:var(--bg);padding:0 0 10px}
+@media (max-width:1023px){ .tabs{position:static} }
+.pane{display:none}
+.pane.on{display:block;animation:panein .28s var(--ease)}
+@keyframes panein{from{opacity:0;transform:translateY(6px)}}
+.gh{margin:18px 16px 6px;font-size:13px;color:var(--label-2)}
+.gh:first-child{margin-top:4px}
+.gf{margin:6px 16px 0;font-size:12.5px;color:var(--label-2);line-height:1.45}
+.group{background:var(--card);border-radius:var(--r-l);overflow:hidden;box-shadow:var(--shadow)}
+.li{display:flex;align-items:center;gap:12px;min-height:50px;padding:6px 16px;position:relative}
+.li+.li::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.li>label,.li>.lb{flex:1;min-width:0;font-size:16px}
+.li input[type=text],.li input:not([type]){flex:1.2;min-width:0;border:0;background:none;text-align:left;direction:rtl;text-align:end;color:var(--label-2);font-size:16px;padding:8px 0}
+.li input:not([type]):focus{color:var(--label);outline:none}
+.li .sel-wrap{position:relative}
+select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;color:var(--label-2);font-size:16px;padding:8px 18px 8px 0;text-align:end;max-width:100%}
+.chev{pointer-events:none;position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--label-3);font-size:13px}
+
+/* stepper */
+.stp{display:inline-flex;align-items:center;background:var(--fill);border-radius:9px;height:34px;direction:ltr;flex:none}
+.stp button{width:38px;height:34px;border:0;background:none;color:var(--label);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;border-radius:9px}
+.stp button:active{background:var(--fill-2)}
+.stp input{width:62px;height:34px;border:0;border-left:.5px solid var(--sep);border-right:.5px solid var(--sep);background:none;text-align:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;padding:0;-moz-appearance:textfield}
+.stp input::-webkit-outer-spin-button,.stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stp input:disabled{color:var(--label-3)}
+.stp.off{opacity:.45;pointer-events:none}
+.unit{font-size:13px;color:var(--label-2);margin-inline-start:-6px}
+
+/* switch */
+.sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--fill-2);position:relative;flex:none;cursor:pointer;transition:background .25s;margin:0}
+.sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s var(--ease)}
+.sw:checked{background:var(--green)}
+.sw:checked::after{transform:translateX(-20px)}
+
+/* presets */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:10px}
+.pcard{border:0;text-align:start;background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:10px;display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s,box-shadow .2s}
+.pcard:active{transform:scale(.97)}
+.pcard[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--tint),var(--shadow)}
+.pcard .thumb{direction:ltr;display:flex;height:30px;border-radius:6px;overflow:hidden;background:var(--fill)}
+.pcard .thumb i{display:block;height:100%}
+.pcard b{font-size:14px;font-weight:600;line-height:1.3}
+.pcard small{font-size:12px;color:var(--label-2)}
+.pcard .ck{position:absolute;top:8px;inset-inline-start:8px;width:20px;height:20px;border-radius:50%;background:var(--tint);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center}
+.pcard[aria-pressed="true"] .ck{display:flex}
+#presetSrc{margin:10px 4px 0}
+#presetFilter{overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+#presetFilter::-webkit-scrollbar{display:none}
+#presetFilter button{flex:0 0 auto;padding:0 12px}
+.stat b{white-space:nowrap}
+
+/* cells */
+.cells{display:flex;flex-direction:column}
+.cell{position:relative;padding:10px 12px 10px 12px;padding-inline-start:16px;background:var(--card);transition:background .25s}
+.cell+.cell{border-top:.5px solid var(--sep)}
+.cell::after{content:"";position:absolute;top:8px;bottom:8px;inset-inline-start:0;width:4px;border-radius:0 3px 3px 0;background:transparent;transition:background .25s}
+[dir=rtl] .cell::after{border-radius:3px 0 0 3px}
+.cell.bad::after{background:var(--red)} .cell.warn::after{background:var(--hi)}
+.cell.sel{background:var(--hi-soft)}
+.cell.flash{animation:flash .9s var(--ease)}
+@keyframes flash{0%{background:var(--tint-soft)}100%{background:var(--card)}}
+.cell.drag{z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.22);border-radius:12px;transform:scale(1.02);background:var(--card)}
+.c-top{display:flex;align-items:center;gap:10px}
+.c-sw{width:26px;height:26px;border-radius:7px;flex:none;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.15)}
+.c-name{flex:1;min-width:0;position:relative}
+.c-name select{width:100%;font-weight:600;color:var(--label);padding:6px 18px 6px 0;text-align:start}
+.c-name .chev{left:0}
+.c-more,.c-handle{width:36px;height:36px;border:0;border-radius:18px;background:var(--fill);color:var(--label-2);font-size:18px;display:flex;align-items:center;justify-content:center;flex:none}
+.c-handle{background:none;cursor:grab;touch-action:none;font-size:20px;color:var(--label-3)}
+.c-bot{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;padding-inline-start:36px}
+.c-bot .seg button{min-height:30px;padding:0 11px;font-size:16px}
+.c-msg{margin:7px 0 0;padding-inline-start:36px;font-size:12.5px;line-height:1.4;color:var(--red);display:none}
+.cell.bad .c-msg,.cell.warn .c-msg{display:block}
+.cell.warn .c-msg{color:var(--amber)}
+.c-idx{font-size:12px;color:var(--label-3);font-variant-numeric:tabular-nums;min-width:18px;text-align:center}
+.empty{padding:26px 16px;text-align:center;color:var(--label-2);font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.tile{border:0;background:var(--card);border-radius:12px;box-shadow:var(--shadow);min-height:52px;padding:8px 10px;display:flex;align-items:center;gap:8px;text-align:start;font-size:13.5px;font-weight:500;line-height:1.2;transition:transform .12s}
+.tile:active{transform:scale(.95)}
+.tile i{width:16px;height:28px;border-radius:4px;flex:none}
+.rowbtns{display:flex;gap:8px;margin-top:10px}
+.rowbtns button{flex:1;min-height:44px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--shadow);color:var(--tint);font-weight:600;font-size:15px}
+.rowbtns button.danger{color:var(--red)}
+
+/* edges */
+.edgecard .li.sub{transition:opacity .2s}
+.edgecard .li.sub[hidden]{display:none}
+
+/* action sheet */
+.scrim{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:91;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));width:min(420px,calc(100% - 24px));transform:translate(-50%,120%);transition:transform .35s var(--ease)}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .grp{background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.sheet .ttl{padding:12px 16px;text-align:center;font-size:13px;color:var(--label-2);border-bottom:.5px solid var(--sep)}
+.sheet button,.sheet label.act{display:flex;width:100%;min-height:56px;align-items:center;justify-content:center;border:0;background:none;font-size:18px;color:var(--tint);cursor:pointer}
+.sheet .grp>*+*{border-top:.5px solid var(--sep)}
+.sheet button.danger{color:var(--red)}
+.sheet button.cancel{background:var(--card);border-radius:14px;font-weight:600}
+.sheet button:disabled{color:var(--label-3)}
+
+/* toast */
+.toast{position:fixed;z-index:95;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;border-radius:22px;padding:10px 8px 10px 18px;padding-inline-start:18px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;transition:transform .35s var(--ease),opacity .25s;max-width:calc(100% - 32px)}
+.toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.toast button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:14px;min-height:30px;padding:0 12px;font-weight:600;font-size:14px}
+.toast button[hidden]{display:none}
+
+@media (max-width:600px){
+  .stage{position:static}
+  .nav h1 small{display:none}
+  .nav h1{white-space:nowrap;font-size:17px}
+  .nav-in{gap:6px}
+  .nbtn{min-width:40px;padding:0 9px}
+  .nbtn .t{display:none}
+  .grid3{grid-template-columns:1fr 1fr}
+  .stp input{width:54px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{.nav,.insp,.canvas-bar,.ribbon-wrap{display:none}}
 </style>
 </head>
 <body>
-<header class="bar">
-  <div class="mark"><b>MAHALCO</b><span>חתך טיפוסי – עירוני ובין-עירוני · גיליון A0 בקנה מידה אמיתי</span></div>
-  <button id="btnAddSheet">הוסף חתך לגיליון</button>
-  <button id="btnHtml" class="key">ייצוא גיליון A0 (HTML)</button>
-  <button id="btnSvg">הורד SVG</button>
-  <button id="btnPrint">הדפס</button>
-  <button id="btnJson">שמור JSON</button>
-  <label class="mini" style="cursor:pointer"><input type="file" id="fileJson" accept=".json" hidden><span style="border:1px solid #4a5057;border-radius:6px;padding:6px 11px;font-size:13px;background:#33383e">טען JSON</span></label>
+<header class="nav">
+  <div class="nav-in">
+    <div><h1>חתך טיפוסי<small>עירוני ובין-עירוני · גיליון A0 בקנה מידה</small></h1></div>
+    <span class="sp"></span>
+    <button class="pill ok" id="statusPill" type="button" aria-live="polite"><i></i><span>תקין</span></button>
+    <button class="nbtn" id="btnUndo" type="button" aria-label="ביטול" title="ביטול" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h-7a5 5 0 0 0 0 10h3"/><path d="M12 4l3 3-3 3"/></svg></button>
+    <button class="nbtn" id="btnRedo" type="button" aria-label="חזרה" title="חזרה" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h7a5 5 0 0 1 0 10h-3"/><path d="M12 4L9 7l3 3"/></svg></button>
+    <button class="nbtn" id="btnAddSheet" type="button" title="הוספת החתך הנוכחי לגיליון"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg><span class="t">לגיליון</span></button>
+    <button class="nbtn primary" id="btnShare" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="t">ייצוא</span></button>
+  </div>
 </header>
 
 <div class="shell">
-<aside>
-  <h2>תבנית פתיחה</h2>
-  <div class="row wide"><select id="preset"></select></div>
-  <p class="hint" id="presetSrc"></p>
+<section class="stage" aria-label="שרטוט">
+  <div class="canvas">
+    <div class="canvas-bar">
+      <div class="seg" id="viewSeg" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" aria-pressed="true" data-v="section">חתך מוגדל</button>
+        <button class="tab" role="tab" aria-selected="false" aria-pressed="false" data-v="sheet">גיליון A0</button>
+      </div>
+      <div class="zoom"><button type="button" id="zOut" aria-label="הקטנה">−</button><output id="zVal">100%</output><button type="button" id="zIn" aria-label="הגדלה">+</button></div>
+    </div>
+    <div class="sheetwrap" id="sheetwrap"><div id="drawing"></div></div>
+    <div class="ribbon-wrap">
+      <div class="ribbon-head"><span>רוחב כולל</span><b id="rbTot">0.00 מ׳</b><span class="gap" id="rbGap"></span></div>
+      <div class="ribbon" id="ribbon" aria-label="פס רוחבים – גררו את המפרידים לשינוי רוחב"></div>
+      <div class="ribbon-hint">הקישו על תא לבחירה. גררו מפריד בין שני תאים כדי להעביר רוחב ביניהם – הרוחב הכולל נשמר.</div>
+    </div>
+  </div>
+  <div class="readouts" id="readouts">
+    <div class="box"><h3>נתוני החתך</h3><div class="grid3" id="stats"></div></div>
+    <div class="box" id="checksBox"><h3>בדיקות מול ההנחיות</h3><div id="checks"></div></div>
+  </div>
+</section>
 
-  <h2>פרטי החתך</h2>
-  <div class="row"><label for="title">כותרת החתך</label><input id="title" value="חתך טיפוסי"></div>
-  <div class="row"><label for="rowTarget">רוחב זכות דרך יעד (מ׳)</label><input id="rowTarget" type="number" step="0.1" value="0"></div>
-  <div class="row"><label for="ctx">הקשר</label><select id="ctx"><option value="urban">עירוני</option><option value="inter">בין-עירוני</option></select></div>
+<aside class="insp" aria-label="הגדרות">
+  <div class="tabs"><div class="seg full" id="paneSeg">
+    <button type="button" data-p="p-start" aria-pressed="true">פתיחה</button>
+    <button type="button" data-p="p-cells" aria-pressed="false">תאים</button>
+    <button type="button" data-p="p-edges" aria-pressed="false">קצוות</button>
+    <button type="button" data-p="p-pave" aria-pressed="false">מבנה</button>
+    <button type="button" data-p="p-sheet" aria-pressed="false">גיליון</button>
+  </div></div>
 
-  <h2>תאים (משמאל לימין בשרטוט)</h2>
-  <div class="cells" id="cells"></div>
-  <div class="addbar"><select id="addType"></select><button id="btnAdd">+ הוסף</button></div>
-  <div class="addbar"><button id="btnMirror">שיקוף – השלם צד שני</button><button id="btnClear">נקה</button></div>
+  <!-- פתיחה -->
+  <div class="pane on" id="p-start">
+    <p class="gh">פרטי החתך</p>
+    <div class="group">
+      <div class="li"><label for="title">כותרת</label><input id="title" value="חתך טיפוסי"></div>
+      <div class="li"><span class="lb">הקשר</span>
+        <select id="ctx" class="vh" tabindex="-1" aria-hidden="true"><option value="urban">עירוני</option><option value="inter">בין-עירוני</option></select>
+        <div class="seg" data-bind="ctx"></div></div>
+      <div class="li"><label for="rowTarget">זכות דרך יעד</label><div class="stp" data-step="0.5"><input id="rowTarget" type="number" step="0.1" min="0" value="0" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+    </div>
+    <p class="gf">0 = ללא יעד. כשיש יעד, הפס שמעל מראה בכל רגע כמה חסר או עודף.</p>
 
-  <h2>קצוות החתך</h2>
-  <div class="edge" id="edgeL"></div>
-  <div class="edge" id="edgeR"></div>
+    <p class="gh">תבנית פתיחה</p>
+    <select id="preset" class="vh" tabindex="-1" aria-hidden="true"></select>
+    <div class="seg full" id="presetFilter"></div>
+    <div class="pgrid" id="presetGrid"></div>
+    <p class="hint" id="presetSrc"></p>
+  </div>
 
-  <h2>מבנה מסעה ושיפועים</h2>
-  <div class="row"><label for="dSurf">שכבות אספלט (מ׳)</label><input id="dSurf" type="number" step="0.01" value="0.10"></div>
-  <div class="row"><label for="dBase">מצע (מ׳)</label><input id="dBase" type="number" step="0.01" value="0.25"></div>
-  <div class="row"><label for="dSub">מצע תחתון / שתית (מ׳)</label><input id="dSub" type="number" step="0.01" value="0.30"></div>
-  <div class="row"><label for="cfRoad">שיפוע רוחבי כביש (%)</label><input id="cfRoad" type="number" step="0.1" value="2.0"></div>
-  <div class="row"><label for="cfSide">שיפוע מדרכה/שול (%)</label><input id="cfSide" type="number" step="0.1" value="2.0"></div>
-  <div class="row"><label for="curbH">גובה אבן שפה (מ׳)</label><input id="curbH" type="number" step="0.01" value="0.15"></div>
+  <!-- תאים -->
+  <div class="pane" id="p-cells">
+    <p class="gh">תאים, משמאל לימין בשרטוט</p>
+    <div class="group"><div class="cells" id="cells"></div></div>
+    <div class="rowbtns"><button id="btnMirror" type="button">שיקוף – השלמת הצד השני</button><button id="btnClear" type="button" class="danger">ניקוי</button></div>
+    <p class="gh">הוספת תא <span id="addWhere" style="color:var(--label-3)"></span></p>
+    <select id="addType" class="vh" tabindex="-1" aria-hidden="true"></select>
+    <button id="btnAdd" class="vh" tabindex="-1" type="button">הוספה</button>
+    <div class="tiles" id="tiles"></div>
+  </div>
 
-  <h2>גיליון</h2>
-  <div class="row"><label for="scale">קנה מידה</label><select id="scale"><option value="100">1:100</option><option value="200" selected>1:200</option><option value="250">1:250</option><option value="500">1:500</option></select></div>
-  <div class="row"><label for="proj">פרויקט</label><input id="proj" value=""></div>
-  <div class="row"><label for="drawn">שורטט ע״י</label><input id="drawn" value=""></div>
-  <div class="row"><label for="dwg">מס׳ גיליון</label><input id="dwg" value="TS-01"></div>
-  <div class="toggles">
-    <label><input type="checkbox" id="tIcons" checked> כלי רכב ואנשים</label>
-    <label><input type="checkbox" id="tTrees" checked> עצים</label>
-    <label><input type="checkbox" id="tCf" checked> שיפועים</label>
-    <label><input type="checkbox" id="tPave" checked> מבנה מסעה</label>
-    <label><input type="checkbox" id="tNames" checked> שמות תאים</label>
+  <!-- קצוות -->
+  <div class="pane" id="p-edges">
+    <p class="gh">קצה שמאלי</p><div class="group edgecard" id="edgeL"></div>
+    <p class="gh">קצה ימני</p><div class="group edgecard" id="edgeR"></div>
+    <p class="gf">בסוללה ובחפירה: שיפוע 1:n וגובה המדרון. בחפירה נוסף עומק התעלה.</p>
+  </div>
+
+  <!-- מבנה -->
+  <div class="pane" id="p-pave">
+    <p class="gh">מבנה מסעה</p>
+    <div class="group">
+      <div class="li"><label for="dSurf">שכבות אספלט</label><div class="stp" data-step="0.01"><input id="dSurf" type="number" step="0.01" value="0.10" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li"><label for="dBase">מצע</label><div class="stp" data-step="0.05"><input id="dBase" type="number" step="0.01" value="0.25" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li"><label for="dSub">מצע תחתון / שתית</label><div class="stp" data-step="0.05"><input id="dSub" type="number" step="0.01" value="0.30" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li"><label for="tPave">הצגת מבנה מסעה</label><input type="checkbox" class="sw" id="tPave" checked></div>
+    </div>
+    <p class="gh">שיפועים ואבן שפה</p>
+    <div class="group">
+      <div class="li"><label for="cfRoad">שיפוע רוחבי כביש</label><div class="stp" data-step="0.5"><input id="cfRoad" type="number" step="0.1" value="2.0" inputmode="decimal"></div><span class="unit">%</span></div>
+      <div class="li"><label for="cfSide">שיפוע מדרכה / שול</label><div class="stp" data-step="0.5"><input id="cfSide" type="number" step="0.1" value="2.0" inputmode="decimal"></div><span class="unit">%</span></div>
+      <div class="li"><label for="curbH">גובה אבן שפה</label><div class="stp" data-step="0.01"><input id="curbH" type="number" step="0.01" value="0.15" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+    </div>
+  </div>
+
+  <!-- גיליון -->
+  <div class="pane" id="p-sheet">
+    <p class="gh">קנה מידה</p>
+    <select id="scale" class="vh" tabindex="-1" aria-hidden="true"><option value="100">1:100</option><option value="200" selected>1:200</option><option value="250">1:250</option><option value="500">1:500</option></select>
+    <div class="seg full" data-bind="scale"></div>
+    <p class="gh">כותרת הגיליון</p>
+    <div class="group">
+      <div class="li"><label for="proj">פרויקט</label><input id="proj" value="" placeholder="שם הפרויקט"></div>
+      <div class="li"><label for="drawn">שורטט ע״י</label><input id="drawn" value="" placeholder="שם"></div>
+      <div class="li"><label for="dwg">מס׳ גיליון</label><input id="dwg" value="TS-01"></div>
+    </div>
+    <p class="gh">מה מופיע בשרטוט</p>
+    <div class="group">
+      <div class="li"><label for="tIcons">כלי רכב ואנשים</label><input type="checkbox" class="sw" id="tIcons" checked></div>
+      <div class="li"><label for="tTrees">עצים</label><input type="checkbox" class="sw" id="tTrees" checked></div>
+      <div class="li"><label for="tCf">חיצי שיפוע</label><input type="checkbox" class="sw" id="tCf" checked></div>
+      <div class="li"><label for="tNames">שמות תאים</label><input type="checkbox" class="sw" id="tNames" checked></div>
+    </div>
+    <p class="gh">חתכים בגיליון (עד שלושה ב-A0)</p>
+    <div class="box"><div class="sheetlist" id="sheetList"></div>
+      <p class="hint">ייצוא ה-HTML מפיק דף A0 לרוחב (1189×841 מ״מ). מדפיסים ב-100% בלי התאמה לדף, ובודקים מול סרגל קנה המידה שבגיליון.</p></div>
   </div>
 </aside>
+</div>
 
-<main>
-  <div class="tabs" role="tablist">
-    <button class="tab" role="tab" aria-selected="true" data-v="section">חתך מוגדל</button>
-    <button class="tab" role="tab" aria-selected="false" data-v="sheet">גיליון A0</button>
-  </div>
-  <div class="sheetwrap"><div id="drawing"></div></div>
-  <div class="readouts">
-    <div class="box"><h3>נתוני החתך</h3><div class="grid3" id="stats"></div></div>
-    <div class="box"><h3>בדיקות מול ההנחיות</h3><div id="checks"></div></div>
-  </div>
-  <div class="box" style="margin-top:14px"><h3>חתכים בגיליון (עד שלושה בגיליון A0 אחד)</h3><div class="sheetlist" id="sheetList"></div>
-    <p class="hint">אם הרשימה ריקה, הגיליון כולל את החתך הנוכחי בלבד. ייצוא ה-HTML מפיק דף בגודל A0 לרוחב (1189×841 מ״מ). יש להדפיס ב-100% ללא התאמה לגודל הדף; קנה המידה נבדק באמצעות סרגל קנה המידה שבגיליון.</p></div>
-</main>
+<!-- action sheet -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grp" id="sheetGrp"></div><button class="cancel" type="button" id="sheetCancel">ביטול</button></div>
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><button type="button" id="toastAct" hidden>בטל</button></div>
+
+<!-- export actions (used by the action sheet) -->
+<div hidden>
+  <button id="btnHtml" type="button">ייצוא גיליון A0 (HTML)</button>
+  <button id="btnSvg" type="button">הורדת SVG</button>
+  <button id="btnPrint" type="button">הדפסה</button>
+  <button id="btnJson" type="button">שמירת JSON</button>
+  <input type="file" id="fileJson" accept=".json,application/json">
 </div>
 
 <script>
+
 /* ======================================================================
    סוגי תאים – ברירות מחדל ומגבלות מתוך ספרי ההנחיות (אותם ערכים שבמחשבון)
    lvl: 'road' = מפלס כביש, 'curb' = מפלס מדרכה (מעל אבן שפה)
@@ -223,53 +467,416 @@ const f2 = v => (Math.round(v*100)/100).toFixed(2);
 const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------------- עורך התאים ---------------- */
+/* ---------------- עורך התאים (ממשק מגע) ---------------- */
+let SEL = -1;                                   // התא הנבחר
+const DIR_LBL = {up:'↑', down:'↓', both:'⇅', none:'–'};
 function renderCells(){
   const box = $('cells');
+  if(!S.cells.length){ box.innerHTML = '<div class="empty">אין עדיין תאים. בחרו תבנית בלשונית «פתיחה» או הוסיפו תא מהרשימה למטה.</div>'; SEL=-1; return; }
+  if(SEL >= S.cells.length) SEL = S.cells.length-1;
   box.innerHTML = S.cells.map((c,i)=>{
-    const t = T[c.t], lv = levelOf(c);
-    const hasDir = !!t.dir;
-    const st = cellCheck(c);
-    return `<div class="cell ${st?st.cls:''}" title="${esc(st?st.msg:t.n)}">
-      <span class="sw" style="background:${t.col}"></span>
-      <select data-i="${i}" data-k="t">${Object.keys(T).map(k=>`<option value="${k}" ${k===c.t?'selected':''}>${T[k].n}</option>`).join('')}</select>
-      <input data-i="${i}" data-k="w" type="number" step="0.05" min="0.05" value="${f2(c.w)}" aria-label="רוחב (מ׳)">
-      ${hasDir?`<select data-i="${i}" data-k="dir" aria-label="כיוון">${DIRS.map(d=>`<option value="${d[0]}" ${d[0]===c.dir?'selected':''}>${d[1]}</option>`).join('')}</select>`:'<span></span>'}
-      <span class="btns"><button class="mini" data-a="up" data-i="${i}" title="הזז שמאלה">▲</button><button class="mini" data-a="dn" data-i="${i}" title="הזז ימינה">▼</button><button class="mini" data-a="dup" data-i="${i}" title="שכפל">⧉</button><button class="mini" data-a="del" data-i="${i}" title="מחק">✕</button></span>
+    const t = T[c.t], hasDir = !!t.dir, st = cellCheck(c);
+    return `<div class="cell ${st?st.cls:''}" data-row="${i}" title="${esc(st?st.msg:t.n)}">
+      <div class="c-top">
+        <span class="c-idx">${i+1}</span>
+        <span class="c-sw" style="background:${t.col}"></span>
+        <div class="c-name"><select class="plain" data-i="${i}" data-k="t" aria-label="סוג התא">${Object.keys(T).map(k=>`<option value="${k}" ${k===c.t?'selected':''}>${T[k].n}</option>`).join('')}</select><span class="chev">⌄</span></div>
+        <button type="button" class="c-more" data-more="${i}" aria-label="פעולות לתא ${i+1}">⋯</button>
+        <button type="button" class="c-handle" data-drag="${i}" aria-label="גרירה לשינוי סדר">≡</button>
+      </div>
+      <div class="c-bot">
+        <div class="stp" data-step="0.05" data-big="0.25"><input data-i="${i}" data-k="w" type="number" step="0.05" min="0.05" value="${f2(c.w)}" inputmode="decimal" aria-label="רוחב (מ׳)"></div><span class="unit">מ׳</span>
+        ${hasDir?`<div class="seg" data-dir="${i}" role="group" aria-label="כיוון">${DIRS.map(d=>`<button type="button" data-d="${d[0]}" aria-pressed="${d[0]===c.dir}" aria-label="${d[0]}">${d[1]}</button>`).join('')}</div>`:''}
+      </div>
+      <p class="c-msg">${esc(st?st.msg:'')}</p>
     </div>`;
   }).join('');
-  box.querySelectorAll('[data-k]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',e=>{
+  box.querySelectorAll('[data-k]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{
     const i=+el.dataset.i, k=el.dataset.k;
     if(k==='w') S.cells[i].w = Math.max(0.05, parseFloat(el.value)||0.05);
-    else if(k==='t'){ S.cells[i].t = el.value; S.cells[i].w = T[el.value].w; S.cells[i].dir = T[el.value].dir || 'none'; renderCells(); }
-    else S.cells[i][k] = el.value;
+    else if(k==='t'){ S.cells[i].t = el.value; S.cells[i].w = T[el.value].w; S.cells[i].dir = T[el.value].dir || 'none'; SEL=i; renderCells(); }
     if(k!=='t') update(false); else update();
   }));
-  box.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{
-    const i=+b.dataset.i, a=b.dataset.a, arr=S.cells;
-    if(a==='up' && i>0) [arr[i-1],arr[i]]=[arr[i],arr[i-1]];
-    if(a==='dn' && i<arr.length-1) [arr[i+1],arr[i]]=[arr[i],arr[i+1]];
-    if(a==='dup') arr.splice(i+1,0,{...arr[i]});
-    if(a==='del') arr.splice(i,1);
-    renderCells(); update();
-  });
+  box.querySelectorAll('[data-dir]').forEach(g=>g.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const i=+g.dataset.dir; S.cells[i].dir=b.dataset.d;
+    g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); UI.segKnob(g); update(false);
+  }));
+  box.querySelectorAll('.cell').forEach(r=>r.addEventListener('pointerdown',e=>{
+    if(e.target.closest('input,select,button')) return; UI.select(+r.dataset.row);
+  }));
+  box.querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>UI.cellMenu(+b.dataset.more));
+  box.querySelectorAll('[data-drag]').forEach(h=>UI.dragRow(h));
+  UI.enhance(box);
 }
+function cellAction(i,a){
+  const arr=S.cells;
+  if(a==='up' && i>0){ [arr[i-1],arr[i]]=[arr[i],arr[i-1]]; SEL=i-1; }
+  if(a==='dn' && i<arr.length-1){ [arr[i+1],arr[i]]=[arr[i],arr[i+1]]; SEL=i+1; }
+  if(a==='dup'){ arr.splice(i+1,0,{...arr[i]}); SEL=i+1; }
+  if(a==='del'){ arr.splice(i,1); SEL=Math.min(i,arr.length-1); }
+  renderCells(); update();
+}
+const EDGE_TYPES = [['none','ללא'],['building','בניין'],['fill','סוללה'],['cut','חפירה']];
 function edgeUI(side){
   const e = side==='L'?S.eL:S.eR, id = side==='L'?'edgeL':'edgeR';
+  const slope = e.type==='fill'||e.type==='cut', cut = e.type==='cut';
   $(id).innerHTML = `
-    <label>${side==='L'?'קצה שמאלי':'קצה ימני'}<select data-e="type">
-      <option value="none" ${e.type==='none'?'selected':''}>ללא</option>
-      <option value="building" ${e.type==='building'?'selected':''}>קו בניין</option>
-      <option value="fill" ${e.type==='fill'?'selected':''}>סוללה (מילוי)</option>
-      <option value="cut" ${e.type==='cut'?'selected':''}>חפירה + תעלה</option></select></label>
-    <label>שיפוע 1:n<input data-e="n" type="number" step="0.5" value="${e.n??4}" ${e.type==='fill'||e.type==='cut'?'':'disabled'}></label>
-    <label>גובה (מ׳)<input data-e="h" type="number" step="0.1" value="${e.h??1.5}" ${e.type==='fill'||e.type==='cut'?'':'disabled'}></label>
-    <label>עומק תעלה<input data-e="dd" type="number" step="0.05" value="${e.dd??0.6}" ${e.type==='cut'?'':'disabled'}></label>`;
-  $(id).querySelectorAll('[data-e]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{
-    const k=el.dataset.e; e[k] = k==='type'? el.value : (parseFloat(el.value)||0);
-    if(k==='type'){ if(e.type==='fill'){e.n=e.n||4;e.h=e.h||1.5;} if(e.type==='cut'){e.n=e.n||3;e.h=e.h||1.5;e.dd=e.dd||0.6;e.db=0.6;} edgeUI(side); }
-    update(false);
+    <div class="li"><div class="seg full" style="flex:1" role="group" aria-label="${side==='L'?'קצה שמאלי':'קצה ימני'}">${EDGE_TYPES.map(t=>`<button type="button" data-et="${t[0]}" aria-pressed="${e.type===t[0]}">${t[1]}</button>`).join('')}</div></div>
+    <div class="li sub" ${slope?'':'hidden'}><span class="lb">שיפוע 1:n</span><div class="stp" data-step="0.5"><input data-e="n" type="number" step="0.5" value="${e.n??4}" inputmode="decimal" aria-label="שיפוע 1:n"></div></div>
+    <div class="li sub" ${slope?'':'hidden'}><span class="lb">גובה המדרון</span><div class="stp" data-step="0.1"><input data-e="h" type="number" step="0.1" value="${e.h??1.5}" inputmode="decimal" aria-label="גובה (מ׳)"></div><span class="unit">מ׳</span></div>
+    <div class="li sub" ${cut?'':'hidden'}><span class="lb">עומק תעלה</span><div class="stp" data-step="0.05"><input data-e="dd" type="number" step="0.05" value="${e.dd??0.6}" inputmode="decimal" aria-label="עומק תעלה"></div><span class="unit">מ׳</span></div>`;
+  $(id).querySelectorAll('[data-et]').forEach(b=>b.onclick=()=>{
+    e.type=b.dataset.et;
+    if(e.type==='fill'){e.n=e.n||4;e.h=e.h||1.5;} if(e.type==='cut'){e.n=e.n||3;e.h=e.h||1.5;e.dd=e.dd||0.6;e.db=0.6;}
+    edgeUI(side); update(false);
+  });
+  $(id).querySelectorAll('[data-e]').forEach(el=>el.addEventListener('input',()=>{
+    e[el.dataset.e] = parseFloat(el.value)||0; update(false);
   }));
+  UI.enhance($(id));
 }
+
+/* ======================================================================
+   שכבת ממשק – טאבלט / iOS: פס רוחבים חי, צעדים, גיליון פעולות, ביטול/חזרה
+   (שכבה זו אינה משנה את חישובי החתך – רק את אופן העריכה והתצוגה)
+   ====================================================================== */
+const UI = (()=>{
+  const U = {};
+  const vib = ms => { try{ navigator.vibrate && navigator.vibrate(ms||8); }catch(e){} };
+  let zoom = 1;
+
+  /* ---- segmented control knob ---- */
+  U.segKnob = seg => {
+    let k = seg.querySelector(':scope > .knob');
+    if(!k){ k=document.createElement('span'); k.className='knob'; seg.prepend(k); }
+    const on = seg.querySelector(':scope > button[aria-pressed="true"]');
+    if(!on || !on.offsetWidth){ k.style.width='0'; return; }
+    k.style.left = on.offsetLeft+'px'; k.style.width = on.offsetWidth+'px';
+  };
+  U.segAll = () => document.querySelectorAll('.seg').forEach(U.segKnob);
+
+  /* ---- steppers: − value + with press-and-hold ---- */
+  U.enhance = root => {
+    root.querySelectorAll('.stp:not([data-ok])').forEach(w=>{
+      w.dataset.ok=1;
+      const inp = w.querySelector('input'), step = parseFloat(w.dataset.step)||0.1;
+      const dec = Math.max(0, (String(step).split('.')[1]||'').length, (String(inp.step).split('.')[1]||'').length);
+      const mk = (sgn,label)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=label; b.setAttribute('aria-label', sgn>0?'הגדלה':'הקטנה');
+        let t1, t2;
+        const bump = ()=>{ if(inp.disabled) return; const min = inp.min!==''?parseFloat(inp.min):-Infinity;
+          let v = (parseFloat(inp.value)||0) + sgn*step; v = Math.max(min, Math.round(v/step)*step);
+          inp.value = v.toFixed(dec); inp.dispatchEvent(new Event('input',{bubbles:true})); vib(4); };
+        const stop = ()=>{ clearTimeout(t1); clearInterval(t2); };
+        b.addEventListener('pointerdown', e=>{ e.preventDefault(); bump(); t1=setTimeout(()=>{ t2=setInterval(bump,70); },380); });
+        ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
+        b.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); bump(); } });
+        return b; };
+      w.prepend(mk(-1,'−')); w.append(mk(1,'+'));
+      inp.addEventListener('focus', ()=>setTimeout(()=>inp.select(),0));
+    });
+    root.querySelectorAll('.seg').forEach(U.segKnob);
+  };
+
+  /* ---- segmented controls bound to hidden selects ---- */
+  U.bindSelect = seg => {
+    const sel = $(seg.dataset.bind);
+    seg.innerHTML = [...sel.options].map(o=>`<button type="button" data-v="${o.value}" aria-pressed="${o.value===sel.value}">${o.text}</button>`).join('');
+    seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      sel.value=b.dataset.v; sel.dispatchEvent(new Event('input',{bubbles:true})); sel.dispatchEvent(new Event('change',{bubbles:true}));
+      sync(); vib(); });
+    const sync = ()=>{ seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.v===sel.value)); U.segKnob(seg); };
+    seg._sync = sync;
+  };
+
+  /* ---- selection: row ↔ ribbon ↔ drawing ---- */
+  U.select = (i, scroll) => {
+    SEL = (SEL===i && !scroll) ? -1 : i;
+    U.after(true);
+    if(SEL>=0 && scroll){
+      const row = document.querySelector(`#cells .cell[data-row="${SEL}"]`);
+      if(row){ U.pane('p-cells'); row.scrollIntoView({block:'nearest',behavior:'smooth'}); row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
+    }
+    vib(6);
+  };
+
+  /* ---- ribbon ---- */
+  function ribbon(){
+    const rb = $('ribbon'), cells = S.cells, tot = cells.reduce((a,c)=>a+c.w,0);
+    if(rb.querySelectorAll('.rb').length !== cells.length || rb._n !== cells.map(c=>c.t).join()){
+      rb.innerHTML = cells.map((c,i)=>`<div class="rb" data-i="${i}"><span></span></div>`).join('');
+      rb._n = cells.map(c=>c.t).join();
+      rb.querySelectorAll('.rb').forEach(el=>el.addEventListener('click',()=>{ if(!rb._moved) U.select(+el.dataset.i, true); }));
+    }
+    [...rb.querySelectorAll('.rb')].forEach((el,i)=>{
+      const c = cells[i], t = T[c.t], st = cellCheck(c);
+      el.style.flexGrow = c.w; el.style.flexBasis = '0'; el.style.background = t.col;
+      el.className = 'rb' + (i===SEL?' sel':'') + (st?' '+st.cls:'');
+      el.title = `${i+1}. ${t.n} – ${f2(c.w)} מ׳`;
+      el.firstChild.textContent = c.w*1 >= tot*0.06 ? `${t.s} ${f2(c.w)}` : (c.w >= tot*0.035 ? f2(c.w) : '');
+    });
+    grips(rb); clearTimeout(rb._gt); rb._gt=setTimeout(()=>grips(rb),300);
+    $('rbTot').textContent = f2(tot)+' מ׳';
+    const tgt = num('rowTarget'), g = $('rbGap');
+    if(tgt>0){ const d = tot-tgt; g.className='gap '+(Math.abs(d)<0.005?'ok':'bad');
+      g.textContent = Math.abs(d)<0.005 ? `תואם ליעד ${f2(tgt)} מ׳` : (d>0?`חריגה ${f2(d)} מ׳`:`חסרים ${f2(-d)} מ׳`) + ` מול יעד ${f2(tgt)}`; }
+    else { g.className='gap'; g.textContent=''; }
+  }
+  function grips(rb){
+    const kids=[...rb.querySelectorAll('.rb')], have=[...rb.querySelectorAll('.grip')];
+    if(have.length===Math.max(0,kids.length-1)){   // אותו מספר מפרידים – רק הזזה (שומר על הגרירה הפעילה)
+      have.forEach((g,i)=>g.style.left=(kids[i].offsetLeft+kids[i].offsetWidth)+'px'); return;
+    }
+    have.forEach(g=>g.remove());
+    for(let i=0;i<kids.length-1;i++){
+      const g=document.createElement('div'); g.className='grip'; g.dataset.i=i;
+      g.style.left = (kids[i].offsetLeft + kids[i].offsetWidth)+'px';
+      g.setAttribute('role','separator'); g.setAttribute('aria-label',`מפריד בין תא ${i+1} לתא ${i+2}`); g.tabIndex=0;
+      rb.appendChild(g); dragGrip(g, rb);
+    }
+  }
+  const tip = document.createElement('div'); tip.className='tip'; tip.hidden=true;
+  function dragGrip(g, rb){
+    const i = +g.dataset.i;
+    g.addEventListener('pointerdown', e=>{
+      e.preventDefault(); g.setPointerCapture(e.pointerId);
+      const a=S.cells[i], b=S.cells[i+1], pair=a.w+b.w, a0=a.w, x0=e.clientX;
+      const mPerPx = S.cells.reduce((s,c)=>s+c.w,0) / rb.clientWidth;
+      let raf=0, lastSnap=a0; rb._moved=false;
+      g.classList.add('on'); rb.classList.add('dragging'); document.body.appendChild(tip); tip.hidden=false; SEL=i;
+      const mv = ev=>{
+        let na = a0 + (ev.clientX-x0)*mPerPx;
+        na = Math.round(na/0.05)*0.05; na = Math.min(pair-0.05, Math.max(0.05, na));
+        if(Math.abs(ev.clientX-x0)>3) rb._moved=true;
+        if(Math.abs(na-lastSnap)>1e-9){ lastSnap=na; vib(3); }
+        a.w = +na.toFixed(2); b.w = +(pair-na).toFixed(2);
+        tip.style.left=ev.clientX+'px'; tip.style.top=rb.getBoundingClientRect().top+'px';
+        tip.textContent = `\u2066${f2(a.w)}  ⟷  ${f2(b.w)}\u2069`;
+        if(!raf) raf=requestAnimationFrame(()=>{ raf=0; syncWidths(); update(false); });
+      };
+      const up = ()=>{ g.removeEventListener('pointermove',mv); g.classList.remove('on'); rb.classList.remove('dragging'); tip.hidden=true;
+        setTimeout(()=>rb._moved=false,50); syncWidths(); update(false); };
+      g.addEventListener('pointermove',mv); g.addEventListener('pointerup',up,{once:true}); g.addEventListener('pointercancel',up,{once:true});
+    });
+    g.addEventListener('keydown', e=>{
+      const d = e.key==='ArrowRight'?0.05:e.key==='ArrowLeft'?-0.05:0; if(!d) return; e.preventDefault();
+      const a=S.cells[i], b=S.cells[i+1]; if(a.w+d<0.05||b.w-d<0.05) return;
+      a.w=+(a.w+d).toFixed(2); b.w=+(b.w-d).toFixed(2); syncWidths(); update(false);
+    });
+  }
+  function syncWidths(){ document.querySelectorAll('#cells input[data-k="w"]').forEach(inp=>{ const c=S.cells[+inp.dataset.i]; if(c && document.activeElement!==inp) inp.value=f2(c.w); }); }
+
+  /* ---- drawing: highlight + tap-to-select + zoom ---- */
+  function drawingOverlay(){
+    const svg = $('secSVG'); if(!svg || VIEW!=='section') return;
+    const sec = curSec(), D=+$('scale').value, k=1000/D, xL=edgeExtent(sec.eL).w*k;
+    const vb = svg.viewBox.baseVal;
+    svg._geom = {k, xL};
+    if(SEL<0 || !S.cells[SEL]) return;
+    const x0 = S.cells.slice(0,SEL).reduce((a,c)=>a+c.w,0);
+    const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('class','selrect'); r.setAttribute('x', xL+x0*k); r.setAttribute('width', S.cells[SEL].w*k);
+    r.setAttribute('y', vb.y); r.setAttribute('height', vb.height);
+    svg.appendChild(r);
+  }
+  $('drawing').addEventListener('click', e=>{
+    const svg = $('secSVG'); if(!svg || !svg._geom || VIEW!=='section') return;
+    const pt = svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+    const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const m = (p.x - svg._geom.xL)/svg._geom.k; let acc=0;
+    for(let i=0;i<S.cells.length;i++){ acc+=S.cells[i].w; if(m>=acc-S.cells[i].w && m<acc){ U.select(i,true); return; } }
+  });
+  const setZoom = z => { zoom = Math.min(4, Math.max(1, z)); $('drawing').style.width = (zoom*100)+'%'; $('zVal').textContent = Math.round(zoom*100)+'%'; };
+  $('zIn').onclick = ()=>setZoom(zoom*1.4);
+  $('zOut').onclick = ()=>setZoom(zoom/1.4);
+  (function pinch(){
+    const w=$('sheetwrap'), pts=new Map(); let d0=0, z0=1;
+    const dist=()=>{ const [a,b]=[...pts.values()]; return Math.hypot(a.x-b.x,a.y-b.y); };
+    w.addEventListener('pointerdown',e=>{ if(e.pointerType!=='touch') return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===2){ d0=dist(); z0=zoom; } });
+    w.addEventListener('pointermove',e=>{ if(!pts.has(e.pointerId)) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===2 && d0){ setZoom(z0*dist()/d0); } });
+    ['pointerup','pointercancel','pointerleave'].forEach(ev=>w.addEventListener(ev,e=>{ pts.delete(e.pointerId); if(pts.size<2) d0=0; }));
+    w.addEventListener('gesturestart',e=>e.preventDefault());
+    w.addEventListener('wheel',e=>{ if(e.ctrlKey){ e.preventDefault(); setZoom(zoom*(e.deltaY<0?1.08:0.92)); } },{passive:false});
+  })();
+
+  /* ---- row drag to reorder ---- */
+  U.dragRow = h => {
+    h.addEventListener('pointerdown', e=>{
+      e.preventDefault(); h.setPointerCapture(e.pointerId);
+      const from=+h.dataset.drag, row=h.closest('.cell'), rows=[...document.querySelectorAll('#cells .cell')];
+      const rects=rows.map(r=>r.getBoundingClientRect()), y0=e.clientY; let to=from;
+      row.classList.add('drag'); vib(10);
+      const mv = ev=>{
+        const dy=ev.clientY-y0; row.style.transform=`translateY(${dy}px) scale(1.02)`;
+        const cy=rects[from].top+rects[from].height/2+dy; to=from;
+        rects.forEach((r,i)=>{ if(i<from && cy<r.bottom) to=Math.min(to,i); if(i>from && cy>r.top) to=Math.max(to,i); });
+        rows.forEach((r,i)=>{ if(i===from) return; let s=0; if(from<to && i>from && i<=to) s=-rects[from].height; if(from>to && i<from && i>=to) s=rects[from].height;
+          r.style.transition='transform .2s var(--ease)'; r.style.transform=s?`translateY(${s}px)`:''; });
+      };
+      const up = ()=>{ h.removeEventListener('pointermove',mv);
+        rows.forEach(r=>{ r.style.transform=''; r.style.transition=''; }); row.classList.remove('drag');
+        if(to!==from){ const [c]=S.cells.splice(from,1); S.cells.splice(to,0,c); SEL=to; renderCells(); update(); vib(12); } };
+      h.addEventListener('pointermove',mv); h.addEventListener('pointerup',up,{once:true}); h.addEventListener('pointercancel',up,{once:true});
+    });
+  };
+
+  /* ---- action sheet ---- */
+  U.sheet = (title, items) => {
+    const g=$('sheetGrp');
+    g.innerHTML = (title?`<div class="ttl">${esc(title)}</div>`:'') + items.map((it,i)=>`<button type="button" data-x="${i}" class="${it.danger?'danger':''}" ${it.disabled?'disabled':''}>${esc(it.label)}</button>`).join('');
+    g.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{ close(); items[+b.dataset.x].run(); });
+    $('scrim').classList.add('on'); $('sheet').classList.add('on');
+    setTimeout(()=>{ const f=g.querySelector('button:not([disabled])'); f&&f.focus(); },60);
+  };
+  const close = ()=>{ $('scrim').classList.remove('on'); $('sheet').classList.remove('on'); };
+  $('scrim').onclick = close; $('sheetCancel').onclick = close;
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+  U.cellMenu = i => {
+    const c=S.cells[i];
+    U.sheet(`תא ${i+1} – ${T[c.t].n}, ${f2(c.w)} מ׳`, [
+      {label:'הזזה שמאלה בשרטוט', disabled:i===0, run:()=>cellAction(i,'up')},
+      {label:'הזזה ימינה בשרטוט', disabled:i===S.cells.length-1, run:()=>cellAction(i,'dn')},
+      {label:'שכפול התא', run:()=>{ cellAction(i,'dup'); U.toast('התא שוכפל'); }},
+      {label:'מחיקת התא', danger:true, run:()=>{ cellAction(i,'del'); U.toast('התא נמחק', 'בטל', U.undo); }}
+    ]);
+  };
+  $('btnShare').onclick = ()=> U.sheet('ייצוא ושמירה', [
+    {label:'ייצוא גיליון A0 (HTML)', run:()=>{ $('btnHtml').click(); U.toast('הגיליון יוצא'); }},
+    {label:'הורדת SVG', run:()=>$('btnSvg').click()},
+    {label:'הדפסה', run:()=>$('btnPrint').click()},
+    {label:'שמירת JSON', run:()=>{ $('btnJson').click(); U.toast('הקובץ נשמר'); }},
+    {label:'טעינת JSON…', run:()=>$('fileJson').click()}
+  ]);
+
+  /* ---- toast ---- */
+  let tt;
+  U.toast = (msg, act, fn) => {
+    $('toastMsg').textContent = msg; const b=$('toastAct');
+    b.hidden = !act; if(act){ b.textContent=act; b.onclick=()=>{ fn(); $('toast').classList.remove('on'); }; }
+    $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'), act?4500:2200);
+  };
+  window.alert = m => U.toast(String(m));
+
+  /* ---- undo / redo ---- */
+  const H = {stack:[], i:-1, lock:false, t:0};
+  const snap = () => JSON.stringify({sec:curSec(), sheet:SHEET, scale:$('scale').value, proj:$('proj').value, drawn:$('drawn').value, dwg:$('dwg').value,
+    tog:['tIcons','tTrees','tCf','tNames'].map(id=>$(id).checked), preset:$('preset').value});
+  const push = () => { if(H.lock) return; const s=snap(); if(H.stack[H.i]===s) return; H.stack.splice(H.i+1); H.stack.push(s); if(H.stack.length>80) H.stack.shift(); H.i=H.stack.length-1; btns(); };
+  const btns = () => { $('btnUndo').disabled = H.i<=0; $('btnRedo').disabled = H.i>=H.stack.length-1; };
+  const restore = s => { H.lock=true; const j=JSON.parse(s);
+    SHEET=j.sheet; loadSec(j.sec); $('tPave').checked=j.sec.pave; $('scale').value=j.scale; $('proj').value=j.proj; $('drawn').value=j.drawn; $('dwg').value=j.dwg;
+    ['tIcons','tTrees','tCf','tNames'].forEach((id,i)=>$(id).checked=j.tog[i]); $('preset').value=j.preset;
+    update(); H.lock=false; };
+  U.undo = () => { if(H.i>0){ H.i--; restore(H.stack[H.i]); btns(); vib(); } };
+  U.redo = () => { if(H.i<H.stack.length-1){ H.i++; restore(H.stack[H.i]); btns(); vib(); } };
+  $('btnUndo').onclick = U.undo; $('btnRedo').onclick = U.redo;
+  document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='z' && !/INPUT|SELECT/.test(document.activeElement.tagName)){ e.preventDefault(); e.shiftKey?U.redo():U.undo(); } });
+
+  /* ---- stats tween + status ---- */
+  let prevStats = [];
+  function stats(){
+    [...$('stats').querySelectorAll('.stat b')].forEach((b,i)=>{
+      const node=b.firstChild, txt=node.textContent, prev=prevStats[i];
+      if(prev!==undefined && prev!==txt){
+        b.parentNode.classList.remove('pulse'); void b.offsetWidth; b.parentNode.classList.add('pulse');
+        const a=parseFloat(prev), z=parseFloat(txt);
+        if(/^-?\d+(\.\d+)?$/.test(txt) && !isNaN(a)){ const d=(txt.split('.')[1]||'').length, t0=performance.now();
+          const step=now=>{ const p=Math.min(1,(now-t0)/260), e=1-Math.pow(1-p,3); node.textContent=(a+(z-a)*e).toFixed(d); if(p<1) requestAnimationFrame(step); };
+          node.textContent=prev; requestAnimationFrame(step); }
+      }
+      prevStats[i]=txt;
+    });
+    const all=[...$('checks').querySelectorAll('.chk')];
+    const bad=all.filter(c=>c.classList.contains('bad')).length, warn=all.filter(c=>c.classList.contains('warn')).length;
+    const p=$('statusPill'), prevKey=p.dataset.k, key=`${bad}/${warn}`;
+    p.className='pill '+(bad?'bad':warn?'warn':'ok');
+    p.querySelector('span').textContent = bad? `${bad} חריגות` : warn? `${warn} הערות` : 'תקין';
+    if(prevKey && prevKey!==key){ all.forEach(c=>c.classList.add('new')); }
+    p.dataset.k=key;
+  }
+  $('statusPill').onclick = ()=>{ $('checksBox').scrollIntoView({behavior:'smooth',block:'center'}); };
+
+  /* ---- panes ---- */
+  U.pane = id => {
+    document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on', p.id===id));
+    $('paneSeg').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.p===id));
+    U.segAll();
+  };
+  $('paneSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ U.pane(b.dataset.p); vib(); });
+
+  /* ---- presets as cards ---- */
+  let pFilter = null;
+  U.presets = () => {
+    const groups=[...new Set(Object.values(PRESETS).map(p=>p.g))];
+    if(!pFilter) pFilter = PRESETS[$('preset').value].g;
+    $('presetFilter').innerHTML = groups.map(g=>`<button type="button" data-g="${esc(g)}" aria-pressed="${g===pFilter}">${esc(g.replace(/^(עירוני|בין-עירוני) – /,'$1 · '))}</button>`).join('');
+    $('presetFilter').querySelectorAll('button').forEach(b=>b.onclick=()=>{ pFilter=b.dataset.g; U.presets(); vib(); });
+    $('presetGrid').innerHTML = Object.entries(PRESETS).filter(([,p])=>p.g===pFilter).map(([k,p])=>{
+      const tot=p.cells.reduce((a,c)=>a+c.w,0);
+      return `<button type="button" class="pcard" data-p="${k}" aria-pressed="${k===$('preset').value}">
+        <span class="ck">✓</span>
+        <span class="thumb">${p.cells.map(c=>`<i style="width:${(c.w/tot*100).toFixed(2)}%;background:${T[c.t].col}"></i>`).join('')}</span>
+        <b>${esc(p.n.replace(/\s*\(.*\)$/,''))}</b><small>${f2(tot)} מ׳ · ${p.cells.length} תאים</small></button>`; }).join('');
+    $('presetGrid').querySelectorAll('.pcard').forEach(b=>b.onclick=()=>{
+      $('preset').value=b.dataset.p; SEL=-1; applyPreset(); vib(10);
+      U.toast('התבנית נטענה – אפשר לערוך את התאים', 'לתאים', ()=>U.pane('p-cells'));
+    });
+    U.segKnob($('presetFilter'));
+  };
+
+  /* ---- add tiles ---- */
+  U.tiles = () => {
+    $('tiles').innerHTML = Object.keys(T).map(k=>`<button type="button" class="tile" data-t="${k}"><i style="background:${T[k].col}"></i>${esc(T[k].n)}</button>`).join('');
+    $('tiles').querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+      const t=b.dataset.t, at = SEL>=0 ? SEL+1 : S.cells.length;
+      S.cells.splice(at,0,{t, w:T[t].w, dir:T[t].dir||'none'}); SEL=at; update(); vib(10);
+      const row=document.querySelector(`#cells .cell[data-row="${at}"]`); if(row){ row.classList.add('flash'); row.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+    });
+  };
+
+  /* ---- runs after every update ---- */
+  U.after = (selOnly) => {
+    document.querySelectorAll('#cells .cell').forEach((el,i)=>{
+      el.classList.toggle('sel', i===SEL);
+      const st = S.cells[i] && cellCheck(S.cells[i]); const m=el.querySelector('.c-msg'); if(m) m.textContent = st?st.msg:'';
+    });
+    if(selOnly){ // רק החלפת בחירה – בלי לבנות מחדש את השרטוט
+      const old=document.querySelector('#secSVG .selrect'); old&&old.remove(); drawingOverlay();
+      $('ribbon').querySelectorAll('.rb').forEach((el,i)=>el.classList.toggle('sel',i===SEL));
+    } else { drawingOverlay(); ribbon(); stats(); }
+    $('addWhere').textContent = SEL>=0 && S.cells[SEL] ? `– אחרי תא ${SEL+1}` : '– בסוף החתך';
+    document.querySelectorAll('.pcard').forEach(b=>b.setAttribute('aria-pressed', b.dataset.p===$('preset').value));
+    document.querySelectorAll('[data-bind]').forEach(s=>s._sync&&s._sync());
+    if(!selOnly){ clearTimeout(H.t); H.t=setTimeout(push, 450); }
+  };
+  U.push = push;
+
+  /* ---- view tabs ---- */
+  document.querySelectorAll('#viewSeg .tab').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#viewSeg .tab').forEach(x=>x.setAttribute('aria-pressed', x===b)); U.segKnob($('viewSeg')); vib();
+  }));
+
+  /* ---- layout: portrait tablets get checks as a pane ---- */
+  const mq = matchMedia('(max-width:1023px)');
+  const place = () => {
+    const ro=$('readouts');
+    if(mq.matches){ let p=$('p-checks'); if(!p){ p=document.createElement('div'); p.className='pane'; p.id='p-checks'; document.querySelector('.insp').appendChild(p);
+        const b=document.createElement('button'); b.type='button'; b.dataset.p='p-checks'; b.textContent='בדיקות'; b.setAttribute('aria-pressed','false'); b.onclick=()=>U.pane('p-checks'); $('paneSeg').appendChild(b); }
+      p.appendChild(ro); }
+    else { const p=$('p-checks'); document.querySelector('.stage').appendChild(ro);
+      if(p){ if(p.classList.contains('on')) U.pane('p-start'); p.remove(); $('paneSeg').querySelector('[data-p="p-checks"]').remove(); } }
+    U.segAll(); requestAnimationFrame(()=>grips($('ribbon')));
+  };
+  (mq.addEventListener?mq.addEventListener('change',place):mq.addListener(place));
+  U.place = place;
+  window.addEventListener('resize', ()=>{ U.segAll(); grips($('ribbon')); });
+  $('statusPill').addEventListener('click', ()=>{ if(mq.matches) U.pane('p-checks'); });
+  return U;
+})();
+
+/* כל קריאה ל-update מסתיימת בעדכון שכבת הממשק */
+const _coreUpdate = update;
+update = function(rerender){ _coreUpdate(rerender); UI.after(false); };
+
 function levelOf(c){ return T[c.t].lvl; }
 
 /* ---------------- בדיקות ---------------- */
@@ -587,6 +1194,13 @@ $('ctx').addEventListener('change',()=>update());
   $('addType').innerHTML = Object.keys(T).map(k=>`<option value="${k}">${T[k].n}</option>`).join('');
   $('preset').value='ex1'; applyPreset();
 })();
+
+/* ---------------- אתחול שכבת הממשק ---------------- */
+document.querySelectorAll('[data-bind]').forEach(UI.bindSelect);
+UI.presets(); UI.tiles(); UI.enhance(document); UI.place();
+UI.after(false);
+requestAnimationFrame(()=>{ UI.segAll(); UI.after(false); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>UI.segAll());
 </script>
 </body>
 </html>

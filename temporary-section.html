@@ -160,7 +160,6 @@ body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent}
 .nav{background:color-mix(in srgb,var(--card) 84%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px)}
 .nav .back{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 10px 0 4px;border-radius:20px;color:var(--focus);font-weight:600;font-size:15px;text-decoration:none;flex:none}
 .nav .back::before{content:"";width:9px;height:9px;border-top:2.2px solid currentColor;border-right:2.2px solid currentColor;transform:rotate(45deg);margin-inline-end:2px}
-.jump{display:none}
 button,select,input,.case{touch-action:manipulation}
 
 /* iPad לרוחב */
@@ -197,17 +196,29 @@ button,select,input,.case{touch-action:manipulation}
   .row .seg{flex:1 1 100%;display:flex}
   .row .seg button{flex:1 1 auto}
 
-  /* סרגל קפיצה תחתון בסגנון iOS */
-  .jump{display:flex;position:fixed;z-index:40;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));
-    gap:2px;padding:4px;border-radius:22px;background:color-mix(in srgb,var(--card) 78%,transparent);
-    -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
-    border:.5px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.18);max-width:calc(100% - 24px)}
-  .jump button{border:0;background:none;min-height:46px;min-width:74px;padding:4px 12px;border-radius:18px;color:var(--ink-2);
-    font-size:12px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-  .jump button svg{width:20px;height:20px}
-  .jump button[aria-current="true"]{background:var(--fill);color:var(--work-ink)}
-  .jump .jn{font-size:10.5px;font-weight:800;min-width:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;line-height:16px}
-  .jump .jn:empty{display:none}
+  /* כמו כלי החתך הסופי: לשוניות – חלונית אחת בכל פעם */
+  .shell{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+  .insp{display:block}
+  .insp > .panel + .panel{margin-top:0}
+  .ttabs{display:flex;order:1;position:relative;isolation:isolate;background:var(--fill);border-radius:11px;padding:2px;gap:2px;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .ttabs::-webkit-scrollbar{display:none}
+  .ttabs button{flex:1 0 auto;border:0;background:none;min-height:40px;padding:0 14px;border-radius:9px;font-size:15px;font-weight:500;color:var(--ink);white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+  .ttabs button[aria-selected="true"]{background:var(--card);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  :root[data-theme="dark"] .ttabs button[aria-selected="true"]{background:#3A3F46}
+  .ttabs .jn{font-size:11px;font-weight:800;min-width:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;line-height:17px}
+  .ttabs .jn:empty{display:none}
+  [data-pane]:not(.pane-on){display:none!important}
+  [data-pane].pane-on{animation:panein .28s cubic-bezier(.2,.8,.2,1)}
+  .insp,#bookPanel,#baseCard,.stage > .grid2{scroll-margin-top:0}
+  .stage > .grid2{grid-template-columns:1fr}
+  /* סרגל השרטוט: התאמה לרוחב + זום */
+  .cbar{display:flex;align-items:center;gap:6px;padding:0 12px 6px}
+  .cbar .zoom{margin-inline-start:auto;display:flex;align-items:center;gap:4px;direction:ltr}
+  .cbar .zoom button{width:40px;height:34px;border:0;border-radius:9px;background:var(--fill);color:var(--focus);font-size:19px;font-weight:600}
+  .cbar output{min-width:52px;text-align:center;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+  .cbar .fit{border:0;background:var(--fill);color:var(--ink);border-radius:9px;min-height:34px;padding:0 12px;font-size:13.5px;font-weight:600}
+  .draw svg,.book-view .svg-wrap svg{min-width:0!important;width:calc(100% * var(--tz,1))!important;max-width:none}
 }
 @media (max-width:760px){
   .insp{grid-template-columns:1fr}
@@ -222,13 +233,12 @@ button,select,input,.case{touch-action:manipulation}
   .nav .back span{display:none}
   .pill{height:30px;padding:0 10px;font-size:12.5px}
   .hero-h p{display:block;font-size:13.5px}
-  .draw{max-height:none}
-  .draw svg{min-width:600px}
+  .draw{max-height:46vh}
+  .ttabs button{padding:0 12px;font-size:14.5px}
   .pb{padding:10px 14px 14px}
   .facts{grid-template-columns:1fr}
   .notes{padding:0 28px 0 12px}
   .legend{font-size:12px}
-  .jump button{min-width:64px;padding:4px 8px}
 }
 
 /* מגע: שטחי לחיצה של 44 נק׳ ושדות ב-16px כדי ש-iOS לא יגדיל את הדף */
@@ -245,8 +255,10 @@ button,select,input,.case{touch-action:manipulation}
   .case:hover{background:none}
   .case:active{background:var(--fill)}
 }
-@media (prefers-reduced-motion:reduce){.jump{transition:none}}
-@media print{.jump,.nav{display:none!important} .stage > .hero{position:static}}
+@keyframes panein{from{opacity:0;transform:translateY(6px)}}
+.cbar,.ttabs{display:none}
+@media (max-width:1023px){.cbar{display:flex}.ttabs{display:flex}}
+@media print{.ttabs,.cbar,.nav{display:none!important} [data-pane]{display:block!important} .stage > .hero{position:static}}
 </style>
 
 <!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
@@ -425,6 +437,8 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
 html[data-glass="on"] .panel,
 html[data-glass="on"] .stage > .hero,
 html[data-glass="on"] .hero{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] .ttabs,
+html[data-glass="on"] .cbar button,
 html[data-glass="on"] .seg,
 html[data-glass="on"] select,
 html[data-glass="on"] input[type=number],
@@ -432,8 +446,7 @@ html[data-glass="on"] .cells,
 html[data-glass="on"] .crow,
 html[data-glass="on"] .facts div,
 html[data-glass="on"] .case[aria-pressed="true"]{background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
-html[data-glass="on"] .nav,
-html[data-glass="on"] .jump{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .nav{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
 html[data-glass="on"] .panel,html[data-glass="on"] .hero{border-radius:18px}
 html[data-glass="on"] .facts{background:transparent}
 @media (min-width:601px) and (max-width:1023px){html[data-glass="on"] .stage > .hero{background:color-mix(in srgb,var(--card) 90%,transparent)!important}}
@@ -4604,32 +4617,52 @@ render();
 </template>
 
 
-<nav class="jump" id="jumpBar" aria-label="מעבר מהיר">
-  <button type="button" data-to=".insp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>הגדרות</span></button>
-  <button type="button" data-to=".stage > .grid2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="4" y="4" width="16" height="16" rx="4"/></svg><span>בדיקות <b class="jn" id="jumpBad"></b></span></button>
-  <button type="button" data-to="#bookPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><span>מהספר</span></button>
-</nav>
 <script>
-/* שכבת טאבלט/טלפון: גובה השרטוט הדביק, סרגל קפיצה ומונה חריגות */
+/* טלפון/טאבלט – באותה תבנית של כלי החתך הסופי: שרטוט למעלה, לשוניות, וחלונית אחת בכל פעם */
 (function(){
-  var hero=document.querySelector('.stage > .hero'), bar=document.getElementById('jumpBar');
-  if(!hero||!bar) return;
-  var btns=[].slice.call(bar.querySelectorAll('button'));
-  function heroH(){ document.documentElement.style.setProperty('--heroH', hero.offsetHeight+'px'); }
-  heroH(); addEventListener('resize',heroH);
-  if(window.ResizeObserver) new ResizeObserver(heroH).observe(hero);
-  btns.forEach(function(b){ b.addEventListener('click',function(){
-    var t=document.querySelector(b.dataset.to); if(!t) return;
-    if(b.dataset.to==='#bookPanel'){ var bv=document.getElementById('bookView'); if(bv&&bv.style.display==='none'){ var tg=document.getElementById('toggleBook'); if(tg) tg.click(); } }
-    t.scrollIntoView({behavior:'smooth',block:'start'});
-  }); });
-  function active(){
-    var y=hero.getBoundingClientRect().bottom+40, cur=btns[0];
-    btns.forEach(function(b){ var t=document.querySelector(b.dataset.to); if(t&&t.getBoundingClientRect().top<=y) cur=b; });
-    btns.forEach(function(b){ b.setAttribute('aria-current', b===cur?'true':'false'); });
+  var MQ=matchMedia('(max-width:1023px)'), shell=document.querySelector('.shell'), hero=document.querySelector('#stageView > .hero');
+  if(!shell||!hero) return;
+  var P=[].slice.call(document.querySelectorAll('.insp > section.panel'));
+  var panes=[
+    ['case','תרשים',[P[0]]],
+    ['base','חתך קיים',[P[1]]],
+    ['site','תנאי האתר',[P[2]]],
+    ['dev','התקנים',[P[3]]],
+    ['chk','בדיקות',[document.querySelector('#stageView > .grid2')]],
+    ['book','מהספר',[document.getElementById('bookPanel'),document.getElementById('baseCard')]]
+  ];
+  var tabs=document.createElement('div'); tabs.className='ttabs'; tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label','חלוניות הכלי');
+  panes.forEach(function(p){
+    p[2].forEach(function(el){ if(el) el.setAttribute('data-pane',p[0]); });
+    var b=document.createElement('button'); b.type='button'; b.setAttribute('role','tab'); b.dataset.v=p[0];
+    b.innerHTML=p[1]+(p[0]==='chk'?' <b class="jn" id="jumpBad"></b>':'');
+    b.onclick=function(){ show(p[0],true); }; tabs.appendChild(b);
+  });
+  shell.insertBefore(tabs, document.querySelector('.insp'));
+  var cur=(function(){try{return localStorage.getItem('tmp-pane')||'case'}catch(e){return 'case'}})();
+  function show(v,user){
+    cur=v; try{localStorage.setItem('tmp-pane',v)}catch(e){}
+    document.querySelectorAll('[data-pane]').forEach(function(el){ el.classList.toggle('pane-on', el.getAttribute('data-pane')===v); });
+    [].forEach.call(tabs.children,function(b){ var on=b.dataset.v===v; b.setAttribute('aria-selected',on); if(on&&user) b.scrollIntoView({block:'nearest',inline:'nearest',behavior:'smooth'}); });
+    if(v==='book'){ var bv=document.getElementById('bookView'); if(bv&&bv.style.display==='none'){ var tg=document.getElementById('toggleBook'); if(tg) tg.click(); } }
+    if(user && tabs.getBoundingClientRect().top<0) tabs.scrollIntoView({behavior:'smooth',block:'start'});
   }
-  addEventListener('scroll',function(){ if(active.t) return; active.t=requestAnimationFrame(function(){active.t=0;active();}); },{passive:true});
-  active();
+  show(cur,false);
+
+  /* זום לשרטוט – כברירת מחדל מותאם לרוחב המסך */
+  var z=1, bar=document.createElement('div'); bar.className='cbar';
+  bar.innerHTML='<button type="button" class="fit">התאמה לרוחב</button><div class="zoom"><button type="button" data-z="-" aria-label="הקטנה">−</button><output>100%</output><button type="button" data-z="+" aria-label="הגדלה">+</button></div>';
+  hero.insertBefore(bar, document.getElementById('svgTemp'));
+  var out=bar.querySelector('output');
+  function setZ(v){ z=Math.min(3,Math.max(1,Math.round(v*100)/100)); document.documentElement.style.setProperty('--tz',z); out.textContent=Math.round(z*100)+'%'; }
+  bar.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return;
+    if(b.classList.contains('fit')) setZ(1); else setZ(z+(b.dataset.z==='+'?.25:-.25)); });
+  function mode(){ if(!MQ.matches) document.documentElement.style.removeProperty('--tz'); else setZ(z); }
+  MQ.addEventListener?MQ.addEventListener('change',mode):MQ.addListener(mode); mode();
+
+  /* גובה השרטוט הדביק + מונה חריגות */
+  function heroH(){ document.documentElement.style.setProperty('--heroH', hero.offsetHeight+'px'); }
+  heroH(); addEventListener('resize',heroH); if(window.ResizeObserver) new ResizeObserver(heroH).observe(hero);
   var checks=document.getElementById('checks'), n=document.getElementById('jumpBad');
   function count(){ if(n) n.textContent=(checks.querySelectorAll('.ck.bad').length||''); }
   if(checks&&window.MutationObserver){ new MutationObserver(count).observe(checks,{childList:true,subtree:true}); count(); }

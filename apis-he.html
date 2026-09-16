@@ -629,6 +629,68 @@
   .usage { flex-wrap: wrap }
   .usage a[href^="tel"] { white-space: nowrap; direction: ltr; unicode-bidi: isolate }
 }
+
+/* ==================== נוסף החודש — שורה מקופלת ==================== */
+.strip { padding: 0 }
+.strip .wrap { display: block !important }
+.strip-fold > summary.strip-head { list-style: none; cursor: pointer; margin: 0; padding: 14px 0;
+  align-items: center; min-height: 54px }
+.strip-fold > summary::-webkit-details-marker { display: none }
+.strip-fold > summary .arrow { border-color: var(--marking); align-self: center }
+.strip-fold[open] > summary .arrow { transform: rotate(135deg); margin-top: 2px }
+.strip-head .s-n { background: var(--marking); color: var(--ink); font-size: 12px; font-weight: 800;
+  padding: 2px 9px; border-radius: 20px }
+.strip-head .s-hint { margin-inline-start: auto; font-size: 12.5px }
+.strip-fold[open] .s-hint::after { content: " · סגירה" }
+.strip-fold:not([open]) .s-hint::after { content: " · פתחו" }
+.strip-grid { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 2px 0 22px }
+@media (min-width:760px) { .strip-grid { grid-template-columns: repeat(2, minmax(0,1fr)) } }
+@media (min-width:1040px) { .strip-grid { grid-template-columns: repeat(4, minmax(0,1fr)) } }
+@media (max-width:640px) { .strip-head .s-hint { display: none } }
+
+/* ==================== כפתורי ה-Hero — מסודרים לפי חשיבות ==================== */
+.hero-primary { margin-bottom: 22px }
+.hero-quick { margin: 0 0 22px }
+.hq-label { display: block; font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--marking); margin-bottom: 9px }
+.hq-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px }
+a.hq { display: flex; flex-direction: column; justify-content: center; min-height: 56px; padding: 9px 13px;
+  border: 1px solid var(--rule-dark); border-radius: 6px; background: #1B2126; color: var(--paper);
+  text-decoration: none; transition: border-color .15s, background .15s }
+a.hq:hover, a.hq:focus-visible { border-color: var(--marking); background: #20272D }
+a.hq small { font-size: 11.5px; color: var(--muted-dark); font-weight: 600 }
+a.hq b { font-size: 14.5px; font-weight: 700; line-height: 1.35 }
+.hero .app-actions { gap: 8px; margin: 0 0 4px; padding-top: 16px; border-top: 1px solid var(--rule-dark) }
+.hero .app-cta { padding: 8px 12px; gap: 10px; box-shadow: none }
+.hero .app-cta-text b { font-size: 13.5px }
+.hero .app-cta-text span { font-size: 12px }
+@media (max-width:599px) { .hq-list { grid-template-columns: 1fr 1fr } a.hq b { font-size: 13.5px } }
+
+/* ==================== מראה כללי: מקטעים והפרדה ביניהם ==================== */
+main.wrap { padding-bottom: 40px }
+.part-div { display: flex; align-items: center; gap: 12px; margin: 46px 0 14px; font-size: 13px;
+  font-weight: 800; letter-spacing: .05em; color: var(--ink) }
+.part-div::before { content: ""; flex: none; width: 26px; height: 6px; border-radius: 1px;
+  background: repeating-linear-gradient(90deg, var(--marking) 0 8px, transparent 8px 12px) }
+.part-div::after { content: ""; flex: 1; height: 1px; background: var(--rule) }
+.part-div span { color: var(--muted); font-weight: 500; letter-spacing: 0 }
+main.wrap > .block { padding: 22px 24px 24px; margin: 0 0 14px; background: var(--paper-2);
+  border: 1px solid var(--rule); border-radius: 8px }
+main.wrap > .block > .block-head { border-bottom-width: 1px; border-bottom-color: var(--rule); margin-bottom: 8px }
+main.wrap > .block:has(> details.foldable:only-child) { padding: 0; background: none; border: 0 }
+main.wrap > .routes-late { margin: 0 0 14px; border-radius: 8px }
+main.wrap > .block .tier:last-of-type { border-bottom: 0 }
+main.wrap > details.keywords { margin-top: 30px }
+@media (max-width: 820px) {
+  .part-div { margin: 34px 0 10px; font-size: 12.5px }
+  .part-div span { display: none }
+  main.wrap > .block { padding: 16px 14px 18px }
+}
+
+@media (max-width:599px) {
+  .hero .plan { display: none }
+  .hero { padding: 34px 0 30px }
+  .tally { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; margin-top: 22px }
+}
 </style>
 </head>
 <body>
@@ -657,7 +719,22 @@
             <div>
                 <h1>הכלים, לפי מה שצריך להגיש.</h1>
                 <p>ניתוח צמתים, רמת שירות, בטיחות, תכנון גיאומטרי, תחבורה ציבורית וחניה — לפי HCM, AASHTO ו‑HSM ולפי ההנחיות הישראליות. כל נוהל זמין להרצה בדפדפן, ואותם נתונים נשלחים ל‑API כשהשאלה גדלה לכדי מסדרון או רשת שלמה.</p>
-                <div class="app-actions">
+
+                <div class="hero-actions hero-primary">
+                    <a class="btn btn-solid" href="#who">מצאו את הכלי לפי התפקיד</a>
+                    <a class="btn btn-line" href="#catalog">כל הקטלוג</a>
+                </div>
+                <div class="hero-quick">
+                    <span class="hq-label">הכלים המבוקשים</span>
+                    <nav class="hq-list" aria-label="הכלים המבוקשים">
+                        <a class="hq" href="critical-lane-volume.html"><small>צמתים</small><b>רמת שירות ונפח קריטי</b></a>
+                        <a class="hq" href="parking-regulations.html"><small>חניה</small><b>תקן חניה לפי יישוב</b></a>
+                        <a class="hq" href="calculator_dark_ui.html"><small>ערכי תכן</small><b>חיפוש לפי ההנחיות</b></a>
+                        <a class="hq" href="SD-tool.html"><small>ראות</small><b>משולשי ראות על תכנית</b></a>
+                        <a class="hq" href="typical-section.html"><small>גיאומטריה</small><b>חתך רוחב טיפוסי</b></a>
+                    </nav>
+                </div>
+<div class="app-actions">
                     <button class="app-cta" data-install onclick="installApp()" style="margin-bottom:0;">
                         <span class="app-cta-badge" style="background:#fff;color:var(--ink);border:1px solid var(--rule);">התקנה</span>
                         <span class="app-cta-text">
@@ -675,17 +752,6 @@
                         </span>
                         <span class="app-cta-go" aria-hidden="true"><svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true" style="flex:none"><circle cx="16" cy="16" r="15" fill="#25D366"/><path d="M16 6.6c-5.2 0-9.4 4.2-9.4 9.4 0 1.7.4 3.2 1.2 4.6L6.6 25.4l5-1.3c1.3.7 2.8 1.1 4.4 1.1 5.2 0 9.4-4.2 9.4-9.4S21.2 6.6 16 6.6z" fill="#fff" opacity=".14"/><path d="M12.6 11.3c-.25-.56-.5-.57-.74-.58h-.63c-.22 0-.57.08-.87.4-.3.33-1.14 1.11-1.14 2.7 0 1.6 1.17 3.14 1.33 3.36.16.22 2.26 3.6 5.58 4.91 2.76 1.09 3.32.87 3.92.82.6-.06 1.94-.79 2.21-1.56.27-.76.27-1.42.19-1.56-.08-.13-.3-.22-.63-.38-.33-.17-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.25-.71.08-.33-.16-1.39-.51-2.64-1.63-.98-.87-1.63-1.94-1.83-2.27-.19-.33-.02-.5.14-.67.15-.15.33-.38.49-.57.16-.19.22-.33.33-.55.11-.22.05-.41-.03-.57-.08-.16-.72-1.76-1-2.4z" fill="#fff"/></svg></span>
                     </a>
-                </div>
-
-                <div class="hero-actions">
-                    <a class="btn btn-solid" href="#who">מצאו את הכלי לפי התפקיד</a>
-                    <a class="btn btn-line" href="critical-lane-volume.html">רמת שירות ונפח קריטי</a>
-                    <a class="btn btn-line" href="parking-regulations.html">תקן חניה לפי יישוב</a>
-                    <a class="btn btn-line" href="SD-tool.html">משולשי ראות על תכנית</a>
-                    <a class="btn btn-line" href="typical-section.html">חתך טיפוסי</a>
-                    <a class="btn btn-line" href="calculator_dark_ui.html">חיפוש ערכי תכן</a>
-                    <a class="btn btn-line" href="worklog.html">יומן עבודה לאתר</a>
-                    <a class="btn btn-line" href="#catalog">כל הקטלוג</a>
                 </div>
                 <div class="tally">
                     <div><b>17</b>רחובות עירוניים</div>
@@ -723,10 +789,9 @@
 
     <section class="strip" aria-label="מה נוסף לאחרונה">
         <div class="wrap">
-            <div class="strip-head">
-                <h2>נוסף החודש</h2>
-                <span>הכול רץ בדפדפן, בלי התקנה ובלי להעלות קבצים לשרת</span>
-            </div>
+            <details class="strip-fold">
+                <summary class="strip-head"><span class="arrow" aria-hidden="true"></span><h2>נוסף החודש</h2><span class="s-n">4 חידושים</span><span class="s-hint">הכול רץ בדפדפן, בלי התקנה ובלי להעלות קבצים לשרת</span></summary>
+                <div class="strip-grid">
             <a class="fresh" href="critical-lane-volume.html">
                 <em>ייבוא נתונים</em>
                 <b>קובץ ספירת נפחים ← נפח נתיב קריטי</b>
@@ -747,11 +812,12 @@
                 <b>מדריך מודרך בתוך הכלי</b>
                 <span>תשעה צעדים שמסמנים את עצמם: רקע, כיול, סימון הציר והזרועות, ועד גיליון A0 להדפסה בקנה מידה.</span>
             </a>
+                </div>
+            </details>
         </div>
     </section>
 
     
-
 
     <div class="controls">
         <div class="wrap">
@@ -811,7 +877,6 @@
                             <div class="soon"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></div>
                         </div>
                     </details>
-
 
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>תכנון גיאומטרי עירוני<span class="t-n" data-twigcount>4</span></summary>
@@ -910,7 +975,6 @@
                         </div>
                     </details>
 
-
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>סביבה, ניהול וטכנולוגיה<span class="t-n" data-twigcount>3</span></summary>
                         <div class="leaves">
@@ -985,6 +1049,92 @@
             <p class="empty" id="empty" hidden>אין נוהל שתואם את החיפוש. נסו לחפש לפי תקן — HCM, AASHTO או HSM — או <button type="button" id="reset" style="font:inherit;background:none;border:0;color:#8a6a12;text-decoration:underline;cursor:pointer;padding:0">נקו את החיפוש</button>.</p>
         </div>
 
+        <div class="part-div" role="separator">מצאו את הכלי<span>לפי התפקיד שלכם</span></div>
+        <section class="routes routes-late" id="who" aria-label="לפי תפקיד">
+            <div class="r-in">
+                <div class="r-head">
+                    <h2>מה שאתם צריכים, לפי התפקיד שלכם</h2>
+                    <p>אותם חישובים משרתים שש קבוצות שמחפשות אותם בשפה שונה לגמרי. בחרו את התפקיד שלכם וקבלו את הכלים הרלוונטיים בלבד.</p>
+                </div>
+                <div class="r-grid">
+
+                    <div class="route">
+                        <h3>מהנדסי ומהנדסאי תנועה</h3>
+                        <span class="who2">בדיקת תכנון, חישוב קיבולת, דוחות</span>
+                        <p>החישובים שבדרך כלל נעשים ביד או ב‑HCS/Sidra: נפח קריטי, זמני מחזור, עיכוב, תור ורמת שירות — עם הצגת שלבי החישוב ולא רק התוצאה.</p>
+                        <ul>
+                            <li><a href="critical-lane-volume.html">נפח נתיב קריטי ורמת שירות</a></li>
+                            <li><a href="roundabout-analysis-metric.html">קיבולת ועיכוב בכיכר תנועה</a></li>
+                            <li><a href="lane-queue-metric.html">אורך תור באחוזון 95 לנתיב</a></li>
+                            <li><a href="optimizes-signal-timing%20plans-metric.html">תזמון ותיאום רמזורים</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="route">
+                        <h3>משרדי תכנון והנדסה</h3>
+                        <span class="who2">תוצרים לתב״ע, להיתר ולוועדה</span>
+                        <p>הבדיקות שחוזרות בכל פרויקט, בפורמט שניתן לצרף לתיק: תקן חניה, רמת שירות לצומת הגישה, חתך טיפוסי ומרחקי ראות.</p>
+                        <ul>
+                            <li><a href="parking-regulations.html">תקן חניה לפי תקנות 2016</a></li>
+                            <li><a href="typical-section.html">חתך רוחב טיפוסי</a></li>
+                            <li><a href="SD-tool.html">משולשי ראות על גבי התכנית</a></li>
+                            <li><a href="TRAFFIC-IMPACT.html">בדיקת השפעת תנועה</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="route">
+                        <h3>מנהלי פרויקטים</h3>
+                        <span class="who2">בקרת תכן, לוחות זמנים, החלטות</span>
+                        <p>בדיקה עצמאית ומהירה למה שמגיע מהיועצים — לפני שהוא נכנס לתיק או עולה לוועדה. אומדן, השוואת חלופות וזיהוי מה חסר בדוח.</p>
+                        <ul>
+                            <li><a href="critical-lane-volume.html#fcOut">תחזית רמת שירות לשנות היעד</a></li>
+                            <li><a href="htool.html">בדיקת צומת מרומזר מקצה לקצה</a></li>
+                            <li><a href="calculator_dark_ui.html">ערכי תכן לפי ההנחיות הישראליות</a></li>
+                            <li><a href="apis-he.html">כל הכלים לפי תחום</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="route">
+                        <h3>מודדים ומיפוי</h3>
+                        <span class="who2">עבודה על גבי תכנית, קנה מידה, גיליונות</span>
+                        <p>העבודה מתחילה מתמונה או תכנית: מכיילים לפי קטע במידה ידועה, מסמנים על גבי הרקע, ומייצאים גיליון A0 בקנה מידה אמיתי, SVG או JSON.</p>
+                        <ul>
+                            <li><a href="SD-tool.html">מרחקי ראות מתוך תכנית מכוילת</a></li>
+                            <li><a href="horizontal.html">תוואי אופקי ועקומות מעבר</a></li>
+                            <li><a href="vertical.html">תוואי אנכי ושיפועים</a></li>
+                            <li><a href="typical-section.html">חתכים טיפוסיים לשרטוט</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="route">
+                        <h3>יזמים, נדל״ן ותיווך</h3>
+                        <span class="who2">היתכנות, חניה, שווי ושימושים</span>
+                        <p>לפני שקונים או מקדמים שימוש: כמה מקומות חניה התקנות דורשות לשימוש הזה ביישוב הזה, והאם צומת הגישה יחזיק את התנועה הנוספת.</p>
+                        <ul>
+                            <li><a href="parking-regulations.html">כמה חניות נדרשות לנכס</a></li>
+                            <li><a href="critical-lane-volume.html">עומס צומת הגישה ורמת שירות</a></li>
+                            <li><a href="TRAFFIC-IMPACT.html">בדיקת השפעת תנועה ראשונית</a></li>
+                            <li><a href="#lead">מה נדרש לנספח תנועה חתום</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="route">
+                        <h3>רשויות מקומיות וועדות</h3>
+                        <span class="who2">בדיקת דוחות, תנאים להיתר</span>
+                        <p>בדיקה בלתי תלויה של מה שהוגש: האם החישוב נעשה לפי התקן, האם ההנחות סבירות, ומה משתנה כשמעדכנים נפח או שיעור צמיחה.</p>
+                        <ul>
+                            <li><a href="parking-regulations.html">בדיקת תקן חניה שהוגש</a></li>
+                            <li><a href="critical-lane-volume.html">בדיקת רמת שירות שהוגשה</a></li>
+                            <li><a href="lane-queue-metric.html">בדיקת אורכי תור ומפרצים</a></li>
+                            <li><a href="LOS_nat.html">רמת שירות ברשת הבין-עירונית</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class="part-div" role="separator">איך עובדים<span>מסלולים וחיפושים נפוצים</span></div>
         <section class="block" id="flows">
             <details class="foldable">
                 <summary><span class="arrow" aria-hidden="true"></span>שלושה מסלולי עבודה שלמים<span class="kw-hint">פתחו למסלולים המלאים</span></summary>
@@ -1132,6 +1282,7 @@
             </details>
         </section>
 
+        <div class="part-div" role="separator">שירות, גישה ומנויים<span>מה חינמי, מה בתשלום, ו‑API</span></div>
         <section class="block" id="lead">
             <div class="block-head">
                 <h2>מה הכלים עושים, ומה עדיין דורש מהנדס</h2>
@@ -1148,90 +1299,6 @@
                 <a class="price buy" href="mailto:mahmoudalem95@icloud.com?subject=%D7%A0%D7%A1%D7%A4%D7%97%20%D7%AA%D7%A0%D7%95%D7%A2%D7%94%20%2F%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%94%D7%A0%D7%93%D7%A1%D7%99">דברו איתנו</a>
             </div>
             <p class="note">מהנדס תחבורה, מוסמך הטכניון. לפניות מקצועיות: <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a> · <a href="tel:+972546528572">‎+972-546-528572</a></p>
-        </section>
-
-        <section class="routes routes-late" id="who" aria-label="לפי תפקיד">
-            <div class="r-in">
-                <div class="r-head">
-                    <h2>מה שאתם צריכים, לפי התפקיד שלכם</h2>
-                    <p>אותם חישובים משרתים שש קבוצות שמחפשות אותם בשפה שונה לגמרי. בחרו את התפקיד שלכם וקבלו את הכלים הרלוונטיים בלבד.</p>
-                </div>
-                <div class="r-grid">
-
-                    <div class="route">
-                        <h3>מהנדסי ומהנדסאי תנועה</h3>
-                        <span class="who2">בדיקת תכנון, חישוב קיבולת, דוחות</span>
-                        <p>החישובים שבדרך כלל נעשים ביד או ב‑HCS/Sidra: נפח קריטי, זמני מחזור, עיכוב, תור ורמת שירות — עם הצגת שלבי החישוב ולא רק התוצאה.</p>
-                        <ul>
-                            <li><a href="critical-lane-volume.html">נפח נתיב קריטי ורמת שירות</a></li>
-                            <li><a href="roundabout-analysis-metric.html">קיבולת ועיכוב בכיכר תנועה</a></li>
-                            <li><a href="lane-queue-metric.html">אורך תור באחוזון 95 לנתיב</a></li>
-                            <li><a href="optimizes-signal-timing%20plans-metric.html">תזמון ותיאום רמזורים</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="route">
-                        <h3>משרדי תכנון והנדסה</h3>
-                        <span class="who2">תוצרים לתב״ע, להיתר ולוועדה</span>
-                        <p>הבדיקות שחוזרות בכל פרויקט, בפורמט שניתן לצרף לתיק: תקן חניה, רמת שירות לצומת הגישה, חתך טיפוסי ומרחקי ראות.</p>
-                        <ul>
-                            <li><a href="parking-regulations.html">תקן חניה לפי תקנות 2016</a></li>
-                            <li><a href="typical-section.html">חתך רוחב טיפוסי</a></li>
-                            <li><a href="SD-tool.html">משולשי ראות על גבי התכנית</a></li>
-                            <li><a href="TRAFFIC-IMPACT.html">בדיקת השפעת תנועה</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="route">
-                        <h3>מנהלי פרויקטים</h3>
-                        <span class="who2">בקרת תכן, לוחות זמנים, החלטות</span>
-                        <p>בדיקה עצמאית ומהירה למה שמגיע מהיועצים — לפני שהוא נכנס לתיק או עולה לוועדה. אומדן, השוואת חלופות וזיהוי מה חסר בדוח.</p>
-                        <ul>
-                            <li><a href="critical-lane-volume.html#fcOut">תחזית רמת שירות לשנות היעד</a></li>
-                            <li><a href="htool.html">בדיקת צומת מרומזר מקצה לקצה</a></li>
-                            <li><a href="calculator_dark_ui.html">ערכי תכן לפי ההנחיות הישראליות</a></li>
-                            <li><a href="apis-he.html">כל הכלים לפי תחום</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="route">
-                        <h3>מודדים ומיפוי</h3>
-                        <span class="who2">עבודה על גבי תכנית, קנה מידה, גיליונות</span>
-                        <p>העבודה מתחילה מתמונה או תכנית: מכיילים לפי קטע במידה ידועה, מסמנים על גבי הרקע, ומייצאים גיליון A0 בקנה מידה אמיתי, SVG או JSON.</p>
-                        <ul>
-                            <li><a href="SD-tool.html">מרחקי ראות מתוך תכנית מכוילת</a></li>
-                            <li><a href="horizontal.html">תוואי אופקי ועקומות מעבר</a></li>
-                            <li><a href="vertical.html">תוואי אנכי ושיפועים</a></li>
-                            <li><a href="typical-section.html">חתכים טיפוסיים לשרטוט</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="route">
-                        <h3>יזמים, נדל״ן ותיווך</h3>
-                        <span class="who2">היתכנות, חניה, שווי ושימושים</span>
-                        <p>לפני שקונים או מקדמים שימוש: כמה מקומות חניה התקנות דורשות לשימוש הזה ביישוב הזה, והאם צומת הגישה יחזיק את התנועה הנוספת.</p>
-                        <ul>
-                            <li><a href="parking-regulations.html">כמה חניות נדרשות לנכס</a></li>
-                            <li><a href="critical-lane-volume.html">עומס צומת הגישה ורמת שירות</a></li>
-                            <li><a href="TRAFFIC-IMPACT.html">בדיקת השפעת תנועה ראשונית</a></li>
-                            <li><a href="#lead">מה נדרש לנספח תנועה חתום</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="route">
-                        <h3>רשויות מקומיות וועדות</h3>
-                        <span class="who2">בדיקת דוחות, תנאים להיתר</span>
-                        <p>בדיקה בלתי תלויה של מה שהוגש: האם החישוב נעשה לפי התקן, האם ההנחות סבירות, ומה משתנה כשמעדכנים נפח או שיעור צמיחה.</p>
-                        <ul>
-                            <li><a href="parking-regulations.html">בדיקת תקן חניה שהוגש</a></li>
-                            <li><a href="critical-lane-volume.html">בדיקת רמת שירות שהוגשה</a></li>
-                            <li><a href="lane-queue-metric.html">בדיקת אורכי תור ומפרצים</a></li>
-                            <li><a href="LOS_nat.html">רמת שירות ברשת הבין-עירונית</a></li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
         </section>
 
         <section class="block" id="access">
@@ -1283,6 +1350,7 @@
             </div>
         </section>
 
+        <div class="part-div" role="separator">מה הלאה<span>בפיתוח ותחומי עיסוק</span></div>
         <section class="block" id="coming">
             <div class="block-head">
                 <h2>בפיתוח – חידושים מבוססי בינה מלאכותית</h2>
@@ -1554,7 +1622,6 @@
     });
 })();
 </script>
-
 
 <script>
 /* שיתוף: במכשירים שתומכים בשיתוף מערכת — תפריט השיתוף; אחרת ווטסאב */

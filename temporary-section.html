@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#EDEFF1">
 <title>MAHALCO — חתך זמני באתרי עבודה עירוניים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -149,12 +152,301 @@ tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
 .book-view .legend{display:flex;flex-wrap:wrap;gap:9px 20px;padding:10px 18px 12px;font-size:12px;border-top:1px solid #777;background:#fafafa;color:#222}
 .book-view .legend-item{display:flex;align-items:center;gap:7px}
 .book-view .swatch{width:24px;height:14px;border:1px solid #333;display:inline-block}
+
+/* ==================== טאבלט / iPad וטלפון – באותה שפה של כלי החתך הרגיל ==================== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent}
+.nav{padding-top:env(safe-area-inset-top)}
+.nav{background:color-mix(in srgb,var(--card) 84%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px)}
+.nav .back{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 10px 0 4px;border-radius:20px;color:var(--focus);font-weight:600;font-size:15px;text-decoration:none;flex:none}
+.nav .back::before{content:"";width:9px;height:9px;border-top:2.2px solid currentColor;border-right:2.2px solid currentColor;transform:rotate(45deg);margin-inline-end:2px}
+.jump{display:none}
+button,select,input,.case{touch-action:manipulation}
+
+/* iPad לרוחב */
+@media (min-width:1024px) and (max-width:1366px){
+  :root{--insp:344px}
+  .shell{gap:14px}
+  .hero-h h2{font-size:21px}
+}
+
+/* טאבלט לאורך וטלפון: השרטוט נשאר גלוי למעלה, ההגדרות מתחתיו */
+@media (max-width:1023px){
+  .shell{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+  .stage{display:contents}
+  .shell > *,.stage > *{min-width:0;max-width:100%}
+  .stage > .hero{order:0;position:sticky;top:calc(64px + env(safe-area-inset-top));z-index:20;box-shadow:0 10px 26px rgba(0,0,0,.14)}
+  .insp{order:1;scroll-margin-top:calc(var(--heroH,300px) + 76px)}
+  #bookPanel{order:2} #baseCard{order:3} .stage > .grid2{order:4} .stage > .src{order:5}
+  #bookPanel,#baseCard,.stage > .grid2{scroll-margin-top:calc(var(--heroH,300px) + 76px)}
+  .hero .tape{height:6px}
+  .hero-h{padding:10px 14px 4px;gap:10px;align-items:center}
+  .hero-h h2{font-size:17px}
+  .hero-h p{display:none}
+  .plate{font-size:13px;padding:4px 9px}
+  .draw{max-height:32vh;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:2px 10px 6px}
+  .hero .legend{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:7px 14px 9px;white-space:nowrap;gap:6px 14px}
+  .hero .legend::-webkit-scrollbar{display:none}
+  .insp{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  .cases{max-height:300px}
+  .row{flex-wrap:wrap;gap:6px 10px;min-height:44px}
+  .row > label,.row > .lb{max-width:none;flex:1 1 100%}
+  .row select{max-width:none;flex:1 1 100%}
+  .row > span:has(input){flex:1 1 100%;display:flex;align-items:center;gap:8px}
+  .row > span:has(input) input{flex:1}
+  .row .seg{flex:1 1 100%;display:flex}
+  .row .seg button{flex:1 1 auto}
+
+  /* סרגל קפיצה תחתון בסגנון iOS */
+  .jump{display:flex;position:fixed;z-index:40;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));
+    gap:2px;padding:4px;border-radius:22px;background:color-mix(in srgb,var(--card) 78%,transparent);
+    -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+    border:.5px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.18);max-width:calc(100% - 24px)}
+  .jump button{border:0;background:none;min-height:46px;min-width:74px;padding:4px 12px;border-radius:18px;color:var(--ink-2);
+    font-size:12px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+  .jump button svg{width:20px;height:20px}
+  .jump button[aria-current="true"]{background:var(--fill);color:var(--work-ink)}
+  .jump .jn{font-size:10.5px;font-weight:800;min-width:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;line-height:16px}
+  .jump .jn:empty{display:none}
+}
+@media (max-width:760px){
+  .insp{grid-template-columns:1fr}
+}
+
+/* טלפון */
+@media (max-width:600px){
+  .stage > .hero{position:relative;top:auto;box-shadow:none}
+  .insp,#bookPanel,#baseCard,.stage > .grid2{scroll-margin-top:72px}
+  .nav-in{gap:8px;min-height:54px}
+  .nav h1{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .nav .back span{display:none}
+  .pill{height:30px;padding:0 10px;font-size:12.5px}
+  .hero-h p{display:block;font-size:13.5px}
+  .draw{max-height:none}
+  .draw svg{min-width:600px}
+  .pb{padding:10px 14px 14px}
+  .facts{grid-template-columns:1fr}
+  .notes{padding:0 28px 0 12px}
+  .legend{font-size:12px}
+  .jump button{min-width:64px;padding:4px 8px}
+}
+
+/* מגע: שטחי לחיצה של 44 נק׳ ושדות ב-16px כדי ש-iOS לא יגדיל את הדף */
+@media (hover:none) and (pointer:coarse), (max-width:1023px){
+  select{min-height:44px;font-size:16px}
+  input[type=number]{min-height:44px;font-size:16px;width:84px;border-radius:10px}
+  .crow input{min-height:38px;width:72px}
+  .seg{border-radius:11px}
+  .seg button{min-height:40px;padding:0 13px;font-size:14.5px;border-radius:9px}
+  .case{min-height:46px;font-size:15px}
+  .btn-link{min-height:40px;font-size:14.5px}
+  .crow{padding:5px 8px;min-height:44px}
+  .crow .cn{font-size:14px}
+  .case:hover{background:none}
+  .case:active{background:var(--fill)}
+}
+@media (prefers-reduced-motion:reduce){.jump{transition:none}}
+@media print{.jump,.nav{display:none!important} .stage > .hero{position:static}}
+</style>
+
+<!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
+<script data-light="#EDEFF1" data-dark="#0F1113" data-slot=".nav-in">
+(function(){
+  var d=document.documentElement, K='mh-theme', G='mh-glass';
+  var me=document.currentScript||{dataset:{}};
+  var LC=me.dataset.light||'#F2F2F7', DC=me.dataset.dark||'#000000', SLOT=me.dataset.slot||'';
+  function rd(k,v){try{return localStorage.getItem(k)||v}catch(e){return v}}
+  function wr(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+  var ui=null;
+  function apply(){
+    var pref=rd(K,'auto'); if(!/^(light|dark|auto)$/.test(pref)) pref='auto';
+    var t=pref==='auto'?(mq.matches?'dark':'light'):pref, gl=rd(G,'off')==='on'?'on':'off';
+    d.setAttribute('data-theme',t); d.setAttribute('data-theme-pref',pref); d.setAttribute('data-glass',gl);
+    d.style.colorScheme=t;
+    var ms=document.querySelectorAll('meta[name="theme-color"]');
+    if(!ms.length && document.head){var m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m);ms=[m];}
+    for(var i=0;i<ms.length;i++){ms[i].removeAttribute('media');ms[i].setAttribute('content',t==='dark'?DC:LC);}
+    if(ui) ui.sync(pref,gl);
+    try{document.dispatchEvent(new CustomEvent('mh:theme',{detail:{theme:t,pref:pref,glass:gl}}));}catch(e){}
+  }
+  function soft(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},420);
+  }
+  window.MHTheme={
+    set:function(p){wr(K,p);soft();apply();},
+    glass:function(on){wr(G,on?'on':'off');soft();apply();},
+    get:function(){return {theme:d.getAttribute('data-theme'),pref:rd(K,'auto'),glass:rd(G,'off')};}
+  };
+  apply();
+  if(mq.addEventListener) mq.addEventListener('change',function(){if(rd(K,'auto')==='auto'){soft();apply();}});
+  else if(mq.addListener) mq.addListener(function(){if(rd(K,'auto')==='auto') apply();});
+  window.addEventListener('storage',function(e){if(e.key===K||e.key===G) apply();});
+
+  var ICO={
+    look:'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="currentColor"/></svg>',
+    light:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>',
+    dark:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 0 1 9.4 4a8.4 8.4 0 1 0 10.6 10.6z" fill="currentColor"/></svg>',
+    auto:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4.5" width="18" height="12" rx="2.2"/><path d="M8.5 20h7M12 16.5V20" stroke-linecap="round"/></svg>'
+  };
+  function build(){
+    if(document.getElementById('mh-look')) return;
+    var b=document.body;
+    var bg=document.createElement('div'); bg.id='mh-bg'; bg.setAttribute('aria-hidden','true'); b.insertBefore(bg,b.firstChild);
+    var btn=document.createElement('button');
+    btn.type='button'; btn.id='mh-look'; btn.className='mh-look';
+    btn.setAttribute('aria-label','מראה התצוגה: בהיר, כהה וזכוכית');
+    btn.setAttribute('aria-haspopup','dialog'); btn.setAttribute('aria-expanded','false');
+    btn.title='מראה התצוגה'; btn.innerHTML=ICO.look;
+    var slot=SLOT?document.querySelector(SLOT):null;
+    if(slot){btn.classList.add('mh-inline');slot.appendChild(btn);} else {btn.classList.add('mh-float');b.appendChild(btn);}
+    var pop=document.createElement('div');
+    pop.className='mh-pop'; pop.id='mh-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','מראה התצוגה'); pop.hidden=true;
+    pop.innerHTML=
+      '<div class="mh-pop-h">מראה התצוגה</div>'+
+      '<div class="mh-seg" role="radiogroup" aria-label="ערכת צבעים">'+
+        '<span class="mh-knob" aria-hidden="true"></span>'+
+        '<button type="button" role="radio" data-v="light">'+ICO.light+'<span>בהיר</span></button>'+
+        '<button type="button" role="radio" data-v="dark">'+ICO.dark+'<span>לילה</span></button>'+
+        '<button type="button" role="radio" data-v="auto">'+ICO.auto+'<span>לפי המכשיר</span></button>'+
+      '</div>'+
+      '<label class="mh-row"><span class="mh-row-t"><b>זכוכית iOS</b><small>שקיפות וטשטוש מאחורי הכרטיסים</small></span>'+
+      '<input type="checkbox" class="mh-sw" role="switch"></label>'+
+      '<p class="mh-foot">הבחירה נשמרת לכל העמודים והכלים באתר.</p>';
+    b.appendChild(pop);
+    var seg=pop.querySelector('.mh-seg'), knob=pop.querySelector('.mh-knob'), sw=pop.querySelector('.mh-sw');
+    function place(){
+      var r=btn.getBoundingClientRect(), w=pop.offsetWidth, h=pop.offsetHeight, vw=innerWidth, vh=innerHeight;
+      var left=Math.min(Math.max(8,r.left),vw-w-8);
+      var top=(r.bottom+10+h<vh-8)?r.bottom+10:Math.max(8,r.top-h-10);
+      pop.style.left=left+'px'; pop.style.top=top+'px';
+    }
+    function moveKnob(){
+      var on=seg.querySelector('[aria-checked="true"]'); if(!on||!pop.offsetWidth) return;
+      knob.style.width=on.offsetWidth+'px'; knob.style.left=on.offsetLeft+'px';
+    }
+    function open(){pop.hidden=false;btn.setAttribute('aria-expanded','true');place();moveKnob();
+      requestAnimationFrame(function(){pop.classList.add('on');});
+      var c=seg.querySelector('[aria-checked="true"]'); if(c) c.focus({preventScroll:true});}
+    function close(f){if(pop.hidden) return; pop.classList.remove('on');btn.setAttribute('aria-expanded','false');pop.hidden=true; if(f) btn.focus();}
+    btn.addEventListener('click',function(e){e.stopPropagation(); pop.hidden?open():close();});
+    pop.addEventListener('click',function(e){e.stopPropagation();});
+    document.addEventListener('click',function(){close();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape') close(true);});
+    addEventListener('resize',function(){if(!pop.hidden){place();moveKnob();}});
+    addEventListener('scroll',function(){if(!pop.hidden) place();},{passive:true});
+    seg.addEventListener('click',function(e){var t=e.target.closest('button[data-v]'); if(t) MHTheme.set(t.dataset.v);});
+    seg.addEventListener('keydown',function(e){
+      if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
+      var bs=[].slice.call(seg.querySelectorAll('button')), i=bs.indexOf(document.activeElement); if(i<0) return;
+      i=(i+(e.key==='ArrowLeft'?1:-1)+bs.length)%bs.length; bs[i].focus(); MHTheme.set(bs[i].dataset.v); e.preventDefault();
+    });
+    sw.addEventListener('change',function(){MHTheme.glass(sw.checked);});
+    ui={sync:function(pref,gl){
+      [].forEach.call(seg.querySelectorAll('button'),function(x){var on=x.dataset.v===pref;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;});
+      sw.checked=gl==='on'; moveKnob();
+    }};
+    apply();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+})();
+</script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+/* ---- backdrop for glass ---- */
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+/* ---- look button ---- */
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+/* ---- popover ---- */
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+/* ---- התאמות לעמוד הזה ---- */
+
+:root[data-theme="dark"] .nav .back{color:var(--focus)}
+html[data-glass="on"] .panel,
+html[data-glass="on"] .stage > .hero,
+html[data-glass="on"] .hero{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] .seg,
+html[data-glass="on"] select,
+html[data-glass="on"] input[type=number],
+html[data-glass="on"] .cells,
+html[data-glass="on"] .crow,
+html[data-glass="on"] .facts div,
+html[data-glass="on"] .case[aria-pressed="true"]{background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .nav,
+html[data-glass="on"] .jump{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .panel,html[data-glass="on"] .hero{border-radius:18px}
+html[data-glass="on"] .facts{background:transparent}
+@media (min-width:601px) and (max-width:1023px){html[data-glass="on"] .stage > .hero{background:color-mix(in srgb,var(--card) 90%,transparent)!important}}
+html[data-glass="on"] .draw svg{border-radius:12px}
+html[data-glass="on"] .seg button[aria-pressed="true"]{background:var(--card)}
+
 </style>
 </head>
 <body>
 <header class="nav">
   <div class="tape" aria-hidden="true"></div>
   <div class="nav-in">
+    <a class="back" href="index.html" aria-label="חזרה לדף הבית"><span>מהאלco</span></a>
     <span class="brand">MAHALCO</span>
     <h1>חתך זמני באתרי עבודה עירוניים</h1>
     <span class="sp"></span>
@@ -216,7 +508,7 @@ tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
     </section>
   </aside>
 
-  <div class="stage" id="stage">
+  <div class="stage" id="stageView">
     <article class="hero">
       <div class="tape" aria-hidden="true"></div>
       <div class="hero-h">
@@ -950,7 +1242,7 @@ function caseList(){
     if(c.speed) ST.P.speed=c.speed; if(c.maxS && ST.P.speed>c.maxS) ST.P.speed=c.maxS;
     if(c.wz) ST.P.wz=c.wz; if(c.dur) ST.P.dur=c.dur; ST.P.night=!!c.night;
     if(c.bikeMerge){ ST.P.bikeMode='merge'; ST.P.speed=30; }
-    render(); if(window.matchMedia('(max-width:1023px)').matches) $('stage').scrollIntoView({behavior:'smooth'}); });
+    render(); if(window.matchMedia('(max-width:600px)').matches) document.querySelector('#stageView > .hero').scrollIntoView({behavior:'smooth'}); });
 }
 function controls(){
   const P=ST.P, c=curCase();
@@ -4311,5 +4603,37 @@ render();
 </div>
 </template>
 
+
+<nav class="jump" id="jumpBar" aria-label="מעבר מהיר">
+  <button type="button" data-to=".insp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>הגדרות</span></button>
+  <button type="button" data-to=".stage > .grid2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="4" y="4" width="16" height="16" rx="4"/></svg><span>בדיקות <b class="jn" id="jumpBad"></b></span></button>
+  <button type="button" data-to="#bookPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><span>מהספר</span></button>
+</nav>
+<script>
+/* שכבת טאבלט/טלפון: גובה השרטוט הדביק, סרגל קפיצה ומונה חריגות */
+(function(){
+  var hero=document.querySelector('.stage > .hero'), bar=document.getElementById('jumpBar');
+  if(!hero||!bar) return;
+  var btns=[].slice.call(bar.querySelectorAll('button'));
+  function heroH(){ document.documentElement.style.setProperty('--heroH', hero.offsetHeight+'px'); }
+  heroH(); addEventListener('resize',heroH);
+  if(window.ResizeObserver) new ResizeObserver(heroH).observe(hero);
+  btns.forEach(function(b){ b.addEventListener('click',function(){
+    var t=document.querySelector(b.dataset.to); if(!t) return;
+    if(b.dataset.to==='#bookPanel'){ var bv=document.getElementById('bookView'); if(bv&&bv.style.display==='none'){ var tg=document.getElementById('toggleBook'); if(tg) tg.click(); } }
+    t.scrollIntoView({behavior:'smooth',block:'start'});
+  }); });
+  function active(){
+    var y=hero.getBoundingClientRect().bottom+40, cur=btns[0];
+    btns.forEach(function(b){ var t=document.querySelector(b.dataset.to); if(t&&t.getBoundingClientRect().top<=y) cur=b; });
+    btns.forEach(function(b){ b.setAttribute('aria-current', b===cur?'true':'false'); });
+  }
+  addEventListener('scroll',function(){ if(active.t) return; active.t=requestAnimationFrame(function(){active.t=0;active();}); },{passive:true});
+  active();
+  var checks=document.getElementById('checks'), n=document.getElementById('jumpBad');
+  function count(){ if(n) n.textContent=(checks.querySelectorAll('.ck.bad').length||''); }
+  if(checks&&window.MutationObserver){ new MutationObserver(count).observe(checks,{childList:true,subtree:true}); count(); }
+})();
+</script>
 </body>
 </html>

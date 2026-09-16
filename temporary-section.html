@@ -136,10 +136,10 @@ td.nar{color:var(--warn);font-weight:700} td.fail{color:var(--bad);font-weight:8
 tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
 .tw{max-height:360px;overflow:auto;padding:0 6px 8px}
 .src{padding:12px 16px 16px;font-size:12px;color:var(--ink-3);line-height:1.6}
+
 /* === Reference book diagrams (scoped to .book-view) === */
 .book-view{background:#fff;color:#111;font-family:"Arial","Segoe UI",sans-serif;line-height:1.45;border-radius:var(--r-sm);overflow:hidden;direction:rtl}
 .book-view .card{background:#fff;border:1.5px solid #222;margin:0;overflow:hidden}
-.book-view .doc-header{display:none!important}
 .book-view .card-header{background:#fff;border-bottom:2px solid #111;padding:12px 18px}
 .book-view .card-header h2{margin:0 0 8px;color:#111;font-size:17px;font-weight:800;line-height:1.3}
 .book-view .meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12.5px;color:#222}
@@ -153,6 +153,196 @@ tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
 .book-view .legend{display:flex;flex-wrap:wrap;gap:9px 20px;padding:10px 18px 12px;font-size:12px;border-top:1px solid #777;background:#fafafa;color:#222}
 .book-view .legend-item{display:flex;align-items:center;gap:7px}
 .book-view .swatch{width:24px;height:14px;border:1px solid #333;display:inline-block}
+
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="tape" aria-hidden="true"></div>
+  <div class="nav-in">
+    <span class="brand">MAHALCO</span>
+    <h1>חתך זמני באתרי עבודה עירוניים</h1>
+    <span class="sp"></span>
+    <span class="pill ok" id="status" role="status"><i></i>עומד בהנחיות</span>
+  </div>
+</header>
+
+<main class="shell">
+  <aside class="insp" aria-label="הגדרות">
+    <section class="panel">
+      <h2><span class="step">1</span>תרשים מהספר</h2>
+      <div class="cases" id="cases"></div>
+      <div class="pb" style="border-top:1px solid var(--line)">
+        <div class="row" id="stageRow" hidden><span class="lb">שלב ביצוע</span><div class="seg" id="stage"></div></div>
+        <div class="row" id="closeRow" hidden><label>נתיבים לסגירה<small>«צמצום» – ללא סגירת נתיב</small></label><div class="seg" id="close"></div></div>
+        <div class="row"><span class="lb">צד העבודה</span><div class="seg" id="side"></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">2</span>החתך הקיים</h2>
+      <div class="pb">
+        <select id="preset" aria-label="תבנית חתך"></select>
+        <p class="muted" id="presetSrc"></p>
+        <div class="cells" id="cellsEd"></div>
+        <button type="button" class="btn-link" id="resetCells" hidden>שחזור רוחבי התבנית</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">3</span>תנאי האתר</h2>
+      <div class="pb">
+        <div class="row"><label>מהירות מרבית מותרת<small>לפני העבודות (מ.מ.מ), קמ״ש</small></label><div class="seg" id="speed"></div></div>
+        <div class="row"><label for="tc">הרכב התנועה</label><select id="tc"></select></div>
+        <div class="row"><span class="lb">משך העבודה</span><div class="seg" id="dur"></div></div>
+        <div class="row"><span class="lb">סיכון העבודה</span><div class="seg" id="risk"></div></div>
+        <div class="row"><label for="st">סוג הרחוב<small>לרוחב מעבר הולכי רגל</small></label><select id="st"></select></div>
+        <div class="row"><label>חזית מסחרית<small>תוספת 0.5 מ׳ מומלצת</small></label><div class="seg" id="shop"></div></div>
+        <div id="bikeRows" style="display:contents">
+          <div class="row"><label for="bv">היקף אופניים</label><select id="bv"></select></div>
+          <div class="row"><span class="lb">אופניים בסגירה</span><div class="seg" id="bikeMode"></div></div>
+        </div>
+        <div class="row" id="ptRow"><label for="pt">נתיב תחבורה ציבורית</label><select id="pt"></select></div>
+        <div class="row"><span class="lb">שעות העבודה</span><div class="seg" id="night"></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">4</span>התקנים ורוחבים</h2>
+      <div class="pb">
+        <div class="row"><label for="devSel">התקן הפרדה</label><select id="devSel"></select></div>
+        <div class="row"><label for="d">רצועת התקנים d<small>כולל סימון 807</small></label><span><input id="d" type="number" step="0.05" inputmode="decimal"> <span class="u">מ׳</span></span></div>
+        <div class="row" id="wbarRow"><label for="wbar">רוחב פעיל W של המעקה<small>ללא מעקה – 0.60 לפחות</small></label><span><input id="wbar" type="number" step="0.05" inputmode="decimal"> <span class="u">מ׳</span></span></div>
+        <div class="row"><span class="lb">אזור העבודה</span><div class="seg" id="wzMode"></div></div>
+        <div class="row" id="wzRow"><label for="wz">רוחב אזור העבודה</label><span><input id="wz" type="number" step="0.05" inputmode="decimal"> <span class="u">מ׳</span></span></div>
+        <div class="row" id="emRow" hidden><label for="emW">נתיב לרכב חירום<small>ערך מוצע – לתאם</small></label><span><input id="emW" type="number" step="0.05" inputmode="decimal"> <span class="u">מ׳</span></span></div>
+        <div class="row"><label>גוון הסימון<small>מכתב המפקח הארצי, 13.3.2023</small></label><div class="seg" id="mark"></div></div>
+      </div>
+    </section>
+  </aside>
+
+  <div class="stage" id="stage">
+    <article class="hero">
+      <div class="tape" aria-hidden="true"></div>
+      <div class="hero-h">
+        <span class="plate" id="caseNo">תרשים 1</span>
+        <div><h2 id="caseTitle"></h2><p id="caseDesc"></p></div>
+      </div>
+      <div class="draw" id="svgTemp"></div>
+      <div class="legend">
+        <span><span class="sw" style="background:#f07f1e"></span>אזור פעילות</span>
+        <span><span class="sw" style="background:#ffc978"></span>רצועת התקנים d</span>
+        <span><span class="sw" style="background:#ffe3b8"></span>רוחב פעיל W</span>
+        <span><span class="sw" style="background:#f1e3a0"></span>מעבר הולכי רגל זמני</span>
+        <span><span class="sw" style="background:#f7cf9f"></span>שטח חסום נוסף</span>
+        <span>מידה <b style="color:#b15d00">כתומה</b> – מוצר ביחס לקיים; <b style="color:#c8372d">אדומה</b> – מתחת למזערי</span>
+      </div>
+    </article>
+
+    
+    <section class="panel" id="bookPanel">
+      <div class="base-h">
+        <h3>התרשים מספר ההנחיות<small id="bookName"></small></h3>
+        <button type="button" class="btn-link" id="toggleBook" aria-expanded="true" aria-controls="bookView">הסתרה</button>
+      </div>
+      <div class="book-view" id="bookView"></div>
+    </section>
+<section class="panel" id="baseCard">
+      <div class="base-h"><h3>החתך הקיים<small id="baseName"></small></h3><button type="button" class="btn-link" id="toggleBase" aria-expanded="false" aria-controls="svgBase">הצגה</button></div>
+      <div class="draw" id="svgBase"></div>
+    </section>
+
+    <div class="grid2">
+      <section class="panel">
+        <h2>בדיקות מול ההנחיות</h2>
+        <div id="checks"></div>
+      </section>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <section class="panel">
+          <h2>סיכום ההסדר</h2>
+          <dl class="facts" style="margin:0">
+            <div><dt>רוחב אזור העבודה</dt><dd id="sumWork"></dd></div>
+            <div><dt>גוון הסימון</dt><dd id="sumMark"></dd></div>
+            <div><dt>התקן הפרדה</dt><dd id="sumDev"></dd></div>
+            <div><dt>מרחק עצירה לפריסת תמרורים</dt><dd id="sumStop"></dd></div>
+          </dl>
+          <p class="why" id="sumMarkWhy"></p>
+          <ul class="notes" id="notes"></ul>
+        </section>
+        <section class="panel">
+          <h2>רכיבי החתך הזמני</h2>
+          <div class="tw"><table id="alloc"></table></div>
+        </section>
+      </div>
+    </div>
+    <p class="src">מבוסס על "הנחיות לתכנון הסדרי תנועה זמניים באתרי עבודה עירוניים" (משרד התחבורה, אפריל 2020) – טבלאות 2.3.1–2.3.7, 2.9.1 וסעיפים 2.3.4, 2.3.5; ועל מכתב המפקח הארצי על התעבורה בנושא גוון הסימון באתרי עבודה (13.3.2023). תבניות הרחוב – מתוך כלי החתך הטיפוסי (מרחב הרחוב 2020). הכלי עקרוני ואינו מחליף תכנון מפורט ואישור רשות התמרור.</p>
+  </div>
+</main>
+<script>
+const T = {
+  walk:   {n:'רצועת הליכה',        s:'הליכה', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'רצועת הליכה מזערית 1.5 מ׳ (מרחב הרחוב, תבנית 1)']},
+  aux:    {n:'רצועת עזר / עצים',   s:'עזר',   lvl:'curb', w:1.2,  col:'#cfd9bf', tree:true},
+  front:  {n:'רצועת דופן',         s:'דופן',  lvl:'curb', w:0.3,  col:'#ddd6c6'},
+  plaza:  {n:'שדירה / פעילות',     s:'שדירה', lvl:'curb', w:6.0,  col:'#d9e3c6', tree:true, ppl:true},
+  green:  {n:'גינון',              s:'גינון', lvl:'curb', w:2.0,  col:'#b9cfa3', tree:true},
+  bikeP:  {n:'שביל אופניים',       s:'אופניים',lvl:'curb', w:2.5, col:'#e8b9a8', dir:'up', bike:true,
+           min:[1.5,'שביל חד-סטרי מזערי 1.5 מ׳, דו-סטרי 3.0 מ׳ (כרך 1 פרק 9)']},
+  bikeL:  {n:'נתיב אופניים',       s:'נ. אופניים',lvl:'road', w:1.5, col:'#e39c86', dir:'up', bike:true, min:[1.5,'נתיב אופניים 1.5–2.0 מ׳']},
+  buf:    {n:'רצועת הפרדה',        s:'הפרדה', lvl:'road', w:0.5,  col:'#c9ced3'},
+  parkP:  {n:'חנייה מקבילה',       s:'חנייה', lvl:'road', w:2.0,  col:'#9aa4ad', car:'park', max:[2.25,'אין לתכנן מפרץ חנייה מקביל רחב מ-2.25 מ׳ (רכב מנועי 3.3.4)']},
+  parkX:  {n:'חנייה ניצבת',        s:'ח. ניצבת',lvl:'road', w:5.0, col:'#9aa4ad', car:'park'},
+  lane:   {n:'נתיב נסיעה',         s:'נתיב',  lvl:'road', w:3.25, col:'#6d7680', dir:'up', car:'car'},
+  bus:    {n:'נת״צ',               s:'נת״צ',  lvl:'road', w:3.6,  col:'#b5645a', dir:'up', car:'bus', min:[3.6,'נת״צ 3.6–4.0 מ׳ (כרך 1 פרק 10)']},
+  brt:    {n:'מת״צ (נתיב בודד)',   s:'מת״צ',  lvl:'road', w:3.6,  col:'#c0795f', dir:'up', car:'bus', min:[3.6,'נתיב במת״צ 3.6 מ׳ (כרך 1 פרק 10)']},
+  lrt:    {n:'מסילת רק״ל (לכיוון)',s:'רק״ל',  lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'ערך מוצע – רוחב רצועת רק״ל אינו בספרים המצורפים; לאמת מול תכנון הרכבת'},
+  median: {n:'מפרדה בנויה',        s:'מפרדה', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'מפרדה מזערית 2.5 מ׳ לצד נתיב שמאלה (תנועה בצמתים 5.5.4)']},
+  barrier:{n:'מעקה מפרדה (בין-עירוני)',s:'מעקה',lvl:'road', w:0.8, col:'#a8b0b8', rail:true},
+  shR:    {n:'שול ימני',           s:'שול',   lvl:'road', w:3.0,  col:'#8c949c', min:[2.0,'שול ימני 2.0–3.5 מ׳ לפי סוג הדרך (כרך 1 טבלה 3.2)']},
+  shL:    {n:'שול שמאלי',          s:'שול שמאלי',lvl:'road', w:1.2, col:'#8c949c'},
+  active: {n:'רוחב פעיל + מעקה',   s:'W',     lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'הרוחב הפעיל W נקבע לפי סוג המעקה ורמת התפקוד'},
+  kerbArea:{n:'שוליים עם אבן שפה', s:'שוליים', lvl:'curb', w:0.5, col:'#cfc8b6'}
+};
+
+const C = (t,w,dir)=>({t, w:(w===undefined?T[t].w:w), dir: dir || T[t].dir || 'none'});
+function mirror(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir==='up'?'down':c.dir==='down'?'up':c.dir})); }
+function sym(half){ return [...half, ...mirror(half)]; }  // half = מהקצה השמאלי עד הציר, בכיוון "down"
+const E_BLD = {type:'building'}, E_FILL = {type:'fill', n:4, h:1.5}, E_CUT = {type:'cut', n:3, h:1.5, dd:0.6, db:0.6}, E_NONE={type:'none'};
+
+const PRESETS = {
+  mr1:{g:'עירוני – מרחב הרחוב',n:'תבנית 1 – מקומי, בינוי נמוך (15.0 מ׳)',ctx:'urban',row:15,src:'מרחב הרחוב 2020, תבנית 1 (עמ׳ 113 בקובץ)',
+       cells:sym([C('front',0.3),C('walk',1.5),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
+  mr2:{g:'עירוני – מרחב הרחוב',n:'תבנית 2 – מקומי, מדרכות אסימטריות (17.5 מ׳)',ctx:'urban',row:17.5,src:'מרחב הרחוב 2020, תבנית 2 (עמ׳ 115)',
+       cells:[C('front',0.3),C('walk',1.6),C('aux',1.2),C('parkX',5.0),C('lane',2.75,'down'),C('lane',2.75,'up'),C('parkP',2.0),C('walk',1.6),C('front',0.3)],eL:E_BLD,eR:E_BLD},
+  mr3:{g:'עירוני – מרחב הרחוב',n:'תבנית 3 – מקומי, בינוי בינוני (16.0 מ׳)',ctx:'urban',row:16,src:'מרחב הרחוב 2020, תבנית 3 (עמ׳ 117)',
+       cells:sym([C('front',0.3),C('walk',2.0),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
+  mr4:{g:'עירוני – מרחב הרחוב',n:'תבנית 4 – מקומי/מאסף 1, בינוני (22.0 מ׳)',ctx:'urban',row:22,src:'מרחב הרחוב 2020, תבנית 4 (עמ׳ 119)',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr5:{g:'עירוני – מרחב הרחוב',n:'תבנית 5 – מקומי, בינוי גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 5 (עמ׳ 121)',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkX',5.0),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr7:{g:'עירוני – מרחב הרחוב',n:'תבנית 7 – מקומי/מאסף 1, גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 7 (עמ׳ 125)',
+       cells:sym([C('front',0.5),C('walk',3.3),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr9:{g:'עירוני – מרחב הרחוב',n:'תבנית 9 – מאסף 2, חזית פעילה (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 9 (עמ׳ 129)',
+       cells:sym([C('front',2.5),C('walk',2.8),C('aux',1.2),C('bikeP',2.0,'down'),C('parkP',2.0),C('lane',3.0,'down'),C('lane',3.0,'down'),C('median',1.5)]),eL:E_BLD,eR:E_BLD},
+  mr10:{g:'עירוני – מרחב הרחוב',n:'תבנית 10 – עורק רמה 1 (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 10 (עמ׳ 131)',
+       cells:sym([C('walk',2.5),C('aux',1.5),C('bikeP',2.5,'down'),C('aux',1.5),C('lane',3.5,'down'),C('lane',3.5,'down'),C('median',3.0)]),eL:E_BLD,eR:E_BLD},
+  ex1:{g:'עירוני – דוגמאות',n:'שדרה + מת״צ BRT (42.0 מ׳)',ctx:'urban',row:42,src:'לפי השרטוט שהועלה (צילום 1)',
+       cells:[C('plaza',12.0),C('brt',3.5,'down'),C('brt',3.5,'up'),C('median',3.5),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.5),C('lane',3.25,'up'),C('lane',3.25,'up'),C('walk',4.0)],eL:E_NONE,eR:E_BLD},
+  ex2:{g:'עירוני – דוגמאות',n:'נת״צ ושבילי אופניים (44.0 מ׳)',ctx:'urban',row:44,src:'לפי השרטוט שהועלה (צילום 3)',
+       cells:sym([C('walk',7.7),C('bikeP',1.5,'down'),C('aux',2.0),C('bus',3.6,'down'),C('lane',3.1,'down'),C('lane',3.1,'down'),C('median',1.0)]),eL:E_BLD,eR:E_BLD},
+  ex3:{g:'עירוני – דוגמאות',n:'רק״ל במרכז + נת״צ (דוגמה)',ctx:'urban',row:0,src:'דוגמה סכמטית (צילום 8) – רוחבי הרק״ל מוצעים ויש לאמת',
+       cells:[C('green',2.0),C('bikeP',3.0,'both'),C('median',1.0),C('lrt',3.5,'up'),C('lrt',3.5,'down'),C('median',2.0),C('bus',3.6,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.0),C('lane',3.25,'up'),C('lane',3.25,'up'),C('lane',3.25,'up'),C('bus',3.6,'up'),C('walk',2.0),C('green',2.0),C('bikeP',3.0,'both'),C('walk',3.0)],eL:E_NONE,eR:E_BLD},
+};
+
+
+function iCar(cx,yG,k,col){ const w=1.8*k,h=1.45*k; return `<g><rect x="${cx-w*.36}" y="${yG-h}" width="${w*.72}" height="${h*.42}" rx="${h*.1}" fill="${col}"/><rect x="${cx-w*.3}" y="${yG-h+h*.07}" width="${w*.6}" height="${h*.22}" fill="#dfe6ea"/><rect x="${cx-w/2}" y="${yG-h*.62}" width="${w}" height="${h*.44}" rx="${h*.09}" fill="${col}"/><rect x="${cx-w*.46}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/><rect x="${cx+w*.30}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/></g>`; }
+function iBus(cx,yG,k,col){ const w=2.55*k,h=3.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.93}" rx="${w*.08}" fill="${col}"/><rect x="${cx-w*.42}" y="${yG-h*.88}" width="${w*.84}" height="${h*.36}" fill="#e3eaee"/><rect x="${cx-w*.36}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx+w*.18}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx-w*.46}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/><rect x="${cx+w*.3}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/></g>`; }
+function iLrt(cx,yG,k,col){ const w=2.65*k,h=3.6*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.92}" rx="${w*.14}" fill="${col}"/><rect x="${cx-w*.4}" y="${yG-h*.86}" width="${w*.8}" height="${h*.4}" rx="${w*.05}" fill="#dfe8ef"/><path d="M${cx-w*.25} ${yG-h} l${w*.25} ${-h*.35} l${w*.25} ${h*.35}" fill="none" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><line x1="${cx-w*.5}" y1="${yG-h*1.35}" x2="${cx+w*.5}" y2="${yG-h*1.35}" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><rect x="${cx-w*.42}" y="${yG-k*.18}" width="${w*.84}" height="${k*.18}" fill="#555"/></g>`; }
+function iPerson(cx,yG,k,col){ const h=1.7*k,w=.46*k,hd=.2*k; return `<g fill="${col}" opacity=".85"><circle cx="${cx}" cy="${yG-h+hd}" r="${hd}"/><path d="M${cx-w/2} ${yG-h+hd*2.1} h${w} v${h*.42} l${-w*.28} 0 v${h*.44} h${-w*.16} v${-h*.44} h${-w*.12} v${h*.44} h${-w*.16} v${-h*.44} l${-w*.28} 0 z"/></g>`; }
+function iBike(cx,yG,k,col){ const w=.7*k,h=1.75*k,sw=Math.max(.15,k*.035); return `<g><circle cx="${cx}" cy="${yG-h*.16}" r="${h*.16}" fill="none" stroke="#3b3f44" stroke-width="${sw}"/><line x1="${cx-w/2}" y1="${yG-h*.52}" x2="${cx+w/2}" y2="${yG-h*.52}" stroke="#3b3f44" stroke-width="${sw}"/><circle cx="${cx}" cy="${yG-h*.9}" r="${h*.1}" fill="${col}"/><path d="M${cx-w*.34} ${yG-h*.76} h${w*.68} v${h*.34} h${-w*.68} z" fill="${col}"/></g>`; }
+function iTree(cx,yG,k,col){ const h=6*k,r=h*.28,tw=Math.max(.3,h*.04); return `<g><rect x="${cx-tw/2}" y="${yG-h*.58}" width="${tw}" height="${h*.58}" fill="#6b5a44"/><circle cx="${cx}" cy="${yG-h*.72}" r="${r}" fill="${col}" opacity=".9"/><circle cx="${cx-r*.6}" cy="${yG-h*.56}" r="${r*.7}" fill="${col}" opacity=".82"/><circle cx="${cx+r*.6}" cy="${yG-h*.57}" r="${r*.66}" fill="${col}" opacity=".82"/></g>`; }
+function iRail(cx,yG,k){ const h=.8*k,w=.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h}" fill="#555"/><rect x="${cx-w*1.6}" y="${yG-h*.95}" width="${w*3.2}" height="${h*.35}" fill="#8a9097"/></g>`; }
+function iBuilding(x,yG,k,dir){ const w=5*k,h=9*k, x0=dir>0?x:x-w; let win=''; for(let r=0;r<4;r++)for(let c=0;c<3;c++) win+=`<rect x="${x0+w*.12+c*w*.29}" y="${yG-h+h*.1+r*h*.21}" width="${w*.18}" height="${h*.1}" fill="#f0f3f6"/>`; return `<g><rect x="${x0}" y="${yG-h}" width="${w}" height="${h}" fill="#9aa1a7" opacity=".55"/>${win}</g>`; }
+
 
 /* ======================================================================
    מנוע החתך הזמני – לפי "הנחיות לתכנון הסדרי תנועה זמניים באתרי עבודה

@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAHALCO — חתך זמני באתרי עבודה עירוניים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDEFF1; --card:#FFFFFF; --fill:#EEF0F2; --fill-2:#E1E4E8; --ink:#1D2126; --ink-2:#5F6770; --ink-3:#8C939B;
+  --line:rgba(29,33,38,.12); --work:#E8710A; --work-ink:#9A4A00; --work-soft:rgba(232,113,10,.12);
+  --ok:#2E8B57; --ok-soft:rgba(46,139,87,.12); --bad:#C8372D; --bad-soft:rgba(200,55,45,.10); --warn:#A86B0C; --warn-soft:rgba(232,162,31,.16);
+  --focus:#1F5FA8; --r:12px; --insp:392px; --paper:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0F1113; --card:#1A1D21; --fill:#24282D; --fill-2:#30353B; --ink:#EEF0F2; --ink-2:#AEB5BC; --ink-3:#7D848B;
+    --line:rgba(255,255,255,.12); --work:#FF8A2B; --work-ink:#FFB070; --work-soft:rgba(255,138,43,.16);
+    --ok:#4CC787; --ok-soft:rgba(76,199,135,.14); --bad:#FF6B5E; --bad-soft:rgba(255,107,94,.14); --warn:#F2B53A; --warn-soft:rgba(242,181,58,.16); --focus:#6AA8F2; --paper:#F4F5F6 }
+}
+:root[data-theme="dark"]{ --bg:#0F1113; --card:#1A1D21; --fill:#24282D; --fill-2:#30353B; --ink:#EEF0F2; --ink-2:#AEB5BC; --ink-3:#7D848B;
+  --line:rgba(255,255,255,.12); --work:#FF8A2B; --work-ink:#FFB070; --work-soft:rgba(255,138,43,.16);
+  --ok:#4CC787; --ok-soft:rgba(76,199,135,.14); --bad:#FF6B5E; --bad-soft:rgba(255,107,94,.14); --warn:#F2B53A; --warn-soft:rgba(242,181,58,.16); --focus:#6AA8F2; --paper:#F4F5F6 }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Heebo,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* פס עליון */
+.nav{position:sticky;top:0;z-index:30;background:var(--card);border-bottom:1px solid var(--line)}
+.tape{height:6px;background:repeating-linear-gradient(-45deg,var(--work) 0 12px,#fff 12px 24px)}
+.nav-in{display:flex;align-items:center;gap:14px;min-height:58px;padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));max-width:1560px;margin:0 auto}
+.brand{font-weight:800;letter-spacing:.02em;font-size:15px;color:var(--ink-2)}
+.nav h1{margin:0;font-size:18px;font-weight:700;line-height:1.2}
+.nav .sp{flex:1}
+.pill{white-space:nowrap;height:32px;padding:0 13px;border-radius:16px;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:7px}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+
+/* פריסה */
+.shell{display:grid;grid-template-columns:var(--insp) minmax(0,1fr);gap:18px;max-width:1560px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left));align-items:start}
+.insp{display:flex;flex-direction:column;gap:14px;min-width:0}
+.stage{display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (max-width:1023px){ .shell{grid-template-columns:1fr} .stage{order:-1} }
+@media (max-width:560px){ .brand{display:none} .nav h1{font-size:16px} .hero-h{flex-direction:column;gap:8px} .hero-h h2{font-size:20px} .draw svg{min-width:640px} }
+
+.panel{background:var(--card);border-radius:var(--r);border:1px solid var(--line);overflow:hidden}
+.panel > h2{margin:0;padding:12px 16px 10px;font-size:15px;font-weight:700;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.panel > h2 .step{width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--card);font-size:12px;display:inline-grid;place-items:center;flex:none}
+.pb{padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:10px;justify-content:space-between;min-height:36px}
+.row > label, .row > .lb{font-size:14px;color:var(--ink);flex:none;max-width:48%}
+.row > label small{display:block;color:var(--ink-3);font-size:12px}
+select{appearance:none;background:var(--fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235F6770' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat left 10px center;border:1px solid transparent;border-radius:9px;min-height:36px;padding:0 12px 0 30px;width:100%;min-width:0}
+.row select{width:auto;flex:1;max-width:62%}
+input[type=number]{width:74px;min-height:34px;border-radius:8px;border:1px solid var(--line);background:var(--fill);padding:0 8px;text-align:center;font-variant-numeric:tabular-nums}
+.u{color:var(--ink-3);font-size:13px}
+.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;min-height:32px;padding:0 11px;border-radius:7px;font-size:13.5px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.muted{color:var(--ink-3);font-size:12.5px;margin:0}
+.btn-link{border:0;background:none;color:var(--focus);padding:0;font-size:13px;font-weight:600}
+
+/* עורך חתך קיים */
+.cells{display:flex;flex-direction:column;gap:2px;max-height:250px;overflow:auto;border-radius:9px;background:var(--fill);padding:4px}
+.crow{display:flex;align-items:center;gap:8px;padding:3px 6px;border-radius:7px;background:var(--card)}
+.crow .cn{flex:1;font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow em{font-style:normal;color:var(--ink-3)}
+.crow input{width:64px;min-height:28px}
+.sw{width:12px;height:12px;border-radius:3px;flex:none;display:inline-block;border:1px solid rgba(0,0,0,.15);vertical-align:-1px;margin-inline-end:6px}
+.crow .sw{margin:0}
+
+/* רשימת תרשימים */
+.cases{display:flex;flex-direction:column;gap:2px;max-height:420px;overflow:auto;padding:4px 8px 10px}
+.cgroup{font-size:12px;color:var(--ink-3);padding:10px 8px 4px;font-weight:600}
+.case{display:flex;align-items:center;gap:10px;border:0;background:none;text-align:right;padding:7px 8px;border-radius:9px;font-size:14px;color:var(--ink)}
+.case:hover{background:var(--fill)}
+.case .cnum{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--ink-3);display:grid;place-items:center;font-size:12.5px;font-weight:700;flex:none;color:var(--ink-2)}
+.case[aria-pressed="true"]{background:var(--work-soft);font-weight:700}
+.case[aria-pressed="true"] .cnum{background:var(--work);border-color:var(--work);color:#fff}
+
+/* במה */
+.hero{background:var(--card);border-radius:var(--r);border:1px solid var(--line);overflow:hidden}
+.hero .tape{height:10px}
+.hero-h{display:flex;gap:16px;align-items:flex-start;padding:16px 20px 6px}
+.plate{flex:none;background:var(--work);color:#fff;border-radius:8px;padding:6px 12px;font-weight:800;font-size:15px}
+.hero-h h2{margin:0;font-size:24px;line-height:1.2;font-weight:800;letter-spacing:-.01em}
+.hero-h p{margin:6px 0 0;color:var(--ink-2);max-width:72ch;font-size:14.5px}
+.draw{padding:4px 12px 8px;overflow-x:auto}
+.draw svg{display:block;width:100%;height:auto;min-width:760px;background:var(--paper);border-radius:8px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 20px 14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .sw{margin:0}
+.mk{display:inline-block;width:26px;height:6px;border-radius:2px;vertical-align:middle;margin-inline-end:6px;border:1px solid #1d2126}
+.mk.orange{background:#f28a00} .mk.white{background:#fff}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px}
+@media (max-width:1200px){ .grid2{grid-template-columns:1fr} }
+
+.base-h{display:flex;align-items:center;gap:10px;padding:10px 16px}
+.base-h h3{margin:0;font-size:14.5px;font-weight:700;flex:1}
+.base-h h3 small{color:var(--ink-3);font-weight:400;margin-inline-start:6px}
+#baseCard .draw{display:none}
+#baseCard.open .draw{display:block}
+
+.cg{padding:4px 16px 10px}
+.cg h4{margin:10px 0 4px;font-size:12.5px;color:var(--ink-3);font-weight:600}
+.ck{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
+.ck:first-of-type{border-top:0}
+.ci{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:1px}
+.ck.ok .ci{background:var(--ok-soft);color:var(--ok)} .ck.bad .ci{background:var(--bad);color:#fff} .ck.warn .ci{background:var(--warn-soft);color:var(--warn)}
+.ct b{display:block;font-size:14px;font-weight:600}
+.ct small{display:block;color:var(--ink-2);font-size:12.5px;line-height:1.45}
+.cv{text-align:left;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cv b{display:block;font-size:15px}
+.ck.bad .cv b{color:var(--bad)}
+.cv small{color:var(--ink-3);font-size:12px}
+
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.facts div{background:var(--card);padding:10px 16px}
+.facts dt{font-size:12.5px;color:var(--ink-3)}
+.facts dd{margin:2px 0 0;font-size:15.5px;font-weight:700}
+.why{padding:8px 16px 0;margin:0;font-size:12.5px;color:var(--ink-2)}
+.notes{margin:8px 0 14px;padding:0 34px 0 16px;font-size:13.5px;color:var(--ink-2)}
+.notes li{margin:3px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:6px 10px;border-top:1px solid var(--line);text-align:right}
+th{font-size:12px;color:var(--ink-3);font-weight:600;border-top:0}
+td:nth-child(3),td:nth-child(4),th:nth-child(3),th:nth-child(4){text-align:left}
+tr.tmp td:nth-child(2){font-weight:600}
+td.nar{color:var(--warn);font-weight:700} td.fail{color:var(--bad);font-weight:800}
+tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
+.tw{max-height:360px;overflow:auto;padding:0 6px 8px}
+.src{padding:12px 16px 16px;font-size:12px;color:var(--ink-3);line-height:1.6}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="tape" aria-hidden="true"></div>
+  <div class="nav-in">
+    <span class="brand">MAHALCO</span>
+    <h1>חתך זמני באתרי עבודה עירוניים</h1>
+    <span class="sp"></span>
+    <span class="pill ok" id="status" role="status"><i></i>עומד בהנחיות</span>
+  </div>
+</header>
+
+<main class="shell">
+  <aside class="insp" aria-label="הגדרות">
+    <section class="panel">
+      <h2><span class="step">1</span>תרשים מהספר</h2>
+      <div class="cases" id="cases"></div>
+      <div class="pb" style="border-top:1px solid var(--line)">
+        <div class="row" id="stageRow" hidden><span class="lb">שלב ביצוע</span><div class="seg" id="stage"></div></div>
+        <div class="row" id="closeRow" hidden><label>נתיבים לסגירה<small>«צמצום» – ללא סגירת נתיב</small></label><div class="seg" id="close"></div></div>
+        <div class="row"><span class="lb">צד העבודה</span><div class="seg" id="side"></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">2</span>החתך הקיים</h2>
+      <div class="pb">
+        <select id="preset" aria-label="תבנית חתך"></select>
+        <p class="muted" id="presetSrc"></p>
+        <div class="cells" id="cellsEd"></div>
+        <button type="button" class="btn-link" id="resetCells" hidden>שחזור רוחבי התבנית</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">3</span>תנאי האתר</h2>
+      <div class="pb">
+        <div class="row"><label>מהירות מרבית מותרת<small>לפני העבודות (מ.מ.מ), קמ״ש</small></label><div class="seg" id="speed"></div></div>
+        <div class="row"><label for="tc">הרכב התנועה</label><select id="tc"></select></div>
+        <div class="row"><span class="lb">משך העבודה</span><div class="seg" id="dur"></div></div>
+        <div class="row"><span class="lb">סיכון העבודה</span><div class="seg" id="risk"></div></div>
+        <div class="row"><label for="st">סוג הרחוב<small>לרוחב מעבר הולכי רגל</small></label><select id="st"></select></div>
+        <div class="row"><label>חזית מסחרית<small>תוספת 0.5 מ׳ מומלצת</small></label><div class="seg" id="shop"></div></div>
+        <div id="bikeRows" style="display:contents">
+          <div class="row"><label for="bv">היקף אופניים</label><select id="bv"></select></div>
+          <div class="row"><span class="lb">אופניים בסגירה</span><div class="seg" id="bikeMode"></div></div>
+        </div>
+        <div class="row" id="ptRow"><label for="pt">נתיב תחבורה ציבורית</label><select id="pt"></select></div>
+        <div class="row"><span class="lb">שעות העבודה</span><div class="seg" id="night"></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">4</span>התקנים ורוחבים</h2>
+      <div class="pb">
+        <div class="row"><label for="devSel">התקן הפרדה</label><select id="devSel"></select></div>
+        <div class="row"><label for="d">רצועת התקנים d<small>כולל סימון 807</small></label><span><input id="d" type="number" step="0.05" inputmode="decimal"> <span class="u">מ׳</span></span></div>
+        <div class="row" id="wbarRow"><label for="wbar">רוחב פעיל W של המעקה<small>ללא מעקה – 0.60 לפחות</small></label><span><input id="wbar" type="number" step="0.05" inputmode="decimal"> <span class="u">מ׳</span></span></div>
+        <div class="row"><span class="lb">אזור העבודה</span><div class="seg" id="wzMode"></div></div>
+        <div class="row" id="wzRow"><label for="wz">רוחב אזור העבודה</label><span><input id="wz" type="number" step="0.05" inputmode="decimal"> <span class="u">מ׳</span></span></div>
+        <div class="row" id="emRow" hidden><label for="emW">נתיב לרכב חירום<small>ערך מוצע – לתאם</small></label><span><input id="emW" type="number" step="0.05" inputmode="decimal"> <span class="u">מ׳</span></span></div>
+        <div class="row"><label>גוון הסימון<small>מכתב המפקח הארצי, 13.3.2023</small></label><div class="seg" id="mark"></div></div>
+      </div>
+    </section>
+  </aside>
+
+  <div class="stage" id="stage">
+    <article class="hero">
+      <div class="tape" aria-hidden="true"></div>
+      <div class="hero-h">
+        <span class="plate" id="caseNo">תרשים 1</span>
+        <div><h2 id="caseTitle"></h2><p id="caseDesc"></p></div>
+      </div>
+      <div class="draw" id="svgTemp"></div>
+      <div class="legend">
+        <span><span class="sw" style="background:#f07f1e"></span>אזור פעילות</span>
+        <span><span class="sw" style="background:#ffc978"></span>רצועת התקנים d</span>
+        <span><span class="sw" style="background:#ffe3b8"></span>רוחב פעיל W</span>
+        <span><span class="sw" style="background:#f1e3a0"></span>מעבר הולכי רגל זמני</span>
+        <span><span class="sw" style="background:#f7cf9f"></span>שטח חסום נוסף</span>
+        <span>מידה <b style="color:#b15d00">כתומה</b> – מוצר ביחס לקיים; <b style="color:#c8372d">אדומה</b> – מתחת למזערי</span>
+      </div>
+    </article>
+
+    <section class="panel" id="baseCard">
+      <div class="base-h"><h3>החתך הקיים<small id="baseName"></small></h3><button type="button" class="btn-link" id="toggleBase" aria-expanded="false" aria-controls="svgBase">הצגה</button></div>
+      <div class="draw" id="svgBase"></div>
+    </section>
+
+    <div class="grid2">
+      <section class="panel">
+        <h2>בדיקות מול ההנחיות</h2>
+        <div id="checks"></div>
+      </section>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <section class="panel">
+          <h2>סיכום ההסדר</h2>
+          <dl class="facts" style="margin:0">
+            <div><dt>רוחב אזור העבודה</dt><dd id="sumWork"></dd></div>
+            <div><dt>גוון הסימון</dt><dd id="sumMark"></dd></div>
+            <div><dt>התקן הפרדה</dt><dd id="sumDev"></dd></div>
+            <div><dt>מרחק עצירה לפריסת תמרורים</dt><dd id="sumStop"></dd></div>
+          </dl>
+          <p class="why" id="sumMarkWhy"></p>
+          <ul class="notes" id="notes"></ul>
+        </section>
+        <section class="panel">
+          <h2>רכיבי החתך הזמני</h2>
+          <div class="tw"><table id="alloc"></table></div>
+        </section>
+      </div>
+    </div>
+    <p class="src">מבוסס על "הנחיות לתכנון הסדרי תנועה זמניים באתרי עבודה עירוניים" (משרד התחבורה, אפריל 2020) – טבלאות 2.3.1–2.3.7, 2.9.1 וסעיפים 2.3.4, 2.3.5; ועל מכתב המפקח הארצי על התעבורה בנושא גוון הסימון באתרי עבודה (13.3.2023). תבניות הרחוב – מתוך כלי החתך הטיפוסי (מרחב הרחוב 2020). הכלי עקרוני ואינו מחליף תכנון מפורט ואישור רשות התמרור.</p>
+  </div>
+</main>
+<script>
+const T = {
+  walk:   {n:'רצועת הליכה',        s:'הליכה', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'רצועת הליכה מזערית 1.5 מ׳ (מרחב הרחוב, תבנית 1)']},
+  aux:    {n:'רצועת עזר / עצים',   s:'עזר',   lvl:'curb', w:1.2,  col:'#cfd9bf', tree:true},
+  front:  {n:'רצועת דופן',         s:'דופן',  lvl:'curb', w:0.3,  col:'#ddd6c6'},
+  plaza:  {n:'שדירה / פעילות',     s:'שדירה', lvl:'curb', w:6.0,  col:'#d9e3c6', tree:true, ppl:true},
+  green:  {n:'גינון',              s:'גינון', lvl:'curb', w:2.0,  col:'#b9cfa3', tree:true},
+  bikeP:  {n:'שביל אופניים',       s:'אופניים',lvl:'curb', w:2.5, col:'#e8b9a8', dir:'up', bike:true,
+           min:[1.5,'שביל חד-סטרי מזערי 1.5 מ׳, דו-סטרי 3.0 מ׳ (כרך 1 פרק 9)']},
+  bikeL:  {n:'נתיב אופניים',       s:'נ. אופניים',lvl:'road', w:1.5, col:'#e39c86', dir:'up', bike:true, min:[1.5,'נתיב אופניים 1.5–2.0 מ׳']},
+  buf:    {n:'רצועת הפרדה',        s:'הפרדה', lvl:'road', w:0.5,  col:'#c9ced3'},
+  parkP:  {n:'חנייה מקבילה',       s:'חנייה', lvl:'road', w:2.0,  col:'#9aa4ad', car:'park', max:[2.25,'אין לתכנן מפרץ חנייה מקביל רחב מ-2.25 מ׳ (רכב מנועי 3.3.4)']},
+  parkX:  {n:'חנייה ניצבת',        s:'ח. ניצבת',lvl:'road', w:5.0, col:'#9aa4ad', car:'park'},
+  lane:   {n:'נתיב נסיעה',         s:'נתיב',  lvl:'road', w:3.25, col:'#6d7680', dir:'up', car:'car'},
+  bus:    {n:'נת״צ',               s:'נת״צ',  lvl:'road', w:3.6,  col:'#b5645a', dir:'up', car:'bus', min:[3.6,'נת״צ 3.6–4.0 מ׳ (כרך 1 פרק 10)']},
+  brt:    {n:'מת״צ (נתיב בודד)',   s:'מת״צ',  lvl:'road', w:3.6,  col:'#c0795f', dir:'up', car:'bus', min:[3.6,'נתיב במת״צ 3.6 מ׳ (כרך 1 פרק 10)']},
+  lrt:    {n:'מסילת רק״ל (לכיוון)',s:'רק״ל',  lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'ערך מוצע – רוחב רצועת רק״ל אינו בספרים המצורפים; לאמת מול תכנון הרכבת'},
+  median: {n:'מפרדה בנויה',        s:'מפרדה', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'מפרדה מזערית 2.5 מ׳ לצד נתיב שמאלה (תנועה בצמתים 5.5.4)']},
+  barrier:{n:'מעקה מפרדה (בין-עירוני)',s:'מעקה',lvl:'road', w:0.8, col:'#a8b0b8', rail:true},
+  shR:    {n:'שול ימני',           s:'שול',   lvl:'road', w:3.0,  col:'#8c949c', min:[2.0,'שול ימני 2.0–3.5 מ׳ לפי סוג הדרך (כרך 1 טבלה 3.2)']},
+  shL:    {n:'שול שמאלי',          s:'שול שמאלי',lvl:'road', w:1.2, col:'#8c949c'},
+  active: {n:'רוחב פעיל + מעקה',   s:'W',     lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'הרוחב הפעיל W נקבע לפי סוג המעקה ורמת התפקוד'},
+  kerbArea:{n:'שוליים עם אבן שפה', s:'שוליים', lvl:'curb', w:0.5, col:'#cfc8b6'}
+};
+
+const C = (t,w,dir)=>({t, w:(w===undefined?T[t].w:w), dir: dir || T[t].dir || 'none'});
+function mirror(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir==='up'?'down':c.dir==='down'?'up':c.dir})); }
+function sym(half){ return [...half, ...mirror(half)]; }  // half = מהקצה השמאלי עד הציר, בכיוון "down"
+const E_BLD = {type:'building'}, E_FILL = {type:'fill', n:4, h:1.5}, E_CUT = {type:'cut', n:3, h:1.5, dd:0.6, db:0.6}, E_NONE={type:'none'};
+
+const PRESETS = {
+  mr1:{g:'עירוני – מרחב הרחוב',n:'תבנית 1 – מקומי, בינוי נמוך (15.0 מ׳)',ctx:'urban',row:15,src:'מרחב הרחוב 2020, תבנית 1 (עמ׳ 113 בקובץ)',
+       cells:sym([C('front',0.3),C('walk',1.5),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
+  mr2:{g:'עירוני – מרחב הרחוב',n:'תבנית 2 – מקומי, מדרכות אסימטריות (17.5 מ׳)',ctx:'urban',row:17.5,src:'מרחב הרחוב 2020, תבנית 2 (עמ׳ 115)',
+       cells:[C('front',0.3),C('walk',1.6),C('aux',1.2),C('parkX',5.0),C('lane',2.75,'down'),C('lane',2.75,'up'),C('parkP',2.0),C('walk',1.6),C('front',0.3)],eL:E_BLD,eR:E_BLD},
+  mr3:{g:'עירוני – מרחב הרחוב',n:'תבנית 3 – מקומי, בינוי בינוני (16.0 מ׳)',ctx:'urban',row:16,src:'מרחב הרחוב 2020, תבנית 3 (עמ׳ 117)',
+       cells:sym([C('front',0.3),C('walk',2.0),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
+  mr4:{g:'עירוני – מרחב הרחוב',n:'תבנית 4 – מקומי/מאסף 1, בינוני (22.0 מ׳)',ctx:'urban',row:22,src:'מרחב הרחוב 2020, תבנית 4 (עמ׳ 119)',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr5:{g:'עירוני – מרחב הרחוב',n:'תבנית 5 – מקומי, בינוי גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 5 (עמ׳ 121)',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkX',5.0),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr7:{g:'עירוני – מרחב הרחוב',n:'תבנית 7 – מקומי/מאסף 1, גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 7 (עמ׳ 125)',
+       cells:sym([C('front',0.5),C('walk',3.3),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr9:{g:'עירוני – מרחב הרחוב',n:'תבנית 9 – מאסף 2, חזית פעילה (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 9 (עמ׳ 129)',
+       cells:sym([C('front',2.5),C('walk',2.8),C('aux',1.2),C('bikeP',2.0,'down'),C('parkP',2.0),C('lane',3.0,'down'),C('lane',3.0,'down'),C('median',1.5)]),eL:E_BLD,eR:E_BLD},
+  mr10:{g:'עירוני – מרחב הרחוב',n:'תבנית 10 – עורק רמה 1 (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 10 (עמ׳ 131)',
+       cells:sym([C('walk',2.5),C('aux',1.5),C('bikeP',2.5,'down'),C('aux',1.5),C('lane',3.5,'down'),C('lane',3.5,'down'),C('median',3.0)]),eL:E_BLD,eR:E_BLD},
+  ex1:{g:'עירוני – דוגמאות',n:'שדרה + מת״צ BRT (42.0 מ׳)',ctx:'urban',row:42,src:'לפי השרטוט שהועלה (צילום 1)',
+       cells:[C('plaza',12.0),C('brt',3.5,'down'),C('brt',3.5,'up'),C('median',3.5),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.5),C('lane',3.25,'up'),C('lane',3.25,'up'),C('walk',4.0)],eL:E_NONE,eR:E_BLD},
+  ex2:{g:'עירוני – דוגמאות',n:'נת״צ ושבילי אופניים (44.0 מ׳)',ctx:'urban',row:44,src:'לפי השרטוט שהועלה (צילום 3)',
+       cells:sym([C('walk',7.7),C('bikeP',1.5,'down'),C('aux',2.0),C('bus',3.6,'down'),C('lane',3.1,'down'),C('lane',3.1,'down'),C('median',1.0)]),eL:E_BLD,eR:E_BLD},
+  ex3:{g:'עירוני – דוגמאות',n:'רק״ל במרכז + נת״צ (דוגמה)',ctx:'urban',row:0,src:'דוגמה סכמטית (צילום 8) – רוחבי הרק״ל מוצעים ויש לאמת',
+       cells:[C('green',2.0),C('bikeP',3.0,'both'),C('median',1.0),C('lrt',3.5,'up'),C('lrt',3.5,'down'),C('median',2.0),C('bus',3.6,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.0),C('lane',3.25,'up'),C('lane',3.25,'up'),C('lane',3.25,'up'),C('bus',3.6,'up'),C('walk',2.0),C('green',2.0),C('bikeP',3.0,'both'),C('walk',3.0)],eL:E_NONE,eR:E_BLD},
+};
+
+
+function iCar(cx,yG,k,col){ const w=1.8*k,h=1.45*k; return `<g><rect x="${cx-w*.36}" y="${yG-h}" width="${w*.72}" height="${h*.42}" rx="${h*.1}" fill="${col}"/><rect x="${cx-w*.3}" y="${yG-h+h*.07}" width="${w*.6}" height="${h*.22}" fill="#dfe6ea"/><rect x="${cx-w/2}" y="${yG-h*.62}" width="${w}" height="${h*.44}" rx="${h*.09}" fill="${col}"/><rect x="${cx-w*.46}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/><rect x="${cx+w*.30}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/></g>`; }
+function iBus(cx,yG,k,col){ const w=2.55*k,h=3.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.93}" rx="${w*.08}" fill="${col}"/><rect x="${cx-w*.42}" y="${yG-h*.88}" width="${w*.84}" height="${h*.36}" fill="#e3eaee"/><rect x="${cx-w*.36}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx+w*.18}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx-w*.46}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/><rect x="${cx+w*.3}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/></g>`; }
+function iLrt(cx,yG,k,col){ const w=2.65*k,h=3.6*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.92}" rx="${w*.14}" fill="${col}"/><rect x="${cx-w*.4}" y="${yG-h*.86}" width="${w*.8}" height="${h*.4}" rx="${w*.05}" fill="#dfe8ef"/><path d="M${cx-w*.25} ${yG-h} l${w*.25} ${-h*.35} l${w*.25} ${h*.35}" fill="none" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><line x1="${cx-w*.5}" y1="${yG-h*1.35}" x2="${cx+w*.5}" y2="${yG-h*1.35}" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><rect x="${cx-w*.42}" y="${yG-k*.18}" width="${w*.84}" height="${k*.18}" fill="#555"/></g>`; }
+function iPerson(cx,yG,k,col){ const h=1.7*k,w=.46*k,hd=.2*k; return `<g fill="${col}" opacity=".85"><circle cx="${cx}" cy="${yG-h+hd}" r="${hd}"/><path d="M${cx-w/2} ${yG-h+hd*2.1} h${w} v${h*.42} l${-w*.28} 0 v${h*.44} h${-w*.16} v${-h*.44} h${-w*.12} v${h*.44} h${-w*.16} v${-h*.44} l${-w*.28} 0 z"/></g>`; }
+function iBike(cx,yG,k,col){ const w=.7*k,h=1.75*k,sw=Math.max(.15,k*.035); return `<g><circle cx="${cx}" cy="${yG-h*.16}" r="${h*.16}" fill="none" stroke="#3b3f44" stroke-width="${sw}"/><line x1="${cx-w/2}" y1="${yG-h*.52}" x2="${cx+w/2}" y2="${yG-h*.52}" stroke="#3b3f44" stroke-width="${sw}"/><circle cx="${cx}" cy="${yG-h*.9}" r="${h*.1}" fill="${col}"/><path d="M${cx-w*.34} ${yG-h*.76} h${w*.68} v${h*.34} h${-w*.68} z" fill="${col}"/></g>`; }
+function iTree(cx,yG,k,col){ const h=6*k,r=h*.28,tw=Math.max(.3,h*.04); return `<g><rect x="${cx-tw/2}" y="${yG-h*.58}" width="${tw}" height="${h*.58}" fill="#6b5a44"/><circle cx="${cx}" cy="${yG-h*.72}" r="${r}" fill="${col}" opacity=".9"/><circle cx="${cx-r*.6}" cy="${yG-h*.56}" r="${r*.7}" fill="${col}" opacity=".82"/><circle cx="${cx+r*.6}" cy="${yG-h*.57}" r="${r*.66}" fill="${col}" opacity=".82"/></g>`; }
+function iRail(cx,yG,k){ const h=.8*k,w=.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h}" fill="#555"/><rect x="${cx-w*1.6}" y="${yG-h*.95}" width="${w*3.2}" height="${h*.35}" fill="#8a9097"/></g>`; }
+function iBuilding(x,yG,k,dir){ const w=5*k,h=9*k, x0=dir>0?x:x-w; let win=''; for(let r=0;r<4;r++)for(let c=0;c<3;c++) win+=`<rect x="${x0+w*.12+c*w*.29}" y="${yG-h+h*.1+r*h*.21}" width="${w*.18}" height="${h*.1}" fill="#f0f3f6"/>`; return `<g><rect x="${x0}" y="${yG-h}" width="${w}" height="${h}" fill="#9aa1a7" opacity=".55"/>${win}</g>`; }
+
+
+/* ======================================================================
+   מנוע החתך הזמני – לפי "הנחיות לתכנון הסדרי תנועה זמניים באתרי עבודה
+   עירוניים" (משרד התחבורה, אפריל 2020) ומכתב המפקח הארצי 13.3.2023
+   ====================================================================== */
+Object.assign(T, {
+  work:  {n:'אזור פעילות',               s:'אזור פעילות', lvl:'road', col:'#f07f1e', tmp:true},
+  dz:    {n:'רצועת התקני תנועה (d)',     s:'d',           lvl:'road', col:'#ffc978', tmp:true},
+  wA:    {n:'רוחב פעיל (W)',             s:'W',           lvl:'road', col:'#ffe3b8', tmp:true},
+  pedT:  {n:'מעבר הולכי רגל זמני',       s:'מעבר ה״ר',    lvl:'road', col:'#f1e3a0', tmp:true},
+  bikeT: {n:'נתיב אופניים זמני',         s:'אופניים',     lvl:'road', col:'#f2b39a', tmp:true, bike:true, dir:'up'},
+  laneT: {n:'נתיב נסיעה זמני',           s:'נתיב',        lvl:'road', col:'#6d7680', tmp:true, car:'car', dir:'up'},
+  altT:  {n:'נתיב לסירוגין',             s:'לסירוגין',    lvl:'road', col:'#6d7680', tmp:true, car:'car', dir:'both'},
+  busT:  {n:'נת״צ זמני',                 s:'נת״צ זמני',   lvl:'road', col:'#b5645a', tmp:true, car:'bus', dir:'down'},
+  emT:   {n:'נתיב לרכב חירום',           s:'חירום',       lvl:'road', col:'#7a6a8c', tmp:true, car:'emg', dir:'both'},
+  spare: {n:'שטח חסום נוסף',             s:'חסום',        lvl:'road', col:'#f7cf9f', tmp:true}
+});
+
+/* ---------------- טבלאות ההנחיות ---------------- */
+// D – רוחב מזערי. bus = קו אוטובוס סדיר / משאיות; trk = משאיות אקראיות; no = איסור משאיות / רחוב מקומי
+const TAB = {
+  t231:{id:'2.3.1', n:'דרך/רחוב דו-מסלוליים', pair:true, rows:{
+    70:{bus:6.6, trk:6.6, no:null, d:[0.50,0.75]},
+    50:{bus:6.0, trk:5.5, no:null, d:[0.50,0.75]},
+    30:{bus:5.5, trk:5.0, no:5.0,  d:[0.35,0.50]},
+    b30:{bus:null, trk:6.0, no:6.0, d:[0.35,0.70]} }},
+  t232:{id:'2.3.2', n:'רחוב דו-סטרי חד-מסלולי', pair:true, rows:{
+    70:null,
+    50:{bus:6.0, trk:5.5, no:null, d:[0.50,0.75]},
+    30:{bus:5.5, trk:5.0, no:5.0,  d:[0.25,0.50]},
+    b30:{bus:null, trk:6.0, no:6.0, d:[0.35,0.70]} }},
+  t233:{id:'2.3.3', n:'רחוב חד-סטרי / נתיב בודד בכיוון', pair:false, rows:{
+    70:null,
+    50:{bus:3.5, trk:3.3, no:null, d:[0.25,0.50]},
+    30:{bus:2.75, trk:2.75, no:2.5, d:[0.25,0.50]},
+    b30:{bus:null, trk:3.75, no:3.5, d:[0.35,0.70]} }},
+  t234:{id:'2.3.4', n:'קטע נסיעה לסירוגין', pair:false, rows:{
+    70:null, 50:null,
+    30:{bus:3.0, trk:2.75, no:2.5, d:[0.25,0.50]},
+    b30:{bus:null, trk:3.75, no:3.5, d:[0.35,0.70]} }}
+};
+// טבלה 2.3.6 – מעבר הולכי רגל [≤2 ש׳, >2 ש׳, מתמשכת]
+const PED = {
+  res:  {n:'מקומי / ללא מוצא – מגורים',     v:[0.6,0.9,1.3]},
+  inst: {n:'מקומי / ללא מוצא – מוסד ציבור', v:[0.8,1.3,1.5]},
+  cbd:  {n:'מקומי – מע״ר',                   v:[1.3,2.0,2.0]},
+  col:  {n:'רחוב מאסף',                      v:[1.3,2.0,2.0]},
+  art:  {n:'דרך עירונית',                    v:[0.6,0.9,1.5]}
+};
+// טבלה 2.3.7 – שביל/נתיב אופניים [≤2ש׳ חד, ≤2ש׳ דו, >2ש׳ חד, >2ש׳ דו]
+const BIKE = { lo:{n:'עד 50 אופניים/שעה', v:[0.75,1.50,1.00,1.75]},
+               md:{n:'50–150 אופניים/שעה', v:[1.00,2.00,1.25,2.25]},
+               hi:{n:'מעל 150 אופניים/שעה', v:[1.25,2.25,1.50,2.50]} };
+const DUR = { h2:{n:'עד שעתיים', i:0, short:true}, day:{n:'מעל שעתיים (עד 12 ש׳)', i:1, short:true}, long:{n:'מתמשכת (שלב עד חצי שנה)', i:2, short:false} };
+const STOP = {30:30, 50:65, 70:110};  // מרחק עצירה, סעיף 2.3.5.1
+const TC = { bus:'קו אוטובוס סדיר / משאיות', trk:'משאיות אקראיות', no:'איסור משאיות / רחוב מקומי' };
+
+/* ---------------- תרשימי הספר ---------------- */
+const CASES = [
+  {id:1,  sec:'א', n:'עבודות במדרכה צמוד לאבן השפה', kind:'sidewalk', wz:1.0, preset:'mr3',
+   d:'העבודה בתחום המדרכה, בצד הכביש. הנתיבים אינם מוצרים; רצועת ההליכה נשמרת בצד הבניין.'},
+  {id:2,  sec:'א', n:'סגירת נתיב – תנועה לסירוגין', kind:'alt', wz:3.0, preset:'mr1', maxS:30,
+   d:'נתיב אחד פתוח לשני הכיוונים בבקרת רמזור זמני או דגלנים. מוגדר בטבלה 2.3.4 רק ל-30 קמ״ש.'},
+  {id:3,  sec:'א', n:'סגירת נתיב ימין – דרך דו-מסלולית', kind:'lane', close:1, wz:3.5, preset:'mr10', speed:70,
+   d:'סגירת הנתיב הימני במסלול אחד; הנתיבים הנותרים לפי טבלה 2.3.1 או 2.3.3.'},
+  {id:4,  sec:'ב', n:'סגירת נתיב בגישה לצומת מרומזר', kind:'lane', close:1, wz:3.0, preset:'mr9',
+   d:'חתך בגישה לצומת. עבודה בצומת מוגדרת כאשר המרחק בין צמתים קטן מ-100 מ׳.'},
+  {id:5,  sec:'ב', n:'מעקף להולכי רגל על הכביש', kind:'bypass', wz:3.0, preset:'mr3',
+   d:'המדרכה סגורה במלואה. מעבר הולכי הרגל עובר לכביש, מופרד מהתנועה – ללא העברה למדרכה ממול (2.3.5.3).'},
+  {id:6,  sec:'ג', n:'סגירת שביל אופניים', kind:'bike', preset:'mr4', speed:30,
+   d:'שביל/נתיב האופניים סגור. ב-30 קמ״ש ניתן לשלב את האופניים בנתיב; אחרת נדרש נתיב אופניים זמני (טבלה 2.3.7).'},
+  {id:7,  sec:'ג', n:'העתקת תחנת אוטובוס', kind:'bypass', wz:3.2, preset:'mr9', pt:true,
+   d:'התחנה והמדרכה בתחום העבודה. האוטובוס ממשיך בנתיב הסמוך, שרוחבו נבדק לפי סעיף 2.3.4 (תח״צ).'},
+  {id:8,  sec:'ג', n:'סגירת זרוע כניסה למעגל תנועה', kind:'arm', preset:'mr1',
+   d:'חתך בזרוע: כל נתיבי הכניסה סגורים; נתיב היציאה נותר פעיל. נדרש מעקף מסומן (איור 2.3.25).'},
+  {id:9,  sec:'ד', n:'מעבר חצייה זמני – צמצום נתיב', kind:'lane', close:0, wz:2.0, preset:'mr1',
+   d:'אזור העבודה תופס חלק מרוחב הנתיב; הנתיבים הנותרים מוצרים עד לערך המזערי.'},
+  {id:10, sec:'ד', n:'סגירת רחוב מלאה עם מעקף', kind:'full', preset:'mr3',
+   d:'כל המיסעה סגורה. המדרכות נשמרות ומופרדות מהאתר; התנועה מופנית למעקף.'},
+  {id:11, sec:'ד', n:'עבודות לילה בנתיב', kind:'lane', close:1, wz:3.0, preset:'mr9', night:true, dur:'day',
+   d:'כמו סגירת נתיב, עם פנסים מהבהבים 932 על ההתקנים ותאורה ניידת שאינה מסנוורת.'},
+  {id:12, sec:'ד', n:'נת״צ זמני וסגירת נתיב רגיל', kind:'bus', close:1, wz:3.0, preset:'mr9',
+   d:'בכיוון אחד נסגר נתיב; בכיוון הנגדי נתיב הימין מוסב לנת״צ זמני (סעיף 2.3.4).'},
+  {id:13, sec:'ה', n:'שלבי ביצוע – פרויקט צומת', kind:'stages', preset:'mr4',
+   d:'בחרו שלב: 1 מדרכה, 2 צמצום נתיב, 3 מעקף הולכי רגל, 4 החזרה להסדר קבוע.'},
+  {id:14, sec:'ה', n:'העתקת מעבר חצייה קיים', kind:'lane', close:0, wz:2.0, preset:'mr3',
+   d:'אזור העבודה בשפת הכביש ליד המעבר הקיים; הנתיבים הנותרים מוצרים עד לערך המזערי.'},
+  {id:15, sec:'ה', n:'שינוי הסדר רמזור עקב עבודות', kind:'lane', close:1, wz:3.0, preset:'mr10', speed:50,
+   d:'סגירת נתיב בגישה מרומזרת. יש לעדכן את תוכנית הזמנים באישור רשות התמרור.'},
+  {id:16, sec:'ה', n:'נגישות רכב חירום באתר מורכב', kind:'emerg', preset:'mr5',
+   d:'המיסעה סגורה למעט נתיב פתוח לרכב חירום. רוחב הנתיב אינו נקוב בהנחיות – יש לתאם עם כבאות והצלה.'},
+  {id:17, sec:'ה', n:'רמזור מיטלטל ובקרת VMS', kind:'alt', wz:3.0, preset:'mr3', maxS:30, vms:true,
+   d:'נתיב לסירוגין ברמזור מיטלטל. אורך הקטע והנפח מוגבלים (עד 500 מ׳, עד 1,600 כ״ר/שעה).'},
+  {id:18, sec:'ה', n:'תוכנית אב – אתר מורכב', kind:'bypass', wz:4.5, preset:'mr4', bikeMerge:true,
+   d:'המדרכה ושביל האופניים סגורים; הולכי רגל במעקף על הכביש ואופניים משולבים בתנועה (30 קמ״ש).'}
+];
+const STAGES = {1:{kind:'sidewalk', wz:1.0, n:'שלב 1 – עבודה במדרכה'}, 2:{kind:'lane', close:0, wz:2.0, n:'שלב 2 – צמצום נתיב'},
+                3:{kind:'bypass', wz:3.0, n:'שלב 3 – מעקף הולכי רגל'}, 4:{kind:'none', n:'שלב 4 – החזרה להסדר קבוע'}};
+
+/* ---------------- עזרים ---------------- */
+const lvl = c => c.lv || T[c.t].lvl;
+const isLane = c => ['lane','bus','brt','laneT','busT'].includes(c.t);
+const isWalk = c => ['walk','plaza','pedT'].includes(c.t);
+const sum = a => a.reduce((s,c)=>s+c.w,0);
+const r2 = v => Math.round(v*100)/100;
+const cl = (t,w,o={}) => ({t, w:r2(w), dir:o.dir||T[t].dir||'none', ...o});
+
+function split(cells){
+  const n=cells.length; let a=0; while(a<n && lvl(cells[a])==='curb') a++;
+  let b=n-1; while(b>=a && lvl(cells[b])==='curb') b--;
+  const Ls=cells.slice(0,a), Rs=cells.slice(b+1), mid=cells.slice(a,b+1);
+  const divided = mid.some(c=>lvl(c)==='curb');
+  let Lmid, Rr;
+  if(divided){ let k=mid.length-1; while(k>=0 && lvl(mid[k])==='road') k--; Lmid=mid.slice(0,k+1); Rr=mid.slice(k+1); }
+  else { let k=-1; mid.forEach((c,i)=>{ if(isLane(c) && c.dir==='down') k=i; }); Lmid=mid.slice(0,k+1); Rr=mid.slice(k+1); }
+  const dn = mid.some(c=>isLane(c)&&c.dir==='down'), up = mid.some(c=>isLane(c)&&c.dir==='up');
+  return {Ls, Lmid, Rr, Rs, mid, divided, oneWay: !(dn&&up)};
+}
+function mirrorCells(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir==='up'?'down':c.dir==='down'?'up':c.dir})); }
+
+function laneReq(tab, P, bikeRow){
+  const T_ = TAB[tab]; const row = (bikeRow && P.speed===30) ? T_.rows.b30 : T_.rows[P.speed];
+  const tag = `טבלה ${T_.id}`;
+  if(!row) return {err:`${tag} אינה מגדירה ערך ל-${P.speed} קמ״ש – נדרשת הפחתת מהירות באתר`, tab:T_, tag};
+  let v = row[P.tc];
+  if(v==null) return {err:`${tag}: השילוב "${TC[P.tc]}"${bikeRow?' עם אופניים':''} אינו רלוונטי ב-${P.speed} קמ״ש`, tab:T_, tag, d:row.d};
+  const fence = P.dev==='wall';
+  if(fence) v += 0.5;   // הערה ט: גדר מעל 1.0 מ׳ לצד נתיבים
+  return {v:r2(v), d:row.d, tab:T_, tag: tag + (fence?' (+0.5 גדר גבוהה)':'') + (bikeRow&&P.speed===30?' – עם אופניים':'')};
+}
+function pedReq(P){
+  let v = PED[P.st].v[DUR[P.dur].i], note=[];
+  if(P.shop){ v+=0.5; note.push('+0.5 חזית מסחרית'); }
+  if(P.dev==='wall'){ v+=0.5; note.push('+0.5 קיר/גדר אטומה'); }
+  return {v:r2(v), tag:'טבלה 2.3.6'+(note.length?' ('+note.join(', ')+')':'')};
+}
+function bikeReq(P, two){
+  const i = (P.dur==='h2'?0:2) + (two?1:0);
+  return {v:BIKE[P.bv].v[i], tag:`טבלה 2.3.7 (${BIKE[P.bv].n}, ${two?'דו':'חד'}-סטרי)`};
+}
+function ptReq(P){
+  const m = {base:[3.0,'סעיף 2.3.4 א׳'], col:[3.25,'סעיף 2.3.4 ב׳ – מאסף, ≥10 אוטובוסים'], art:[3.10,'סעיף 2.3.4 ג׳ – אוטובוס דו-מפרקי'], rail:[3.5,'סעיף 2.3.4 ד׳ – כלוא בין מעקות']}[P.pt];
+  return {v:m[0], tag:m[1]};
+}
+function device(P){
+  // טבלה 2.9.1 + סעיף 2.3.5.3
+  const short = DUR[P.dur].short;
+  const mark = short && P.risk==='lo';
+  const sepLight = short && P.speed===30;
+  let auto = mark ? 'cones' : (sepLight ? 'fence' : 'barrier');
+  const dev = P.devSel==='auto' ? auto : P.devSel;
+  return {dev, auto, mark, sepLight};
+}
+const DEV = {cones:'חרוטים 930/931 + פנסים 932', fence:'גידור קל (1.0–1.2 מ׳)', barrier:'מעקה בטיחות זמני', wall:'גידור אטום / רשת כבדה 2 מ׳'};
+
+/* ---------------- בניית החתך הזמני ---------------- */
+function build(base, P, K){
+  const flip = P.side==='L';
+  const cells = flip ? mirrorCells(base) : base.map(c=>({...c}));
+  const S = split(cells);
+  const out = {checks:[], notes:[], info:{}};
+  const chk = (g,t,v,r,s,ref)=>out.checks.push({g,t,v,r,s,ref});
+  const dv = device(P); P.dev = dv.dev;
+  const kind = K.kind;
+  out.info.dev = dv;
+
+  const lanesR = S.Rr.filter(isLane), lanesL = S.Lmid.filter(isLane);
+  const bikeCell = [...S.Rr, ...S.Rs].find(c=>c.t==='bikeL'||c.t==='bikeP');
+  const Wz = P.wzMode==='manual' ? P.wz : null;
+  const Wbar = dv.dev==='barrier' ? P.wbar : 0.6;
+  let res;
+
+  // --- רצועת מדרכה ימנית: בדיקת הולכי רגל כשהיא נשמרת
+  const ped = pedReq(P);
+  const pedCheck = (grp, lbl, adj)=>{ if(!grp.length || !grp.some(isWalk)) return; const w = r2(sum(grp.filter(isWalk)) - (adj?0.15:0));
+    const ok = w>=ped.v-1e-6;
+    out.checks.push({g:'הולכי רגל', t:lbl, v:w, r:ped.v, s: ok?'ok':(adj?'bad':'warn'), ref: ped.tag+(adj?'; d≥0.15 מהגידור':'; מדרכה קיימת שאינה בתחום האתר'), exist:!adj}); };
+
+  // --- חישוב נתיבים נותרים + דרישה
+  function laneReqFor(keptR, alt, bikeMerge){
+    if(alt) return {...laneReq('t234',P,bikeMerge), mode:'single'};
+    if(S.oneWay) return {...laneReq('t233',P,bikeMerge), mode:'single'};
+    if(S.divided){
+      if(keptR>=2) return {...laneReq('t231',P,bikeMerge), mode:'pair'};
+      if(keptR===1) return {...laneReq('t233',P,bikeMerge), mode:'single'};
+      return null;
+    }
+    if(keptR>=2) return {...laneReq('t231',P,bikeMerge), mode:'pair'};
+    if(keptR===1) return {...laneReq('t232',P,bikeMerge), mode:'pair2'};
+    return null;
+  }
+  function fitLanes(kept, avail, rq, leftW){
+    const E = sum(kept); if(!kept.length) return {w:[], spare:avail, free:avail};
+    const fl = v => Math.floor(v*20+1e-6)/20;          // עיגול כלפי מטה ל-5 ס״מ
+    let per;
+    if(rq){
+      per = kept.map(c=>{ const need = rq.mode==='pair'? rq.v/2 : rq.mode==='pair2'? Math.max(rq.v-leftW, 2.5) : rq.v;
+        return Math.min(c.w, Math.ceil(need*20-1e-6)/20); });
+      const tot = per.reduce((a,b)=>a+b,0);
+      if(tot > avail) per = per.map(w=>fl(w*avail/tot));
+      const t2 = per.reduce((a,b)=>a+b,0);
+      return {w:per.map(r2), spare:0, free:r2(Math.max(0,avail-t2))};
+    }
+    if(avail >= E) return {w:kept.map(c=>c.w), spare:r2(avail-E)};
+    per = kept.map(c=>fl(c.w*Math.max(avail,0)/E));
+    return {w:per.map(r2), spare:r2(Math.max(0, avail - per.reduce((a,b)=>a+b,0)))};
+  }
+  function laneChecks(keptCells, rq, leftAdj){
+    if(!rq) return;
+    if(rq.err){ chk('נתיבי נסיעה', 'רוחב נתיבים נותרים', sum(keptCells), null, 'bad', rq.err); return; }
+    let val, need=rq.v, lbl;
+    if(rq.mode==='pair'){ val = keptCells[0].w + keptCells[1].w; lbl='רוחב זוג הנתיבים (D)'; }
+    else if(rq.mode==='pair2'){ val = keptCells[0].w + (leftAdj?leftAdj.w:0); lbl='שני הנתיבים, שני הכיוונים (D)'; }
+    else { val = Math.min(...keptCells.map(c=>c.w)); lbl = keptCells.length>1?'רוחב נתיב (D) – המזערי':'רוחב הנתיב (D)'; }
+    chk('נתיבי נסיעה', lbl, val, need, val>=need-1e-6?'ok':'bad', rq.tag+' – '+rq.tab.n);
+    keptCells.forEach((c,i)=>{ if(c.w < (c.ex||c.w)-1e-6) c.narrow=true; });
+  }
+  function dRange(rq){ return rq && rq.d ? rq.d : [0.35,0.70]; }
+
+  // --- בונה צד ימין: [נתיבים שנשמרו][d][W][אופניים זמני][מעבר ה״ר][עבודה]
+  function closeRight(opt){
+    const k = opt.close ?? 1;
+    const keep = lanesR.slice(0, Math.max(0, lanesR.length-k));
+    const closedBike = S.Rr.some(c=>c.t==='bikeL') || (opt.bypass && S.Rs.some(c=>c.t==='bikeP'));
+    let bikeMode = 'none';
+    if(closedBike) bikeMode = (P.bikeMode==='merge' && P.speed===30) ? 'merge' : 'temp';
+    if(closedBike && P.bikeMode==='merge' && P.speed!==30) chk('אופניים','שילוב אופניים בנתיב', null, null,'bad','הערה ו׳: שילוב מותר רק ב-30 קמ״ש – נוסף נתיב אופניים זמני');
+    const leftAdj = S.divided ? null : lanesL[lanesL.length-1];
+    const rq = laneReqFor(keep.length, false, bikeMode==='merge');
+    const dd = r2(Math.max(P.d, dRange(rq)[0]));
+    const A = sum(S.Rr);
+    let fixed = (keep.length? dd + Wbar : 0);
+    const two = bikeCell && bikeCell.dir==='both';
+    const bq = bikeMode==='temp' ? bikeReq(P, two) : null;
+    if(bq) fixed += bq.v + 0.25;
+    const wRs = sum(S.Rs);
+    if(opt.bypass) fixed += ped.v + 0.15;
+    const avail0 = A - fixed;
+    let roadWork, fit;
+    if(!keep.length){ roadWork = avail0; fit = {w:[], spare:0}; }
+    else if(P.wzMode==='manual'){
+      roadWork = opt.bypass ? Math.max(0, Wz - wRs) : Wz;
+      fit = fitLanes(keep, avail0 - roadWork, null, 0);
+    } else {
+      fit = fitLanes(keep, avail0, (rq && !rq.err) ? rq : null, leftAdj?leftAdj.w:0);
+      if(rq && !rq.err){ roadWork = fit.free; }
+      else { fit = fitLanes(keep, avail0, null, 0); roadWork = fit.spare; fit.spare = 0; }
+    }
+    const avail = avail0 - roadWork;
+    const kept = keep.map((c,i)=>cl(c.t==='lane'?'laneT':c.t, fit.w[i], {dir:c.dir, ex:c.w}));
+    const R = [...kept];
+    if(keep.length){ R.push(cl('dz', dd, {dev:dv.dev})); R.push(cl('wA', Wbar)); }
+    if(bq){ R.push(cl('bikeT', bq.v, {dir: two?'both':(bikeCell.dir||'up')})); R.push(cl('dz', 0.25, {dev:'fence'})); }
+    if(opt.bypass){ R.push(cl('pedT', ped.v)); R.push(cl('dz', 0.15, {dev: dv.dev==='cones'?'fence':dv.dev})); }
+    if(fit.spare>0.01) R.push(cl('spare', fit.spare));
+    const wkRoad = r2(roadWork);
+    if(wkRoad>0.01) R.push(cl('work', wkRoad));
+    // מדרכה
+    let Rs2;
+    if(opt.bypass){ Rs2 = [cl('work', wRs, {lv:'curb'})]; }
+    else { Rs2 = S.Rs.map(c=>({...c})); pedCheck(S.Rs, 'רצועת הליכה במדרכה הסמוכה', true); }
+    // בדיקות
+    laneChecks(kept, rq, leftAdj);
+    if(avail < -1e-6) chk('כללי','רוחב זמין לנתיבים', r2(avail), 0, 'bad', 'הרכיבים הזמניים אינם נכנסים ברוחב המיסעה – הקטינו את אזור העבודה או סגרו נתיב נוסף');
+    if(keep.length && rq && !rq.err) chk('התקנים','רצועת התקנים d', dd, rq.d[0], dd>=rq.d[0]-1e-6 && dd<=0.70+1e-6?'ok':'warn', `${rq.tag}: ${rq.d[0]}–${rq.d[1]} מ׳ (כולל סימון 807)`);
+    if(keep.length) chk('התקנים','רוחב פעיל W', Wbar, dv.dev==='barrier'?null:0.6, Wbar>=0.6-1e-6?'ok':'bad', dv.dev==='barrier'?'לפי סוג המעקה (הערה ג׳)':'הערה ג׳: לא יקטן מ-0.6 מ׳');
+    if(opt.bypass) chk('הולכי רגל','מעבר הולכי רגל על הכביש', ped.v, ped.v, 'ok', ped.tag);
+    if(bq) chk('אופניים','נתיב אופניים זמני', bq.v, bq.v, 'ok', bq.tag+'; d≥0.25');
+    if(bikeMode==='merge') chk('אופניים','שילוב אופניים בנתיב', null, null, 'ok', 'הערה ו׳ – מותר ב-30 קמ״ש; הרוחב נבדק בשורת "עם אופניים"');
+    if(opt.pt && kept.length){ const q=ptReq(P), w=kept[kept.length-1].w; chk('תחבורה ציבורית','נתיב האוטובוס הסמוך', w, q.v, w>=q.v-1e-6?'ok':'bad', q.tag); }
+    const wk = sum(R.filter(c=>c.t==='work')) + sum(Rs2.filter(c=>c.t==='work'));
+    out.info.work = r2(wk);
+    return {R, Rs2, kept, rq};
+  }
+
+  if(kind==='none'){
+    res = {cells: cells.map(c=>({...c}))};
+    out.notes.push('החזרה להסדר הקבוע – אין אלמנטים זמניים בחתך.');
+    out.info.work = 0;
+  }
+  else if(kind==='sidewalk'){
+    const bikes = S.Rs.filter(c=>c.t==='bikeP'), rest = S.Rs.filter(c=>c.t!=='bikeP');
+    const W = sum(rest);
+    let wz = Math.max(0, Math.min(W-0.15, Wz==null ? r2(W - 0.15 - ped.v) : Wz));
+    const pedW = r2(W - wz - 0.15);
+    const Rs2 = [...bikes.map(c=>({...c})), cl('work', wz, {lv:'curb'}), cl('dz', 0.15, {lv:'curb', dev: dv.dev==='cones'?'fence':dv.dev}), cl('pedT', Math.max(pedW,0), {lv:'curb'})];
+    chk('הולכי רגל','רצועת הליכה בצד הבניין', pedW, ped.v, pedW>=ped.v-1e-6?'ok':'bad', ped.tag+'; אם לא ניתן – מעקף (תרשים 5)');
+    if(wz<=0.05) chk('כללי','רוחב אזור עבודה', wz, null, 'bad', 'המדרכה צרה מכדי להכיל עבודה ומעבר – עברו למעקף הולכי רגל (תרשים 5)');
+    const R = S.Rr.map(c=>({...c}));
+    const hasBuffer = R.length && ['parkP','parkX','bikeL','buf'].includes(R[R.length-1].t);
+    chk('התקנים','הפרדה מהתנועה', null, null, hasBuffer?'ok':'warn', hasBuffer?'רצועת חנייה/הפרדה בין הנתיב לאתר':'האתר צמוד לנתיב נסיעה – יש להציב התקני הפרדה בשפת המדרכה');
+    res = {cells:[...S.Ls, ...S.Lmid, ...R, ...Rs2]};
+    out.info.work = wz;
+    pedCheck(S.Ls, 'רצועת הליכה במדרכה הנגדית');
+  }
+  else if(kind==='lane' || kind==='bypass' || kind==='arm' || kind==='bus'){
+    const close = kind==='arm' ? lanesR.length : (kind==='bypass' ? (K.closeLanes||0) : (K.close??1));
+    const r = closeRight({close, bypass: kind==='bypass', pt:K.pt});
+    let L = S.Lmid.map(c=>({...c}));
+    if(kind==='arm'){
+      const rq = S.divided ? null : laneReqFor(0,false,false);
+      if(!S.divided){
+        const rq2 = lanesL.length>=2 ? laneReq('t231',P,false) : laneReq('t233',P,false);
+        if(rq2.err) chk('נתיבי נסיעה','נתיב היציאה', sum(lanesL), null, 'bad', rq2.err);
+        else { const v = lanesL.length>=2 ? lanesL[0].w+lanesL[1].w : lanesL[0].w;
+          chk('נתיבי נסיעה','נתיב היציאה (D)', v, rq2.v, v>=rq2.v-1e-6?'ok':'bad', rq2.tag+' – '+rq2.tab.n); }
+        // נתיב היציאה נצמד ל-d
+        const dd = r2(Math.max(P.d, (rq2.d||[0.25])[0]));
+        r.R.unshift(cl('wA', Wbar)); r.R.unshift(cl('dz', dd, {dev:dv.dev}));
+        const w = r.R.find(c=>c.t==='work'); if(w){ w.w = r2(w.w - dd - Wbar); }
+        chk('התקנים','רוחב פעיל W', Wbar, 0.6, 'ok', 'הערה ג׳');
+      }
+      out.notes.push('נדרש מעקף מסומן לתנועה מהזרוע הסגורה (איור 2.3.25) ותמרור 402 בכניסה.');
+    }
+    if(kind==='bus'){
+      const i = L.findIndex(isLane);
+      if(i<0) chk('תחבורה ציבורית','נת״צ זמני', null, null, 'bad', 'אין נתיב בכיוון הנגדי להסבה');
+      else { L[i] = {...L[i], t:'busT', ex:L[i].w}; const q=ptReq(P);
+        chk('תחבורה ציבורית','נת״צ זמני בכיוון הנגדי', L[i].w, q.v, L[i].w>=q.v-1e-6?'ok':'bad', q.tag);
+        const rest = L.filter(isLane).length-1;
+        if(rest<1) chk('נתיבי נסיעה','נתיב כללי בכיוון הנגדי', 0, null, 'bad', 'הסבת הנתיב היחיד לנת״צ משאירה את הכיוון ללא נתיב כללי');
+      }
+    }
+    res = {cells:[...S.Ls, ...L, ...r.R, ...r.Rs2]};
+    pedCheck(S.Ls, 'רצועת הליכה במדרכה הנגדית');
+    if(kind==='bypass') out.notes.push('מעבר הולכי הרגל נשאר בצד האתר – העברה למדרכה ממול היא הפתרון האחרון (2.3.5.3).');
+  }
+  else if(kind==='bike'){
+    if(!bikeCell){ chk('אופניים','שביל / נתיב אופניים בחתך', null, null, 'bad', 'בחתך הקיים אין אופניים – בחרו תבנית 4, 7, 9 או 10'); res={cells:cells.map(c=>({...c}))}; out.info.work=0; }
+    else if(bikeCell.t==='bikeP'){
+      // שביל במדרכה: העבודה בשביל, האופניים לנתיב (30) או לנתיב זמני על חשבון הכביש
+      const merge = P.bikeMode==='merge' && P.speed===30;
+      if(P.bikeMode==='merge' && P.speed!==30) chk('אופניים','שילוב אופניים בנתיב', null, null,'bad','הערה ו׳: שילוב מותר רק ב-30 קמ״ש – נוסף נתיב אופניים זמני');
+      const Rs2 = S.Rs.map(c=> c===bikeCell ? cl('work', c.w, {lv:'curb'}) : {...c});
+      const bi = S.Rs.indexOf(bikeCell);
+      Rs2.splice(bi+1,0); // שמירת סדר
+      let R = S.Rr.map(c=>({...c}));
+      if(!merge){
+        const two = bikeCell.dir==='both', bq = bikeReq(P,two);
+        const lanes = R.filter(isLane), rq = laneReqFor(lanes.length,false,false);
+        const need = bq.v + 0.25 + P.d;
+        const park = R.filter(c=>c.t==='parkP'||c.t==='parkX');
+        let freed = sum(park); R = R.filter(c=>!park.includes(c));
+        const lacking = Math.max(0, need - freed);
+        const E = sum(lanes);
+        R = R.map(c=> isLane(c) ? cl('laneT', r2(c.w - lacking*c.w/E), {dir:c.dir, ex:c.w}) : c);
+        const spare = r2(freed - need);
+        R.push(cl('dz', r2(P.d), {dev:dv.dev})); R.push(cl('bikeT', bq.v, {dir: two?'both':bikeCell.dir})); R.push(cl('dz', 0.25, {dev:'fence', lv:'road'}));
+        if(spare>0.01) R.push(cl('spare', spare));
+        chk('אופניים','נתיב אופניים זמני', bq.v, bq.v, 'ok', bq.tag+'; על חשבון החנייה'+(lacking>0?' והנתיבים':''));
+        laneChecks(R.filter(isLane), rq, S.divided?null:lanesL[lanesL.length-1]);
+      } else {
+        const rq = laneReqFor(lanesR.length,false,true);
+        const kept = R.filter(isLane); kept.forEach(c=>c.ex=c.w);
+        laneChecks(kept, rq, S.divided?null:lanesL[lanesL.length-1]);
+        chk('אופניים','שילוב אופניים בנתיב', null, null, 'ok', 'הערה ו׳ – 30 קמ״ש; רוחב לפי שורת "עם אופניים"');
+      }
+      res = {cells:[...S.Ls, ...S.Lmid, ...R, ...Rs2]};
+      pedCheck(S.Rs.filter(c=>c!==bikeCell), 'רצועת הליכה ליד השביל', true);
+      out.info.work = bikeCell.w;
+    } else {
+      const r = closeRight({close:0, bypass:false});
+      res = {cells:[...S.Ls, ...S.Lmid.map(c=>({...c})), ...r.R, ...r.Rs2]};
+    }
+  }
+  else if(kind==='alt'){
+    if(S.divided){
+      const r = closeRight({close: Math.max(1, lanesR.length-1)});
+      out.notes.push('בדרך דו-מסלולית אין תנועה לסירוגין – הוחל נתיב בודד בכיוון (טבלה 2.3.3).');
+      res = {cells:[...S.Ls, ...S.Lmid.map(c=>({...c})), ...r.R, ...r.Rs2]};
+    } else {
+      const lead = []; for(const c of S.mid){ if(isLane(c)) break; lead.push({...c}); }
+      const rq = {...laneReq('t234',P,false), mode:'single'};
+      const dd = r2(Math.max(P.d, dRange(rq)[0]));
+      const A = sum(S.mid) - sum(lead);
+      let lw = rq.err ? 3.0 : rq.v;
+      if(P.wzMode==='manual') lw = r2(A - dd - Wbar - Wz);
+      const wk = r2(A - lw - dd - Wbar);
+      const alt = cl('altT', lw, {dir:'both', ex:Math.max(...S.mid.filter(isLane).map(c=>c.w))});
+      res = {cells:[...S.Ls, ...lead, alt, cl('dz',dd,{dev:dv.dev}), cl('wA',Wbar), cl('work', wk), ...S.Rs.map(c=>({...c}))]};
+      if(rq.err) chk('נתיבי נסיעה','נתיב לסירוגין', lw, null, 'bad', rq.err);
+      else chk('נתיבי נסיעה','נתיב לסירוגין (D)', lw, rq.v, lw>=rq.v-1e-6?'ok':'bad', rq.tag+' – '+rq.tab.n);
+      if(wk<0.05) chk('כללי','רוחב אזור עבודה', wk, null, 'bad', 'אין רוחב לאזור עבודה');
+      chk('התקנים','רצועת התקנים d', dd, rq.d?rq.d[0]:0.25, 'ok', rq.tag||'');
+      chk('התקנים','רוחב פעיל W', Wbar, 0.6, 'ok', 'הערה ג׳');
+      out.notes.push('בקרת תנועה לסירוגין: רמזור זמני מתואם או דגלנים בשני קצות הקטע.');
+      if(K.vms) out.notes.push('רמזור מיטלטל: אורך קטע עד 500 מ׳, נפח עד 1,600 כ״ר/שעה, נתיב בודד בגישה, זמן אדום עד 240 שנ׳ (לפי דרישות התרשים).');
+      pedCheck(S.Rs,'רצועת הליכה במדרכה הסמוכה', true); pedCheck(S.Ls,'רצועת הליכה במדרכה הנגדית');
+      out.info.work = wk;
+    }
+  }
+  else if(kind==='full' || kind==='emerg'){
+    const lead = [], tail = [];
+    const A = sum(S.mid);
+    const fence = cl('dz', 0.15, {dev: dv.dev==='cones'?'fence':dv.dev});
+    let midNew;
+    if(kind==='full'){ midNew = [fence, cl('work', r2(A-0.30)), {...fence}]; out.info.work = r2(A-0.30);
+      out.notes.push('נדרשים מעקף מסומן (תמרורי 614/629) ומעבר לרכב חירום בתיאום עם כבאות, מד״א ומשטרה.'); }
+    else { const E = P.emW, dd = r2(Math.max(P.d,0.35)), wk = r2(A - E - dd - Wbar - 0.15);
+      midNew = [cl('emT', E, {dir:'both'}), cl('dz',dd,{dev:dv.dev}), cl('wA',Wbar), cl('work', wk), fence];
+      chk('רכב חירום','נתיב פתוח לרכב חירום', E, E, 'warn', 'רוחב אינו נקוב בהנחיות – ערך מוצע, לתאם עם כבאות והצלה');
+      if(wk<0.05) chk('כללי','רוחב אזור עבודה', wk, null, 'bad', 'אין רוחב לאזור עבודה');
+      out.info.work = wk; }
+    res = {cells:[...S.Ls, ...midNew, ...S.Rs.map(c=>({...c}))]};
+    pedCheck(S.Ls,'רצועת הליכה – מדרכה א׳', true); pedCheck(S.Rs,'רצועת הליכה – מדרכה ב׳', true);
+    if(S.divided) out.notes.push('המפרדה בתחום האתר – יש לגדר גם את קצוותיה.');
+  }
+
+  // --- גידור וסימון
+  chk('התקנים','סוג התקן הבטיחות', null, null, (P.devSel==='cones' && !dv.mark)?'bad':'ok',
+      (dv.mark?'טבלה 2.9.1: גידור לסימון (גידור קל, חרוטים 930/932)':'טבלה 2.9.1: גידור לתיחום (מעקות, פח אטום או רשת כבדה 2 מ׳)') +
+      (dv.sepLight?'; 2.3.5.3: גידור קל מספק להפרדת הולכי רגל':'; 2.3.5.3: נדרש מעקה בטיחות להפרדת הולכי רגל'));
+  // גוון הסימון – מכתב המפקח הארצי 13.3.2023
+  const tmp = res.cells;
+  const narrowed = tmp.some(c=>c.ex && c.w < c.ex-1e-6);
+  const failed = out.checks.some(c=>c.s==='bad' && !c.exist);
+  const pedMin = tmp.filter(c=>c.t==='pedT').some(c=>c.w<1.5);
+  const constrained = narrowed || pedMin || failed;
+  out.info.marking = P.mark==='auto' ? (constrained?'orange':'white') : P.mark;
+  out.info.markWhy = constrained ? [narrowed&&'נתיבים מוצרים ביחס לקיים', pedMin&&'מעבר הולכי רגל מתחת ל-1.5 מ׳', failed&&'ערכים מזעריים אינם מתקיימים'].filter(Boolean).join('; ')
+                                 : 'התנאים תואמים את ההנחיות ללא אילוצים';
+  out.info.stop = STOP[P.speed];
+  if(P.night || K.night) out.notes.push('עבודות לילה: פנסים מהבהבים 932 על ההתקנים ותאורה ניידת לאורך הרוחב הפעיל, שאינה מסנוורת.');
+  if(K.maxS && P.speed>K.maxS) chk('כללי','מהירות באתר', P.speed, K.maxS, 'bad', 'הסדר זה מוגדר רק ל-30 קמ״ש – יש להציב תמרור 426 מתאים');
+
+  res.cells = flip ? mirrorCells(res.cells) : res.cells;
+  res.cells.forEach(c=>{ c.w = r2(Math.max(0,c.w)); });
+  { const diff = r2(sum(base) - sum(res.cells));
+    if(Math.abs(diff)>0.001){ const w = res.cells.filter(c=>c.t==='work').sort((a,b)=>b.w-a.w)[0];
+      if(w && w.w+diff>=0) w.w = r2(w.w+diff);
+      else if(diff>0) res.cells.push(cl('spare', diff));
+      else chk('כללי','התאמה לרוחב זכות הדרך', r2(sum(res.cells)), sum(base), 'bad', 'הרכיבים הזמניים חורגים מרוחב החתך הקיים'); } }
+  out.cells = res.cells.filter(c=>c.w>0.001);
+  out.total = r2(sum(out.cells)); out.base = r2(sum(base));
+  return out;
+}
+
+/* ======================================================================
+   ממשק ושרטוט
+   ====================================================================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f2 = v => (Math.round(v*100)/100).toFixed(2);
+
+const ST = {
+  preset:'mr3', caseId:1, stage:1, cells:null, close:null,
+  P:{speed:50, tc:'trk', dur:'long', st:'col', shop:false, bv:'lo', bikeMode:'merge', risk:'hi', pt:'base',
+     side:'R', night:false, devSel:'auto', wbar:1.0, d:0.50, wzMode:'manual', wz:1.0, emW:3.5, mark:'auto'}
+};
+try{ const s = JSON.parse(localStorage.getItem('mahalco-temp-section')||'null'); if(s && s.P){ Object.assign(ST.P, s.P); Object.assign(ST, {preset:s.preset, caseId:s.caseId, stage:s.stage||1, cells:s.cells||null, close:s.close??null}); } }catch(e){}
+const save = ()=>{ try{ localStorage.setItem('mahalco-temp-section', JSON.stringify(ST)); }catch(e){} };
+
+/* ---------------- שרטוט ---------------- */
+const K = 20;                 // יחידות ציור למטר
+const CURB = 0.18;
+const FONT = 'font-family:Heebo,Arial,sans-serif';
+function tx(x,y,s,size,o={}){
+  const a=o.anchor||'middle', w=o.weight||400, c=o.color||'#1d2126', r=o.rot?` transform="rotate(${o.rot} ${x} ${y})"`:'';
+  return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="${size}" text-anchor="${a}" font-weight="${w}" fill="${c}" style="${FONT}"${r}>${esc(s)}</text>`;
+}
+function arrowV(x,yTop,len,dir,col,wd){
+  const h=len, head=Math.min(h*0.4, wd*1.6), sw=wd*0.45;
+  if(dir==='up') return `<path d="M${x} ${yTop} l${wd} ${head} h${-wd+sw} v${h-head} h${-sw*2} v${-(h-head)} h${-wd+sw} z" fill="${col}"/>`;
+  return `<path d="M${x} ${yTop+h} l${wd} ${-head} h${-wd+sw} v${-(h-head)} h${-sw*2} v${h-head} h${-wd+sw} z" fill="${col}"/>`;
+}
+function iCone(cx,yG,k){ const h=.75*k, w=.36*k; return `<g><rect x="${cx-w*.75}" y="${yG-h*.08}" width="${w*1.5}" height="${h*.08}" fill="#2b2b2b"/><path d="M${cx-w/2} ${yG-h*.08} L${cx-w*.12} ${yG-h} L${cx+w*.12} ${yG-h} L${cx+w/2} ${yG-h*.08} Z" fill="#f07f1e"/><path d="M${cx-w*.33} ${yG-h*.42} L${cx+w*.33} ${yG-h*.42} L${cx+w*.28} ${yG-h*.55} L${cx-w*.28} ${yG-h*.55} Z" fill="#fff"/></g>`; }
+function iLamp(cx,y,k){ return `<g><circle cx="${cx}" cy="${y-.14*k}" r="${.14*k}" fill="#ffc400" stroke="#8a5a00" stroke-width="1"/><circle cx="${cx}" cy="${y-.14*k}" r="${.34*k}" fill="#ffc400" opacity=".22"/></g>`; }
+function iFence(cx,yG,k,h,solid){ const w=.5*k, hh=h*k; return `<g><rect x="${cx-w/2}" y="${yG-.08*k}" width="${w}" height="${.08*k}" fill="#555"/><rect x="${cx-1}" y="${yG-hh}" width="2" height="${hh}" fill="#3a3f44"/>${solid?`<rect x="${cx-2.5}" y="${yG-hh}" width="5" height="${hh*.97}" fill="#c9ced3" stroke="#3a3f44"/>`:`<path d="M${cx-3} ${yG-hh} v${hh*.95} M${cx+3} ${yG-hh} v${hh*.95}" stroke="#3a3f44" stroke-width="1" stroke-dasharray="2 2"/>`}<rect x="${cx-3.5}" y="${yG-hh}" width="7" height="${.1*k}" fill="#f07f1e"/></g>`; }
+function iBarrier(cx,yG,k){ const w=.6*k, h=.8*k; return `<g><path d="M${cx-w/2} ${yG} L${cx-w*.32} ${yG-h*.3} L${cx-w*.12} ${yG-h} L${cx+w*.12} ${yG-h} L${cx+w*.32} ${yG-h*.3} L${cx+w/2} ${yG} Z" fill="#e53935"/><path d="M${cx-w*.2} ${yG-h*.62} L${cx+w*.2} ${yG-h*.62} L${cx+w*.16} ${yG-h*.78} L${cx-w*.16} ${yG-h*.78} Z" fill="#fff"/><path d="M${cx-w*.36} ${yG-h*.18} L${cx+w*.36} ${yG-h*.18} L${cx+w*.3} ${yG-h*.34} L${cx-w*.3} ${yG-h*.34} Z" fill="#fff"/></g>`; }
+function iWorker(cx,yG,k){ const h=1.75*k; return `<g><circle cx="${cx}" cy="${yG-h+.2*k}" r="${.2*k}" fill="#6b4a2e"/><path d="M${cx-.23*k} ${yG-h+.38*k} h${.46*k} v${.75*k} h${-.46*k} z" fill="#f07f1e"/><path d="M${cx-.23*k} ${yG-h+.62*k} h${.46*k}" stroke="#e8f0a0" stroke-width="2"/><path d="M${cx-.18*k} ${yG-h+1.13*k} v${.62*k} M${cx+.12*k} ${yG-h+1.13*k} v${.62*k}" stroke="#2b3a55" stroke-width="${.13*k}"/><path d="M${cx-.26*k} ${yG-h+.08*k} h${.52*k}" stroke="#ffd400" stroke-width="3"/></g>`; }
+function iAmb(cx,yG,k){ const w=2.1*k,h=2.3*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.9}" rx="${w*.08}" fill="#f4f4f4" stroke="#b33" stroke-width="1.2"/><rect x="${cx-w/2}" y="${yG-h*.45}" width="${w}" height="${h*.12}" fill="#d32f2f"/><path d="M${cx-3} ${yG-h*.75} h6 M${cx} ${yG-h*.75-3} v6" stroke="#d32f2f" stroke-width="2.4"/><rect x="${cx-w*.46}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/><rect x="${cx+w*.3}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/></g>`; }
+
+function drawSection(cells, opt){
+  const k=K, eW=5.5, tot=cells.reduce((a,c)=>a+c.w,0);
+  const topM=8.2, xL=eW*k, yG=topM*k;
+  const X=m=>xL+m*k, Z=z=>yG-z*k;
+  let x=0; const P=cells.map(c=>{ const o={...c,x0:x,x1:x+c.w,z:(lvl(c)==='curb'?CURB:0)}; x+=c.w; return o; });
+  const mk = opt.temp ? (opt.marking==='orange'?'#f28a00':'#ffffff') : '#ffffff';
+  const uid = opt.id;
+  let s = `<defs>
+    <pattern id="h${uid}" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#ffd2a3"/><rect width="4.5" height="10" fill="#f07f1e"/></pattern>
+    <pattern id="s${uid}" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#fbe3c6"/><rect width="2" height="10" fill="#f5b36b"/></pattern>
+    <pattern id="p${uid}" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#f4e7b2"/><circle cx="3" cy="3" r="1" fill="#d4bf6a"/><circle cx="9" cy="9" r="1" fill="#d4bf6a"/></pattern>
+  </defs>`;
+  // גוף
+  P.forEach(p=>{
+    const t=T[p.t], base = p.t==='work' ? '#e9d8c3' : (lvl(p)==='curb'?'#e6e1d4':'#d7d2c6');
+    s += `<rect x="${X(p.x0)}" y="${Z(p.z)}" width="${p.w*k}" height="${(p.z+0.9)*k}" fill="${base}"/>`;
+    if(lvl(p)==='road' && !['work','spare'].includes(p.t)) s += `<rect x="${X(p.x0)}" y="${Z(p.z)}" width="${p.w*k}" height="${.18*k}" fill="#3c4146"/>`;
+    const topCol = p.t==='pedT' ? `url(#p${uid})` : t.col;
+    s += `<rect x="${X(p.x0)}" y="${Z(p.z)-.14*k}" width="${p.w*k}" height="${.14*k}" fill="${topCol}"/>`;
+    if(p.t==='work'){ // חפירה
+      const m = Math.min(.5, p.w*.12);
+      if(p.w>1.2) s += `<rect x="${X(p.x0+m)}" y="${Z(p.z)}" width="${(p.w-2*m)*k}" height="${.7*k}" fill="#b89b76" stroke="#6b4a2e" stroke-width="1" stroke-dasharray="4 3"/>`;
+    }
+  });
+  // קו פני שטח + אבני שפה
+  let d=`M${X(0)} ${Z(P[0].z)}`;
+  P.forEach((p,i)=>{ d+=` L${X(p.x0)} ${Z(p.z)} L${X(p.x1)} ${Z(p.z)}`; if(P[i+1] && P[i+1].z!==p.z) d+=` L${X(p.x1)} ${Z(P[i+1].z)}`; });
+  s += `<path d="${d}" fill="none" stroke="#1d2126" stroke-width="1.4"/>`;
+  P.forEach((p,i)=>{ const n=P[i+1]; if(n && n.z!==p.z){ const xx=X(p.x1), cw=.15*k, sg=p.z>n.z?-1:0; s+=`<rect x="${xx+sg*cw}" y="${Z(CURB)}" width="${cw}" height="${(CURB+.3)*k}" fill="#b9b4a8" stroke="#1d2126" stroke-width=".8"/>`; } });
+  // אזור עבודה – בלוק מקווקו
+  P.forEach(p=>{
+    if(p.t==='work' || p.t==='spare'){
+      const hgt = p.t==='work'?1.3:0.5;
+      s += `<rect x="${X(p.x0)}" y="${Z(p.z)-hgt*k}" width="${p.w*k}" height="${hgt*k}" fill="url(#${p.t==='work'?'h':'s'}${uid})" opacity=".92"/>`;
+      if(p.t==='work'){
+        if(p.w>=1.1) s += iWorker(X(p.x0+p.w*0.5), Z(p.z)-hgt*k, k);
+        if(p.w>=2.2) s += tx(X((p.x0+p.x1)/2), Z(p.z)-hgt*k-2.3*k, 'אזור פעילות', 13, {weight:700, color:'#9a4a00'});
+      }
+    }
+  });
+  // סימון נתיבים
+  const trav = c => ['lane','bus','brt','laneT','busT','altT','emT','lrt'].includes(c.t);
+  P.forEach((p,i)=>{ const n=P[i+1]; if(!n) return;
+    let col=null;
+    if(trav(p)&&trav(n)){ col = opt.temp ? mk : (p.dir===n.dir?'#ffffff':'#f2c94c'); if(!opt.temp && p.dir!==n.dir) col='#f2c94c'; if(opt.temp && p.dir!==n.dir && opt.marking==='white') col='#f2c94c'; }
+    if(opt.temp && ((trav(p)&&n.t==='dz')||(p.t==='dz'&&trav(n)))) col = opt.marking==='orange'?'#f28a00':'#ffffff';
+    if(col) s += `<rect x="${X(p.x1)-.07*k}" y="${Z(0)-.06*k}" width="${.14*k}" height="${.06*k}" fill="${col}" stroke="#1d2126" stroke-width=".5"/>`;
+  });
+  // פיקטוגרמות
+  P.forEach(p=>{
+    const t=T[p.t], cx=X((p.x0+p.x1)/2), y=Z(p.z);
+    if(t.car==='car') s += iCar(cx,y,k, p.narrow?'#8a6d4b':'#5c6e82');
+    if(t.car==='park') s += iCar(cx,y,k,'#9aa7b3');
+    if(t.car==='bus') s += iBus(cx,y,k,'#c4574a');
+    if(t.car==='lrt') s += iLrt(cx,y,k,'#2f6db3');
+    if(t.car==='emg') s += iAmb(cx,y,k);
+    if(t.bike){ if(p.dir==='both'&&p.w>=1.6){ s+=iBike(X(p.x0+p.w*.3),y,k,'#b0503a')+iBike(X(p.x0+p.w*.7),y,k,'#b0503a'); } else s+=iBike(cx,y,k,'#b0503a'); }
+    if(p.t==='walk'||p.t==='pedT'||(t.ppl&&p.w>=3)){ const n=Math.max(1,Math.min(4,Math.floor(p.w/1.2))); for(let j=0;j<n;j++) s+=iPerson(X(p.x0+(j+.5)*p.w/n),y,k,p.t==='pedT'?'#6b5a12':'#3d4650'); }
+    if(t.tree && p.w>=1.0 && p.t!=='median'||(p.t==='median'&&p.w>=1.5)){ const n=p.t==='plaza'?Math.max(1,Math.floor(p.w/6)):1; for(let j=0;j<n;j++) s+=iTree(X(p.x0+(j+.5)*p.w/n),y,k*.8,'#6f9a55'); }
+    if(p.t==='dz'){
+      const dev=p.dev||'cones', n = p.w>=0.5?1:1;
+      const top = dev==='cones'?.75:dev==='barrier'?.8:dev==='wall'?2.0:(p.w<=0.3?1.1:1.2);
+      if(dev==='cones') s+=iCone(cx,y,k); else if(dev==='barrier') s+=iBarrier(cx,y,k); else s+=iFence(cx,y,k,dev==='wall'?2.0:1.1,dev==='wall');
+      if(opt.night) s += iLamp(cx, y-top*k, k);
+    }
+    if(t.dir && p.dir && p.dir!=='none' && (t.car||t.bike)){
+      const top=y-(t.car==='bus'?4.4:t.car==='emg'?3.4:t.car==='lrt'?5.8:t.bike?2.8:2.6)*k, len=1.2*k, wd=.3*k;
+      const ac = (t.car==='bus'||t.car==='lrt')?'#c49a1a':'#1d2126';
+      if(p.dir==='both') s+=arrowV(cx-wd*1.4,top-len,len,'up',ac,wd)+arrowV(cx+wd*1.4,top-len,len,'down',ac,wd);
+      else s+=arrowV(cx,top-len,len,p.dir,ac,wd);
+    }
+  });
+  // תאורה ניידת
+  if(opt.night){ P.filter(p=>p.t==='wA').forEach(p=>{ const cx=X((p.x0+p.x1)/2); s+=`<rect x="${cx-1}" y="${Z(0)-4.2*k}" width="2" height="${4.2*k}" fill="#555"/><path d="M${cx-8} ${Z(0)-4.2*k} h16 l-3 7 h-10 z" fill="#ffd54f" stroke="#555"/><path d="M${cx-5} ${Z(0)-4.2*k+7} L${cx-26} ${Z(0)} L${cx+26} ${Z(0)} L${cx+5} ${Z(0)-4.2*k+7} Z" fill="#ffe082" opacity=".18"/>`; }); }
+  // קצוות
+  const bld = (xx,dir)=>iBuilding(xx+dir*.4*k, Z(P[dir<0?0:P.length-1].z), k*.9, dir);
+  if(opt.eL && opt.eL.type==='building') s += bld(X(0),-1);
+  if(opt.eR && opt.eR.type==='building') s += bld(X(tot),1);
+  // שרשראות מידות
+  const tick=(x,y)=>`<line x1="${x-3}" y1="${y+3}" x2="${x+3}" y2="${y-3}" stroke="#1d2126" stroke-width="1.1"/>`;
+  function chain(segs,y,size,withLbl){
+    let o=`<line x1="${X(segs[0].a)}" y1="${y}" x2="${X(segs[segs.length-1].b)}" y2="${y}" stroke="#1d2126" stroke-width=".8"/>`;
+    segs.forEach(g=>{ const a=X(g.a), b=X(g.b), w=b-a, val=f2(g.b-g.a), col=g.c||'#1d2126';
+      o+=tick(a,y)+tick(b,y)+`<line x1="${a}" y1="${y-7}" x2="${a}" y2="${y+4}" stroke="#1d2126" stroke-width=".5"/><line x1="${b}" y1="${y-7}" x2="${b}" y2="${y+4}" stroke="#1d2126" stroke-width=".5"/>`;
+      if(w >= val.length*size*.58+4) o+=tx((a+b)/2,y-4,val,size,{color:col,weight:g.c?700:400});
+      else o+=tx((a+b)/2+size*.35,y-5,val,size*.85,{anchor:'start',rot:-90,color:col,weight:g.c?700:400});
+      if(withLbl && g.l){ if(w >= g.l.length*9.5*.55+4) o+=tx((a+b)/2,y+14,g.l,9.5,{color:'#5f6770'}); else o+=tx((a+b)/2+3,y+8,g.l,8.5,{anchor:'end',rot:-90,color:'#5f6770'}); }
+    });
+    return o;
+  }
+  const yD = yG + 1.4*k;
+  s += chain(P.map(p=>({a:p.x0,b:p.x1,l:T[p.t].s,c:p.fail?'#c8372d':(p.narrow?'#b15d00':null)})), yD, 11, true);
+  const cat = p => p.t==='work'||p.t==='spare' ? 'אתר' : (['median','barrier'].includes(p.t)?'מפרדה':(lvl(p)==='road'?'כביש':'מדרכה'));
+  let G=[]; P.forEach(p=>{ const c=cat(p), l=G[G.length-1]; if(l&&l.l===c) l.b=p.x1; else G.push({a:p.x0,b:p.x1,l:c}); });
+  const y2 = yD + 3.4*k;
+  s += chain(G, y2, 11.5, true);
+  const y3 = y2 + 2.4*k;
+  s += chain([{a:0,b:tot,l:'רוחב זכות הדרך'}], y3, 12.5, true);
+  [0,tot].forEach(m=>{ s+=`<line x1="${X(m)}" y1="${Z(4.5)}" x2="${X(m)}" y2="${y3+6}" stroke="#b03a2e" stroke-width="1" stroke-dasharray="10 4 2 4"/>`; });
+  const W=(tot+2*eW)*k, H=y3+1.4*k;
+  return `<svg viewBox="0 0 ${W.toFixed(0)} ${H.toFixed(0)}" xmlns="http://www.w3.org/2000/svg" style="direction:ltr" role="img" aria-label="${esc(opt.title||'')}">${s}</svg>`;
+}
+
+/* ---------------- ממשק ---------------- */
+function curCase(){ const c = CASES.find(c=>c.id===ST.caseId)||CASES[0]; if(c.kind==='stages') return {...c, ...STAGES[ST.stage], n:c.n, id:c.id}; return c; }
+function baseCells(){ return (ST.cells || PRESETS[ST.preset].cells).map(c=>({...c})); }
+
+function seg(id, opts, val, on){
+  const el=$(id); el.innerHTML = opts.map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${String(v)===String(val)}">${l}</button>`).join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>{ on(b.dataset.v); });
+}
+function sel(id, opts, val, on){
+  const el=$(id); el.innerHTML = opts.map(([v,l,g])=>`<option value="${v}" ${String(v)===String(val)?'selected':''}>${esc(l)}</option>`).join('');
+  el.onchange=()=>on(el.value);
+}
+function presetSelect(){
+  const el=$('preset'); const groups={};
+  Object.entries(PRESETS).forEach(([k,p])=>{ (groups[p.g]=groups[p.g]||[]).push([k,p.n]); });
+  el.innerHTML = Object.entries(groups).map(([g,a])=>`<optgroup label="${esc(g)}">${a.map(([k,n])=>`<option value="${k}" ${k===ST.preset?'selected':''}>${esc(n)}</option>`).join('')}</optgroup>`).join('');
+  el.onchange=()=>{ ST.preset=el.value; ST.cells=null; render(); };
+}
+function cellsEditor(){
+  const cells = baseCells();
+  $('cellsEd').innerHTML = cells.map((c,i)=>`<div class="crow"><span class="sw" style="background:${T[c.t].col}"></span><span class="cn">${esc(T[c.t].n)}${T[c.t].dir?` <em>${c.dir==='up'?'↑':c.dir==='down'?'↓':c.dir==='both'?'⇅':''}</em>`:''}</span><input type="number" step="0.05" min="0.1" value="${f2(c.w)}" data-i="${i}" aria-label="רוחב ${esc(T[c.t].n)}" inputmode="decimal"><span class="u">מ׳</span></div>`).join('');
+  $('cellsEd').querySelectorAll('input').forEach(inp=>inp.onchange=()=>{ const a=baseCells(); a[+inp.dataset.i].w=Math.max(0.1,parseFloat(inp.value)||0.1); ST.cells=a; render(); });
+  const src = PRESETS[ST.preset].src;
+  $('presetSrc').textContent = (ST.cells?'נערך ידנית · ':'') + 'מקור: ' + src;
+  $('resetCells').hidden = !ST.cells;
+}
+function caseList(){
+  const secs = {'א':'עבודות בקטע רחוב','ב':'צמתים ומעברי חצייה','ג':'אופניים, תחבורה ציבורית ומעגל תנועה','ד':'מעבר חצייה, סגירת רחוב, לילה','ה':'עבודות מורכבות'};
+  let h=''; let last='';
+  CASES.forEach(c=>{ if(c.sec!==last){ h+=`<div class="cgroup">${c.sec}. ${secs[c.sec]}</div>`; last=c.sec; }
+    h+=`<button type="button" class="case" data-id="${c.id}" aria-pressed="${c.id===ST.caseId}"><span class="cnum">${c.id}</span><span>${esc(c.n)}</span></button>`; });
+  $('cases').innerHTML=h;
+  $('cases').querySelectorAll('.case').forEach(b=>b.onclick=()=>{ const c=CASES.find(x=>x.id===+b.dataset.id);
+    ST.caseId=c.id; ST.close=null; ST.preset=c.preset; ST.cells=null;
+    if(c.speed) ST.P.speed=c.speed; if(c.maxS && ST.P.speed>c.maxS) ST.P.speed=c.maxS;
+    if(c.wz) ST.P.wz=c.wz; if(c.dur) ST.P.dur=c.dur; ST.P.night=!!c.night;
+    if(c.bikeMerge){ ST.P.bikeMode='merge'; ST.P.speed=30; }
+    render(); if(window.matchMedia('(max-width:1023px)').matches) $('stage').scrollIntoView({behavior:'smooth'}); });
+}
+function controls(){
+  const P=ST.P, c=curCase();
+  const set=(k,v,num)=>{ P[k]= num?+v:(v==='true'?true:v==='false'?false:v); render(); };
+  seg('speed', [[30,'30'],[50,'50'],[70,'70']], P.speed, v=>set('speed',v,true));
+  sel('tc', Object.entries(TC), P.tc, v=>set('tc',v));
+  seg('dur', Object.entries(DUR).map(([k,d])=>[k,d.n.replace(' (עד 12 ש׳)','').replace(' (שלב עד חצי שנה)','')]), P.dur, v=>set('dur',v));
+  sel('st', Object.entries(PED).map(([k,d])=>[k,d.n]), P.st, v=>set('st',v));
+  seg('shop', [[false,'לא'],[true,'כן']], P.shop, v=>set('shop',v));
+  seg('risk', [['lo','נמוך'],['hi','גבוה']], P.risk, v=>set('risk',v));
+  sel('bv', Object.entries(BIKE).map(([k,d])=>[k,d.n]), P.bv, v=>set('bv',v));
+  seg('bikeMode', [['merge','שילוב בנתיב'],['temp','נתיב זמני']], P.bikeMode, v=>set('bikeMode',v));
+  sel('pt', [['base','נתיב רגיל – 3.00'],['col','מאסף, ≥10 אוטובוסים – 3.25'],['art','חד-סטרי, דו-מפרקי – 3.10'],['rail','כלוא בין מעקות – 3.50']], P.pt, v=>set('pt',v));
+  seg('side', [['R','ימין'],['L','שמאל']], P.side, v=>set('side',v));
+  seg('night', [[false,'יום'],[true,'לילה']], P.night, v=>set('night',v));
+  sel('devSel', [['auto','לפי ההנחיות (אוטומטי)'],...Object.entries(DEV)], P.devSel, v=>set('devSel',v));
+  seg('wzMode', [['manual','רוחב קבוע'],['auto','מרבי']], P.wzMode, v=>set('wzMode',v));
+  seg('mark', [['auto','לפי המצב'],['orange','כתום'],['white','לבן']], P.mark, v=>set('mark',v));
+  [['wz','wz'],['wbar','wbar'],['d','d'],['emW','emW']].forEach(([id,k])=>{ const el=$(id); el.value=f2(P[k]); el.onchange=()=>set(k,Math.max(0,parseFloat(el.value)||0),true); });
+  $('wzRow').hidden = P.wzMode!=='manual' || ['full','arm','none'].includes(c.kind);
+  $('emRow').hidden = c.kind!=='emerg';
+  $('bikeRows').style.display = ['bike','bypass','lane'].includes(c.kind) ? 'contents' : 'none';
+  $('ptRow').hidden = !(c.pt || c.kind==='bus');
+  $('wbarRow').hidden = false;
+  // שלבים / נתיבים לסגירה
+  const orig = CASES.find(x=>x.id===ST.caseId);
+  $('stageRow').hidden = orig.kind!=='stages';
+  if(orig.kind==='stages') seg('stage', Object.entries(STAGES).map(([k,s])=>[k,k]), ST.stage, v=>{ ST.stage=+v; const s=STAGES[v]; if(s.wz) P.wz=s.wz; render(); });
+  $('closeRow').hidden = c.kind!=='lane';
+  if(c.kind==='lane'){ const S=split(baseCells().map(x=>({...x}))); const n=(P.side==='L'?split(mirrorCells(baseCells())):S).Rr.filter(isLane).length;
+    const cur = ST.close ?? c.close ?? 1; seg('close', Array.from({length:n+1},(_,i)=>[i, i===0?'צמצום':String(i)]), Math.min(cur,n), v=>{ ST.close=+v; render(); }); }
+}
+
+function render(){
+  presetSelect(); cellsEditor(); caseList(); controls();
+  const P={...ST.P}, c0=curCase();
+  const Kc = c0.kind==='lane' && ST.close!=null ? {...c0, close:ST.close} : c0;
+  const base = baseCells();
+  const R = build(base, P, Kc);
+  // סימון תאים כושלים
+  const bad = R.checks.filter(x=>x.s==='bad'&&x.g==='נתיבי נסיעה').length>0;
+  R.cells.forEach(c=>{ if(bad && ['laneT','altT'].includes(c.t)) c.fail=true; });
+  const pre = PRESETS[ST.preset];
+  const orig = CASES.find(x=>x.id===ST.caseId);
+  $('caseNo').textContent = `תרשים ${orig.id}`;
+  $('caseTitle').textContent = orig.kind==='stages' ? `${orig.n} · ${STAGES[ST.stage].n}` : orig.n;
+  $('caseDesc').textContent = orig.d;
+  $('svgTemp').innerHTML = drawSection(R.cells, {temp:true, id:'t', marking:R.info.marking, night:P.night||orig.night, eL:pre.eL, eR:pre.eR, title:'חתך זמני'});
+  $('svgBase').innerHTML = drawSection(base, {temp:false, id:'b', eL:pre.eL, eR:pre.eR, title:'חתך קיים'});
+  $('baseName').textContent = pre.n + (ST.cells?' (נערך)':'');
+  // סטטוס
+  const nb=R.checks.filter(x=>x.s==='bad').length, nw=R.checks.filter(x=>x.s==='warn').length;
+  const pill=$('status'); pill.className='pill '+(nb?'bad':nw?'warn':'ok');
+  pill.innerHTML = `<i></i>${nb?`${nb} ליקויים`:nw?`${nw} הערות`:'עומד בהנחיות'}`;
+  // בדיקות
+  const groups={}; R.checks.forEach(x=>(groups[x.g]=groups[x.g]||[]).push(x));
+  const sym={ok:'✓',warn:'!',bad:'✕'};
+  $('checks').innerHTML = Object.entries(groups).map(([g,a])=>`<div class="cg"><h4>${esc(g)}</h4>${a.map(x=>`<div class="ck ${x.s}"><span class="ci" aria-label="${x.s==='ok'?'תקין':x.s==='warn'?'הערה':'ליקוי'}">${sym[x.s]}</span><div class="ct"><b>${esc(x.t)}</b><small>${esc(x.ref||'')}</small></div><div class="cv">${x.v!=null?`<b>${f2(x.v)}</b>`:''}${x.r!=null?`<small>נדרש ${x.s==='bad'?'≥ ':''}${f2(x.r)}</small>`:''}</div></div>`).join('')}</div>`).join('');
+  // סיכום
+  const mk = R.info.marking;
+  $('sumWork').textContent = f2(R.info.work||0)+' מ׳';
+  $('sumDev').textContent = DEV[R.info.dev.dev];
+  $('sumStop').textContent = R.info.stop+' מ׳';
+  $('sumMark').innerHTML = `<span class="mk ${mk}"></span>${mk==='orange'?'כתום':'לבן'}`;
+  $('sumMarkWhy').textContent = R.info.markWhy;
+  $('notes').innerHTML = R.notes.length ? R.notes.map(n=>`<li>${esc(n)}</li>`).join('') : '<li>אין הערות נוספות למקרה זה.</li>';
+  // טבלת רכיבים
+  $('alloc').innerHTML = `<tr><th>#</th><th>רכיב</th><th>רוחב זמני</th><th>קיים</th></tr>` + R.cells.map((c,i)=>`<tr class="${T[c.t].tmp?'tmp':''}"><td>${i+1}</td><td><span class="sw" style="background:${T[c.t].col}"></span>${esc(T[c.t].n)}${c.dev?` · ${esc(DEV[c.dev].split(' ')[0])}`:''}</td><td class="${c.fail?'fail':c.narrow?'nar':''}">${f2(c.w)}</td><td>${c.ex?f2(c.ex):''}</td></tr>`).join('') + `<tr class="tot"><td></td><td>סה״כ</td><td>${f2(R.total)}</td><td>${f2(R.base)}</td></tr>`;
+  save();
+}
+$('resetCells').onclick=()=>{ ST.cells=null; render(); };
+$('toggleBase').onclick=()=>{ const s=$('baseCard'); const open = s.classList.toggle('open'); $('toggleBase').setAttribute('aria-expanded', open); $('toggleBase').textContent = open?'הסתרה':'הצגה'; };
+render();
+
+</script>
+</body>
+</html>

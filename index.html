@@ -861,7 +861,7 @@ a.hq small{font-size:12px}
 </style>
 
 <!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
-<script data-light="#23272C" data-dark="#15181C" data-slot=".masthead .wrap">
+<script data-light="#F4F5F1" data-dark="#15181C" data-slot=".masthead .wrap">
 (function(){
   var d=document.documentElement, K='mh-theme', G='mh-glass';
   var me=document.currentScript||{dataset:{}};
@@ -1062,11 +1062,32 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
 :root[data-theme="dark"] .plan > g:nth-of-type(3){fill:#FFFFFF}
 :root[data-theme="dark"] .plan > g:nth-of-type(4){stroke:#3A3F46}
 
+
+/* בהיר: גם הסרגל העליון, ה-Hero, «נוסף החודש» והפוטר בהירים (בלי פסי אספלט שחורים) */
+:root[data-theme="light"] :is(.masthead,.hero,.strip,footer){--asphalt:#F4F5F1;--paper:#141A1F;--muted-dark:#5C6570;--rule-dark:#D3D6CF;color:var(--paper)}
+:root[data-theme="light"] .masthead{background:rgba(244,245,241,.92);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);border-bottom-color:#D3D6CF}
+:root[data-theme="light"] .hero{background:linear-gradient(180deg,#F4F5F1,#ECEEE8)}
+:root[data-theme="light"] .strip{background:#E4E6E0;border-bottom-color:#D3D6CF}
+:root[data-theme="light"] footer{background:#E4E6E0;border-top:1px solid #D3D6CF}
+:root[data-theme="light"] .btn-line:hover{background:#E4E6E0}
+:root[data-theme="light"] :is(a.hq,.hq-dropdown,a.fresh,.chain-line a){background:#fff;border-color:#D3D6CF;color:#141A1F}
+:root[data-theme="light"] :is(a.hq:hover,a.hq:focus-visible,.hq-dropdown:hover,.hq-dropdown.open,a.fresh:hover){background:#FFF8E6;border-color:var(--marking)}
+:root[data-theme="light"] .hq-dropdown .hq-options{background:#fff;box-shadow:0 12px 30px rgba(20,26,31,.16)}
+:root[data-theme="light"] .hq-dropdown .hq-opt.gray{background:#F1F2EE;color:#141A1F}
+:root[data-theme="light"] .hq-dropdown .hq-opt.gray:hover{background:#E4E6E0}
+:root[data-theme="light"] .hq-label,:root[data-theme="light"] a.fresh em{color:#8a6a12}
+:root[data-theme="light"] .strip-fold>summary .arrow{border-color:#8a6a12}
+:root[data-theme="light"] .duo-get{background:rgba(233,177,47,.16)}
+:root[data-theme="light"] .duo-share{background:linear-gradient(100deg,rgba(37,211,102,.16),rgba(37,211,102,.04) 70%)}
+:root[data-theme="light"] .masthead .mh-look{background:#fff;color:#141A1F;border-color:#D3D6CF}
+:root[data-theme="light"] #mUp{background:rgba(255,255,255,.9);color:#141A1F;border:.5px solid #D3D6CF;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 6px 18px rgba(0,0,0,.14)}
+:root[data-theme="light"] .plan{border-radius:14px}
+
 /* זכוכית */
-html[data-glass="on"] .hero{background:rgba(35,39,44,.84)}
 html[data-glass="on"][data-theme="dark"] .hero{background:rgba(18,21,25,.72)}
-html[data-glass="on"] footer{background:rgba(35,39,44,.86)}
-html[data-glass="on"] .strip{background:rgba(20,26,31,.82)}
+html[data-glass="on"][data-theme="dark"] footer{background:rgba(21,24,28,.84)}
+html[data-glass="on"][data-theme="dark"] .strip{background:rgba(20,26,31,.82)}
+html[data-glass="on"][data-theme="light"] :is(.hero,footer,.strip){background:rgba(255,255,255,.34)}
 html[data-glass="on"] .branch{border-radius:18px}
 html[data-glass="on"] main.wrap>.block,html[data-glass="on"] .routes-late{border-radius:22px}
 html[data-glass="on"] :is(.route,.seek section,.flow,.keywords,.foldable){border-radius:16px}
@@ -1095,12 +1116,12 @@ html[data-glass="on"] .get-opt{background:var(--mh-glass-fill-2)!important;borde
 html[data-glass="on"] .masthead,
 html[data-glass="on"] .controls,
 html[data-glass="on"] .gates{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
-html[data-glass="on"] .masthead{background:rgba(35,39,44,.72)!important}
+html[data-glass="on"][data-theme="dark"] .masthead{background:rgba(21,24,28,.72)!important}
 html[data-glass="on"] .branch[open]{background:var(--mh-glass-fill)!important}
 
 /* כפתור המראה בתוך סרגל האספלט */
-.masthead .mh-look{background:rgba(255,255,255,.08);color:#E7E8E3;border-color:rgba(255,255,255,.16)}
-.masthead .mh-look:hover{background:rgba(255,255,255,.14)}
+[data-theme="dark"] .masthead .mh-look{background:rgba(255,255,255,.08);color:#E7E8E3;border-color:rgba(255,255,255,.16)}
+[data-theme="dark"] .masthead .mh-look:hover{background:rgba(255,255,255,.14)}
 
 /* ============ כפתור הורדה אחד + שיתוף אנושי ============ */
 .app-duo{display:grid!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:10px!important}

@@ -4,299 +4,520 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>מהאלco — יומן עבודה לביצוע כבישים</title>
-<meta name="description" content="יומן עבודה יומי לאתרי כבישים: כוח אדם, ציוד, כמויות לפי סעיף, בדיקות מעבדה, עיכובים וליקויים. לוח מנהל מחלקת פרויקטים. הנתונים נשמרים במכשיר בלבד.">
-<meta name="theme-color" content="#12121e">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<meta name="description" content="יומן עבודה יומי לאתרי כבישים: כוח אדם, ציוד, כמויות לפי סעיף, בדיקות מעבדה, עיכובים וליקויים. לוח מנהל, דוח יומי להדפסה. הנתונים נשמרים במכשיר בלבד.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <style>
-:root{--bg:#12121e;--panel:#1a1a2e;--sunk:#22223a;--ink:#EDEBF2;--ink2:#9A96AB;--ink3:#6B6780;
- --rule:rgba(255,255,255,.09);--rule2:rgba(255,255,255,.16);--pick:#E8A33D;--pick-bg:rgba(232,163,61,.14);
- --ok:#4ADE80;--ok-bg:rgba(74,222,128,.12);--warn:#F35B5B;--warn-bg:rgba(243,91,91,.13);
- --mono:'IBM Plex Mono',ui-monospace,monospace;--r:7px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font-family:'Assistant',system-ui,sans-serif;font-size:14.5px;line-height:1.5}
-header{position:sticky;top:0;z-index:30;background:var(--panel);border-bottom:1px solid var(--rule);
- padding:10px max(14px,env(safe-area-inset-right)) 10px max(14px,env(safe-area-inset-left));
- display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-header h1{font-size:16px;font-weight:800;letter-spacing:-.01em}
-header .sp{flex:1}
-.tabs{display:flex;gap:4px;background:var(--sunk);border-radius:8px;padding:3px;flex-wrap:wrap}
-.tabs button{background:none;border:0;color:var(--ink2);font:inherit;font-size:13.5px;font-weight:600;
- padding:7px 13px;border-radius:6px;cursor:pointer;min-height:40px}
-.tabs button.on{background:var(--pick);color:#151424}
-main{max-width:1120px;margin:0 auto;padding:16px max(14px,env(safe-area-inset-right)) 60px max(14px,env(safe-area-inset-left))}
-button,select,input,textarea{font-family:inherit;font-size:14px;color:var(--ink);background:var(--sunk);
- border:1px solid var(--rule2);border-radius:6px;padding:9px 11px;min-height:42px}
-button{cursor:pointer;font-weight:600}
-button:hover{border-color:var(--pick)}
-button.key{background:var(--pick);color:#151424;border-color:var(--pick)}
-button.mini{min-height:34px;padding:5px 10px;font-size:12.5px}
-button.danger{color:var(--warn);border-color:rgba(243,91,91,.4)}
-input,select,textarea{width:100%}
-textarea{min-height:70px;resize:vertical;line-height:1.5}
-label{display:block;font-size:12.5px;color:var(--ink2);margin-bottom:4px}
-.card{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r);padding:14px;margin-bottom:12px}
-.card h2{font-size:15px;font-weight:800;margin-bottom:10px;color:var(--pick)}
-.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-.grid.g2{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
-.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--rule)}
-th{color:var(--ink2);font-size:12px;font-weight:600}
-td.n,th.n{font-family:var(--mono);text-align:center;white-space:nowrap}
-.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.rowset{display:grid;gap:6px}
-.rowline{display:grid;grid-template-columns:1fr 1fr 90px 34px;gap:6px;align-items:center}
-.rowline.acts{grid-template-columns:1.4fr 1fr .8fr .8fr 34px}
-@media(max-width:640px){.rowline,.rowline.acts{grid-template-columns:1fr 1fr;}.rowline .x,.rowline.acts .x{grid-column:2}}
-.chip{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:var(--mono)}
-.c-open{background:var(--pick-bg);color:var(--pick)}
-.c-sign{background:var(--ok-bg);color:var(--ok)}
-.c-warn{background:var(--warn-bg);color:var(--warn)}
-.kpi{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
-.kpi div{background:var(--sunk);border:1px solid var(--rule);border-radius:var(--r);padding:11px 12px}
-.kpi .k{font-size:12px;color:var(--ink2)}
-.kpi .v{font-family:var(--mono);font-size:21px;font-weight:600}
-.note{font-size:12.5px;color:var(--ink3);line-height:1.55;margin-top:8px}
-.empty{color:var(--ink3);font-size:13.5px;padding:14px 0;text-align:center}
-.privacy{background:var(--ok-bg);border:1px solid rgba(74,222,128,.3);border-radius:var(--r);padding:10px 12px;
- font-size:12.5px;color:#bdf0df;margin-bottom:12px}
-.hide{display:none}
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF; --fill:#EFEFF4; --fill-2:#E3E3E9; --label:#1C1C1E; --label-2:#6C6C70; --label-3:#9A9AA0;
+  --sep:rgba(60,60,67,.16); --tint:#C77A0A; --tint-ink:#fff; --tint-soft:rgba(232,163,61,.16);
+  --red:#D93A2B; --red-soft:rgba(217,58,43,.10); --green:#2E9D55; --green-soft:rgba(46,157,85,.12); --blue:#1F5FA8;
+  --bar:rgba(242,242,247,.84); --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.05);
+  --r-l:14px; --r-m:10px; --ease:cubic-bezier(.2,.8,.2,1);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#000; --card:#1C1C1E; --fill:#2C2C2E; --fill-2:#3A3A3C; --label:#F2F2F7; --label-2:#AEAEB2; --label-3:#7C7C80;
+    --sep:rgba(84,84,88,.55); --tint:#E8A33D; --tint-ink:#1a1400; --tint-soft:rgba(232,163,61,.18);
+    --red:#FF6B5E; --red-soft:rgba(255,107,94,.14); --green:#4CD27B; --green-soft:rgba(76,210,123,.14); --blue:#5AA0F2;
+    --bar:rgba(18,18,20,.82); --shadow:none }
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:var(--bg);color:var(--label);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Heebo",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--tint);outline-offset:2px;border-radius:6px}
+.hide{display:none!important}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:40;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--sep);padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+.nav-in{display:flex;align-items:center;gap:10px;min-height:56px;max-width:1180px;margin:0 auto}
+.back{color:var(--tint);text-decoration:none;font-size:15px;font-weight:600;display:flex;align-items:center;gap:2px;min-height:40px}
+.back::before{content:"›";font-size:26px;line-height:1;margin-top:-2px}
+.nav h1{font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.nav h1 small{display:block;font-size:12px;font-weight:500;color:var(--label-2)}
+.sp{flex:1}
+.nbtn{min-width:44px;height:38px;padding:0 13px;border:0;border-radius:19px;background:var(--fill);color:var(--tint);font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.nbtn.primary{background:var(--tint);color:var(--tint-ink)}
+.nbtn svg{width:18px;height:18px}
+
+/* segmented */
+.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;position:relative;isolation:isolate;max-width:100%}
+.seg button{position:relative;z-index:1;border:0;background:none;min-height:32px;padding:0 13px;border-radius:7px;font-size:14px;font-weight:500;white-space:nowrap}
+.seg button[aria-pressed="true"]{font-weight:600}
+.seg .knob{position:absolute;z-index:0;top:2px;bottom:2px;border-radius:7px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:left .3s var(--ease),width .3s var(--ease)}
+@media (prefers-color-scheme: dark){ .seg .knob{background:#636366} }
+.seg.full{display:flex} .seg.full button{flex:1;padding:0 6px}
+.seg.scroll{overflow-x:auto;scrollbar-width:none} .seg.scroll::-webkit-scrollbar{display:none}
+#topTabs{margin:0 auto}
+
+/* bottom tab bar (portrait tablet / phone) */
+.tabbar{display:none}
+@media (max-width:900px){
+  #topTabs{display:none}
+  .tabbar{display:flex;position:fixed;z-index:45;left:0;right:0;bottom:0;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+    border-top:.5px solid var(--sep);padding:4px max(8px,env(safe-area-inset-right)) calc(4px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+  .tabbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:50px;font-size:11px;font-weight:600;color:var(--label-3);position:relative}
+  .tabbar button svg{width:25px;height:25px}
+  .tabbar button[aria-pressed="true"]{color:var(--tint)}
+  .tabbar .badge{position:absolute;top:2px;left:calc(50% + 6px)}
+  main{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+}
+.badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.badge:empty{display:none}
+
+/* ---------- layout ---------- */
+main{max-width:1180px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left))}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.side{position:sticky;top:74px;display:flex;flex-direction:column;gap:12px}
+@media (max-width:1023px){ .cols{grid-template-columns:1fr} .side{position:static;order:-1} }
+.gh{margin:20px 16px 6px;font-size:13px;color:var(--label-2);display:flex;align-items:center;gap:8px}
+.gh:first-child{margin-top:2px}
+.gh .cnt{margin-inline-start:auto;color:var(--label-3)}
+.gf{margin:6px 16px 0;font-size:12.5px;color:var(--label-2);line-height:1.45}
+.group{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);overflow:hidden}
+.li{display:flex;align-items:center;gap:12px;min-height:50px;padding:6px 16px;position:relative}
+.li+.li::before,.li+.rowi::before,.rowi+.li::before,.rowi+.rowi::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.li>label,.li>.lb{flex:1;min-width:0}
+.li input[type=text],.li input[type=date],.li input:not([type]){flex:1.3;min-width:0;border:0;background:none;text-align:end;color:var(--label-2);padding:8px 0;font-size:16px}
+.li input[type=date]{direction:ltr;text-align:left;flex:0 1 auto}
+.li input:focus{outline:none;color:var(--label)}
+.selw{position:relative;min-width:0}
+select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;color:var(--label-2);padding:8px 16px 8px 0;font-size:16px;max-width:100%;text-overflow:ellipsis}
+.selw::after{content:"⌄";position:absolute;left:0;top:50%;transform:translateY(-62%);color:var(--label-3);font-size:13px;pointer-events:none}
+textarea{width:100%;border:0;background:none;resize:vertical;min-height:84px;padding:12px 16px;font-size:16px;line-height:1.5;display:block}
+textarea:focus{outline:none}
+.ta-lb{display:block;padding:12px 16px 0;font-size:13px;color:var(--label-2)}
+.ta+.ta{border-top:.5px solid var(--sep)}
+
+/* stepper */
+.stp{display:inline-flex;align-items:center;background:var(--fill);border-radius:9px;height:34px;direction:ltr;flex:none}
+.stp button{width:36px;height:34px;border:0;background:none;font-size:20px;line-height:1;border-radius:9px}
+.stp button:active{background:var(--fill-2)}
+.stp input{width:56px;height:34px;border:0;border-left:.5px solid var(--sep);border-right:.5px solid var(--sep);background:none;text-align:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.stp input::-webkit-outer-spin-button,.stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.unit{font-size:13px;color:var(--label-2)}
+
+/* switch */
+.sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--fill-2);position:relative;flex:none;cursor:pointer;transition:background .25s}
+.sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15);transition:transform .25s var(--ease)}
+.sw:checked{background:var(--green)} .sw:checked::after{transform:translateX(-20px)}
+
+/* day header */
+.dayhead{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.dh-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.datebox{display:flex;align-items:center;gap:6px}
+.datebox button{width:38px;height:38px;border:0;border-radius:19px;background:var(--fill);color:var(--tint);font-size:22px;line-height:1}
+.datebox input{border:0;background:none;font-size:20px;font-weight:700;direction:ltr;text-align:center;min-width:0;width:auto}
+.datebox .dow{font-size:13px;color:var(--label-2);min-width:48px}
+.today{border:0;background:var(--tint-soft);color:var(--tint);font-weight:600;font-size:13px;border-radius:14px;min-height:28px;padding:0 10px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:12px;white-space:nowrap}
+.chip.open{background:var(--tint-soft);color:var(--tint)}
+.chip.signed{background:var(--green-soft);color:var(--green)}
+.chip.warn{background:var(--red-soft);color:var(--red)}
+.chip.draft{background:var(--fill);color:var(--label-2)}
+.projchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.projchips::-webkit-scrollbar{display:none}
+.pchip{flex:none;border:0;background:var(--fill);border-radius:18px;min-height:36px;padding:0 14px;font-size:14.5px;font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pchip[aria-pressed="true"]{background:var(--label);color:var(--card)}
+.pchip.add{color:var(--tint);background:var(--tint-soft)}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+.qbtn{border:0;min-height:38px;padding:0 13px;border-radius:12px;background:var(--fill);color:var(--tint);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.qbtn svg{width:17px;height:17px}
+
+/* summary tiles */
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:1023px){ .tiles{grid-template-columns:repeat(4,minmax(0,1fr))} }
+@media (max-width:560px){ .tiles{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.tile{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:10px 12px;border:0;text-align:start;display:block;width:100%}
+.tile span{display:block;font-size:12px;color:var(--label-2)}
+.tile b{display:block;font-size:24px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tile b small{font-size:12px;font-weight:500;color:var(--label-2)}
+.tile.pulse{animation:pulse .5s var(--ease)}
+@keyframes pulse{40%{background:var(--tint-soft)}}
+
+/* rows */
+.rowi{position:relative;padding:10px 16px;display:flex;flex-direction:column;gap:8px}
+.rowi .r1,.rowi .r2{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rowi .r1 .selw{flex:1}
+.rowi .r1 select.plain{color:var(--label);font-weight:600;width:100%}
+.rowi input.tx{flex:1;min-width:120px;border:0;background:var(--fill);border-radius:9px;height:34px;padding:0 10px;font-size:15px}
+.rowi .del{width:34px;height:34px;border:0;border-radius:17px;background:var(--red-soft);color:var(--red);font-size:15px;flex:none}
+.rowi.fresh{animation:fresh .9s var(--ease)}
+@keyframes fresh{0%{background:var(--tint-soft)}100%{background:transparent}}
+.addrow{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;border-top:.5px solid var(--sep)}
+.addrow button{border:0;min-height:34px;padding:0 12px;border-radius:17px;background:var(--fill);font-size:13.5px;font-weight:500}
+.addrow button.main{background:var(--tint-soft);color:var(--tint);font-weight:700}
+.empty{padding:18px 16px;text-align:center;color:var(--label-2);font-size:14.5px}
+.resseg button{min-height:30px;padding:0 10px;font-size:13px}
+
+/* list */
+.search{display:flex;align-items:center;gap:8px;background:var(--fill-2);border-radius:10px;padding:0 10px;height:40px}
+.search input{flex:1;border:0;background:none;font-size:16px;min-width:0}
+.search input:focus{outline:none}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.lrow{display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:64px;position:relative;width:100%;border:0;background:none;text-align:start}
+.lrow+.lrow::before{content:"";position:absolute;top:0;inset-inline-start:74px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.lrow:active{background:var(--fill)}
+.cal{flex:none;width:46px;height:46px;border-radius:10px;background:var(--fill);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.cal b{font-size:19px;font-weight:700}
+.cal small{font-size:10.5px;color:var(--label-2);margin-top:2px}
+.lmain{flex:1;min-width:0}
+.lmain b{display:block;font-size:15.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lmain span{display:block;font-size:13px;color:var(--label-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chev{color:var(--label-3);font-size:22px}
+.month{margin:18px 16px 6px;font-size:13px;color:var(--label-2);font-weight:600}
+
+/* manager */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.bars{padding:6px 16px 12px}
+.brow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto;gap:10px;align-items:center;padding:7px 0;font-size:14px}
+.brow+.brow{border-top:.5px solid var(--sep)}
+.brow .track{height:10px;border-radius:5px;background:var(--fill);overflow:hidden}
+.brow .fillb{height:100%;border-radius:5px;background:var(--tint);transform-origin:right;animation:grow .6s var(--ease)}
+.brow.red .fillb{background:var(--red)}
+@keyframes grow{from{transform:scaleX(0)}}
+.brow .v{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;font-size:14.5px}
+.alert+.alert{border-top:.5px solid var(--sep)}
+.alert i{flex:none;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-style:normal;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.alert.ok i{background:var(--green)}
+.alert button{margin-inline-start:auto;border:0;background:none;color:var(--tint);font-weight:600;font-size:14px;white-space:nowrap}
+
+/* projects */
+.pcard{display:flex;align-items:center;gap:12px;padding:12px 16px;width:100%;border:0;background:none;text-align:start;position:relative;min-height:66px}
+.pcard+.pcard::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.pic{flex:none;width:42px;height:42px;border-radius:10px;background:var(--tint);color:var(--tint-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.pic.team{background:var(--blue);color:#fff;border-radius:50%}
+.pic.asst{background:var(--fill-2);color:var(--label);border-radius:50%}
+.trow{display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:60px;position:relative;width:100%;border:0;background:none;text-align:start}
+.trow+.trow::before{content:"";position:absolute;top:0;inset-inline-start:70px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.trow[aria-pressed="true"]{background:var(--tint-soft)}
+.trow .del{width:32px;height:32px;border:0;border-radius:16px;background:var(--red-soft);color:var(--red);flex:none}
+.mini-stats{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pic.off{background:var(--fill-2);color:var(--label-2)}
+
+/* privacy + backup */
+.note-card{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:var(--r-l);background:var(--green-soft);font-size:13.5px;line-height:1.45}
+.note-card.warn{background:var(--red-soft)}
+.note-card svg{flex:none;width:24px;height:24px;color:var(--green)}
+.note-card.warn svg{color:var(--red)}
+.note-card button{margin-inline-start:auto;border:0;background:var(--card);color:var(--tint);font-weight:600;border-radius:14px;min-height:32px;padding:0 12px;white-space:nowrap}
+.bigbtn{display:flex;width:100%;min-height:50px;align-items:center;justify-content:center;border:0;border-radius:var(--r-l);font-size:16px;font-weight:600;background:var(--card);color:var(--tint);box-shadow:var(--shadow)}
+.bigbtn.primary{background:var(--tint);color:var(--tint-ink)}
+.bigbtn.danger{color:var(--red)}
+.stack{display:flex;flex-direction:column;gap:10px}
+
+/* save bar */
+.savebar{display:flex;gap:10px;align-items:center;margin-top:18px}
+.savebar .bigbtn{flex:1}
+.savestate{font-size:13px;color:var(--label-2);display:flex;align-items:center;gap:6px}
+.savestate i{width:8px;height:8px;border-radius:50%;background:var(--label-3)}
+.savestate.dirty i{background:var(--tint)} .savestate.ok i{background:var(--green)}
+@media (max-width:900px){
+  .savebar{position:fixed;z-index:44;left:0;right:0;bottom:calc(59px + env(safe-area-inset-bottom));margin:0;padding:8px max(16px,env(safe-area-inset-right)) 8px max(16px,env(safe-area-inset-left));background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-top:.5px solid var(--sep)}
+  .savebar .bigbtn{min-height:46px;box-shadow:none}
+}
+
+/* sheet, dialog, toast */
+.scrim{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:91;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));width:min(440px,calc(100% - 24px));transform:translate(-50%,130%);transition:transform .35s var(--ease)}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .grp{background:color-mix(in srgb,var(--card) 94%,transparent);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.sheet .ttl{padding:14px 16px;text-align:center;font-size:13.5px;color:var(--label-2);line-height:1.4}
+.sheet .ttl b{display:block;color:var(--label);font-size:15px;margin-bottom:2px}
+.sheet .grp>button{display:flex;width:100%;min-height:56px;align-items:center;justify-content:center;border:0;border-top:.5px solid var(--sep);background:none;font-size:18px;color:var(--tint)}
+.sheet .grp>button.danger{color:var(--red)}
+.sheet .cancel{display:block;width:100%;min-height:56px;border:0;border-radius:14px;background:var(--card);font-size:18px;font-weight:600;color:var(--tint)}
+.modal{position:fixed;z-index:92;left:50%;top:50%;width:min(520px,calc(100% - 24px));max-height:calc(100% - 40px);overflow:auto;background:var(--bg);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);
+  transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;transition:transform .3s var(--ease),opacity .2s}
+.modal.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.modal-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:.5px solid var(--sep);position:sticky;top:0;background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);z-index:1}
+.modal-h b{flex:1;text-align:center;font-size:16px}
+.modal-h button{border:0;background:none;color:var(--tint);font-size:16px;min-height:36px;min-width:60px}
+.modal-h button.done{font-weight:700}
+.modal-b{padding:6px 16px 20px}
+.toast{position:fixed;z-index:95;left:50%;top:calc(66px + env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;background:rgba(28,28,30,.93);color:#fff;border-radius:22px;padding:10px 18px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;transition:transform .35s var(--ease),opacity .25s;max-width:calc(100% - 32px)}
+.toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.toast button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:14px;min-height:30px;padding:0 12px;font-weight:600}
+
+/* welcome */
+.welcome{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:28px 22px;text-align:center;max-width:560px;margin:10px auto}
+.welcome .ico{width:64px;height:64px;border-radius:16px;background:var(--tint);color:var(--tint-ink);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.welcome .ico svg{width:34px;height:34px}
+.welcome h2{font-size:22px;margin-bottom:8px}
+.welcome p{color:var(--label-2);font-size:15px;line-height:1.55;margin-bottom:18px}
+.steps{text-align:start;display:flex;flex-direction:column;gap:10px;margin:0 0 20px}
+.steps div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.steps div b{flex:none;width:24px;height:24px;border-radius:12px;background:var(--tint-soft);color:var(--tint);display:flex;align-items:center;justify-content:center;font-size:13px}
+
+/* print report */
+#report{display:none}
 @media print{
- header,.tabs,.bar,.no-print{display:none!important}
- body{background:#fff;color:#000}
- .card{border-color:#bbb;background:#fff;break-inside:avoid}
- .card h2{color:#000}
- th,td{border-color:#999}
- .kpi div{background:#fff;border-color:#bbb}
+  body{background:#fff;color:#000}
+  .nav,.tabbar,main,.toast,.sheet,.scrim,.modal{display:none!important}
+  #report{display:block;font:11pt/1.45 Arial,sans-serif;color:#000;padding:0}
+  #report h1{font-size:17pt;margin-bottom:2pt}
+  #report .meta{font-size:10pt;color:#333;margin-bottom:10pt}
+  #report h2{font-size:12pt;margin:12pt 0 4pt;border-bottom:1pt solid #000;padding-bottom:2pt}
+  #report table{width:100%;border-collapse:collapse;font-size:10pt}
+  #report th,#report td{border:.5pt solid #888;padding:3pt 5pt;text-align:right}
+  #report th{background:#eee}
+  #report .sig{display:flex;gap:30pt;margin-top:26pt}
+  #report .sig div{flex:1;border-top:.8pt solid #000;padding-top:3pt;font-size:10pt}
+  @page{size:A4;margin:14mm}
 }
-
-/* ==================== MOBILE LAYER — מהאלco (phone / tablet) ==================== */
-#mAct{display:none}
-@media(max-width:820px){
-  header{padding:8px max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left));
-    flex-wrap:wrap;gap:6px}
-  header h1{font-size:14.5px;flex:1}
-  header .sp{display:none}
-  .tabs{order:3;flex:1 0 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
-    border-radius:8px 8px 0 0;margin:2px -12px 0;padding:4px 12px;background:transparent}
-  .tabs::-webkit-scrollbar{display:none}
-  .tabs button{flex:0 0 auto;min-height:46px;font-size:13.5px;background:var(--sunk)}
-  main{padding:14px max(12px,env(safe-area-inset-right))
-    calc(86px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-  .card{padding:13px;border-radius:10px}
-  .grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:11px}
-  .grid.g2{grid-template-columns:1fr}
-  input,select,textarea{font-size:16px;min-height:46px}
-  button{min-height:46px}
-  button.mini{min-height:40px;font-size:13px}
-  label{font-size:13px}
-  .kpi{grid-template-columns:1fr 1fr;gap:8px}
-  .kpi .v{font-size:19px}
-  .bar{gap:8px}
-  .bar button{flex:1 1 calc(50% - 8px)}
-
-  /* --- טבלאות כרטיסיות: בלי גלילה לצדדים --- */
-  .tw table,.tw tbody,.tw tr,.tw td{display:block;width:100%}
-  .tw thead{display:none}
-  .tw{overflow:visible}
-  .tw tr{background:var(--sunk);border:1px solid var(--rule);border-radius:9px;
-    padding:9px 11px;margin-bottom:9px}
-  .tw td{border:0;padding:5px 0;display:flex;align-items:center;justify-content:space-between;
-    gap:12px;text-align:right;font-size:13.5px}
-  .tw td::before{content:attr(data-label);color:var(--ink2);font-size:12px;font-weight:600;flex:0 0 auto}
-  .tw td:empty{display:none}
-  .tw td.n{text-align:left}
-  .tw td button{width:100%;margin-top:2px}
-  .tw td:has(button)::before{flex:1}
-
-  .rowline,.rowline.acts{grid-template-columns:1fr 1fr;gap:7px}
-  .rowline input,.rowline select{min-height:44px}
-  .privacy{font-size:12px}
-
-  /* --- סרגל פעולה קבוע (שמירה תמיד בהישג אגודל) --- */
-  #mAct{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;gap:8px;
-    padding:9px 12px calc(9px + env(safe-area-inset-bottom));
-    background:rgba(26,26,46,.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-    border-top:1px solid var(--rule2);box-shadow:0 -6px 18px rgba(0,0,0,.35)}
-  #mAct button{flex:1;min-height:48px;font-size:14.5px}
-  #mAct button.key{background:var(--pick);color:#151424;border-color:var(--pick);font-weight:700}
-}
-@media print{#mAct{display:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:560px){ .nav h1 small{display:none} .nbtn .t{display:none} .back span{display:none} }
 </style>
 </head>
 <body>
-<header>
-  <h1>יומן עבודה — ביצוע כבישים</h1>
-  <div class="tabs">
-    <button data-t="day" class="on">יומן יומי</button>
-    <button data-t="list">רשומות</button>
-    <button data-t="mgr">לוח מנהל</button>
-    <button data-t="proj">פרויקטים</button>
-    <button data-t="data">גיבוי</button>
+<header class="nav">
+  <div class="nav-in">
+    <a class="back" href="index.html"><span>מהאלco</span></a>
+    <h1>יומן עבודה<small>ביצוע כבישים · נשמר במכשיר</small></h1>
+    <span class="sp"></span>
+    <div class="seg" id="topTabs"></div>
+    <span class="sp"></span>
+    <button class="nbtn" id="btnPrint" type="button" title="הדפסת דוח יומי"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg><span class="t">דוח יומי</span></button>
   </div>
-  <span class="sp"></span>
-  <button class="mini" id="btnPrint">הדפסה</button>
 </header>
 
 <main>
-<div class="privacy">הנתונים נשמרים במכשיר הזה בלבד — לא נשלחים לשום שרת ואין לאיש גישה אליהם מלבדכם. גבו את הקובץ מדי שבוע בלשונית «גיבוי».</div>
+<!-- ============ ברוכים הבאים ============ -->
+<section id="tab-welcome" class="hide">
+  <div class="welcome">
+    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div>
+    <h2>יומן עבודה לאתר</h2>
+    <p>רישום יומי של צוותים, ציוד, כמויות, בדיקות ועיכובים – עם לוח מנהל ודוח להדפסה. הכול נשמר רק במכשיר הזה.</p>
+    <div class="steps">
+      <div><b>1</b><span>מגדירים פרויקט: שם, מזמין, קבלן ומקטע – ואת המנהל ועוזרי המנהל שעובדים בו.</span></div>
+      <div><b>2</b><span>ממלאים יומן יומי. מחר אפשר להעתיק את הצוותים והציוד מהיום בנגיעה אחת.</span></div>
+      <div><b>3</b><span>שומרים, חותמים, ומדפיסים דוח. הכמויות מצטברות לבד בלוח המנהל.</span></div>
+    </div>
+    <button class="bigbtn primary" type="button" data-newproj>יצירת הפרויקט הראשון</button>
+    <p class="gf" style="margin-top:12px">יש גיבוי קיים? <a href="#" id="welcomeRestore" style="color:var(--tint);font-weight:600">שחזור מקובץ</a></p>
+  </div>
+</section>
 
 <!-- ============ יומן יומי ============ -->
 <section id="tab-day">
-  <div class="card">
-    <h2>פרטי היום</h2>
-    <div class="grid">
-      <div><label for="d_pid">פרויקט</label><select id="d_pid"></select></div>
-      <div><label for="d_date">תאריך</label><input type="date" id="d_date"></div>
-      <div><label for="d_shift">משמרת</label><select id="d_shift">
-        <option>יום</option><option>לילה</option><option>סופ״ש</option></select></div>
-      <div><label for="d_weather">מזג אוויר</label><select id="d_weather">
-        <option>בהיר</option><option>מעונן</option><option>גשם קל</option><option>גשם</option><option>שרב</option><option>רוחות</option></select></div>
-      <div><label for="d_temp">טמפ׳ (°C)</label><input type="number" id="d_temp" step="1" inputmode="numeric"></div>
-      <div><label for="d_hours">שעות עבודה</label><input type="number" id="d_hours" step="0.5" inputmode="decimal"></div>
-      <div><label for="d_from">מפיקט / ק״מ</label><input type="text" id="d_from" placeholder="0+000"></div>
-      <div><label for="d_to">עד פיקט / ק״מ</label><input type="text" id="d_to" placeholder="0+250"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>כוח אדם וציוד</h2>
-    <div class="grid g2">
-      <div>
-        <label>צוותים בשטח</label>
-        <div class="rowset" id="crewRows"></div>
-        <button class="mini" data-add="crew" style="margin-top:6px">+ צוות</button>
+  <div class="cols">
+    <div>
+      <div class="dayhead">
+        <div class="projchips" id="projChips" role="group" aria-label="פרויקט"></div>
+        <div class="dh-row">
+          <div class="datebox">
+            <button type="button" id="dPrev" aria-label="יום קודם">›</button>
+            <input type="date" id="d_date" aria-label="תאריך">
+            <button type="button" id="dNext" aria-label="יום הבא">‹</button>
+            <span class="dow" id="dDow"></span>
+          </div>
+          <button class="today" type="button" id="dToday">היום</button>
+          <span class="sp"></span>
+          <span class="chip draft" id="dState">חדש</span>
+        </div>
+        <div class="quick" id="quickBar">
+          <button class="qbtn" type="button" id="btnCopyPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>העתקה מהיומן הקודם</button>
+          <button class="qbtn" type="button" id="btnNew"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>יומן חדש</button>
+        </div>
       </div>
-      <div>
-        <label>ציוד מכני</label>
-        <div class="rowset" id="equipRows"></div>
-        <button class="mini" data-add="equip" style="margin-top:6px">+ ציוד</button>
+
+      <p class="gh">תנאי העבודה</p>
+      <div class="group">
+        <div class="li"><span class="lb">משמרת</span><select id="d_shift" class="hide"><option>יום</option><option>לילה</option><option>סופ״ש</option></select><div class="seg" data-bind="d_shift"></div></div>
+        <div class="li"><span class="lb">מזג אוויר</span><div class="selw"><select id="d_weather" class="plain"><option>בהיר</option><option>מעונן</option><option>גשם קל</option><option>גשם</option><option>שרב</option><option>רוחות</option></select></div></div>
+        <div class="li"><label for="d_temp">טמפרטורה</label><div class="stp" data-step="1"><input type="number" id="d_temp" step="1" inputmode="numeric" placeholder="—"></div><span class="unit">°C</span></div>
+        <div class="li"><label for="d_hours">שעות עבודה</label><div class="stp" data-step="0.5" data-min="0"><input type="number" id="d_hours" step="0.5" inputmode="decimal" placeholder="—"></div><span class="unit">ש׳</span></div>
+        <div class="li"><label for="d_from">מפיקט / ק״מ</label><input type="text" id="d_from" placeholder="0+000" dir="ltr"></div>
+        <div class="li"><label for="d_to">עד פיקט / ק״מ</label><input type="text" id="d_to" placeholder="0+250" dir="ltr"></div>
+      </div>
+
+      <p class="gh">צוותים בשטח<span class="cnt" id="cnt_crew"></span></p>
+      <div class="group"><div id="crewRows"></div><div class="addrow" data-quick="crew"></div></div>
+
+      <p class="gh">ציוד מכני<span class="cnt" id="cnt_equip"></span></p>
+      <div class="group"><div id="equipRows"></div><div class="addrow" data-quick="equip"></div></div>
+
+      <p class="gh">עבודות שבוצעו וכמויות<span class="cnt" id="cnt_act"></span></p>
+      <div class="group"><div id="actRows"></div><div class="addrow" data-quick="act"></div></div>
+      <p class="gf">הכמויות מצטברות לפי סעיף בלוח המנהל ומשמשות בסיס לחשבון חלקי.</p>
+
+      <p class="gh">בדיקות מעבדה<span class="cnt" id="cnt_test"></span></p>
+      <div class="group"><div id="testRows"></div><div class="addrow" data-quick="test"></div></div>
+
+      <p class="gh">עיכובים<span class="cnt" id="cnt_delay"></span></p>
+      <div class="group"><div id="delayRows"></div><div class="addrow" data-quick="delay"></div></div>
+
+      <p class="gh">הערות, ליקויים וביקורים</p>
+      <div class="group">
+        <div class="ta"><label class="ta-lb" for="d_issues">אי-התאמות והוראות שניתנו</label><textarea id="d_issues"></textarea></div>
+        <div class="ta"><label class="ta-lb" for="d_visits">ביקורים באתר</label><textarea id="d_visits" placeholder="מפקח, מתכנן, רשות מקומית, מעבדה…"></textarea></div>
+        <div class="ta"><label class="ta-lb" for="d_safety">בטיחות והסדרי תנועה זמניים</label><textarea id="d_safety"></textarea></div>
+        <div class="ta"><label class="ta-lb" for="d_notes">הערות כלליות</label><textarea id="d_notes"></textarea></div>
+      </div>
+
+      <p class="gh">סגירת היומן</p>
+      <div class="group">
+        <div class="li"><label for="d_by">נרשם על ידי</label><input type="text" id="d_by" placeholder="שם"></div>
+        <div class="li" id="byRow"><div class="projchips" id="byChips" role="group" aria-label="בחירה מהצוות" style="flex:1"></div></div>
+        <div class="li"><label for="d_signedSw">היומן נחתם</label><select id="d_signed" class="hide"><option value="0">פתוח</option><option value="1">נחתם</option></select><input type="checkbox" class="sw" id="d_signedSw"></div>
+      </div>
+
+      <div class="savebar">
+        <span class="savestate" id="saveState"><i></i><span>אין שינויים</span></span>
+        <button class="bigbtn primary" type="button" id="btnSave">שמירת היומן</button>
+        <button class="bigbtn danger" type="button" id="btnDel" style="flex:0 0 auto;padding:0 16px" aria-label="מחיקת הרשומה">מחיקה</button>
       </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h2>עבודות שבוצעו וכמויות</h2>
-    <div class="rowset" id="actRows"></div>
-    <button class="mini" data-add="act" style="margin-top:6px">+ עבודה</button>
-    <p class="note">הכמויות מצטברות אוטומטית לפי סעיף בלוח המנהל, ומשמשות בסיס לחשבון חלקי.</p>
-  </div>
-
-  <div class="card">
-    <h2>בדיקות מעבדה</h2>
-    <div class="rowset" id="testRows"></div>
-    <button class="mini" data-add="test" style="margin-top:6px">+ בדיקה</button>
-  </div>
-
-  <div class="card">
-    <h2>עיכובים, ליקויים וביקורים</h2>
-    <div class="rowset" id="delayRows"></div>
-    <button class="mini" data-add="delay" style="margin-top:6px">+ עיכוב</button>
-    <div class="grid g2" style="margin-top:12px">
-      <div><label for="d_issues">אי-התאמות והוראות שניתנו</label><textarea id="d_issues"></textarea></div>
-      <div><label for="d_visits">ביקורים באתר</label><textarea id="d_visits" placeholder="מפקח, מתכנן, רשות מקומית, מעבדה…"></textarea></div>
-      <div><label for="d_safety">בטיחות והסדרי תנועה זמניים</label><textarea id="d_safety"></textarea></div>
-      <div><label for="d_notes">הערות כלליות</label><textarea id="d_notes"></textarea></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>סגירת היומן</h2>
-    <div class="grid">
-      <div><label for="d_by">נרשם על ידי</label><input type="text" id="d_by"></div>
-      <div><label for="d_signed">סטטוס</label><select id="d_signed">
-        <option value="0">פתוח</option><option value="1">נחתם</option></select></div>
-    </div>
-    <div class="bar" style="margin-top:12px;margin-bottom:0">
-      <button class="key" id="btnSave">שמור יומן</button>
-      <button id="btnNew">יומן חדש</button>
-      <button class="danger mini" id="btnDel">מחק רשומה</button>
-      <span id="saveMsg" class="note" style="align-self:center;margin:0"></span>
-    </div>
+    <aside class="side">
+      <div class="tiles" id="dayTiles"></div>
+      <div class="note-card" id="backupNote"></div>
+    </aside>
   </div>
 </section>
 
 <!-- ============ רשומות ============ -->
 <section id="tab-list" class="hide">
-  <div class="card">
-    <div class="grid">
-      <div><label for="f_pid">פרויקט</label><select id="f_pid"><option value="">הכול</option></select></div>
-      <div><label for="f_from">מתאריך</label><input type="date" id="f_from"></div>
-      <div><label for="f_to">עד תאריך</label><input type="date" id="f_to"></div>
-      <div><label for="f_st">סטטוס</label><select id="f_st">
-        <option value="">הכול</option><option value="0">פתוח</option><option value="1">נחתם</option></select></div>
-    </div>
-    <div class="bar" style="margin-top:12px;margin-bottom:0">
-      <button class="mini" id="btnCsvEntries">ייצוא רשומות ל‑CSV</button>
-      <button class="mini" id="btnCsvQty">ייצוא כמויות ל‑CSV</button>
-    </div>
+  <div class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--label-3)"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+    <input type="search" id="f_q" placeholder="חיפוש בהערות, בסעיפים ובמיקום"></div>
+  <div class="filters">
+    <div class="selw"><select id="f_pid" class="plain" aria-label="פרויקט"><option value="">כל הפרויקטים</option></select></div>
+    <select id="f_st" class="hide"><option value="">הכול</option><option value="0">פתוח</option><option value="1">נחתם</option></select>
+    <div class="seg" data-bind="f_st"></div>
+    <span class="sp"></span>
+    <label class="unit" for="f_from">מ-</label><input type="date" id="f_from" style="border:0;background:var(--fill);border-radius:9px;height:34px;padding:0 8px;direction:ltr">
+    <label class="unit" for="f_to">עד</label><input type="date" id="f_to" style="border:0;background:var(--fill);border-radius:9px;height:34px;padding:0 8px;direction:ltr">
   </div>
-  <div class="card"><div class="tw"><table id="tblList"></table></div></div>
+  <div id="listBody"></div>
+  <p class="gh">ייצוא הרשומות שבסינון</p>
+  <div class="stack" style="flex-direction:row">
+    <button class="bigbtn" type="button" id="btnCsvEntries">רשומות ל-CSV</button>
+    <button class="bigbtn" type="button" id="btnCsvQty">כמויות ל-CSV</button>
+  </div>
 </section>
 
 <!-- ============ לוח מנהל ============ -->
 <section id="tab-mgr" class="hide">
-  <div class="card">
-    <div class="grid">
-      <div><label for="m_pid">פרויקט</label><select id="m_pid"><option value="">כל הפרויקטים</option></select></div>
-      <div><label for="m_days">טווח</label><select id="m_days">
-        <option value="7">7 ימים אחרונים</option><option value="30" selected>30 ימים</option>
-        <option value="90">רבעון</option><option value="0">הכול</option></select></div>
-    </div>
+  <div class="filters" style="margin-top:0">
+    <div class="selw"><select id="m_pid" class="plain" aria-label="פרויקט"><option value="">כל הפרויקטים</option></select></div>
+    <div class="selw"><select id="m_by" class="plain" aria-label="איש צוות"><option value="">כל הצוות</option></select></div>
+    <span class="sp"></span>
+    <select id="m_days" class="hide"><option value="7">7 ימים</option><option value="30" selected>30 ימים</option><option value="90">רבעון</option><option value="0">הכול</option></select>
+    <div class="seg" data-bind="m_days"></div>
   </div>
-  <div class="card"><h2>תמונת מצב</h2><div class="kpi" id="mgrKpi"></div></div>
-  <div class="card"><h2>כמויות מצטברות לפי סעיף</h2><div class="tw"><table id="tblQty"></table></div></div>
-  <div class="card"><h2>עיכובים לפי סיבה</h2><div class="tw"><table id="tblDelay"></table></div></div>
-  <div class="card"><h2>דורש טיפול</h2><div id="mgrAlerts"></div></div>
+  <p class="gh">דורש טיפול</p>
+  <div class="group" id="mgrAlerts"></div>
+  <p class="gh">מנהל ועוזרי מנהל<span class="cnt">הקישו על שם לסינון הלוח</span></p>
+  <div class="group" id="mgrTeam"></div>
+  <p class="gh">תמונת מצב</p>
+  <div class="kpis" id="mgrKpi"></div>
+  <p class="gh">כמויות מצטברות לפי סעיף</p>
+  <div class="group"><div class="bars" id="tblQty"></div></div>
+  <p class="gh">עיכובים לפי סיבה</p>
+  <div class="group"><div class="bars" id="tblDelay"></div></div>
 </section>
 
 <!-- ============ פרויקטים ============ -->
 <section id="tab-proj" class="hide">
-  <div class="card">
-    <h2>פרויקט חדש / עריכה</h2>
-    <div class="grid">
-      <div><label for="p_name">שם הפרויקט</label><input type="text" id="p_name"></div>
-      <div><label for="p_client">מזמין</label><input type="text" id="p_client" placeholder="נתיבי ישראל / עירייה"></div>
-      <div><label for="p_contr">קבלן מבצע</label><input type="text" id="p_contr"></div>
-      <div><label for="p_eng">מהנדס ביצוע</label><input type="text" id="p_eng"></div>
-      <div><label for="p_sec">מקטע</label><input type="text" id="p_sec" placeholder="כביש 444, ק״מ 3+200–5+700"></div>
-      <div><label for="p_start">תחילת עבודה</label><input type="date" id="p_start"></div>
-      <div><label for="p_status">סטטוס</label><select id="p_status">
-        <option>פעיל</option><option>מושהה</option><option>הסתיים</option></select></div>
-    </div>
-    <div class="bar" style="margin-top:12px;margin-bottom:0">
-      <button class="key" id="btnPSave">שמור פרויקט</button>
-      <button id="btnPNew">חדש</button>
+  <p class="gh">פרויקטים</p>
+  <div class="group" id="projList"></div>
+  <div style="margin-top:12px"><button class="bigbtn primary" type="button" data-newproj>פרויקט חדש</button></div>
+
+  <p class="gh">צוות הניהול<span class="cnt" id="teamCnt"></span></p>
+  <div class="group">
+    <div id="teamList"></div>
+    <div class="li" style="flex-wrap:wrap;border-top:.5px solid var(--sep)">
+      <input type="text" id="t_name" placeholder="שם איש הצוות" style="flex:1 1 160px;text-align:start;background:var(--fill);border-radius:9px;height:36px;padding:0 10px;color:var(--label)">
+      <select id="t_role" class="hide"><option>עוזר מנהל</option><option>מנהל</option></select>
+      <div class="seg" data-bind="t_role"></div>
+      <button type="button" class="qbtn" id="btnTeamAdd">+ הוספה</button>
     </div>
   </div>
-  <div class="card"><div class="tw"><table id="tblProj"></table></div></div>
+  <p class="gf">מנהל רואה את לוח המנהל לכל הצוות. עוזר מנהל ממלא יומנים במכשיר שלו ושולח אותם למנהל מלשונית «גיבוי» – והמנהל ממזג אותם אצלו.</p>
 </section>
 
 <!-- ============ גיבוי ============ -->
 <section id="tab-data" class="hide">
-  <div class="card">
-    <h2>גיבוי ושחזור</h2>
-    <p class="note" style="margin-top:0">הכול יושב ב‑localStorage של הדפדפן הזה. ניקוי היסטוריית הדפדפן או החלפת מכשיר ימחקו את היומן — ולכן גיבוי שבועי הוא לא המלצה אלא תנאי.</p>
-    <div class="bar" style="margin-top:12px">
-      <button class="key" id="btnExport">ייצוא גיבוי מלא (JSON)</button>
-      <label class="mini" style="margin:0"><input type="file" id="fileImp" accept=".json" hidden>
-        <span style="display:inline-flex;align-items:center;min-height:42px;padding:9px 11px;border:1px solid var(--rule2);border-radius:6px;background:var(--sunk);cursor:pointer">שחזור מגיבוי</span></label>
-      <button class="danger" id="btnWipe">מחיקת הכול</button>
-    </div>
-    <div id="dataStats" class="kpi" style="margin-top:12px"></div>
+  <div class="note-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+    <span>היומן נשמר רק בדפדפן הזה ולא נשלח לשום שרת. ניקוי נתוני הדפדפן או החלפת מכשיר ימחקו אותו – לכן מגבים פעם בשבוע.</span></div>
+  <p class="gh">מה שמור במכשיר</p>
+  <div class="kpis" id="dataStats"></div>
+  <p class="gh">גיבוי ושחזור</p>
+  <div class="stack">
+    <button class="bigbtn primary" type="button" id="btnExport">ייצוא גיבוי מלא (JSON)</button>
+    <button class="bigbtn" type="button" id="btnImp">שחזור מגיבוי</button>
   </div>
+  <p class="gh">עבודה עם עוזרי מנהל</p>
+  <div class="stack">
+    <button class="bigbtn primary" type="button" id="btnSend">שליחת היומנים שלי למנהל</button>
+    <button class="bigbtn" type="button" id="btnMerge">מיזוג יומנים שהתקבלו מעוזר מנהל</button>
+    <input type="file" id="fileMerge" accept=".json,application/json" multiple hidden>
+  </div>
+  <p class="gf">עוזר מנהל: «שליחה» יוצרת קובץ עם היומנים שלו (בטאבלט – שיתוף ישיר לוואטסאפ או למייל). מנהל: «מיזוג» מוסיף את היומנים מהקובץ בלי למחוק דבר; יומן שקיים אצל שניכם נשמר בגרסה המעודכנת יותר.</p>
+  <p class="gh">אזור מסוכן</p>
+  <div class="stack">
+    <input type="file" id="fileImp" accept=".json,application/json" hidden>
+    <button class="bigbtn danger" type="button" id="btnWipe">מחיקת כל הנתונים</button>
+  </div>
+  <p class="gf" id="lastBackup"></p>
 </section>
 </main>
+
+<nav class="tabbar" id="tabbar" aria-label="לשוניות"></nav>
+
+<!-- פרויקט: חלון עריכה -->
+<div class="scrim" id="scrim"></div>
+<div class="modal" id="projModal" role="dialog" aria-modal="true" aria-labelledby="projTitle">
+  <div class="modal-h"><button type="button" id="btnPCancel">ביטול</button><b id="projTitle">פרויקט חדש</b><button type="button" class="done" id="btnPSave">שמירה</button></div>
+  <div class="modal-b">
+    <p class="gh">פרטי הפרויקט</p>
+    <div class="group">
+      <div class="li"><label for="p_name">שם</label><input type="text" id="p_name" placeholder="חובה"></div>
+      <div class="li"><label for="p_client">מזמין</label><input type="text" id="p_client" placeholder="נתיבי ישראל / עירייה"></div>
+      <div class="li"><label for="p_contr">קבלן מבצע</label><input type="text" id="p_contr"></div>
+      <div class="li"><label for="p_eng">מהנדס ביצוע</label><input type="text" id="p_eng"></div>
+      <div class="li"><label for="p_sec">מקטע</label><input type="text" id="p_sec" placeholder="כביש 444, ק״מ 3+200–5+700"></div>
+      <div class="li"><label for="p_start">תחילת עבודה</label><input type="date" id="p_start"></div>
+    </div>
+    <p class="gh">ניהול הפרויקט</p>
+    <div class="group">
+      <div class="li"><span class="lb">מנהל הפרויקט</span><div class="selw"><select id="p_mgr" class="plain"></select></div></div>
+      <div class="li" style="flex-direction:column;align-items:stretch;gap:8px;padding-top:10px;padding-bottom:12px"><span class="lb">עוזרי מנהל בפרויקט</span><div class="projchips" id="p_asst" style="flex-wrap:wrap"></div></div>
+    </div>
+    <p class="gf">מוסיפים אנשי צוות בלשונית «פרויקטים», תחת «צוות הניהול».</p>
+    <p class="gh">סטטוס</p>
+    <select id="p_status" class="hide"><option>פעיל</option><option>מושהה</option><option>הסתיים</option></select>
+    <div class="seg full" data-bind="p_status"></div>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grp" id="sheetGrp"></div><button class="cancel" type="button" id="sheetCancel">ביטול</button></div>
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><button type="button" id="toastAct" hidden></button></div>
+<div id="report"></div>
 
 <script>
 /* =====================================================================
    יומן עבודה — ביצוע כבישים · כל הנתונים במכשיר בלבד (localStorage)
+   מבנה הנתונים זהה לגרסה הקודמת (mahalco_worklog_v1) – יומנים קיימים נטענים כמו שהם.
    ===================================================================== */
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-const KEY='mahalco_worklog_v1';
+const KEY='mahalco_worklog_v1', DRAFT_KEY='mahalco_worklog_draft', BK_KEY='mahalco_worklog_lastbackup', LASTPID='mahalco_worklog_lastpid';
+const vib=ms=>{ try{ navigator.vibrate&&navigator.vibrate(ms||8); }catch(e){} };
+const iso=d=>{ const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4); return z.toISOString().slice(0,10); };
+const todayIso=()=>iso(new Date());
+const daysAgo=n=>iso(new Date(Date.now()-n*864e5));
+const DOW=['יום א׳','יום ב׳','יום ג׳','יום ד׳','יום ה׳','יום ו׳','שבת'];
+const MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const fmtDate=s=>{ if(!s) return '—'; const [y,m,d]=s.split('-'); return `${+d}.${+m}.${y}`; };
 
 const ACTS=['עבודות עפר — חפירה','עבודות עפר — מילוי מובא','יישור ועיבוד שתית',
  'מצע סוג א׳','מצע סוג ב׳','ריסוס ביטומני (פריים/טאק)','אספלט — שכבת תשתית',
@@ -304,6 +525,9 @@ const ACTS=['עבודות עפר — חפירה','עבודות עפר — מיל
  'ניקוז — צנרת','ניקוז — שוחות וקולטנים','קירות תומכים','מעקות בטיחות',
  'תמרור וסימון','תאורת רחוב','צנרת תת-קרקעית','גינון והשקיה','עבודות שונות'];
 const UNITS=['מ״ק','טון','מ״ר','מ״א','יח׳','קומפ׳'];
+const DEF_UNIT={'עבודות עפר — חפירה':'מ״ק','עבודות עפר — מילוי מובא':'מ״ק','יישור ועיבוד שתית':'מ״ר','מצע סוג א׳':'מ״ק','מצע סוג ב׳':'מ״ק',
+ 'ריסוס ביטומני (פריים/טאק)':'מ״ר','אספלט — שכבת תשתית':'טון','אספלט — שכבת מקשר':'טון','אספלט — שכבה נושאת':'טון','קרצוף אספלט':'מ״ר',
+ 'אבני שפה':'מ״א','מדרכות וריצוף':'מ״ר','ניקוז — צנרת':'מ״א','ניקוז — שוחות וקולטנים':'יח׳','מעקות בטיחות':'מ״א','תמרור וסימון':'קומפ׳','צנרת תת-קרקעית':'מ״א'};
 const EQUIP=['מחפר','שופל','דחפור','מפלסת','מכבש ויברציוני','מכבש פנאומטי','פינישר',
  'משאית','ביובית','מנוף','מקרצפת','מפזר אמולסיה','גנרטור','אחר'];
 const CREW=['צוות עפר','צוות מצעים','צוות אספלט','צוות ניקוז','צוות אבני שפה','צוות תמרור',
@@ -314,129 +538,411 @@ const DELAYS=['מזג אוויר','תשתיות קיימות','אישור מזמ
  'כוח אדם','הסדרי תנועה','מעבדה','אחר'];
 
 let DB={v:1,projects:[],entries:[]};
-let curEntry=null, curProj=null;
+let curEntry=null, curProj=null, dirty=false, TAB='day';
 
 /* ---------- אחסון ---------- */
 function load(){
   try{ const raw=localStorage.getItem(KEY); if(raw) DB=JSON.parse(raw); }catch(e){}
-  DB.projects=DB.projects||[]; DB.entries=DB.entries||[];
+  DB.projects=DB.projects||[]; DB.entries=DB.entries||[]; DB.team=DB.team||[];
 }
 function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(DB)); return true; }
-  catch(e){ alert('השמירה נכשלה — ייתכן שאחסון הדפדפן מלא. ייצאו גיבוי ופנו מקום.'); return false; }
+  catch(e){ toast('השמירה נכשלה – אחסון הדפדפן מלא. ייצאו גיבוי ופנו מקום.'); return false; }
+}
+function saveDraft(){ try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(curEntry)); }catch(e){} }
+function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
+
+/* ---------- toast / sheet / confirm ---------- */
+let tt;
+function toast(msg, act, fn){
+  $('toastMsg').textContent=msg; const b=$('toastAct'); b.hidden=!act;
+  if(act){ b.textContent=act; b.onclick=()=>{ $('toast').classList.remove('on'); fn(); }; }
+  $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'), act?5000:2400);
+}
+function sheet(title, sub, items){
+  $('sheetGrp').innerHTML=`<div class="ttl">${title?`<b>${esc(title)}</b>`:''}${esc(sub||'')}</div>`+
+    items.map((it,i)=>`<button type="button" data-x="${i}" class="${it.danger?'danger':''}">${esc(it.label)}</button>`).join('');
+  $('sheetGrp').querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{ closeSheet(); items[+b.dataset.x].run(); });
+  $('scrim').classList.add('on'); $('sheet').classList.add('on');
+}
+function closeSheet(){ $('sheet').classList.remove('on'); if(!$('projModal').classList.contains('on')) $('scrim').classList.remove('on'); }
+const ask=(title,sub,label,run)=>sheet(title,sub,[{label,danger:true,run}]);
+$('sheetCancel').onclick=closeSheet;
+$('scrim').onclick=()=>{ closeSheet(); closeProj(); };
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSheet(); closeProj(); } });
+
+/* ---------- segmented controls ---------- */
+function knob(seg){
+  let k=seg.querySelector(':scope>.knob'); if(!k){ k=document.createElement('span'); k.className='knob'; seg.prepend(k); }
+  const on=seg.querySelector(':scope>button[aria-pressed="true"]');
+  if(!on||!on.offsetWidth){ k.style.width='0'; return; }
+  k.style.left=on.offsetLeft+'px'; k.style.width=on.offsetWidth+'px';
+}
+const knobs=()=>document.querySelectorAll('.seg').forEach(knob);
+function bindSeg(seg){
+  const sel=$(seg.dataset.bind);
+  const draw=()=>{ seg.innerHTML=[...sel.options].map(o=>`<button type="button" data-v="${esc(o.value)}" aria-pressed="${o.value===sel.value}">${esc(o.text)}</button>`).join('');
+    seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ sel.value=b.dataset.v; sel.dispatchEvent(new Event('input',{bubbles:true})); sel.dispatchEvent(new Event('change',{bubbles:true})); sync(); vib(); });
+    knob(seg); };
+  const sync=()=>{ seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.v===sel.value)); knob(seg); };
+  seg._sync=sync; draw();
+}
+const syncSegs=()=>document.querySelectorAll('[data-bind]').forEach(s=>s._sync&&s._sync());
+
+/* ---------- steppers ---------- */
+function enhance(root){
+  root.querySelectorAll('.stp:not([data-ok])').forEach(w=>{
+    w.dataset.ok=1;
+    const inp=w.querySelector('input'), step=parseFloat(w.dataset.step)||1, min=w.dataset.min!==undefined?parseFloat(w.dataset.min):-Infinity;
+    const dec=(String(step).split('.')[1]||'').length;
+    const mk=(s,t)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=t; b.setAttribute('aria-label',s>0?'הגדלה':'הקטנה');
+      let t1,t2;
+      const bump=()=>{ let v=(parseFloat(inp.value)||0)+s*step; v=Math.max(min,Math.round(v/step)*step); inp.value=v.toFixed(dec);
+        inp.dispatchEvent(new Event('input',{bubbles:true})); vib(4); };
+      const stop=()=>{ clearTimeout(t1); clearInterval(t2); };
+      b.addEventListener('pointerdown',e=>{ e.preventDefault(); bump(); t1=setTimeout(()=>t2=setInterval(bump,80),400); });
+      ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
+      b.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); bump(); } });
+      return b; };
+    w.prepend(mk(-1,'−')); w.append(mk(1,'+'));
+    inp.addEventListener('focus',()=>setTimeout(()=>inp.select(),0));
+  });
 }
 
 /* ---------- שורות דינמיות ---------- */
 const ROWDEF={
-  crew:{el:'crewRows', cols:[['sel','role',CREW],['num','n','מס׳ עובדים'],['num','h','שעות']]},
-  equip:{el:'equipRows', cols:[['sel','kind',EQUIP],['num','n','כמות'],['num','h','שעות']]},
-  act:{el:'actRows', cls:'acts', cols:[['sel','code',ACTS],['txt','loc','מיקום / פיקטים'],['num','qty','כמות'],['sel','unit',UNITS]]},
-  test:{el:'testRows', cols:[['sel','kind',TESTS],['txt','loc','מיקום'],['txt','res','תוצאה']]},
-  delay:{el:'delayRows', cols:[['sel','reason',DELAYS],['txt','note','פירוט'],['num','h','שעות']]}
+  crew:{el:'crewRows', one:'צוות', quick:['צוות עפר','צוות אספלט','צוות ניקוז','מודד','מפקח'], main:'role',
+        cols:[['sel','role',CREW],['num','n','עובדים',1,'עוב׳'],['num','h','שעות',0.5,'ש׳']]},
+  equip:{el:'equipRows', one:'ציוד', quick:['מחפר','שופל','מכבש ויברציוני','משאית','פינישר'], main:'kind',
+        cols:[['sel','kind',EQUIP],['num','n','כמות',1,'יח׳'],['num','h','שעות',0.5,'ש׳']]},
+  act:{el:'actRows', one:'עבודה', quick:['מצע סוג א׳','אספלט — שכבה נושאת','אבני שפה','ניקוז — צנרת'], main:'code',
+        cols:[['sel','code',ACTS],['txt','loc','מיקום / פיקטים'],['num','qty','כמות',1,''],['unit','unit',UNITS]]},
+  test:{el:'testRows', one:'בדיקה', quick:['צפיפות שדה — מודיפייד AASHTO','טמפ׳ אספלט בפריסה','גבהים — מדידה'], main:'kind',
+        cols:[['sel','kind',TESTS],['txt','loc','מיקום'],['res','res','תוצאה']]},
+  delay:{el:'delayRows', one:'עיכוב', quick:['מזג אוויר','תקלת ציוד','חוסר חומר','אישור מזמין'], main:'reason',
+        cols:[['sel','reason',DELAYS],['txt','note','פירוט'],['num','h','שעות',0.5,'ש׳']]}
 };
+const KINDS=Object.keys(ROWDEF);
 function rowHtml(kind,r,i){
-  const d=ROWDEF[kind];
-  const cells=d.cols.map(([t,f,opt])=>{
+  const d=ROWDEF[kind], a=(t,f)=>`data-k="${kind}" data-i="${i}" data-f="${f}"`;
+  let top='', bot='';
+  d.cols.forEach(([t,f,opt,step,unit])=>{
     const v=r[f]==null?'':r[f];
-    if(t==='sel') return `<select data-k="${kind}" data-i="${i}" data-f="${f}">`+
-      opt.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('')+`</select>`;
-    if(t==='num') return `<input type="number" step="0.01" inputmode="decimal" placeholder="${esc(opt)}" value="${esc(v)}" data-k="${kind}" data-i="${i}" data-f="${f}">`;
-    return `<input type="text" placeholder="${esc(opt)}" value="${esc(v)}" data-k="${kind}" data-i="${i}" data-f="${f}">`;
-  }).join('');
-  return `<div class="rowline ${d.cls||''}">${cells}<button class="mini x" data-del="${kind}" data-i="${i}" title="מחיקה">✕</button></div>`;
+    if(t==='sel'){ const list=opt.includes(v)||v===''?opt:[v,...opt];
+      top+=`<div class="selw"><select class="plain" ${a(t,f)}>${list.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('')}</select></div>`; }
+    else if(t==='num') bot+=`<div class="stp" data-step="${step}" data-min="0"><input type="number" step="0.01" min="0" inputmode="decimal" placeholder="${esc(opt)}" aria-label="${esc(opt)}" value="${esc(v)}" ${a(t,f)}></div>${unit?`<span class="unit">${unit}</span>`:''}`;
+    else if(t==='unit') bot+=`<div class="selw"><select class="plain" ${a(t,f)} aria-label="יחידה">${opt.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('')}</select></div>`;
+    else if(t==='res') bot+=`<input class="tx" type="text" placeholder="${esc(opt)}" value="${esc(v)}" ${a(t,f)}><div class="seg resseg" data-res="${kind}:${i}"><button type="button" data-rv="עבר" aria-pressed="${v==='עבר'}">עבר</button><button type="button" data-rv="נכשל" aria-pressed="${v==='נכשל'}">נכשל</button></div>`;
+    else bot+=`<input class="tx" type="text" placeholder="${esc(opt)}" value="${esc(v)}" ${a(t,f)}>`;
+  });
+  return `<div class="rowi" data-row="${kind}:${i}"><div class="r1">${top}<button class="del" type="button" data-del="${kind}" data-i="${i}" aria-label="מחיקת השורה">✕</button></div><div class="r2">${bot}</div></div>`;
 }
-function renderRows(kind){
-  const arr=curEntry[kind]||[];
-  $(ROWDEF[kind].el).innerHTML = arr.length? arr.map((r,i)=>rowHtml(kind,r,i)).join('')
-    : '<p class="empty">אין שורות</p>';
+function renderRows(kind, freshIdx){
+  const arr=curEntry[kind]||[], box=$(ROWDEF[kind].el);
+  box.innerHTML = arr.length? arr.map((r,i)=>rowHtml(kind,r,i)).join('') : `<p class="empty">אין ${kind==='delay'?'עיכובים – יום נקי':'שורות עדיין'}.</p>`;
+  if(freshIdx!=null){ const r=box.querySelector(`[data-row="${kind}:${freshIdx}"]`); if(r){ r.classList.add('fresh'); const s=r.querySelector('select'); r.scrollIntoView({block:'nearest',behavior:'smooth'}); } }
+  $('cnt_'+kind).textContent = arr.length? arr.length : '';
+  enhance(box); box.querySelectorAll('.seg').forEach(knob);
 }
-function blankEntry(){
-  const today=new Date().toISOString().slice(0,10);
-  return {id:uid(), pid:(DB.projects[0]||{}).id||'', date:today, shift:'יום', weather:'בהיר',
+function renderQuick(){
+  document.querySelectorAll('[data-quick]').forEach(q=>{
+    const kind=q.dataset.quick, d=ROWDEF[kind];
+    q.innerHTML=`<button type="button" class="main" data-add="${kind}">+ ${d.one}</button>`+d.quick.map(v=>`<button type="button" data-add="${kind}" data-v="${esc(v)}">${esc(v.replace(/ — .*/,m=>m.length>14?'…':m))}</button>`).join('');
+  });
+}
+function addRow(kind, v){
+  const d=ROWDEF[kind], r={};
+  const first=d.cols[0][2][0]; r[d.main]=v||first;
+  if(kind==='act') r.unit=DEF_UNIT[r.code]||UNITS[0];
+  if(kind==='crew'||kind==='equip') r.n=1;
+  if((kind==='crew'||kind==='equip') && curEntry.hours) r.h=curEntry.hours;
+  (curEntry[kind]=curEntry[kind]||[]).push(r);
+  renderRows(kind, curEntry[kind].length-1); touch(); vib(8);
+}
+
+function blankEntry(pid){
+  return {id:uid(), pid:pid||localStorage.getItem(LASTPID)||(DB.projects[0]||{}).id||'', date:todayIso(), shift:'יום', weather:'בהיר',
     temp:'', hours:'', from:'', to:'', crew:[], equip:[], act:[], test:[], delay:[],
-    issues:'', visits:'', safety:'', notes:'', by:'', signed:0};
+    issues:'', visits:'', safety:'', notes:'', by:localStorage.getItem('mahalco_worklog_by')||'', signed:0};
 }
+const FIELDS=['date','shift','weather','temp','hours','from','to','issues','visits','safety','notes','by'];
 function entryToForm(e){
   curEntry=JSON.parse(JSON.stringify(e));
-  ['pid','date','shift','weather','temp','hours','from','to','issues','visits','safety','notes','by']
-    .forEach(f=>{ const el=$('d_'+f); if(el) el.value=curEntry[f]||''; });
-  $('d_signed').value=curEntry.signed?'1':'0';
-  ['crew','equip','act','test','delay'].forEach(renderRows);
+  if(!DB.projects.some(p=>p.id===curEntry.pid) && DB.projects[0]) curEntry.pid=DB.projects[0].id;
+  FIELDS.forEach(f=>{ const el=$('d_'+f); if(el) el.value=curEntry[f]||''; });
+  if(!$('d_weather').value) $('d_weather').selectedIndex=0;
+  $('d_signed').value=curEntry.signed?'1':'0'; $('d_signedSw').checked=!!curEntry.signed;
+  KINDS.forEach(k=>renderRows(k));
+  dirty=false; syncSegs(); renderHead(); renderTiles();
 }
 function formToEntry(){
-  ['pid','date','shift','weather','temp','hours','from','to','issues','visits','safety','notes','by']
-    .forEach(f=>{ const el=$('d_'+f); if(el) curEntry[f]=el.value; });
-  curEntry.signed = $('d_signed').value==='1' ? 1 : 0;
+  FIELDS.forEach(f=>{ const el=$('d_'+f); if(el) curEntry[f]=el.value; });
+  curEntry.signed = $('d_signedSw').checked ? 1 : 0;
   return curEntry;
+}
+function isSaved(){ return DB.entries.some(x=>x.id===curEntry.id); }
+function touch(){ formToEntry(); dirty=true; saveDraft(); renderHead(); renderTiles(); }
+
+/* ---------- כותרת היום ---------- */
+function renderHead(){
+  const chips=$('projChips');
+  chips.innerHTML=DB.projects.filter(p=>p.status!=='הסתיים'||p.id===curEntry.pid).map(p=>`<button type="button" class="pchip" data-pid="${p.id}" aria-pressed="${p.id===curEntry.pid}">${esc(p.name)}</button>`).join('')+
+    `<button type="button" class="pchip add" data-newproj>+ פרויקט</button>`;
+  chips.querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>{ curEntry.pid=b.dataset.pid; localStorage.setItem(LASTPID,curEntry.pid); touch(); vib(); });
+  renderByChips();
+  const d=curEntry.date? new Date(curEntry.date+'T12:00:00') : null;
+  $('dDow').textContent = d? DOW[d.getDay()] : '';
+  $('dToday').classList.toggle('hide', curEntry.date===todayIso());
+  const st=$('dState');
+  if(curEntry.signed){ st.className='chip signed'; st.textContent='נחתם'; }
+  else if(isSaved()){ st.className='chip open'; st.textContent=dirty?'פתוח · לא נשמר':'פתוח'; }
+  else { st.className='chip draft'; st.textContent=dirty?'טיוטה':'חדש'; }
+  const dup = DB.entries.find(x=>x.id!==curEntry.id && x.pid===curEntry.pid && x.date===curEntry.date);
+  if(dup){ st.className='chip warn'; st.textContent='כבר קיים יומן לתאריך'; st.onclick=()=>openEntry(dup.id); st.style.cursor='pointer'; } else { st.onclick=null; st.style.cursor=''; }
+  const ss=$('saveState');
+  ss.className='savestate '+(dirty?'dirty':isSaved()?'ok':'');
+  ss.querySelector('span').textContent = dirty? 'טיוטה נשמרת אוטומטית' : isSaved()? 'שמור' : 'אין שינויים';
+  $('btnDel').classList.toggle('hide', !isSaved());
+  $('btnCopyPrev').disabled = !prevEntry();
+  $('btnCopyPrev').style.opacity = prevEntry()?1:.45;
+}
+let prevTiles=[];
+function renderTiles(){
+  const e=curEntry, s=a=>(a||[]).reduce((x,r)=>x+(parseFloat(r.n)||0),0);
+  const dh=(e.delay||[]).reduce((x,r)=>x+(parseFloat(r.h)||0),0);
+  const T=[['עובדים בשטח',s(e.crew),''],['כלים',s(e.equip),''],['סעיפי עבודה',(e.act||[]).length,''],['שעות עיכוב',dh? dh.toFixed(1):'0','ש׳']];
+  $('dayTiles').innerHTML=T.map((t,i)=>`<div class="tile${prevTiles[i]!==undefined&&prevTiles[i]!==String(t[1])?' pulse':''}"><span>${t[0]}</span><b>${t[1]}${t[2]?` <small>${t[2]}</small>`:''}</b></div>`).join('');
+  prevTiles=T.map(t=>String(t[1]));
+  renderBackupNote();
+}
+function renderBackupNote(){
+  const last=localStorage.getItem(BK_KEY), n=$('backupNote');
+  const old = !last || last < daysAgo(7);
+  if(!DB.entries.length){ n.className='note-card'; n.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg><span>הנתונים נשמרים רק במכשיר הזה.</span>`; return; }
+  n.className='note-card'+(old?' warn':'');
+  n.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M5 19h14"/></svg><span>${old? (last?`הגיבוי האחרון: ${fmtDate(last)}. הגיע הזמן לגבות.`:'עדיין לא נוצר גיבוי.') : `גובה לאחרונה ב-${fmtDate(last)}.`}</span>${old?'<button type="button" id="bkNow">גיבוי</button>':''}`;
+  const b=$('bkNow'); if(b) b.onclick=doExport;
+}
+function prevEntry(){
+  return DB.entries.filter(x=>x.pid===curEntry.pid && x.id!==curEntry.id && x.date<=(curEntry.date||'9999'))
+    .sort((a,b)=>b.date.localeCompare(a.date))[0];
 }
 
 /* ---------- פרויקטים ---------- */
 function projName(id){ const p=DB.projects.find(x=>x.id===id); return p?p.name:'—'; }
 function fillProjSelects(){
   const opts=DB.projects.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
-  $('d_pid').innerHTML = opts || '<option value="">— הגדירו פרויקט —</option>';
-  $('f_pid').innerHTML = '<option value="">הכול</option>'+opts;
-  $('m_pid').innerHTML = '<option value="">כל הפרויקטים</option>'+opts;
-  if(curEntry && curEntry.pid) $('d_pid').value=curEntry.pid;
+  const keep=[$('f_pid').value,$('m_pid').value];
+  $('f_pid').innerHTML='<option value="">כל הפרויקטים</option>'+opts;
+  $('m_pid').innerHTML='<option value="">כל הפרויקטים</option>'+opts;
+  $('f_pid').value=keep[0]; $('m_pid').value=keep[1];
 }
 function renderProjects(){
-  const t=$('tblProj');
-  if(!DB.projects.length){ t.innerHTML='<tr><td class="empty">עדיין אין פרויקטים.</td></tr>'; return; }
-  t.innerHTML='<thead><tr><th>שם</th><th>מזמין</th><th>קבלן</th><th>מקטע</th><th class="n">יומנים</th><th>סטטוס</th><th></th></tr></thead><tbody>'+
-    DB.projects.map(p=>{
-      const n=DB.entries.filter(e=>e.pid===p.id).length;
-      return `<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.client||'—')}</td><td>${esc(p.contr||'—')}</td>
-        <td>${esc(p.sec||'—')}</td><td class="n">${n}</td>
-        <td><span class="chip ${p.status==='פעיל'?'c-open':'c-sign'}">${esc(p.status||'')}</span></td>
-        <td class="n"><button class="mini" data-ped="${p.id}">עריכה</button></td></tr>`;
-    }).join('')+'</tbody>';
-  t.querySelectorAll('[data-ped]').forEach(b=>b.onclick=()=>{
-    const p=DB.projects.find(x=>x.id===b.dataset.ped); if(!p) return;
-    curProj=p.id;
-    ['name','client','contr','eng','sec','start','status'].forEach(f=>{ const el=$('p_'+f); if(el) el.value=p[f]||''; });
-    window.scrollTo({top:0,behavior:'smooth'});
+  const box=$('projList');
+  if(!DB.projects.length){ box.innerHTML='<p class="empty">עדיין אין פרויקטים.</p>'; return; }
+  box.innerHTML=DB.projects.map(p=>{
+    const es=DB.entries.filter(e=>e.pid===p.id), last=es.map(e=>e.date).sort().slice(-1)[0];
+    return `<button type="button" class="pcard" data-ped="${p.id}"><span class="pic${p.status==='פעיל'?'':' off'}">${esc((p.name||'?').trim()[0])}</span>
+      <span class="lmain"><b>${esc(p.name)}</b><span>${esc([p.client,p.sec].filter(Boolean).join(' · ')||'ללא פרטים')}</span>${projPeople(p)?`<span>${esc(projPeople(p))}</span>`:''}<span>${es.length} יומנים${last?` · אחרון ${fmtDate(last)}`:''}</span></span>
+      <span class="chip ${p.status==='פעיל'?'open':'signed'}">${esc(p.status||'')}</span><span class="chev">‹</span></button>`;
+  }).join('');
+  box.querySelectorAll('[data-ped]').forEach(b=>b.onclick=()=>openProj(b.dataset.ped));
+}
+function openProj(id){
+  const p=id?DB.projects.find(x=>x.id===id):null; curProj=p?p.id:null;
+  ['name','client','contr','eng','sec','start'].forEach(f=>$('p_'+f).value=p?(p[f]||''):'');
+  $('p_status').value=p?(p.status||'פעיל'):'פעיל';
+  projTeamUI(p);
+  $('projTitle').textContent=p?'עריכת פרויקט':'פרויקט חדש';
+  $('scrim').classList.add('on'); $('projModal').classList.add('on');
+  requestAnimationFrame(()=>{ syncSegs(); knobs(); if(!p) $('p_name').focus(); });
+}
+function closeProj(){ $('projModal').classList.remove('on'); if(!$('sheet').classList.contains('on')) $('scrim').classList.remove('on'); }
+$('btnPCancel').onclick=closeProj;
+$('btnPSave').onclick=()=>{
+  const name=$('p_name').value.trim();
+  if(!name){ $('p_name').focus(); toast('צריך שם לפרויקט'); return; }
+  const isNew=!curProj, o={id:curProj||uid()};
+  ['name','client','contr','eng','sec','start','status','mgr'].forEach(f=>o[f]=$('p_'+f).value.trim());
+  o.asst=[...$('p_asst').querySelectorAll('[aria-pressed="true"]')].map(b=>b.dataset.tid);
+  const ix=DB.projects.findIndex(p=>p.id===o.id);
+  if(ix>=0) DB.projects[ix]=o; else DB.projects.push(o);
+  curProj=null; save(); closeProj(); fillProjSelects(); renderProjects();
+  if(isNew){ localStorage.setItem(LASTPID,o.id); if(curEntry){ curEntry.pid=o.id; } toast(`«${o.name}» נוצר`); if(TAB==='welcome') showTab('day'); }
+  else toast('הפרויקט עודכן');
+  if(curEntry) renderHead();
+};
+document.addEventListener('click',e=>{ if(e.target.closest('[data-newproj]')) openProj(null); });
+
+
+/* ---------- צוות: מנהל ועוזרי מנהל ---------- */
+const initials=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('');
+function teamName(id){ const m=DB.team.find(x=>x.id===id); return m?m.name:''; }
+function projPeople(p){
+  const a=[]; if(p.mgr) a.push('מנהל: '+(teamName(p.mgr)||'—'));
+  const as=(p.asst||[]).map(teamName).filter(Boolean); if(as.length) a.push('עוזרים: '+as.join(', '));
+  return a.join(' · ');
+}
+function renderTeam(){
+  const box=$('teamList');
+  $('teamCnt').textContent = DB.team.length? `${DB.team.filter(m=>m.role==='מנהל').length} מנהלים · ${DB.team.filter(m=>m.role==='עוזר מנהל').length} עוזרים` : '';
+  if(!DB.team.length){ box.innerHTML='<p class="empty">עדיין אין אנשי צוות. הוסיפו את המנהל ואת עוזרי המנהל – ואז אפשר לבחור אותם ביומן בנגיעה.</p>'; return; }
+  const sorted=[...DB.team].sort((a,b)=>(a.role===b.role?a.name.localeCompare(b.name,'he'):a.role==='מנהל'?-1:1));
+  box.innerHTML=sorted.map(m=>{
+    const es=DB.entries.filter(e=>(e.by||'').trim()===m.name);
+    const projs=DB.projects.filter(p=>p.mgr===m.id||(p.asst||[]).includes(m.id)).map(p=>p.name);
+    return `<div class="trow"><span class="pic ${m.role==='מנהל'?'team':'asst'}">${esc(initials(m.name))}</span>
+      <span class="lmain"><b>${esc(m.name)}</b><span>${esc(m.role)} · ${es.length} יומנים${projs.length?' · '+esc(projs.join(', ')):''}</span></span>
+      <button type="button" class="qbtn" data-trole="${m.id}">${m.role==='מנהל'?'להגדיר כעוזר':'להגדיר כמנהל'}</button>
+      <button type="button" class="del" data-tdel="${m.id}" aria-label="הסרת ${esc(m.name)}">✕</button></div>`;
+  }).join('');
+  box.querySelectorAll('[data-trole]').forEach(b=>b.onclick=()=>{ const m=DB.team.find(x=>x.id===b.dataset.trole); m.role=m.role==='מנהל'?'עוזר מנהל':'מנהל'; save(); renderTeam(); vib(); });
+  box.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=()=>{
+    const i=DB.team.findIndex(x=>x.id===b.dataset.tdel), gone=DB.team[i];
+    DB.team.splice(i,1); save(); renderTeam(); renderProjects(); fillTeamSelects(); if(curEntry) renderHead();
+    toast(`${gone.name} הוסר מהצוות`,'בטל',()=>{ DB.team.splice(i,0,gone); save(); renderTeam(); renderProjects(); fillTeamSelects(); if(curEntry) renderHead(); });
   });
 }
+function addMember(name, role){
+  name=(name||'').trim(); if(!name) return null;
+  let m=DB.team.find(x=>x.name===name);
+  if(!m){ m={id:uid(), name, role:role||'עוזר מנהל'}; DB.team.push(m); }
+  return m;
+}
+$('btnTeamAdd').onclick=()=>{
+  const n=$('t_name').value.trim(); if(!n){ $('t_name').focus(); toast('כתבו שם'); return; }
+  if(DB.team.some(x=>x.name===n)){ toast(`${n} כבר בצוות`); return; }
+  addMember(n,$('t_role').value); save(); $('t_name').value=''; renderTeam(); fillTeamSelects(); if(curEntry) renderHead();
+  toast(`${n} נוסף כ${$('t_role').value}`); vib(10);
+};
+$('t_name').addEventListener('keydown',e=>{ if(e.key==='Enter') $('btnTeamAdd').click(); });
+function fillTeamSelects(){
+  const names=[...new Set([...DB.team.map(m=>m.name),...DB.entries.map(e=>(e.by||'').trim()).filter(Boolean)])];
+  const keep=$('m_by').value;
+  $('m_by').innerHTML='<option value="">כל הצוות</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');
+  $('m_by').value=names.includes(keep)?keep:'';
+}
+function projTeamUI(p){
+  const mgrs=DB.team.filter(m=>m.role==='מנהל');
+  $('p_mgr').innerHTML='<option value="">—</option>'+mgrs.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');
+  $('p_mgr').value=p&&p.mgr||'';
+  const asst=DB.team.filter(m=>m.role==='עוזר מנהל'), sel=(p&&p.asst)||[];
+  $('p_asst').innerHTML = asst.length ? asst.map(m=>`<button type="button" class="pchip" data-tid="${m.id}" aria-pressed="${sel.includes(m.id)}">${esc(m.name)}</button>`).join('')
+    : '<span class="unit">אין עוזרי מנהל בצוות עדיין.</span>';
+  $('p_asst').querySelectorAll('[data-tid]').forEach(b=>b.onclick=()=>{ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')!=='true'); vib(); });
+}
+function renderByChips(){
+  const p=DB.projects.find(x=>x.id===curEntry.pid)||{};
+  const ids=[p.mgr,...(p.asst||[])].filter(Boolean);
+  let people = ids.length ? ids.map(id=>DB.team.find(m=>m.id===id)).filter(Boolean) : DB.team;
+  const cur=(curEntry.by||'').trim();
+  $('byRow').classList.toggle('hide', !people.length);
+  $('byChips').innerHTML=people.map(m=>`<button type="button" class="pchip" data-byn="${esc(m.name)}" aria-pressed="${m.name===cur}">${esc(m.name)}<small style="font-weight:500;opacity:.7"> · ${m.role==='מנהל'?'מנהל':'עוזר'}</small></button>`).join('');
+  $('byChips').querySelectorAll('[data-byn]').forEach(b=>b.onclick=()=>{ $('d_by').value=b.dataset.byn; $('d_by').dispatchEvent(new Event('input',{bubbles:true})); vib(); });
+}
+function renderMgrTeam(){
+  const days=+$('m_days').value, pid=$('m_pid').value, lim=days?daysAgo(days):'';
+  const names=[...new Set([...DB.team.map(m=>m.name),...DB.entries.map(e=>(e.by||'').trim()).filter(Boolean)])];
+  const box=$('mgrTeam'), sel=$('m_by').value;
+  if(!names.length){ box.innerHTML='<p class="empty">אין עדיין צוות. הוסיפו מנהל ועוזרי מנהל בלשונית «פרויקטים».</p>'; return; }
+  const stats=names.map(n=>{
+    const m=DB.team.find(x=>x.name===n);
+    const es=DB.entries.filter(e=>(e.by||'').trim()===n && (!pid||e.pid===pid) && (!lim||e.date>=lim));
+    const all=DB.entries.filter(e=>(e.by||'').trim()===n);
+    return {n, role:m?m.role:'לא בצוות', cnt:es.length, open:es.filter(e=>!e.signed).length,
+      last:all.map(e=>e.date).sort().slice(-1)[0], qty:es.reduce((s,e)=>s+(e.act||[]).length,0)};
+  }).sort((a,b)=>(a.role==='מנהל')-(b.role==='מנהל')||b.cnt-a.cnt).reverse();
+  box.innerHTML=stats.map(s=>`<button type="button" class="trow" data-mby="${esc(s.n)}" aria-pressed="${s.n===sel}">
+    <span class="pic ${s.role==='מנהל'?'team':'asst'}">${esc(initials(s.n))}</span>
+    <span class="lmain"><b>${esc(s.n)}</b><span>${esc(s.role)} · אחרון ${s.last?fmtDate(s.last):'—'}</span></span>
+    <span class="mini-stats"><span class="chip draft">${s.cnt} יומנים</span>${s.open?`<span class="chip open">${s.open} פתוחים</span>`:''}${s.last&&s.last<daysAgo(2)&&s.role==='עוזר מנהל'?'<span class="chip warn">לא עדכני</span>':''}</span></button>`).join('');
+  box.querySelectorAll('[data-mby]').forEach(b=>b.onclick=()=>{ $('m_by').value = $('m_by').value===b.dataset.mby?'':b.dataset.mby; renderMgr(); vib(); });
+}
 
-/* ---------- רשימת רשומות ---------- */
+/* שליחה למנהל ומיזוג אצל המנהל */
+$('btnSend').onclick=async()=>{
+  const me=($('d_by').value||localStorage.getItem('mahalco_worklog_by')||'').trim();
+  const mine = me ? DB.entries.filter(e=>(e.by||'').trim()===me) : DB.entries;
+  if(!mine.length){ toast(me?`אין יומנים שנרשמו על ידי ${me}`:'אין יומנים לשליחה'); return; }
+  const pids=new Set(mine.map(e=>e.pid));
+  const pack={v:1, kind:'worklog-share', from:me, sent:new Date().toISOString(),
+    projects:DB.projects.filter(p=>pids.has(p.id)), entries:mine, team:DB.team};
+  const name=`worklog-${(me||'team').replace(/\s+/g,'_')}-${todayIso()}.json`;
+  const text=JSON.stringify(pack,null,1);
+  try{
+    const file=new File([text],name,{type:'application/json'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:'יומני עבודה', text:`יומני עבודה מ${me||'הצוות'} – ${mine.length} רשומות`}); toast('היומנים נשלחו'); return; }
+  }catch(err){ if(err && err.name==='AbortError') return; }
+  dl(text,name,'application/json'); toast(`נוצר קובץ עם ${mine.length} יומנים – שלחו אותו למנהל`);
+};
+$('btnMerge').onclick=()=>$('fileMerge').click();
+$('fileMerge').onchange=async ev=>{
+  const files=[...ev.target.files]; ev.target.value=''; if(!files.length) return;
+  let addE=0, updE=0, addP=0, addT=0;
+  for(const f of files){
+    let o; try{ o=JSON.parse(await f.text()); }catch(e){ toast(`${f.name}: הקובץ אינו תקין`); continue; }
+    if(!o.entries||!o.projects){ toast(`${f.name}: אינו קובץ יומנים`); continue; }
+    (o.team||[]).forEach(m=>{ if(m && m.name && !DB.team.some(x=>x.name===m.name)){ DB.team.push({id:m.id||uid(),name:m.name,role:m.role||'עוזר מנהל'}); addT++; } });
+    if(o.from && !DB.team.some(x=>x.name===o.from)){ addMember(o.from,'עוזר מנהל'); addT++; }
+    o.projects.forEach(p=>{ if(!DB.projects.some(x=>x.id===p.id)){ DB.projects.push(p); addP++; } });
+    o.entries.forEach(e=>{
+      const i=DB.entries.findIndex(x=>x.id===e.id);
+      if(i<0){ DB.entries.push(e); addE++; }
+      else if((e.upd||0)>(DB.entries[i].upd||0)){ DB.entries[i]=e; updE++; }
+    });
+  }
+  save(); fillProjSelects(); fillTeamSelects(); renderTeam(); renderStats(); if(curEntry) renderHead(); updateBadgeQuiet();
+  if(TAB==='mgr') renderMgr(); if(TAB==='list') renderList();
+  toast(`מוזגו ${addE} יומנים חדשים${updE?`, ${updE} עודכנו`:''}${addP?`, ${addP} פרויקטים`:''}${addT?`, ${addT} אנשי צוות`:''}`);
+};
+
+/* ---------- רשומות ---------- */
 function filtered(){
-  const pid=$('f_pid').value, a=$('f_from').value, b=$('f_to').value, st=$('f_st').value;
+  const pid=$('f_pid').value, a=$('f_from').value, b=$('f_to').value, st=$('f_st').value, q=$('f_q').value.trim();
   return DB.entries.filter(e=>{
     if(pid && e.pid!==pid) return false;
     if(a && e.date<a) return false;
     if(b && e.date>b) return false;
     if(st!=='' && String(e.signed?1:0)!==st) return false;
+    if(q){ const hay=[e.notes,e.issues,e.visits,e.safety,e.by,e.from,e.to,projName(e.pid),...(e.act||[]).map(r=>r.code+' '+(r.loc||'')),...(e.delay||[]).map(r=>r.reason+' '+(r.note||''))].join(' ');
+      if(!hay.includes(q)) return false; }
     return true;
   }).sort((x,y)=>y.date.localeCompare(x.date));
 }
-function sumQty(e){ return (e.act||[]).reduce((s,r)=>s+(parseFloat(r.qty)||0),0); }
 function renderList(){
-  const rows=filtered(), t=$('tblList');
-  if(!rows.length){ t.innerHTML='<tr><td class="empty">אין רשומות בטווח שנבחר.</td></tr>'; return; }
-  t.innerHTML='<thead><tr><th class="n">תאריך</th><th>פרויקט</th><th>מקטע</th><th class="n">עבודות</th>'+
-    '<th class="n">שעות</th><th class="n">עיכוב</th><th>סטטוס</th><th></th></tr></thead><tbody>'+
-    rows.map(e=>{
-      const dh=(e.delay||[]).reduce((s,d)=>s+(parseFloat(d.h)||0),0);
-      return `<tr><td class="n">${esc(e.date)}</td><td>${esc(projName(e.pid))}</td>
-        <td>${esc(e.from||'')}${e.to?' – '+esc(e.to):''}</td>
-        <td class="n">${(e.act||[]).length}</td><td class="n">${esc(e.hours||'')}</td>
-        <td class="n">${dh?dh.toFixed(1):''}</td>
-        <td><span class="chip ${e.signed?'c-sign':'c-open'}">${e.signed?'נחתם':'פתוח'}</span></td>
-        <td class="n"><button class="mini" data-ed="${e.id}">פתח</button></td></tr>`;
-    }).join('')+'</tbody>';
-  t.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{
-    const e=DB.entries.find(x=>x.id===b.dataset.ed); if(!e) return;
-    entryToForm(e); showTab('day'); window.scrollTo({top:0});
+  const rows=filtered(), box=$('listBody');
+  if(!rows.length){ box.innerHTML=`<p class="gh"></p><div class="group"><p class="empty">${DB.entries.length?'אין רשומות שמתאימות לסינון.':'עדיין לא נשמר אף יומן.'}</p></div>`; return; }
+  let html='', cur='';
+  rows.forEach(e=>{
+    const [y,m,d]=e.date.split('-'); const key=y+'-'+m;
+    if(key!==cur){ if(cur) html+='</div>'; html+=`<p class="month">${MONTHS[+m-1]} ${y}</p><div class="group">`; cur=key; }
+    const dh=(e.delay||[]).reduce((s,x)=>s+(parseFloat(x.h)||0),0);
+    const crew=(e.crew||[]).reduce((s,x)=>s+(parseFloat(x.n)||0),0);
+    const sub=[(e.act||[]).length?`${(e.act||[]).length} עבודות`:'', crew?`${crew} עובדים`:'', dh?`עיכוב ${dh.toFixed(1)} ש׳`:'', (e.from||e.to)?`${e.from||''}${e.to?'–'+e.to:''}`:'', e.by||''].filter(Boolean).join(' · ');
+    html+=`<button type="button" class="lrow" data-ed="${e.id}"><span class="cal"><b>${+d}</b><small>${DOW[new Date(e.date+'T12:00:00').getDay()]}</small></span>
+      <span class="lmain"><b>${esc(projName(e.pid))}</b><span>${esc(sub||'יומן ריק')}</span></span>
+      <span class="chip ${e.signed?'signed':'open'}">${e.signed?'נחתם':'פתוח'}</span><span class="chev">‹</span></button>`;
   });
+  box.innerHTML=html+'</div>';
+  box.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>openEntry(b.dataset.ed));
+}
+function openEntry(id){
+  const go=()=>{ const e=DB.entries.find(x=>x.id===id); if(!e) return; clearDraft(); entryToForm(e); showTab('day'); window.scrollTo({top:0}); };
+  if(dirty) ask('יש שינויים שלא נשמרו','פתיחת יומן אחר תבטל אותם.','פתיחה בלי לשמור',go); else go();
 }
 
 /* ---------- לוח מנהל ---------- */
 function mgrSet(){
   const pid=$('m_pid').value, days=+$('m_days').value;
-  let rows=DB.entries.filter(e=>!pid||e.pid===pid);
-  if(days){ const lim=new Date(Date.now()-days*864e5).toISOString().slice(0,10);
-    rows=rows.filter(e=>e.date>=lim); }
+  const by=$('m_by').value;
+  let rows=DB.entries.filter(e=>(!pid||e.pid===pid)&&(!by||(e.by||'').trim()===by));
+  if(days){ const lim=daysAgo(days); rows=rows.filter(e=>e.date>=lim); }
   return rows;
+}
+function bars(map, total, unitFn, red){
+  const keys=Object.keys(map).sort((a,b)=>map[b].v-map[a].v);
+  const max=Math.max(...keys.map(k=>map[k].v),0);
+  return keys.map(k=>`<div class="brow${red?' red':''}"><span>${esc(map[k].label)}</span><span class="track"><span class="fillb" style="display:block;width:${max?(map[k].v/max*100).toFixed(1):0}%"></span></span><span class="v">${unitFn(map[k])}</span></div>`).join('');
 }
 function renderMgr(){
   const rows=mgrSet();
@@ -444,245 +950,267 @@ function renderMgr(){
   const hrs=rows.reduce((s,e)=>s+(parseFloat(e.hours)||0),0);
   const dh=rows.reduce((s,e)=>s+(e.delay||[]).reduce((a,d)=>a+(parseFloat(d.h)||0),0),0);
   const act=DB.projects.filter(p=>p.status==='פעיל').length;
-  const last=rows.map(e=>e.date).sort().slice(-1)[0]||'—';
+  const last=rows.map(e=>e.date).sort().slice(-1)[0];
   $('mgrKpi').innerHTML=[
-    ['פרויקטים פעילים',act],['יומנים בטווח',rows.length],['יומנים פתוחים',open],
-    ['שעות עבודה',hrs.toFixed(1)],['שעות עיכוב',dh.toFixed(1)],['יומן אחרון',last]
-  ].map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${esc(v)}</div></div>`).join('');
+    ['פרויקטים פעילים',act,''],['יומנים בטווח',rows.length,''],['יומנים פתוחים',open,''],
+    ['שעות עבודה',hrs.toFixed(1),'ש׳'],['שעות עיכוב',dh.toFixed(1),'ש׳'],['יומן אחרון',last?fmtDate(last):'—','']
+  ].map(([k,v,u])=>`<div class="tile"><span>${k}</span><b>${esc(v)}${u?` <small>${u}</small>`:''}</b></div>`).join('');
 
-  // כמויות לפי סעיף ויחידה
   const q={};
   rows.forEach(e=>(e.act||[]).forEach(r=>{
     const v=parseFloat(r.qty)||0; if(!v) return;
     const k=(r.code||'—')+'|'+(r.unit||'');
-    q[k]=(q[k]||0)+v;
+    q[k]=q[k]||{label:r.code||'—',u:r.unit||'',v:0}; q[k].v+=v;
   }));
-  const qk=Object.keys(q).sort();
-  $('tblQty').innerHTML = qk.length
-    ? '<thead><tr><th>סעיף</th><th class="n">כמות</th><th class="n">יחידה</th></tr></thead><tbody>'+
-      qk.map(k=>{const [c,u]=k.split('|');
-        return `<tr><td>${esc(c)}</td><td class="n">${q[k].toFixed(2)}</td><td class="n">${esc(u)}</td></tr>`;}).join('')+'</tbody>'
-    : '<tr><td class="empty">לא נרשמו כמויות בטווח.</td></tr>';
+  $('tblQty').innerHTML = Object.keys(q).length ? bars(q,0,o=>`${o.v.toFixed(2)} ${esc(o.u)}`) : '<p class="empty">לא נרשמו כמויות בטווח.</p>';
 
-  // עיכובים
   const dmap={};
   rows.forEach(e=>(e.delay||[]).forEach(r=>{
-    const h=parseFloat(r.h)||0; const k=r.reason||'אחר';
-    dmap[k]=dmap[k]||{h:0,n:0}; dmap[k].h+=h; dmap[k].n++;
+    const h=parseFloat(r.h)||0, k=r.reason||'אחר';
+    dmap[k]=dmap[k]||{label:k,v:0,n:0}; dmap[k].v+=h; dmap[k].n++;
   }));
-  const dk=Object.keys(dmap).sort((a,b)=>dmap[b].h-dmap[a].h);
-  $('tblDelay').innerHTML = dk.length
-    ? '<thead><tr><th>סיבה</th><th class="n">מקרים</th><th class="n">שעות</th><th class="n">% מהעיכוב</th></tr></thead><tbody>'+
-      dk.map(k=>`<tr><td>${esc(k)}</td><td class="n">${dmap[k].n}</td><td class="n">${dmap[k].h.toFixed(1)}</td>
-        <td class="n">${dh?((dmap[k].h/dh)*100).toFixed(0)+'%':'—'}</td></tr>`).join('')+'</tbody>'
-    : '<tr><td class="empty">לא נרשמו עיכובים בטווח.</td></tr>';
+  $('tblDelay').innerHTML = Object.keys(dmap).length ? bars(dmap,dh,o=>`${o.v.toFixed(1)} ש׳ · ${o.n} מקרים${dh?` · ${(o.v/dh*100).toFixed(0)}%`:''}`,true) : '<p class="empty">לא נרשמו עיכובים בטווח.</p>';
 
-  // התראות
   const al=[];
-  const openOld=rows.filter(e=>!e.signed && e.date < new Date(Date.now()-3*864e5).toISOString().slice(0,10));
-  if(openOld.length) al.push(['c-warn', openOld.length+' יומנים פתוחים מעל שלושה ימים — לא נחתמו.']);
+  const openOld=rows.filter(e=>!e.signed && e.date < daysAgo(3));
+  if(openOld.length) al.push([`${openOld.length} יומנים פתוחים יותר משלושה ימים – לא נחתמו.`,'להצגה',()=>{ $('f_st').value='0'; $('f_pid').value=$('m_pid').value; syncSegs(); showTab('list'); }]);
   DB.projects.filter(p=>p.status==='פעיל').forEach(p=>{
-    const last=DB.entries.filter(e=>e.pid===p.id).map(e=>e.date).sort().slice(-1)[0];
-    const lim=new Date(Date.now()-7*864e5).toISOString().slice(0,10);
-    if(!last) al.push(['c-warn','«'+p.name+'» פעיל אך אין בו אף יומן.']);
-    else if(last<lim) al.push(['c-warn','«'+p.name+'» — היומן האחרון מ‑'+last+'.']);
+    const lastP=DB.entries.filter(e=>e.pid===p.id).map(e=>e.date).sort().slice(-1)[0];
+    if(!lastP) al.push([`«${p.name}» פעיל, אבל אין בו אף יומן.`,'יומן חדש',()=>newFor(p.id)]);
+    else if(lastP<daysAgo(7)) al.push([`«${p.name}» – היומן האחרון מ-${fmtDate(lastP)}.`,'יומן חדש',()=>newFor(p.id)]);
+  });
+  DB.team.filter(m=>m.role==='עוזר מנהל').forEach(m=>{
+    const projs=DB.projects.filter(p=>p.status==='פעיל' && (p.asst||[]).includes(m.id)); if(!projs.length) return;
+    const lastM=DB.entries.filter(e=>(e.by||'').trim()===m.name).map(e=>e.date).sort().slice(-1)[0];
+    if(!lastM || lastM<daysAgo(2)) al.push([`${m.name} (עוזר מנהל) – ${lastM?'היומן האחרון מ-'+fmtDate(lastM):'עדיין לא התקבל ממנו יומן'}. אם הוא ממלא במכשיר שלו, מזגו את הקובץ שלו.`,'מיזוג',()=>$('fileMerge').click()]);
   });
   const fail=rows.reduce((s,e)=>s+(e.test||[]).filter(t=>/נכשל|לא עבר|fail/i.test(t.res||'')).length,0);
-  if(fail) al.push(['c-warn', fail+' בדיקות מעבדה שסומנו ככישלון.']);
-  $('mgrAlerts').innerHTML = al.length
-    ? al.map(([c,t])=>`<p style="margin-bottom:7px"><span class="chip ${c}">בדקו</span> ${esc(t)}</p>`).join('')
-    : '<p class="note" style="margin:0">אין פריטים פתוחים בטווח שנבחר.</p>';
+  if(fail) al.push([`${fail} בדיקות מעבדה סומנו ככישלון.`,null,null]);
+  const box=$('mgrAlerts');
+  box.innerHTML = al.length ? al.map(([t,b],i)=>`<div class="alert"><i>!</i><span>${esc(t)}</span>${b?`<button type="button" data-al="${i}">${b}</button>`:''}</div>`).join('')
+    : '<div class="alert ok"><i>✓</i><span>אין פריטים פתוחים בטווח שנבחר.</span></div>';
+  box.querySelectorAll('[data-al]').forEach(b=>b.onclick=al[+b.dataset.al][2]);
+  updateBadge(openOld.length + (fail?1:0));
+  renderMgrTeam();
+}
+function updateBadge(n){ document.querySelectorAll('[data-badge="mgr"]').forEach(b=>b.textContent=n||''); }
+function newFor(pid){
+  const go=()=>{ clearDraft(); entryToForm(blankEntry(pid)); showTab('day'); };
+  if(dirty) ask('יש שינויים שלא נשמרו','יומן חדש יבטל אותם.','יומן חדש בלי לשמור',go); else go();
 }
 
 /* ---------- CSV ---------- */
 function dl(text,name,type){
-  const b=new Blob(['\ufeff'+text],{type:type||'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click();
+  const b=new Blob([(type?'':'\ufeff')+text],{type:type||'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href),1500);
 }
 const csvCell=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
 function csvEntries(){
   const rows=filtered();
+  if(!rows.length){ toast('אין רשומות לייצוא'); return; }
   const head=['תאריך','פרויקט','משמרת','מזג אוויר','טמפ','שעות','מפיקט','עד פיקט','עבודות','שעות עיכוב','נרשם','סטטוס','הערות'];
   const body=rows.map(e=>[e.date,projName(e.pid),e.shift,e.weather,e.temp,e.hours,e.from,e.to,
     (e.act||[]).map(a=>a.code+' '+(a.qty||'')+(a.unit||'')).join('; '),
     (e.delay||[]).reduce((s,d)=>s+(parseFloat(d.h)||0),0), e.by, e.signed?'נחתם':'פתוח', e.notes]);
-  dl([head,...body].map(r=>r.map(csvCell).join(',')).join('\n'),'worklog-entries.csv');
+  dl([head,...body].map(r=>r.map(csvCell).join(',')).join('\n'),'worklog-entries.csv'); toast(`יוצאו ${rows.length} רשומות`);
 }
 function csvQty(){
   const rows=filtered(), out=[['תאריך','פרויקט','סעיף','מיקום','כמות','יחידה']];
   rows.forEach(e=>(e.act||[]).forEach(a=>out.push([e.date,projName(e.pid),a.code,a.loc,a.qty,a.unit])));
-  dl(out.map(r=>r.map(csvCell).join(',')).join('\n'),'worklog-quantities.csv');
+  if(out.length<2){ toast('אין כמויות לייצוא'); return; }
+  dl(out.map(r=>r.map(csvCell).join(',')).join('\n'),'worklog-quantities.csv'); toast(`יוצאו ${out.length-1} שורות כמות`);
 }
 
+/* ---------- דוח יומי להדפסה ---------- */
+function buildReport(){
+  const e=formToEntry(), p=DB.projects.find(x=>x.id===e.pid)||{};
+  const tbl=(head,rows)=>rows.length?`<table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`:'<p>—</p>';
+  const d=e.date?new Date(e.date+'T12:00:00'):null;
+  $('report').innerHTML=`<h1>יומן עבודה – ${esc(p.name||'')}</h1>
+    <div class="meta">${d?DOW[d.getDay()]+', '+fmtDate(e.date):''} · משמרת ${esc(e.shift)} · ${esc(e.weather)}${e.temp!==''?` ${esc(e.temp)}°C`:''} · שעות עבודה: ${esc(e.hours||'—')} · מקטע: ${esc(e.from||'')}${e.to?'–'+esc(e.to):''}<br>
+    מזמין: ${esc(p.client||'—')} · קבלן: ${esc(p.contr||'—')} · מהנדס ביצוע: ${esc(p.eng||'—')} · ${esc(p.sec||'')}</div>
+    <h2>צוותים</h2>${tbl(['צוות','עובדים','שעות'],(e.crew||[]).map(r=>[r.role,r.n,r.h]))}
+    <h2>ציוד מכני</h2>${tbl(['ציוד','כמות','שעות'],(e.equip||[]).map(r=>[r.kind,r.n,r.h]))}
+    <h2>עבודות שבוצעו</h2>${tbl(['סעיף','מיקום','כמות','יחידה'],(e.act||[]).map(r=>[r.code,r.loc,r.qty,r.unit]))}
+    <h2>בדיקות מעבדה</h2>${tbl(['בדיקה','מיקום','תוצאה'],(e.test||[]).map(r=>[r.kind,r.loc,r.res]))}
+    <h2>עיכובים</h2>${tbl(['סיבה','פירוט','שעות'],(e.delay||[]).map(r=>[r.reason,r.note,r.h]))}
+    ${[['אי-התאמות והוראות',e.issues],['ביקורים',e.visits],['בטיחות והסדרי תנועה',e.safety],['הערות',e.notes]].filter(x=>x[1]).map(x=>`<h2>${x[0]}</h2><p style="white-space:pre-wrap">${esc(x[1])}</p>`).join('')}
+    <div class="sig"><div>נרשם: ${esc(e.by||'')}</div><div>מהנדס ביצוע: ${esc(p.eng||'')}</div><div>מפקח</div></div>
+    <p style="font-size:8.5pt;color:#555;margin-top:10pt">סטטוס: ${e.signed?'נחתם':'פתוח'} · הופק ב-מהאלco</p>`;
+}
+window.addEventListener('beforeprint',buildReport);
+$('btnPrint').onclick=()=>{ buildReport(); window.print(); };
+
 /* ---------- לשוניות ---------- */
+const TABS=[['day','יומן יומי','<path d="M7 3v3M17 3v3"/><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 14h3"/>'],
+  ['list','רשומות','<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>'],
+  ['mgr','לוח מנהל','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
+  ['proj','פרויקטים וצוות','<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'],
+  ['data','גיבוי','<path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>']];
+function buildTabs(){
+  $('topTabs').innerHTML=TABS.map(([t,l])=>`<button type="button" data-t="${t}" aria-pressed="${t===TAB}">${l}${t==='mgr'?' <span class="badge" data-badge="mgr"></span>':''}</button>`).join('');
+  $('tabbar').innerHTML=TABS.map(([t,l,ic])=>`<button type="button" data-t="${t}" aria-pressed="${t===TAB}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ic}</svg>${l}${t==='mgr'?'<span class="badge" data-badge="mgr"></span>':''}</button>`).join('');
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ showTab(b.dataset.t); vib(); });
+}
 function showTab(t){
-  ['day','list','mgr','proj','data'].forEach(x=>$('tab-'+x).classList.toggle('hide',x!==t));
-  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  if(t!=='welcome' && !DB.projects.length && (t==='day')) t='welcome';
+  TAB=t;
+  ['welcome','day','list','mgr','proj','data'].forEach(x=>$('tab-'+x).classList.toggle('hide',x!==t));
+  document.querySelectorAll('[data-t]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===t||(t==='welcome'&&b.dataset.t==='day')));
+  knob($('topTabs'));
+  $('btnPrint').classList.toggle('hide', t!=='day');
   if(t==='list') renderList();
   if(t==='mgr') renderMgr();
-  if(t==='proj') renderProjects();
+  if(t==='proj'){ renderProjects(); renderTeam(); requestAnimationFrame(knobs); }
+  if(t==='mgr') fillTeamSelects();
   if(t==='data') renderStats();
+  if(t==='day'){ renderHead(); requestAnimationFrame(knobs); }
+  window.scrollTo({top:0});
 }
 function renderStats(){
   const bytes=(localStorage.getItem(KEY)||'').length;
   $('dataStats').innerHTML=[['פרויקטים',DB.projects.length],['רשומות יומן',DB.entries.length],
-    ['שורות עבודה',DB.entries.reduce((s,e)=>s+(e.act||[]).length,0)],
-    ['גודל הנתונים',(bytes/1024).toFixed(1)+' ק״ב']]
-    .map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${esc(v)}</div></div>`).join('');
+    ['שורות עבודה',DB.entries.reduce((s,e)=>s+(e.act||[]).length,0)],['גודל הנתונים',(bytes/1024).toFixed(1)+' ק״ב']]
+    .map(([k,v])=>`<div class="tile"><span>${k}</span><b>${esc(v)}</b></div>`).join('');
+  const last=localStorage.getItem(BK_KEY);
+  $('lastBackup').textContent = last? `גיבוי אחרון מהמכשיר הזה: ${fmtDate(last)}` : 'עדיין לא בוצע גיבוי מהמכשיר הזה.';
 }
 
 /* ---------- אירועים ---------- */
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
-$('btnPrint').onclick=()=>window.print();
-
 document.addEventListener('input',ev=>{
   const el=ev.target, k=el.dataset.k;
-  if(!k||!curEntry) return;
-  const i=+el.dataset.i, f=el.dataset.f;
-  (curEntry[k]=curEntry[k]||[])[i]=curEntry[k][i]||{};
-  curEntry[k][i][f]=el.value;
+  if(k && curEntry){
+    const i=+el.dataset.i, f=el.dataset.f;
+    (curEntry[k]=curEntry[k]||[])[i]=curEntry[k][i]||{};
+    curEntry[k][i][f]=el.value;
+    if(k==='act' && f==='code' && DEF_UNIT[el.value]){ curEntry[k][i].unit=DEF_UNIT[el.value]; const u=el.closest('.rowi').querySelector('[data-f="unit"]'); if(u) u.value=DEF_UNIT[el.value]; }
+    if(k==='test' && f==='res'){ const g=el.closest('.rowi').querySelector('.resseg'); g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.rv===el.value)); knob(g); }
+    touch(); return;
+  }
+  if(el.closest('#tab-day') && el.id && (el.id.startsWith('d_'))){ if(el.id==='d_by') localStorage.setItem('mahalco_worklog_by',el.value); touch(); }
 });
 document.addEventListener('click',ev=>{
-  const add=ev.target.dataset&&ev.target.dataset.add;
-  if(add&&curEntry){ (curEntry[add]=curEntry[add]||[]).push({}); renderRows(add); return; }
-  const del=ev.target.dataset&&ev.target.dataset.del;
-  if(del&&curEntry){ curEntry[del].splice(+ev.target.dataset.i,1); renderRows(del); }
+  const addB=ev.target.closest('[data-add]');
+  if(addB && curEntry){ addRow(addB.dataset.add, addB.dataset.v); return; }
+  const delB=ev.target.closest('[data-del]');
+  if(delB && curEntry){
+    const k=delB.dataset.del, i=+delB.dataset.i, [gone]=curEntry[k].splice(i,1);
+    renderRows(k); touch(); vib(10);
+    toast('השורה נמחקה','בטל',()=>{ curEntry[k].splice(i,0,gone); renderRows(k,i); touch(); });
+    return;
+  }
+  const rv=ev.target.closest('[data-rv]');
+  if(rv && curEntry){
+    const [k,i]=rv.parentNode.dataset.res.split(':'); const inp=rv.closest('.rowi').querySelector('[data-f="res"]');
+    inp.value=rv.dataset.rv; inp.dispatchEvent(new Event('input',{bubbles:true})); vib();
+  }
 });
+$('d_signedSw').addEventListener('change',()=>{ $('d_signed').value=$('d_signedSw').checked?'1':'0'; touch(); vib(10); });
+$('d_shift').addEventListener('change',touch);
+
+/* ניווט בין ימים */
+function shiftDay(n){
+  const d=new Date(($('d_date').value||todayIso())+'T12:00:00'); d.setDate(d.getDate()+n);
+  $('d_date').value=iso(d); touch();
+}
+$('dPrev').onclick=()=>shiftDay(-1);
+$('dNext').onclick=()=>shiftDay(1);
+$('dToday').onclick=()=>{ $('d_date').value=todayIso(); touch(); };
+
+$('btnCopyPrev').onclick=()=>{
+  const p=prevEntry(); if(!p){ toast('אין יומן קודם בפרויקט הזה'); return; }
+  const copy=(k,keep)=>(p[k]||[]).map(r=>{ const o={...r}; if(!keep) o.qty=''; return o; });
+  sheet('העתקה מהיומן של '+fmtDate(p.date), 'מה להעתיק ליומן הנוכחי?', [
+    {label:'צוותים וציוד', run:()=>{ curEntry.crew=copy('crew',1); curEntry.equip=copy('equip',1); ['crew','equip'].forEach(k=>renderRows(k)); fillMeta(p); touch(); toast('הצוותים והציוד הועתקו'); }},
+    {label:'צוותים, ציוד וסעיפי עבודה (בלי כמויות)', run:()=>{ curEntry.crew=copy('crew',1); curEntry.equip=copy('equip',1); curEntry.act=copy('act',0); ['crew','equip','act'].forEach(k=>renderRows(k)); fillMeta(p); touch(); toast('הועתק – נשאר למלא כמויות'); }}
+  ]);
+};
+function fillMeta(p){
+  if(!$('d_hours').value && p.hours) $('d_hours').value=p.hours;
+  if(!$('d_from').value && p.to) $('d_from').value=p.to;   // ממשיכים מהפיקט שבו הסתיים היום הקודם
+  if($('d_shift').value!==p.shift && p.shift){ $('d_shift').value=p.shift; syncSegs(); }
+}
 
 $('btnSave').onclick=()=>{
-  if(!DB.projects.length){ alert('הגדירו קודם פרויקט בלשונית «פרויקטים».'); return; }
+  if(!DB.projects.length){ openProj(null); return; }
   const e=formToEntry();
+  if(!e.pid){ toast('בחרו פרויקט'); return; }
   const ix=DB.entries.findIndex(x=>x.id===e.id);
-  if(ix>=0) DB.entries[ix]=e; else DB.entries.push(e);
-  if(save()){ $('saveMsg').textContent='נשמר · '+new Date().toLocaleTimeString('he-IL'); }
+  const isNew=ix<0;
+  e.upd=Date.now();
+  if(ix>=0) DB.entries[ix]=JSON.parse(JSON.stringify(e)); else DB.entries.push(JSON.parse(JSON.stringify(e)));
+  if(save()){ dirty=false; clearDraft(); localStorage.setItem(LASTPID,e.pid); renderHead(); vib(15);
+    toast(isNew?`היומן של ${fmtDate(e.date)} נשמר`:'השינויים נשמרו', 'יומן חדש', ()=>newFor(e.pid)); updateBadgeQuiet(); }
 };
-$('btnNew').onclick=()=>{ entryToForm(blankEntry()); fillProjSelects(); $('saveMsg').textContent=''; };
+$('btnNew').onclick=()=>newFor(curEntry&&curEntry.pid);
 $('btnDel').onclick=()=>{
-  if(!curEntry) return;
-  if(!confirm('למחוק את רשומת היומן?')) return;
-  DB.entries=DB.entries.filter(x=>x.id!==curEntry.id); save();
-  entryToForm(blankEntry()); fillProjSelects();
+  if(!curEntry||!isSaved()) return;
+  ask('מחיקת היומן של '+fmtDate(curEntry.date), 'אפשר לבטל מיד אחרי המחיקה.', 'מחיקת היומן', ()=>{
+    const idx=DB.entries.findIndex(x=>x.id===curEntry.id), gone=DB.entries[idx];
+    DB.entries.splice(idx,1); save(); clearDraft(); entryToForm(blankEntry(gone.pid));
+    toast('היומן נמחק','בטל',()=>{ DB.entries.splice(idx,0,gone); save(); entryToForm(gone); });
+  });
 };
 
-$('btnPSave').onclick=()=>{
-  const name=$('p_name').value.trim();
-  if(!name){ alert('צריך שם פרויקט.'); return; }
-  const o={id:curProj||uid()};
-  ['name','client','contr','eng','sec','start','status'].forEach(f=>o[f]=$('p_'+f).value);
-  const ix=DB.projects.findIndex(p=>p.id===o.id);
-  if(ix>=0) DB.projects[ix]=o; else DB.projects.push(o);
-  curProj=null; save(); fillProjSelects(); renderProjects();
-  ['name','client','contr','eng','sec','start'].forEach(f=>$('p_'+f).value='');
-};
-$('btnPNew').onclick=()=>{ curProj=null; ['name','client','contr','eng','sec','start'].forEach(f=>$('p_'+f).value=''); };
-
-['f_pid','f_from','f_to','f_st'].forEach(id=>$(id).addEventListener('input',renderList));
-['m_pid','m_days'].forEach(id=>$(id).addEventListener('input',renderMgr));
+['f_pid','f_from','f_to','f_st','f_q'].forEach(id=>$(id).addEventListener('input',renderList));
+['m_pid','m_days','m_by'].forEach(id=>$(id).addEventListener('input',renderMgr));
 $('btnCsvEntries').onclick=csvEntries;
 $('btnCsvQty').onclick=csvQty;
 
-$('btnExport').onclick=()=>{
-  const name='worklog-backup-'+new Date().toISOString().slice(0,10)+'.json';
+function doExport(){
+  const name='worklog-backup-'+todayIso()+'.json';
   dl(JSON.stringify(DB,null,1),name,'application/json');
-};
+  localStorage.setItem(BK_KEY,todayIso()); renderBackupNote(); if(TAB==='data') renderStats();
+  toast('הגיבוי נשמר בתיקיית ההורדות');
+}
+$('btnExport').onclick=doExport;
+$('btnImp').onclick=()=>$('fileImp').click();
+$('welcomeRestore').onclick=e=>{ e.preventDefault(); $('fileImp').click(); };
 $('fileImp').onchange=ev=>{
   const f=ev.target.files[0]; if(!f) return;
   const r=new FileReader();
   r.onload=()=>{
     try{
       const o=JSON.parse(r.result);
-      if(!o.entries||!o.projects) throw new Error('קובץ שאינו גיבוי של היומן');
-      if(!confirm('שחזור יחליף את הנתונים הקיימים. להמשיך?')) return;
-      DB=o; save(); fillProjSelects(); entryToForm(blankEntry()); renderStats();
-      alert('שוחזר: '+DB.projects.length+' פרויקטים, '+DB.entries.length+' רשומות.');
-    }catch(err){ alert('שחזור נכשל — '+err.message); }
+      if(!o.entries||!o.projects) throw new Error('הקובץ אינו גיבוי של היומן');
+      const apply=()=>{ DB=o; save(); clearDraft(); fillProjSelects(); entryToForm(blankEntry()); renderStats(); showTab(TAB==='welcome'?'day':TAB);
+        toast(`שוחזרו ${DB.projects.length} פרויקטים ו-${DB.entries.length} רשומות`); };
+      if(DB.entries.length||DB.projects.length) ask('שחזור מגיבוי',`הקובץ כולל ${o.projects.length} פרויקטים ו-${o.entries.length} רשומות. הנתונים הנוכחיים במכשיר יוחלפו.`,'החלפה ושחזור',apply);
+      else apply();
+    }catch(err){ toast('השחזור נכשל – '+err.message); }
   };
   r.readAsText(f); ev.target.value='';
 };
 $('btnWipe').onclick=()=>{
-  if(!confirm('למחוק את כל היומן מהמכשיר? פעולה בלתי הפיכה.')) return;
-  if(!confirm('בטוחים? ייצאו גיבוי קודם.')) return;
-  DB={v:1,projects:[],entries:[]}; save(); fillProjSelects(); entryToForm(blankEntry()); renderStats(); renderProjects();
+  ask('מחיקת כל הנתונים', `${DB.projects.length} פרויקטים ו-${DB.entries.length} רשומות יימחקו מהמכשיר. מומלץ לייצא גיבוי קודם.`, 'מחיקה סופית', ()=>{
+    DB={v:1,projects:[],entries:[]}; save(); clearDraft(); fillProjSelects(); entryToForm(blankEntry()); renderStats(); renderProjects(); toast('כל הנתונים נמחקו');
+  });
 };
+function updateBadgeQuiet(){
+  const open=DB.entries.filter(e=>!e.signed && e.date<daysAgo(3)).length;
+  const fail=DB.entries.filter(e=>e.date>=daysAgo(30)).reduce((s,e)=>s+(e.test||[]).filter(t=>/נכשל|לא עבר|fail/i.test(t.res||'')).length,0);
+  updateBadge(open+(fail?1:0));
+}
+window.addEventListener('beforeunload',e=>{ if(dirty){ saveDraft(); } });
+window.addEventListener('resize',knobs);
 
 /* ---------- אתחול ---------- */
 load();
-entryToForm(blankEntry());
+buildTabs();
+document.querySelectorAll('[data-bind]').forEach(bindSeg);
+renderQuick();
+enhance(document);
 fillProjSelects();
+fillTeamSelects();
+let draft=null; try{ draft=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null'); }catch(e){}
+entryToForm(draft && draft.id ? draft : blankEntry());
+if(draft && draft.id){ dirty=true; renderHead(); toast('הטיוטה האחרונה שוחזרה','התחלה מחדש',()=>{ clearDraft(); entryToForm(blankEntry()); }); }
 renderStats();
-</script>
-
-<!-- ============ MOBILE LAYER — מהאלco ============ -->
-<script>
-(function () {
-  'use strict';
-  var MQ = window.matchMedia('(max-width:820px)');
-
-  /* ---------- 1. טבלאות → כרטיסים: תווית לכל תא ---------- */
-  function label(tbl) {
-    var heads = [].map.call(tbl.querySelectorAll('thead th'), function (th) {
-      return th.textContent.trim();
-    });
-    if (!heads.length) return;
-    [].forEach.call(tbl.querySelectorAll('tbody tr'), function (tr) {
-      [].forEach.call(tr.children, function (td, i) {
-        if (heads[i] !== undefined) td.setAttribute('data-label', heads[i]);
-      });
-    });
-  }
-  function labelAll() {
-    [].forEach.call(document.querySelectorAll('.tw table'), label);
-  }
-  [].forEach.call(document.querySelectorAll('.tw table'), function (t) {
-    new MutationObserver(function () { label(t); }).observe(t, { childList: true, subtree: true });
-  });
-  labelAll();
-
-  /* ---------- 2. סרגל פעולה קבוע לפי הלשונית הפעילה ---------- */
-  var bar = document.createElement('div');
-  bar.id = 'mAct';
-  document.body.appendChild(bar);
-
-  var MAP = {
-    day: [['שמור יומן', 'btnSave', 1], ['יומן חדש', 'btnNew', 0]],
-    list: [['ייצוא רשומות', 'btnCsvEntries', 1], ['ייצוא כמויות', 'btnCsvQty', 0]],
-    mgr: [],
-    proj: [['שמור פרויקט', 'btnPSave', 1], ['חדש', 'btnPNew', 0]],
-    data: [['ייצוא גיבוי', 'btnExport', 1]]
-  };
-
-  function build(tab) {
-    var list = MAP[tab] || [];
-    bar.innerHTML = '';
-    bar.style.display = list.length ? '' : 'none';
-    list.forEach(function (d) {
-      var src = document.getElementById(d[1]);
-      if (!src) return;
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = d[0];
-      if (d[2]) b.className = 'key';
-      b.addEventListener('click', function () { src.click(); });
-      bar.appendChild(b);
-    });
-  }
-
-  function current() {
-    var on = document.querySelector('.tabs button.on');
-    return on ? on.dataset.t : 'day';
-  }
-  build(current());
-  document.querySelectorAll('.tabs button').forEach(function (b) {
-    b.addEventListener('click', function () { setTimeout(function () { build(current()); }, 0); });
-  });
-
-  /* ---------- 3. אחרי שמירה — גלילה למעלה כדי לראות את ההודעה ---------- */
-  var save = document.getElementById('btnSave');
-  if (save) save.addEventListener('click', function () {
-    if (MQ.matches) setTimeout(function () { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 120);
-  });
-})();
+updateBadgeQuiet();
+showTab(DB.projects.length?'day':'welcome');
+requestAnimationFrame(knobs);
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(knobs);
 </script>
 </body>
 </html>

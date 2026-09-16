@@ -693,18 +693,6 @@ main.wrap > details.keywords { margin-top: 30px }
 }
 
 /* ==================== יומן עבודה בתחתית ה-Hero + כרטיסים בסגנון iOS ==================== */
-.wl-row{display:flex;align-items:center;gap:14px;margin-top:22px;padding:12px 14px;min-height:64px;
-  background:#1B2126;border:1px solid var(--rule-dark);border-radius:14px;text-decoration:none;color:var(--paper);
-  transition:transform .15s cubic-bezier(.2,.8,.2,1),border-color .15s,background .15s;-webkit-tap-highlight-color:transparent}
-.wl-row:hover,.wl-row:focus-visible{border-color:var(--marking);background:#20272D}
-.wl-row:active{transform:scale(.98)}
-.wl-ic{flex:none;width:40px;height:40px;border-radius:10px;background:var(--marking);color:var(--ink);display:flex;align-items:center;justify-content:center}
-.wl-ic svg{width:22px;height:22px}
-.wl-tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
-.wl-tx b{font-size:15.5px;font-weight:700}
-.wl-tx span{font-size:13px;color:var(--muted-dark)}
-.wl-go{flex:none;font-size:26px;line-height:1;color:var(--muted-dark);transition:transform .15s}
-.wl-row:hover .wl-go{transform:translateX(-3px);color:var(--marking)}
 /* כרטיסי «הכלים המבוקשים» – באותה שפה של כרטיסי התבניות בכלי החתך */
 a.hq{border-radius:14px;min-height:62px;padding:10px 14px 10px 14px;position:relative;overflow:hidden;
   transition:transform .15s cubic-bezier(.2,.8,.2,1),border-color .15s,background .15s}
@@ -783,11 +771,6 @@ a.hq small{font-size:12px}
                     <div><b>11</b>תכנון משותף</div>
                     <div><b>18</b>תחבורה נכונה</div>
                 </div>
-                <a class="wl-row" href="worklog.html">
-                    <span class="wl-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span>
-                    <span class="wl-tx"><b>יומן עבודה לביצוע כבישים</b><span>צוותים, ציוד, כמויות, בדיקות ועיכובים – ולוח מנהל. הנתונים נשארים במכשיר.</span></span>
-                    <span class="wl-go" aria-hidden="true">‹</span>
-                </a>
             </div>
             <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="מבט על של צומת בעל ארבע זרועות עם סימוני דרך">
                 <rect width="380" height="380" fill="#1B1F24"/>

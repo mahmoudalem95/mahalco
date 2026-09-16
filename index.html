@@ -31,7 +31,7 @@
     <meta name="description" content="כלי חישוב להנדסת תנועה ותחבורה שרצים בדפדפן: רמת שירות ונפח קריטי לצומת מרומזר, תקן חניה לפי תקנות 2016 ולפי שם היישוב, מרחקי ראות על גבי תכנית, אורכי תור, חתכים טיפוסיים ותחזית לשנות יעד. ייבוא קובץ ספירת נפחים ישירות לחישוב. למהנדסי והנדסאי תנועה, משרדי תכנון, מנהלי פרויקטים, מודדים, יזמי נדל״ן ורשויות מקומיות.">
     <meta name="keywords" content="הנדסת תחבורה, מהנדס תנועה, מהנדס כבישים, נתיבי ישראל, הנחיות תכנון כבישים, הנחיות תכנון בערים, הנחיות תנועה בצמתים, הסדרה הירוקה, הצבת מעקות, רמזורים, ניתוח צמתים, תכנית תנועה, תכנית כבישים, תכנית גבהים, חתכים טיפוסים, HCM, HCS, Highway Capacity Software, Queue Length, Level of Service, LOS, AASHTO, Geometric Design, Traffic Safety, HSM, Signal Timing, Corridor Analysis, PTV Vissim, PTV Visum, Synchro, SimTraffic, TransModeler, Aimsun, SIDRA, סקרי תנועה, סקר נפחים, סקר מהירויות, סקר חניה, RSA, Safety Road Audit, נקודות שחורות, PHF, מפרט 3, מפרט 35, MUTCD, ספר אדום, אדם רחוב, נת&quot;ע, רכבת ישראל, חוצה ישראל, מוריה, נתיבי איילון, כרמלית, תב&quot;ע, תמ&quot;א, הס&quot;פ, Civil 3D, InRoads, MX, PMCM, GIS, מכרזי תשתית, דרושים מהנדס תנועה, מנהל פרויקט תשתיות, יועץ בטיחות בדרכים, סופר-אלוויישן, קלואיד, נת&quot;צ, שבילי אופניים, שילוט דרכים, תמרורים, חניה, נהלי חניה, מחשבון תקנות חניה, חניות נכים, תקן חניה, מחשבון תקן חניה, כמה חניות צריך לדירה, תקן חניה למשרדים, תקן חניה למסחר, חניות נכים, חניית אופניים, תקנות התקנת מקומות חניה, אזור מתע"ן, מחשבון רמת שירות, רמת שירות צומת מרומזר, עיכוב בקרה, אורך תור 95%, מפרץ פנייה, נפח נתיב קריטי, זמני מחזור רמזור, תיאום רמזורים, קיבולת כיכר, מרחק ראות עצירה, משולש ראות, כיול תמונה לקנה מידה, גיליון A0, נספח תנועה, תסקיר השפעה על התנועה, בדיקת היתכנות תנועתית, שינוי שימוש, מנהל פרויקט תשתיות, בקרת תכן, מודד מוסמך, מיפוי ותצלומי אוויר, יזמי נדל"ן, תיווך מסחרי, שמאות מקרקעין, רשות רישוי, ועדה מקומית, בדיקת דוח יועץ תנועה, תחזית תנועה, שנת יעד, שנת רוויה, ייבוא ספירת נפחים, לוח 2.4, שעת שיא, הנדסאי תנועה">
     <meta property="og:title" content="מהאלco — ממשקי API להנדסת תחבורה">
-    <meta property="og:description" content="חמישים ושלושה נהלים להנדסת תנועה ותחבורה: ניתוח צמתים, תכנון כבישים, חתכים טיפוסים, הנחיות רמזורים, מעקות, הסדרה הירוקה – תואם להנחיות נתיבי ישראל.">
+    <meta property="og:description" content="חמישים וארבעה נהלים להנדסת תנועה ותחבורה: ניתוח צמתים, תכנון כבישים, חתכים טיפוסים, הנחיות רמזורים, מעקות, הסדרה הירוקה – תואם להנחיות נתיבי ישראל.">
     <meta property="og:url" content="https://mahmoudalem95.github.io/mahalco/">
     <meta name="twitter:card" content="summary">
     <meta property="og:type" content="website">
@@ -43,7 +43,7 @@
             "name": "מהאלco",
             "operatingSystem": "Web Browser",
             "applicationCategory": "EngineeringApplication",
-            "description": "חמישים ושלושה נהלים להנדסת תחבורה לפי HCM, AASHTO ו-HSM – כולל ניתוח צמתים, כבישים מהירים, תכנון גיאומטרי ובטיחות.",
+            "description": "חמישים וארבעה נהלים להנדסת תחבורה לפי HCM, AASHTO ו-HSM – כולל ניתוח צמתים, כבישים מהירים, תכנון גיאומטרי ובטיחות.",
             "offers": [
                 { "@type": "Offer", "name": "מפתחים", "price": "19", "priceCurrency": "USD",
                   "eligibleQuantity": { "@type": "QuantitativeValue", "value": "120 requests per hour" } },
@@ -774,6 +774,50 @@ a.hq b { font-size: 14.5px; font-weight: 700; line-height: 1.35 }
 .hero .app-cta-text span { font-size: 12px }
 @media (max-width:599px) { .hq-list { grid-template-columns: 1fr 1fr } a.hq b { font-size: 13.5px } }
 
+/* ==================== Dropdown for Hero Quick Links ==================== */
+.hq-dropdown {
+    display: flex; flex-direction: column; justify-content: center;
+    min-height: 56px; padding: 9px 13px;
+    border: 1px solid var(--rule-dark); border-radius: 6px; background: #1B2126; color: var(--paper);
+    position: relative; cursor: pointer; user-select: none; -webkit-user-select: none;
+    transition: border-color .15s, background .15s;
+}
+.hq-dropdown:hover { border-color: var(--marking); background: #20272D }
+.hq-dropdown.open { border-color: var(--marking); background: #20272D }
+.hq-dropdown > small { font-size: 11.5px; color: var(--muted-dark); font-weight: 600 }
+.hq-dropdown > b { font-size: 14.5px; font-weight: 700; line-height: 1.35 }
+.hq-dropdown .hq-options {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-start: 0;
+    width: 100%;
+    min-width: 210px;
+    background: #1B2126;
+    border: 1px solid var(--marking);
+    border-radius: 8px;
+    z-index: 200;
+    box-shadow: 0 10px 24px rgba(0,0,0,.5);
+    overflow: hidden;
+}
+.hq-dropdown.open .hq-options { display: block }
+.hq-dropdown .hq-opt {
+    display: block;
+    padding: 11px 14px;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-align: right;
+    transition: background .15s, color .15s;
+    border-bottom: 1px solid var(--rule-dark);
+}
+.hq-dropdown .hq-opt:last-child { border-bottom: 0 }
+.hq-dropdown .hq-opt.gray { color: var(--paper); background: #2C3239 }
+.hq-dropdown .hq-opt.gray:hover, .hq-dropdown .hq-opt.gray:focus-visible { background: #39404A }
+.hq-dropdown .hq-opt.gold { color: var(--ink); background: var(--marking) }
+.hq-dropdown .hq-opt.gold:hover, .hq-dropdown .hq-opt.gold:focus-visible { background: #F3C455 }
+@media (max-width:599px) { .hq-dropdown > b { font-size: 13.5px } .hq-dropdown > small { font-size: 11.5px } }
+
 /* ==================== מראה כללי: מקטעים והפרדה ביניהם ==================== */
 main.wrap { padding-bottom: 40px }
 .part-div { display: flex; align-items: center; gap: 12px; margin: 46px 0 14px; font-size: 13px;
@@ -808,6 +852,9 @@ a.hq{border-radius:14px;min-height:62px;padding:10px 14px 10px 14px;position:rel
 a.hq:active{transform:scale(.97)}
 a.hq::before{content:"";position:absolute;inset-inline-start:0;top:10px;bottom:10px;width:4px;border-radius:0 3px 3px 0;background:var(--marking);opacity:.85}
 a.hq small{font-size:12px}
+.hq-dropdown{border-radius:14px;min-height:62px;padding:10px 14px}
+.hq-dropdown::before{content:"";position:absolute;inset-inline-start:0;top:10px;bottom:10px;width:4px;border-radius:0 3px 3px 0;background:var(--marking);opacity:.85}
+.hq-dropdown small{font-size:12px}
 .hero .app-cta{border-radius:12px}
 .hero .btn{border-radius:12px}
 .tally{margin-top:26px}
@@ -851,7 +898,14 @@ a.hq small{font-size:12px}
                         <a class="hq" href="parking-regulations.html"><small>חניה</small><b>תקן חניה לפי יישוב</b></a>
                         <a class="hq" href="calculator_dark_ui.html"><small>ערכי תכן</small><b>חיפוש לפי ההנחיות</b></a>
                         <a class="hq" href="SD-tool.html"><small>ראות</small><b>משולשי ראות על תכנית</b></a>
-                        <a class="hq" href="typical-section.html"><small>גיאומטריה</small><b>חתך רוחב טיפוסי</b></a>
+                        <div class="hq-dropdown" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
+                            <small>גיאומטריה</small>
+                            <b>חתך רוחב</b>
+                            <div class="hq-options" role="menu">
+                                <a href="typical-section.html" class="hq-opt gray" role="menuitem">חתך סופי</a>
+                                <a href="TT.html.webarchive" class="hq-opt gold" role="menuitem">עבודה זמנית עירוני - פיילוט</a>
+                            </div>
+                        </div>
                         <a class="hq" href="worklog.html"><small>ביצוע</small><b>יומן עבודה יומי לאתר</b></a>
                     </nav>
                 </div>
@@ -885,7 +939,7 @@ a.hq small{font-size:12px}
                 </div>
                 <div class="tally">
                     <div><b>13</b>תחבורה נכונה</div>
-                    <div><b>17</b>רחובות עירוניים</div>
+                    <div><b>18</b>רחובות עירוניים</div>
                     <div><b>15</b>כבישים בין-עירוניים</div>
                     <div><b>8</b>תכנון משותף</div>
                 </div>
@@ -963,7 +1017,7 @@ a.hq small{font-size:12px}
                 <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
                 <button class="chip chip-pending" id="chip-pending" type="button" aria-pressed="false">טרם הושלמו</button>
             </div>
-            <p class="count" id="count" aria-live="polite">53 נהלים</p>
+            <p class="count" id="count" aria-live="polite">54 נהלים</p>
 
             <div class="usage" id="usage" hidden>
                 <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
@@ -1031,14 +1085,15 @@ a.hq small{font-size:12px}
                     <span class="arrow" aria-hidden="true"></span>
                     <span class="b-title">רחובות עירוניים</span>
                     <span class="b-sub">הנחיות ותכנון עירוני: גיאומטריה ותכנון, וניתוחי צמתים, רמזורים ומקטעים.</span>
-                    <span class="b-n"><b data-groupcount>17</b> נהלים</span>
+                    <span class="b-n"><b data-groupcount>18</b> נהלים</span>
                 </summary>
                 <div class="twigs">
 
                     <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>גיאומטריה ותכנון עירוני<span class="t-n" data-twigcount>7</span></summary>
+                        <summary><span class="arrow" aria-hidden="true"></span>גיאומטריה ותכנון עירוני<span class="t-n" data-twigcount>8</span></summary>
                         <div class="leaves">
                             <a class="leaf" href="typical-section.html"><h3>חתך רוחב עירוני<span class="tool-flag">כלי חי</span></h3><p>רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="TT.html.webarchive"><h3>עבודה זמנית עירוני - פיילוט<span class="tool-flag">כלי חי</span></h3><p>חתך עבודה זמנית עירוני - פיילוט. תכנון חתך רוחב להסדרי תנועה זמניים באתר עבודה.</p><span class="std">פיילוט / הנחיות הסדרי תנועה זמניים</span></a>
                             <a class="leaf" href="calculator_dark_ui.html"><h3>ערכי תכן לפי ההנחיות הישראליות<span class="tool-flag">כלי חי</span></h3><p>רוחבי נתיבים, רדיוסי פנייה, נתיבי האטה והאצה, מפרצי אוטובוס והסדרי תנועה זמניים – ישר מספרי ההנחיות.</p><span class="std">הנחיות לתכנון רחובות בערים</span></a>
                             <a class="leaf" href="SD-tool.html"><h3>משולשי ראות על תכנית<span class="tool-flag">כלי חי</span></h3><p>מסמנים צומת על גבי תכנית מכוילת ומפיקים גיליון A0 בקנה מידה.</p><span class="std">תנועה בצמתים 2020</span></a>
                             <div class="soon"><h3>הנחיות בטיחות בתכנון</h3><p>עקרונות עיצוב בטיחותי, הפחתת נקודות חיכוך, הארת כביש.</p><span class="std">HSM / AASHTO</span></div>
@@ -1606,6 +1661,38 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === dialog) dialog.close();
         });
     }
+});
+
+/* Dropdown לתפריט הנפתח של "חתך רוחב" */
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdowns = document.querySelectorAll('.hq-dropdown');
+    dropdowns.forEach(dropdown => {
+        const toggle = function(e) {
+            // אם לוחצים על אחת מהאופציות, תן לקישור לעבוד
+            if (e.target.closest('.hq-opt')) return;
+            e.stopPropagation();
+            const isOpen = dropdown.classList.toggle('open');
+            dropdown.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        };
+        dropdown.addEventListener('click', toggle);
+        dropdown.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggle(e);
+            } else if (e.key === 'Escape') {
+                dropdown.classList.remove('open');
+                dropdown.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+
+    // סגירת כל התפריטים כאשר לוחצים מחוץ להם
+    document.addEventListener('click', function() {
+        dropdowns.forEach(d => {
+            d.classList.remove('open');
+            d.setAttribute('aria-expanded', 'false');
+        });
+    });
 });
 
 /* מכסת שימוש יומית — 10 פתיחות של נהלים ליום, וסימון נהלים שטרם הושלמו */

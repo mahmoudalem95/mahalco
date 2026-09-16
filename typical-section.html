@@ -1196,6 +1196,9 @@ $('ctx').addEventListener('change',()=>update());
 })();
 
 /* ---------------- אתחול שכבת הממשק ---------------- */
+/* קישור מהקטלוג: typical-section.html?ctx=inter פותח ישר בתבנית בין-עירונית */
+(function(){ const q=new URLSearchParams(location.search).get('ctx');
+  if(q==='inter' && PRESETS.iuR){ $('preset').value='iuR'; applyPreset(); } })();
 document.querySelectorAll('[data-bind]').forEach(UI.bindSelect);
 UI.presets(); UI.tiles(); UI.enhance(document); UI.place();
 UI.after(false);

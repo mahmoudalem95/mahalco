@@ -884,10 +884,10 @@ a.hq small{font-size:12px}
                     </a>
                 </div>
                 <div class="tally">
-                    <div><b>17</b>רחובות עירוניים</div>
-                    <div><b>16</b>כבישים בין-עירוניים</div>
-                    <div><b>12</b>תכנון משותף</div>
                     <div><b>13</b>תחבורה נכונה</div>
+                    <div><b>17</b>רחובות עירוניים</div>
+                    <div><b>15</b>כבישים בין-עירוניים</div>
+                    <div><b>9</b>תכנון משותף</div>
                 </div>
             </div>
             <svg class="plan" viewBox="0 0 380 380" role="img" aria-label="מבט על של צומת בעל ארבע זרועות עם סימוני דרך">
@@ -957,13 +957,13 @@ a.hq small{font-size:12px}
             </label>
             <div class="filters" role="group" aria-label="סינון לפי תחום">
                 <button class="chip" data-cat="all" aria-pressed="true">הכול</button>
+                <button class="chip" data-cat="proper" aria-pressed="false">תחבורה נכונה</button>
                 <button class="chip" data-cat="urban" aria-pressed="false">עירוני</button>
                 <button class="chip" data-cat="rural" aria-pressed="false">בין-עירוני</button>
                 <button class="chip" data-cat="common" aria-pressed="false">משותף</button>
-                <button class="chip" data-cat="proper" aria-pressed="false">תחבורה נכונה</button>
                 <button class="chip chip-pending" id="chip-pending" type="button" aria-pressed="false">טרם הושלמו</button>
             </div>
-            <p class="count" id="count" aria-live="polite">58 נהלים</p>
+            <p class="count" id="count" aria-live="polite">54 נהלים</p>
 
             <div class="usage" id="usage" hidden>
                 <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
@@ -977,171 +977,21 @@ a.hq small{font-size:12px}
 
         <div class="tree" id="catalog">
 
-            <details class="branch" id="urban" data-group="urban" open>
-                <summary>
-                    <span class="arrow" aria-hidden="true"></span>
-                    <span class="b-title">רחובות עירוניים</span>
-                    <span class="b-sub">רמזורים, צמתים, איכות רב-אמצעית וגיאומטריית חתך.</span>
-                    <span class="b-n"><b data-groupcount>17</b> נהלים</span>
-                </summary>
-                <div class="twigs">
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>צמתים ורמזורים<span class="t-n" data-twigcount>7</span></summary>
-                        <div class="leaves">
-                            <a class="leaf" href="critical-lane-volume.html"><h3>נפח נתיב קריטי<span class="tool-flag">כלי חי</span></h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                            <a class="leaf" href="htool.html"><h3>כלי ניתוח צמתים<span class="tool-flag">כלי חי</span></h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
-                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>ניתוח צומת מרומזר<span class="tool-flag">כלי חי</span></h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
-                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>ניתוח צומת לא מרומזר<span class="tool-flag">כלי חי</span></h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
-                            <a class="leaf" href="roundabout-analysis-metric.html"><h3>ניתוח כיכר תנועה<span class="tool-flag">כלי חי</span></h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
-                            <a class="leaf" href="optimizes-signal-timing%20plans-metric.html"><h3>תיאום ותזמון רמזורים<span class="tool-flag">כלי חי</span></h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                            <div class="soon"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></div>
-                        </div>
-                    </details>
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>נתיבים, מקטעים ומסדרונות<span class="t-n" data-twigcount>3</span></summary>
-                        <div class="leaves">
-                            <a class="leaf" href="lane-queue-metric.html"><h3>ניתוח נתיבים ותורים<span class="tool-flag">כלי חי</span></h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                            <a class="leaf" href="Urban-Street-Segment%20Analysis-metric.html"><h3>ניתוח מקטע רחוב עירוני<span class="tool-flag">כלי חי</span></h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
-                            <div class="soon"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></div>
-                        </div>
-                    </details>
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>תכנון גיאומטרי עירוני<span class="t-n" data-twigcount>4</span></summary>
-                        <div class="leaves">
-                            <a class="leaf" href="Urban-intersection-Design.html"><h3>תכנון גיאומטרי של צומת עירוני<span class="tool-flag">כלי חי</span></h3><p>פריסה גיאומטרית, רדיוסי פינה ומשולשי ראייה.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="typical-section.html"><h3>חתך רוחב עירוני<span class="tool-flag">כלי חי</span></h3><p>רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="Urban-interchange-Design.html"><h3>תכנון מחלפים<span class="tool-flag">כלי חי</span></h3><p>מחלף יהלום, פארקלו, SPUI וצורות מחלף עירוניות נוספות.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="Frontage-Road-Design.html"><h3>תכנון דרכי שירות<span class="tool-flag">כלי חי</span></h3><p>דרכי שירות מקבילות לעורק ראשי והחיבורים אליו.</p><span class="std">AASHTO Green Book</span></a>
-                        </div>
-                    </details>
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>תשתיות נלוות ובטיחות<span class="t-n" data-twigcount>3</span></summary>
-                        <div class="leaves">
-                            <a class="leaf" href="Intersection-Safety-Performance-Functions.html"><h3>פונקציות ביצועי בטיחות בצמתים<span class="tool-flag">כלי חי</span></h3><p>תדירות תאונות צפויה בצמתים עירוניים לפי סוג בקרה ונפח תנועה.</p><span class="std">HSM</span></a>
-                            <div class="soon"><h3>תכנון מערכות ניקוז עירוני</h3><p>תכנון תעלות, ספיגה, תולעים וספל קולטי מי גשמים.</p><span class="std">FHWA / AASHTO</span></div>
-                            <div class="soon"><h3>הנחיות שילוט ותמרורים</h3><p>תכנון שלטי הכוונה, תמרורי אזהרה וחובה לפי MUTCD.</p><span class="std">MUTCD</span></div>
-                        </div>
-                    </details>
-
-                </div>
-            </details>
-
-            <details class="branch" id="rural" data-group="rural">
-                <summary>
-                    <span class="arrow" aria-hidden="true"></span>
-                    <span class="b-title">כבישים בין-עירוניים</span>
-                    <span class="b-sub">תפעול כבישים מהירים ודו-נתיביים, תוואי וגיאומטריית שוליים.</span>
-                    <span class="b-n"><b data-groupcount>16</b> נהלים</span>
-                </summary>
-                <div class="twigs">
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>כבישים מהירים ומחלפים<span class="t-n" data-twigcount>5</span></summary>
-                        <div class="leaves">
-                            <div class="soon"><h3>ניתוח מקטע בסיסי בכביש מהיר</h3><p>צפיפות, מהירות ממוצעת ורמת שירות במקטעים ללא הפרעה.</p><span class="std">HCM Ch. 21 / 23</span></div>
-                            <div class="soon"><h3>ניתוח מתקן כביש מהיר</h3><p>רמת שירות לכלל המתקן על פני מקטעים בסיסיים, מקטעי שזירה ורמפות ברצף.</p><span class="std">HCM Ch. 21</span></div>
-                            <a class="leaf" href="Interchange-Ramp-Terminal%20Analysis.html"><h3>ניתוח מיזוג והתפצלות ברמפות<span class="tool-flag">כלי חי</span></h3><p>צפיפות ורמת שירות באזורי ההשפעה של רמפת כניסה ורמפת יציאה.</p><span class="std">HCM Ch. 25</span></a>
-                            <div class="soon"><h3>ניתוח מקטע שזירה</h3><p>יחס שזירה, ביקוש ביחידות רכב נוסעים, קיבולת, מהירות ותנאי מרווח בין רמפות.</p><span class="std">HCM Ch. 24</span></div>
-                            <a class="leaf" href="interchange-los.html"><h3>רמת שירות במחלף<span class="tool-flag">כלי חי</span></h3><p>קיבולת מסופי הרמפות, תורים בקטע הפנימי והשפעה הדדית בין שני הצמתים.</p><span class="std">HCM Ch. 23</span></a>
-                        </div>
-                    </details>
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>כבישים דו-נתיביים ואמינות<span class="t-n" data-twigcount>3</span></summary>
-                        <div class="leaves">
-                            <div class="soon"><h3>ניתוח כביש דו-נתיבי</h3><p>צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ורמת שירות.</p><span class="std">HCM Ch. 15</span></div>
-                            <div class="soon"><h3>אמינות זמני נסיעה בכביש מהיר</h3><p>מדד זמן תכנון, מדד מרווח ביטחון והתפלגות האמינות על פני שנה.</p><span class="std">HCM Ch. 10</span></div>
-                            <div class="soon"><h3>הצדקה לנתיב טיפוס</h3><p>שיפוע, אורך, ביצועי משאיות וירידת מהירות, לכדי הצדקה שניתן להגן עליה.</p><span class="std">AASHTO Green Book</span></div>
-                        </div>
-                    </details>
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>תוואי, עקומות וחתכים<span class="t-n" data-twigcount>8</span></summary>
-                        <div class="leaves">
-                            <a class="leaf" href="horizontal.html"><h3>תכנון עקומה אופקית<span class="tool-flag">כלי חי</span></h3><p>רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="vertical.html"><h3>תכנון עקומה אנכית<span class="tool-flag">כלי חי</span></h3><p>אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="SD.html"><h3>חישוב מרחק ראייה<span class="tool-flag">כלי חי</span></h3><p>מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="typical-section.html"><h3>חתך רוחב בין-עירוני<span class="tool-flag">כלי חי</span></h3><p>רוחבי נתיב ושוליים עם שיפוע רוחבי לפי סוג הכביש.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="policy_sec.html"><h3>מדיניות וחתך<span class="tool-flag">כלי חי</span></h3><p>מדיניות תכנון וחתכים רוחביים לכבישים בין-עירוניים.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="LOS_nat.html"><h3>ניתוח רמת שרות<span class="tool-flag">כלי חי</span></h3><p>רמת שירות, מהירות נסיעה ותנאי זרימה במקטעים בין-עירוניים.</p><span class="std">HCM</span></a>
-                            <div class="soon"><h3>חתכים טיפוסיים בין-עירוניים</h3><p>חתכי מסדרון עם נתיבי נסיעה, שוליים, איי הפרדה ורצועות ביטחון.</p><span class="std">AASHTO Green Book</span></div>
-                            <div class="soon"><h3>תכנון תוואי כביש בשטחים פתוחים</h3><p>התאמת תוואי לנוף, שיקולי אקולוגיה, שיפועים וניקוז.</p><span class="std">AASHTO Green Book</span></div>
-                        </div>
-                    </details>
-
-                </div>
-            </details>
-
-            <details class="branch" id="common" data-group="common">
-                <summary>
-                    <span class="arrow" aria-hidden="true"></span>
-                    <span class="b-title">תכנון משותף</span>
-                    <span class="b-sub">נהלים שרלוונטיים בכל מקום שבו הפרויקט יושב.</span>
-                    <span class="b-n"><b data-groupcount>12</b> נהלים</span>
-                </summary>
-                <div class="twigs">
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>תסקירים, קיבולת וכלכלה<span class="t-n" data-twigcount>3</span></summary>
-                        <div class="leaves">
-                            <a class="leaf" href="TRAFFIC-IMPACT.html"><h3>תסקיר השפעה תחבורתית<span class="tool-flag">כלי חי</span></h3><p>מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.</p><span class="std">HCM &amp; AASHTO</span></a>
-                            <a class="leaf" href="Capacity-Factor-Library.html"><h3>ספריית קיבולת ומקדמי תיקון<span class="tool-flag">כלי חי</span></h3><p>קיבולות בסיס עם תיקונים לרכב כבד, שיפוע ואוכלוסיית נהגים.</p><span class="std">HCM</span></a>
-                            <div class="soon"><h3>ניתוח כלכלי ותועלת-עלות</h3><p>עלויות משתמש, תועלות, ערך נוכחי נקי ודירוג פרויקטים.</p><span class="std">AASHTO Red Book</span></div>
-                        </div>
-                    </details>
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>מיסעה, גשרים ובטיחות שוליים<span class="t-n" data-twigcount>5</span></summary>
-                        <div class="leaves">
-                            <a class="leaf" href="Design-Vehicle-Swept-Path%20Analysis.html"><h3>מסלול סחיפה של רכב תכן<span class="tool-flag">כלי חי</span></h3><p>מסלולי פנייה וסחיפה של רכבי תכן סטנדרטיים ברדיוס נתון.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="MEPDG-methodologies.html"><h3>תכנון מבנה מיסעה<span class="tool-flag">כלי חי</span></h3><p>עובי מבנה לפי שיטת 1993 ולפי ניתוח מכני-אמפירי.</p><span class="std">AASHTO Pavement Structures</span></a>
-                            <a class="leaf" href="Roadside-Design-Guide.html"><h3>בחירת אמצעי בטיחות בשולי הדרך<span class="tool-flag">כלי חי</span></h3><p>מעקות, כריות בלימה וקצוות, בהתאמה למפגע ולמהירות.</p><span class="std">AASHTO Roadside Design Guide</span></a>
-                            <div class="soon"><h3>ניתוח סחיפה בגשרים</h3><p>פוטנציאל סחיפה כללית, סביב עמודים וסביב כתפיים במעבר נחל.</p><span class="std">HEC-18 / AASHTO LRFD</span></div>
-                            <a class="leaf" href="Urban-Roadside-Safety.html"><h3>הנחיות בטיחות בתכנון<span class="tool-flag">כלי חי</span></h3><p>עקרונות עיצוב בטיחותי, הפחתת נקודות חיכוך, הארת כביש.</p><span class="std">HSM / AASHTO</span></a>
-                        </div>
-                    </details>
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>חניה וחניונים<span class="t-n" data-twigcount>1</span></summary>
-                        <div class="leaves">
-                            <a class="leaf" href="parking-regulations.html"><h3>תכנון חניונים ותקנות חניה<span class="tool-flag">כלי חי</span></h3><p>חניוני צד, חניוני קומות, תקני חניה ונגישות.</p><span class="std">ITE / AASHTO</span></a>
-                        </div>
-                    </details>
-
-                    <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>סביבה, ניהול וטכנולוגיה<span class="t-n" data-twigcount>3</span></summary>
-                        <div class="leaves">
-                            <div class="soon"><h3>הערכת השפעה על הסביבה</h3><p>הערכת זיהום אוויר, רעש, נוף וחיתוך שטחים פתוחים.</p><span class="std">FHWA / NEPA</span></div>
-                            <div class="soon"><h3>ניהול פרויקטים תחבורתיים</h3><p>תכנון, ביצוע, בקרת עלויות ולוחות זמנים לפרויקטי תשתית.</p><span class="std">PMCM / AASHTO</span></div>
-                            <div class="soon"><h3>תכנון תשתיות חכמות</h3><p>חיישנים, IoT, תקשורת רכב-תשתית וניהול תנועה חכם.</p><span class="std">FHWA / ITS</span></div>
-                        </div>
-                    </details>
-
-                </div>
-            </details>
-
-            <details class="branch" id="proper" data-group="proper">
+            <details class="branch" id="proper" data-group="proper" open>
                 <summary>
                     <span class="arrow" aria-hidden="true"></span>
                     <span class="b-title">תחבורה נכונה</span>
-                    <span class="b-sub">תחב״צ, אופניים, הולכי רגל ומיתון תנועה — מה שקובע איך הרחוב מתנהג.</span>
+                    <span class="b-sub">מדרכות, שבילי אופניים, נת״צים ומת״צים ומיתון תנועה.</span>
                     <span class="b-n"><b data-groupcount>13</b> נהלים</span>
                 </summary>
                 <div class="twigs">
 
                     <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>הצדקה ותכנון תחבורה ציבורית<span class="t-n" data-twigcount>4</span></summary>
-                        <div class="leaves"><a class="leaf" href="urban-bus-lane-justification.html"><h3>הצדקת נת״צ עירוני</h3><p>קריטריוני הצדקה לנתיב תחבורה ציבורית עירוני: נפח נוסעים בשעת שיא, תדירות הקווים, זמן הנסיעה שנחסך והרוחב הזמין בחתך.</p><span class="std">הנחיות תח״צ / TCQSM</span></a>
-
-<a class="leaf" href="intercity-bus-lane-justification.html"><h3>הצדקת מת״צ ונת״צ בין-עירוני</h3><p>מסלול תחבורה ציבורית מופרד ונתיב בין-עירוני: הצדקה תפעולית, חתך רוחב והשתלבות בצמתים ובמחלפים.</p><span class="std">הנחיות תח״צ / כרך 2</span></a>
-
-<a class="leaf" href="transit-level-of-service.html"><h3>רמת שירות לתחבורה ציבורית</h3><p>תדירות שירות, מתקני תחנה ואמינות לאורך הקו.</p><span class="std">HCM Ch. 16</span></a>
-
-<a class="leaf" href="transit-lanes-stations-safety.html"><h3>ניתוח נתיבי תחבורה ציבורית</h3><p>תכנון נת"צ, תחנות, אמצעי בטיחות ושדרוג.</p><span class="std">AASHTO / APTA</span></a>
+                        <summary><span class="arrow" aria-hidden="true"></span>מדרכות והולכי רגל<span class="t-n" data-twigcount>3</span></summary>
+                        <div class="leaves">
+                            <div class="soon"><h3>תכנון מדרכות והולכי רגל</h3><p>רוחב מדרכה, ריהוט רחוב, מעברי חצייה ונגישות.</p><span class="std">AASHTO / ADA</span></div>
+                            <a class="leaf" href="crossing-high-demand.html"><h3>הנחיות ובדיקות מעברי חצייה עתירי ביקוש<span class="tool-flag">כלי חי</span></h3><p>בדיקת מעבר חצייה בביקוש גבוה: נפח חוצים, מרווחים בתנועה, אי מפלט, זמני חצייה, הצדקה לרמזור ולמעבר מוגבה.</p><span class="std">HCM Ch. 20 / הנחיות חצייה</span></a>
+                            <div class="soon"><h3>רמת שירות להולכי רגל</h3><p>הליכות לפי רוחב מדרכה, הפרדה מהתנועה ותנאי החצייה.</p><span class="std">HCM Ch. 16</span></div>
                         </div>
                     </details>
 
@@ -1155,11 +1005,12 @@ a.hq small{font-size:12px}
                     </details>
 
                     <details class="twig">
-                        <summary><span class="arrow" aria-hidden="true"></span>הולכי רגל ומעברי חצייה<span class="t-n" data-twigcount>3</span></summary>
+                        <summary><span class="arrow" aria-hidden="true"></span>נת״צים ומת״צים<span class="t-n" data-twigcount>4</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="crossing-high-demand.html"><h3>הנחיות ובדיקות מעברי חצייה עתירי ביקוש<span class="tool-flag">כלי חי</span></h3><p>בדיקת מעבר חצייה בביקוש גבוה: נפח חוצים, מרווחים בתנועה, אי מפלט, זמני חצייה, הצדקה לרמזור ולמעבר מוגבה.</p><span class="std">HCM Ch. 20 / הנחיות חצייה</span></a>
-                            <div class="soon"><h3>רמת שירות להולכי רגל</h3><p>הליכות לפי רוחב מדרכה, הפרדה מהתנועה ותנאי החצייה.</p><span class="std">HCM Ch. 16</span></div>
-                            <div class="soon"><h3>תכנון מדרכות והולכי רגל</h3><p>רוחב מדרכה, ריהוט רחוב, מעברי חצייה ונגישות.</p><span class="std">AASHTO / ADA</span></div>
+                            <a class="leaf" href="urban-bus-lane-justification.html"><h3>הצדקת נת״צ עירוני</h3><p>קריטריוני הצדקה לנתיב תחבורה ציבורית עירוני: נפח נוסעים בשעת שיא, תדירות הקווים, זמן הנסיעה שנחסך והרוחב הזמין בחתך.</p><span class="std">הנחיות תח״צ / TCQSM</span></a>
+                            <a class="leaf" href="intercity-bus-lane-justification.html"><h3>הצדקת מת״צ ונת״צ בין-עירוני</h3><p>מסלול תחבורה ציבורית מופרד ונתיב בין-עירוני: הצדקה תפעולית, חתך רוחב והשתלבות בצמתים ובמחלפים.</p><span class="std">הנחיות תח״צ / כרך 2</span></a>
+                            <a class="leaf" href="transit-lanes-stations-safety.html"><h3>ניתוח נתיבי תחבורה ציבורית</h3><p>תכנון נת"צ, תחנות, אמצעי בטיחות ושדרוג.</p><span class="std">AASHTO / APTA</span></a>
+                            <a class="leaf" href="transit-level-of-service.html"><h3>רמת שירות לתחבורה ציבורית</h3><p>תדירות שירות, מתקני תחנה ואמינות לאורך הקו.</p><span class="std">HCM Ch. 16</span></a>
                         </div>
                     </details>
 
@@ -1169,6 +1020,131 @@ a.hq small{font-size:12px}
                             <div class="soon"><h3>אזורי מיתון תנועה — העתיד הקרוב</h3><p>תכנון אזור מיתון שלם ולא אמצעי בודד: היררכיית רחובות, מהירות תכן, בחירת האמצעים ובדיקת ההשפעה על זמני נסיעה ועל תחב״צ.</p><span class="std">הנחיות מיתון תנועה</span></div>
                             <div class="soon"><h3>רמת שירות רב-אמצעית</h3><p>שילוב ציוני הולכי רגל, אופניים ותחבורה ציבורית לתוצאה אחת למסדרון.</p><span class="std">HCM Ch. 16</span></div>
                             <div class="soon"><h3>ניתוח צמתים רב-אמצעי</h3><p>שילוב הולכי רגל, אופניים, תחבורה ציבורית ורכב פרטי בצומת אחד.</p><span class="std">HCM Ch. 16 / 19</span></div>
+                        </div>
+                    </details>
+
+                </div>
+            </details>
+
+            <details class="branch" id="urban" data-group="urban">
+                <summary>
+                    <span class="arrow" aria-hidden="true"></span>
+                    <span class="b-title">רחובות עירוניים</span>
+                    <span class="b-sub">הנחיות ותכנון עירוני: גיאומטריה ותכנון, וניתוחי צמתים, רמזורים ומקטעים.</span>
+                    <span class="b-n"><b data-groupcount>17</b> נהלים</span>
+                </summary>
+                <div class="twigs">
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>גיאומטריה ותכנון עירוני<span class="t-n" data-twigcount>7</span></summary>
+                        <div class="leaves">
+                            <a class="leaf" href="typical-section.html"><h3>חתך רוחב עירוני<span class="tool-flag">כלי חי</span></h3><p>רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="calculator_dark_ui.html"><h3>ערכי תכן לפי ההנחיות הישראליות<span class="tool-flag">כלי חי</span></h3><p>רוחבי נתיבים, רדיוסי פנייה, נתיבי האטה והאצה, מפרצי אוטובוס והסדרי תנועה זמניים – ישר מספרי ההנחיות.</p><span class="std">הנחיות לתכנון רחובות בערים</span></a>
+                            <a class="leaf" href="SD-tool.html"><h3>משולשי ראות על תכנית<span class="tool-flag">כלי חי</span></h3><p>מסמנים צומת על גבי תכנית מכוילת ומפיקים גיליון A0 בקנה מידה.</p><span class="std">תנועה בצמתים 2020</span></a>
+                            <a class="leaf" href="Urban-Roadside-Safety.html"><h3>הנחיות בטיחות בתכנון<span class="tool-flag">כלי חי</span></h3><p>עקרונות עיצוב בטיחותי, הפחתת נקודות חיכוך, הארת כביש.</p><span class="std">HSM / AASHTO</span></a>
+                            <div class="soon"><h3>בחירת אמצעי בטיחות בשולי הדרך – עירוני</h3><p>הצדקה למעקות ולאמצעי ריסון ברחוב עירוני, לפי מהירות, מפגע ומרחק מאבן השפה.</p><span class="std">AASHTO Roadside Design Guide</span></div>
+                            <div class="soon"><h3>הנחיות שילוט ותמרורים</h3><p>תכנון שלטי הכוונה, תמרורי אזהרה וחובה לפי MUTCD.</p><span class="std">MUTCD</span></div>
+                            <div class="soon"><h3>תכנון מערכות ניקוז עירוני</h3><p>תכנון תעלות, ספיגה, תולעים וספל קולטי מי גשמים.</p><span class="std">FHWA / AASHTO</span></div>
+                        </div>
+                    </details>
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>ניתוחים ורמת שירות<span class="t-n" data-twigcount>10</span></summary>
+                        <div class="leaves">
+                            <a class="leaf" href="critical-lane-volume.html"><h3>נפח נתיב קריטי<span class="tool-flag">כלי חי</span></h3><p>חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <a class="leaf" href="htool.html"><h3>כלי ניתוח צמתים<span class="tool-flag">כלי חי</span></h3><p>ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.</p><span class="std">HCM Ch. 19</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>ניתוח צומת מרומזר<span class="tool-flag">כלי חי</span></h3><p>עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.</p><span class="std">HCM Ch. 19</span></a>
+                            <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>ניתוח צומת לא מרומזר<span class="tool-flag">כלי חי</span></h3><p>בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.</p><span class="std">HCM Ch. 20</span></a>
+                            <a class="leaf" href="roundabout-analysis-metric.html"><h3>ניתוח כיכר תנועה<span class="tool-flag">כלי חי</span></h3><p>קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.</p><span class="std">HCM Ch. 22</span></a>
+                            <a class="leaf" href="lane-queue-metric.html"><h3>ניתוח נתיבים ותורים<span class="tool-flag">כלי חי</span></h3><p>יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <a class="leaf" href="optimizes-signal-timing%20plans-metric.html"><h3>תיאום ותזמון רמזורים<span class="tool-flag">כלי חי</span></h3><p>היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <a class="leaf" href="Urban-Street-Segment%20Analysis-metric.html"><h3>ניתוח מקטע רחוב עירוני<span class="tool-flag">כלי חי</span></h3><p>מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.</p><span class="std">HCM Ch. 17</span></a>
+                            <div class="soon"><h3>ניתוח מסדרון עירוני</h3><p>מהירות נסיעה ורמת שירות לאורך מסדרון שלם, על פני מקטעים רצופים.</p><span class="std">HCM Ch. 17 / 18</span></div>
+                            <div class="soon"><h3>ניהול רמזורים מתקדם</h3><p>זיהוי ביקוש, הסתגלות לתנועה ורמזורים חכמים.</p><span class="std">HCM Ch. 31</span></div>
+                        </div>
+                    </details>
+
+                </div>
+            </details>
+
+            <details class="branch" id="rural" data-group="rural">
+                <summary>
+                    <span class="arrow" aria-hidden="true"></span>
+                    <span class="b-title">כבישים בין-עירוניים</span>
+                    <span class="b-sub">הנחיות ותכנון בין-עירוני: גיאומטריה ותוואי, וניתוחי רמת שירות.</span>
+                    <span class="b-n"><b data-groupcount>15</b> נהלים</span>
+                </summary>
+                <div class="twigs">
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>גיאומטריה ותוואי<span class="t-n" data-twigcount>10</span></summary>
+                        <div class="leaves">
+                            <a class="leaf" href="horizontal.html"><h3>תכנון עקומה אופקית<span class="tool-flag">כלי חי</span></h3><p>רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="vertical.html"><h3>תכנון עקומה אנכית<span class="tool-flag">כלי חי</span></h3><p>אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="SD.html"><h3>חישוב מרחק ראייה<span class="tool-flag">כלי חי</span></h3><p>מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="typical-section.html?ctx=inter"><h3>חתך רוחב בין-עירוני<span class="tool-flag">כלי חי</span></h3><p>רוחבי נתיב ושוליים עם שיפוע רוחבי לפי סוג הכביש.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="policy_sec.html"><h3>מדיניות וחתך<span class="tool-flag">כלי חי</span></h3><p>מדיניות תכנון וחתכים רוחביים לכבישים בין-עירוניים.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf" href="calculator_dark_ui.html"><h3>ערכי תכן בין-עירוניים<span class="tool-flag">כלי חי</span></h3><p>צמתים, רמפות כניסה ויציאה, נתיבי האטה והאצה ושוליים – לפי הנחיות הדרכים הבין-עירוניות.</p><span class="std">הנחיות לתכנון דרכים בין-עירוניות</span></a>
+                            <div class="soon"><h3>חתכים טיפוסיים בין-עירוניים</h3><p>חתכי מסדרון עם נתיבי נסיעה, שוליים, איי הפרדה ורצועות ביטחון.</p><span class="std">AASHTO Green Book</span></div>
+                            <div class="soon"><h3>בחירת אמצעי בטיחות בשולי הדרך – בין-עירוני</h3><p>הצדקה למעקות, כריות בלימה וקצוות, בהתאמה למפגע, למהירות ולמרחק מהמיסעה.</p><span class="std">AASHTO Roadside Design Guide</span></div>
+                            <div class="soon"><h3>תכנון תוואי כביש בשטחים פתוחים</h3><p>התאמת תוואי לנוף, שיקולי אקולוגיה, שיפועים וניקוז.</p><span class="std">AASHTO Green Book</span></div>
+                            <div class="soon"><h3>הצדקה לנתיב טיפוס</h3><p>שיפוע, אורך, ביצועי משאיות וירידת מהירות, לכדי הצדקה שניתן להגן עליה.</p><span class="std">AASHTO Green Book</span></div>
+                        </div>
+                    </details>
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>ניתוחים ורמת שירות<span class="t-n" data-twigcount>5</span></summary>
+                        <div class="leaves">
+                            <a class="leaf" href="LOS_nat.html"><h3>ניתוח רמת שרות<span class="tool-flag">כלי חי</span></h3><p>רמת שירות, מהירות נסיעה ותנאי זרימה במקטעים בין-עירוניים.</p><span class="std">HCM</span></a>
+                            <div class="soon"><h3>ניתוח כביש דו-נתיבי</h3><p>צפיפות עוקבים, אחוז זמן נסיעה בעקיבה, מהירות ממוצעת ורמת שירות.</p><span class="std">HCM Ch. 15</span></div>
+                            <div class="soon"><h3>ניתוח מקטע בסיסי בכביש מהיר</h3><p>צפיפות, מהירות ממוצעת ורמת שירות במקטעים ללא הפרעה.</p><span class="std">HCM Ch. 21 / 23</span></div>
+                            <div class="soon"><h3>ניתוח מתקן כביש מהיר</h3><p>רמת שירות לכלל המתקן על פני מקטעים בסיסיים ברצף.</p><span class="std">HCM Ch. 21</span></div>
+                            <div class="soon"><h3>אמינות זמני נסיעה בכביש מהיר</h3><p>מדד זמן תכנון, מדד מרווח ביטחון והתפלגות האמינות על פני שנה.</p><span class="std">HCM Ch. 10</span></div>
+                        </div>
+                    </details>
+
+                </div>
+            </details>
+
+            <details class="branch" id="common" data-group="common">
+                <summary>
+                    <span class="arrow" aria-hidden="true"></span>
+                    <span class="b-title">תכנון משותף</span>
+                    <span class="b-sub">תסקירים, קיבולת, מיסעה, חניה וניהול.</span>
+                    <span class="b-n"><b data-groupcount>9</b> נהלים</span>
+                </summary>
+                <div class="twigs">
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>תסקירים וכלכלה<span class="t-n" data-twigcount>2</span></summary>
+                        <div class="leaves">
+                            <a class="leaf" href="TRAFFIC-IMPACT.html"><h3>תסקיר השפעה תחבורתית<span class="tool-flag">כלי חי</span></h3><p>מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.</p><span class="std">HCM &amp; AASHTO</span></a>
+                            <div class="soon"><h3>ניתוח כלכלי ותועלת-עלות</h3><p>עלויות משתמש, תועלות, ערך נוכחי נקי ודירוג פרויקטים.</p><span class="std">AASHTO Red Book</span></div>
+                        </div>
+                    </details>
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>קיבולת ומיסעה<span class="t-n" data-twigcount>4</span></summary>
+                        <div class="leaves">
+                            <a class="leaf" href="Capacity-Factor-Library.html"><h3>ספריית קיבולת ומקדמי תיקון<span class="tool-flag">כלי חי</span></h3><p>קיבולות בסיס עם תיקונים לרכב כבד, שיפוע ואוכלוסיית נהגים.</p><span class="std">HCM</span></a>
+                            <div class="soon"><h3>מסלול סחיפה של רכב תכן</h3><p>מסלולי פנייה וסחיפה של רכבי תכן סטנדרטיים ברדיוס נתון.</p><span class="std">AASHTO Green Book</span></div>
+                            <div class="soon"><h3>תכנון מבנה מיסעה ופרטי תכן</h3><p>עובי מבנה לפי שיטת 1993 ולפי ניתוח מכני-אמפירי.</p><span class="std">AASHTO Pavement Structures</span></div>
+                            <div class="soon"><h3>ניתוח סחיפה בגשרים</h3><p>פוטנציאל סחיפה כללית, סביב עמודים וסביב כתפיים במעבר נחל.</p><span class="std">HEC-18 / AASHTO LRFD</span></div>
+                        </div>
+                    </details>
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>חניה וחניונים<span class="t-n" data-twigcount>1</span></summary>
+                        <div class="leaves">
+                            <a class="leaf" href="parking-regulations.html"><h3>תכנון חניונים ותקנות חניה<span class="tool-flag">כלי חי</span></h3><p>חניוני צד, חניוני קומות, תקני חניה ונגישות.</p><span class="std">ITE / AASHTO</span></a>
+                        </div>
+                    </details>
+
+                    <details class="twig">
+                        <summary><span class="arrow" aria-hidden="true"></span>ניהול וטכנולוגיה<span class="t-n" data-twigcount>2</span></summary>
+                        <div class="leaves">
+                            <div class="soon"><h3>ניהול פרויקטים תחבורתיים</h3><p>תכנון, ביצוע, בקרת עלויות ולוחות זמנים לפרויקטי תשתית.</p><span class="std">PMCM / AASHTO</span></div>
+                            <div class="soon"><h3>תכנון תשתיות חכמות</h3><p>חיישנים, IoT, תקשורת רכב-תשתית וניהול תנועה חכם.</p><span class="std">FHWA / ITS</span></div>
                         </div>
                     </details>
 
@@ -1402,7 +1378,6 @@ a.hq small{font-size:12px}
                         <li><a href="SD-tool.html">שרטוט על <b>תצלום אוויר</b> וייצוא SVG</a></li>
                         <li><a href="SD-tool.html">הפקת <b>גיליון A0</b> בקנה מידה 1:500</a></li>
                         <li><a href="typical-section.html">חתך לרוחב ל<b>תכנית פיתוח</b></a></li>
-                        <li><a href="Urban-intersection-Design.html"><b>רדיוסי פינה</b> ופריסת צומת</a></li>
                         <li><a href="rural.html">תכנון <b>דרך בין-עירונית</b> — ערכי תכן</a></li>
                     </ul>
                 </section>

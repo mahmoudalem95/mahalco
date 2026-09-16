@@ -941,6 +941,15 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
 :root[data-theme="dark"] .connect-area .code-sample code{background:#2A3036}
 :root[data-theme="dark"] .leaf.leaf-temp{background:linear-gradient(90deg,rgba(233,177,47,.10),transparent 70%)}
 
+
+/* לילה: שרטוט הצומת ב-Hero – רקע שחור וסימוני דרך לבנים */
+:root[data-theme="dark"] .plan > rect:first-of-type{fill:#000}
+:root[data-theme="dark"] .plan > rect:not(:first-of-type){fill:#17191C}
+:root[data-theme="dark"] .plan > g:nth-of-type(1){stroke:#FFFFFF}
+:root[data-theme="dark"] .plan > g:nth-of-type(2){stroke:#FFFFFF;opacity:.5}
+:root[data-theme="dark"] .plan > g:nth-of-type(3){fill:#FFFFFF}
+:root[data-theme="dark"] .plan > g:nth-of-type(4){stroke:#3A3F46}
+
 /* זכוכית */
 html[data-glass="on"] .hero{background:rgba(35,39,44,.84)}
 html[data-glass="on"][data-theme="dark"] .hero{background:rgba(18,21,25,.72)}

@@ -3,7 +3,9 @@
 <head>
   <meta name="description" content="Parking regulations and design guidance covering parking supply, layout, access, dimensions, and policy requirements.">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#12121e">
+  <meta name="color-scheme" content="dark">
   <title>תקנות חניה בישראל – מחשבון לפי התקנות והנחיות מינהל התכנון</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
@@ -82,6 +84,77 @@
     .city-badge b{color:#E8A33D}
     .city-badge .vf{display:block;margin-top:4px;font-size:.79rem;opacity:.75}
     .manual-sum{cursor:pointer;font-size:.9rem;opacity:.85}
+
+    /* ==================== MOBILE LAYER — מהאלco (phone / tablet) ==================== */
+    #mNav,#mBar,#mSheet,.card-header .mchev{display:none}
+    @media (max-width: 991px) {
+      body{padding:0 0 calc(86px + env(safe-area-inset-bottom))}
+      .container{padding:0 12px}
+      h1.display-6{font-size:1.32rem;line-height:1.35;margin-top:14px}
+      h1.display-6 .bi{font-size:1.1rem}
+      body > .container > p.text-muted{font-size:.8rem;line-height:1.55}
+
+      /* ניווט מהיר בין מקטעים */
+      #mNav{display:flex;position:sticky;top:0;z-index:40;gap:6px;overflow-x:auto;
+        margin:0 -12px 12px;padding:9px 12px;background:rgba(18,18,30,.97);
+        -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+        border-bottom:1px solid var(--line);scrollbar-width:none}
+      #mNav::-webkit-scrollbar{display:none}
+      #mNav button{flex:0 0 auto;white-space:nowrap;min-height:40px;font-size:12.5px;
+        padding:6px 13px;border-radius:99px;background:var(--card-2);color:var(--ink-2);
+        border:1px solid var(--line)}
+      #mNav button.on{background:var(--accent);color:#1a1a2e;border-color:var(--accent);font-weight:700}
+
+      .card{margin-bottom:14px;border-radius:12px;scroll-margin-top:62px}
+      .card-header{font-size:.95rem;padding:11px 14px;display:flex;align-items:center;
+        gap:8px;cursor:pointer;min-height:48px}
+      .card-header .mchev{margin-inline-start:auto;transition:transform .2s;font-size:.8rem}
+      .card.mclosed .card-body{display:none}
+      .card.mclosed .card-header .mchev{transform:rotate(-90deg)}
+      .card-body{padding:14px}
+      .form-control,.form-select{font-size:16px;min-height:46px}
+      .form-control-sm,.form-select-sm{font-size:15px;min-height:42px}
+      .form-label{font-size:.82rem;margin-bottom:3px}
+      .form-text{font-size:.72rem;line-height:1.45}
+      .btn{min-height:46px}
+      .btn-sm{min-height:38px}
+      .form-range{height:34px}
+      .land-use-item{padding:12px 12px 10px}
+      .land-use-item .row > [class^="col-"]{margin-bottom:2px}
+      .table{font-size:.78rem}
+      .table td,.table th{padding:.4rem .35rem}
+      #calcBtn{margin-bottom:10px!important}
+
+      /* --- שורת תוצאה קבועה: רואים את המספר תוך כדי הזנה --- */
+      #mBar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:center;
+        gap:10px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+        background:rgba(26,26,46,.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+        border-top:1px solid rgba(255,255,255,.12);box-shadow:0 -6px 18px rgba(0,0,0,.4)}
+      #mBarVals{display:flex;gap:14px;overflow-x:auto;flex:1;scrollbar-width:none}
+      #mBarVals::-webkit-scrollbar{display:none}
+      #mBarVals .v{flex:0 0 auto}
+      #mBarVals .k{display:block;font-size:.66rem;color:var(--ink-3);line-height:1.25}
+      #mBarVals .n{font-size:1.3rem;font-weight:700;color:var(--accent);line-height:1.1}
+      #mBar .open{flex:0 0 auto;min-height:44px;font-size:.8rem;padding:8px 13px;border-radius:9px;
+        background:var(--accent);color:#1a1a2e;border:0;font-weight:700}
+
+      /* --- גיליון התוצאות המלא --- */
+      #mSheet{display:block;position:fixed;left:0;right:0;bottom:0;top:auto;z-index:70;
+        height:88vh;background:var(--bg);border-top:1px solid var(--line);
+        border-radius:16px 16px 0 0;box-shadow:0 -14px 44px rgba(0,0,0,.6);
+        transform:translateY(102%);transition:transform .26s ease;overflow:auto;
+        padding:0 12px calc(22px + env(safe-area-inset-bottom));overscroll-behavior:contain}
+      body.msheet #mSheet{transform:translateY(0)}
+      #mSheetHead{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:9px;
+        background:var(--bg);padding:12px 0 10px;border-bottom:1px solid var(--line)}
+      #mSheetHead b{flex:1;font-size:.98rem}
+      #mSheetHead button{min-height:40px;padding:5px 13px;border-radius:9px;border:1px solid var(--line);
+        background:var(--card-2);color:var(--ink);font-size:.82rem}
+      #mSheet .sticky-results{position:static!important}
+      #mSheet .card{margin-top:12px}
+      body.msheet{overflow:hidden}
+    }
+    @media print{#mNav,#mBar,#mSheet{display:none!important}}
 </style>
 </head>
 <body>
@@ -1037,6 +1110,124 @@
   addUse('restaurant', { area: 200, loc: 'ent' });
   addUse('clinic', { area: 800 });
   run();
+})();
+</script>
+
+<!-- ============ MOBILE LAYER — מהאלco ============ -->
+<script>
+(function () {
+  'use strict';
+  var MQ = window.matchMedia('(max-width:991px)');
+  var container = document.querySelector('body > .container');
+  var resWrap = document.querySelector('.sticky-results');
+  var resHome = resWrap ? resWrap.parentNode : null;
+  var resArea = document.getElementById('resultsArea');
+  if (!container || !resWrap) return;
+
+  /* ---------- 1. קיפול כרטיסים + ניווט מהיר ---------- */
+  var cards = [].slice.call(container.querySelectorAll('.col-lg-7 .card'));
+  var nav = document.createElement('nav');
+  nav.id = 'mNav';
+  nav.setAttribute('aria-label', 'ניווט בין מקטעים');
+
+  cards.forEach(function (card, i) {
+    var head = card.querySelector('.card-header');
+    if (!head) return;
+    var title = head.textContent.trim();
+    card.id = card.id || 'msec' + i;
+
+    var chev = document.createElement('span');
+    chev.className = 'mchev'; chev.textContent = '▾';
+    head.appendChild(chev);
+    head.setAttribute('role', 'button');
+    head.setAttribute('tabindex', '0');
+    head.addEventListener('click', function () {
+      if (!MQ.matches) return;
+      card.classList.toggle('mclosed');
+    });
+
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = title.length > 16 ? title.slice(0, 15) + '…' : title;
+    b.addEventListener('click', function () {
+      card.classList.remove('mclosed');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    nav.appendChild(b);
+  });
+  container.insertBefore(nav, container.firstChild);
+
+  /* ---------- 2. גיליון התוצאות ---------- */
+  var sheet = document.createElement('section');
+  sheet.id = 'mSheet';
+  sheet.setAttribute('aria-label', 'תוצאות החישוב');
+  sheet.innerHTML = '<div id="mSheetHead"><b>תוצאות החישוב</b>' +
+    '<button type="button" id="mSheetClose">סגור ✕</button></div>';
+  document.body.appendChild(sheet);
+
+  function openSheet(on) {
+    document.body.classList.toggle('msheet', on);
+    if (on) sheet.scrollTop = 0;
+  }
+  sheet.querySelector('#mSheetClose').addEventListener('click', function () { openSheet(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') openSheet(false); });
+
+  /* העברת כרטיס התוצאות אל הגיליון בטלפון, והחזרתו למקומו במסך רחב */
+  function place() {
+    if (MQ.matches) {
+      if (resWrap.parentNode !== sheet) sheet.appendChild(resWrap);
+    } else {
+      if (resHome && resWrap.parentNode !== resHome) resHome.appendChild(resWrap);
+      openSheet(false);
+    }
+  }
+
+  /* ---------- 3. שורת התוצאה הקבועה ---------- */
+  var bar = document.createElement('div');
+  bar.id = 'mBar';
+  bar.innerHTML = '<div id="mBarVals"><div class="v"><span class="k">טרם חושב</span>' +
+    '<span class="n">—</span></div></div><button type="button" class="open">פירוט מלא ↑</button>';
+  document.body.appendChild(bar);
+  bar.querySelector('.open').addEventListener('click', function () { openSheet(true); });
+  document.getElementById('mBarVals').addEventListener('click', function () { openSheet(true); });
+
+  function paint() {
+    var boxes = resArea ? resArea.querySelectorAll('.result-box') : [];
+    var vals = document.getElementById('mBarVals');
+    if (!boxes.length) return;
+    var h = '';
+    [].slice.call(boxes, 0, 3).forEach(function (b) {
+      var k = b.querySelector('.result-label'), n = b.querySelector('.result-number');
+      if (!k || !n) return;
+      h += '<div class="v"><span class="k">' + k.textContent.trim() + '</span>' +
+        '<span class="n">' + n.textContent.trim() + '</span></div>';
+    });
+    if (h) vals.innerHTML = h;
+  }
+  if (resArea) new MutationObserver(paint).observe(resArea, { childList: true, subtree: true });
+  paint();
+
+  (MQ.addEventListener ? MQ.addEventListener('change', place) : MQ.addListener(place));
+  place();
+
+  /* ---------- 4. "חשב" פותח מיד את התוצאה בטלפון ---------- */
+  var calc = document.getElementById('calcBtn');
+  if (calc) calc.addEventListener('click', function () {
+    if (MQ.matches) setTimeout(function () { paint(); openSheet(true); }, 60);
+  });
+
+  /* ---------- 5. הדגשת המקטע הנוכחי בניווט ---------- */
+  if ('IntersectionObserver' in window) {
+    var btns = [].slice.call(nav.querySelectorAll('button'));
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var i = cards.indexOf(e.target);
+        btns.forEach(function (b, k) { b.classList.toggle('on', k === i); });
+      });
+    }, { rootMargin: '-60px 0px -72% 0px' });
+    cards.forEach(function (c) { io.observe(c); });
+  }
 })();
 </script>
 </body>

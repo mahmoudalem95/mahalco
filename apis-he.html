@@ -506,7 +506,40 @@
             .install-body { padding: 18px; }
             .install-header { padding: 16px 18px; }
         }
-    </style>
+    
+/* ==================== MOBILE LAYER — מהאלco (phone / tablet) ==================== */
+#mUp, #mClear { display: none }
+@media (max-width: 820px) {
+  .controls { padding: 10px 0 8px }
+  .controls .wrap { display: flex; flex-direction: column; gap: 8px }
+  .search { flex: 1 1 100%; min-height: 50px; border-radius: 10px; padding: 0 12px; position: relative }
+  .search input { font-size: 16px; min-height: 48px; width: 100%; border: 0; background: transparent }
+  #mClear { position: absolute; inset-inline-end: 6px; top: 50%; transform: translateY(-50%);
+    width: 34px; height: 34px; border-radius: 50%; border: 0; display: none; align-items: center;
+    justify-content: center; background: var(--rule, #ddd); color: var(--ink, #222); font-size: 15px;
+    cursor: pointer; z-index: 3 }
+  #mClear.on { display: flex }
+  .filters { flex-wrap: nowrap; overflow-x: auto; gap: 8px; scrollbar-width: none;
+    margin-inline: calc(-1 * max(16px, env(safe-area-inset-inline, 0px)));
+    padding-inline: max(16px, env(safe-area-inset-inline, 0px)); padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity }
+  .filters::-webkit-scrollbar { display: none }
+  .filters .chip { flex: 0 0 auto; min-height: 42px; font-size: 13px; padding: 8px 15px;
+    scroll-snap-align: start }
+  .count { font-size: 13px; margin: 0 }
+  a.leaf, #catalog .soon { min-height: 54px; padding-top: 13px; padding-bottom: 13px }
+  .branch > summary, .twig > summary { min-height: 52px; display: flex; align-items: center;
+    flex-wrap: wrap; gap: 6px }
+  .gate { min-height: 64px }
+  #mUp { display: flex; position: fixed; inset-inline-start: 14px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 45; width: 48px; height: 48px;
+    border-radius: 50%; align-items: center; justify-content: center; border: 0; font-size: 20px;
+    background: var(--ink, #1b1b1b); color: var(--paper, #fff); box-shadow: 0 6px 18px rgba(0,0,0,.28);
+    opacity: 0; pointer-events: none; transition: opacity .2s }
+  body.m-scrolled #mUp { opacity: 1; pointer-events: auto }
+}
+@media print { #mUp, #mClear { display: none !important } }
+</style>
 </head>
 <body>
 
@@ -1530,6 +1563,56 @@ document.querySelectorAll('a.share-cta').forEach(function (a) {
             navigator.serviceWorker.register('sw.js').catch(function () {});
         });
     }
+})();
+</script>
+
+<!-- ============ MOBILE LAYER — מהאלco ============ -->
+<script>
+(function () {
+  'use strict';
+  var MQ = window.matchMedia('(max-width:820px)');
+  var q = document.getElementById('q');
+
+  /* ---------- חיפוש נוח בטלפון ---------- */
+  if (q) {
+    q.setAttribute('enterkeyhint', 'search');
+    q.setAttribute('autocomplete', 'off');
+    q.setAttribute('autocorrect', 'off');
+    q.setAttribute('autocapitalize', 'off');
+
+    var clr = document.createElement('button');
+    clr.id = 'mClear'; clr.type = 'button'; clr.textContent = '✕';
+    clr.setAttribute('aria-label', 'נקה חיפוש');
+    (q.parentNode || document.body).appendChild(clr);
+
+    var sync = function () { clr.classList.toggle('on', !!q.value); };
+    q.addEventListener('input', sync);
+    clr.addEventListener('click', function () {
+      q.value = '';
+      q.dispatchEvent(new Event('input', { bubbles: true }));
+      sync(); q.focus();
+    });
+    q.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); if (MQ.matches) q.blur(); }
+    });
+    sync();
+  }
+
+  /* ---------- חזרה לראש הדף ---------- */
+  var up = document.createElement('button');
+  up.id = 'mUp'; up.type = 'button'; up.innerHTML = '↑';
+  up.setAttribute('aria-label', 'חזרה לראש הדף');
+  up.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  document.body.appendChild(up);
+
+  var t;
+  window.addEventListener('scroll', function () {
+    if (t) return;
+    t = setTimeout(function () {
+      t = null;
+      document.body.classList.toggle('m-scrolled', (window.scrollY || 0) > 400);
+    }, 140);
+  }, { passive: true });
 })();
 </script>
 </body>

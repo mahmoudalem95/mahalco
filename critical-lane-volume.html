@@ -266,6 +266,90 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
   section{break-inside:avoid}
   tr.total td{background:#f0d9b0;color:#111}
 }
+
+/* ==================== MOBILE LAYER — מהאלco (phone / tablet) ==================== */
+#mTop,#mRes,#mArms{display:none}
+@media (max-width:900px){
+  .wrap{max-width:none;padding:0 14px calc(104px + env(safe-area-inset-bottom))}
+  h1{font-size:24px;margin-top:12px}
+  .lede{font-size:14.5px;line-height:1.6;margin-bottom:18px}
+  section{margin-bottom:34px;scroll-margin-top:66px}
+  .sec-head{margin-bottom:14px}
+  .sec-head h2{font-size:18px}
+  .sec-head .meta{font-size:12px}
+
+  /* --- סרגל ניווט עליון דביק --- */
+  #mTop{display:flex;position:sticky;top:0;z-index:55;gap:6px;overflow-x:auto;
+    background:rgba(18,18,30,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--rule);padding:8px 14px;margin:0 -14px 4px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  #mTop::-webkit-scrollbar{display:none}
+  #mTop button{flex:0 0 auto;font-size:13px;padding:8px 13px;border-radius:99px;
+    min-height:42px;white-space:nowrap;background:var(--sunk)}
+  #mTop button.on{background:var(--pick);color:#12121e;border-color:var(--pick);font-weight:600}
+
+  /* --- זרוע אחת בכל פעם + סכמה מעליה --- */
+  .cross{display:flex;flex-direction:column;gap:10px}
+  #mArms{order:0;position:sticky;top:58px;z-index:45;display:flex;gap:6px;
+    background:var(--bg);padding:8px 0 9px;border-bottom:1px solid var(--rule2)}
+  #mArms button{flex:1;min-height:50px;font-size:13px;font-weight:600;border-radius:8px;padding:5px 2px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.15}
+  #mArms button small{font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink3)}
+  #mArms button.on{background:var(--pick);color:#12121e;border-color:var(--pick)}
+  #mArms button.on small{color:#4a3505}
+  #mArms button.armoff{opacity:.42}
+  .cell-c{order:1;min-height:0;padding:8px}
+  .cell-c svg{max-height:158px;height:auto;width:auto}
+  .cell-c .cap{font-size:11.5px;line-height:1.5}
+  .movement-hint{display:none}
+  .arm{order:2;display:none;padding:12px 13px}
+  .arm.m-on{display:block}
+  .arm-name{font-size:14.5px}
+  .fields{font-size:13.5px;gap:7px}
+  .fields .hd{font-size:11.5px}
+  .fields input[type=number]{font-size:16px;padding:10px 6px;min-height:46px;text-align:center}
+  .toggles{margin-top:13px;gap:2px;font-size:13.5px}
+  label.chk{min-height:44px}
+  input[type=checkbox]{width:20px;height:20px}
+
+  /* --- כפתורים וטפסים --- */
+  .bar{gap:8px;margin-top:14px}
+  .bar button{flex:1 1 calc(50% - 8px);min-height:48px;font-size:14.5px}
+  .thr{width:100%;margin-inline-start:0;justify-content:space-between;padding:8px 12px}
+  .thr input{width:92px;min-height:44px;font-size:16px}
+  select,input[type=text],.fc-inputs input{font-size:16px;min-height:44px}
+  .fc-inputs{gap:10px}
+  .fc-inputs label{font-size:12.5px}
+  .drop{padding:14px;gap:9px}
+  .drop button{width:100%;min-height:48px}
+  .drop .meta{font-size:12.5px}
+  details{padding:10px 13px}
+  summary{min-height:44px;display:flex;align-items:center}
+  pre{font-size:11.5px}
+  .capline{padding:12px 13px;font-size:13px}
+  .cmp .card{padding:14px}
+  .warnbox{font-size:13px}
+
+  /* --- טבלאות: רמז גלילה --- */
+  .m-swipe{font-size:11.5px;color:var(--ink3);margin:0 0 6px;display:flex;align-items:center;gap:5px}
+  .tblwrap,.chartwrap{scroll-snap-type:x proximity}
+  table{font-size:13.5px}
+  th,td{padding:8px 10px}
+  .schematic-cell{width:78px;min-width:78px}
+  .schematic-cell svg.ph{width:70px;height:70px}
+
+  /* --- שורת תוצאה קבועה בתחתית --- */
+  #mRes{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:center;gap:11px;
+    padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+    background:rgba(26,26,46,.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    border-top:1px solid var(--rule2);box-shadow:0 -6px 18px rgba(0,0,0,.35)}
+  #mRes .k{font-size:11px;color:var(--ink2);display:block;line-height:1.3}
+  #mRes .v{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1.1}
+  #mRes .v span{font-size:11px;color:var(--ink3);font-family:'Assistant',sans-serif}
+  #mRes .badge{font-weight:700;padding:4px 9px;border-radius:4px;font-size:11.5px;white-space:nowrap}
+  #mRes .go{margin-inline-start:auto;min-height:44px;font-size:13px;padding:8px 12px;white-space:nowrap}
+}
+@media print{#mTop,#mRes,#mArms,.m-swipe{display:none!important}.arm{display:block!important}}
 </style>
 </head>
 <body>
@@ -2222,6 +2306,161 @@ summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
   initForecast();
   initApiDoc();
   refreshAll();
+})();
+</script>
+
+<!-- ============ MOBILE LAYER — מהאלco ============ -->
+<script>
+(function () {
+  'use strict';
+  var MQ = window.matchMedia('(max-width:900px)');
+  var HEB = { N: 'צפון', S: 'דרום', E: 'מזרח', W: 'מערב' };
+  var ORDER = ['N', 'S', 'E', 'W'];
+  var wrap = document.querySelector('.wrap');
+  var cross = document.getElementById('cross');
+  if (!wrap || !cross) return;
+
+  /* ---------- 1. סרגל ניווט עליון ---------- */
+  var secs = wrap.querySelectorAll(':scope > section');
+  var targets = [
+    { el: secs[1], t: 'נתוני הצומת' },
+    { el: document.getElementById('results'), t: 'תוצאות' },
+    { el: secs[2], t: 'רמת שירות' },
+    { el: secs[0], t: 'ייבוא ספירה' },
+    { el: secs[4] || secs[3], t: 'עזרה' }
+  ].filter(function (x) { return x.el; });
+
+  var nav = document.createElement('nav');
+  nav.id = 'mTop';
+  nav.setAttribute('aria-label', 'ניווט מהיר בדף');
+  targets.forEach(function (x, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = x.t;
+    b.addEventListener('click', function () {
+      x.el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    x.btn = b;
+    nav.appendChild(b);
+  });
+  wrap.insertBefore(nav, wrap.firstChild);
+
+  /* הדגשת המקטע הנוכחי */
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        targets.forEach(function (x) { x.btn.classList.toggle('on', x.el === e.target); });
+      });
+    }, { rootMargin: '-64px 0px -70% 0px' });
+    targets.forEach(function (x) { io.observe(x.el); });
+  }
+
+  /* ---------- 2. זרוע אחת בכל פעם (טלפון) ---------- */
+  var armTabs = document.createElement('div');
+  armTabs.id = 'mArms';
+  armTabs.setAttribute('role', 'tablist');
+  armTabs.setAttribute('aria-label', 'בחירת זרוע לעריכה');
+  var btns = {};
+  ORDER.forEach(function (k) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.innerHTML = HEB[k] + '<small>—</small>';
+    b.addEventListener('click', function () { showArm(k); });
+    btns[k] = b;
+    armTabs.appendChild(b);
+  });
+  cross.insertBefore(armTabs, cross.firstChild);
+
+  var current = 'N';
+  function armBox(k) { return cross.querySelector('.arm[data-arm="' + k + '"]'); }
+  function showArm(k) {
+    current = k;
+    ORDER.forEach(function (a) {
+      var box = armBox(a);
+      if (box) box.classList.toggle('m-on', a === k);
+      btns[a].classList.toggle('on', a === k);
+      btns[a].setAttribute('aria-selected', a === k ? 'true' : 'false');
+    });
+    syncTabs();
+  }
+  function val(id) { var el = document.getElementById(id); return el ? (parseFloat(el.value) || 0) : 0; }
+  function syncTabs() {
+    ORDER.forEach(function (a) {
+      var box = armBox(a), on = box && !box.classList.contains('off');
+      var tot = val('f-' + a + '-L') + val('f-' + a + '-S') + val('f-' + a + '-R');
+      btns[a].classList.toggle('armoff', !on);
+      var s = btns[a].querySelector('small');
+      if (s) s.textContent = on ? (tot ? tot.toLocaleString('he-IL') : '0') : 'כבויה';
+    });
+  }
+
+  /* ---------- 3. שורת תוצאה קבועה ---------- */
+  var bar = document.createElement('div');
+  bar.id = 'mRes';
+  bar.innerHTML =
+    '<div><span class="k">נפח קריטי (השיטה הטובה)</span>' +
+    '<span class="v" id="mResV">—</span></div>' +
+    '<span class="badge" id="mResB">—</span>' +
+    '<button type="button" class="go">לתוצאות ↓</button>';
+  document.body.appendChild(bar);
+  bar.querySelector('.go').addEventListener('click', function () {
+    var r = document.getElementById('results');
+    if (r) r.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  function paint() {
+    if (typeof window.computeCriticalVolume !== 'function') return;
+    var best;
+    try { best = window.computeCriticalVolume().best; } catch (e) { return; }
+    var thrEl = document.getElementById('threshold');
+    var thr = thrEl ? (parseFloat(thrEl.value) || 0) : 0;
+    var v = document.getElementById('mResV'), b = document.getElementById('mResB');
+    if (!isFinite(best)) { v.textContent = '—'; b.textContent = '—'; return; }
+    v.innerHTML = Math.round(best) + ' <span>רכ/ש/נתיב</span>';
+    if (!thr) { b.textContent = ''; return; }
+    var pct = (best / thr) * 100;
+    var ok = pct <= 85, mid = pct > 85 && pct <= 100;
+    b.textContent = (ok ? 'מתחת לסף' : mid ? 'גבולי' : 'חורג') + ' · ' + Math.round(pct) + '%';
+    b.style.background = ok ? 'var(--ok-bg)' : mid ? 'var(--mid-bg)' : 'var(--warn-bg)';
+    b.style.color = ok ? 'var(--ok)' : mid ? 'var(--mid)' : 'var(--warn)';
+  }
+
+  var t;
+  function refresh() { clearTimeout(t); t = setTimeout(function () { paint(); syncTabs(); }, 120); }
+  document.addEventListener('input', refresh, true);
+  document.addEventListener('change', refresh, true);
+
+  /* ---------- 4. רמז גלילה לטבלאות רחבות ---------- */
+  function hints() {
+    if (!MQ.matches) return;
+    document.querySelectorAll('.tblwrap,.chartwrap,.table-mock-wrap').forEach(function (w) {
+      if (w.dataset.hinted) return;
+      if (w.scrollWidth - w.clientWidth < 24) return;
+      w.dataset.hinted = '1';
+      var p = document.createElement('p');
+      p.className = 'm-swipe';
+      p.textContent = '↔ החליקו לצדדים לצפייה בכל העמודות';
+      w.parentNode.insertBefore(p, w);
+    });
+  }
+
+  /* ---------- הפעלה / כיבוי לפי רוחב המסך ---------- */
+  function apply() {
+    if (MQ.matches) {
+      showArm(current);
+      paint();
+      setTimeout(hints, 400);
+    } else {
+      ORDER.forEach(function (a) { var b = armBox(a); if (b) b.classList.remove('m-on'); });
+    }
+  }
+  (MQ.addEventListener ? MQ.addEventListener('change', apply) : MQ.addListener(apply));
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
+  else apply();
+  setTimeout(apply, 300);
+  window.addEventListener('load', function () { setTimeout(hints, 600); });
 })();
 </script>
 </body>

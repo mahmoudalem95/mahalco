@@ -308,6 +308,15 @@
         .limit-card li { margin-bottom: 7px }
         .limit-card a { color: #8a6a12 }
         .limit-card .card-foot { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted) }
+        .limit-key { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0 2px }
+        .limit-key label { font-size: 13px; font-weight: 700; color: var(--muted); flex: none }
+        .limit-key input { flex: 1 1 190px; min-width: 0; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 3px; font: inherit; font-size: 14.5px; background: var(--paper-2); color: var(--ink) }
+        .limit-key button { flex: none; background: var(--marking); color: var(--ink); border: 0; padding: 10px 22px; border-radius: 3px; font: inherit; font-weight: 700; cursor: pointer; transition: background .15s ease }
+        .limit-key button:hover { background: #F3C455 }
+        .limit-msg { margin: 9px 0 0 !important; font-size: 13.5px; font-weight: 600 }
+        .limit-msg[data-state="err"] { color: var(--alert-ink) }
+        .limit-msg[data-state="ok"] { color: #2F6B3F }
+        .linkish { background: none; border: 0; padding: 0; font: inherit; font-size: 13px; color: #8a6a12; text-decoration: underline; cursor: pointer }
 
         /* ============ 2026-09 : audiences, flows, search, questions ============ */
         .strip { background: var(--ink); color: var(--paper); padding: 22px 0 24px; border-bottom: 1px solid var(--rule-dark) }
@@ -1240,81 +1249,138 @@
 
 <div id="limit-overlay" role="dialog" aria-modal="true" aria-labelledby="limit-title" data-on="0">
     <div class="limit-card">
-        <h2 id="limit-title">You have reached today's limit</h2>
-        <p>Ten procedures have been opened from this site today, which is the daily allowance for open access. Access reopens at midnight, your local time.</p>
-        <p class="reset">Access reopens in <b id="limit-countdown">—</b></p>
+        <h2 id="limit-title">An API key is required</h2>
+        <p>Every procedure on this site is locked until an API key is entered. This is your first use from this browser — enter your key once and the whole catalogue opens.</p>
+        <div class="limit-key">
+            <label for="limit-key-input">API key</label>
+            <input id="limit-key-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your API key">
+            <button id="limit-connect" type="button">Unlock</button>
+        </div>
+        <p class="limit-msg" id="limit-msg" hidden=""></p>
         <ul>
-            <li>For a higher limit or an API key: <a href="mailto:mahmoudalem95@icloud.com?subject=Daily%20limit">mahmoudalem95@icloud.com</a></li>
+            <li>No key yet? Request a 14-day trial key: <a href="mailto:mahmoudalem95@icloud.com?subject=API%20Trial%20Key">mahmoudalem95@icloud.com</a></li>
             <li>Phone: <a href="tel:+972546528572">‎+972-546-528572</a></li>
-            <li>Plans and pricing are listed on this page — open it tomorrow or send us an email.</li>
+            <li>Plans and pricing: <a href="#access" id="limit-plans">Developer $19 · Practice $79</a></li>
         </ul>
-        <p class="card-foot">The count is kept in this browser only and resets each calendar day.</p>
+        <p class="card-foot">The key is kept in this browser only. <button type="button" class="linkish" id="limit-dismiss">Close and keep browsing</button></p>
     </div>
 </div>
 
 <script>
-/* Daily use allowance — 10 procedures per day, plus flags for what is not built yet */
-(function() {
-    const LIMIT = 10;
-    const KEY = 'mahalco_daily_use_v1';
-    /* distinct procedures per day, not clicks: returning to the same one is free.
-       To restore click counting, bring back the 30-second check that was here. */
+/* Access gate — every procedure is locked from the first use until an API key is entered.
+   Replaces the former ten-procedures-per-day allowance. */
+(function () {
+    const STORE  = 'mahalco_api_key_v1';   // persistent key
+    const LEGACY = 'mahalco_api_key';      // session key written by the Connect box
 
-    let mem = null;
-    const stamp = () => {
-        const d = new Date();
-        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    };
-    const fresh = () => ({ date: stamp(), count: 0, last: {} });
-    function readState() {
-        let raw = null;
-        try { raw = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { raw = mem; }
-        if (!raw) raw = mem;
-        if (!raw || raw.date !== stamp() || typeof raw.count !== 'number') return fresh();
-        if (!raw.last) raw.last = {};
-        return raw;
-    }
-    function writeState(s) {
-        mem = s;
-        try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
-    }
-
-    const usage = document.getElementById('usage');
-    const usageMsg = document.getElementById('usage-msg');
+    const usage     = document.getElementById('usage');
+    const usageMsg  = document.getElementById('usage-msg');
     const usageFill = document.getElementById('usage-fill');
-    const overlay = document.getElementById('limit-overlay');
-    const countdown = document.getElementById('limit-countdown');
+    const uContact  = usage ? usage.querySelector('.u-contact') : null;
+    const overlay   = document.getElementById('limit-overlay');
+    const keyInput  = document.getElementById('limit-key-input');
+    const keyBtn    = document.getElementById('limit-connect');
+    const keyMsg    = document.getElementById('limit-msg');
+    const dismiss   = document.getElementById('limit-dismiss');
+    const plans     = document.getElementById('limit-plans');
+
+    let pendingHref = null;
+
+    function readKey() {
+        let k = '';
+        try { k = localStorage.getItem(STORE) || ''; } catch (e) {}
+        if (!k) { try { k = sessionStorage.getItem(LEGACY) || ''; } catch (e) {} }
+        k = String(k).trim();
+        return k || null;
+    }
+    function saveKey(k) {
+        try { localStorage.setItem(STORE, k); } catch (e) {}
+        try { sessionStorage.setItem(LEGACY, k); } catch (e) {}
+    }
+    function dropKey() {
+        try { localStorage.removeItem(STORE); } catch (e) {}
+        try { sessionStorage.removeItem(LEGACY); } catch (e) {}
+    }
+    function maskKey(k) { return k.length > 10 ? k.slice(0, 4) + '••••' + k.slice(-4) : k.charAt(0) + '••••'; }
 
     function render() {
-        const s = readState();
-        const left = Math.max(0, LIMIT - s.count);
-        usage.hidden = false;
-        usageMsg.innerHTML = left > 0
-            ? 'Used today: <b>' + s.count + '</b> of 10 procedures · <b>' + left + '</b> left'
-            : 'Daily limit reached — <b>10</b> of 10 procedures';
-        usageFill.style.width = Math.min(100, (s.count / LIMIT) * 100) + '%';
-        usage.classList.toggle('low', left <= 2);
-        return s;
+        const k = readKey();
+        if (usage) {
+            usage.hidden = false;
+            usage.classList.toggle('low', !k);
+            if (usageFill) usageFill.style.width = k ? '100%' : '0%';
+            usageMsg.innerHTML = k
+                ? 'API key active — every procedure is unlocked. <b>' + maskKey(k) + '</b> · <a href="#" id="usage-signout">remove key</a>'
+                : 'Locked — an API key is required before any procedure opens. <a href="#access">Plans</a> · <a href="mailto:mahmoudalem95@icloud.com?subject=API%20Key">request a trial key</a>';
+            if (uContact) uContact.hidden = !!k;
+        }
+        return k;
     }
 
-    function tickCountdown() {
-        const end = new Date(); end.setHours(24, 0, 0, 0);
-        let mins = Math.max(0, Math.round((end - Date.now()) / 60000));
-        const h = Math.floor(mins / 60); mins = mins % 60;
-        countdown.textContent = h > 0 ? '' + h + ' h ' + mins + ' min' : '' + mins + ' min';
-    }
-
-    let locked = false;
-    function lock() {
-        if (locked) return;
-        locked = true;
+    function openGate(href) {
+        if (href) pendingHref = href;
+        if (keyMsg) { keyMsg.hidden = true; keyMsg.textContent = ''; }
         overlay.setAttribute('data-on', '1');
         document.body.classList.add('locked');
-        tickCountdown();
-        setInterval(tickCountdown, 60000);
+        if (keyInput) setTimeout(function () { keyInput.focus(); }, 40);
+    }
+    function closeGate() {
+        overlay.setAttribute('data-on', '0');
+        document.body.classList.remove('locked');
     }
 
-    document.querySelectorAll('#catalog .soon').forEach(d => {
+    function unlock() {
+        const v = keyInput ? keyInput.value.trim() : '';
+        if (keyMsg) keyMsg.hidden = false;
+        if (!v) {
+            if (keyMsg) { keyMsg.dataset.state = 'err'; keyMsg.textContent = 'Enter the API key from your welcome email.'; }
+            if (keyInput) keyInput.focus();
+            return;
+        }
+        saveKey(v);
+        render();
+        if (keyMsg) { keyMsg.dataset.state = 'ok'; keyMsg.textContent = 'Key accepted — opening…'; }
+        const href = pendingHref;
+        pendingHref = null;
+        setTimeout(function () {
+            closeGate();
+            if (href) window.location.href = href;
+        }, 400);
+    }
+
+    /* every procedure link on the page is gated */
+    document.querySelectorAll('a[href]').forEach(function (a) {
+        const h = a.getAttribute('href') || '';
+        if (!h || h.charAt(0) === '#' || /^(mailto:|tel:)/i.test(h)) return;
+        if (a.closest('.masthead') || a.closest('footer') || a.closest('#access')) return;
+        if (a.classList.contains('share-cta')) return;
+        a.dataset.service = '1';
+    });
+
+    document.addEventListener('click', function (ev) {
+        const t = ev.target;
+        if (t && t.id === 'usage-signout') { ev.preventDefault(); dropKey(); render(); return; }
+        const a = (t && t.closest) ? t.closest('a[data-service]') : null;
+        if (!a) return;
+        if (readKey()) return;                 // unlocked
+        ev.preventDefault();
+        openGate(a.href);
+    }, true);
+
+    if (keyBtn) keyBtn.addEventListener('click', unlock);
+    if (keyInput) keyInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); unlock(); }
+    });
+    if (dismiss) dismiss.addEventListener('click', closeGate);
+    if (plans) plans.addEventListener('click', closeGate);
+    window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.getAttribute('data-on') === '1') closeGate();
+    });
+    window.addEventListener('mahalco-key', render);
+    window.addEventListener('pageshow', render);
+
+    /* still flag the procedures that are not built yet */
+    document.querySelectorAll('#catalog .soon').forEach(function (d) {
         d.classList.add('pending');
         const h = d.querySelector('h3');
         if (h && !h.querySelector('.flag-pending')) {
@@ -1325,25 +1391,8 @@
         }
         d.setAttribute('title', 'This procedure is not built yet — it will be added to the catalogue later');
     });
-    document.querySelectorAll('a.leaf').forEach(a => { a.dataset.service = '1'; });
 
-    document.addEventListener('click', function(ev) {
-        const a = ev.target.closest('a[data-service]');
-        if (!a) return;
-        const s = readState();
-        if (s.count >= LIMIT) { ev.preventDefault(); lock(); return; }
-        const id = a.getAttribute('href');
-        const now = Date.now();
-        if (s.last[id]) { s.last[id] = now; writeState(s); return; }
-        s.last[id] = now;
-        s.count += 1;
-        writeState(s);
-        render();
-    }, true);
-
-    const start = render();
-    if (start.count >= LIMIT) lock();
-    window.addEventListener('pageshow', () => { const s = render(); if (s.count >= LIMIT) lock(); });
+    render();
 })();
 
 (function() {
@@ -1437,7 +1486,9 @@
         msg.hidden = false;
         if (!v) { msg.textContent = 'Enter an API key to save it.'; msg.style.color = '#8a2f2f'; input.focus(); return; }
         try { sessionStorage.setItem('mahalco_api_key', v); } catch (e) {}
-        msg.textContent = 'Key saved in browser for convenience.';
+        try { localStorage.setItem('mahalco_api_key_v1', v); } catch (e) {}
+        window.dispatchEvent(new Event('mahalco-key'));
+        msg.textContent = 'Key saved — every procedure is unlocked in this browser.';
         msg.style.color = '#2f6b3f';
     });
 })();

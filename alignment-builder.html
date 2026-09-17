@@ -382,17 +382,27 @@ const MEDIAN_C = '#6f8a55';
 /* פלטת ציור: 'map' – מצב צבעוני, 'plan' – תכנית קווית בסגנון גיליון הנדסי */
 const PAL = {
   plan: ()=>S.view.mode==='plan',
-  bg:   ()=>PAL.plan()?'#ffffff':css('--map'),
-  grid: ()=>PAL.plan()?'rgba(0,0,0,.06)':css('--grid'),
-  road: ()=>PAL.plan()?'#ffffff':TYPES.lane.c,
-  turn: ()=>PAL.plan()?'#ffffff':'#35506a',
-  median:()=>PAL.plan()?'#d8d8d8':MEDIAN_C,
-  line: ()=>PAL.plan()?'#111111':'#f2f2f2',
-  edge: ()=>PAL.plan()?'#d9a400':'#f2f2f2',       // קו שפה צהוב (807)
-  sep:  ()=>PAL.plan()?'#111111':'rgba(0,0,0,.35)',
-  axis: ()=>PAL.plan()?'#c0392b':css('--axis'),
-  ink:  ()=>PAL.plan()?'#111111':css('--ink'),
-  fill: t=>{ if(!PAL.plan()) return t==='median'?MEDIAN_C:(TYPES[t]||TYPES.lane).c;
+  bg:   ()=>PAL.plan()?'#ffffff':PAL.areas()?'#f4f4f2':css('--map'),
+  grid: ()=>PAL.plan()||PAL.areas()?'rgba(0,0,0,.06)':css('--grid'),
+  road: ()=>PAL.plan()?'#ffffff':PAL.areas()?'#9b9b9b':TYPES.lane.c,
+  turn: ()=>PAL.plan()?'#ffffff':PAL.areas()?'#9b9b9b':'#35506a',
+  median:()=>PAL.plan()?'#d8d8d8':PAL.areas()?'#d24b43':MEDIAN_C,
+  line: ()=>PAL.plan()?'#111111':PAL.areas()?'#ffffff':'#f2f2f2',
+  edge: ()=>PAL.plan()?'#d9a400':PAL.areas()?'#ffffff':'#f2f2f2',       // קו שפה צהוב (807)
+  sep:  ()=>PAL.plan()?'#111111':PAL.areas()?'rgba(0,0,0,.25)':'rgba(0,0,0,.35)',
+  axis: ()=>PAL.plan()||PAL.areas()?'#c0392b':css('--axis'),
+  ink:  ()=>PAL.plan()||PAL.areas()?'#111111':css('--ink'),
+  areas:()=>S.view.mode==='areas',
+  fill: t=>{
+    if(PAL.areas()){
+      if(['median','medRow','barrier'].includes(t)) return '#d24b43';
+      if(['walk','front','plaza','sidewalk','aux','kerbArea'].includes(t)) return '#8a5a3b';
+      if(['green','open'].includes(t)) return '#7f9e63';
+      if(['fill','cut','ditch'].includes(t)) return '#cbbfa6';
+      if(['bikeL','bikeP'].includes(t)) return '#5f7d9a';
+      return '#9b9b9b';
+    }
+    if(!PAL.plan()) return t==='median'?MEDIAN_C:(TYPES[t]||TYPES.lane).c;
              if(t==='median'||t==='medRow'||t==='barrier') return '#d8d8d8';
              if(t==='fill'||t==='cut') return '#f3efe6';
              if(['walk','front','plaza','aux','green','kerbArea','sidewalk'].includes(t)) return '#f7f7f7';
@@ -1199,7 +1209,7 @@ function draw(){
   computeNetwork();
   drawBackground();
   S.axes.forEach((a,k)=>{ if(k===S.cur) return;
-    ctx.save(); ctx.globalAlpha=0.5; withAxis(k,()=>drawAxis(false)); ctx.restore(); });
+    ctx.save(); ctx.globalAlpha=(PAL.plan()||PAL.areas())?0.3:0.5; withAxis(k,()=>drawAxis(false)); ctx.restore(); });
   const R=drawAxis(true);
   drawJunctions();
   renderCornerPop();
@@ -1264,12 +1274,13 @@ function drawArmArrows(J,a){
   const c=a.cfg, z=S.axes[a.k]._zones.find(q=>q.jn===S.junctions.indexOf(J)); if(!z) return;
   const g=a.sgA, sgn=g<0?-1:1, ax=S.axes[a.k];
   const u0=Math.max(0,(a.uNose||8)-1);                          // קו עצירה – בקו ההמשך של שפת הדרך החוצה
-  if(u0+MK.stop>zE(z,a.side)) return;
+  if(u0+MK.stop>Math.min(zE(z,a.side),a.reach||1e9)) return;
   const Dat=st=>armD(a,st);
   // 810 קו עצירה לרוחב נתיבי הכניסה
   {
     const s1=a.sj+sgn*u0, s2=a.sj+sgn*(u0+MK.stop), F1=frameAt(a.els,s1), F2=frameAt(a.els,s2);
-    const lo=g*(Dat(s1)-(c.left||0)*c.wL), hi=g*EinAt(a,s1);
+    const freeR=(S.junctions[S.junctions.indexOf(J)].corners||[]).some(q=>q.free&&q.from===a);
+    const lo=g*(Dat(s1)-(c.left||0)*c.wL), hi=g*(EinAt(a,s1)-(freeR?c.right*c.wR:0));
     const P=(F,o)=>w2s(add(F.p,mul(F.n,o)));
     const q=[P(F1,lo),P(F1,hi),P(F2,hi),P(F2,lo)];
     ctx.beginPath(); q.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.closePath(); ctx.fillStyle=PAL.line(); ctx.fill();
@@ -1279,7 +1290,7 @@ function drawArmArrows(J,a){
   const dists=MK.arrowAt[V]||MK.arrowAt[50];
   const L=laneUse(c);
   const put=(off,kinds,w,maxU)=>dists.forEach(d=>{
-    const u=u0+MK.stop+d; if(maxU!==undefined&&u+2.4>maxU) return; if(u+2.4>zE(z,a.side)) return;
+    const u=u0+MK.stop+d; if(maxU!==undefined&&u+2.4>maxU) return; if(u+2.4>Math.min(zE(z,a.side),a.reach||1e9)) return;
     const st=a.sj+sgn*u, F=frameAt(a.els,st), f=mul({x:F.n.y,y:-F.n.x},-sgn);
     drawArrow(add(F.p,mul(F.n,g*off(st))),f,kinds, w<3.2?0.75:1);
   });
@@ -1303,7 +1314,7 @@ function drawJunctionEdges(J,arms,cs){
   const zoneOf=a=>S.axes[a.k]._zones.find(z=>z.jn===n);
   const shape=pts=>{ ctx.beginPath(); pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);}); };
   const along=(a,sign,edge,u0,u1,withRows)=>{
-    const z=zoneOf(a); if(!z) return; u1=Math.min(u1,zE(z,a.side));
+    const z=zoneOf(a); if(!z) return; u1=Math.min(u1,zE(z,a.side),a.reach||1e9);
     if(u1<=u0) return;
     const sg=a.sgA<0?-1:1, N=Math.max(4,Math.ceil((u1-u0)/0.75)), st=[];
     for(let q=0;q<=N;q++) st.push(a.sj+sg*(u0+(u1-u0)*q/N));
@@ -1320,7 +1331,7 @@ function drawJunctionEdges(J,arms,cs){
   };
   // נתיבי מיזוג (פנייה חופשית) לאורך זרוע היציאה
   arms.forEach(a=>{ if(!a.merge) return;
-    const z=zoneOf(a), sign=-a.sgA, sg=a.sgA<0?-1:1, m=a.merge, c=a.cfg, L=Math.min(m.Lp+m.Lt,z?zE(z,a.side):0);
+    const z=zoneOf(a), sign=-a.sgA, sg=a.sgA<0?-1:1, m=a.merge, c=a.cfg, L=Math.min(m.Lp+m.Lt, z?zE(z,a.side):0, a.reach||1e9);
     const st=[]; for(let q=0;q<=40;q++) st.push(a.sj+sg*L*q/40);
     const P=(v,o)=>{ const F=frameAt(a.els,v); return add(F.p,mul(F.n,sign*o)); };
     const base=v=>armD(a,v)+c.out*c.wT;
@@ -1548,13 +1559,15 @@ function drawAxis(active){
       const LANE=PAL.road(), LEFTC=PAL.turn(), RIGHTC=PAL.turn(), WHITE=PAL.line();
       z.arms.forEach(A=>{
         const c=A.cfg, g=A.sgA;
-        const ap=zp.filter(v=> g<0 ? v<=z.sj+1e-9 : v>=z.sj-1e-9);
+        const u0=Math.max(0,(z.nose&&z.nose[A.side]!==undefined?z.nose[A.side]:0)-1);
+        const ap=zp.filter(v=> (g<0 ? v<=z.sj+1e-9 : v>=z.sj-1e-9) && Math.abs(v-z.sj)>=u0-1e-9);
+        const apF=zp.filter(v=> g<0 ? v<=z.sj+1e-9 : v>=z.sj-1e-9);
         if(ap.length<2) return;
         const u=st=>Math.abs(st-z.sj);
         const D=st=>m+widenAt(zs,st);
         const fL=st=>c.left?turnF(u(st),c.storeL,c.taperL):0;
         const fR=st=>c.right?turnF(u(st),c.storeR,c.taperR):0;
-        const band=(f0,f1,col)=>{ const a0=offsetPts(R.els,f0,ap).pts, a1=offsetPts(R.els,f1,ap).pts;
+        const band=(f0,f1,col)=>{ const a0=offsetPts(R.els,f0,apF).pts, a1=offsetPts(R.els,f1,apF).pts;
           path(a0.concat(a1.slice().reverse())); ctx.closePath(); ctx.fillStyle=col; ctx.fill(); };
         const axA=S.axes[S.cur];
         const line=(f,kind)=>{ setMark(kind||'807',axA,'jct'); path(offsetPts(R.els,f,ap).pts); ctx.stroke(); };
@@ -1678,6 +1691,7 @@ function drawAxis(active){
     if(e.type==='line'){
       const seg=segIndexOfLine(e);
       ctx.strokeStyle= badSeg.has(seg)? css('--bad') : PAL.axis();
+      if(PAL.areas()) ctx.setLineDash([12,3,2,3]);
       const a=w2s(e.from), b=w2s(e.to);
       ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
     }else if(e.type==='spiral'){
@@ -2272,7 +2286,15 @@ $('mapOp').oninput=e=>{ if(S.bg){ S.bg.op=e.target.value/100; draw(); } };
 $('bCalib').onclick=()=>{ if(!S.bg) return; S.calib=S.calib?null:{pts:[]}; renderMapBox(); if(S.calib) toast('הקישו על נקודה ידועה במפה'); };
 $('bMapHide').onclick=()=>{ if(S.bg){ S.bg.show=S.bg.show===false; draw(); } };
 $('bMapDel').onclick=()=>{ S.bg=null; S.calib=null; renderMapBox(); draw(); };
-$('bPlan').onclick=()=>{ S.view.mode=S.view.mode==='plan'?'map':'plan'; $('bPlan').classList.toggle('on',S.view.mode==='plan'); draw(); };
+$('bPlan').onclick=()=>{
+  const seq=['map','plan','areas'], k=(seq.indexOf(S.view.mode)+1)%3;
+  S.view.mode=seq[k];
+  $('bPlan').classList.toggle('on',S.view.mode!=='map');
+  $('bPlan').textContent={map:'📐',plan:'🎨',areas:'🔴'}[S.view.mode];
+  $('bPlan').title={map:'תצוגה צבעונית',plan:'תצוגת תכנית הנדסית',areas:'חלוקת אזורים'}[S.view.mode];
+  toast({map:'תצוגה צבעונית',plan:'תצוגת תכנית',areas:'חלוקת אזורים: מיסעה אפור · מפרדות ואיים אדום · מדרכות חום'}[S.view.mode]);
+  draw();
+};
 $('bExport').onclick=()=>{
   const R=solve();
   const out={ version:4, crs:S.bg&&S.bg.geo?'ITM (לפי מפת הרקע)':'local-m', env:S.env, median_at_junction:MEDIAN_JCT,

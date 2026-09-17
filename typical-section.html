@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="חתך טיפוסי עירוני ובין-עירוני – בניית חתך רוחב לפי ההנחיות, בדיקות חיות וגיליון A0 בקנה מידה אמיתי.">
+<meta name="description" content="חתך טיפוסי עירוני ובין-עירוני – בניית חתך רוחב לפי הנחיות נתיבי ישראל (כרך 1, פרק 3), בדיקות חיות מול ההנחיות, מדריך ההנחיות המלא וגיליון A0 בקנה מידה אמיתי.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-<title>MAHALCO — חתך טיפוסי עירוני ובין-עירוני</title>
+<title>MAHALCO — חתך טיפוסי + מדריך ההנחיות</title>
 <style>
 :root{
   --bg:#F2F2F7; --card:#FFFFFF; --fill:#EFEFF4; --fill-2:#E4E4EA; --label:#1C1C1E; --label-2:#6C6C70; --label-3:#9A9AA0;
@@ -243,7 +243,17 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
   .stp input{width:54px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-@media print{.nav,.insp,.canvas-bar,.ribbon-wrap{display:none}}
+@media print{.nav,.insp,.canvas-bar,.ribbon-wrap,.guide-ov{display:none}}
+
+/* ---------- guide overlay (מדריך ההנחיות, פרק 3) ---------- */
+.guide-ov{position:fixed;inset:0;z-index:200;background:var(--bg);opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .28s var(--ease),transform .28s var(--ease)}
+.guide-ov.on{opacity:1;pointer-events:auto;transform:none}
+.guide-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;min-height:56px;padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));
+  background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--sep)}
+.guide-bar b{font-size:16px;font-weight:700}
+.guide-bar small{display:block;font-size:12px;font-weight:500;color:var(--label-2)}
+.guide-ov iframe{display:block;width:100%;height:calc(100% - 56px - env(safe-area-inset-top));border:0;background:var(--bg)}
+@media (max-width:600px){.guide-bar b{font-size:15px}.guide-bar small{display:none}}
 </style>
 
 <!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
@@ -447,6 +457,7 @@ html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
     <div><h1>חתך טיפוסי<small>עירוני ובין-עירוני · גיליון A0 בקנה מידה</small></h1></div>
     <span class="sp"></span>
     <button class="pill ok" id="statusPill" type="button" aria-live="polite"><i></i><span>תקין</span></button>
+    <button class="nbtn" id="btnGuide" type="button" title="מדריך ההנחיות – פרק 3, כרך 1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="t">מדריך</span></button>
     <button class="nbtn" id="btnUndo" type="button" aria-label="ביטול" title="ביטול" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h-7a5 5 0 0 0 0 10h3"/><path d="M12 4l3 3-3 3"/></svg></button>
     <button class="nbtn" id="btnRedo" type="button" aria-label="חזרה" title="חזרה" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h7a5 5 0 0 1 0 10h-3"/><path d="M12 4L9 7l3 3"/></svg></button>
     <button class="nbtn" id="btnAddSheet" type="button" title="הוספת החתך הנוכחי לגיליון"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg><span class="t">לגיליון</span></button>
@@ -569,6 +580,16 @@ html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grp" id="sheetGrp"></div><button class="cancel" type="button" id="sheetCancel">ביטול</button></div>
 <div class="toast" id="toast" role="status"><span id="toastMsg"></span><button type="button" id="toastAct" hidden>בטל</button></div>
+
+<!-- מדריך ההנחיות (פרק 3, כרך 1) – נטען פנימה כמסמך עצמאי, כדי לשמר את כל הפונקציונליות שלו (תוכן עניינים, ניגודיות וכו') -->
+<div class="guide-ov" id="guideOv" role="dialog" aria-modal="true" aria-label="מדריך ההנחיות">
+  <div class="guide-bar">
+    <button class="nbtn" id="btnGuideClose" type="button" aria-label="סגירת המדריך" title="סגירה"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div><b>מדריך ההנחיות</b><small>הנחיות לתכן גיאומטרי של דרכים בין-עירוניות · כרך 1, פרק 3</small></div>
+  </div>
+  <iframe id="guideFrame" title="החתך לרוחב הדרך – מדריך ההנחיות"></iframe>
+</div>
+<textarea id="guideSrc" hidden aria-hidden="true">__GUIDE_HTML__</textarea>
 
 <!-- export actions (used by the action sheet) -->
 <div hidden>
@@ -1397,6 +1418,36 @@ UI.presets(); UI.tiles(); UI.enhance(document); UI.place();
 UI.after(false);
 requestAnimationFrame(()=>{ UI.segAll(); UI.after(false); });
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>UI.segAll());
+</script>
+
+<!-- ---------------- מדריך ההנחיות: פתיחה/סגירה של הכלי המשולב ---------------- -->
+<script>
+(function(){
+  var ov = document.getElementById('guideOv'), frame = document.getElementById('guideFrame'),
+      openBtn = document.getElementById('btnGuide'), closeBtn = document.getElementById('btnGuideClose'),
+      loaded = false, lastFocus = null;
+  function load(){
+    if(loaded) return;
+    var src = document.getElementById('guideSrc').value;
+    frame.srcdoc = src;
+    loaded = true;
+  }
+  function open(){
+    load();
+    lastFocus = document.activeElement;
+    ov.classList.add('on');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+  function close(){
+    ov.classList.remove('on');
+    document.body.style.overflow = '';
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && ov.classList.contains('on')) close(); });
+})();
 </script>
 </body>
 </html>

@@ -18,7 +18,7 @@
   --paper:#fbfaf6; --bar:rgba(242,242,247,.82); --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06);
   --r-l:14px; --r-m:10px; --r-s:8px; --insp:420px; --ease:cubic-bezier(.2,.8,.2,1);
 }
-:root[data-theme="dark"]{ --bg:#000; --card:#1C1C1E; --fill:#2C2C2E; --fill-2:#3A3A3C; --label:#F2F2F7; --label-2:#AEAEB2; --label-3:#7C7C80;
+/* dark: לפי בחירת האתר */ :root[data-theme="dark"]{ --bg:#000; --card:#1C1C1E; --fill:#2C2C2E; --fill-2:#3A3A3C; --label:#F2F2F7; --label-2:#AEAEB2; --label-3:#7C7C80;
     --sep:rgba(84,84,88,.55); --tint:#5AA0F2; --tint-soft:rgba(90,160,242,.16); --bar:rgba(18,18,20,.8);
     --red:#FF6B5E; --red-soft:rgba(255,107,94,.14); --amber:#F2B53A; --green:#4CD27B; --shadow:none }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -30,6 +30,7 @@ button{cursor:pointer;touch-action:manipulation}
 :focus-visible{outline:3px solid var(--tint);outline-offset:2px;border-radius:6px}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
+/* ---------- navigation bar ---------- */
 .nav{position:sticky;top:0;z-index:40;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
   border-bottom:.5px solid var(--sep);padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
 .nav-in{display:flex;align-items:center;gap:10px;min-height:56px}
@@ -46,6 +47,7 @@ button{cursor:pointer;touch-action:manipulation}
 .pill.warn{background:var(--amber-soft);color:var(--amber)}
 .pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
 
+/* ---------- layout ---------- */
 .shell{display:grid;grid-template-columns:minmax(0,1fr) var(--insp);gap:18px;padding:16px max(16px,env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
   max-width:1500px;margin:0 auto;align-items:start}
 .stage{grid-column:1;grid-row:1;position:sticky;top:74px;display:flex;flex-direction:column;gap:14px;min-width:0}
@@ -56,12 +58,13 @@ button{cursor:pointer;touch-action:manipulation}
   .insp{grid-column:1;grid-row:2}
 }
 
+/* ---------- canvas card ---------- */
 .canvas{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);overflow:hidden}
 .canvas-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:.5px solid var(--sep)}
 .seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;position:relative;isolation:isolate}
 .seg button{position:relative;z-index:1;border:0;background:none;min-height:32px;padding:0 13px;border-radius:7px;font-size:14px;font-weight:500;color:var(--label);white-space:nowrap}
 .seg .knob{position:absolute;z-index:0;top:2px;bottom:2px;border-radius:7px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);transition:left .32s var(--ease),width .32s var(--ease)}
-:root[data-theme="dark"] .seg .knob{background:#636366}
+/* dark: לפי בחירת האתר */ :root[data-theme="dark"] .seg .knob{background:#636366}
 .seg button[aria-pressed="true"]{font-weight:600}
 .seg.full{display:flex}
 .seg.full button{flex:1;padding:0 6px}
@@ -74,6 +77,7 @@ button{cursor:pointer;touch-action:manipulation}
 #drawing svg{direction:ltr;display:block;width:100%;height:auto;background:var(--paper)}
 #drawing .selrect{fill:var(--hi-soft);stroke:var(--hi);stroke-width:.6;transition:x .25s var(--ease),width .25s var(--ease)}
 
+/* ---------- ribbon (the live strip) ---------- */
 .ribbon-wrap{padding:10px 12px 12px;border-top:.5px solid var(--sep)}
 .ribbon-head{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;font-size:13px;color:var(--label-2)}
 .ribbon-head b{color:var(--label);font-size:15px;font-variant-numeric:tabular-nums}
@@ -94,6 +98,7 @@ button{cursor:pointer;touch-action:manipulation}
 .ribbon-hint{font-size:12px;color:var(--label-3);margin-top:6px}
 .tip{position:fixed;z-index:80;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;font-size:13px;font-weight:600;padding:6px 10px;border-radius:9px;transform:translate(-50%,-120%);direction:ltr;white-space:nowrap;font-variant-numeric:tabular-nums}
 
+/* ---------- readouts ---------- */
 .readouts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:1023px){ .readouts{grid-template-columns:1fr} }
 .box{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:14px 16px}
@@ -101,7 +106,7 @@ button{cursor:pointer;touch-action:manipulation}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .stat{background:var(--fill);border-radius:var(--r-m);padding:9px 11px}
 .stat span{display:block;font-size:12px;color:var(--label-2);line-height:1.25}
-.stat b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap}
+.stat b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px}
 .stat b small{font-size:12px;font-weight:500;color:var(--label-2)}
 .stat.pulse{animation:pulse .5s var(--ease)}
 @keyframes pulse{40%{background:var(--tint-soft)}}
@@ -119,6 +124,7 @@ button{cursor:pointer;touch-action:manipulation}
 .sheetlist button[data-a="rm"]{color:var(--red)}
 .hint{font-size:13px;color:var(--label-2);margin:6px 0 0;line-height:1.45}
 
+/* ---------- inspector ---------- */
 .tabs{position:sticky;top:74px;z-index:15;background:var(--bg);padding:0 0 10px}
 @media (max-width:1023px){ .tabs{position:static} }
 .pane{display:none}
@@ -137,6 +143,7 @@ button{cursor:pointer;touch-action:manipulation}
 select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;color:var(--label-2);font-size:16px;padding:8px 18px 8px 0;text-align:end;max-width:100%}
 .chev{pointer-events:none;position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--label-3);font-size:13px}
 
+/* stepper */
 .stp{display:inline-flex;align-items:center;background:var(--fill);border-radius:9px;height:34px;direction:ltr;flex:none}
 .stp button{width:38px;height:34px;border:0;background:none;color:var(--label);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;border-radius:9px}
 .stp button:active{background:var(--fill-2)}
@@ -146,11 +153,13 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
 .stp.off{opacity:.45;pointer-events:none}
 .unit{font-size:13px;color:var(--label-2);margin-inline-start:-6px}
 
+/* switch */
 .sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--fill-2);position:relative;flex:none;cursor:pointer;transition:background .25s;margin:0}
 .sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s var(--ease)}
 .sw:checked{background:var(--green)}
 .sw:checked::after{transform:translateX(-20px)}
 
+/* presets */
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:10px}
 .pcard{border:0;text-align:start;background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:10px;display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s,box-shadow .2s}
 .pcard:active{transform:scale(.97)}
@@ -165,7 +174,9 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
 #presetFilter{overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
 #presetFilter::-webkit-scrollbar{display:none}
 #presetFilter button{flex:0 0 auto;padding:0 12px}
+.stat b{white-space:nowrap}
 
+/* cells */
 .cells{display:flex;flex-direction:column}
 .cell{position:relative;padding:10px 12px 10px 12px;padding-inline-start:16px;background:var(--card);transition:background .25s}
 .cell+.cell{border-top:.5px solid var(--sep)}
@@ -198,9 +209,11 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
 .rowbtns button{flex:1;min-height:44px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--shadow);color:var(--tint);font-weight:600;font-size:15px}
 .rowbtns button.danger{color:var(--red)}
 
+/* edges */
 .edgecard .li.sub{transition:opacity .2s}
 .edgecard .li.sub[hidden]{display:none}
 
+/* action sheet */
 .scrim{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .25s}
 .scrim.on{opacity:1;pointer-events:auto}
 .sheet{position:fixed;z-index:91;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));width:min(420px,calc(100% - 24px));transform:translate(-50%,120%);transition:transform .35s var(--ease)}
@@ -213,16 +226,11 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
 .sheet button.cancel{background:var(--card);border-radius:14px;font-weight:600}
 .sheet button:disabled{color:var(--label-3)}
 
+/* toast */
 .toast{position:fixed;z-index:95;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;border-radius:22px;padding:10px 8px 10px 18px;padding-inline-start:18px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;transition:transform .35s var(--ease),opacity .25s;max-width:calc(100% - 32px)}
 .toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 .toast button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:14px;min-height:30px;padding:0 12px;font-weight:600;font-size:14px}
 .toast button[hidden]{display:none}
-
-/* ===== DXF export kit ===== */
-.btn-primary{width:100%;min-height:44px;border:0;border-radius:12px;background:var(--tint);color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:10px}
-.btn-primary:active{filter:brightness(.92)}
-.btn-primary[disabled]{opacity:.5;cursor:default}
-#dxfInfo{font-size:12.5px;color:var(--label-2);line-height:1.5;margin:10px 0 0}
 
 @media (max-width:600px){
   .stage{position:static}
@@ -237,6 +245,7 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media print{.nav,.insp,.canvas-bar,.ribbon-wrap,.guide-ov{display:none}}
 
+/* ---------- guide overlay (מדריך ההנחיות, פרק 3) ---------- */
 .guide-ov{position:fixed;inset:0;z-index:200;background:var(--bg);opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .28s var(--ease),transform .28s var(--ease)}
 .guide-ov.on{opacity:1;pointer-events:auto;transform:none}
 .guide-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;min-height:56px;padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));
@@ -247,6 +256,7 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
 @media (max-width:600px){.guide-bar b{font-size:15px}.guide-bar small{display:none}}
 </style>
 
+<!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
 <script data-light="#F2F2F7" data-dark="#000000" data-slot=".nav-in">
 (function(){
   var d=document.documentElement, K='mh-theme', G='mh-glass';
@@ -364,6 +374,7 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
   --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
 html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
 
+/* ---- backdrop for glass ---- */
 #mh-bg{display:none}
 html[data-glass="on"]{background:var(--mh-glass-base)!important}
 html[data-glass="on"] body{background:transparent!important}
@@ -373,6 +384,7 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
   radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
   var(--mh-glass-base)}
 
+/* ---- look button ---- */
 .mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
   border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
@@ -384,6 +396,7 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
   bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
 @media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
 
+/* ---- popover ---- */
 .mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
   color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
@@ -413,24 +426,1028 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
 .mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
 @media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
 
+/* ---- התאמות לעמוד הזה ---- */
 html[data-glass="on"] .canvas,
 html[data-glass="on"] .box,
 html[data-glass="on"] .group,
 html[data-glass="on"] .pcard,
 html[data-glass="on"] .tile,
-html[data-glass="on"] .rowbtns button{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] .rowbtns button,
+html[data-glass="on"] .welcome,
+html[data-glass="on"] .dayhead,
+html[data-glass="on"] .note-card{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
 html[data-glass="on"] .stat,
 html[data-glass="on"] .stp,
 html[data-glass="on"] .sheetlist div,
-html[data-glass="on"] .seg:not(.full){background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .seg:not(.full),
+html[data-glass="on"] .pchip:not([aria-pressed="true"]){background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
 html[data-glass="on"] .nav,
+html[data-glass="on"] .tabbar,
+html[data-glass="on"] .savebar,
 html[data-glass="on"] .tabs{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
 html[data-glass="on"] .cell:not(.sel):not(.drag){background:transparent!important}
 html[data-glass="on"] .sheetwrap{background:color-mix(in srgb,var(--paper) 92%,transparent)}
-html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
+html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
+
 </style>
 </head>
 <body>
 <header class="nav">
   <div class="nav-in">
-    <div><h1>חתך טיפוסי<small>עירוני ובין-עירוני · גיליון A0 בקנה מידה</small></h
+    <div><h1>חתך טיפוסי<small>עירוני ובין-עירוני · גיליון A0 בקנה מידה</small></h1></div>
+    <span class="sp"></span>
+    <button class="pill ok" id="statusPill" type="button" aria-live="polite"><i></i><span>תקין</span></button>
+    <button class="nbtn" id="btnGuide" type="button" title="מדריך ההנחיות – פרק 3, כרך 1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="t">מדריך</span></button>
+    <button class="nbtn" id="btnUndo" type="button" aria-label="ביטול" title="ביטול" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h-7a5 5 0 0 0 0 10h3"/><path d="M12 4l3 3-3 3"/></svg></button>
+    <button class="nbtn" id="btnRedo" type="button" aria-label="חזרה" title="חזרה" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h7a5 5 0 0 1 0 10h-3"/><path d="M12 4L9 7l3 3"/></svg></button>
+    <button class="nbtn" id="btnAddSheet" type="button" title="הוספת החתך הנוכחי לגיליון"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg><span class="t">לגיליון</span></button>
+    <button class="nbtn primary" id="btnShare" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="t">ייצוא</span></button>
+  </div>
+</header>
+
+<div class="shell">
+<section class="stage" aria-label="שרטוט">
+  <div class="canvas">
+    <div class="canvas-bar">
+      <div class="seg" id="viewSeg" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" aria-pressed="true" data-v="section">חתך מוגדל</button>
+        <button class="tab" role="tab" aria-selected="false" aria-pressed="false" data-v="sheet">גיליון A0</button>
+      </div>
+      <div class="zoom"><button type="button" id="zOut" aria-label="הקטנה">−</button><output id="zVal">100%</output><button type="button" id="zIn" aria-label="הגדלה">+</button></div>
+    </div>
+    <div class="sheetwrap" id="sheetwrap"><div id="drawing"></div></div>
+    <div class="ribbon-wrap">
+      <div class="ribbon-head"><span>רוחב כולל</span><b id="rbTot">0.00 מ׳</b><span class="gap" id="rbGap"></span></div>
+      <div class="ribbon" id="ribbon" aria-label="פס רוחבים – גררו את המפרידים לשינוי רוחב"></div>
+      <div class="ribbon-hint">הקישו על תא לבחירה. גררו מפריד בין שני תאים כדי להעביר רוחב ביניהם – הרוחב הכולל נשמר.</div>
+    </div>
+  </div>
+  <div class="readouts" id="readouts">
+    <div class="box"><h3>נתוני החתך</h3><div class="grid3" id="stats"></div></div>
+    <div class="box" id="checksBox"><h3>בדיקות מול ההנחיות</h3><div id="checks"></div></div>
+  </div>
+</section>
+
+<aside class="insp" aria-label="הגדרות">
+  <div class="tabs"><div class="seg full" id="paneSeg">
+    <button type="button" data-p="p-start" aria-pressed="true">פתיחה</button>
+    <button type="button" data-p="p-cells" aria-pressed="false">תאים</button>
+    <button type="button" data-p="p-edges" aria-pressed="false">קצוות</button>
+    <button type="button" data-p="p-pave" aria-pressed="false">מבנה</button>
+    <button type="button" data-p="p-sheet" aria-pressed="false">גיליון</button>
+  </div></div>
+
+  <!-- פתיחה -->
+  <div class="pane on" id="p-start">
+    <p class="gh">פרטי החתך</p>
+    <div class="group">
+      <div class="li"><label for="title">כותרת</label><input id="title" value="חתך טיפוסי"></div>
+      <div class="li"><span class="lb">הקשר</span>
+        <select id="ctx" class="vh" tabindex="-1" aria-hidden="true"><option value="urban">עירוני</option><option value="inter">בין-עירוני</option></select>
+        <div class="seg" data-bind="ctx"></div></div>
+      <div class="li"><label for="rowTarget">זכות דרך יעד</label><div class="stp" data-step="0.5"><input id="rowTarget" type="number" step="0.1" min="0" value="0" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+    </div>
+    <p class="gf">0 = ללא יעד. כשיש יעד, הפס שמעל מראה בכל רגע כמה חסר או עודף.</p>
+
+    <p class="gh">תבנית פתיחה</p>
+    <select id="preset" class="vh" tabindex="-1" aria-hidden="true"></select>
+    <div class="seg full" id="presetFilter"></div>
+    <div class="pgrid" id="presetGrid"></div>
+    <p class="hint" id="presetSrc"></p>
+  </div>
+
+  <!-- תאים -->
+  <div class="pane" id="p-cells">
+    <p class="gh">תאים, משמאל לימין בשרטוט</p>
+    <div class="group"><div class="cells" id="cells"></div></div>
+    <div class="rowbtns"><button id="btnMirror" type="button">שיקוף – השלמת הצד השני</button><button id="btnClear" type="button" class="danger">ניקוי</button></div>
+    <p class="gh">הוספת תא <span id="addWhere" style="color:var(--label-3)"></span></p>
+    <select id="addType" class="vh" tabindex="-1" aria-hidden="true"></select>
+    <button id="btnAdd" class="vh" tabindex="-1" type="button">הוספה</button>
+    <div class="tiles" id="tiles"></div>
+  </div>
+
+  <!-- קצוות -->
+  <div class="pane" id="p-edges">
+    <p class="gh">קצה שמאלי</p><div class="group edgecard" id="edgeL"></div>
+    <p class="gh">קצה ימני</p><div class="group edgecard" id="edgeR"></div>
+    <p class="gf">בסוללה ובחפירה: שיפוע 1:n וגובה המדרון. בחפירה נוסף עומק התעלה.</p>
+  </div>
+
+  <!-- מבנה -->
+  <div class="pane" id="p-pave">
+    <p class="gh">מבנה מסעה</p>
+    <div class="group">
+      <div class="li"><label for="dSurf">שכבות אספלט</label><div class="stp" data-step="0.01"><input id="dSurf" type="number" step="0.01" value="0.10" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li"><label for="dBase">מצע</label><div class="stp" data-step="0.05"><input id="dBase" type="number" step="0.01" value="0.25" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li"><label for="dSub">מצע תחתון / שתית</label><div class="stp" data-step="0.05"><input id="dSub" type="number" step="0.01" value="0.30" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li"><label for="tPave">הצגת מבנה מסעה</label><input type="checkbox" class="sw" id="tPave" checked></div>
+    </div>
+    <p class="gh">שיפועים ואבן שפה</p>
+    <div class="group">
+      <div class="li"><label for="cfRoad">שיפוע רוחבי כביש</label><div class="stp" data-step="0.5"><input id="cfRoad" type="number" step="0.1" value="2.0" inputmode="decimal"></div><span class="unit">%</span></div>
+      <div class="li"><label for="cfSide">שיפוע מדרכה / שול</label><div class="stp" data-step="0.5"><input id="cfSide" type="number" step="0.1" value="2.0" inputmode="decimal"></div><span class="unit">%</span></div>
+      <div class="li"><label for="curbH">גובה אבן שפה</label><div class="stp" data-step="0.01"><input id="curbH" type="number" step="0.01" value="0.15" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+    </div>
+  </div>
+
+  <!-- גיליון -->
+  <div class="pane" id="p-sheet">
+    <p class="gh">קנה מידה</p>
+    <select id="scale" class="vh" tabindex="-1" aria-hidden="true"><option value="100">1:100</option><option value="200" selected>1:200</option><option value="250">1:250</option><option value="500">1:500</option></select>
+    <div class="seg full" data-bind="scale"></div>
+    <p class="gh">כותרת הגיליון</p>
+    <div class="group">
+      <div class="li"><label for="proj">פרויקט</label><input id="proj" value="" placeholder="שם הפרויקט"></div>
+      <div class="li"><label for="drawn">שורטט ע״י</label><input id="drawn" value="" placeholder="שם"></div>
+      <div class="li"><label for="dwg">מס׳ גיליון</label><input id="dwg" value="TS-01"></div>
+    </div>
+    <p class="gh">מה מופיע בשרטוט</p>
+    <div class="group">
+      <div class="li"><label for="tIcons">כלי רכב ואנשים</label><input type="checkbox" class="sw" id="tIcons" checked></div>
+      <div class="li"><label for="tTrees">עצים</label><input type="checkbox" class="sw" id="tTrees" checked></div>
+      <div class="li"><label for="tCf">חיצי שיפוע</label><input type="checkbox" class="sw" id="tCf" checked></div>
+      <div class="li"><label for="tNames">שמות תאים</label><input type="checkbox" class="sw" id="tNames" checked></div>
+    </div>
+    <p class="gh">חתכים בגיליון (עד שלושה ב-A0)</p>
+    <div class="box"><div class="sheetlist" id="sheetList"></div>
+      <p class="hint">ייצוא ה-HTML מפיק דף A0 לרוחב (1189×841 מ״מ). מדפיסים ב-100% בלי התאמה לדף, ובודקים מול סרגל קנה המידה שבגיליון.</p></div>
+  </div>
+</aside>
+</div>
+
+<!-- action sheet -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grp" id="sheetGrp"></div><button class="cancel" type="button" id="sheetCancel">ביטול</button></div>
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><button type="button" id="toastAct" hidden>בטל</button></div>
+
+<!-- מדריך ההנחיות (פרק 3, כרך 1) – נטען פנימה כמסמך עצמאי, כדי לשמר את כל הפונקציונליות שלו (תוכן עניינים, ניגודיות וכו') -->
+<div class="guide-ov" id="guideOv" role="dialog" aria-modal="true" aria-label="מדריך ההנחיות">
+  <div class="guide-bar">
+    <button class="nbtn" id="btnGuideClose" type="button" aria-label="סגירת המדריך" title="סגירה"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div><b>מדריך ההנחיות</b><small>הנחיות לתכן גיאומטרי של דרכים בין-עירוניות · כרך 1, פרק 3</small></div>
+  </div>
+  <iframe id="guideFrame" title="החתך לרוחב הדרך – מדריך ההנחיות"></iframe>
+</div>
+<textarea id="guideSrc" hidden aria-hidden="true">__GUIDE_HTML__</textarea>
+
+<!-- export actions (used by the action sheet) -->
+<div hidden>
+  <button id="btnHtml" type="button">ייצוא גיליון A0 (HTML)</button>
+  <button id="btnSvg" type="button">הורדת SVG</button>
+  <button id="btnPrint" type="button">הדפסה</button>
+  <button id="btnJson" type="button">שמירת JSON</button>
+  <input type="file" id="fileJson" accept=".json,application/json">
+</div>
+
+<script>
+
+/* ======================================================================
+   סוגי תאים – ברירות מחדל ומגבלות מתוך ספרי ההנחיות (אותם ערכים שבמחשבון)
+   lvl: 'road' = מפלס כביש, 'curb' = מפלס מדרכה (מעל אבן שפה)
+   ====================================================================== */
+const T = {
+  walk:   {n:'רצועת הליכה',        s:'הליכה', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'רצועת הליכה מזערית 1.5 מ׳ (מרחב הרחוב, תבנית 1)']},
+  aux:    {n:'רצועת עזר / עצים',   s:'עזר',   lvl:'curb', w:1.2,  col:'#cfd9bf', tree:true},
+  front:  {n:'רצועת דופן',         s:'דופן',  lvl:'curb', w:0.3,  col:'#ddd6c6'},
+  plaza:  {n:'שדירה / פעילות',     s:'שדירה', lvl:'curb', w:6.0,  col:'#d9e3c6', tree:true, ppl:true},
+  green:  {n:'גינון',              s:'גינון', lvl:'curb', w:2.0,  col:'#b9cfa3', tree:true},
+  bikeP:  {n:'שביל אופניים',       s:'אופניים',lvl:'curb', w:2.5, col:'#e8b9a8', dir:'up', bike:true,
+           min:[1.5,'שביל חד-סטרי מזערי 1.5 מ׳, דו-סטרי 3.0 מ׳ (כרך 1 פרק 9)']},
+  bikeL:  {n:'נתיב אופניים',       s:'נ. אופניים',lvl:'road', w:1.5, col:'#e39c86', dir:'up', bike:true, min:[1.5,'נתיב אופניים 1.5–2.0 מ׳']},
+  buf:    {n:'רצועת הפרדה',        s:'הפרדה', lvl:'road', w:0.5,  col:'#c9ced3'},
+  parkP:  {n:'חנייה מקבילה',       s:'חנייה', lvl:'road', w:2.0,  col:'#9aa4ad', car:'park', max:[2.25,'אין לתכנן מפרץ חנייה מקביל רחב מ-2.25 מ׳ (רכב מנועי 3.3.4)']},
+  parkX:  {n:'חנייה ניצבת',        s:'ח. ניצבת',lvl:'road', w:5.0, col:'#9aa4ad', car:'park'},
+  lane:   {n:'נתיב נסיעה',         s:'נתיב',  lvl:'road', w:3.25, col:'#6d7680', dir:'up', car:'car'},
+  bus:    {n:'נת״צ',               s:'נת״צ',  lvl:'road', w:3.6,  col:'#b5645a', dir:'up', car:'bus', min:[3.6,'נת״צ 3.6–4.0 מ׳ (כרך 1 פרק 10)']},
+  brt:    {n:'מת״צ (נתיב בודד)',   s:'מת״צ',  lvl:'road', w:3.6,  col:'#c0795f', dir:'up', car:'bus', min:[3.6,'נתיב במת״צ 3.6 מ׳ (כרך 1 פרק 10)']},
+  lrt:    {n:'מסילת רק״ל (לכיוון)',s:'רק״ל',  lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'ערך מוצע – רוחב רצועת רק״ל אינו בספרים המצורפים; לאמת מול תכנון הרכבת'},
+  median: {n:'מפרדה בנויה',        s:'מפרדה', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'מפרדה מזערית 2.5 מ׳ לצד נתיב שמאלה (תנועה בצמתים 5.5.4)']},
+  barrier:{n:'מעקה מפרדה (בין-עירוני)',s:'מעקה',lvl:'road', w:0.8, col:'#a8b0b8', rail:true},
+  shR:    {n:'שול ימני',           s:'שול',   lvl:'road', w:3.0,  col:'#8c949c', min:[2.0,'שול ימני 2.0–3.5 מ׳ לפי סוג הדרך (כרך 1 טבלה 3.2)']},
+  shL:    {n:'שול שמאלי',          s:'שול שמאלי',lvl:'road', w:1.2, col:'#8c949c'},
+  active: {n:'רוחב פעיל + מעקה',   s:'W',     lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'הרוחב הפעיל W נקבע לפי סוג המעקה ורמת התפקוד'},
+  kerbArea:{n:'שוליים עם אבן שפה', s:'שוליים', lvl:'curb', w:0.5, col:'#cfc8b6'}
+};
+const DIRS = [['up','↑'],['down','↓'],['both','⇅'],['none','–']];
+
+/* ---------------- תבניות ---------------- */
+const C = (t,w,dir)=>({t, w:(w===undefined?T[t].w:w), dir: dir || T[t].dir || 'none'});
+function mirror(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir==='up'?'down':c.dir==='down'?'up':c.dir})); }
+function sym(half){ return [...half, ...mirror(half)]; }  // half = מהקצה השמאלי עד הציר, בכיוון "down"
+const E_BLD = {type:'building'}, E_FILL = {type:'fill', n:4, h:1.5}, E_CUT = {type:'cut', n:3, h:1.5, dd:0.6, db:0.6}, E_NONE={type:'none'};
+const PRESETS = {
+  mr1:{g:'עירוני – מרחב הרחוב',n:'תבנית 1 – מקומי, בינוי נמוך (15.0 מ׳)',ctx:'urban',row:15,src:'מרחב הרחוב 2020, תבנית 1 (עמ׳ 113 בקובץ)',
+       cells:sym([C('front',0.3),C('walk',1.5),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
+  mr2:{g:'עירוני – מרחב הרחוב',n:'תבנית 2 – מקומי, מדרכות אסימטריות (17.5 מ׳)',ctx:'urban',row:17.5,src:'מרחב הרחוב 2020, תבנית 2 (עמ׳ 115)',
+       cells:[C('front',0.3),C('walk',1.6),C('aux',1.2),C('parkX',5.0),C('lane',2.75,'down'),C('lane',2.75,'up'),C('parkP',2.0),C('walk',1.6),C('front',0.3)],eL:E_BLD,eR:E_BLD},
+  mr3:{g:'עירוני – מרחב הרחוב',n:'תבנית 3 – מקומי, בינוי בינוני (16.0 מ׳)',ctx:'urban',row:16,src:'מרחב הרחוב 2020, תבנית 3 (עמ׳ 117)',
+       cells:sym([C('front',0.3),C('walk',2.0),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
+  mr4:{g:'עירוני – מרחב הרחוב',n:'תבנית 4 – מקומי/מאסף 1, בינוני (22.0 מ׳)',ctx:'urban',row:22,src:'מרחב הרחוב 2020, תבנית 4 (עמ׳ 119)',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr5:{g:'עירוני – מרחב הרחוב',n:'תבנית 5 – מקומי, בינוי גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 5 (עמ׳ 121)',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkX',5.0),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr7:{g:'עירוני – מרחב הרחוב',n:'תבנית 7 – מקומי/מאסף 1, גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 7 (עמ׳ 125)',
+       cells:sym([C('front',0.5),C('walk',3.3),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
+  mr9:{g:'עירוני – מרחב הרחוב',n:'תבנית 9 – מאסף 2, חזית פעילה (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 9 (עמ׳ 129)',
+       cells:sym([C('front',2.5),C('walk',2.8),C('aux',1.2),C('bikeP',2.0,'down'),C('parkP',2.0),C('lane',3.0,'down'),C('lane',3.0,'down'),C('median',1.5)]),eL:E_BLD,eR:E_BLD},
+  mr10:{g:'עירוני – מרחב הרחוב',n:'תבנית 10 – עורק רמה 1 (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 10 (עמ׳ 131)',
+       cells:sym([C('walk',2.5),C('aux',1.5),C('bikeP',2.5,'down'),C('aux',1.5),C('lane',3.5,'down'),C('lane',3.5,'down'),C('median',3.0)]),eL:E_BLD,eR:E_BLD},
+  ex1:{g:'עירוני – דוגמאות',n:'שדרה + מת״צ BRT (42.0 מ׳)',ctx:'urban',row:42,src:'לפי השרטוט שהועלה (צילום 1)',
+       cells:[C('plaza',12.0),C('brt',3.5,'down'),C('brt',3.5,'up'),C('median',3.5),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.5),C('lane',3.25,'up'),C('lane',3.25,'up'),C('walk',4.0)],eL:E_NONE,eR:E_BLD},
+  ex2:{g:'עירוני – דוגמאות',n:'נת״צ ושבילי אופניים (44.0 מ׳)',ctx:'urban',row:44,src:'לפי השרטוט שהועלה (צילום 3)',
+       cells:sym([C('walk',7.7),C('bikeP',1.5,'down'),C('aux',2.0),C('bus',3.6,'down'),C('lane',3.1,'down'),C('lane',3.1,'down'),C('median',1.0)]),eL:E_BLD,eR:E_BLD},
+  ex3:{g:'עירוני – דוגמאות',n:'רק״ל במרכז + נת״צ (דוגמה)',ctx:'urban',row:0,src:'דוגמה סכמטית (צילום 8) – רוחבי הרק״ל מוצעים ויש לאמת',
+       cells:[C('green',2.0),C('bikeP',3.0,'both'),C('median',1.0),C('lrt',3.5,'up'),C('lrt',3.5,'down'),C('median',2.0),C('bus',3.6,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.0),C('lane',3.25,'up'),C('lane',3.25,'up'),C('lane',3.25,'up'),C('bus',3.6,'up'),C('walk',2.0),C('green',2.0),C('bikeP',3.0,'both'),C('walk',3.0)],eL:E_NONE,eR:E_BLD},
+  iuL:{g:'בין-עירוני – כרך 1',n:'חד-מסלולית מקומית וגישה',ctx:'inter',row:0,src:'כרך 1 טבלאות 3.1–3.2: נתיב 3.3, שול 2.0',
+       cells:[C('active',1.0),C('shR',2.0),C('lane',3.3,'down'),C('lane',3.3,'up'),C('shR',2.0),C('active',1.0)],eL:E_FILL,eR:E_CUT},
+  iuR:{g:'בין-עירוני – כרך 1',n:'חד-מסלולית ראשית/אזורית (80 קמ״ש)',ctx:'inter',row:0,src:'כרך 1 טבלאות 3.1–3.2: נתיב 3.6, שול 3.0',
+       cells:[C('active',1.0),C('shR',3.0),C('lane',3.6,'down'),C('lane',3.6,'up'),C('shR',3.0),C('active',1.0)],eL:E_FILL,eR:E_FILL},
+  iuD:{g:'בין-עירוני – כרך 1',n:'דו-מסלולית ראשית 2+2',ctx:'inter',row:0,src:'כרך 1: נתיב 3.6, שול ימני 3.5, שול שמאלי 1.2, מפרדה 2.4 + מעקה (סעיף 3.4.2)',
+       cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',1.2)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]),eL:E_FILL,eR:E_FILL},
+  iuF:{g:'בין-עירוני – כרך 1',n:'דרך מהירה 3+3',ctx:'inter',row:0,src:'כרך 1: נתיב 3.6–3.7, שול ימני 3.5, שול שמאלי 1.2; מפרדה 6.0 + מעקות ב-120 קמ״ש',
+       cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',3.0)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]),eL:E_CUT,eR:E_FILL},
+  ex4:{g:'בין-עירוני – דוגמאות',n:'חתך טיפוסי 5-5 (צילום 6)',ctx:'inter',row:0,src:'לפי השרטוט שהועלה (צילום 6)',
+       cells:[C('active',1.1),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',1.5),C('barrier',0.6),C('shL',1.5),C('lane',3.6,'up'),C('lane',3.6,'up'),C('shR',3.5),C('active',1.1)],eL:E_CUT,eR:E_FILL}
+};
+
+/* ---------------- מצב ---------------- */
+let S = { cells:[], eL:{...E_BLD}, eR:{...E_BLD} };
+let SHEET = [];   // חתכים שנשמרו לגיליון
+let VIEW = 'section';
+const $ = id => document.getElementById(id);
+const num = id => parseFloat($(id).value) || 0;
+const f2 = v => (Math.round(v*100)/100).toFixed(2);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------------- עורך התאים ---------------- */
+/* ---------------- עורך התאים (ממשק מגע) ---------------- */
+let SEL = -1;                                   // התא הנבחר
+const DIR_LBL = {up:'↑', down:'↓', both:'⇅', none:'–'};
+function renderCells(){
+  const box = $('cells');
+  if(!S.cells.length){ box.innerHTML = '<div class="empty">אין עדיין תאים. בחרו תבנית בלשונית «פתיחה» או הוסיפו תא מהרשימה למטה.</div>'; SEL=-1; return; }
+  if(SEL >= S.cells.length) SEL = S.cells.length-1;
+  box.innerHTML = S.cells.map((c,i)=>{
+    const t = T[c.t], hasDir = !!t.dir, st = cellCheck(c);
+    return `<div class="cell ${st?st.cls:''}" data-row="${i}" title="${esc(st?st.msg:t.n)}">
+      <div class="c-top">
+        <span class="c-idx">${i+1}</span>
+        <span class="c-sw" style="background:${t.col}"></span>
+        <div class="c-name"><select class="plain" data-i="${i}" data-k="t" aria-label="סוג התא">${Object.keys(T).map(k=>`<option value="${k}" ${k===c.t?'selected':''}>${T[k].n}</option>`).join('')}</select><span class="chev">⌄</span></div>
+        <button type="button" class="c-more" data-more="${i}" aria-label="פעולות לתא ${i+1}">⋯</button>
+        <button type="button" class="c-handle" data-drag="${i}" aria-label="גרירה לשינוי סדר">≡</button>
+      </div>
+      <div class="c-bot">
+        <div class="stp" data-step="0.05" data-big="0.25"><input data-i="${i}" data-k="w" type="number" step="0.05" min="0.05" value="${f2(c.w)}" inputmode="decimal" aria-label="רוחב (מ׳)"></div><span class="unit">מ׳</span>
+        ${hasDir?`<div class="seg" data-dir="${i}" role="group" aria-label="כיוון">${DIRS.map(d=>`<button type="button" data-d="${d[0]}" aria-pressed="${d[0]===c.dir}" aria-label="${d[0]}">${d[1]}</button>`).join('')}</div>`:''}
+      </div>
+      <p class="c-msg">${esc(st?st.msg:'')}</p>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('[data-k]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{
+    const i=+el.dataset.i, k=el.dataset.k;
+    if(k==='w') S.cells[i].w = Math.max(0.05, parseFloat(el.value)||0.05);
+    else if(k==='t'){ S.cells[i].t = el.value; S.cells[i].w = T[el.value].w; S.cells[i].dir = T[el.value].dir || 'none'; SEL=i; renderCells(); }
+    if(k!=='t') update(false); else update();
+  }));
+  box.querySelectorAll('[data-dir]').forEach(g=>g.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const i=+g.dataset.dir; S.cells[i].dir=b.dataset.d;
+    g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); UI.segKnob(g); update(false);
+  }));
+  box.querySelectorAll('.cell').forEach(r=>r.addEventListener('pointerdown',e=>{
+    if(e.target.closest('input,select,button')) return; UI.select(+r.dataset.row);
+  }));
+  box.querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>UI.cellMenu(+b.dataset.more));
+  box.querySelectorAll('[data-drag]').forEach(h=>UI.dragRow(h));
+  UI.enhance(box);
+}
+function cellAction(i,a){
+  const arr=S.cells;
+  if(a==='up' && i>0){ [arr[i-1],arr[i]]=[arr[i],arr[i-1]]; SEL=i-1; }
+  if(a==='dn' && i<arr.length-1){ [arr[i+1],arr[i]]=[arr[i],arr[i+1]]; SEL=i+1; }
+  if(a==='dup'){ arr.splice(i+1,0,{...arr[i]}); SEL=i+1; }
+  if(a==='del'){ arr.splice(i,1); SEL=Math.min(i,arr.length-1); }
+  renderCells(); update();
+}
+const EDGE_TYPES = [['none','ללא'],['building','בניין'],['fill','סוללה'],['cut','חפירה']];
+function edgeUI(side){
+  const e = side==='L'?S.eL:S.eR, id = side==='L'?'edgeL':'edgeR';
+  const slope = e.type==='fill'||e.type==='cut', cut = e.type==='cut';
+  $(id).innerHTML = `
+    <div class="li"><div class="seg full" style="flex:1" role="group" aria-label="${side==='L'?'קצה שמאלי':'קצה ימני'}">${EDGE_TYPES.map(t=>`<button type="button" data-et="${t[0]}" aria-pressed="${e.type===t[0]}">${t[1]}</button>`).join('')}</div></div>
+    <div class="li sub" ${slope?'':'hidden'}><span class="lb">שיפוע 1:n</span><div class="stp" data-step="0.5"><input data-e="n" type="number" step="0.5" value="${e.n??4}" inputmode="decimal" aria-label="שיפוע 1:n"></div></div>
+    <div class="li sub" ${slope?'':'hidden'}><span class="lb">גובה המדרון</span><div class="stp" data-step="0.1"><input data-e="h" type="number" step="0.1" value="${e.h??1.5}" inputmode="decimal" aria-label="גובה (מ׳)"></div><span class="unit">מ׳</span></div>
+    <div class="li sub" ${cut?'':'hidden'}><span class="lb">עומק תעלה</span><div class="stp" data-step="0.05"><input data-e="dd" type="number" step="0.05" value="${e.dd??0.6}" inputmode="decimal" aria-label="עומק תעלה"></div><span class="unit">מ׳</span></div>`;
+  $(id).querySelectorAll('[data-et]').forEach(b=>b.onclick=()=>{
+    e.type=b.dataset.et;
+    if(e.type==='fill'){e.n=e.n||4;e.h=e.h||1.5;} if(e.type==='cut'){e.n=e.n||3;e.h=e.h||1.5;e.dd=e.dd||0.6;e.db=0.6;}
+    edgeUI(side); update(false);
+  });
+  $(id).querySelectorAll('[data-e]').forEach(el=>el.addEventListener('input',()=>{
+    e[el.dataset.e] = parseFloat(el.value)||0; update(false);
+  }));
+  UI.enhance($(id));
+}
+
+/* ======================================================================
+   שכבת ממשק – טאבלט / iOS: פס רוחבים חי, צעדים, גיליון פעולות, ביטול/חזרה
+   (שכבה זו אינה משנה את חישובי החתך – רק את אופן העריכה והתצוגה)
+   ====================================================================== */
+const UI = (()=>{
+  const U = {};
+  const vib = ms => { try{ navigator.vibrate && navigator.vibrate(ms||8); }catch(e){} };
+  let zoom = 1;
+
+  /* ---- segmented control knob ---- */
+  U.segKnob = seg => {
+    let k = seg.querySelector(':scope > .knob');
+    if(!k){ k=document.createElement('span'); k.className='knob'; seg.prepend(k); }
+    const on = seg.querySelector(':scope > button[aria-pressed="true"]');
+    if(!on || !on.offsetWidth){ k.style.width='0'; return; }
+    k.style.left = on.offsetLeft+'px'; k.style.width = on.offsetWidth+'px';
+  };
+  U.segAll = () => document.querySelectorAll('.seg').forEach(U.segKnob);
+
+  /* ---- steppers: − value + with press-and-hold ---- */
+  U.enhance = root => {
+    root.querySelectorAll('.stp:not([data-ok])').forEach(w=>{
+      w.dataset.ok=1;
+      const inp = w.querySelector('input'), step = parseFloat(w.dataset.step)||0.1;
+      const dec = Math.max(0, (String(step).split('.')[1]||'').length, (String(inp.step).split('.')[1]||'').length);
+      const mk = (sgn,label)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=label; b.setAttribute('aria-label', sgn>0?'הגדלה':'הקטנה');
+        let t1, t2;
+        const bump = ()=>{ if(inp.disabled) return; const min = inp.min!==''?parseFloat(inp.min):-Infinity;
+          let v = (parseFloat(inp.value)||0) + sgn*step; v = Math.max(min, Math.round(v/step)*step);
+          inp.value = v.toFixed(dec); inp.dispatchEvent(new Event('input',{bubbles:true})); vib(4); };
+        const stop = ()=>{ clearTimeout(t1); clearInterval(t2); };
+        b.addEventListener('pointerdown', e=>{ e.preventDefault(); bump(); t1=setTimeout(()=>{ t2=setInterval(bump,70); },380); });
+        ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
+        b.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); bump(); } });
+        return b; };
+      w.prepend(mk(-1,'−')); w.append(mk(1,'+'));
+      inp.addEventListener('focus', ()=>setTimeout(()=>inp.select(),0));
+    });
+    root.querySelectorAll('.seg').forEach(U.segKnob);
+  };
+
+  /* ---- segmented controls bound to hidden selects ---- */
+  U.bindSelect = seg => {
+    const sel = $(seg.dataset.bind);
+    seg.innerHTML = [...sel.options].map(o=>`<button type="button" data-v="${o.value}" aria-pressed="${o.value===sel.value}">${o.text}</button>`).join('');
+    seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      sel.value=b.dataset.v; sel.dispatchEvent(new Event('input',{bubbles:true})); sel.dispatchEvent(new Event('change',{bubbles:true}));
+      sync(); vib(); });
+    const sync = ()=>{ seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.v===sel.value)); U.segKnob(seg); };
+    seg._sync = sync;
+  };
+
+  /* ---- selection: row ↔ ribbon ↔ drawing ---- */
+  U.select = (i, scroll) => {
+    SEL = (SEL===i && !scroll) ? -1 : i;
+    U.after(true);
+    if(SEL>=0 && scroll){
+      const row = document.querySelector(`#cells .cell[data-row="${SEL}"]`);
+      if(row){ U.pane('p-cells'); row.scrollIntoView({block:'nearest',behavior:'smooth'}); row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
+    }
+    vib(6);
+  };
+
+  /* ---- ribbon ---- */
+  function ribbon(){
+    const rb = $('ribbon'), cells = S.cells, tot = cells.reduce((a,c)=>a+c.w,0);
+    if(rb.querySelectorAll('.rb').length !== cells.length || rb._n !== cells.map(c=>c.t).join()){
+      rb.innerHTML = cells.map((c,i)=>`<div class="rb" data-i="${i}"><span></span></div>`).join('');
+      rb._n = cells.map(c=>c.t).join();
+      rb.querySelectorAll('.rb').forEach(el=>el.addEventListener('click',()=>{ if(!rb._moved) U.select(+el.dataset.i, true); }));
+    }
+    [...rb.querySelectorAll('.rb')].forEach((el,i)=>{
+      const c = cells[i], t = T[c.t], st = cellCheck(c);
+      el.style.flexGrow = c.w; el.style.flexBasis = '0'; el.style.background = t.col;
+      el.className = 'rb' + (i===SEL?' sel':'') + (st?' '+st.cls:'');
+      el.title = `${i+1}. ${t.n} – ${f2(c.w)} מ׳`;
+      el.firstChild.textContent = c.w*1 >= tot*0.06 ? `${t.s} ${f2(c.w)}` : (c.w >= tot*0.035 ? f2(c.w) : '');
+    });
+    grips(rb); clearTimeout(rb._gt); rb._gt=setTimeout(()=>grips(rb),300);
+    $('rbTot').textContent = f2(tot)+' מ׳';
+    const tgt = num('rowTarget'), g = $('rbGap');
+    if(tgt>0){ const d = tot-tgt; g.className='gap '+(Math.abs(d)<0.005?'ok':'bad');
+      g.textContent = Math.abs(d)<0.005 ? `תואם ליעד ${f2(tgt)} מ׳` : (d>0?`חריגה ${f2(d)} מ׳`:`חסרים ${f2(-d)} מ׳`) + ` מול יעד ${f2(tgt)}`; }
+    else { g.className='gap'; g.textContent=''; }
+  }
+  function grips(rb){
+    const kids=[...rb.querySelectorAll('.rb')], have=[...rb.querySelectorAll('.grip')];
+    if(have.length===Math.max(0,kids.length-1)){   // אותו מספר מפרידים – רק הזזה (שומר על הגרירה הפעילה)
+      have.forEach((g,i)=>g.style.left=(kids[i].offsetLeft+kids[i].offsetWidth)+'px'); return;
+    }
+    have.forEach(g=>g.remove());
+    for(let i=0;i<kids.length-1;i++){
+      const g=document.createElement('div'); g.className='grip'; g.dataset.i=i;
+      g.style.left = (kids[i].offsetLeft + kids[i].offsetWidth)+'px';
+      g.setAttribute('role','separator'); g.setAttribute('aria-label',`מפריד בין תא ${i+1} לתא ${i+2}`); g.tabIndex=0;
+      rb.appendChild(g); dragGrip(g, rb);
+    }
+  }
+  const tip = document.createElement('div'); tip.className='tip'; tip.hidden=true;
+  function dragGrip(g, rb){
+    const i = +g.dataset.i;
+    g.addEventListener('pointerdown', e=>{
+      e.preventDefault(); g.setPointerCapture(e.pointerId);
+      const a=S.cells[i], b=S.cells[i+1], pair=a.w+b.w, a0=a.w, x0=e.clientX;
+      const mPerPx = S.cells.reduce((s,c)=>s+c.w,0) / rb.clientWidth;
+      let raf=0, lastSnap=a0; rb._moved=false;
+      g.classList.add('on'); rb.classList.add('dragging'); document.body.appendChild(tip); tip.hidden=false; SEL=i;
+      const mv = ev=>{
+        let na = a0 + (ev.clientX-x0)*mPerPx;
+        na = Math.round(na/0.05)*0.05; na = Math.min(pair-0.05, Math.max(0.05, na));
+        if(Math.abs(ev.clientX-x0)>3) rb._moved=true;
+        if(Math.abs(na-lastSnap)>1e-9){ lastSnap=na; vib(3); }
+        a.w = +na.toFixed(2); b.w = +(pair-na).toFixed(2);
+        tip.style.left=ev.clientX+'px'; tip.style.top=rb.getBoundingClientRect().top+'px';
+        tip.textContent = `\u2066${f2(a.w)}  ⟷  ${f2(b.w)}\u2069`;
+        if(!raf) raf=requestAnimationFrame(()=>{ raf=0; syncWidths(); update(false); });
+      };
+      const up = ()=>{ g.removeEventListener('pointermove',mv); g.classList.remove('on'); rb.classList.remove('dragging'); tip.hidden=true;
+        setTimeout(()=>rb._moved=false,50); syncWidths(); update(false); };
+      g.addEventListener('pointermove',mv); g.addEventListener('pointerup',up,{once:true}); g.addEventListener('pointercancel',up,{once:true});
+    });
+    g.addEventListener('keydown', e=>{
+      const d = e.key==='ArrowRight'?0.05:e.key==='ArrowLeft'?-0.05:0; if(!d) return; e.preventDefault();
+      const a=S.cells[i], b=S.cells[i+1]; if(a.w+d<0.05||b.w-d<0.05) return;
+      a.w=+(a.w+d).toFixed(2); b.w=+(b.w-d).toFixed(2); syncWidths(); update(false);
+    });
+  }
+  function syncWidths(){ document.querySelectorAll('#cells input[data-k="w"]').forEach(inp=>{ const c=S.cells[+inp.dataset.i]; if(c && document.activeElement!==inp) inp.value=f2(c.w); }); }
+
+  /* ---- drawing: highlight + tap-to-select + zoom ---- */
+  function drawingOverlay(){
+    const svg = $('secSVG'); if(!svg || VIEW!=='section') return;
+    const sec = curSec(), D=+$('scale').value, k=1000/D, xL=edgeExtent(sec.eL).w*k;
+    const vb = svg.viewBox.baseVal;
+    svg._geom = {k, xL};
+    if(SEL<0 || !S.cells[SEL]) return;
+    const x0 = S.cells.slice(0,SEL).reduce((a,c)=>a+c.w,0);
+    const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('class','selrect'); r.setAttribute('x', xL+x0*k); r.setAttribute('width', S.cells[SEL].w*k);
+    r.setAttribute('y', vb.y); r.setAttribute('height', vb.height);
+    svg.appendChild(r);
+  }
+  $('drawing').addEventListener('click', e=>{
+    const svg = $('secSVG'); if(!svg || !svg._geom || VIEW!=='section') return;
+    const pt = svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+    const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const m = (p.x - svg._geom.xL)/svg._geom.k; let acc=0;
+    for(let i=0;i<S.cells.length;i++){ acc+=S.cells[i].w; if(m>=acc-S.cells[i].w && m<acc){ U.select(i,true); return; } }
+  });
+  const setZoom = z => { zoom = Math.min(4, Math.max(1, z)); $('drawing').style.width = (zoom*100)+'%'; $('zVal').textContent = Math.round(zoom*100)+'%'; };
+  $('zIn').onclick = ()=>setZoom(zoom*1.4);
+  $('zOut').onclick = ()=>setZoom(zoom/1.4);
+  (function pinch(){
+    const w=$('sheetwrap'), pts=new Map(); let d0=0, z0=1;
+    const dist=()=>{ const [a,b]=[...pts.values()]; return Math.hypot(a.x-b.x,a.y-b.y); };
+    w.addEventListener('pointerdown',e=>{ if(e.pointerType!=='touch') return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===2){ d0=dist(); z0=zoom; } });
+    w.addEventListener('pointermove',e=>{ if(!pts.has(e.pointerId)) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===2 && d0){ setZoom(z0*dist()/d0); } });
+    ['pointerup','pointercancel','pointerleave'].forEach(ev=>w.addEventListener(ev,e=>{ pts.delete(e.pointerId); if(pts.size<2) d0=0; }));
+    w.addEventListener('gesturestart',e=>e.preventDefault());
+    w.addEventListener('wheel',e=>{ if(e.ctrlKey){ e.preventDefault(); setZoom(zoom*(e.deltaY<0?1.08:0.92)); } },{passive:false});
+  })();
+
+  /* ---- row drag to reorder ---- */
+  U.dragRow = h => {
+    h.addEventListener('pointerdown', e=>{
+      e.preventDefault(); h.setPointerCapture(e.pointerId);
+      const from=+h.dataset.drag, row=h.closest('.cell'), rows=[...document.querySelectorAll('#cells .cell')];
+      const rects=rows.map(r=>r.getBoundingClientRect()), y0=e.clientY; let to=from;
+      row.classList.add('drag'); vib(10);
+      const mv = ev=>{
+        const dy=ev.clientY-y0; row.style.transform=`translateY(${dy}px) scale(1.02)`;
+        const cy=rects[from].top+rects[from].height/2+dy; to=from;
+        rects.forEach((r,i)=>{ if(i<from && cy<r.bottom) to=Math.min(to,i); if(i>from && cy>r.top) to=Math.max(to,i); });
+        rows.forEach((r,i)=>{ if(i===from) return; let s=0; if(from<to && i>from && i<=to) s=-rects[from].height; if(from>to && i<from && i>=to) s=rects[from].height;
+          r.style.transition='transform .2s var(--ease)'; r.style.transform=s?`translateY(${s}px)`:''; });
+      };
+      const up = ()=>{ h.removeEventListener('pointermove',mv);
+        rows.forEach(r=>{ r.style.transform=''; r.style.transition=''; }); row.classList.remove('drag');
+        if(to!==from){ const [c]=S.cells.splice(from,1); S.cells.splice(to,0,c); SEL=to; renderCells(); update(); vib(12); } };
+      h.addEventListener('pointermove',mv); h.addEventListener('pointerup',up,{once:true}); h.addEventListener('pointercancel',up,{once:true});
+    });
+  };
+
+  /* ---- action sheet ---- */
+  U.sheet = (title, items) => {
+    const g=$('sheetGrp');
+    g.innerHTML = (title?`<div class="ttl">${esc(title)}</div>`:'') + items.map((it,i)=>`<button type="button" data-x="${i}" class="${it.danger?'danger':''}" ${it.disabled?'disabled':''}>${esc(it.label)}</button>`).join('');
+    g.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{ close(); items[+b.dataset.x].run(); });
+    $('scrim').classList.add('on'); $('sheet').classList.add('on');
+    setTimeout(()=>{ const f=g.querySelector('button:not([disabled])'); f&&f.focus(); },60);
+  };
+  const close = ()=>{ $('scrim').classList.remove('on'); $('sheet').classList.remove('on'); };
+  $('scrim').onclick = close; $('sheetCancel').onclick = close;
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+  U.cellMenu = i => {
+    const c=S.cells[i];
+    U.sheet(`תא ${i+1} – ${T[c.t].n}, ${f2(c.w)} מ׳`, [
+      {label:'הזזה שמאלה בשרטוט', disabled:i===0, run:()=>cellAction(i,'up')},
+      {label:'הזזה ימינה בשרטוט', disabled:i===S.cells.length-1, run:()=>cellAction(i,'dn')},
+      {label:'שכפול התא', run:()=>{ cellAction(i,'dup'); U.toast('התא שוכפל'); }},
+      {label:'מחיקת התא', danger:true, run:()=>{ cellAction(i,'del'); U.toast('התא נמחק', 'בטל', U.undo); }}
+    ]);
+  };
+  $('btnShare').onclick = ()=> U.sheet('ייצוא ושמירה', [
+    {label:'ייצוא גיליון A0 (HTML)', run:()=>{ $('btnHtml').click(); U.toast('הגיליון יוצא'); }},
+    {label:'הורדת SVG', run:()=>$('btnSvg').click()},
+    {label:'הדפסה', run:()=>$('btnPrint').click()},
+    {label:'שמירת JSON', run:()=>{ $('btnJson').click(); U.toast('הקובץ נשמר'); }},
+    {label:'טעינת JSON…', run:()=>$('fileJson').click()}
+  ]);
+
+  /* ---- toast ---- */
+  let tt;
+  U.toast = (msg, act, fn) => {
+    $('toastMsg').textContent = msg; const b=$('toastAct');
+    b.hidden = !act; if(act){ b.textContent=act; b.onclick=()=>{ fn(); $('toast').classList.remove('on'); }; }
+    $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'), act?4500:2200);
+  };
+  window.alert = m => U.toast(String(m));
+
+  /* ---- undo / redo ---- */
+  const H = {stack:[], i:-1, lock:false, t:0};
+  const snap = () => JSON.stringify({sec:curSec(), sheet:SHEET, scale:$('scale').value, proj:$('proj').value, drawn:$('drawn').value, dwg:$('dwg').value,
+    tog:['tIcons','tTrees','tCf','tNames'].map(id=>$(id).checked), preset:$('preset').value});
+  const push = () => { if(H.lock) return; const s=snap(); if(H.stack[H.i]===s) return; H.stack.splice(H.i+1); H.stack.push(s); if(H.stack.length>80) H.stack.shift(); H.i=H.stack.length-1; btns(); };
+  const btns = () => { $('btnUndo').disabled = H.i<=0; $('btnRedo').disabled = H.i>=H.stack.length-1; };
+  const restore = s => { H.lock=true; const j=JSON.parse(s);
+    SHEET=j.sheet; loadSec(j.sec); $('tPave').checked=j.sec.pave; $('scale').value=j.scale; $('proj').value=j.proj; $('drawn').value=j.drawn; $('dwg').value=j.dwg;
+    ['tIcons','tTrees','tCf','tNames'].forEach((id,i)=>$(id).checked=j.tog[i]); $('preset').value=j.preset;
+    update(); H.lock=false; };
+  U.undo = () => { if(H.i>0){ H.i--; restore(H.stack[H.i]); btns(); vib(); } };
+  U.redo = () => { if(H.i<H.stack.length-1){ H.i++; restore(H.stack[H.i]); btns(); vib(); } };
+  $('btnUndo').onclick = U.undo; $('btnRedo').onclick = U.redo;
+  document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='z' && !/INPUT|SELECT/.test(document.activeElement.tagName)){ e.preventDefault(); e.shiftKey?U.redo():U.undo(); } });
+
+  /* ---- stats tween + status ---- */
+  let prevStats = [];
+  function stats(){
+    [...$('stats').querySelectorAll('.stat b')].forEach((b,i)=>{
+      const node=b.firstChild, txt=node.textContent, prev=prevStats[i];
+      if(prev!==undefined && prev!==txt){
+        b.parentNode.classList.remove('pulse'); void b.offsetWidth; b.parentNode.classList.add('pulse');
+        const a=parseFloat(prev), z=parseFloat(txt);
+        if(/^-?\d+(\.\d+)?$/.test(txt) && !isNaN(a)){ const d=(txt.split('.')[1]||'').length, t0=performance.now();
+          const step=now=>{ const p=Math.min(1,(now-t0)/260), e=1-Math.pow(1-p,3); node.textContent=(a+(z-a)*e).toFixed(d); if(p<1) requestAnimationFrame(step); };
+          node.textContent=prev; requestAnimationFrame(step); }
+      }
+      prevStats[i]=txt;
+    });
+    const all=[...$('checks').querySelectorAll('.chk')];
+    const bad=all.filter(c=>c.classList.contains('bad')).length, warn=all.filter(c=>c.classList.contains('warn')).length;
+    const p=$('statusPill'), prevKey=p.dataset.k, key=`${bad}/${warn}`;
+    p.className='pill '+(bad?'bad':warn?'warn':'ok');
+    p.querySelector('span').textContent = bad? `${bad} חריגות` : warn? `${warn} הערות` : 'תקין';
+    if(prevKey && prevKey!==key){ all.forEach(c=>c.classList.add('new')); }
+    p.dataset.k=key;
+  }
+  $('statusPill').onclick = ()=>{ $('checksBox').scrollIntoView({behavior:'smooth',block:'center'}); };
+
+  /* ---- panes ---- */
+  U.pane = id => {
+    document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on', p.id===id));
+    $('paneSeg').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.p===id));
+    U.segAll();
+  };
+  $('paneSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ U.pane(b.dataset.p); vib(); });
+
+  /* ---- presets as cards ---- */
+  let pFilter = null;
+  U.presets = () => {
+    const groups=[...new Set(Object.values(PRESETS).map(p=>p.g))];
+    if(!pFilter) pFilter = PRESETS[$('preset').value].g;
+    $('presetFilter').innerHTML = groups.map(g=>`<button type="button" data-g="${esc(g)}" aria-pressed="${g===pFilter}">${esc(g.replace(/^(עירוני|בין-עירוני) – /,'$1 · '))}</button>`).join('');
+    $('presetFilter').querySelectorAll('button').forEach(b=>b.onclick=()=>{ pFilter=b.dataset.g; U.presets(); vib(); });
+    $('presetGrid').innerHTML = Object.entries(PRESETS).filter(([,p])=>p.g===pFilter).map(([k,p])=>{
+      const tot=p.cells.reduce((a,c)=>a+c.w,0);
+      return `<button type="button" class="pcard" data-p="${k}" aria-pressed="${k===$('preset').value}">
+        <span class="ck">✓</span>
+        <span class="thumb">${p.cells.map(c=>`<i style="width:${(c.w/tot*100).toFixed(2)}%;background:${T[c.t].col}"></i>`).join('')}</span>
+        <b>${esc(p.n.replace(/\s*\(.*\)$/,''))}</b><small>${f2(tot)} מ׳ · ${p.cells.length} תאים</small></button>`; }).join('');
+    $('presetGrid').querySelectorAll('.pcard').forEach(b=>b.onclick=()=>{
+      $('preset').value=b.dataset.p; SEL=-1; applyPreset(); vib(10);
+      U.toast('התבנית נטענה – אפשר לערוך את התאים', 'לתאים', ()=>U.pane('p-cells'));
+    });
+    U.segKnob($('presetFilter'));
+  };
+
+  /* ---- add tiles ---- */
+  U.tiles = () => {
+    $('tiles').innerHTML = Object.keys(T).map(k=>`<button type="button" class="tile" data-t="${k}"><i style="background:${T[k].col}"></i>${esc(T[k].n)}</button>`).join('');
+    $('tiles').querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+      const t=b.dataset.t, at = SEL>=0 ? SEL+1 : S.cells.length;
+      S.cells.splice(at,0,{t, w:T[t].w, dir:T[t].dir||'none'}); SEL=at; update(); vib(10);
+      const row=document.querySelector(`#cells .cell[data-row="${at}"]`); if(row){ row.classList.add('flash'); row.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+    });
+  };
+
+  /* ---- runs after every update ---- */
+  U.after = (selOnly) => {
+    document.querySelectorAll('#cells .cell').forEach((el,i)=>{
+      el.classList.toggle('sel', i===SEL);
+      const st = S.cells[i] && cellCheck(S.cells[i]); const m=el.querySelector('.c-msg'); if(m) m.textContent = st?st.msg:'';
+    });
+    if(selOnly){ // רק החלפת בחירה – בלי לבנות מחדש את השרטוט
+      const old=document.querySelector('#secSVG .selrect'); old&&old.remove(); drawingOverlay();
+      $('ribbon').querySelectorAll('.rb').forEach((el,i)=>el.classList.toggle('sel',i===SEL));
+    } else { drawingOverlay(); ribbon(); stats(); }
+    $('addWhere').textContent = SEL>=0 && S.cells[SEL] ? `– אחרי תא ${SEL+1}` : '– בסוף החתך';
+    document.querySelectorAll('.pcard').forEach(b=>b.setAttribute('aria-pressed', b.dataset.p===$('preset').value));
+    document.querySelectorAll('[data-bind]').forEach(s=>s._sync&&s._sync());
+    if(!selOnly){ clearTimeout(H.t); H.t=setTimeout(push, 450); }
+  };
+  U.push = push;
+
+  /* ---- view tabs ---- */
+  document.querySelectorAll('#viewSeg .tab').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#viewSeg .tab').forEach(x=>x.setAttribute('aria-pressed', x===b)); U.segKnob($('viewSeg')); vib();
+  }));
+
+  /* ---- layout: portrait tablets get checks as a pane ---- */
+  const mq = matchMedia('(max-width:1023px)');
+  const place = () => {
+    const ro=$('readouts');
+    if(mq.matches){ let p=$('p-checks'); if(!p){ p=document.createElement('div'); p.className='pane'; p.id='p-checks'; document.querySelector('.insp').appendChild(p);
+        const b=document.createElement('button'); b.type='button'; b.dataset.p='p-checks'; b.textContent='בדיקות'; b.setAttribute('aria-pressed','false'); b.onclick=()=>U.pane('p-checks'); $('paneSeg').appendChild(b); }
+      p.appendChild(ro); }
+    else { const p=$('p-checks'); document.querySelector('.stage').appendChild(ro);
+      if(p){ if(p.classList.contains('on')) U.pane('p-start'); p.remove(); $('paneSeg').querySelector('[data-p="p-checks"]').remove(); } }
+    U.segAll(); requestAnimationFrame(()=>grips($('ribbon')));
+  };
+  (mq.addEventListener?mq.addEventListener('change',place):mq.addListener(place));
+  U.place = place;
+  window.addEventListener('resize', ()=>{ U.segAll(); grips($('ribbon')); });
+  $('statusPill').addEventListener('click', ()=>{ if(mq.matches) U.pane('p-checks'); });
+  return U;
+})();
+
+/* כל קריאה ל-update מסתיימת בעדכון שכבת הממשק */
+const _coreUpdate = update;
+update = function(rerender){ _coreUpdate(rerender); UI.after(false); };
+
+function levelOf(c){ return T[c.t].lvl; }
+
+/* ---------------- בדיקות ---------------- */
+function cellCheck(c){
+  const t=T[c.t], ctx=$('ctx').value;
+  if(c.t==='bikeP' && c.dir==='both' && c.w<3.0) return {cls:'bad',msg:'שביל אופניים דו-סטרי – רוחב מזערי 3.0 מ׳ (כרך 1 פרק 9)'};
+  if(t.min && c.w < t.min[0]-1e-9) return {cls:'bad',msg:t.min[1]};
+  if(t.max && c.w > t.max[0]+1e-9) return {cls:'warn',msg:t.max[1]};
+  if(c.t==='lane'){
+    if(ctx==='urban' && (c.w<2.5-1e-9)) return {cls:'bad',msg:'נתיב עירוני שאינו יחיד – מזערי 2.50 מ׳ (רכב מנועי טבלה 3.3)'};
+    if(ctx==='urban' && c.w>3.5+1e-9) return {cls:'warn',msg:'נתיב עירוני – מרבי 3.50 מ׳ (דרך עורקית, רכב מנועי טבלה 3.3)'};
+    if(ctx==='inter' && c.w<3.0-1e-9) return {cls:'bad',msg:'נתיב בין-עירוני – 3.0–3.7 מ׳ (כרך 1 טבלה 3.1)'};
+  }
+  if(c.t==='shL' && c.w>1.2+1e-9 && c.w<3.0-1e-9) return {cls:'bad',msg:'אין לתכנן שול שמאלי ברוחב שבין 1.2 ל-3.0 מ׳ (כרך 1 טבלה 3.2)'};
+  return null;
+}
+
+/* ======================================================================
+   שרטוט החתך – יחידות: מ״מ על הנייר. k = מ״מ למטר = 1000 / קנה המידה
+   ====================================================================== */
+const TXT = 'font-family:Arial,Helvetica,sans-serif';
+function tx(x,y,s,size,o={}){
+  const a=o.anchor||'middle', w=o.weight||400, c=o.color||'#14171a', r=o.rot?` transform="rotate(${o.rot} ${x} ${y})"`:'';
+  return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-size="${size}" text-anchor="${a}" font-weight="${w}" fill="${c}" style="${TXT}"${r}>${esc(s)}</text>`;
+}
+function arrowV(x,yTop,len,dir,col,wd){ // חץ כיוון תנועה
+  const h=len, head=Math.min(h*0.4, wd*1.6), sw=wd*0.45;
+  if(dir==='up') return `<path d="M${x} ${yTop} l${wd} ${head} h${-wd+sw} v${h-head} h${-sw*2} v${-(h-head)} h${-wd+sw} z" fill="${col}"/>`;
+  return `<path d="M${x} ${yTop+h} l${wd} ${-head} h${-wd+sw} v${-(h-head)} h${-sw*2} v${h-head} h${-wd+sw} z" fill="${col}"/>`;
+}
+/* פיקטוגרמות בקנה מידה אמיתי */
+function iCar(cx,yG,k,col){ const w=1.8*k,h=1.45*k; return `<g><rect x="${cx-w*.36}" y="${yG-h}" width="${w*.72}" height="${h*.42}" rx="${h*.1}" fill="${col}"/><rect x="${cx-w*.3}" y="${yG-h+h*.07}" width="${w*.6}" height="${h*.22}" fill="#dfe6ea"/><rect x="${cx-w/2}" y="${yG-h*.62}" width="${w}" height="${h*.44}" rx="${h*.09}" fill="${col}"/><rect x="${cx-w*.46}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/><rect x="${cx+w*.30}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/></g>`; }
+function iBus(cx,yG,k,col){ const w=2.55*k,h=3.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.93}" rx="${w*.08}" fill="${col}"/><rect x="${cx-w*.42}" y="${yG-h*.88}" width="${w*.84}" height="${h*.36}" fill="#e3eaee"/><rect x="${cx-w*.36}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx+w*.18}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx-w*.46}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/><rect x="${cx+w*.3}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/></g>`; }
+function iLrt(cx,yG,k,col){ const w=2.65*k,h=3.6*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.92}" rx="${w*.14}" fill="${col}"/><rect x="${cx-w*.4}" y="${yG-h*.86}" width="${w*.8}" height="${h*.4}" rx="${w*.05}" fill="#dfe8ef"/><path d="M${cx-w*.25} ${yG-h} l${w*.25} ${-h*.35} l${w*.25} ${h*.35}" fill="none" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><line x1="${cx-w*.5}" y1="${yG-h*1.35}" x2="${cx+w*.5}" y2="${yG-h*1.35}" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><rect x="${cx-w*.42}" y="${yG-k*.18}" width="${w*.84}" height="${k*.18}" fill="#555"/></g>`; }
+function iPerson(cx,yG,k,col){ const h=1.7*k,w=.46*k,hd=.2*k; return `<g fill="${col}" opacity=".85"><circle cx="${cx}" cy="${yG-h+hd}" r="${hd}"/><path d="M${cx-w/2} ${yG-h+hd*2.1} h${w} v${h*.42} l${-w*.28} 0 v${h*.44} h${-w*.16} v${-h*.44} h${-w*.12} v${h*.44} h${-w*.16} v${-h*.44} l${-w*.28} 0 z"/></g>`; }
+function iBike(cx,yG,k,col){ const w=.7*k,h=1.75*k,sw=Math.max(.15,k*.035); return `<g><circle cx="${cx}" cy="${yG-h*.16}" r="${h*.16}" fill="none" stroke="#3b3f44" stroke-width="${sw}"/><line x1="${cx-w/2}" y1="${yG-h*.52}" x2="${cx+w/2}" y2="${yG-h*.52}" stroke="#3b3f44" stroke-width="${sw}"/><circle cx="${cx}" cy="${yG-h*.9}" r="${h*.1}" fill="${col}"/><path d="M${cx-w*.34} ${yG-h*.76} h${w*.68} v${h*.34} h${-w*.68} z" fill="${col}"/></g>`; }
+function iTree(cx,yG,k,col){ const h=6*k,r=h*.28,tw=Math.max(.3,h*.04); return `<g><rect x="${cx-tw/2}" y="${yG-h*.58}" width="${tw}" height="${h*.58}" fill="#6b5a44"/><circle cx="${cx}" cy="${yG-h*.72}" r="${r}" fill="${col}" opacity=".9"/><circle cx="${cx-r*.6}" cy="${yG-h*.56}" r="${r*.7}" fill="${col}" opacity=".82"/><circle cx="${cx+r*.6}" cy="${yG-h*.57}" r="${r*.66}" fill="${col}" opacity=".82"/></g>`; }
+function iRail(cx,yG,k){ const h=.8*k,w=.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h}" fill="#555"/><rect x="${cx-w*1.6}" y="${yG-h*.95}" width="${w*3.2}" height="${h*.35}" fill="#8a9097"/></g>`; }
+function iBuilding(x,yG,k,dir){ const w=5*k,h=9*k, x0=dir>0?x:x-w; let win=''; for(let r=0;r<4;r++)for(let c=0;c<3;c++) win+=`<rect x="${x0+w*.12+c*w*.29}" y="${yG-h+h*.1+r*h*.21}" width="${w*.18}" height="${h*.1}" fill="#f0f3f6"/>`; return `<g><rect x="${x0}" y="${yG-h}" width="${w}" height="${h}" fill="#9aa1a7" opacity=".55"/>${win}</g>`; }
+
+function edgeExtent(e){ // מטרים אופקיים ומטרים אנכיים (עומק מתחת לכביש)
+  if(!e || e.type==='none') return {w:1.0, dep:0};
+  if(e.type==='building') return {w:5.5, dep:0};
+  if(e.type==='fill') return {w: e.h*e.n + 2.0, dep: e.h};
+  if(e.type==='cut') return {w: (e.dd||0.6)*3 + (e.db||0.6) + (e.h+(e.dd||0.6))*e.n + 2.0, dep: (e.dd||0.6)};
+  return {w:1,dep:0};
+}
+
+function sectionSVG(sec, D, opt){
+  /* מחזיר {g, w, h} ביחידות מ״מ נייר; המקור (0,0) בפינה השמאלית-עליונה של בלוק החתך */
+  const k = 1000/D;
+  const cells = sec.cells.filter(c=>c.w>0);
+  const tot = cells.reduce((a,c)=>a+c.w,0);
+  const eL = edgeExtent(sec.eL), eR = edgeExtent(sec.eR);
+  const curbH = sec.curbH;
+  const topM = 9.5;                     // מ׳ מעל מפלס הכביש (עצים, רק״ל)
+  const titleH = 14;                    // מ״מ לכותרת
+  const xL = eL.w*k, yG = titleH + topM*k;
+  const pave = sec.pave ? (sec.dSurf+sec.dBase+sec.dSub) : 0;
+  const depth = Math.max(pave+0.2, eL.dep, eR.dep) * k;
+  let out = '';
+  const X = m => xL + m*k;
+  const Z = z => yG - z*k;
+
+  // מיקום תאים
+  let x = 0; const P = cells.map(c=>{ const o={...c, x0:x, x1:x+c.w, z:(levelOf(c)==='curb'?curbH:0)}; x+=c.w; return o; });
+
+  // כותרת החתך
+  out += tx(X(tot/2), 7, sec.title || 'חתך טיפוסי', 6, {weight:700});
+  out += tx(X(tot/2), 12.5, `קנה מידה 1:${D}`, 3.2, {color:'#585f66'});
+
+  // גוף הקרקע / מבנה מסעה
+  const baseZ = -(Math.max(pave,0.35)+0.15);
+  P.forEach(p=>{
+    const t=T[p.t];
+    if(levelOf(p)==='road' && sec.pave){
+      const ys = Z(0), a=sec.dSurf*k, b=sec.dBase*k, c=sec.dSub*k;
+      out += `<rect x="${X(p.x0)}" y="${ys}" width="${p.w*k}" height="${a}" fill="#3c4146"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys+a}" width="${p.w*k}" height="${b}" fill="#c9b98f"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys+a+b}" width="${p.w*k}" height="${c}" fill="#e0d6b8"/>`;
+    } else {
+      out += `<rect x="${X(p.x0)}" y="${Z(p.z)}" width="${p.w*k}" height="${(p.z-baseZ)*k}" fill="${levelOf(p)==='curb'?'#e6e1d4':'#d9d3c4'}"/>`;
+    }
+    // פס צבע התא
+    out += `<rect x="${X(p.x0)}" y="${Z(p.z)-0.08*k}" width="${p.w*k}" height="${0.08*k}" fill="${t.col}"/>`;
+  });
+  // קו פני השטח
+  let d = `M${X(0)} ${Z(P.length?P[0].z:0)}`;
+  P.forEach((p,i)=>{ d += ` L${X(p.x0)} ${Z(p.z)} L${X(p.x1)} ${Z(p.z)}`; if(i<P.length-1 && P[i+1].z!==p.z) d += ` L${X(p.x1)} ${Z(P[i+1].z)}`; });
+  out += `<path d="${d}" fill="none" stroke="#14171a" stroke-width="0.35"/>`;
+  // אבני שפה
+  P.forEach((p,i)=>{ const n=P[i+1]; if(n && n.z!==p.z){ const xx=X(p.x1), zz=Math.max(p.z,n.z), cw=0.15*k, sgn = p.z>n.z?-1:0; out += `<rect x="${xx + sgn*cw}" y="${Z(zz)}" width="${cw}" height="${(zz+0.25)*k}" fill="#b9b4a8" stroke="#14171a" stroke-width="0.15"/>`; } });
+
+  // קצוות
+  const z0L = P.length?P[0].z:0, z0R = P.length?P[P.length-1].z:0;
+  out += edgeDraw(sec.eL, X(0), Z(z0L), k, -1);
+  out += edgeDraw(sec.eR, X(tot), Z(z0R), k, 1);
+
+  // קווי סימון ציר/נתיבים – קווקוו בין נתיבים באותו כיוון, רציף בין כיוונים
+  P.forEach((p,i)=>{ const n=P[i+1]; if(!n) return;
+    const road = t=>['lane','bus','brt'].includes(t);
+    if(road(p.t)&&road(n.t)){ const same = p.dir===n.dir; out += `<line x1="${X(p.x1)}" y1="${Z(0)-0.02*k}" x2="${X(p.x1)}" y2="${Z(0)-0.02*k}" stroke="#fff"/>`;
+      out += `<rect x="${X(p.x1)-0.06*k}" y="${Z(0)-0.05*k}" width="${0.12*k}" height="${0.05*k}" fill="${same?'#ffffff':'#f2c94c'}" stroke="#14171a" stroke-width="0.05"/>`; }
+  });
+
+  // פיקטוגרמות
+  P.forEach(p=>{
+    const t=T[p.t], cx=X((p.x0+p.x1)/2), yS=Z(p.z);
+    if(opt.icons){
+      if(t.car==='car') out += iCar(cx,yS,k,'#5c6e82');
+      if(t.car==='park') out += iCar(cx,yS,k,'#9aa7b3');
+      if(t.car==='bus') out += iBus(cx,yS,k,'#c4574a');
+      if(t.car==='lrt') out += iLrt(cx,yS,k,'#2f6db3');
+      if(t.bike){ if(p.dir==='both' && p.w>=2){ out += iBike(X(p.x0+p.w*0.3),yS,k,'#b0503a')+iBike(X(p.x0+p.w*0.7),yS,k,'#b0503a'); } else out += iBike(cx,yS,k,'#b0503a'); }
+      if(p.t==='walk' || (t.ppl && p.w>=3)){ const n=Math.max(1,Math.min(4,Math.floor(p.w/1.2))); for(let j=0;j<n;j++) out += iPerson(X(p.x0+(j+0.5)*p.w/n),yS,k,'#3d4650'); }
+    }
+    if(opt.trees && t.tree && p.w>=1.0){ const n=p.t==='plaza'?Math.max(1,Math.floor(p.w/6)):1; for(let j=0;j<n;j++) out += iTree(X(p.x0+(j+0.5)*p.w/n),yS,k,'#6f9a55'); }
+    if(t.rail) out += iRail(p.t==='barrier'?cx:X(p.x0+Math.min(0.5,p.w/2)),yS,k);
+    // חצי כיוון
+    if(t.dir && p.dir && p.dir!=='none' && (t.car||t.bike)){
+      const top = yS - (t.car==='lrt'?5.8:t.car==='bus'?4.4:t.bike?2.8:2.6)*k, len=1.4*k, wd=0.35*k;
+      if(p.dir==='both'){ out += arrowV(cx-wd*1.4,top-len,len,'up','#14171a',wd)+arrowV(cx+wd*1.4,top-len,len,'down','#14171a',wd); }
+      else out += arrowV(cx,top-len,len,p.dir,t.car==='bus'||t.car==='lrt'?'#c49a1a':'#14171a',wd);
+    }
+  });
+
+  // שיפועים רוחביים
+  if(opt.cf){
+    const isRoad = p=>levelOf(p)==='road' && !['barrier','active'].includes(p.t);
+    // קבוצות כביש רציפות
+    let groups=[], cur=null;
+    P.forEach((p,i)=>{ if(isRoad(p)){ if(!cur){cur={a:i,b:i}; groups.push(cur);} else cur.b=i; } else cur=null; });
+    groups.forEach(g=>{
+      const x0=P[g.a].x0, x1=P[g.b].x1, mid=(x0+x1)/2;
+      [[x0,mid],[mid,x1]].forEach(([a,b],j)=>{ if(b-a<1.2) return; const cx=X((a+b)/2), y=yG+depth+2.2;
+        const dir = j===0?-1:1; // כלפי חוץ
+        out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a"/>`;
+        out += tx(cx, y-1.0, sec.cfRoad.toFixed(1)+'%', 2.5, {color:'#2b5c8a'}); });
+    });
+    P.forEach((p,i)=>{ if(levelOf(p)!=='curb' || p.w<2.0 || T[p.t].tree && p.t!=='plaza') return;
+      // כיוון לעבר הכביש הקרוב
+      let dL=1e9,dR=1e9; for(let j=i-1;j>=0;j--) if(levelOf(P[j])==='road'){dL=i-j;break;} for(let j=i+1;j<P.length;j++) if(levelOf(P[j])==='road'){dR=j-i;break;}
+      const dir = dR<dL?1:-1, cx=X((p.x0+p.x1)/2), y=yG+depth+2.2;
+      out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a"/>`;
+      out += tx(cx, y-1.0, sec.cfSide.toFixed(1)+'%', 2.5, {color:'#2b5c8a'}); });
+  }
+
+  // שרשראות מידות
+  let yD = yG + depth + (opt.cf?11:7);
+  const tick = (x,y)=>`<line x1="${x-0.9}" y1="${y+0.9}" x2="${x+0.9}" y2="${y-0.9}" stroke="#14171a" stroke-width="0.3"/>`;
+  function chain(segs, y, size, labels){
+    let s = `<line x1="${X(segs[0].a)}" y1="${y}" x2="${X(segs[segs.length-1].b)}" y2="${y}" stroke="#14171a" stroke-width="0.2"/>`;
+    segs.forEach(g=>{ const a=X(g.a), b=X(g.b), wmm=b-a, val=f2(g.b-g.a);
+      s += tick(a,y)+tick(b,y)+`<line x1="${a}" y1="${y-2.2}" x2="${a}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12"/><line x1="${b}" y1="${y-2.2}" x2="${b}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12"/>`;
+      const need = val.length*size*0.55;
+      if(wmm >= need+0.6) s += tx((a+b)/2, y-0.9, val, size);
+      else s += tx((a+b)/2+size*0.35, y-1.2, val, size*0.85, {anchor:'start', rot:-90});
+      if(labels && g.l){ const need2 = g.l.length*2.1*0.55; if(wmm>=need2+0.8) s += tx((a+b)/2, y+3.6, g.l, 2.1, {color:'#585f66'}); else s += tx((a+b)/2+0.8, y+2.2, g.l, 1.9, {anchor:'end', rot:-90, color:'#585f66'}); }
+    });
+    return s;
+  }
+  // שורה 1 – כל תא
+  out += chain(P.map(p=>({a:p.x0,b:p.x1,l:opt.names?T[p.t].s:''})), yD, 2.7, opt.names);
+  // שורה 2 – קבוצות (מדרכה / כביש / מפרדה)
+  const cat = p => ['median','barrier'].includes(p.t)?'מפרדה' : (p.t==='lrt'?'רק״ל' : (levelOf(p)==='road'?(sec.ctx==='inter'?'מיסעה + שוליים':'כביש'):(p.t==='plaza'?'שדירה':'מדרכה')));
+  let G=[]; P.forEach(p=>{ const c=cat(p); const last=G[G.length-1]; if(last && last.l===c) last.b=p.x1; else G.push({a:p.x0,b:p.x1,l:c}); });
+  const row2Y = yD + (opt.names?14:9);
+  if(G.length>1) out += chain(G, row2Y, 2.9, true);
+  const row3Y = row2Y + (G.length>1?11:0);
+  out += chain([{a:0,b:tot,l:'רוחב כולל'}], row3Y, 3.3, true);
+  // גבולות זכות דרך
+  [0,tot].forEach(m=>{ out += `<line x1="${X(m)}" y1="${Z(4.5)}" x2="${X(m)}" y2="${row3Y+2}" stroke="#b03a2e" stroke-width="0.25" stroke-dasharray="3 1.2 0.6 1.2"/>`; });
+  out += tx(X(0)-1, Z(4.8), 'גבול ז.ד.', 2.3, {anchor:'end', color:'#b03a2e'}) + tx(X(tot)+1, Z(4.8), 'גבול ז.ד.', 2.3, {anchor:'start', color:'#b03a2e'});
+
+  const W = (eL.w + tot + eR.w)*k;
+  return {g: out, w: W, h: row3Y + 6, tot};
+}
+function edgeDraw(e, x, y, k, dir){
+  if(!e || e.type==='none') return '';
+  if(e.type==='building') return iBuilding(x + dir*0.4*k, y, k, dir) + `<line x1="${x+dir*0.4*k}" y1="${y-9.5*k}" x2="${x+dir*0.4*k}" y2="${y+0.5*k}" stroke="#585f66" stroke-width="0.25" stroke-dasharray="2 1"/>`;
+  if(e.type==='fill'){ const run=e.h*e.n*k, dy=e.h*k;
+    return `<path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy} L${x+dir*(run+2*k)} ${y+dy+1*k} L${x} ${y+dy+1*k} Z" fill="#e4dcc6" stroke="none"/><path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+
+      tx(x+dir*run*0.5, y+dy*0.5-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a'}); }
+  if(e.type==='cut'){ const dd=(e.dd||0.6)*k, f=dd*3, b=(e.db||0.6)*k, up=(e.h+(e.dd||0.6))*k, br=up*e.n;
+    const p1=[x+dir*f, y+dd], p2=[x+dir*(f+b), y+dd], p3=[x+dir*(f+b+br), y+dd-up], p4=[x+dir*(f+b+br+2*k), y+dd-up];
+    return `<path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4} L${p4[0]} ${y+dd+1*k} L${x} ${y+dd+1*k} Z" fill="#e4dcc6"/><path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+
+      tx((p2[0]+p3[0])/2, (p2[1]+p3[1])/2-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a'})+tx((p1[0]+p2[0])/2, y+dd+3, 'תעלה', 2.2, {color:'#585f66'}); }
+  return '';
+}
+
+/* ---------------- גיליון A0 ---------------- */
+const A0 = {w:1189, h:841};
+function curSec(){
+  return {title:$('title').value, ctx:$('ctx').value, cells:S.cells.map(c=>({...c})), eL:{...S.eL}, eR:{...S.eR},
+    curbH:num('curbH'), dSurf:num('dSurf'), dBase:num('dBase'), dSub:num('dSub'), cfRoad:num('cfRoad'), cfSide:num('cfSide'),
+    pave:$('tPave').checked, rowTarget:num('rowTarget')};
+}
+function opts(){ return {icons:$('tIcons').checked, trees:$('tTrees').checked, cf:$('tCf').checked, names:$('tNames').checked}; }
+function sheetSVG(){
+  const D = +$('scale').value, secs = SHEET.length? SHEET : [curSec()];
+  const frameL=20, frame=10, tbW=180, tbH=62;
+  const drawW = A0.w - frameL - frame - 10, availH = A0.h - 2*frame - tbH - 20;
+  const blocks = secs.map(s=>sectionSVG(s, D, opts()));
+  const totalH = blocks.reduce((a,b)=>a+b.h,0) + 12*(blocks.length-1);
+  let y = frame + 12 + Math.max(0,(availH-totalH)/2), body='', warn=[];
+  blocks.forEach((b,i)=>{ const x = frameL + 5 + Math.max(0,(drawW-b.w)/2); if(b.w>drawW) warn.push(`חתך ${i+1} רחב מהגיליון (${Math.round(b.w)} מ״מ)`);
+    body += `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">${b.g}</g>`; y += b.h + 12; });
+  if(totalH > availH) warn.push('גובה החתכים חורג מהשטח הפנוי בגיליון');
+  // סרגל קנה מידה
+  const k=1000/D, sbX=frameL+10, sbY=A0.h-frame-12; let sb='';
+  for(let i=0;i<5;i++) sb += `<rect x="${sbX+i*2*k}" y="${sbY}" width="${2*k}" height="2" fill="${i%2?'#fff':'#14171a'}" stroke="#14171a" stroke-width="0.2"/>`;
+  sb += tx(sbX, sbY-1.5, '0', 2.5)+tx(sbX+5*k, sbY-1.5, '5', 2.5)+tx(sbX+10*k, sbY-1.5, '10 מ׳', 2.5)+tx(sbX+5*k, sbY+6, `סרגל קנה מידה 1:${D} – 10 מ׳ = ${(10*k).toFixed(0)} מ״מ`, 2.5, {color:'#585f66'});
+  // מסגרת וטבלת כותרת
+  const tbX = A0.w-frame-tbW, tbY=A0.h-frame-tbH, today=new Date().toLocaleDateString('he-IL');
+  const cellT = (x,y,w,h,lab,val,big)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+tx(x+w-2,y+4,lab,2.3,{anchor:'end',color:'#585f66'})+tx(x+w-2,y+h-3,val,big?5:3.4,{anchor:'end',weight:big?700:400});
+  let tb = `<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="#fff" stroke="#14171a" stroke-width="0.6"/>`;
+  tb += cellT(tbX,tbY,tbW,16,'משרד','MAHALCO – הנדסה אזרחית ותחבורה',true);
+  tb += cellT(tbX,tbY+16,tbW,14,'פרויקט',$('proj').value||'—');
+  tb += cellT(tbX,tbY+30,tbW,14,'תוכן הגיליון', secs.map(s=>s.title).join(' | '));
+  tb += cellT(tbX+120,tbY+44,60,18,'קנה מידה',`1:${D}`,true)+cellT(tbX+80,tbY+44,40,18,'גיליון',$('dwg').value||'—')+cellT(tbX+40,tbY+44,40,18,'תאריך',today)+cellT(tbX,tbY+44,40,18,'שרטט',$('drawn').value||'—');
+  const notes = tx(frameL+10, A0.h-frame-26, 'הערות: המידות במטרים. גבהים ושיפועים מוצגים בקנה מידה אחיד (ללא הגזמה אנכית). מבנה המסעה אינדיקטיבי – לפי תכנון מבנה. חתך עקרוני – לא לביצוע.', 2.8, {anchor:'start'});
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${A0.w}mm" height="${A0.h}mm" viewBox="0 0 ${A0.w} ${A0.h}" id="sheetSVG" style="direction:ltr">
+<rect width="${A0.w}" height="${A0.h}" fill="#ffffff"/>
+<rect x="${frameL}" y="${frame}" width="${A0.w-frameL-frame}" height="${A0.h-2*frame}" fill="none" stroke="#14171a" stroke-width="0.7"/>
+${body}${sb}${notes}${tb}</svg>`;
+  return {svg, warn};
+}
+
+/* ---------------- תצוגה, סטטיסטיקה ובדיקות ---------------- */
+function update(rerenderCells=true){
+  if(rerenderCells) renderCells(); else document.querySelectorAll('#cells .cell').forEach((el,i)=>{ const st=cellCheck(S.cells[i]); el.className='cell '+(st?st.cls:''); el.title=st?st.msg:T[S.cells[i].t].n; });
+  const sec = curSec(), D = +$('scale').value;
+  let warn=[];
+  if(VIEW==='section'){
+    const b = sectionSVG(sec, D, opts()), pad=6;
+    $('drawing').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-pad} ${-pad} ${b.w+2*pad} ${b.h+2*pad}" id="secSVG" style="direction:ltr"><rect x="${-pad}" y="${-pad}" width="${b.w+2*pad}" height="${b.h+2*pad}" fill="#fbfaf6"/>${b.g}</svg>`;
+  } else {
+    const s = sheetSVG(); warn = s.warn;
+    $('drawing').innerHTML = s.svg;
+  }
+  // נתונים
+  const tot = sec.cells.reduce((a,c)=>a+c.w,0);
+  const road = sec.cells.filter(c=>levelOf(c)==='road').reduce((a,c)=>a+c.w,0);
+  const lanesDn = sec.cells.filter(c=>['lane'].includes(c.t)&&c.dir==='down').length, lanesUp = sec.cells.filter(c=>['lane'].includes(c.t)&&c.dir==='up').length;
+  const busN = sec.cells.filter(c=>['bus','brt'].includes(c.t)).length;
+  const walk = sec.cells.filter(c=>c.t==='walk').reduce((a,c)=>a+c.w,0);
+  const k = 1000/D;
+  $('stats').innerHTML = [['רוחב כולל',f2(tot),'מ׳'],['מפלס כביש (כולל שוליים)',f2(road),'מ׳'],['נתיבים ↓ / ↑',`${lanesDn} / ${lanesUp}`,''],['נתיבי תח״צ',busN,''],['רצועות הליכה',f2(walk),'מ׳'],[`רוחב על הנייר 1:${D}`,(tot*k).toFixed(0),'מ״מ']]
+    .map(r=>`<div class="stat"><span>${r[0]}</span><b>${r[1]}<small> ${r[2]}</small></b></div>`).join('');
+  const chk=[];
+  if(sec.rowTarget>0){ const df=tot-sec.rowTarget; chk.push(Math.abs(df)<0.005?['','זכות דרך',`סכום התאים ${f2(tot)} מ׳ תואם לרוחב היעד.`]:['bad','זכות דרך',`סכום התאים ${f2(tot)} מ׳ – ${df>0?'חורג ב-':'חסרים '}${f2(Math.abs(df))} מ׳ מול יעד ${f2(sec.rowTarget)} מ׳.`]); }
+  sec.cells.forEach((c,i)=>{ const st=cellCheck(c); if(st) chk.push([st.cls,`תא ${i+1} – ${T[c.t].n} ${f2(c.w)} מ׳`,st.msg]); });
+  sec.cells.forEach((c,i)=>{ if(T[c.t].note) chk.push(['warn',`תא ${i+1} – ${T[c.t].n}`,T[c.t].note]); });
+  for(let i=0;i<sec.cells.length-1;i++){ const a=sec.cells[i], b=sec.cells[i+1]; if(a.t==='lane'&&b.t==='lane'&&a.dir!==b.dir&&sec.ctx==='urban'&&!sec.cells.some(c=>c.t==='median')) {} }
+  if(sec.ctx==='inter' && sec.cells.some(c=>c.t==='barrier')){ const iB=sec.cells.findIndex(c=>c.t==='barrier'); const nb=sec.cells[iB-1], na=sec.cells[iB+1]; const med=(nb&&nb.t==='shL'?nb.w:0)+(na&&na.t==='shL'?na.w:0);
+    chk.push([med>=2.4-1e-9?'':'bad','מפרדה בין-עירונית',`שוליים שמאליים ${f2(med)} מ׳ + מעקה – מזערי 2.4 מ׳ + רוחב המעקות ב-2–3 נתיבים; 6.0 מ׳ ב-4 נתיבים או בדרך מהירה 120 (כרך 1 סעיף 3.4.2).`]); }
+  warn.forEach(w=>chk.push(['bad','גיליון',w]));
+  { const secs = SHEET.length?SHEET:[sec]; const maxW = Math.max(...secs.map(s=>s.cells.reduce((a,c)=>a+c.w,0)+edgeExtent(s.eL).w+edgeExtent(s.eR).w));
+    if(maxW*1000/D < 400) chk.push(['','גיליון',`בקנה מידה 1:${D} החתך תופס ${(maxW*1000/D).toFixed(0)} מ״מ מתוך כ-1,150 מ״מ ברוחב A0. אפשר להוסיף עד שלושה חתכים לגיליון, או לבחור 1:100 (${(maxW*10).toFixed(0)} מ״מ).`]); }
+  if(sec.eL.type==='fill'&&sec.eL.n<4 || sec.eR.type==='fill'&&sec.eR.n<4) chk.push(['warn','מדרון מילוי','שיפוע מילוי חריף מ-1:4 – נדרש מעקה בטיחות בקצה השול (כרך 1 סעיף 3.5.5: 1:4–1:6 במילוי, 1:3–1:6 בחפירה).']);
+  if(!chk.length) chk.push(['','תקין','לא נמצאו חריגות מול ערכי ההנחיות הכלולים בכלי.']);
+  $('checks').innerHTML = chk.map(c=>`<div class="chk ${c[0]}"><b>${esc(c[1])}</b>${esc(c[2])}</div>`).join('');
+  $('sheetList').innerHTML = SHEET.map((s,i)=>`<div><span>${i+1}. ${esc(s.title)} – ${f2(s.cells.reduce((a,c)=>a+c.w,0))} מ׳</span><button class="mini" data-s="${i}" data-a="load">ערוך</button><button class="mini" data-s="${i}" data-a="rm">✕</button></div>`).join('') || '<p class="hint">הגיליון יכלול את החתך הנוכחי.</p>';
+  $('sheetList').querySelectorAll('button').forEach(b=>b.onclick=()=>{ const i=+b.dataset.s; if(b.dataset.a==='rm') SHEET.splice(i,1); else loadSec(SHEET[i]); update(); });
+}
+function loadSec(s){
+  S.cells = s.cells.map(c=>({...c})); S.eL={...s.eL}; S.eR={...s.eR};
+  $('title').value=s.title||''; $('ctx').value=s.ctx||'urban'; $('rowTarget').value=s.rowTarget||0;
+  ['curbH','dSurf','dBase','dSub','cfRoad','cfSide'].forEach(k=>{ if(s[k]!==undefined) $(k).value=s[k]; });
+  edgeUI('L'); edgeUI('R');
+}
+function applyPreset(){
+  const p = PRESETS[$('preset').value];
+  S.cells = p.cells.map(c=>({...c})); S.eL={...p.eL}; S.eR={...p.eR};
+  $('title').value = p.n.replace(/\s*\(.*\)$/,''); $('ctx').value=p.ctx; $('rowTarget').value=p.row||0;
+  $('presetSrc').textContent = 'מקור: '+p.src;
+  edgeUI('L'); edgeUI('R'); update();
+}
+
+/* ---------------- ייצוא ---------------- */
+function save(blob, name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); }
+function a0Html(){
+  const {svg} = sheetSVG();
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><title>${esc(($('dwg').value||'TS')+' – '+(SHEET.length?SHEET.map(s=>s.title).join(', '):$('title').value))}</title>
+<style>
+@page{size:1189mm 841mm;margin:0}
+html,body{margin:0;padding:0;background:#fff}
+svg{display:block;width:1189mm;height:841mm}
+.noprint{position:fixed;top:8px;left:8px;background:#fffbe6;border:1px solid #c9a227;padding:8px 12px;font:13px Arial;direction:rtl}
+@media print{.noprint{display:none}}
+</style></head><body>
+<div class="noprint">גיליון A0 לרוחב (1189×841 מ״מ), קנה מידה 1:${$('scale').value}. להדפסה/PDF: גודל נייר A0, ״גודל בפועל / 100%״, ללא שוליים. בדקו את סרגל קנה המידה: 10 מ׳ = ${(10000/ +$('scale').value).toFixed(0)} מ״מ.</div>
+${svg}
+</body></html>`;
+}
+$('btnHtml').onclick = ()=> save(new Blob([a0Html()],{type:'text/html;charset=utf-8'}), `MAHALCO_${$('dwg').value||'TS'}_A0_1-${$('scale').value}.html`);
+$('btnSvg').onclick = ()=> { const {svg}=sheetSVG(); save(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+svg],{type:'image/svg+xml;charset=utf-8'}), `MAHALCO_${$('dwg').value||'TS'}_A0.svg`); };
+$('btnPrint').onclick = ()=> { const w=window.open('','_blank'); w.document.write(a0Html()); w.document.close(); setTimeout(()=>w.print(),400); };
+$('btnJson').onclick = ()=> save(new Blob([JSON.stringify({version:1, sheet:SHEET, current:curSec(), scale:+$('scale').value, proj:$('proj').value, dwg:$('dwg').value},null,2)],{type:'application/json'}), 'typical-section.json');
+$('fileJson').onchange = e=>{ const f=e.target.files[0]; if(!f) return; f.text().then(t=>{ try{ const j=JSON.parse(t); SHEET=j.sheet||[]; if(j.current) loadSec(j.current); if(j.scale) $('scale').value=j.scale; if(j.proj!==undefined) $('proj').value=j.proj; if(j.dwg) $('dwg').value=j.dwg; update(); }catch(err){ alert('קובץ JSON לא תקין'); } }); };
+$('btnAddSheet').onclick = ()=>{ if(SHEET.length>=3){ alert('עד שלושה חתכים בגיליון A0 אחד'); return; } SHEET.push(curSec()); update(); };
+$('btnAdd').onclick = ()=>{ const t=$('addType').value; S.cells.push({t, w:T[t].w, dir:T[t].dir||'none'}); update(); };
+$('btnMirror').onclick = ()=>{ S.cells = [...S.cells, ...mirror(S.cells)]; const e=S.eL; S.eR={...e}; edgeUI('R'); update(); };
+$('btnClear').onclick = ()=>{ S.cells=[]; update(); };
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{ VIEW=b.dataset.v; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b)); update(false); });
+['title','rowTarget','ctx','dSurf','dBase','dSub','cfRoad','cfSide','curbH','scale','proj','drawn','dwg','tIcons','tTrees','tCf','tPave','tNames'].forEach(id=>$(id).addEventListener(id.startsWith('t')&&$(id).type==='checkbox'?'change':'input',()=>update(id==='ctx')));
+$('ctx').addEventListener('change',()=>update());
+
+/* ---------------- אתחול ---------------- */
+(function init(){
+  const groups={}; Object.entries(PRESETS).forEach(([k,p])=>{ (groups[p.g]=groups[p.g]||[]).push([k,p.n]); });
+  $('preset').innerHTML = Object.entries(groups).map(([g,a])=>`<optgroup label="${g}">${a.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('')}</optgroup>`).join('');
+  $('preset').onchange = applyPreset;
+  $('addType').innerHTML = Object.keys(T).map(k=>`<option value="${k}">${T[k].n}</option>`).join('');
+  $('preset').value='ex1'; applyPreset();
+})();
+
+/* ---------------- אתחול שכבת הממשק ---------------- */
+/* קישור מהקטלוג: typical-section.html?ctx=inter פותח ישר בתבנית בין-עירונית */
+(function(){ const q=new URLSearchParams(location.search).get('ctx');
+  if(q==='inter' && PRESETS.iuR){ $('preset').value='iuR'; applyPreset(); } })();
+document.querySelectorAll('[data-bind]').forEach(UI.bindSelect);
+UI.presets(); UI.tiles(); UI.enhance(document); UI.place();
+UI.after(false);
+requestAnimationFrame(()=>{ UI.segAll(); UI.after(false); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>UI.segAll());
+</script>
+
+<!-- ---------------- מדריך ההנחיות: פתיחה/סגירה של הכלי המשולב ---------------- -->
+<script>
+(function(){
+  var ov = document.getElementById('guideOv'), frame = document.getElementById('guideFrame'),
+      openBtn = document.getElementById('btnGuide'), closeBtn = document.getElementById('btnGuideClose'),
+      loaded = false, lastFocus = null;
+  function load(){
+    if(loaded) return;
+    var src = document.getElementById('guideSrc').value;
+    frame.srcdoc = src;
+    loaded = true;
+  }
+  function open(){
+    load();
+    lastFocus = document.activeElement;
+    ov.classList.add('on');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+  function close(){
+    ov.classList.remove('on');
+    document.body.style.overflow = '';
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && ov.classList.contains('on')) close(); });
+})();
+</script>
+</body>
+</html>

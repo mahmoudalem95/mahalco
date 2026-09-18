@@ -1,15 +1,25 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <!-- Clarity tracking code -->
+    <script>
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "yhq6a92ouj");
+    </script>
     <meta name="description" content="Transportation engineering tools and APIs: signalized and unsignalized intersection LOS, roundabouts, lane and queue analysis, freeway and two-lane operations, alignment, sight distance and parking — per HCM, AASHTO and HSM. Run in the browser or post the same inputs to the API.">
     <script src="https://app.secureprivacy.ai/script/6a9ea3e9610163e1a700488f.js"></script>
     <!-- Google tag (gtag.js) -->
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-HGFLQEM5HT"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGFLQEM5HT"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', 'G-HGFLQEM5HT');
     </script>
-    <script data-goatcounter="https://mahalco.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script>
+    <script data-goatcounter="https://mahalco.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     <link rel="canonical" href="https://mahmoudalem95.github.io/mahalco/apis.html">
     <link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/">
     <link rel="alternate" hreflang="en" href="https://mahmoudalem95.github.io/mahalco/apis.html">
@@ -35,7 +45,7 @@
             "inLanguage": "en",
             "operatingSystem": "Web Browser",
             "applicationCategory": "EngineeringApplication",
-            "description": "Applications for transportation engineering services based on HCM, AASHTO and HSM \u2014 intersection analysis, freeways, geometric design, safety, transit and multi-modal infrastructure.",
+            "description": "Applications for transportation engineering services based on HCM, AASHTO and HSM — intersection analysis, freeways, geometric design, safety, transit and multi-modal infrastructure.",
             "offers": [
                 { "@type": "Offer", "name": "Developer", "price": "19", "priceCurrency": "USD",
                   "eligibleQuantity": { "@type": "QuantitativeValue", "value": "120 requests per hour" } },
@@ -45,54 +55,23 @@
         }
     </script>
     <script type="application/ld+json">
-{
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "inLanguage": "en",
-        "mainEntity": [
-                {
-                        "@type": "Question",
-                        "name": "Which standards do the calculations follow?",
-                        "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "HCM for capacity, level of service, delay and queues; the AASHTO Green Book for geometric design; the HSM for safety performance. Where an Israeli guideline governs — parking regulations, urban street guidelines, interurban design guidelines, roundabout guidelines — the tool follows it and says so."
-                        }
-                },
-                {
-                        "@type": "Question",
-                        "name": "Do I need to install anything or upload my files?",
-                        "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "No. Every tool runs in the browser, including reading a counts spreadsheet and marking up a plan. Nothing is uploaded to a server. The API exists separately, for embedding the same calculations in your own systems."
-                        }
-                },
-                {
-                        "@type": "Question",
-                        "name": "What is the difference between the in-browser pages and the API?",
-                        "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "Identical methods, different interface. The pages are for a single intersection, segment or cross-section; the API is for batches — a corridor, a scenario matrix, or a nightly run against your own database."
-                        }
-                },
-                {
-                        "@type": "Question",
-                        "name": "How is a future-year level of service produced?",
-                        "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "Every movement is grown at a compound annual rate and the whole chain is recomputed — critical volume, cycle length, green split, delay. The delay is never simply multiplied by the growth factor, because delay is not linear in volume and diverges around a volume-to-capacity ratio of 1.0."
-                        }
-                },
-                {
-                        "@type": "Question",
-                        "name": "Do the results replace a signed traffic report?",
-                        "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "No. The tools perform the calculation to the standard and expose the intermediate steps so they can be checked. A traffic impact assessment, a safety report or a submission to an authority requires a licensed traffic engineer who takes professional responsibility for the assumptions and the result."
-                        }
-                }
-                
-        ]
-}
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "inLanguage": "en",
+            "mainEntity": [
+                { "@type": "Question", "name": "Which standards do the calculations follow?",
+                  "acceptedAnswer": { "@type": "Answer", "text": "HCM for capacity, level of service, delay and queues; the AASHTO Green Book for geometric design; the HSM for safety performance. Where an Israeli guideline governs — parking regulations, urban street guidelines, interurban design guidelines, roundabout guidelines — the tool follows it and says so." } },
+                { "@type": "Question", "name": "Do I need to install anything or upload my files?",
+                  "acceptedAnswer": { "@type": "Answer", "text": "No. Every tool runs in the browser, including reading a counts spreadsheet and marking up a plan. Nothing is uploaded to a server. The API exists separately, for embedding the same calculations in your own systems." } },
+                { "@type": "Question", "name": "What is the difference between the in-browser pages and the API?",
+                  "acceptedAnswer": { "@type": "Answer", "text": "Identical methods, different interface. The pages are for a single intersection, segment or cross-section; the API is for batches — a corridor, a scenario matrix, or a nightly run against your own database." } },
+                { "@type": "Question", "name": "How is a future-year level of service produced?",
+                  "acceptedAnswer": { "@type": "Answer", "text": "Every movement is grown at a compound annual rate and the whole chain is recomputed — critical volume, cycle length, green split, delay. The delay is never simply multiplied by the growth factor, because delay is not linear in volume and diverges around a volume-to-capacity ratio of 1.0." } },
+                { "@type": "Question", "name": "Do the results replace a signed traffic report?",
+                  "acceptedAnswer": { "@type": "Answer", "text": "No. The tools perform the calculation to the standard and expose the intermediate steps so they can be checked. A traffic impact assessment, a safety report or a submission to an authority requires a licensed traffic engineer who takes professional responsibility for the assumptions and the result." } }
+            ]
+        }
     </script>
     <link rel="manifest" href="manifest.webmanifest">
     <meta name="theme-color" content="#23272C">
@@ -100,14 +79,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="מהאלco">
-    <meta name="application-name" content="מהאלco">
+    <meta name="apple-mobile-web-app-title" content="Mahalco">
+    <meta name="application-name" content="Mahalco">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&amp;display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --asphalt: #23272C;
@@ -123,13 +102,23 @@
             --alert-ink: #8A2318;
             --measure: 66ch;
         }
-        * { box-sizing: border-box }
-        html { scroll-behavior: smooth }
+        /* --- pending routes --- */
+        .pending-route { cursor: default !important; opacity: .72; }
+        .pending-route::after { content: " — pending"; font-size: .78em; font-weight: 600; color: var(--alert-ink); }
+        .pending-route:hover { text-decoration: none !important; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100% }
         @media (prefers-reduced-motion:reduce) { html { scroll-behavior: auto } * { transition: none !important; animation: none !important } }
-        body { margin:0; background: var(--paper); color: var(--ink); font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased }
+        body { margin:0; background: var(--paper); color: var(--ink); font-family: 'Archivo', 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none }
+        input, textarea, select, code, .std, .connect-area code { user-select: text; -webkit-user-select: text }
         a { color: inherit }
         :focus-visible { outline: 2px solid var(--marking); outline-offset: 3px }
-        .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px }
+        .wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 28px }
+        @media (max-width: 480px) { .wrap { padding: 0 16px } }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 16px }
+        @media (min-width: 600px) { .grid { grid-template-columns: repeat(2, minmax(0,1fr)) } }
+        @media (min-width: 900px) { .grid { grid-template-columns: repeat(3, minmax(0,1fr)) } }
+        #main-content { display: block; }
         .masthead { position: sticky; top: 0; z-index: 20; background: var(--asphalt); border-bottom: 1px solid var(--rule-dark) }
         .masthead .wrap { display: flex; align-items: center; gap: 24px; height: 60px }
         .mark { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -.01em; font-size: 19px; color: var(--paper); text-decoration: none }
@@ -137,10 +126,13 @@
         .masthead nav { margin-inline-start: auto; display: flex; gap: 20px; font-size: 14.5px }
         .masthead nav a { color: var(--muted-dark); text-decoration: none; padding: 4px 0 }
         .masthead nav a:hover { color: var(--paper) }
+        .masthead nav a.btn-solid { min-height: 34px; padding: 6px 16px; font-size: 13.5px; margin-inline-end: 4px; color: var(--ink) }
+        .masthead nav a.btn-solid:hover { color: var(--ink) }
         @media (max-width:860px) {
             .masthead .wrap { gap: 12px }
             .masthead nav { margin-inline-start: auto; display: flex; gap: 16px; overflow-x: auto;
-                -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; max-width: 100%; padding-bottom: 2px }
+                -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap;
+                max-width: 100%; padding-bottom: 2px }
             .masthead nav::-webkit-scrollbar { display: none }
             .masthead nav a { flex: none; font-size: 13.5px }
         }
@@ -149,20 +141,35 @@
         @media (min-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 48px } }
         .hero h1 { margin: 0 0 18px; font-size: clamp(2.1rem, 4.6vw, 3.3rem); line-height: 1.12; letter-spacing: -.02em; font-weight: 800 }
         .hero p { margin: 0 0 24px; max-width: 48ch; color: var(--muted-dark); font-size: 1.02rem }
+        .app-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+        .app-cta { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; padding: 12px 16px;
+            background: linear-gradient(90deg, rgba(233,177,47,.20), rgba(233,177,47,.05));
+            border: 1px solid var(--marking); border-radius: 6px;
+            box-shadow: 0 0 0 3px rgba(233,177,47,.10); text-decoration: none; color: var(--paper);
+            transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+            cursor: pointer; font-family: inherit; text-align: start; max-width: 100%; }
+        .app-cta:hover, .app-cta:focus-visible { background: rgba(233,177,47,.26); box-shadow: 0 0 0 4px rgba(233,177,47,.18) }
+        .app-cta:active { transform: translateY(1px) }
+        .app-cta-badge { flex: none; background: var(--marking); color: var(--ink); font-size: 12px; font-weight: 800; letter-spacing: .02em; padding: 4px 9px; border-radius: 3px }
+        .app-cta-text { display: flex; flex-direction: column; line-height: 1.35; min-width: 0 }
+        .app-cta-text b { font-size: 15.5px; font-weight: 800 }
+        .app-cta-text span { font-size: 13px; color: var(--muted-dark) }
+        .app-cta-go { flex: none; margin-inline-start: auto; font-size: 20px; line-height: 1; color: var(--marking) }
+        @media (max-width: 599px) { .app-actions { flex-direction: column; } .app-cta { width: 100%; } }
         .hero-actions { display: flex; flex-wrap: wrap; gap: 10px }
-        .btn { display: inline-block; padding: 12px 20px; border-radius: 3px; font-weight: 600; font-size: 14.5px; text-decoration: none; transition: background .15s ease, color .15s ease }
+        @media (max-width: 599px) { .hero-actions { flex-direction: column; align-items: stretch } .hero-actions .btn { width: 100% } }
+        .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 13px 22px; border-radius: 3px; font-weight: 600; font-size: 14.5px; text-decoration: none; transition: background .15s ease, color .15s ease }
         .btn-solid { background: var(--marking); color: var(--ink) }
         .btn-solid:hover { background: #F3C455 }
         .btn-line { border: 1px solid var(--rule-dark); color: var(--paper) }
         .btn-line:hover { background: #2C3239 }
         .plan { width: 100%; height: auto; display: block; max-width: 320px; margin: 0 auto }
         @media (min-width: 900px) { .plan { max-width: none; margin: 0 } }
-        .tally { display: flex; gap: 34px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--rule-dark); flex-wrap: wrap }
+        .tally { display: flex; flex-wrap: wrap; gap: 20px 34px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--rule-dark) }
         .tally div { font-size: 13.5px; color: var(--muted-dark) }
         .tally b { display: block; font-size: 1.5rem; font-weight: 800; color: var(--paper); letter-spacing: -.01em; line-height: 1.3 }
-        @media (max-width:860px) { .hero { padding: 44px 0 46px } .hero .wrap { grid-template-columns: 1fr; gap: 32px } .plan { max-width: 320px; margin: 0 auto } }
         .gates { background: var(--paper-2); border-bottom: 1px solid var(--rule); padding: 26px 0 }
-        .gates .wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px }
+        .gates .wrap { gap: 14px }
         .gate { display: block; text-decoration: none; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px 15px; position: relative; overflow: hidden; transition: border-color .15s ease, transform .15s ease }
         .gate::before { content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 4px; background: var(--marking); transform: scaleY(0); transform-origin: top; transition: transform .18s ease }
         .gate:hover { border-color: var(--muted) }
@@ -171,14 +178,13 @@
         .gate p { margin: 0 0 10px; font-size: 14px; color: var(--muted); line-height: 1.5 }
         .gate .g-n { font-size: 13px; font-weight: 600; color: var(--ink) }
         .gate .g-n b { color: var(--marking); -webkit-text-stroke: .4px var(--ink) }
-        @media (max-width:820px) { .gates .wrap { grid-template-columns: 1fr; gap: 10px } }
         .controls { position: sticky; top: 60px; z-index: 15; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 14px 0 }
         .controls .wrap { display: flex; flex-wrap: wrap; gap: 12px; align-items: center }
         .search { flex: 1 1 240px; min-width: 0; display: flex; align-items: center; gap: 9px; background: var(--paper-2); border: 1px solid var(--rule); border-radius: 3px; padding: 9px 13px }
         .search svg { flex: none; opacity: .5 }
         .search input { border: 0; background: none; outline: none; width: 100%; font: inherit; font-size: 15px; color: var(--ink) }
         .filters { display: flex; gap: 7px; flex-wrap: wrap }
-        .chip { border: 1px solid var(--rule); background: transparent; border-radius: 3px; padding: 8px 14px; font: inherit; font-size: 13.5px; font-weight: 500; color: var(--muted); cursor: pointer; transition: border-color .15s, color .15s }
+        .chip { display: inline-flex; align-items: center; min-height: 40px; border: 1px solid var(--rule); background: transparent; border-radius: 3px; padding: 8px 14px; font: inherit; font-size: 13.5px; font-weight: 500; color: var(--muted); cursor: pointer; transition: border-color .15s, color .15s }
         .chip:hover { border-color: var(--muted); color: var(--ink) }
         .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper) }
         .count { font-size: 13.5px; color: var(--muted); margin-inline-start: auto; flex: none }
@@ -215,10 +221,7 @@
         .leaf p { margin: 0; color: var(--muted); font-size: 14.5px; max-width: var(--measure) }
         .std { font-size: 12.5px; color: var(--muted); text-align: left; direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums }
         .leaf .tool-flag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--ink); background: var(--marking); border-radius: 2px; padding: 1px 6px; margin-inline-start: 7px; vertical-align: middle }
-        .soon { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) minmax(0, 11rem); gap: 18px; align-items: baseline; padding: 14px 0; padding-inline-start: 16px; border-bottom: 1px solid var(--rule); opacity: .75 }
-        .soon h3 { margin: 0; font-size: .99rem; font-weight: 600 }
-        .soon p { margin: 0; color: var(--muted); font-size: 14.5px }
-        @media (max-width:820px) { a.leaf, .soon { grid-template-columns: 1fr; gap: 4px; padding-inline-start: 14px } .std { text-align: right; direction: rtl } }
+        @media (max-width:820px) { a.leaf { grid-template-columns: 1fr; gap: 4px; padding-inline-start: 14px } .std { text-align: right; direction: rtl } }
         .block { padding-top: 52px }
         .block-head { display: flex; align-items: baseline; gap: 14px; padding-bottom: 12px; margin-bottom: 4px; border-bottom: 2px solid var(--ink) }
         .block-head h2 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -.01em }
@@ -234,14 +237,19 @@
         a.buy:hover { background: #F3C455 }
         .note { margin: 18px 0 0; color: var(--muted); font-size: 13.5px; max-width: 62ch }
         @media (max-width:820px) { .tier { grid-template-columns: 1fr; gap: 9px; padding-inline-start: 14px } .price { justify-self: start; text-align: right } }
+        .soon { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) minmax(0, 11rem); gap: 18px; align-items: baseline; padding: 14px 0; padding-inline-start: 16px; border-bottom: 1px solid var(--rule); opacity: .75 }
+        .soon h3 { margin: 0; font-size: .99rem; font-weight: 600 }
+        .soon p { margin: 0; color: var(--muted); font-size: 14.5px }
+        @media (max-width:820px) { .soon { grid-template-columns: 1fr; gap: 4px } }
         .empty { padding: 44px 0; color: var(--muted); font-size: 16px }
         .empty[hidden] { display: none }
         .connect-area { padding: 18px 0 }
         .connect-area .input-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
         .connect-area .input-group label { font-weight: 600; color: var(--muted); font-size: 14.5px }
         .connect-area .input-group input { flex: 1; min-width: 200px; padding: 10px 13px; border: 1px solid var(--rule); border-radius: 3px; font-family: inherit; background: var(--paper-2); color: var(--ink) }
-        .connect-area .input-group button { background: var(--marking); color: var(--ink); border: none; padding: 10px 20px; border-radius: 3px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .15s ease }
+        .connect-area .input-group button { background: var(--marking); color: var(--ink); border: none; min-height: 44px; padding: 10px 20px; border-radius: 3px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .15s ease }
         .connect-area .input-group button:hover { background: #F3C455 }
+        @media (max-width: 599px) { .connect-area .input-group input { min-width: 0; flex: 1 1 100% } .connect-area .input-group button { width: 100% } }
         .connect-area .hint { color: var(--muted); font-size: 13.5px; margin: 8px 0 0 }
         .connect-area .hint a { color: #8a6a12; text-decoration: underline }
         .connect-area .code-sample { background: var(--paper-2); padding: 14px 18px; border-radius: 4px; border-inline-end: 4px solid var(--marking); margin-top: 12px }
@@ -265,7 +273,9 @@
         .tag-project { border-color: #c9a98b; background: #f7f1ea }
         .tag-plan { border-color: #a3b0cb; background: #eff2f7 }
         footer { background: var(--asphalt); color: var(--muted-dark); padding: 34px 0 28px; font-size: 13.5px; margin-top: 10px }
-        footer .f-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start }
+        footer .f-grid { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: start }
+        @media (min-width: 600px) { footer .f-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px } }
+        @media (min-width: 900px) { footer .f-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 28px } }
         footer h4 { margin: 0 0 8px; font-size: 13px; font-weight: 700; color: var(--paper); letter-spacing: .01em }
         footer p { margin: 0; max-width: 52ch; line-height: 1.65 }
         footer ul { margin: 0; padding: 0; list-style: none }
@@ -275,18 +285,36 @@
         footer .pay-link { color: var(--paper); font-weight: 600 }
         .f-bottom { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--rule-dark); font-size: 13px }
         .f-bottom .who { color: var(--paper); font-weight: 600; margin-inline-start: auto }
-        @media (max-width:820px) { footer .f-grid { grid-template-columns: 1fr; gap: 22px } .f-bottom .who { margin-inline-start: 0; width: 100% } }
-
-        /* --- procedures that are not built yet --- */
+        @media (max-width:820px) { .f-bottom .who { margin-inline-start: 0; width: 100% } }
+        /* PWA Install Modal */
+        dialog.install-dialog { border: none; border-radius: 12px; padding: 0; max-width: 520px; width: 92%; box-shadow: 0 24px 48px rgba(0,0,0,.25); background: #f8f9fa; color: var(--ink); font-family: inherit; }
+        dialog.install-dialog::backdrop { background: rgba(20,26,31,.75); backdrop-filter: blur(2px); }
+        .install-header { padding: 20px 24px; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 12px 12px 0 0; }
+        .install-header h3 { margin: 0; font-size: 1.25rem; font-weight: 800; }
+        .install-close { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--muted); line-height: 1; padding: 0 4px; }
+        .install-close:hover { color: var(--ink); }
+        .install-body { padding: 24px; }
+        .install-intro { margin: 0 0 20px; font-size: 14.5px; color: var(--muted); }
+        .platform-block { margin-bottom: 28px; }
+        .platform-block:last-child { margin-bottom: 0; }
+        .platform-tag { display: inline-block; font-size: 12px; font-weight: 700; background: var(--rule); padding: 3px 8px; border-radius: 4px; margin-bottom: 12px; color: var(--ink); }
+        .install-step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+        .install-step:last-child { margin-bottom: 0; }
+        .step-num { background: var(--marking); color: var(--ink); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex: none; margin-top: 2px; }
+        .step-text { font-size: 15px; line-height: 1.5; }
+        .step-text b { display: block; font-size: 15.5px; margin-bottom: 2px; }
+        .step-text span { color: var(--muted); font-size: 14px; }
+        .install-divider { border: 0; border-top: 1px solid var(--rule); margin: 24px 0; }
+        @media (max-width: 480px) { .install-body { padding: 18px; } .install-header { padding: 16px 18px; } }
+        /* pending */
         .flag-pending { display: inline-block; font-size: 11px; font-weight: 700; color: #fff; background: var(--alert); border-radius: 2px; padding: 1px 6px; margin-inline-start: 7px; vertical-align: middle }
-        .soon.pending { opacity: 1; border-inline-start: 3px solid rgba(178,45,32,.45); padding-inline-start: 13px }
-        .soon.pending h3 { color: var(--alert-ink) }
         a.leaf.pending::before { background: var(--alert); transform: scaleY(1); opacity: .5 }
+        a.leaf.pending:hover::before, a.leaf.pending:focus-visible::before { opacity: 1 }
         a.leaf.pending h3 { color: var(--alert-ink) }
+        .soon.pending { border-inline-start: 3px solid rgba(178,45,32,.4); padding-inline-start: 13px }
         .chip-pending[aria-pressed="true"] { background: var(--alert); border-color: var(--alert); color: #fff }
         .count .pend { color: var(--alert-ink); font-weight: 600 }
-
-        /* --- daily use allowance --- */
+        /* usage / gate */
         .usage { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 7px 14px; margin-top: 12px; padding-top: 11px; border-top: 1px dashed var(--rule); font-size: 13px; color: var(--muted) }
         .usage b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums }
         .usage .meter { flex: none; width: 116px; height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden }
@@ -296,7 +324,6 @@
         .usage.low .meter i { background: var(--alert) }
         .usage.low .u-msg { color: var(--alert-ink); font-weight: 600 }
         @media (max-width:640px) { .usage .u-contact { margin-inline-start: 0; flex: 1 1 100% } }
-
         #limit-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(20,26,31,.97); padding: 24px; display: none; align-items: center; justify-content: center }
         #limit-overlay[data-on="1"] { display: flex }
         body.locked { overflow: hidden }
@@ -308,34 +335,29 @@
         .limit-card li { margin-bottom: 7px }
         .limit-card a { color: #8a6a12 }
         .limit-card .card-foot { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted) }
-        .limit-key { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0 2px }
-        .limit-key label { font-size: 13px; font-weight: 700; color: var(--muted); flex: none }
-        .limit-key input { flex: 1 1 190px; min-width: 0; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 3px; font: inherit; font-size: 14.5px; background: var(--paper-2); color: var(--ink) }
-        .limit-key button { flex: none; background: var(--marking); color: var(--ink); border: 0; padding: 10px 22px; border-radius: 3px; font: inherit; font-weight: 700; cursor: pointer; transition: background .15s ease }
-        .limit-key button:hover { background: #F3C455 }
-        .limit-msg { margin: 9px 0 0 !important; font-size: 13.5px; font-weight: 600 }
-        .limit-msg[data-state="err"] { color: var(--alert-ink) }
-        .limit-msg[data-state="ok"] { color: #2F6B3F }
-        .linkish { background: none; border: 0; padding: 0; font: inherit; font-size: 13px; color: #8a6a12; text-decoration: underline; cursor: pointer }
-
-        /* ============ 2026-09 : audiences, flows, search, questions ============ */
-        .strip { background: var(--ink); color: var(--paper); padding: 22px 0 24px; border-bottom: 1px solid var(--rule-dark) }
-        .strip .wrap { display: grid; grid-template-columns: 1fr; gap: 12px }
-        @media (min-width:760px) { .strip .wrap { grid-template-columns: repeat(2, minmax(0,1fr)) } }
-        @media (min-width:1040px) { .strip .wrap { grid-template-columns: repeat(4, minmax(0,1fr)) } }
-        .strip-head { grid-column: 1/-1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px }
+        @media (max-width: 480px) { .limit-card { padding: 24px 20px 22px } }
+        /* strip fold */
+        .strip { background: var(--ink); color: var(--paper); padding: 0; border-bottom: 1px solid var(--rule-dark) }
+        .strip .wrap { display: block !important }
+        .strip-fold > summary.strip-head { list-style: none; cursor: pointer; margin: 0; padding: 14px 0; align-items: center; min-height: 54px; display: flex; gap: 10px 14px; flex-wrap: wrap }
+        .strip-fold > summary::-webkit-details-marker { display: none }
+        .strip-fold > summary .arrow { border-color: var(--marking); align-self: center }
+        .strip-fold[open] > summary .arrow { transform: rotate(135deg); margin-top: 2px }
         .strip-head h2 { font-size: 1.06rem; font-weight: 800; letter-spacing: -.01em }
-        .strip-head span { font-size: 13px; color: var(--muted-dark) }
-        a.fresh { display: block; text-decoration: none; color: var(--paper); background: #1B2126;
-            border: 1px solid var(--rule-dark); border-radius: 4px; padding: 13px 14px; transition: border-color .15s, background .15s }
+        .strip-head .s-n { background: var(--marking); color: var(--ink); font-size: 12px; font-weight: 800; padding: 2px 9px; border-radius: 20px }
+        .strip-head .s-hint { margin-inline-start: auto; font-size: 12.5px; color: var(--muted-dark) }
+        .strip-fold[open] .s-hint::after { content: " · close" }
+        .strip-fold:not([open]) .s-hint::after { content: " · open" }
+        .strip-grid { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 2px 0 22px }
+        @media (min-width:760px) { .strip-grid { grid-template-columns: repeat(2, minmax(0,1fr)) } }
+        @media (min-width:1040px) { .strip-grid { grid-template-columns: repeat(4, minmax(0,1fr)) } }
+        @media (max-width:640px) { .strip-head .s-hint { display: none } }
+        a.fresh { display: block; text-decoration: none; color: var(--paper); background: #1B2126; border: 1px solid var(--rule-dark); border-radius: 4px; padding: 13px 14px; transition: border-color .15s, background .15s }
         a.fresh:hover { border-color: var(--marking); background: #20272D }
         a.fresh b { display: block; font-size: 14.6px; font-weight: 700; margin-bottom: 4px }
         a.fresh span { display: block; font-size: 13px; color: var(--muted-dark); line-height: 1.5 }
-        a.fresh em { font-style: normal; color: var(--marking); font-weight: 700; font-size: 11.5px;
-            letter-spacing: .04em; display: block; margin-bottom: 6px; text-transform: uppercase }
-        .he-tag { display: inline-block; font-size: 10.5px; font-weight: 800; letter-spacing: .04em;
-            border: 1px solid var(--marking); color: var(--marking); border-radius: 2px; padding: 0 5px; margin-inline-start: 6px; vertical-align: middle }
-
+        a.fresh em { font-style: normal; color: var(--marking); font-weight: 700; font-size: 11.5px; letter-spacing: .04em; display: block; margin-bottom: 6px; text-transform: uppercase }
+        /* routes */
         .routes { background: var(--paper-2); border-bottom: 1px solid var(--rule); padding: 34px 0 38px }
         .r-head { margin-bottom: 18px }
         .r-head h2 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); font-weight: 800; letter-spacing: -.015em; margin-bottom: 6px }
@@ -349,38 +371,33 @@
         .route .who2 { font-size: 12.5px; color: var(--muted); display: block; margin-bottom: 9px }
         .route p { font-size: 14px; color: var(--muted); line-height: 1.55; margin-bottom: 11px }
         .route ul { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0 }
-        .route li a { display: flex; gap: 8px; align-items: baseline; font-size: 14px; font-weight: 600;
-            text-decoration: none; color: var(--ink); border-bottom: 1px solid transparent }
+        .route li a { display: flex; gap: 8px; align-items: baseline; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--ink); border-bottom: 1px solid transparent }
         .route li a:hover { border-bottom-color: var(--marking) }
         .route li a::before { content: "\2192"; color: var(--marking); font-weight: 800; flex: none }
-
+        /* flows */
         .flow { border: 1px solid var(--rule); border-radius: 4px; background: var(--paper-2); padding: 18px 20px; margin-bottom: 14px }
         .flow h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; letter-spacing: -.01em }
         .flow > p { font-size: 14px; color: var(--muted); margin-bottom: 14px; max-width: 72ch }
         .steps2 { list-style: none; display: grid; grid-template-columns: 1fr; gap: 10px; counter-reset: st; margin: 0; padding: 0 }
         @media (min-width:820px) { .steps2 { grid-template-columns: repeat(4, minmax(0,1fr)) } .steps2.three { grid-template-columns: repeat(3, minmax(0,1fr)) } }
         .steps2 li { counter-increment: st; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; padding: 11px 12px }
-        .steps2 li::before { content: counter(st); display: inline-flex; align-items: center; justify-content: center;
-            width: 20px; height: 20px; border-radius: 3px; background: var(--marking); color: var(--ink); font-size: 12px; font-weight: 800; margin-bottom: 7px }
+        .steps2 li::before { content: counter(st); display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; background: var(--marking); color: var(--ink); font-size: 12px; font-weight: 800; margin-bottom: 7px }
         .steps2 b { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px }
         .steps2 span { display: block; font-size: 13px; color: var(--muted); line-height: 1.5 }
         .steps2 a { color: var(--alert-ink); font-weight: 600 }
         .flow-foot { margin-top: 13px; font-size: 13.5px; color: var(--muted) }
         .flow-foot a { font-weight: 600; color: var(--alert-ink) }
-
         .chain { background: var(--asphalt); color: var(--paper); border-radius: 4px; padding: 20px 22px }
         .chain h3 { font-size: 1.08rem; font-weight: 800; margin-bottom: 6px }
         .chain > p { font-size: 14.2px; color: var(--muted-dark); line-height: 1.6; max-width: 74ch; margin-bottom: 16px }
         .chain-line { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px }
-        .chain-line a { display: inline-flex; align-items: center; min-height: 38px; padding: 7px 12px;
-            border: 1px solid var(--rule-dark); border-radius: 3px; font-size: 13.5px; font-weight: 600;
-            text-decoration: none; color: var(--paper); background: #1B2126 }
+        .chain-line a { display: inline-flex; align-items: center; min-height: 38px; padding: 7px 12px; border: 1px solid var(--rule-dark); border-radius: 3px; font-size: 13.5px; font-weight: 600; text-decoration: none; color: var(--paper); background: #1B2126 }
         .chain-line a:hover { border-color: var(--marking) }
         .chain-line i { font-style: normal; color: var(--marking); font-weight: 800 }
         .chain ul { list-style: none; display: grid; grid-template-columns: 1fr; gap: 7px; font-size: 13.6px; color: var(--muted-dark); margin: 0; padding: 0 }
         @media (min-width:820px) { .chain ul { grid-template-columns: 1fr 1fr; gap: 7px 26px } }
         .chain ul li::before { content: "\00B7"; color: var(--marking); font-weight: 800; margin-inline-end: 7px }
-
+        /* seek */
         .seek { display: grid; grid-template-columns: 1fr; gap: 14px }
         @media (min-width:760px) { .seek { grid-template-columns: repeat(2, minmax(0,1fr)) } }
         @media (min-width:1040px) { .seek { grid-template-columns: repeat(3, minmax(0,1fr)) } }
@@ -390,19 +407,16 @@
         .seek li a { font-size: 13.6px; color: var(--muted); text-decoration: none; line-height: 1.5; display: block }
         .seek li a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 2px }
         .seek li a b { color: var(--ink); font-weight: 600 }
-
+        /* qa */
         .qa { border-top: 1px solid var(--rule) }
         .qa details { border-bottom: 1px solid var(--rule) }
-        .qa summary { cursor: pointer; list-style: none; display: flex; gap: 12px; align-items: baseline;
-            padding: 14px 2px; font-size: 15.5px; font-weight: 700; letter-spacing: -.01em }
+        .qa summary { cursor: pointer; list-style: none; display: flex; gap: 12px; align-items: baseline; padding: 14px 2px; font-size: 15.5px; font-weight: 700; letter-spacing: -.01em }
         .qa summary::-webkit-details-marker { display: none }
         .qa .a { padding: 0 2px 16px; font-size: 14.6px; color: var(--muted); line-height: 1.65; max-width: 78ch }
-
-        /* collapsed sections */
+        /* foldable */
         .foldable { border: 1px solid var(--rule); border-radius: 4px; background: var(--paper-2) }
         .foldable[open] { background: var(--paper) }
-        .foldable > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 13px;
-            padding: 16px 18px; font-size: 1.12rem; font-weight: 800; letter-spacing: -.015em; border-inline-start: 4px solid transparent }
+        .foldable > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 13px; padding: 16px 18px; font-size: 1.12rem; font-weight: 800; letter-spacing: -.015em; border-inline-start: 4px solid transparent }
         .foldable > summary::-webkit-details-marker { display: none }
         .foldable[open] > summary { border-inline-start-color: var(--marking); border-bottom: 1px solid var(--rule) }
         .foldable > summary:hover { background: #eceee8 }
@@ -411,32 +425,11 @@
         .fold-lede { font-size: 15px; color: var(--muted); max-width: 72ch; margin-bottom: 18px }
         .fold-body .flow:last-of-type { margin-bottom: 0 }
         @media (max-width:600px) { .foldable > summary { font-size: 1.02rem; padding: 14px } .fold-body { padding: 14px } }
-
-        /* --- Share CTA (WhatsApp) --- */
-        .app-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
-        .app-cta {
-            display: flex; align-items: center; gap: 14px; flex: 0 1 auto;
-            padding: 12px 16px;
-            background: linear-gradient(90deg, rgba(233,177,47,.20), rgba(233,177,47,.05));
-            border: 1px solid var(--marking); border-radius: 6px;
-            box-shadow: 0 0 0 3px rgba(233,177,47,.10);
-            text-decoration: none; color: var(--paper);
-            transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
-            cursor: pointer; font-family: inherit; text-align: start; max-width: 100%;
-        }
-        .app-cta:hover, .app-cta:focus-visible { background: rgba(233,177,47,.26); box-shadow: 0 0 0 4px rgba(233,177,47,.18) }
-        .app-cta:active { transform: translateY(1px) }
-        .app-cta-badge { flex: none; background: var(--marking); color: var(--ink); font-size: 12px; font-weight: 800; letter-spacing: .02em; padding: 4px 9px; border-radius: 3px }
-        .app-cta-text { display: flex; flex-direction: column; line-height: 1.35; min-width: 0 }
-        .app-cta-text b { font-size: 15.5px; font-weight: 800 }
-        .app-cta-text span { font-size: 13px; color: var(--muted-dark) }
-        .app-cta-go { flex: none; margin-inline-start: auto; font-size: 20px; line-height: 1; color: var(--marking) }
-        .share-cta { background: linear-gradient(90deg, rgba(37,211,102,.18), rgba(37,211,102,.04)); border-color: #25D366; box-shadow: 0 0 0 3px rgba(37,211,102,.10) }
+        /* share cta */
+        .app-actions .share-cta { background: linear-gradient(90deg, rgba(37,211,102,.18), rgba(37,211,102,.04)); border-color: #25D366; box-shadow: 0 0 0 3px rgba(37,211,102,.10) }
         .share-cta:hover, .share-cta:focus-visible { background: rgba(37,211,102,.24); box-shadow: 0 0 0 4px rgba(37,211,102,.18) }
         .share-cta .app-cta-badge { background: #25D366; color: #062814 }
-        @media (max-width: 599px) { .app-actions { flex-direction: column; } .app-cta { width: 100%; } }
-
-        /* --- phone reliability --- */
+        /* phone reliability */
         html { -webkit-text-size-adjust: 100%; text-size-adjust: 100% }
         body { overflow-x: hidden; overscroll-behavior-y: contain; -webkit-tap-highlight-color: rgba(233,177,47,.25) }
         img, svg, table { max-width: 100% }
@@ -444,121 +437,399 @@
         .masthead { padding-top: env(safe-area-inset-top, 0px) }
         footer { padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)) }
         a, button, select, summary { touch-action: manipulation }
-        .tblwrap, .seek, .r-grid { -webkit-overflow-scrolling: touch }
-        @media (display-mode: standalone) {
-            .masthead { position: sticky; top: 0; z-index: 40 }
+        @media (display-mode: standalone) { .masthead { position: sticky; top: 0; z-index: 40 } }
+        /* role tabs */
+        .role-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px }
+        .role-tab { font: inherit; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 16px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); color: var(--ink); cursor: pointer; white-space: nowrap; touch-action: manipulation }
+        .role-tab:hover { border-color: var(--muted) }
+        .role-tab[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--marking) }
+        .routes-late .r-grid { grid-template-columns: 1fr !important }
+        .routes-late.tabbed .route:not(.on) { display: none !important }
+        .routes-late.tabbed .route { cursor: default; padding: 18px 20px 16px }
+        .routes-late.tabbed .route > ul { display: grid; grid-template-columns: 1fr; gap: 2px }
+        .routes-late.tabbed .route li a { min-height: 44px; align-items: center }
+        @media (min-width: 700px) { .routes-late.tabbed .route > ul { grid-template-columns: 1fr 1fr; gap: 2px 28px } }
+        @media (max-width: 820px) { .role-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; margin-inline: -12px; padding: 2px 12px 6px } .role-tabs::-webkit-scrollbar { display: none } .role-tab { flex: 0 0 auto; scroll-snap-align: start; font-size: 13.5px } }
+        /* mobile layer */
+        #mUp, #mClear { display: none }
+        @media (max-width: 820px) {
+            .controls { padding: 10px 0 8px; position: static }
+            .controls .wrap { display: flex; flex-direction: column; gap: 8px }
+            .controls .wrap > * { min-width: 0; max-width: 100% }
+            .search { flex: 1 1 100%; min-height: 50px; border-radius: 10px; padding: 0 12px; position: relative }
+            .search input { font-size: 16px; min-height: 48px; width: 100%; border: 0; background: transparent }
+            #mClear { position: absolute; inset-inline-end: 6px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; border: 0; display: none; align-items: center; justify-content: center; background: var(--rule, #ddd); color: var(--ink, #222); font-size: 15px; cursor: pointer; z-index: 3 }
+            #mClear.on { display: flex }
+            .filters { flex-wrap: nowrap; overflow-x: auto; gap: 8px; scrollbar-width: none; margin-inline: calc(-1 * max(16px, env(safe-area-inset-inline, 0px))); padding-inline: max(16px, env(safe-area-inset-inline, 0px)); padding-bottom: 4px; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; min-width: 0; width: auto; max-width: none }
+            .filters::-webkit-scrollbar { display: none }
+            .filters .chip { flex: 0 0 auto; min-height: 42px; font-size: 13px; padding: 8px 15px; scroll-snap-align: start }
+            .count { font-size: 13px; margin: 0; width: auto !important; max-width: 100% }
+            a.leaf, #catalog .soon { min-height: 54px; padding-top: 13px; padding-bottom: 13px }
+            .branch > summary, .twig > summary { min-height: 52px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px }
+            .gate { min-height: 64px }
+            #mUp { display: flex; position: fixed; inset-inline-start: 14px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 45; width: 48px; height: 48px; border-radius: 50%; align-items: center; justify-content: center; border: 0; font-size: 20px; background: var(--ink, #1b1b1b); color: var(--paper, #fff); box-shadow: 0 6px 18px rgba(0,0,0,.28); opacity: 0; pointer-events: none; transition: opacity .2s }
+            body.m-scrolled #mUp { opacity: 1; pointer-events: auto }
+            .usage, .usage * { min-width: 0; max-width: 100%; overflow-wrap: anywhere }
+            .usage { flex-wrap: wrap }
+            .usage a[href^="tel"] { white-space: nowrap; direction: ltr; unicode-bidi: isolate }
         }
-        dialog.install-dialog {
-            border: none;
-            border-radius: 12px;
-            padding: 0;
-            max-width: 520px;
-            width: 92%;
-            box-shadow: 0 24px 48px rgba(0,0,0,.25);
-            background: #f8f9fa;
-            color: var(--ink);
-            font-family: inherit;
+        @media print { #mUp, #mClear { display: none !important } }
+        /* tablet */
+        @media (min-width: 821px) and (max-width: 1180px) {
+            .wrap { padding-inline: max(24px, env(safe-area-inset-inline, 0px)) }
+            .masthead nav { gap: 16px; font-size: 14px; overflow-x: auto; scrollbar-width: none; white-space: nowrap }
+            .masthead nav::-webkit-scrollbar { display: none }
+            .controls .wrap { flex-wrap: wrap; row-gap: 10px }
+            .search { flex: 1 1 100% }
+            .search input { font-size: 16px; min-height: 46px }
+            .filters { flex-wrap: wrap }
+            .filters .chip { min-height: 42px; padding: 8px 15px }
+            a.leaf { grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: 4px 16px }
+            a.leaf .std { grid-column: 1 / -1; text-align: right; direction: rtl }
+            .block-head { flex-wrap: wrap; gap: 6px 14px }
+            .tier { gap: 14px }
+            .hero h1 { font-size: clamp(2rem, 4.2vw, 2.8rem) }
         }
-        dialog.install-dialog::backdrop {
-            background: rgba(20,26,31,.75);
-            backdrop-filter: blur(2px);
+        @media (hover: none) and (pointer: coarse) {
+            .masthead nav a { padding: 12px 2px }
+            .branch > summary, .twig > summary { min-height: 50px }
+            a.leaf { min-height: 52px }
+            .route li a, .seek li a, footer a { min-height: 40px; display: flex; align-items: center }
+            input, select, textarea { font-size: 16px }
+            .gate:hover, a.leaf:hover::before { transform: none }
         }
-        .install-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--rule);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fff;
-            border-radius: 12px 12px 0 0;
+        @media (orientation: landscape) and (max-height: 500px) { .masthead, .controls { position: static } .hero { padding: 28px 0 30px } }
+        /* part dividers + block cards */
+        main.wrap { padding-bottom: 40px }
+        .part-div { display: flex; align-items: center; gap: 12px; margin: 46px 0 14px; font-size: 13px; font-weight: 800; letter-spacing: .05em; color: var(--ink) }
+        .part-div::before { content: ""; flex: none; width: 26px; height: 6px; border-radius: 1px; background: repeating-linear-gradient(90deg, var(--marking) 0 8px, transparent 8px 12px) }
+        .part-div::after { content: ""; flex: 1; height: 1px; background: var(--rule) }
+        .part-div span { color: var(--muted); font-weight: 500; letter-spacing: 0 }
+        main.wrap > .block { padding: 22px 24px 24px; margin: 0 0 14px; background: var(--paper-2); border: 1px solid var(--rule); border-radius: 8px }
+        main.wrap > .block > .block-head { border-bottom-width: 1px; border-bottom-color: var(--rule); margin-bottom: 8px }
+        main.wrap > .block:has(> details.foldable:only-child) { padding: 0; background: none; border: 0 }
+        main.wrap > .routes-late { margin: 0 0 14px; border-radius: 8px }
+        main.wrap > .block .tier:last-of-type { border-bottom: 0 }
+        main.wrap > details.keywords { margin-top: 30px }
+        @media (max-width: 820px) { .part-div { margin: 34px 0 10px; font-size: 12.5px } .part-div span { display: none } main.wrap > .block { padding: 16px 14px 18px } }
+        /* routes-late */
+        .routes-late { background: var(--paper-2); border: 1px solid var(--rule); border-bottom: 1px solid var(--rule); border-radius: 4px; padding: 24px 22px 26px; margin: 0 0 26px }
+        .routes-late .r-head { margin-bottom: 16px }
+        @media (max-width: 820px) { .routes-late { padding: 16px 12px 18px; margin-bottom: 18px } .routes-late .r-head h2 { font-size: 1.14rem } .routes-late .r-head p { font-size: 13.5px } .routes-late .r-grid { gap: 8px } }
+        /* hero quick links */
+        .hero-primary { margin-bottom: 22px }
+        .hero-quick { margin: 0 0 22px }
+        .hq-label { display: block; font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--marking); margin-bottom: 9px }
+        .hq-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px }
+        a.hq { display: flex; flex-direction: column; justify-content: center; min-height: 62px; padding: 10px 14px;
+            border: 1px solid var(--rule-dark); border-radius: 14px; background: #1B2126; color: var(--paper);
+            text-decoration: none; transition: transform .15s cubic-bezier(.2,.8,.2,1),border-color .15s,background .15s;
+            position: relative; overflow: hidden }
+        a.hq:hover, a.hq:focus-visible { border-color: var(--marking); background: #20272D }
+        a.hq:active { transform: scale(.97) }
+        a.hq::before { content: ""; position: absolute; inset-inline-start: 0; top: 10px; bottom: 10px; width: 4px; border-radius: 0 3px 3px 0; background: var(--marking); opacity: .85 }
+        a.hq small { font-size: 12px; color: var(--muted-dark); font-weight: 600 }
+        a.hq b { font-size: 14.5px; font-weight: 700; line-height: 1.35 }
+        .hero .app-actions { gap: 8px; margin: 0 0 4px; padding-top: 16px; border-top: 1px solid var(--rule-dark) }
+        .hero .app-cta { padding: 8px 12px; gap: 10px; box-shadow: none }
+        .hero .app-cta-text b { font-size: 13.5px }
+        .hero .app-cta-text span { font-size: 12px }
+        .hero .app-cta, .hero .btn { border-radius: 12px }
+        @media (max-width:599px) { .hq-list { grid-template-columns: 1fr 1fr } a.hq b { font-size: 13.5px } }
+        /* hero dropdown */
+        .hq-dropdown { display: flex; flex-direction: column; justify-content: center; min-height: 62px; padding: 10px 14px;
+            border: 1px solid var(--rule-dark); border-radius: 14px; background: #1B2126; color: var(--paper);
+            position: relative; cursor: pointer; user-select: none; -webkit-user-select: none;
+            transition: border-color .15s, background .15s }
+        .hq-dropdown::before { content: ""; position: absolute; inset-inline-start: 0; top: 10px; bottom: 10px; width: 4px; border-radius: 0 3px 3px 0; background: var(--marking); opacity: .85 }
+        .hq-dropdown:hover { border-color: var(--marking); background: #20272D }
+        .hq-dropdown.open { border-color: var(--marking); background: #20272D }
+        .hq-dropdown > small { font-size: 12px; color: var(--muted-dark); font-weight: 600 }
+        .hq-dropdown > b { font-size: 14.5px; font-weight: 700; line-height: 1.35 }
+        .hq-dropdown .hq-options { display: none; position: absolute; top: calc(100% + 6px); inset-inline-start: 0; width: 100%; min-width: 210px; background: #1B2126; border: 1px solid var(--marking); border-radius: 8px; z-index: 200; box-shadow: 0 10px 24px rgba(0,0,0,.5); overflow: hidden }
+        .hq-dropdown.open .hq-options { display: block }
+        .hq-dropdown .hq-opt { display: block; padding: 11px 14px; text-decoration: none; font-size: 13.5px; font-weight: 700; text-align: left; transition: background .15s, color .15s; border-bottom: 1px solid var(--rule-dark) }
+        .hq-dropdown .hq-opt:last-child { border-bottom: 0 }
+        .hq-dropdown .hq-opt.gray { color: var(--paper); background: #2C3239 }
+        .hq-dropdown .hq-opt.gray:hover, .hq-dropdown .hq-opt.gray:focus-visible { background: #39404A }
+        .hq-dropdown .hq-opt.gold { color: var(--ink); background: var(--marking) }
+        .hq-dropdown .hq-opt.gold:hover, .hq-dropdown .hq-opt.gold:focus-visible { background: #F3C455 }
+        @media (max-width:599px) { .hq-dropdown > b { font-size: 13.5px } .hq-dropdown > small { font-size: 11.5px } }
+        /* get choices (install) */
+        .get-choices { display: grid; gap: 10px; margin: 0 0 20px }
+        .get-opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 62px; padding: 11px 14px; border-radius: 14px; border: 1px solid var(--rule); background: #fff; color: var(--ink); font: inherit; text-align: left; text-decoration: none; cursor: pointer; position: relative }
+        .get-opt:hover, .get-opt:focus-visible { border-color: var(--marking) }
+        .get-opt .go-ico { flex: none; width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--marking); color: #141A1F; font-weight: 800; font-size: 12px }
+        .get-opt .go-t { display: flex; flex-direction: column; min-width: 0 }
+        .get-opt .go-t b { font-size: 15px }
+        .get-opt .go-t small { font-size: 12.5px; color: var(--muted) }
+        .get-opt.rec { border-color: var(--marking); box-shadow: 0 0 0 3px rgba(233,177,47,.16) }
+        .get-opt .go-rec { position: absolute; top: -10px; inset-inline-end: 12px; font-size: 11px; font-weight: 800; background: var(--ink); color: var(--paper); border-radius: 999px; padding: 3px 9px }
+        .get-opt[hidden] { display: none }
+        .get-note { margin: -8px 0 16px; font-size: 13px; color: var(--alert-ink) }
+        /* app duo */
+        .app-duo { display: grid !important; grid-template-columns: minmax(0,.9fr) minmax(0,1.3fr); gap: 10px !important }
+        @media (max-width:640px) { .app-duo { grid-template-columns: 1fr } }
+        .duo { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px; border-radius: 16px; text-decoration: none; font: inherit; text-align: left; cursor: pointer; color: var(--paper); touch-action: manipulation; transition: transform .15s cubic-bezier(.2,.8,.2,1),background .15s,border-color .15s; border: 1px solid rgba(233,177,47,.55); background: rgba(233,177,47,.10) }
+        .duo:active { transform: scale(.97) }
+        .duo-ico { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--marking); color: #141A1F }
+        .duo-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.3 }
+        .duo-txt b { font-size: 14.5px; font-weight: 800 }
+        .duo-txt small { font-size: 12.5px; color: var(--muted-dark) }
+        .duo-get:hover, .duo-get:focus-visible { background: rgba(233,177,47,.18); border-color: var(--marking) }
+        .duo-share { border: 1px solid rgba(37,211,102,.55); background: linear-gradient(100deg,rgba(37,211,102,.20),rgba(37,211,102,.05) 70%); box-shadow: none !important }
+        .duo-share:hover, .duo-share:focus-visible { background: rgba(37,211,102,.24); border-color: #25D366 }
+        .duo-share .duo-ico { background: #25D366; border-radius: 50% }
+        .duo-share .duo-go { margin-inline-start: auto; flex: none; font-size: 13px; font-weight: 800; color: #062814; background: #25D366; border-radius: 999px; padding: 7px 13px; white-space: nowrap }
+        @media (max-width:380px) { .duo-share .duo-go { display: none } }
+    </style>
+    <!-- theme kit -->
+    <script data-light="#F4F5F1" data-dark="#15181C" data-slot=".masthead .wrap">
+    (function(){
+      var d=document.documentElement, K='mh-theme', G='mh-glass';
+      var me=document.currentScript||{dataset:{}};
+      var LC=me.dataset.light||'#F2F2F7', DC=me.dataset.dark||'#000000', SLOT=me.dataset.slot||'';
+      function rd(k,v){try{return localStorage.getItem(k)||v}catch(e){return v}}
+      function wr(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+      var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+      var ui=null;
+      function apply(){
+        var pref=rd(K,'auto'); if(!/^(light|dark|auto)$/.test(pref)) pref='auto';
+        var t=pref==='auto'?(mq.matches?'dark':'light'):pref, gl=rd(G,'off')==='on'?'on':'off';
+        d.setAttribute('data-theme',t); d.setAttribute('data-theme-pref',pref); d.setAttribute('data-glass',gl);
+        d.style.colorScheme=t;
+        var ms=document.querySelectorAll('meta[name="theme-color"]');
+        if(!ms.length && document.head){var m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m);ms=[m];}
+        for(var i=0;i<ms.length;i++){ms[i].removeAttribute('media');ms[i].setAttribute('content',t==='dark'?DC:LC);}
+        if(ui) ui.sync(pref,gl);
+        try{document.dispatchEvent(new CustomEvent('mh:theme',{detail:{theme:t,pref:pref,glass:gl}}));}catch(e){}
+      }
+      function soft(){
+        if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},420);
+      }
+      window.MHTheme={
+        set:function(p){wr(K,p);soft();apply();},
+        glass:function(on){wr(G,on?'on':'off');soft();apply();},
+        get:function(){return {theme:d.getAttribute('data-theme'),pref:rd(K,'auto'),glass:rd(G,'off')};}
+      };
+      apply();
+      if(mq.addEventListener) mq.addEventListener('change',function(){if(rd(K,'auto')==='auto'){soft();apply();}});
+      else if(mq.addListener) mq.addListener(function(){if(rd(K,'auto')==='auto') apply();});
+      window.addEventListener('storage',function(e){if(e.key===K||e.key===G) apply();});
+      var ICO={
+        look:'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="currentColor"/></svg>',
+        light:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>',
+        dark:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 0 1 9.4 4a8.4 8.4 0 1 0 10.6 10.6z" fill="currentColor"/></svg>',
+        auto:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4.5" width="18" height="12" rx="2.2"/><path d="M8.5 20h7M12 16.5V20" stroke-linecap="round"/></svg>'
+      };
+      function build(){
+        if(document.getElementById('mh-look')) return;
+        var b=document.body;
+        var bg=document.createElement('div'); bg.id='mh-bg'; bg.setAttribute('aria-hidden','true'); b.insertBefore(bg,b.firstChild);
+        var btn=document.createElement('button');
+        btn.type='button'; btn.id='mh-look'; btn.className='mh-look';
+        btn.setAttribute('aria-label','Appearance: light, dark, and glass');
+        btn.setAttribute('aria-haspopup','dialog'); btn.setAttribute('aria-expanded','false');
+        btn.title='Appearance'; btn.innerHTML=ICO.look;
+        var slot=SLOT?document.querySelector(SLOT):null;
+        if(slot){btn.classList.add('mh-inline');slot.appendChild(btn);} else {btn.classList.add('mh-float');b.appendChild(btn);}
+        var pop=document.createElement('div');
+        pop.className='mh-pop'; pop.id='mh-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Appearance'); pop.hidden=true;
+        pop.innerHTML=
+          '<div class="mh-pop-h">Appearance</div>'+
+          '<div class="mh-seg" role="radiogroup" aria-label="Colour scheme">'+
+            '<span class="mh-knob" aria-hidden="true"></span>'+
+            '<button type="button" role="radio" data-v="light">'+ICO.light+'<span>Light</span></button>'+
+            '<button type="button" role="radio" data-v="dark">'+ICO.dark+'<span>Dark</span></button>'+
+            '<button type="button" role="radio" data-v="auto">'+ICO.auto+'<span>System</span></button>'+
+          '</div>'+
+          '<label class="mh-row"><span class="mh-row-t"><b>iOS glass</b><small>Transparency and blur behind cards</small></span>'+
+          '<input type="checkbox" class="mh-sw" role="switch"></label>'+
+          '<p class="mh-foot">Your choice is saved across all pages and tools on this site.</p>';
+        b.appendChild(pop);
+        var seg=pop.querySelector('.mh-seg'), knob=pop.querySelector('.mh-knob'), sw=pop.querySelector('.mh-sw');
+        function place(){
+          var r=btn.getBoundingClientRect(), w=pop.offsetWidth, h=pop.offsetHeight, vw=innerWidth, vh=innerHeight;
+          var left=Math.min(Math.max(8,r.left),vw-w-8);
+          var top=(r.bottom+10+h<vh-8)?r.bottom+10:Math.max(8,r.top-h-10);
+          pop.style.left=left+'px'; pop.style.top=top+'px';
         }
-        .install-header h3 {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 800;
+        function moveKnob(){
+          var on=seg.querySelector('[aria-checked="true"]'); if(!on||!pop.offsetWidth) return;
+          knob.style.width=on.offsetWidth+'px'; knob.style.left=on.offsetLeft+'px';
         }
-        .install-close {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--muted);
-            line-height: 1;
-            padding: 0 4px;
-        }
-        .install-close:hover { color: var(--ink); }
-        .install-body {
-            padding: 24px;
-        }
-        .install-intro {
-            margin: 0 0 20px;
-            font-size: 14.5px;
-            color: var(--muted);
-        }
-        .platform-block {
-            margin-bottom: 28px;
-        }
-        .platform-block:last-child {
-            margin-bottom: 0;
-        }
-        .platform-tag {
-            display: inline-block;
-            font-size: 12px;
-            font-weight: 700;
-            background: var(--rule);
-            padding: 3px 8px;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            color: var(--ink);
-        }
-        .install-step {
-            display: flex;
-            gap: 14px;
-            margin-bottom: 16px;
-            align-items: flex-start;
-        }
-        .install-step:last-child {
-            margin-bottom: 0;
-        }
-        .step-num {
-            background: var(--marking);
-            color: var(--ink);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 14px;
-            flex: none;
-            margin-top: 2px;
-        }
-        .step-text {
-            font-size: 15px;
-            line-height: 1.5;
-        }
-        .step-text b {
-            display: block;
-            font-size: 15.5px;
-            margin-bottom: 2px;
-        }
-        .step-text span {
-            color: var(--muted);
-            font-size: 14px;
-        }
-        .install-divider {
-            border: 0;
-            border-top: 1px solid var(--rule);
-            margin: 24px 0;
-        }
-        @media (max-width: 480px) {
-            .install-body { padding: 18px; }
-            .install-header { padding: 16px 18px; }
-        }
+        function open(){pop.hidden=false;btn.setAttribute('aria-expanded','true');place();moveKnob();
+          requestAnimationFrame(function(){pop.classList.add('on');});
+          var c=seg.querySelector('[aria-checked="true"]'); if(c) c.focus({preventScroll:true});}
+        function close(f){if(pop.hidden) return; pop.classList.remove('on');btn.setAttribute('aria-expanded','false');pop.hidden=true; if(f) btn.focus();}
+        btn.addEventListener('click',function(e){e.stopPropagation(); pop.hidden?open():close();});
+        pop.addEventListener('click',function(e){e.stopPropagation();});
+        document.addEventListener('click',function(){close();});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape') close(true);});
+        addEventListener('resize',function(){if(!pop.hidden){place();moveKnob();}});
+        addEventListener('scroll',function(){if(!pop.hidden) place();},{passive:true});
+        seg.addEventListener('click',function(e){var t=e.target.closest('button[data-v]'); if(t) MHTheme.set(t.dataset.v);});
+        seg.addEventListener('keydown',function(e){
+          if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
+          var bs=[].slice.call(seg.querySelectorAll('button')), i=bs.indexOf(document.activeElement); if(i<0) return;
+          i=(i+(e.key==='ArrowLeft'?1:-1)+bs.length)%bs.length; bs[i].focus(); MHTheme.set(bs[i].dataset.v); e.preventDefault();
+        });
+        sw.addEventListener('change',function(){MHTheme.glass(sw.checked);});
+        ui={sync:function(pref,gl){
+          [].forEach.call(seg.querySelectorAll('button'),function(x){var on=x.dataset.v===pref;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;});
+          sw.checked=gl==='on'; moveKnob();
+        }};
+        apply();
+      }
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+    })();
+    </script>
+    <style id="mh-look-kit">
+    :root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+      --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+      --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+      --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+      --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+      --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+    :root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+      --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+      --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+      --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+      --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+      --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+    html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+    #mh-bg{display:none}
+    html[data-glass="on"]{background:var(--mh-glass-base)!important}
+    html[data-glass="on"] body{background:transparent!important}
+    html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+      radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+      radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+      radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+      var(--mh-glass-base)}
+    .mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+      border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+      -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+      touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+    .mh-look:active{transform:scale(.92)}
+    .mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+    .mh-look.mh-inline{margin-inline-start:8px}
+    .mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+      bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+    @media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+    .mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:ltr;text-align:left;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Archivo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+      color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+      -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+      box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+      opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+    .mh-pop.on{opacity:1;transform:none}
+    .mh-pop[hidden]{display:none!important}
+    .mh-pop *{box-sizing:border-box}
+    .mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+    .mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+    .mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+      font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+    .mh-seg button[aria-checked="true"]{font-weight:700}
+    .mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+    .mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+      box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+    .mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+    .mh-row-t{flex:1;min-width:0}
+    .mh-row-t b{display:block;font-size:15px;font-weight:600}
+    .mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+    .mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+    .mh-sw::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+    .mh-sw:checked{background:var(--mh-ui-on)}
+    .mh-sw:checked::after{transform:translateX(20px)}
+    .mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+    .mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+    @media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+    /* dark theme */
+    :root[data-theme="dark"]{--asphalt:#15181C;--rule-dark:#2D333B}
+    :root[data-theme="dark"] body{background:#0E1114;color:#E6E8E3}
+    :root[data-theme="dark"] :is(.controls,main,.gates,.strip,dialog.install-dialog,.limit-card){
+      --paper:#161A1E;--paper-2:#1C2126;--ink:#E6E8E3;--rule:#323940;--muted:#9BA4AE;--alert:#E0493A;--alert-ink:#FF8C7C;color:var(--ink)}
+    :root[data-theme="dark"] .chain{--paper:#E7E8E3;background:#1B2025}
+    :root[data-theme="dark"] :is(.tool-flag,a.buy,.steps2 li::before,.step-num,.connect-area .input-group button){color:#141A1F}
+    :root[data-theme="dark"] :is(.branch>summary:hover,.foldable>summary:hover){background:rgba(255,255,255,.04)}
+    :root[data-theme="dark"] .twig>summary:hover{color:#fff}
+    :root[data-theme="dark"] :is(.connect-area .hint a,.usage .u-contact a,.limit-card a){color:var(--marking)}
+    :root[data-theme="dark"] .limit-card p{color:#C9CDD1}
+    :root[data-theme="dark"] .install-header{background:var(--paper-2)}
+    :root[data-theme="dark"] .tag{background:#1C2126;color:#C9CDD1;border-color:#3A424A}
+    :root[data-theme="dark"] :is(.tag-soft,.tag-agency,.tag-guideline,.tag-geo,.tag-project,.tag-plan){background:#1C2126}
+    :root[data-theme="dark"] #mUp{background:#E6E8E3;color:#141A1F}
+    :root[data-theme="dark"] .role-tab[aria-selected="true"]{background:#E6E8E3;color:#141A1F}
+    :root[data-theme="dark"] .gate .g-n b{-webkit-text-stroke:0}
+    :root[data-theme="dark"] .search svg{filter:invert(1)}
+    :root[data-theme="dark"] .connect-area .code-sample code{background:#2A3036}
+    /* light theme blocks */
+    :root[data-theme="light"] :is(.masthead,.hero,.strip,footer){--asphalt:#F4F5F1;--paper:#141A1F;--muted-dark:#5C6570;--rule-dark:#D3D6CF;color:var(--paper)}
+    :root[data-theme="light"] .masthead{background:rgba(244,245,241,.92);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);border-bottom-color:#D3D6CF}
+    :root[data-theme="light"] .hero{background:linear-gradient(180deg,#F4F5F1,#ECEEE8)}
+    :root[data-theme="light"] .strip{background:#E4E6E0;border-bottom-color:#D3D6CF}
+    :root[data-theme="light"] footer{background:#E4E6E0;border-top:1px solid #D3D6CF}
+    :root[data-theme="light"] .btn-line:hover{background:#E4E6E0}
+    :root[data-theme="light"] :is(a.hq,.hq-dropdown,a.fresh,.chain-line a){background:#fff;border-color:#D3D6CF;color:#141A1F}
+    :root[data-theme="light"] :is(a.hq:hover,a.hq:focus-visible,.hq-dropdown:hover,.hq-dropdown.open,a.fresh:hover){background:#FFF8E6;border-color:var(--marking)}
+    :root[data-theme="light"] .hq-dropdown .hq-options{background:#fff;box-shadow:0 12px 30px rgba(20,26,31,.16)}
+    :root[data-theme="light"] .hq-dropdown .hq-opt.gray{background:#F1F2EE;color:#141A1F}
+    :root[data-theme="light"] .hq-dropdown .hq-opt.gray:hover{background:#E4E6E0}
+    :root[data-theme="light"] .hq-label,:root[data-theme="light"] a.fresh em{color:#8a6a12}
+    :root[data-theme="light"] .strip-fold>summary .arrow{border-color:#8a6a12}
+    :root[data-theme="light"] .duo-get{background:rgba(233,177,47,.16)}
+    :root[data-theme="light"] .duo-share{background:linear-gradient(100deg,rgba(37,211,102,.16),rgba(37,211,102,.04) 70%)}
+    :root[data-theme="light"] .masthead .mh-look{background:#fff;color:#141A1F;border-color:#D3D6CF}
+    :root[data-theme="light"] #mUp{background:rgba(255,255,255,.9);color:#141A1F;border:.5px solid #D3D6CF;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 6px 18px rgba(0,0,0,.14)}
+    :root[data-theme="light"] .plan{border-radius:14px}
+    :root[data-theme="light"] .plan > rect:first-of-type{fill:#DCDFD8}
+    :root[data-theme="light"] .plan > rect:not(:first-of-type){fill:#7A8088}
+    :root[data-theme="light"] .plan > g:nth-of-type(1),:root[data-theme="light"] .plan > g:nth-of-type(2){stroke:#FFFFFF;opacity:1}
+    :root[data-theme="light"] .plan > g:nth-of-type(3){fill:#FFFFFF}
+    :root[data-theme="light"] .plan > g:nth-of-type(4){stroke:#C6C9C1}
+    /* glass */
+    html[data-glass="on"][data-theme="dark"] .hero{background:rgba(18,21,25,.72)}
+    html[data-glass="on"][data-theme="dark"] footer{background:rgba(21,24,28,.84)}
+    html[data-glass="on"][data-theme="dark"] .strip{background:rgba(20,26,31,.82)}
+    html[data-glass="on"][data-theme="light"] :is(.hero,footer,.strip){background:rgba(255,255,255,.34)}
+    html[data-glass="on"] .branch{border-radius:18px}
+    html[data-glass="on"] main.wrap>.block,html[data-glass="on"] .routes-late{border-radius:22px}
+    html[data-glass="on"] :is(.route,.seek section,.flow,.keywords,.foldable){border-radius:16px}
+    html[data-glass="on"] :is(.steps2 li,.search,.chip,.gate){border-radius:12px}
+    html[data-glass="on"] :is(a.hq,.hq-dropdown,a.fresh,.chain-line a){background:rgba(255,255,255,.07)!important;
+      -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-color:rgba(255,255,255,.14)!important}
+    html[data-glass="on"] .hq-dropdown .hq-options{background:rgba(27,33,38,.82);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px)}
+    html[data-glass="on"] main.wrap>.block:not(:has(> details.foldable:only-child)),
+    html[data-glass="on"] .routes-late,
+    html[data-glass="on"] .branch,
+    html[data-glass="on"] .keywords,
+    html[data-glass="on"] .foldable,
+    html[data-glass="on"] .limit-card,
+    html[data-glass="on"] dialog.install-dialog{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+    html[data-glass="on"] .route,
+    html[data-glass="on"] .seek section,
+    html[data-glass="on"] .flow,
+    html[data-glass="on"] .steps2 li,
+    html[data-glass="on"] .search,
+    html[data-glass="on"] .gate,
+    html[data-glass="on"] .role-tab:not([aria-selected="true"]),
+    html[data-glass="on"] .connect-area .code-sample,
+    html[data-glass="on"] .install-header,
+    html[data-glass="on"] .get-opt{background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+    html[data-glass="on"] .masthead,
+    html[data-glass="on"] .controls,
+    html[data-glass="on"] .gates{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+    html[data-glass="on"][data-theme="dark"] .masthead{background:rgba(21,24,28,.72)!important}
+    html[data-glass="on"] .branch[open]{background:var(--mh-glass-fill)!important}
+    [data-theme="dark"] .masthead .mh-look{background:rgba(255,255,255,.08);color:#E7E8E3;border-color:rgba(255,255,255,.16)}
+    [data-theme="dark"] .masthead .mh-look:hover{background:rgba(255,255,255,.14)}
+    :root[data-theme="dark"] .get-opt{background:#1C2126}
     </style>
 </head>
 <body>
+
+<div id="main-content">
 
 <header class="masthead">
     <div class="wrap">
@@ -567,10 +838,9 @@
             <a href="#who">By role</a>
             <a href="#flows">Workflows</a>
             <a href="#catalog">Catalogue</a>
-            <a href="#seek">What people search</a>
+            <a href="#seek">Search phrasings</a>
             <a href="#faq">Questions</a>
             <a href="#access">Access</a>
-            <a href="tool.html">Junction Tool</a>
             <a href="apis-he.html">עברית</a>
         </nav>
     </div>
@@ -581,34 +851,43 @@
         <div>
             <h1>Transportation engineering, open in your browser.</h1>
             <p>Intersection level of service, queues, freeway and two-lane operations, alignment, sight distance and parking — from the Highway Capacity Manual, the AASHTO Green Book and the Highway Safety Manual. Run a procedure in the browser and see the intermediate steps, or post the same inputs to the API when the question becomes a corridor.</p>
-            <div class="app-actions">
-                    <button class="app-cta" data-install="" onclick="installApp()" style="margin-bottom:0;">
-                        <span class="app-cta-badge" style="background:#fff;color:var(--ink);border:1px solid var(--rule);">Install</span>
-                        <span class="app-cta-text">
-                            <b>Install as an app</b>
-                            <span>Add to your home screen</span>
-                        </span>
-                        <span class="app-cta-go" aria-hidden="true">📲</span>
-                    </button>
-                    <a class="app-cta share-cta" href="https://wa.me/?text=Help%20improve%20the%20profession%20%E2%80%94%20sharing%20matters%21%20https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2Fapis.html" target="_blank" rel="noopener" data-share-text="Help improve the profession — sharing matters!" data-share-url="https://mahmoudalem95.github.io/mahalco/apis.html">
-                        <span class="app-cta-badge">Share</span>
-                        <span class="app-cta-text">
-                            <b>Share these tools</b>
-                            <span>Help improve the profession — sharing matters!</span>
-                        </span>
-                        <span class="app-cta-go" aria-hidden="true"><svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true" style="flex:none"><circle cx="16" cy="16" r="15" fill="#25D366"></circle><path d="M16 6.6c-5.2 0-9.4 4.2-9.4 9.4 0 1.7.4 3.2 1.2 4.6L6.6 25.4l5-1.3c1.3.7 2.8 1.1 4.4 1.1 5.2 0 9.4-4.2 9.4-9.4S21.2 6.6 16 6.6z" fill="#fff" opacity=".14"></path><path d="M12.6 11.3c-.25-.56-.5-.57-.74-.58h-.63c-.22 0-.57.08-.87.4-.3.33-1.14 1.11-1.14 2.7 0 1.6 1.17 3.14 1.33 3.36.16.22 2.26 3.6 5.58 4.91 2.76 1.09 3.32.87 3.92.82.6-.06 1.94-.79 2.21-1.56.27-.76.27-1.42.19-1.56-.08-.13-.3-.22-.63-.38-.33-.17-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.25-.71.08-.33-.16-1.39-.51-2.64-1.63-.98-.87-1.63-1.94-1.83-2.27-.19-.33-.02-.5.14-.67.15-.15.33-.38.49-.57.16-.19.22-.33.33-.55.11-.22.05-.41-.03-.57-.08-.16-.72-1.76-1-2.4z" fill="#fff"></path></svg></span>
-                    </a>
-                </div>
 
-                <div class="hero-actions">
+            <div class="hero-actions hero-primary">
                 <a class="btn btn-solid" href="#who">Find your tool by role</a>
-                <a class="btn btn-line" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Intersection LOS</a>
-                <a class="btn btn-line" href="critical-lane-v-english.html">Critical lane volume</a>
-                <a class="btn btn-line" href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Lanes &amp; queues</a>
-                <a class="btn btn-line" href="tool.html">Junction tool</a>
-
                 <a class="btn btn-line" href="#catalog">Full catalogue</a>
             </div>
+
+            <div class="hero-quick">
+                <span class="hq-label">MOST REQUESTED</span>
+                <nav class="hq-list" aria-label="Most requested tools">
+                    <a class="hq" href="critical-lane-v-english.html"><small>INTERSECTIONS</small><b>Critical lane volume</b></a>
+                    <a class="hq" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><small>LOS</small><b>Signalized intersection</b></a>
+                    <a class="hq" href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis"><small>QUEUES</small><b>Lanes &amp; queues</b></a>
+                    <a class="hq" href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance"><small>SIGHT</small><b>Sight distance</b></a>
+                    <div class="hq-dropdown" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
+                        <small>GEOMETRY</small>
+                        <b>Cross-sections</b>
+                        <div class="hq-options" role="menu">
+                            <a href="typical-section-en.html" class="hq-opt gray" role="menuitem">Urban typical section</a>
+                            <a href="rural.html" class="hq-opt gold" role="menuitem">Rural cross-section</a>
+                        </div>
+                    </div>
+                    <a class="hq" href="tool.html"><small>END TO END</small><b>Junction tool</b></a>
+                </nav>
+            </div>
+
+            <div class="app-actions app-duo">
+                <button type="button" class="duo duo-get" data-install onclick="openGetApp()" aria-haspopup="dialog">
+                    <span class="duo-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg></span>
+                    <span class="duo-txt"><b>Get the app</b><small>Android, iPhone and desktop</small></span>
+                </button>
+                <a class="duo duo-share share-cta" href="https://wa.me/?text=Help%20improve%20the%20profession%20%E2%80%94%20sharing%20matters%21%20https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2Fapis.html" target="_blank" rel="noopener" data-share-text="Help improve the profession — sharing matters!" data-share-url="https://mahmoudalem95.github.io/mahalco/apis.html">
+                    <span class="duo-ico"><svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><path d="M12.6 11.3c-.25-.56-.5-.57-.74-.58h-.63c-.22 0-.57.08-.87.4-.3.33-1.14 1.11-1.14 2.7 0 1.6 1.17 3.14 1.33 3.36.16.22 2.26 3.6 5.58 4.91 2.76 1.09 3.32.87 3.92.82.6-.06 1.94-.79 2.21-1.56.27-.76.27-1.42.19-1.56-.08-.13-.3-.22-.63-.38-.33-.17-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.25-.71.08-.33-.16-1.39-.51-2.64-1.63-.98-.87-1.63-1.94-1.83-2.27-.19-.33-.02-.5.14-.67.15-.15.33-.38.49-.57.16-.19.22-.33.33-.55.11-.22.05-.41-.03-.57-.08-.16-.72-1.76-1-2.4z" fill="#fff"/><path d="M16 5.2C10 5.2 5.2 10 5.2 16c0 1.9.5 3.7 1.4 5.3L5.2 26.8l5.6-1.4c1.5.8 3.3 1.3 5.2 1.3 6 0 10.8-4.8 10.8-10.8S22 5.2 16 5.2z" fill="none" stroke="#fff" stroke-width="1.8"/></svg></span>
+                    <span class="duo-txt"><b>Know an engineer still doing this by hand?</b><small>Send them the tools — one second</small></span>
+                    <span class="duo-go">Send</span>
+                </a>
+            </div>
+
             <div class="tally">
                 <div><b>17</b>Urban streets</div>
                 <div><b>14</b>Rural highways</div>
@@ -643,98 +922,33 @@
     </div>
 </section>
 
-
-
-<section class="routes" id="who" aria-label="By role">
+<section class="strip" aria-label="Recently added">
     <div class="wrap">
-        <div class="r-head">
-            <h2>What you need, by what you do</h2>
-            <p>The same calculations serve six groups who search for them in completely different words. Pick your row and get only the relevant tools.</p>
-        </div>
-        <div class="r-grid">
-
-            <div class="route">
-                <h3>Traffic engineers &amp; technicians</h3>
-                <span class="who2">Capacity, delay, queues, reports</span>
-                <p>The work usually done by hand or in HCS and Sidra: critical volume, cycle length, delay, queue and level of service — with the intermediate steps shown, not just a single number.</p>
-                <ul>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Signalized intersection LOS</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection">Unsignalized intersection LOS</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/roundabout">Roundabout capacity &amp; delay</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">95th percentile queue per lane</a></li>
-                </ul>
+        <details class="strip-fold">
+            <summary class="strip-head"><span class="arrow" aria-hidden="true"></span><h2>Recently added</h2><span class="s-n">4 new</span><span class="s-hint">Everything runs in the browser, no install and no uploads to a server</span></summary>
+            <div class="strip-grid">
+                <a class="fresh" href="critical-lane-v-english.html">
+                    <em>INTERSECTIONS</em>
+                    <b>Critical lane volume calculator</b>
+                    <span>Three phasing methods in parallel — split arms, left-turn separation, double ring — and the lowest selected.</span>
+                </a>
+                <a class="fresh" href="tool.html">
+                    <em>END TO END</em>
+                    <b>Junction analysis tool</b>
+                    <span>Interactive interface for a signalized junction: delay, v/c, LOS, and queue against the bay you actually drew.</span>
+                </a>
+                <a class="fresh" href="typical-section-en.html">
+                    <em>GEOMETRY</em>
+                    <b>Urban cross-section design</b>
+                    <span>Lane, kerb, footway and shoulder widths for local, collector and arterial streets — per AASHTO.</span>
+                </a>
+                <a class="fresh" href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">
+                    <em>QUEUES</em>
+                    <b>Lane &amp; queue analysis</b>
+                    <span>Per-lane v/c, delay and 95th-percentile queue in metres, checked against turn-bay storage.</span>
+                </a>
             </div>
-
-            <div class="route">
-                <h3>Design offices</h3>
-                <span class="who2">Deliverables for submission</span>
-                <p>The checks that repeat on every project, in a form you can attach to a file: cross-section, sight distance, access intersection LOS and the parking standard.</p>
-                <ul>
-                    <li><a href="typical-section-en.html">Urban cross-section design</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance">Sight distance calculation</a></li>
-                    <li><a href="critical-lane-v-english.html">Critical lane volume</a></li>
-                    
-                </ul>
-            </div>
-
-            <div class="route">
-                <h3>Project managers</h3>
-                <span class="who2">Design review, decisions, schedule</span>
-                <p>An independent check on what the consultants hand over — before it enters the file or goes to a committee. Alternatives compared, and the gaps in a report made visible.</p>
-                <ul>
-                    <li><a href="tool.html">Junction analysis end to end</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility">Corridor facility analysis</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/freeway-reliability">Travel time reliability</a></li>
-                    <li><a href="#catalog">Every procedure by category</a></li>
-                </ul>
-            </div>
-
-            <div class="route">
-                <h3>Surveyors &amp; mapping</h3>
-                <span class="who2">Working on a plan, scale, sheets</span>
-                <p>Work that starts from an image: calibrate against a segment of known length, mark up over the background, and export an A0 sheet at true scale, SVG or JSON.</p>
-                <ul>
-                    
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/horizontal-curve">Horizontal curve design</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/vertical-curve">Vertical curve design</a></li>
-                    <li><a href="rural.html">Rural cross-section design</a></li>
-                </ul>
-            </div>
-
-            <div class="route">
-                <h3>Developers &amp; real estate</h3>
-                <span class="who2">Feasibility, parking, permitted use</span>
-                <p>Before you buy or promote a use: how many parking spaces the regulations require for that use in that locality, and whether the access intersection can carry the added trips.</p>
-                <ul>
-                    
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Access intersection LOS</a></li>
-                    <li><a href="critical-lane-v-english.html">Critical volume screening</a></li>
-                    <li><a href="#lead">What a signed report requires</a></li>
-                </ul>
-            </div>
-
-            <div class="route">
-                <h3>Authorities &amp; review bodies</h3>
-                <span class="who2">Checking what was submitted</span>
-                <p>An independent review of a submission: whether the calculation follows the standard, whether the assumptions are reasonable, and what changes when a volume or growth rate is updated.</p>
-                <ul>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Verify a submitted LOS</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Verify queues against bay lengths</a></li>
-                    <li><a href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los">Pedestrian level of service</a></li>
-                    
-                </ul>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<section class="gates" aria-label="The four service areas">
-    <div class="wrap">
-        <a class="gate" href="#urban" data-open="urban"><h3>Urban streets</h3><p>Signals, intersections, queues, multimodal level of service and cross-section geometry.</p><span class="g-n"><b>17</b> procedures · 4 sub-topics</span></a>
-        <a class="gate" href="#rural" data-open="rural"><h3>Rural highways</h3><p>Freeways, interchanges, weaving, horizontal and vertical alignment and sight distance.</p><span class="g-n"><b>14</b> procedures · 3 sub-topics</span></a>
-        <a class="gate" href="#common" data-open="common"><h3>Common planning</h3><p>Impact studies, pavement, roadside safety, environment and project management.</p><span class="g-n"><b>11</b> procedures · 3 sub-topics</span></a>
-        <a class="gate" href="#transit" data-open="transit"><h3>Sustainable Mobility</h3><p>Transit lane justification, cycling infrastructure, high-demand pedestrian crossings, parking, terminals and traffic calming zones.</p><span class="g-n"><b>18</b> procedures · 5 sub-topics</span></a>
+        </details>
     </div>
 </section>
 
@@ -753,11 +967,11 @@
             <button class="chip chip-pending" id="chip-pending" type="button" aria-pressed="false">Not yet complete</button>
         </div>
         <p class="count" id="count" aria-live="polite">60 procedures</p>
-            <div class="usage" id="usage" hidden="">
-                <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
-                <span class="u-msg" id="usage-msg">Procedures opened today: <b>0</b> of 10</span>
-                <span class="u-contact">Need a higher limit: <a href="mailto:mahmoudalem95@icloud.com?subject=Daily%20limit">mahmoudalem95@icloud.com</a> · <a href="tel:+972546528572">‎+972-546-528572</a></span>
-            </div>
+        <div class="usage" id="usage" hidden="">
+            <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
+            <span class="u-msg" id="usage-msg">Locked — an API key is required before any procedure opens.</span>
+            <span class="u-contact">Need a higher limit: <a href="mailto:mahmoudalem95@icloud.com?subject=Daily%20limit">mahmoudalem95@icloud.com</a> · <a href="tel:+972546528572">‎+972-546-528572</a></span>
+        </div>
     </div>
 </div>
 
@@ -796,7 +1010,6 @@
                         <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility"><h3>Urban Street Facility Analysis</h3><p>Whole‑corridor travel speed and LOS across consecutive segments.</p><span class="std">HCM Ch. 17 / 18</span></a>
                     </div>
                 </details>
-
 
                 <details class="twig">
                     <summary><span class="arrow" aria-hidden="true"></span>Urban Geometric Design<span class="t-n" data-twigcount="">4</span></summary>
@@ -895,7 +1108,6 @@
                     </div>
                 </details>
 
-
                 <details class="twig">
                     <summary><span class="arrow" aria-hidden="true"></span>Environment, Management &amp; Technology<span class="t-n" data-twigcount="">3</span></summary>
                     <div class="leaves">
@@ -908,7 +1120,7 @@
             </div>
         </details>
 
-        <!-- TRANSIT & MULTI-MODAL -->
+        <!-- SUSTAINABLE MOBILITY -->
         <details class="branch" id="transit" data-group="transit">
             <summary>
                 <span class="arrow" aria-hidden="true"></span>
@@ -956,7 +1168,7 @@
                     </div>
                 </details>
 
-                            <details class="twig">
+                <details class="twig">
                     <summary><span class="arrow" aria-hidden="true"></span>Multimodal LOS<span class="t-n" data-twigcount="">4</span></summary>
                     <div class="leaves">
                         <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los"><h3>Pedestrian LOS</h3><p>Walkability from footway width, separation from traffic, and crossing conditions.</p><span class="std">HCM Ch. 16</span></a>
@@ -965,11 +1177,96 @@
                         <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/multimodal-los"><h3>Multimodal LOS</h3><p>Pedestrian, bicycle, and transit scores combined into one corridor result.</p><span class="std">HCM Ch. 16</span></a>
                     </div>
                 </details>
-</div>
+
+            </div>
         </details>
 
         <p class="empty" id="empty" hidden="">No procedure matches that search. Try a standard — HCM, AASHTO, or HSM — or <button type="button" id="reset" style="font:inherit;background:none;border:0;color:#8a6a12;text-decoration:underline;cursor:pointer;padding:0">clear search</button>.</p>
     </div>
+
+    <div class="part-div" role="separator">Find your tool<span>by what you do</span></div>
+
+    <section class="routes routes-late" id="who" aria-label="By role">
+        <div class="r-in">
+            <div class="r-head">
+                <h2>What you need, by what you do</h2>
+                <p>The same calculations serve six groups who search for them in completely different words. Pick your row and get only the relevant tools.</p>
+            </div>
+            <div class="r-grid">
+
+                <div class="route">
+                    <h3>Traffic engineers &amp; technicians</h3>
+                    <span class="who2">Capacity, delay, queues, reports</span>
+                    <p>The work usually done by hand or in HCS and Sidra: critical volume, cycle length, delay, queue and level of service — with the intermediate steps shown, not just a single number.</p>
+                    <ul>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Signalized intersection LOS</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection">Unsignalized intersection LOS</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/roundabout">Roundabout capacity &amp; delay</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">95th percentile queue per lane</a></li>
+                    </ul>
+                </div>
+
+                <div class="route">
+                    <h3>Design offices</h3>
+                    <span class="who2">Deliverables for submission</span>
+                    <p>The checks that repeat on every project, in a form you can attach to a file: cross-section, sight distance, access intersection LOS and the parking standard.</p>
+                    <ul>
+                        <li><a href="typical-section-en.html">Urban cross-section design</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance">Sight distance calculation</a></li>
+                        <li><a href="critical-lane-v-english.html">Critical lane volume</a></li>
+                    </ul>
+                </div>
+
+                <div class="route">
+                    <h3>Project managers</h3>
+                    <span class="who2">Design review, decisions, schedule</span>
+                    <p>An independent check on what the consultants hand over — before it enters the file or goes to a committee. Alternatives compared, and the gaps in a report made visible.</p>
+                    <ul>
+                        <li><a href="tool.html">Junction analysis end to end</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility">Corridor facility analysis</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/freeway-reliability">Travel time reliability</a></li>
+                        <li><a href="#catalog">Every procedure by category</a></li>
+                    </ul>
+                </div>
+
+                <div class="route">
+                    <h3>Surveyors &amp; mapping</h3>
+                    <span class="who2">Working on a plan, scale, sheets</span>
+                    <p>Work that starts from an image: calibrate against a segment of known length, mark up over the background, and export an A0 sheet at true scale, SVG or JSON.</p>
+                    <ul>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/horizontal-curve">Horizontal curve design</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/vertical-curve">Vertical curve design</a></li>
+                        <li><a href="rural.html">Rural cross-section design</a></li>
+                    </ul>
+                </div>
+
+                <div class="route">
+                    <h3>Developers &amp; real estate</h3>
+                    <span class="who2">Feasibility, parking, permitted use</span>
+                    <p>Before you buy or promote a use: how many parking spaces the regulations require for that use in that locality, and whether the access intersection can carry the added trips.</p>
+                    <ul>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Access intersection LOS</a></li>
+                        <li><a href="critical-lane-v-english.html">Critical volume screening</a></li>
+                        <li><a href="#lead">What a signed report requires</a></li>
+                    </ul>
+                </div>
+
+                <div class="route">
+                    <h3>Authorities &amp; review bodies</h3>
+                    <span class="who2">Checking what was submitted</span>
+                    <p>An independent review of a submission: whether the calculation follows the standard, whether the assumptions are reasonable, and what changes when a volume or growth rate is updated.</p>
+                    <ul>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Verify a submitted LOS</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Verify queues against bay lengths</a></li>
+                        <li><a href="https://junction-los-api.onrender.com/api/v1/pages/pedestrian-los">Pedestrian level of service</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="part-div" role="separator">How it works<span>workflows and search phrasings</span></div>
 
     <section class="block" id="flows">
         <details class="foldable">
@@ -984,7 +1281,6 @@
                         <li><b>Critical volume</b><span>Enter the twelve movements in <a href="critical-lane-v-english.html">critical lane volume</a>; three phasing methods are computed in parallel and the lowest is selected.</span></li>
                         <li><b>Intersection LOS</b><span>Post the same inputs to <a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">signalized intersection analysis</a> for delay, v/c and LOS per approach.</span></li>
                         <li><b>Queues and bays</b><span><a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Lane and queue analysis</a> gives the 95th percentile queue against the turn bay you actually drew.</span></li>
-                        
                     </ol>
                     <p class="flow-foot">Counts are entered movement by movement. A direct import of the Israeli counts spreadsheet exists in the Hebrew edition of the site.</p>
                 </div>
@@ -1020,8 +1316,7 @@
                         <a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Intersection LOS</a><i>→</i>
                         <a href="https://junction-los-api.onrender.com/api/v1/pages/signal-timing">Signal timing</a><i>→</i>
                         <a href="https://junction-los-api.onrender.com/api/v1/pages/lane-queue-analysis">Queues</a><i>→</i>
-                        <a href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance">Sight distance</a><i>→</i>
-                        
+                        <a href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance">Sight distance</a>
                     </div>
                     <ul>
                         <li>The peak hour is established once and serves every check downstream.</li>
@@ -1070,7 +1365,6 @@
                         <h3>Geometry &amp; sight distance</h3>
                         <ul>
                             <li><a href="https://junction-los-api.onrender.com/api/v1/pages/sight-distance"><b>Stopping sight distance</b> calculation</a></li>
-                            
                             <li><a href="https://junction-los-api.onrender.com/api/v1/pages/horizontal-curve"><b>Minimum radius</b> and superelevation</a></li>
                             <li><a href="https://junction-los-api.onrender.com/api/v1/pages/vertical-curve"><b>Crest curve</b> K value</a></li>
                             <li><a href="typical-section-en.html"><b>Urban cross-section</b> lane and verge widths</a></li>
@@ -1081,8 +1375,6 @@
                     <section>
                         <h3>Development &amp; property</h3>
                         <ul>
-                            
-                            
                             <li><a href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection">Will the <b>access intersection</b> hold the added trips</a></li>
                             <li><a href="critical-lane-v-english.html"><b>Traffic screening</b> before purchase</a></li>
                             <li><a href="#lead">Who <b>signs a traffic report</b></a></li>
@@ -1107,7 +1399,6 @@
                         <ul>
                             <li><a href="tool.html">Checking a <b>traffic consultant's report</b></a></li>
                             <li><a href="https://junction-los-api.onrender.com/api/v1/pages/urban-street-facility">Comparing <b>design alternatives</b> for a corridor</a></li>
-                            
                             <li><a href="https://junction-los-api.onrender.com/api/v1/pages/interchange-los"><b>Interchange ramp terminal</b> LOS</a></li>
                             <li><a href="#access"><b>API rate limits</b> and pricing</a></li>
                             <li><a href="#connect"><b>API key</b> and a sample request</a></li>
@@ -1118,6 +1409,8 @@
             </div>
         </details>
     </section>
+
+    <div class="part-div" role="separator">Service, access and subscriptions<span>what is free, what is paid, and the API</span></div>
 
     <section class="block" id="lead">
         <div class="block-head">
@@ -1135,10 +1428,6 @@
             <a class="price buy" href="mailto:mahmoudalem95@icloud.com?subject=Traffic%20report%20%2F%20engineering%20support">Talk to us</a>
         </div>
         <p class="note">Transportation engineer, Technion graduate. Professional enquiries: <a href="mailto:mahmoudalem95@icloud.com">mahmoudalem95@icloud.com</a> · <a href="tel:+972546528572">‎+972-546-528572</a></p>
-    </section>
-
-    <section class="block" id="faq">
-        
     </section>
 
     <section class="block" id="access">
@@ -1190,6 +1479,8 @@
         </div>
     </section>
 
+    <div class="part-div" role="separator">What's next and help<span>in development and questions</span></div>
+
     <section class="block" id="coming">
         <div class="block-head">
             <h2>In development — AI-based tools</h2>
@@ -1200,6 +1491,22 @@
         <div class="soon"><h3>Automatic sight distance generator</h3><p>Sight distance plans generated from an aerial photograph, for urban and rural roundabouts.</p><span class="std">Early demand — get in touch</span></div>
         <div class="soon"><h3>AI typical cross-section generator</h3><p>Typical cross sections produced in minutes from design line data.</p><span class="std">In development</span></div>
         <p class="note">To register early interest, <a href="mailto:Mahmoudalem95@icloud.com">send us an email</a> or call.</p>
+    </section>
+
+    <section class="block" id="faq">
+        <details class="foldable">
+            <summary><span class="arrow" aria-hidden="true"></span>Frequently asked questions<span class="kw-hint">Open the Q&amp;A</span></summary>
+            <div class="fold-body">
+                <p class="fold-lede">Short answers to questions that arrive by email and in search.</p>
+                <div class="qa">
+                    <details><summary><span class="arrow" aria-hidden="true"></span>Which standards do the calculations follow?</summary><div class="a">HCM for capacity, level of service, delay and queues; the AASHTO Green Book for geometric design; the HSM for safety performance. Where an Israeli guideline governs — parking regulations, urban street guidelines, interurban design guidelines, roundabout guidelines — the tool follows it and says so.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>Do I need to install anything or upload my files?</summary><div class="a">No. Every tool runs in the browser, including reading a counts spreadsheet and marking up a plan. Nothing is uploaded to a server. The API exists separately, for embedding the same calculations in your own systems.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>What is the difference between the in-browser pages and the API?</summary><div class="a">Identical methods, different interface. The pages are for a single intersection, segment or cross-section; the API is for batches — a corridor, a scenario matrix, or a nightly run against your own database.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>How is a future-year level of service produced?</summary><div class="a">Every movement is grown at a compound annual rate and the whole chain is recomputed — critical volume, cycle length, green split, delay. The delay is never simply multiplied by the growth factor, because delay is not linear in volume and diverges around a volume-to-capacity ratio of 1.0.</div></details>
+                    <details><summary><span class="arrow" aria-hidden="true"></span>Do the results replace a signed traffic report?</summary><div class="a">No. The tools perform the calculation to the standard and expose the intermediate steps so they can be checked. A traffic impact assessment, a safety report or a submission to an authority requires a licensed traffic engineer who takes professional responsibility for the assumptions and the result.</div></details>
+                </div>
+            </div>
+        </details>
     </section>
 
     <details class="keywords">
@@ -1237,7 +1544,6 @@
             <a href="tool.html">Junction Tool</a>
             <a href="critical-lane-v-english.html">Critical Lane Volume</a>
             <a href="typical-section-en.html">Cross-Sections</a>
-            
             <a href="#faq">Questions</a>
             <a href="apis-he.html">עברית</a>
             <a href="english-policy.html">Policy</a>
@@ -1246,7 +1552,57 @@
     </div>
 </footer>
 
+</div>
 
+<!-- Install dialog -->
+<dialog id="install-dialog" class="install-dialog">
+    <div class="install-header">
+        <h3>Get the app</h3>
+        <button class="install-close" onclick="document.getElementById('install-dialog').close()" aria-label="Close">×</button>
+    </div>
+    <div class="install-body">
+        <p class="install-intro">Choose how to install. On this device the suggested option is marked, and the tools also work offline.</p>
+        <div class="get-choices">
+            <button type="button" class="get-opt" id="getPwa" onclick="installApp(true)">
+                <span class="go-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg></span>
+                <span class="go-t"><b>Install from the browser</b><small>Home-screen icon, full-screen, auto-updates</small></span>
+            </button>
+            <a class="get-opt" id="getApk" href="https://github.com/mahmoudalem95/mahalco/raw/refs/heads/main/app-release-signed.apk" download>
+                <span class="go-ico">APK</span>
+                <span class="go-t"><b>Android APK</b><small>Direct download and manual install</small></span>
+            </a>
+        </div>
+        <p class="get-note" id="getNote" hidden>This browser does not allow one-tap install — follow the steps below.</p>
+
+        <div class="platform-block">
+            <span class="platform-tag">iOS / Safari</span>
+            <div class="install-step">
+                <div class="step-num">1</div>
+                <div class="step-text"><b>Tap the Share button</b><span>The button at the bottom of the screen (square with an arrow up).</span></div>
+            </div>
+            <div class="install-step">
+                <div class="step-num">2</div>
+                <div class="step-text"><b>Scroll and choose "Add to Home Screen"</b><span>Confirm the addition.</span></div>
+            </div>
+        </div>
+
+        <hr class="install-divider">
+
+        <div class="platform-block">
+            <span class="platform-tag">Android / Chrome</span>
+            <div class="install-step">
+                <div class="step-num">1</div>
+                <div class="step-text"><b>Tap the three-dot menu</b><span>The menu at the top-right corner.</span></div>
+            </div>
+            <div class="install-step">
+                <div class="step-num">2</div>
+                <div class="step-text"><b>Choose "Add to Home Screen"</b><span>Or "Install app".</span></div>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<!-- API key gate overlay -->
 <div id="limit-overlay" role="dialog" aria-modal="true" aria-labelledby="limit-title" data-on="0">
     <div class="limit-card">
         <h2 id="limit-title">An API key is required</h2>
@@ -1267,12 +1623,10 @@
 </div>
 
 <script>
-/* Access gate — every procedure is locked from the first use until an API key is entered.
-   Replaces the former ten-procedures-per-day allowance. */
+/* Access gate — every procedure is locked from the first use until an API key is entered. */
 (function () {
-    const STORE  = 'mahalco_api_key_v1';   // persistent key
-    const LEGACY = 'mahalco_api_key';      // session key written by the Connect box
-
+    const STORE  = 'mahalco_api_key_v1';
+    const LEGACY = 'mahalco_api_key';
     const usage     = document.getElementById('usage');
     const usageMsg  = document.getElementById('usage-msg');
     const usageFill = document.getElementById('usage-fill');
@@ -1283,9 +1637,7 @@
     const keyMsg    = document.getElementById('limit-msg');
     const dismiss   = document.getElementById('limit-dismiss');
     const plans     = document.getElementById('limit-plans');
-
     let pendingHref = null;
-
     function readKey() {
         let k = '';
         try { k = localStorage.getItem(STORE) || ''; } catch (e) {}
@@ -1302,7 +1654,6 @@
         try { sessionStorage.removeItem(LEGACY); } catch (e) {}
     }
     function maskKey(k) { return k.length > 10 ? k.slice(0, 4) + '••••' + k.slice(-4) : k.charAt(0) + '••••'; }
-
     function render() {
         const k = readKey();
         if (usage) {
@@ -1316,7 +1667,6 @@
         }
         return k;
     }
-
     function openGate(href) {
         if (href) pendingHref = href;
         if (keyMsg) { keyMsg.hidden = true; keyMsg.textContent = ''; }
@@ -1328,7 +1678,6 @@
         overlay.setAttribute('data-on', '0');
         document.body.classList.remove('locked');
     }
-
     function unlock() {
         const v = keyInput ? keyInput.value.trim() : '';
         if (keyMsg) keyMsg.hidden = false;
@@ -1347,26 +1696,22 @@
             if (href) window.location.href = href;
         }, 400);
     }
-
-    /* every procedure link on the page is gated */
     document.querySelectorAll('a[href]').forEach(function (a) {
         const h = a.getAttribute('href') || '';
         if (!h || h.charAt(0) === '#' || /^(mailto:|tel:)/i.test(h)) return;
         if (a.closest('.masthead') || a.closest('footer') || a.closest('#access')) return;
-        if (a.classList.contains('share-cta')) return;
+        if (a.classList.contains('share-cta') || a.classList.contains('duo-share')) return;
         a.dataset.service = '1';
     });
-
     document.addEventListener('click', function (ev) {
         const t = ev.target;
         if (t && t.id === 'usage-signout') { ev.preventDefault(); dropKey(); render(); return; }
         const a = (t && t.closest) ? t.closest('a[data-service]') : null;
         if (!a) return;
-        if (readKey()) return;                 // unlocked
+        if (readKey()) return;
         ev.preventDefault();
         openGate(a.href);
     }, true);
-
     if (keyBtn) keyBtn.addEventListener('click', unlock);
     if (keyInput) keyInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') { e.preventDefault(); unlock(); }
@@ -1379,7 +1724,6 @@
     window.addEventListener('mahalco-key', render);
     window.addEventListener('pageshow', render);
 
-    /* still flag the procedures that are not built yet */
     document.querySelectorAll('#catalog .soon').forEach(function (d) {
         d.classList.add('pending');
         const h = d.querySelector('h3');
@@ -1391,7 +1735,6 @@
         }
         d.setAttribute('title', 'This procedure is not built yet — it will be added to the catalogue later');
     });
-
     render();
 })();
 
@@ -1494,12 +1837,11 @@
 })();
 </script>
 
-
 <script>
-/* שיתוף: במכשירים שתומכים בשיתוף מערכת — תפריט השיתוף; אחרת ווטסאב */
+/* Share: use the system share sheet where available; otherwise WhatsApp */
 document.querySelectorAll('a.share-cta').forEach(function (a) {
     a.addEventListener('click', function (e) {
-        if (!navigator.share) return;                 // נשאר קישור ווטסאב רגיל
+        if (!navigator.share) return;
         e.preventDefault();
         navigator.share({
             title: document.title,
@@ -1509,85 +1851,189 @@ document.querySelectorAll('a.share-cta').forEach(function (a) {
     });
 });
 </script>
-<dialog id="install-dialog" class="install-dialog">
-    <div class="install-header">
-        <h3>Install the app</h3>
-        <button class="install-close" onclick="document.getElementById('install-dialog').close()" aria-label="Close">×</button>
-    </div>
-    <div class="install-body">
-        <p class="install-intro">Add Mahalco to your home screen for an app-like experience.</p>
-
-        <div class="platform-block">
-            <span class="platform-tag">iOS / Safari</span>
-            <div class="install-step">
-                <div class="step-num">1</div>
-                <div class="step-text">
-                    <b>לחצו על כפתור השיתוף</b>
-                    <span>הכפתור נמצא בתחתית המסך (ריבוע עם חץ למעלה).</span>
-                </div>
-            </div>
-            <div class="install-step">
-                <div class="step-num">2</div>
-                <div class="step-text">
-                    <b>גללו ובחרו "הוסף למסך הבית"</b>
-                    <span>אשרו את ההוספה.</span>
-                </div>
-            </div>
-        </div>
-
-        <hr class="install-divider">
-
-        <div class="platform-block">
-            <span class="platform-tag">Android / Chrome</span>
-            <div class="install-step">
-                <div class="step-num">1</div>
-                <div class="step-text">
-                    <b>לחצו על תפריט שלוש הנקודות</b>
-                    <span>התפריט נמצא בפינה הימנית העליונה.</span>
-                </div>
-            </div>
-            <div class="install-step">
-                <div class="step-num">2</div>
-                <div class="step-text">
-                    <b>בחרו "הוסף למסך הבית"</b>
-                    <span>או "התקן אפליקציה".</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</dialog>
 
 <script>
-/* התקנה כאפליקציה: קולטים את ההצעה של הדפדפן ומשתמשים בה בכפתור.
-   בדפדפן שלא תומך (בעיקר iOS) נפתחות ההוראות הידניות. */
+/* Install: one button. Android shows APK + browser install, iOS shows "Add to Home Screen", desktop shows browser install. */
 (function () {
     var deferred = null;
-    window.addEventListener('beforeinstallprompt', function (e) {
-        e.preventDefault(); deferred = e;
-        document.querySelectorAll('.app-cta[data-install]').forEach(function (b) {
-            var t = b.querySelector('.app-cta-text span');
-            if (t) t.textContent = 'התקנה בלחיצה אחת';
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var isAndroid = /Android/i.test(ua);
+    window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; });
+    function mark() {
+        var pwa = document.getElementById('getPwa'), apk = document.getElementById('getApk');
+        if (!pwa || !apk) return;
+        pwa.classList.remove('rec'); apk.classList.remove('rec');
+        [pwa, apk].forEach(function (el) { var r = el.querySelector('.go-rec'); if (r) r.remove(); });
+        apk.hidden = isIOS;
+        var best = isAndroid && !deferred ? apk : pwa;
+        best.classList.add('rec');
+        var tag = document.createElement('span'); tag.className = 'go-rec'; tag.textContent = 'Best for your device';
+        best.appendChild(tag);
+        document.querySelectorAll('.platform-block').forEach(function (b) {
+            var t = (b.querySelector('.platform-tag') || {}).textContent || '';
+            b.hidden = (isIOS && /Android/.test(t)) || (isAndroid && /iOS/.test(t));
         });
-    });
-    window.installApp = function () {
+        var n = document.getElementById('getNote'); if (n) n.hidden = true;
+    }
+    window.openGetApp = function () {
+        mark();
+        var dlg = document.getElementById('install-dialog');
+        if (dlg && dlg.showModal) dlg.showModal(); else if (dlg) dlg.setAttribute('open', '');
+    };
+    window.installApp = function (fromDialog) {
         if (deferred) {
+            var dlg = document.getElementById('install-dialog');
+            if (dlg && dlg.open && dlg.close) dlg.close();
             deferred.prompt();
             deferred.userChoice.finally(function () { deferred = null; });
             return;
         }
-        var dlg = document.getElementById('install-dialog');
-        if (dlg && dlg.showModal) dlg.showModal(); else if (dlg) dlg.setAttribute('open', '');
+        if (!fromDialog) return window.openGetApp();
+        var n = document.getElementById('getNote'); if (n) n.hidden = false;
+        var s = document.querySelector('.platform-block:not([hidden])'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     };
     window.addEventListener('appinstalled', function () {
-        document.querySelectorAll('.app-cta[data-install]').forEach(function (b) { b.style.display = 'none'; });
+        var p = document.getElementById('getPwa'); if (p) p.hidden = true;
     });
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-            navigator.serviceWorker.register('sw.js').catch(function () {});
-        });
+        window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
     }
 })();
 </script>
 
+<script>
+/* Mobile layer */
+(function () {
+  'use strict';
+  var MQ = window.matchMedia('(max-width:820px)');
+  var q = document.getElementById('q');
 
-</body></html>
+  if (q) {
+    q.setAttribute('enterkeyhint', 'search');
+    q.setAttribute('autocomplete', 'off');
+    q.setAttribute('autocorrect', 'off');
+    q.setAttribute('autocapitalize', 'off');
+    var clr = document.createElement('button');
+    clr.id = 'mClear'; clr.type = 'button'; clr.textContent = '✕';
+    clr.setAttribute('aria-label', 'Clear search');
+    (q.parentNode || document.body).appendChild(clr);
+    var sync = function () { clr.classList.toggle('on', !!q.value); };
+    q.addEventListener('input', sync);
+    clr.addEventListener('click', function () {
+      q.value = '';
+      q.dispatchEvent(new Event('input', { bubbles: true }));
+      sync(); q.focus();
+    });
+    q.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); if (MQ.matches) q.blur(); }
+    });
+    sync();
+  }
+
+  var up = document.createElement('button');
+  up.id = 'mUp'; up.type = 'button'; up.innerHTML = '↑';
+  up.setAttribute('aria-label', 'Back to top');
+  up.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  document.body.appendChild(up);
+
+  var t;
+  window.addEventListener('scroll', function () {
+    if (t) return;
+    t = setTimeout(function () {
+      t = null;
+      document.body.classList.toggle('m-scrolled', (window.scrollY || 0) > 400);
+    }, 140);
+  }, { passive: true });
+})();
+</script>
+
+<script>
+/* Role tabs — show one role at a time */
+(function () {
+  'use strict';
+  var sec = document.querySelector('.routes-late');
+  if (!sec) return;
+  var grid = sec.querySelector('.r-grid');
+  var routes = [].slice.call(sec.querySelectorAll('.route'));
+  if (!grid || !routes.length) return;
+  var KEY = 'mahalco-role';
+  var bar = document.createElement('div');
+  bar.className = 'role-tabs';
+  bar.setAttribute('role', 'tablist');
+  bar.setAttribute('aria-label', 'Choose a role');
+  var tabs = routes.map(function (r, i) {
+    var h = r.querySelector('h3');
+    r.id = r.id || 'role-' + i;
+    r.setAttribute('role', 'tabpanel');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'role-tab';
+    b.id = 'role-tab-' + i;
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-controls', r.id);
+    r.setAttribute('aria-labelledby', b.id);
+    b.textContent = h ? h.textContent.trim() : ('Role ' + (i + 1));
+    b.addEventListener('click', function () { select(i, true); });
+    b.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var n = (i + d + tabs.length) % tabs.length;
+      select(n, true); tabs[n].focus();
+    });
+    bar.appendChild(b);
+    return b;
+  });
+  function select(i, save) {
+    routes.forEach(function (r, k) { r.classList.toggle('on', k === i); });
+    tabs.forEach(function (t, k) {
+      t.setAttribute('aria-selected', k === i ? 'true' : 'false');
+      t.tabIndex = k === i ? 0 : -1;
+    });
+    if (tabs[i].scrollIntoView && bar.scrollWidth > bar.clientWidth) {
+      try { tabs[i].scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) {}
+    }
+    if (save) { try { localStorage.setItem(KEY, String(i)); } catch (e) {} }
+  }
+  grid.parentNode.insertBefore(bar, grid);
+  sec.classList.add('tabbed');
+  var start = 0;
+  try { var s = parseInt(localStorage.getItem(KEY), 10); if (s >= 0 && s < routes.length) start = s; } catch (e) {}
+  select(start, false);
+})();
+</script>
+
+<script>
+/* Hero quick links dropdown */
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdowns = document.querySelectorAll('.hq-dropdown');
+    dropdowns.forEach(dropdown => {
+        const toggle = function(e) {
+            if (e.target.closest('.hq-opt')) return;
+            e.stopPropagation();
+            const isOpen = dropdown.classList.toggle('open');
+            dropdown.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        };
+        dropdown.addEventListener('click', toggle);
+        dropdown.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggle(e);
+            } else if (e.key === 'Escape') {
+                dropdown.classList.remove('open');
+                dropdown.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+    document.addEventListener('click', function() {
+        dropdowns.forEach(d => {
+            d.classList.remove('open');
+            d.setAttribute('aria-expanded', 'false');
+        });
+    });
+});
+</script>
+
+</body>
+</html>

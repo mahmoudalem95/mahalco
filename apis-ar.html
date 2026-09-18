@@ -148,6 +148,11 @@
             --measure: 66ch;
         }
 
+        /* --- Arabic tool routes: tools not yet localized --- */
+        .pending-route { cursor: default !important; opacity: .72; }
+        .pending-route::after { content: " — قيد الإنشاء"; font-size: .78em; font-weight: 600; color: var(--alert-ink); }
+        .pending-route:hover { text-decoration: none !important; }
+
         /* --- 1. Responsive / app-like reset --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent }
         html { scroll-behavior: smooth; -webkit-text-size-adjust: 100% }
@@ -1183,7 +1188,7 @@ a.leaf.leaf-temp::before{display:none}
         <div class="wrap">
             <a class="mark" href="#top"><span aria-hidden="true"></span>MahAlCo</a>
             <nav>
-                <a class="btn btn-solid" href="worklog.html">سجل العمل</a>
+                <a class="btn btn-solid pending-route" aria-disabled="true" title="قيد الإنشاء">سجل العمل</a>
                 <a href="#flows">مسارات العمل</a>
                 <a href="#catalog">الفهرس</a>
                 <a href="#access">الوصول والدفع</a>
@@ -1199,26 +1204,26 @@ a.leaf.leaf-temp::before{display:none}
                 <p>مستوى الخدمة والحجم الحرج للتقاطع، معيار المواقف، مسافات الرؤية، أطوال الصفوف والمقاطع النموذجية — حسب HCM وAASHTO وHSM وحسب إرشادات هيئات الطرق الإماراتية. تُحمّل ملف عدّ الحركة أو تُدخل البيانات، فتحصل على الحساب مع خطوات الحل. بلا تثبيت، والملفات تبقى عندك.</p>
 
                 <div class="hero-actions hero-primary">
-                    <a class="btn btn-solid" href="calculator_dark_ui.html#search">البحث حسب الإرشادات</a>
+                    <a class="btn btn-solid pending-route" aria-disabled="true" title="قيد الإنشاء">البحث حسب الإرشادات</a>
                     <a class="btn btn-line" href="#catalog">الفهرس الكامل</a>
                 </div>
                 <div class="hero-quick">
                     <span class="hq-label">الأدوات الأكثر طلباً</span>
                     <nav class="hq-list" aria-label="الأدوات الأكثر طلباً">
-                        <a class="hq" href="critical-lane-volume.html"><small>التقاطعات</small><b>مستوى الخدمة والحجم الحرج</b></a>
-                        <a class="hq" href="parking-regulations.html"><small>المواقف</small><b>معيار المواقف حسب المدينة</b></a>
-                        <a class="hq" href="SD-tool.html"><small>الرؤية</small><b>مثلثات الرؤية على المخطط</b></a>
+                        <a class="hq pending-route" aria-disabled="true" title="قيد الإنشاء"><small>التقاطعات</small><b>مستوى الخدمة والحجم الحرج</b></a>
+                        <a class="hq pending-route" aria-disabled="true" title="قيد الإنشاء"><small>المواقف</small><b>معيار المواقف حسب المدينة</b></a>
+                        <a class="hq pending-route" aria-disabled="true" title="قيد الإنشاء"><small>الرؤية</small><b>مثلثات الرؤية على المخطط</b></a>
                         
                         <div class="hq-dropdown" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
                             <small>الهندسة</small>
                             <b>المقطع العرضي</b>
                             <div class="hq-options" role="menu">
-                                <a href="typical-section.html" class="hq-opt gray" role="menuitem">المقطع النهائي</a>
-                                <a href="temporary-section.html" class="hq-opt gold" role="menuitem">عمل مؤقت حضري – تجريبي</a>
+                                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء" class="hq-opt gray" role="menuitem">المقطع النهائي</a>
+                                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء" class="hq-opt gold" role="menuitem">عمل مؤقت حضري – تجريبي</a>
                             </div>
                         </div>
                         
-                        <a class="hq" href="alignment-builder.html"><small>الرسم</small><b>الرسم – تجريبي</b></a>
+                        <a class="hq pending-route" aria-disabled="true" title="قيد الإنشاء"><small>الرسم</small><b>الرسم – تجريبي</b></a>
                     </nav>
                 </div>
                 
@@ -1274,22 +1279,22 @@ a.leaf.leaf-temp::before{display:none}
             <details class="strip-fold">
                 <summary class="strip-head"><span class="arrow" aria-hidden="true"></span><h2>أُضيف هذا الشهر</h2><span class="s-n">4 إضافات</span><span class="s-hint">كل شيء يعمل في المتصفح، بلا تثبيت وبلا رفع ملفات إلى خادم</span></summary>
                 <div class="strip-grid">
-            <a class="fresh" href="critical-lane-volume.html">
+            <a class="fresh pending-route" aria-disabled="true" title="قيد الإنشاء">
                 <em>استيراد البيانات</em>
                 <b>ملف عدّ الحركة ← الحجم الحرج للمسار</b>
                 <span>تُحمَّل ملفات XLSX من جهة العدّ. تتعرّف الأداة على الجدول 2.4، وتبني الملف الساعي، وتختار ساعة الذروة وتُدخلها إلى الحساب.</span>
             </a>
-            <a class="fresh" href="critical-lane-volume.html#fcOut">
+            <a class="fresh pending-route" aria-disabled="true" title="قيد الإنشاء">
                 <em>التوقعات</em>
                 <b>مستوى الخدمة للسنوات المستقبلية</b>
                 <span>دورة Webster، توزيع الأخضر، تأخير التحكم حسب HCM، ومصفوفة مستويات الخدمة حسب معدلات النمو — مع سنة التشبع.</span>
             </a>
-            <a class="fresh" href="parking-regulations.html">
+            <a class="fresh pending-route" aria-disabled="true" title="قيد الإنشاء">
                 <em>حاسبة المواقف</em>
                 <b>معيار المواقف حسب اسم المدينة</b>
                 <span>تُدخل اسم المدينة أو المنطقة؛ تُحدِّد الأداة نوع المدينة ومنطقة النقل العام والمنطقة الإدارية تلقائياً — بدل الاختيار اليدوي.</span>
             </a>
-            <a class="fresh" href="SD-tool.html">
+            <a class="fresh pending-route" aria-disabled="true" title="قيد الإنشاء">
                 <em>مثلثات الرؤية</em>
                 <b>دليل موجَّه داخل الأداة</b>
                 <span>تسع خطوات تُعلِّم نفسها: الخلفية، المعايرة، تعليم المحور والأذرع، وصولاً إلى ورقة A0 للطباعة بمقياس رسم.</span>
@@ -1342,7 +1347,7 @@ a.leaf.leaf-temp::before{display:none}
                         <summary><span class="arrow" aria-hidden="true"></span>الأرصفة والمشاة<span class="t-n" data-twigcount>3</span></summary>
                         <div class="leaves">
                             <div class="soon"><h3>تخطيط الأرصفة والمشاة</h3><p>عرض الرصيف، أثاث الشارع، معابر المشاة، وإمكانية الوصول.</p><span class="std">AASHTO / ADA</span></div>
-                            <a class="leaf" href="crossing-high-demand.html"><h3>إرشادات وفحوصات معابر المشاة عالية الطلب<span class="tool-flag">أداة حيّة</span></h3><p>فحص معابر المشاة تحت طلب مرتفع: حجم العابرين، الفجوات في الحركة، الجزيرة الملجأ، أوقات العبور، التبرير لإشارة ضوئية ومعبر مُرفَّع.</p><span class="std">HCM Ch. 20 / Pedestrian Crossing Guidelines</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>إرشادات وفحوصات معابر المشاة عالية الطلب<span class="tool-flag">أداة حيّة</span></h3><p>فحص معابر المشاة تحت طلب مرتفع: حجم العابرين، الفجوات في الحركة، الجزيرة الملجأ، أوقات العبور، التبرير لإشارة ضوئية ومعبر مُرفَّع.</p><span class="std">HCM Ch. 20 / Pedestrian Crossing Guidelines</span></a>
                             <div class="soon"><h3>مستوى خدمة المشاة</h3><p>جودة السير حسب عرض الرصيف، الفصل عن الحركة، وظروف العبور.</p><span class="std">HCM Ch. 16</span></div>
                         </div>
                     </details>
@@ -1350,7 +1355,7 @@ a.leaf.leaf-temp::before{display:none}
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>مسارات الدراجات<span class="t-n" data-twigcount>3</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="bike-design.html"><h3>اعتبارات وإرشادات لتخطيط مسارات الدراجات<span class="tool-flag">أداة حيّة</span></h3><p>اختيار نوع المسار حسب السرعة والحجم، العرض، الفصل عن الحركة وعن المشاة، المنحدرات، الرصف والأنصاف، ومرور المسار في التقاطع.</p><span class="std">Bikeway Design Guidelines / AASHTO</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>اعتبارات وإرشادات لتخطيط مسارات الدراجات<span class="tool-flag">أداة حيّة</span></h3><p>اختيار نوع المسار حسب السرعة والحجم، العرض، الفصل عن الحركة وعن المشاة، المنحدرات، الرصف والأنصاف، ومرور المسار في التقاطع.</p><span class="std">Bikeway Design Guidelines / AASHTO</span></a>
                             <div class="soon"><h3>تخطيط مسارات الدراجات</h3><p>العرض، المنحدر، الفصل عن الحركة والرصف لمسارات الدراجات الحضرية.</p><span class="std">AASHTO Guide</span></div>
                             <div class="soon"><h3>مستوى خدمة راكبي الدراجات — أطروحة قيد الإعداد</h3><p>راحة الركوب حسب حالة الرصيف، حجم الحركة، ونسبة المركبات الثقيلة.</p><span class="std">HCM Ch. 16</span></div>
                         </div>
@@ -1359,10 +1364,10 @@ a.leaf.leaf-temp::before{display:none}
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>مسارات الحافلات والنقل العام<span class="t-n" data-twigcount>4</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="urban-bus-lane-justification.html"><h3>تبرير مسار الحافلات الحضري</h3><p>معايير تبرير مسار حافلات حضري: حجم الركاب في ساعة الذروة، وتيرة الخطوط، وقت الرحلة الموفَّر، والعرض المتوفر في المقطع.</p><span class="std">Transit Guidelines / TCQSM</span></a>
-                            <a class="leaf" href="intercity-bus-lane-justification.html"><h3>تبرير مسار النقل العام بين المدن</h3><p>مسار نقل عام مفصول ومسار بين المدن: التبرير التشغيلي، المقطع العرضي، والاندماج في التقاطعات والمبادلات.</p><span class="std">Transit Guidelines / Vol. 2</span></a>
-                            <a class="leaf" href="transit-lanes-stations-safety.html"><h3>تحليل مسارات النقل العام</h3><p>تخطيط مسارات النقل العام، المحطات، وسائل السلامة، والترقية.</p><span class="std">AASHTO / APTA</span></a>
-                            <a class="leaf" href="transit-level-of-service.html"><h3>مستوى خدمة النقل العام</h3><p>وتيرة الخدمة، مرافق المحطة، والموثوقية على طول الخط.</p><span class="std">HCM Ch. 16</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تبرير مسار الحافلات الحضري</h3><p>معايير تبرير مسار حافلات حضري: حجم الركاب في ساعة الذروة، وتيرة الخطوط، وقت الرحلة الموفَّر، والعرض المتوفر في المقطع.</p><span class="std">Transit Guidelines / TCQSM</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تبرير مسار النقل العام بين المدن</h3><p>مسار نقل عام مفصول ومسار بين المدن: التبرير التشغيلي، المقطع العرضي، والاندماج في التقاطعات والمبادلات.</p><span class="std">Transit Guidelines / Vol. 2</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تحليل مسارات النقل العام</h3><p>تخطيط مسارات النقل العام، المحطات، وسائل السلامة، والترقية.</p><span class="std">AASHTO / APTA</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>مستوى خدمة النقل العام</h3><p>وتيرة الخدمة، مرافق المحطة، والموثوقية على طول الخط.</p><span class="std">HCM Ch. 16</span></a>
                         </div>
                     </details>
 
@@ -1390,10 +1395,10 @@ a.leaf.leaf-temp::before{display:none}
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>الهندسة والتخطيط الحضري<span class="t-n" data-twigcount>8</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="typical-section.html"><h3>المقطع العرضي الحضري<span class="tool-flag">أداة حيّة</span></h3><p>عروض المسارات، حافة الرصيف، الرصيف والأكتاف لشارع محلي، جامع، وشرياني.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf leaf-temp" href="temporary-section.html"><h3>مقطع مؤقت – ترتيبات المرور في موقع العمل<span class="tool-flag gold-flag">ترتيب مؤقت</span><span class="tool-flag">أداة حيّة</span></h3><p>فئة فرعية من المقطع العرضي: تختار الرسم من دليل الإرشادات، تُغلق المسارات وتفحص عروض العبور، شريط اللوحات ومعبر المشاة المؤقت.</p><span class="std">Temporary Traffic Arrangements</span></a>
-                            <a class="leaf" href="calculator_dark_ui.html"><h3>قيم التصميم حسب إرشادات هيئات الطرق الإماراتية<span class="tool-flag">أداة حيّة</span></h3><p>عروض المسارات، أنصاف الانعطاف، مسارات التباطؤ والتسريع، خلجان الحافلات، وترتيبات المرور المؤقتة – مباشرة من أدلة الطرق.</p><span class="std">RTA / DMT Urban Road Design Manual</span></a>
-                            <a class="leaf" href="SD-tool.html"><h3>مثلثات الرؤية على المخطط<span class="tool-flag">أداة حيّة</span></h3><p>تُعلِّم التقاطع على مخطط مُعايَر وتُخرِج ورقة A0 بمقياس رسم.</p><span class="std">Traffic at Intersections</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>المقطع العرضي الحضري<span class="tool-flag">أداة حيّة</span></h3><p>عروض المسارات، حافة الرصيف، الرصيف والأكتاف لشارع محلي، جامع، وشرياني.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf leaf-temp pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>مقطع مؤقت – ترتيبات المرور في موقع العمل<span class="tool-flag gold-flag">ترتيب مؤقت</span><span class="tool-flag">أداة حيّة</span></h3><p>فئة فرعية من المقطع العرضي: تختار الرسم من دليل الإرشادات، تُغلق المسارات وتفحص عروض العبور، شريط اللوحات ومعبر المشاة المؤقت.</p><span class="std">Temporary Traffic Arrangements</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>قيم التصميم حسب إرشادات هيئات الطرق الإماراتية<span class="tool-flag">أداة حيّة</span></h3><p>عروض المسارات، أنصاف الانعطاف، مسارات التباطؤ والتسريع، خلجان الحافلات، وترتيبات المرور المؤقتة – مباشرة من أدلة الطرق.</p><span class="std">RTA / DMT Urban Road Design Manual</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>مثلثات الرؤية على المخطط<span class="tool-flag">أداة حيّة</span></h3><p>تُعلِّم التقاطع على مخطط مُعايَر وتُخرِج ورقة A0 بمقياس رسم.</p><span class="std">Traffic at Intersections</span></a>
                             <div class="soon"><h3>إرشادات السلامة في التصميم</h3><p>مبادئ التصميم الآمن، تقليل نقاط الاحتكاك، وإنارة الطريق.</p><span class="std">HSM / AASHTO</span></div>
                             <div class="soon"><h3>اختيار وسائل السلامة على حواف الطريق – حضري</h3><p>تبرير الحواجز ووسائل الاحتواء في الشارع الحضري، حسب السرعة، المَعلم، والمسافة من حافة الرصيف.</p><span class="std">AASHTO Roadside Design Guide</span></div>
                             <div class="soon"><h3>إرشادات اللوحات والإشارات</h3><p>تخطيط لوحات الإرشاد، إشارات التحذير والإلزام حسب MUTCD.</p><span class="std">MUTCD</span></div>
@@ -1404,14 +1409,14 @@ a.leaf.leaf-temp::before{display:none}
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>التحليلات ومستوى الخدمة<span class="t-n" data-twigcount>10</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="critical-lane-volume.html"><h3>الحجم الحرج للمسار<span class="tool-flag">أداة حيّة</span></h3><p>حساب الحجم الحرج بثلاث طرق للمراحل: مداخل مقسّمة، فصل الانعطاف لليسار، ومرحلة ممتدة.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                            <a class="leaf" href="htool.html"><h3>أداة تحليل التقاطعات<span class="tool-flag">أداة حيّة</span></h3><p>واجهة تفاعلية لحساب وتحليل التقاطع بإشارة ضوئية عبر الواجهة البرمجية.</p><span class="std">HCM Ch. 19</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>الحجم الحرج للمسار<span class="tool-flag">أداة حيّة</span></h3><p>حساب الحجم الحرج بثلاث طرق للمراحل: مداخل مقسّمة، فصل الانعطاف لليسار، ومرحلة ممتدة.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>أداة تحليل التقاطعات<span class="tool-flag">أداة حيّة</span></h3><p>واجهة تفاعلية لحساب وتحليل التقاطع بإشارة ضوئية عبر الواجهة البرمجية.</p><span class="std">HCM Ch. 19</span></a>
                             <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection"><h3>تحليل تقاطع بإشارة ضوئية<span class="tool-flag">أداة حيّة</span></h3><p>تأخير التحكم، طول الصف، نسبة الحجم إلى السعة، ومستوى الخدمة لكل مدخل ولل تقاطع كاملاً.</p><span class="std">HCM Ch. 19</span></a>
                             <a class="leaf" href="https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection"><h3>تحليل تقاطع بدون إشارة<span class="tool-flag">أداة حيّة</span></h3><p>التحكم بالتوقف في الاتجاهين وفي جميع الاتجاهات، مع قبول الفجوات حسب الحركة.</p><span class="std">HCM Ch. 20</span></a>
-                            <a class="leaf" href="roundabout-analysis-metric.html"><h3>تحليل دوار<span class="tool-flag">أداة حيّة</span></h3><p>سعة المدخل، نسبة الحجم إلى السعة، تأخير التحكم، والصف المئوي 95 لكل مدخل.</p><span class="std">HCM Ch. 22</span></a>
-                            <a class="leaf" href="lane-queue-metric.html"><h3>تحليل المسارات والصفوف<span class="tool-flag">أداة حيّة</span></h3><p>نسبة الحجم إلى السعة، التأخير، والصف المئوي 95 لكل مسار، مقابل طول خليج الانعطاف.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                            <a class="leaf" href="optimizes-signal-timing%20plans-metric.html"><h3>تنسيق وتوقيت الإشارات<span class="tool-flag">أداة حيّة</span></h3><p>الإزاحات، توزيع الأزمنة، وطول الدورة لمجموعة إشارات منسّقة.</p><span class="std">HCM Ch. 19 / 31</span></a>
-                            <a class="leaf" href="Urban-Street-Segment%20Analysis-metric.html"><h3>تحليل مقطع شارع حضري<span class="tool-flag">أداة حيّة</span></h3><p>سرعة السير ومستوى الخدمة في المقطع بين إشارتين.</p><span class="std">HCM Ch. 17</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تحليل دوار<span class="tool-flag">أداة حيّة</span></h3><p>سعة المدخل، نسبة الحجم إلى السعة، تأخير التحكم، والصف المئوي 95 لكل مدخل.</p><span class="std">HCM Ch. 22</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تحليل المسارات والصفوف<span class="tool-flag">أداة حيّة</span></h3><p>نسبة الحجم إلى السعة، التأخير، والصف المئوي 95 لكل مسار، مقابل طول خليج الانعطاف.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تنسيق وتوقيت الإشارات<span class="tool-flag">أداة حيّة</span></h3><p>الإزاحات، توزيع الأزمنة، وطول الدورة لمجموعة إشارات منسّقة.</p><span class="std">HCM Ch. 19 / 31</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تحليل مقطع شارع حضري<span class="tool-flag">أداة حيّة</span></h3><p>سرعة السير ومستوى الخدمة في المقطع بين إشارتين.</p><span class="std">HCM Ch. 17</span></a>
                             <div class="soon"><h3>تحليل ممر حضري</h3><p>سرعة السير ومستوى الخدمة على طول ممر كامل، عبر مقاطع متتالية.</p><span class="std">HCM Ch. 17 / 18</span></div>
                             <div class="soon"><h3>إدارة إشارات متقدمة</h3><p>كشف الطلب، التكيّف مع الحركة، والإشارات الذكية.</p><span class="std">HCM Ch. 31</span></div>
                         </div>
@@ -1432,12 +1437,12 @@ a.leaf.leaf-temp::before{display:none}
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>الهندسة والمسارات<span class="t-n" data-twigcount>10</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="horizontal.html"><h3>تصميم المنحنى الأفقي<span class="tool-flag">أداة حيّة</span></h3><p>نصف القطر الأدنى حسب سرعة التصميم، الميل العرضي، ومعامل الاحتكاك الجانبي.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="vertical.html"><h3>تصميم المنحنى الرأسي<span class="tool-flag">أداة حيّة</span></h3><p>أطوال المنحنيات المحدّبة والمقعّرة حسب مسافة الرؤية وراحة السير.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="SD.html"><h3>حساب مسافة الرؤية<span class="tool-flag">أداة حيّة</span></h3><p>مسافة رؤية التوقف، التجاوز، والقرار لمسار معطى.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="typical-section.html?ctx=inter"><h3>المقطع العرضي بين المدن<span class="tool-flag">أداة حيّة</span></h3><p>عروض المسارات والأكتاف مع الميل العرضي حسب نوع الطريق.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تصميم المنحنى الأفقي<span class="tool-flag">أداة حيّة</span></h3><p>نصف القطر الأدنى حسب سرعة التصميم، الميل العرضي، ومعامل الاحتكاك الجانبي.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تصميم المنحنى الرأسي<span class="tool-flag">أداة حيّة</span></h3><p>أطوال المنحنيات المحدّبة والمقعّرة حسب مسافة الرؤية وراحة السير.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>حساب مسافة الرؤية<span class="tool-flag">أداة حيّة</span></h3><p>مسافة رؤية التوقف، التجاوز، والقرار لمسار معطى.</p><span class="std">AASHTO Green Book</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>المقطع العرضي بين المدن<span class="tool-flag">أداة حيّة</span></h3><p>عروض المسارات والأكتاف مع الميل العرضي حسب نوع الطريق.</p><span class="std">AASHTO Green Book</span></a>
                             <a class="leaf" href="policy_sec.html"><h3>السياسات والمقطع<span class="tool-flag">أداة حيّة</span></h3><p>سياسة التخطيط والمقاطع العرضية للطرق بين المدن.</p><span class="std">AASHTO Green Book</span></a>
-                            <a class="leaf" href="calculator_dark_ui.html"><h3>قيم التصميم بين المدن<span class="tool-flag">أداة حيّة</span></h3><p>التقاطعات، منحدرات الدخول والخروج، مسارات التباطؤ والتسريع والأكتاف – حسب أدلة الطرق بين المدن.</p><span class="std">MoEI Intercity Road Design Manual</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>قيم التصميم بين المدن<span class="tool-flag">أداة حيّة</span></h3><p>التقاطعات، منحدرات الدخول والخروج، مسارات التباطؤ والتسريع والأكتاف – حسب أدلة الطرق بين المدن.</p><span class="std">MoEI Intercity Road Design Manual</span></a>
                             <div class="soon"><h3>مقاطع نموذجية بين المدن</h3><p>مقاطع ممرات بمسارات السير، الأكتاف، الجزر الفاصلة، وأشرطة الأمان.</p><span class="std">AASHTO Green Book</span></div>
                             <div class="soon"><h3>اختيار وسائل السلامة على حواف الطريق – بين المدن</h3><p>تبرير الحواجز، وسائد الفرملة، والحواف، تبعاً للمَعلم، السرعة، والمسافة من الرصيف.</p><span class="std">AASHTO Roadside Design Guide</span></div>
                             <div class="soon"><h3>تخطيط مسار الطريق في المناطق المفتوحة</h3><p>ملاءمة المسار للطبيعة، الاعتبارات البيئية، المنحدرات، والتصريف.</p><span class="std">AASHTO Green Book</span></div>
@@ -1448,12 +1453,12 @@ a.leaf.leaf-temp::before{display:none}
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>التحليلات ومستوى الخدمة<span class="t-n" data-twigcount>5</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="LOS_nat.html"><h3>تحليل مستوى الخدمة<span class="tool-flag">أداة حيّة</span></h3><p>مستوى الخدمة، سرعة السير، وظروف التدفق في المقاطع بين المدن.</p><span class="std">HCM</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تحليل مستوى الخدمة<span class="tool-flag">أداة حيّة</span></h3><p>مستوى الخدمة، سرعة السير، وظروف التدفق في المقاطع بين المدن.</p><span class="std">HCM</span></a>
                             <div class="soon"><h3>تحليل طريق بمسارين</h3><p>كثافة التتابع، نسبة وقت السير في التتابع، السرعة المتوسطة، ومستوى الخدمة.</p><span class="std">HCM Ch. 15</span></div>
                             <div class="soon"><h3>تحليل مقطع أساسي في طريق سريع</h3><p>الكثافة، السرعة المتوسطة، ومستوى الخدمة في مقاطع بلا تعارض.</p><span class="std">HCM Ch. 21 / 23</span></div>
                             <div class="soon"><h3>تحليل منشأة طريق سريع</h3><p>مستوى الخدمة للمنشأة بأكملها على مدى مقاطع أساسية متتالية.</p><span class="std">HCM Ch. 21</span></div>
                             <div class="soon"><h3>موثوقية أوقات السفر على الطريق السريع</h3><p>مؤشر وقت التخطيط، مؤشر هامش الأمان، وتوزيع الموثوقية على مدار سنة.</p><span class="std">HCM Ch. 10</span></div>
-                                  <a class="leaf" href="Interchange-Ramp-Terminal%20Analysis.html"><h3>تحليل التداخل في المبادلات والطرق الجامعة-الموزعة<span class="tool-flag">أداة حيّة</span></h3><p>السعة ومستوى الخدمة في مقاطع التداخل، الطرق الجامعة-الموزعة (C-D)، والتداخلات بين المنحدرات في المبادلات.</p><span class="std">HCM Ch. 12 / 14</span></a>    </div>
+                                  <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تحليل التداخل في المبادلات والطرق الجامعة-الموزعة<span class="tool-flag">أداة حيّة</span></h3><p>السعة ومستوى الخدمة في مقاطع التداخل، الطرق الجامعة-الموزعة (C-D)، والتداخلات بين المنحدرات في المبادلات.</p><span class="std">HCM Ch. 12 / 14</span></a>    </div>
                     </details>
 
                 </div>
@@ -1471,7 +1476,7 @@ a.leaf.leaf-temp::before{display:none}
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>دراسات الأثر والاقتصاد<span class="t-n" data-twigcount>2</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="TRAFFIC-IMPACT.html"><h3>دراسة الأثر المروري<span class="tool-flag">أداة حيّة</span></h3><p>من توليد الرحلات للمشروع حتى الرأي الكامل، في عملية واحدة.</p><span class="std">HCM &amp; AASHTO</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>دراسة الأثر المروري<span class="tool-flag">أداة حيّة</span></h3><p>من توليد الرحلات للمشروع حتى الرأي الكامل، في عملية واحدة.</p><span class="std">HCM &amp; AASHTO</span></a>
                             <div class="soon"><h3>التحليل الاقتصادي والجدوى</h3><p>تكاليف المستخدم، المنافع، القيمة الحالية الصافية، وترتيب المشاريع.</p><span class="std">AASHTO Red Book</span></div>
                         </div>
                     </details>
@@ -1488,7 +1493,7 @@ a.leaf.leaf-temp::before{display:none}
                     <details class="twig">
                         <summary><span class="arrow" aria-hidden="true"></span>المواقف ومواقف السيارات<span class="t-n" data-twigcount>1</span></summary>
                         <div class="leaves">
-                            <a class="leaf" href="parking-regulations.html"><h3>تخطيط المواقف واشتراطات المواقف<span class="tool-flag">أداة حيّة</span></h3><p>مواقف على الجانب، مواقف متعددة الطوابق، معايير المواقف، وإمكانية الوصول.</p><span class="std">ITE / AASHTO</span></a>
+                            <a class="leaf pending-route" aria-disabled="true" title="قيد الإنشاء"><h3>تخطيط المواقف واشتراطات المواقف<span class="tool-flag">أداة حيّة</span></h3><p>مواقف على الجانب، مواقف متعددة الطوابق، معايير المواقف، وإمكانية الوصول.</p><span class="std">ITE / AASHTO</span></a>
                         </div>
                     </details>
 
@@ -1520,10 +1525,10 @@ a.leaf.leaf-temp::before{display:none}
                         <span class="who2">فحص التصميم، حساب السعة، التقارير</span>
                         <p>الحسابات التي تُجرى عادةً يدوياً أو بـ HCS/Sidra: الحجم الحرج، أزمنة الدورة، التأخير، الصف، ومستوى الخدمة — مع عرض خطوات الحل لا النتيجة فقط.</p>
                         <ul>
-                            <li><a href="critical-lane-volume.html">الحجم الحرج للمسار ومستوى الخدمة</a></li>
-                            <li><a href="roundabout-analysis-metric.html">سعة وتأخير الدوار</a></li>
-                            <li><a href="lane-queue-metric.html">طول الصف المئوي 95 لكل مسار</a></li>
-                            <li><a href="optimizes-signal-timing%20plans-metric.html">توقيت وتنسيق الإشارات</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">الحجم الحرج للمسار ومستوى الخدمة</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">سعة وتأخير الدوار</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">طول الصف المئوي 95 لكل مسار</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">توقيت وتنسيق الإشارات</a></li>
                         </ul>
                     </div>
 
@@ -1532,10 +1537,10 @@ a.leaf.leaf-temp::before{display:none}
                         <span class="who2">مخرجات للتراخيص والبلديات واللجان</span>
                         <p>الفحوصات المتكررة في كل مشروع، بصيغة يمكن إرفاقها بالملف: معيار المواقف، مستوى الخدمة لمدخل المشروع، المقطع النموذجي، ومسافات الرؤية.</p>
                         <ul>
-                            <li><a href="parking-regulations.html">معيار المواقف حسب الاشتراطات</a></li>
-                            <li><a href="typical-section.html">المقطع العرضي النموذجي</a></li>
-                            <li><a href="SD-tool.html">مثلثات الرؤية على المخطط</a></li>
-                            <li><a href="TRAFFIC-IMPACT.html">فحص الأثر المروري</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">معيار المواقف حسب الاشتراطات</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">المقطع العرضي النموذجي</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مثلثات الرؤية على المخطط</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">فحص الأثر المروري</a></li>
                         </ul>
                     </div>
 
@@ -1544,10 +1549,10 @@ a.leaf.leaf-temp::before{display:none}
                         <span class="who2">ضبط التصميم، الجداول الزمنية، القرارات</span>
                         <p>فحص مستقل وسريع لما يصل من المستشارين — قبل أن يدخل الملف أو يُعرض على اللجنة. تقدير، مقارنة بدائل، وتحديد ما ينقص في التقرير.</p>
                         <ul>
-                            <li><a href="worklog.html">سجل العمل اليومي ولوحة المدير للفريق</a></li>
-                            <li><a href="critical-lane-volume.html#fcOut">توقعات مستوى الخدمة لسنوات الهدف</a></li>
-                            <li><a href="htool.html">فحص تقاطع بإشارة من البداية للنهاية</a></li>
-                            <li><a href="calculator_dark_ui.html">قيم التصميم حسب إرشادات هيئات الطرق الإماراتية</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">سجل العمل اليومي ولوحة المدير للفريق</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">توقعات مستوى الخدمة لسنوات الهدف</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">فحص تقاطع بإشارة من البداية للنهاية</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">قيم التصميم حسب إرشادات هيئات الطرق الإماراتية</a></li>
                             <li><a href="apis-he.html">كل الأدوات حسب المجال</a></li>
                         </ul>
                     </div>
@@ -1557,10 +1562,10 @@ a.leaf.leaf-temp::before{display:none}
                         <span class="who2">العمل على المخطط، مقياس الرسم، الأوراق</span>
                         <p>العمل يبدأ من صورة أو مخطط: يُعاير حسب قطعة بطول معروف، يُعلَّم على الخلفية، ويُصدَّر ورقة A0 بمقياس رسم حقيقي، أو SVG، أو JSON.</p>
                         <ul>
-                            <li><a href="SD-tool.html">مسافات الرؤية من مخطط معاير</a></li>
-                            <li><a href="horizontal.html">المسار الأفقي ومنحنيات الانتقال</a></li>
-                            <li><a href="vertical.html">المسار الرأسي والمنحدرات</a></li>
-                            <li><a href="typical-section.html">مقاطع نموذجية للرسم</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مسافات الرؤية من مخطط معاير</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">المسار الأفقي ومنحنيات الانتقال</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">المسار الرأسي والمنحدرات</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مقاطع نموذجية للرسم</a></li>
                         </ul>
                     </div>
 
@@ -1569,9 +1574,9 @@ a.leaf.leaf-temp::before{display:none}
                         <span class="who2">الجدوى، المواقف، القيمة، والاستخدامات</span>
                         <p>قبل الشراء أو ترقية الاستخدام: كم موقفاً تطلبه الاشتراطات لهذا الاستخدام في هذه المدينة، وهل يتحمل مدخل المشروع الحركة الإضافية.</p>
                         <ul>
-                            <li><a href="parking-regulations.html">كم موقفاً يحتاج العقار</a></li>
-                            <li><a href="critical-lane-volume.html">حمل مدخل المشروع ومستوى الخدمة</a></li>
-                            <li><a href="TRAFFIC-IMPACT.html">فحص أولي للأثر المروري</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">كم موقفاً يحتاج العقار</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">حمل مدخل المشروع ومستوى الخدمة</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">فحص أولي للأثر المروري</a></li>
                             <li><a href="#lead">ما يشترطه الملحق المروري الموقّع</a></li>
                         </ul>
                     </div>
@@ -1581,10 +1586,10 @@ a.leaf.leaf-temp::before{display:none}
                         <span class="who2">فحص التقارير، شروط الترخيص</span>
                         <p>فحص مستقل لما تم تقديمه: هل جرى الحساب حسب المعيار؟ هل الافتراضات معقولة؟ وما الذي يتغيّر عند تحديث الحجم أو معدل النمو.</p>
                         <ul>
-                            <li><a href="parking-regulations.html">فحص معيار المواقف المُقدَّم</a></li>
-                            <li><a href="critical-lane-volume.html">فحص مستوى الخدمة المُقدَّم</a></li>
-                            <li><a href="lane-queue-metric.html">فحص أطوال الصفوف والخلجان</a></li>
-                            <li><a href="LOS_nat.html">مستوى الخدمة على الشبكة بين المدن</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">فحص معيار المواقف المُقدَّم</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">فحص مستوى الخدمة المُقدَّم</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">فحص أطوال الصفوف والخلجان</a></li>
+                            <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مستوى الخدمة على الشبكة بين المدن</a></li>
                         </ul>
                     </div>
 
@@ -1602,7 +1607,7 @@ a.leaf.leaf-temp::before{display:none}
                 <h3>من ملف العدّ إلى مستوى الخدمة وسنوات الهدف</h3>
                 <p>المُدخَل هو ملف XLSX المستلم من جهة العدّ. المُخرَج هو مستوى الخدمة في سنة الأساس ومصفوفة مستويات الخدمة لسنوات التوقعات.</p>
                 <ol class="steps2">
-                    <li><b>تحميل العدّ</b><span>يُسحب الملف إلى <a href="critical-lane-volume.html">حاسبة الحجم الحرج</a>. يُتعرَّف على الجدول 2.4 تلقائياً، بما في ذلك أسماء المداخل.</span></li>
+                    <li><b>تحميل العدّ</b><span>يُسحب الملف إلى <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">حاسبة الحجم الحرج</a>. يُتعرَّف على الجدول 2.4 تلقائياً، بما في ذلك أسماء المداخل.</span></li>
                     <li><b>اختيار ساعة الذروة</b><span>يُعرض الملف الساعي كمخطط؛ ذروة الصباح، العصر أو اليومية بضغطة، وتُعرض الأحجام على مخطط التقاطع.</span></li>
                     <li><b>الحجم الحرج</b><span>تُحسب ثلاث طرق للمراحل بالتوازي — مداخل مقسّمة، فصل الانعطاف لليسار، ومرحلة ممتدة — وتُختار الأقل.</span></li>
                     <li><b>التوقعات ومستوى الخدمة</b><span>الدورة، توزيع الأخضر، تأخير HCM، ومستوى الخدمة لكل معدل نمو ولكل سنة هدف، مع سنة التشبع.</span></li>
@@ -1614,7 +1619,7 @@ a.leaf.leaf-temp::before{display:none}
                 <h3>معيار المواقف للترخيص، للبلدية، أو لفحص الجدوى</h3>
                 <p>المُدخَل هو مدينة، استخدام، ومساحة أو عدد وحدات. المُخرَج هو عدد المواقف المطلوبة حسب الاشتراطات، مع التفصيل الذي يقف خلفها.</p>
                 <ol class="steps2 three">
-                    <li><b>المدينة</b><span>يُدخل اسم المدينة في <a href="parking-regulations.html">حاسبة المواقف</a>؛ يُحدَّد نوع المدينة، ومنطقة النقل العام، والمنطقة الإدارية تلقائياً، مع إمكانية التجاوز اليدوي.</span></li>
+                    <li><b>المدينة</b><span>يُدخل اسم المدينة في <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">حاسبة المواقف</a>؛ يُحدَّد نوع المدينة، ومنطقة النقل العام، والمنطقة الإدارية تلقائياً، مع إمكانية التجاوز اليدوي.</span></li>
                     <li><b>الاستخدامات</b><span>يُضاف سطر لكل استخدام — سكن، مكاتب، تجاري، مباني عامة — مع المساحة أو عدد الوحدات.</span></li>
                     <li><b>النتيجة والشروط</b><span>يُستلَم المعيار، نطاق المسافة من النقل العام، مواقف ذوي الاحتياجات الخاصة، مواقف الدراجات، وملاحظات لجهة الترخيص.</span></li>
                 </ol>
@@ -1625,7 +1630,7 @@ a.leaf.leaf-temp::before{display:none}
                 <h3>من مثلثات الرؤية إلى ورقة A0 موقّعة</h3>
                 <p>المُدخَل هو صورة أو مخطط. المُخرَج هو مخطط مسافات رؤية بمقياس رسم، جاهز للطباعة والإرفاق بالملف.</p>
                 <ol class="steps2">
-                    <li><b>الخلفية والمعايرة</b><span>يُحمَّل الملف في <a href="SD-tool.html">أداة مثلثات الرؤية</a> ويُعاير حسب قطعة بطول معروف.</span></li>
+                    <li><b>الخلفية والمعايرة</b><span>يُحمَّل الملف في <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">أداة مثلثات الرؤية</a> ويُعاير حسب قطعة بطول معروف.</span></li>
                     <li><b>بيانات التصميم</b><span>حضري أو بين المدن، سرعة الطريق الرئيسي، عدد المسارات، والمسافة إلى حافة الرصيف.</span></li>
                     <li><b>التعليم</b><span>يُعلَّم محور الطريق — 4–8 نقاط على محور مُنحَنٍ — والأذرع، بما في ذلك خط التوقف الفعلي.</span></li>
                     <li><b>التصدير</b><span>ورقة A0 بمقياس 1:500 / 1:1000 / 1:2000، أو PNG وSVG وJSON لمواصلة العمل.</span></li>
@@ -1637,12 +1642,12 @@ a.leaf.leaf-temp::before{display:none}
                 <h3>لماذا يهم ربط الأدوات معاً</h3>
                 <p>ملف العدّ نفسه يُغذّي سلسلة كاملة. كل حلقة تضيف طبقة تتطلّب عادةً نقلاً يدوياً للأرقام بين البرامج — وكل نقل كهذا فرصة لخطأ.</p>
                 <div class="chain-line">
-                    <a href="critical-lane-volume.html">عدّ XLSX</a><i>←</i>
-                    <a href="critical-lane-volume.html">الحجم الحرج</a><i>←</i>
-                    <a href="optimizes-signal-timing%20plans-metric.html">توقيت الإشارة</a><i>←</i>
-                    <a href="lane-queue-metric.html">أطوال الصفوف</a><i>←</i>
-                    <a href="SD-tool.html">مسافات الرؤية</a><i>←</i>
-                    <a href="parking-regulations.html">معيار المواقف</a>
+                    <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">عدّ XLSX</a><i>←</i>
+                    <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">الحجم الحرج</a><i>←</i>
+                    <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">توقيت الإشارة</a><i>←</i>
+                    <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">أطوال الصفوف</a><i>←</i>
+                    <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مسافات الرؤية</a><i>←</i>
+                    <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">معيار المواقف</a>
                 </div>
                 <ul>
                     <li>ساعة الذروة تُحدَّد مرة واحدة وتخدم كل الفحوصات بعدها.</li>
@@ -1666,59 +1671,59 @@ a.leaf.leaf-temp::before{display:none}
                 <section>
                     <h3>الحساب والسعة</h3>
                     <ul>
-                        <li><a href="critical-lane-volume.html"><b>كيف يُحسب الحجم الحرج للمسار</b> في تقاطع بإشارة</a></li>
-                        <li><a href="critical-lane-volume.html">حساب <b>مستوى خدمة التقاطع بإشارة</b> حسب HCM</a></li>
-                        <li><a href="critical-lane-volume.html#fcOut">حساب <b>تأخير التحكم</b> وطول الدورة الأمثل</a></li>
-                        <li><a href="roundabout-analysis-metric.html"><b>سعة الدوار</b> وزمن التأخير على المدخل</a></li>
-                        <li><a href="lane-queue-metric.html"><b>طول الصف</b> المئوي 95 وخليج الانعطاف</a></li>
-                        <li><a href="Urban-Street-Segment%20Analysis-metric.html">سرعة السير ومستوى الخدمة في <b>مقطع شارع</b></a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>كيف يُحسب الحجم الحرج للمسار</b> في تقاطع بإشارة</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">حساب <b>مستوى خدمة التقاطع بإشارة</b> حسب HCM</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">حساب <b>تأخير التحكم</b> وطول الدورة الأمثل</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>سعة الدوار</b> وزمن التأخير على المدخل</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>طول الصف</b> المئوي 95 وخليج الانعطاف</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">سرعة السير ومستوى الخدمة في <b>مقطع شارع</b></a></li>
                     </ul>
                 </section>
 
                 <section>
                     <h3>المواقف والاشتراطات</h3>
                     <ul>
-                        <li><a href="parking-regulations.html"><b>كم موقفاً</b> أحتاج للشقة</a></li>
-                        <li><a href="parking-regulations.html"><b>معيار المواقف</b> حسب لائحة البلدية</a></li>
-                        <li><a href="parking-regulations.html">معيار المواقف ل<b>المكاتب والتجاري</b> حسب المساحة</a></li>
-                        <li><a href="parking-regulations.html">هل تقع المدينة في <b>منطقة نقل عام</b></a></li>
-                        <li><a href="parking-regulations.html">عدد <b>مواقف ذوي الاحتياجات الخاصة</b> المطلوب</a></li>
-                        <li><a href="parking-regulations.html">معيار <b>مواقف الدراجات</b> في مبنى جديد</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>كم موقفاً</b> أحتاج للشقة</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>معيار المواقف</b> حسب لائحة البلدية</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">معيار المواقف ل<b>المكاتب والتجاري</b> حسب المساحة</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">هل تقع المدينة في <b>منطقة نقل عام</b></a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">عدد <b>مواقف ذوي الاحتياجات الخاصة</b> المطلوب</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">معيار <b>مواقف الدراجات</b> في مبنى جديد</a></li>
                     </ul>
                 </section>
 
                 <section>
                     <h3>الرؤية، الهندسة والمقاطع</h3>
                     <ul>
-                        <li><a href="SD-tool.html"><b>مثلث الرؤية</b> في التقاطع — كيف يُعلَّم</a></li>
-                        <li><a href="SD-tool.html">حساب <b>مسافة الرؤية</b> للتوقف وللعبور</a></li>
-                        <li><a href="typical-section.html"><b>مقطع نموذجي</b> لشارع حضري ولطريق</a></li>
-                        <li><a href="horizontal.html">نصف القطر الأدنى و<b>منحنى الانتقال</b></a></li>
-                        <li><a href="vertical.html"><b>الميل الطولي</b> والمنحنى الرأسي</a></li>
-                        <li><a href="calculator_dark_ui.html"><b>قيم التصميم</b> حسب إرشادات هيئات الطرق الإماراتية</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>مثلث الرؤية</b> في التقاطع — كيف يُعلَّم</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">حساب <b>مسافة الرؤية</b> للتوقف وللعبور</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>مقطع نموذجي</b> لشارع حضري ولطريق</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">نصف القطر الأدنى و<b>منحنى الانتقال</b></a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>الميل الطولي</b> والمنحنى الرأسي</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>قيم التصميم</b> حسب إرشادات هيئات الطرق الإماراتية</a></li>
                     </ul>
                 </section>
 
                 <section>
                     <h3>الريادة، العقارات والتقييم</h3>
                     <ul>
-                        <li><a href="parking-regulations.html"><b>الجدوى المرورية</b> للعقار قبل الشراء</a></li>
-                        <li><a href="parking-regulations.html">المواقف المطلوبة ل<b>تغيير استخدام</b> مبنى قائم</a></li>
-                        <li><a href="TRAFFIC-IMPACT.html"><b>الملحق المروري</b> — ماذا يشمل</a></li>
-                        <li><a href="critical-lane-volume.html">هل يتحمّل <b>مدخل المشروع</b> الإضافة</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>الجدوى المرورية</b> للعقار قبل الشراء</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">المواقف المطلوبة ل<b>تغيير استخدام</b> مبنى قائم</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>الملحق المروري</b> — ماذا يشمل</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">هل يتحمّل <b>مدخل المشروع</b> الإضافة</a></li>
                         <li><a href="#lead">من يوقّع على <b>تقرير المرور</b> للجنة</a></li>
-                        <li><a href="parking-regulations.html">معيار المواقف حسب <b>المدينة والمنطقة</b></a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">معيار المواقف حسب <b>المدينة والمنطقة</b></a></li>
                     </ul>
                 </section>
 
                 <section>
                     <h3>إدارة المشاريع والضبط</h3>
                     <ul>
-                        <li><a href="critical-lane-volume.html#fcOut"><b>توقعات المرور</b> لسنة الهدف وسنة التشبع</a></li>
-                        <li><a href="htool.html">فحص <b>تقرير مستشار المرور</b> بشكل مستقل</a></li>
-                        <li><a href="optimizes-signal-timing%20plans-metric.html">هل يلزم <b>إشارة ضوئية</b> وما أزمنة الدورة</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>توقعات المرور</b> لسنة الهدف وسنة التشبع</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">فحص <b>تقرير مستشار المرور</b> بشكل مستقل</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">هل يلزم <b>إشارة ضوئية</b> وما أزمنة الدورة</a></li>
                         <li><a href="apis-he.html">مقارنة <b>بدائل التصميم</b> للتقاطع</a></li>
-                        <li><a href="LOS_nat.html">مستوى الخدمة على <b>طريق بين المدن</b></a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مستوى الخدمة على <b>طريق بين المدن</b></a></li>
                         <li><a href="#access">ربط الحسابات <b>بنظام المكتب</b></a></li>
                     </ul>
                 </section>
@@ -1726,11 +1731,11 @@ a.leaf.leaf-temp::before{display:none}
                 <section>
                     <h3>القياس، المسح والمخططات</h3>
                     <ul>
-                        <li><a href="SD-tool.html"><b>معايرة الصورة</b> لمقياس رسم حقيقي</a></li>
-                        <li><a href="SD-tool.html">الرسم على <b>صورة جوية</b> وتصدير SVG</a></li>
-                        <li><a href="SD-tool.html">إخراج <b>ورقة A0</b> بمقياس 1:500</a></li>
-                        <li><a href="typical-section.html">مقطع عرضي <b>لمخطط تطوير</b></a></li>
-                        <li><a href="rural.html">تخطيط <b>طريق بين المدن</b> — قيم التصميم</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء"><b>معايرة الصورة</b> لمقياس رسم حقيقي</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">الرسم على <b>صورة جوية</b> وتصدير SVG</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">إخراج <b>ورقة A0</b> بمقياس 1:500</a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مقطع عرضي <b>لمخطط تطوير</b></a></li>
+                        <li><a class="pending-route" aria-disabled="true" title="قيد الإنشاء">تخطيط <b>طريق بين المدن</b> — قيم التصميم</a></li>
                     </ul>
                 </section>
 
@@ -1870,13 +1875,13 @@ a.leaf.leaf-temp::before{display:none}
                 <a href="#who">حسب الدور</a>
                 <a href="#flows">مسارات العمل</a>
                 <a href="#catalog">الفهرس</a>
-                <a href="critical-lane-volume.html">مستوى الخدمة والحجم الحرج</a>
-                <a href="parking-regulations.html">معيار المواقف</a>
-                <a href="SD-tool.html">مثلثات الرؤية</a>
-                <a href="typical-section.html">المقطع النموذجي</a>
-                <a href="htool.html">أداة التقاطعات</a>
-                <a href="calculator_dark_ui.html">قيم التصميم</a>
-                <a href="worklog.html">سجل العمل</a>
+                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مستوى الخدمة والحجم الحرج</a>
+                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">معيار المواقف</a>
+                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">مثلثات الرؤية</a>
+                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">المقطع النموذجي</a>
+                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">أداة التقاطعات</a>
+                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">قيم التصميم</a>
+                <a class="pending-route" aria-disabled="true" title="قيد الإنشاء">سجل العمل</a>
                 <a href="apis-he.html">جميع الواجهات</a>
                 <a href="#faq">الأسئلة</a>
                 <a href="apis.html">English</a>

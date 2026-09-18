@@ -1514,14 +1514,16 @@ function drawArmArrows(J,a){
     }
     // הארכת הקצה החיצוני עד קשת אבן השפה בפינה, כדי שהקו יסגור את כל רוחב הכניסה
     if(ext){
-      const cr=(J.corners||[]).find(q=>q.from===a&&!q.straight&&!q.failed&&q.Cc&&q.R>0);
+      const cr=(J.corners||[]).find(q=>q.from===a&&!q.straight&&!q.failed&&q.pts&&q.pts.length>1);
       if(cr){
-        const eo=unit(sub(P2,P1)), fv=sub(P2,cr.Cc);
-        const b2=dot(fv,eo), cq=dot(fv,fv)-cr.R*cr.R, disc=b2*b2-cq;
-        if(disc>=0){
-          const sc=[-b2-Math.sqrt(disc),-b2+Math.sqrt(disc)].filter(v=>v>0.01&&v<15).sort((x,y)=>x-y)[0];
-          if(sc!==undefined) P2=add(P2,mul(eo,sc));
+        const eo=unit(sub(P2,P1)); let best=null;
+        for(let i=0;i+1<cr.pts.length;i++){
+          const A0=cr.pts[i], d=sub(cr.pts[i+1],A0), den=cross(eo,d);
+          if(Math.abs(den)<1e-9) continue;
+          const w=sub(A0,P2), sc=cross(w,d)/den, tt=cross(w,eo)/den;
+          if(sc>0.01&&sc<20&&tt>=-1e-6&&tt<=1+1e-6&&(best===null||sc<best)) best=sc;
         }
+        if(best!==null) P2=add(P2,mul(eo,best));
       }
     }
     const q=[P1,P2,add(P2,mul(fAway,MK.stop)),add(P1,mul(fAway,MK.stop))].map(w2s);

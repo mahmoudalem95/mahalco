@@ -97,7 +97,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .segctl button.on{background:var(--glass2);box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .segctl button.on span{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
 
-/* ---------- مشرف ---------- */
+/* ---------- מפקח ---------- */
 .insp{position:fixed;top:calc(76px + env(safe-area-inset-top));bottom:10px;inset-inline-start:10px;width:360px;border-radius:22px;
   z-index:4;display:flex;flex-direction:column;overflow:hidden}
 .grab{display:none}
@@ -204,7 +204,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
   <canvas id="cv" aria-label="سطح رسم المحور"></canvas>
   <div class="pop glass cpop" id="cpop" hidden>
     <div class="cph"><b id="cpTitle">انعطاف يميناً</b><button id="cpX" aria-label="إغلاق">✕</button></div>
-    <div class="segmini" id="cpMode"><button data-m="0">عادية</button><button data-m="1">حرة</button></div>
+    <div class="segmini" id="cpMode"><button data-m="0">רגילה</button><button data-m="1">حرة</button></div>
     <label class="cpr">R <input id="cpR" type="number" min="2" step="0.5" inputmode="decimal"> م</label>
     <small id="cpInfo"></small>
   </div>
@@ -220,7 +220,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
     <button id="ptNo" title="إزالة القوس">بدون</button>
     <span class="sepv"></span>
     <button id="ptZo" title="تصغير">−</button>
-    <button id="ptZi" title="تكبير">+</button>
+    <button id="ptZi" title="התקרבות">+</button>
     <button id="ptFit" title="توسيط على المحور">⤢</button>
   </div>
   <div class="pop glass" id="pop" hidden>
@@ -233,7 +233,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 </main>
 
 <header class="bar glass">
-  <a class="back" href="https://mahmoudalem95.github.io/mahalco/apis-ar.html?" aria-label="العودة للموقع">‹ <span>MAHALCO</span></a>
+  <a class="back" href="https://mahmoudalem95.github.io/mahalco/" aria-label="العودة للموقع">‹ <span>MAHALCO</span></a>
   <div class="title"><b>منشئ المحور</b><small>محور · أقواس · مقطع على طول الطريق</small></div>
   <div class="grow"></div>
   <div class="pill" id="pill"><i></i><span id="pillTxt">لا يوجد محور</span></div>
@@ -304,7 +304,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
     <section class="grp" id="grpAxis">
       <h3>معطيات التصميم</h3>
       <div class="list">
-        <div class="cell"><span class="lbl">بيئة</span>
+        <div class="cell"><span class="lbl">סביבה</span>
           <div class="segmini" id="envSeg"><button data-env="urban">حضري</button><button data-env="inter">بين-مدني</button></div></div>
         <div class="cell" id="rowV"><span class="lbl">سرعة التصميم, <b id="vAxName"></b></span>
           <div class="stp"><button id="vMinus" aria-label="خفض السرعة">−</button><input id="inV" type="number" min="30" step="10" inputmode="numeric"><button id="vPlus" aria-label="رفع السرعة">+</button></div>
@@ -332,7 +332,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
     </section>
 
     <section class="grp">
-      <h3>الفحوصات</h3>
+      <h3>فحوصات</h3>
       <div class="list"><ul class="msgs" id="msgs"></ul>
         <button class="cell btn" id="bFixNet" hidden>مطابقة مسارب الخروج لقاعدة أ-ب</button></div>
     </section>
@@ -341,7 +341,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
       <h3>خريطة خلفية</h3>
       <div class="list">
         <div class="cell"><span class="lbl">وضع</span><span id="mapGeo" style="color:var(--dim)"></span></div>
-        <div class="cell"><span class="lbl">الشفافية</span><input id="mapOp" type="range" min="10" max="100" style="flex:1"></div>
+        <div class="cell"><span class="lbl">שקיפות</span><input id="mapOp" type="range" min="10" max="100" style="flex:1"></div>
         <button class="cell btn" id="bCalib">معايرة بنقطتين</button>
         <button class="cell btn" id="bMapHide">إخفاء / إظهار</button>
         <button class="cell btn danger" id="bMapDel">إزالة الخريطة</button>
@@ -373,9 +373,9 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 
 <script>
 /* ============================================================
-   نموذج البيانات: قائمة PI فقط. القوس = خاصية PI داخلية (R).
-   كل الهندسة مشتقة من القائمة.
-   الإحداثيات: أمتار، Y نحو الأعلى (جاهز لـITM).
+   מודל הנתונים: قائمة PI فقط. قوس = خاصية PI داخلي (R).
+   كل الهندسة נגזרת מהרשימה.
+   إحداثيات إحداثيات: מטרים, Y باتجاه מעלה (מוכן لـITM).
    ============================================================ */
 let drag=null; // {type:'pan'|'click'|'pi', ...}
 const S = {
@@ -385,21 +385,21 @@ const S = {
   env: 'inter',       // 'urban' | 'inter'
   junctions: [],
   armCfg: {},
-  jctCfg: {},         // إعدادات التقاطع (تصنيف الشوارع / مركبة التصميم)
-  cornerCfg: {},      // نصف قطر انعطاف يميناً يدوي لكل ركن   // تخطيط أذرع التقاطع، وفق مفتاح محور|كم|اتجاه
+  jctCfg: {},         // הגדרות تقاطع (מדרג شوارع / مركبة التصميم)
+  cornerCfg: {},      // نصف قطر انعطاف يميناً ידני لكل ركن         // תצורת أذرع تقاطع, وفق מפתח محور|קמ׳|جانب
   selJ: -1,
   stage: 1,           // 1 محاور · 2 مقاطع · 3 تقاطعات
   tool: 'draw',       // 'draw' | 'edit'
   sel: -1,
-  hover: null,        // نقطة الفأرة في العالم (لعرض مسبق)
+  hover: null,        // نقطة עכבר بإحداثيات (لعرض مسبقة)
   view: { cx: 0, cy: 0, scale: 2, mode:'map' },
   bg: null,          // خريطة خلفية: {img, A,B,C,D,E,F, op}
   calib: null,       // معايرة بنقطتين // scale = بكسل للمتر
-  editRow: null,   // صف نطاقه قيد التحرير
-  pickSta: null    // وضع التحديد على الخريطة: {row, stage:0|1}
+  editRow: null,   // صف שהטווח שלה בעריכה
+  pickSta: null    // وضع ترميز في الخريطة: {row, stage:0|1}
 };
 
-/* الخصائص للمحور الفعّال – كل الكود يعمل مقابل S.pis/S.sec وغيره */
+/* המאפיינים لـ المحور الفعّال – كل הקוד עובד مقابل S.pis/S.sec وغيره */
 ['pis','locked','sec','drawing','undo'].forEach(k=>Object.defineProperty(S,k,{
   get(){ return S.axes[S.cur][k]; }, set(v){ S.axes[S.cur][k]=v; }
 }));
@@ -412,27 +412,27 @@ function newAxis(){
 newAxis();
 function withAxis(k,fn){ const c=S.cur; S.cur=k; try{ return fn(); } finally{ S.cur=c; } }
 
-/* أنواع الأشرطة بالمقطع */
+/* أنواع أشرطة بمقطع */
 const TYPES = {
   lane:     {he:'مسرب',        c:'#3d4349', w:3.6},
   shoulder: {he:'كتف',         c:'#6a7079', w:2.5},
-  parking:  {he:'وقوف',        c:'#525a66', w:2.5},
+  parking:  {he:'חניה',        c:'#525a66', w:2.5},
   sidewalk: {he:'رصيف',       c:'#bdb6a8', w:3.0},
   ditch:    {he:'قناة',        c:'#5f8aa6', w:2.0},
-  wall:     {he:'جدار',         c:'#8b6a55', w:0.5},
+  wall:     {he:'קיר',         c:'#8b6a55', w:0.5},
   open:     {he:'مساحة مفتوحة',    c:'#8ea56c', w:3.0}
 };
 const MEDIAN_C = '#6f8a55';
-/* لوحة الرسم: 'map' – وضع ملوَّن، 'plan' – مخطط خطي بنمط مخطط هندسي */
+/* لوحة الرسم: 'map' – وضع ملوَّن, 'plan' – مخطط קווית בסגנון גיליון הנדסי */
 const PAL = {
   plan: ()=>S.view.mode==='plan',
   bg:   ()=>PAL.plan()?'#ffffff':PAL.areas()?'#f4f4f2':css('--map'),
   grid: ()=>PAL.plan()||PAL.areas()?'rgba(0,0,0,.06)':css('--grid'),
   road: ()=>PAL.plan()?'#ffffff':PAL.areas()?'#9b9b9b':TYPES.lane.c,
-  turn: ()=>PAL.road(),
+  turn: ()=>PAL.road(),        // مسارب انعطاف في نفس גוון مثل مسارب السير
   median:()=>PAL.plan()?'#d8d8d8':PAL.areas()?'#d24b43':MEDIAN_C,
   line: ()=>PAL.plan()?'#111111':PAL.areas()?'#ffffff':'#f2f2f2',
-  edge: ()=>PAL.plan()?'#d9a400':PAL.areas()?'#ffffff':'#f2f2f2',
+  edge: ()=>PAL.plan()?'#d9a400':PAL.areas()?'#ffffff':'#f2f2f2',       // خط حافة צהוב (807)
   sep:  ()=>PAL.plan()?'#111111':PAL.areas()?'rgba(0,0,0,.25)':'rgba(0,0,0,.35)',
   axis: ()=>PAL.plan()||PAL.areas()?'#c0392b':css('--axis'),
   ink:  ()=>PAL.plan()||PAL.areas()?'#111111':css('--ink'),
@@ -454,54 +454,54 @@ const PAL = {
 };
 
 /* ============================================================
-   كتالوج المقاطع النموذجية – منسوخ من-typical-section.html
+   קטלוג المقاطع הטיפוסיים – منسوخ من-typical-section.html
    ============================================================ */
 const TS_T = {
-  walk:   {n:'شريط مشاة',        s:'مشي', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'شريط مشاة أدنى 1.5 م (USDM أبوظبي، النمط 1)']},
+  walk:   {n:'شريط مشاة',        s:'مشي', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'شريط مشاة أدنى 1.5 م (مجال الشارع، النمط 1)']},
   aux:    {n:'شريط مساعد / أشجار',   s:'مساعد',   lvl:'curb', w:1.2,  col:'#cfd9bf', tree:true},
   front:  {n:'شريط جانبي',         s:'جانب',  lvl:'curb', w:0.3,  col:'#ddd6c6'},
   plaza:  {n:'جزيرة مشجَّرة / نشاط',     s:'جزيرة مشجَّرة', lvl:'curb', w:6.0,  col:'#d9e3c6', tree:true, ppl:true},
   green:  {n:'تشجير',              s:'تشجير', lvl:'curb', w:2.0,  col:'#b9cfa3', tree:true},
   bikeP:  {n:'مسار دراجات',       s:'دراجات',lvl:'curb', w:2.5, col:'#e8b9a8', dir:'up', bike:true,
-           min:[1.5,'المسار أحادي الاتجاه أدنى 1.5 م، ثنائي الاتجاه 3.0 م (دليل RTA دبي، الفصل 9)']},
+           min:[1.5,'المسار أحادي الاتجاه أدنى 1.5 م، ثنائي الاتجاه 3.0 م (المجلد 1، الفصل 9)']},
   bikeL:  {n:'مسرب دراجات',       s:'مسار دراجات',lvl:'road', w:1.5, col:'#e39c86', dir:'up', bike:true, min:[1.5,'مسرب دراجات 1.5–2.0 م']},
   buf:    {n:'شريط فاصل',        s:'فاصل', lvl:'road', w:0.5,  col:'#c9ced3'},
   parkP:  {n:'وقوف موازٍ',       s:'وقوف', lvl:'road', w:2.0,  col:'#9aa4ad', car:'park', max:[2.25,'يُمنع تصميم جيب وقوف موازٍ أعرض من 2.25 م (المركبات الآلية 3.3.4)']},
   parkX:  {n:'وقوف عمودي',        s:'وقوف عمودي',lvl:'road', w:5.0, col:'#9aa4ad', car:'park'},
   lane:   {n:'مسرب سير',         s:'مسرب',  lvl:'road', w:3.25, col:'#6d7680', dir:'up', car:'car'},
-  bus:    {n:'حرم النقل العام',               s:'حرم النقل العام',  lvl:'road', w:3.6,  col:'#b5645a', dir:'up', car:'bus', min:[3.6,'حرم النقل العام 3.6–4.0 م (دليل RTA، الفصل 10)']},
-  brt:    {n:'حرم النقل العام (مسرب منفرد)',   s:'حرم النقل العام',  lvl:'road', w:3.6,  col:'#c0795f', dir:'up', car:'bus', min:[3.6,'مسرب في حرم النقل العام 3.6 م (دليل RTA، الفصل 10)']},
+  bus:    {n:'حرم النقل العام',               s:'حرم النقل العام',  lvl:'road', w:3.6,  col:'#b5645a', dir:'up', car:'bus', min:[3.6,'حرم النقل العام 3.6–4.0 م (المجلد 1، الفصل 10)']},
+  brt:    {n:'حرم النقل العام (مسرب منفرد)',   s:'حرم النقل العام',  lvl:'road', w:3.6,  col:'#c0795f', dir:'up', car:'bus', min:[3.6,'مسرب في حرم النقل العام 3.6 م (المجلد 1، الفصل 10)']},
   lrt:    {n:'مسار السكة الخفيفة (باتجاه واحد)',s:'السكة الخفيفة',  lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'قيمة مقترحة – عرض شريط السكة الخفيفة غير وارد في الكراسات المرفقة؛ يجب التحقق منه مقابل تصميم السكة الحديدية'},
-  median: {n:'جزيرة وسطى مبنية',        s:'جزيرة وسطى', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'جزيرة وسطى دنيا 2.5 م بجانب مسرب اليسار (دليل تصميم التقاطعات RTA، البند 5.5.4)']},
+  median: {n:'جزيرة وسطى مبنية',        s:'جزيرة وسطى', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'جزيرة وسطى دنيا 2.5 م بجانب مسرب اليسار (الحركة في التقاطعات 5.5.4)']},
   barrier:{n:'حاجز الجزيرة الوسطى (بين-مدني)',s:'حاجز',lvl:'road', w:0.8, col:'#a8b0b8', rail:true},
-  shR:    {n:'الكتف الأيمن',           s:'كتف',   lvl:'road', w:3.0,  col:'#8c949c', min:[2.0,'الكتف الأيمن 2.0–3.5 م حسب نوع الطريق (دليل RTA، جدول 3.2)']},
+  shR:    {n:'الكتف الأيمن',           s:'كتف',   lvl:'road', w:3.0,  col:'#8c949c', min:[2.0,'الكتف الأيمن 2.0–3.5 م حسب نوع الطريق (المجلد 1، جدول 3.2)']},
   shL:    {n:'الكتف الأيسر',          s:'الكتف الأيسر',lvl:'road', w:1.2, col:'#8c949c'},
   active: {n:'العرض الفعّال + الحاجز',   s:'W',     lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'يُحدَّد العرض الفعّال W وفق نوع الحاجز ومستوى الأداء الوظيفي'},
   kerbArea:{n:'أكتاف مع حجر رصيف', s:'أكتاف', lvl:'curb', w:0.5, col:'#cfc8b6'}
 };
 const TS_DIRS = [['up','↑'],['down','↓'],['both','⇅'],['none','–']];
 
-/* ---------------- أنماط ---------------- */
+/* ---------------- תבניות ---------------- */
 const C = (t,w,dir)=>({t, w:(w===undefined?TS_T[t].w:w), dir: dir || TS_T[t].dir || 'none'});
 function mirror(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir==='up'?'down':c.dir==='down'?'up':c.dir})); }
-function sym(half){ return [...half, ...mirror(half)]; }
+function sym(half){ return [...half, ...mirror(half)]; }  // half = من الطرف الأيسر حتى المحور, باتجاه "down"
 const E_BLD = {type:'building'}, E_FILL = {type:'fill', n:4, h:1.5}, E_CUT = {type:'cut', n:3, h:1.5, dd:0.6, db:0.6}, E_NONE={type:'none'};
 const TS_PRESETS = {
-  mr1:{g:'حضري – مجال الشارع',n:'النمط 1 – محلي، بناء منخفض (15.0 م)',ctx:'urban',row:15,src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 1',
+  mr1:{g:'حضري – مجال الشارع',n:'النمط 1 – محلي، بناء منخفض (15.0 م)',ctx:'urban',row:15,src:'مجال الشارع 2020، النمط 1 (ص 113 في الملف)',
        cells:sym([C('front',0.3),C('walk',1.5),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
-  mr2:{g:'حضري – مجال الشارع',n:'النمط 2 – محلي، أرصفة غير متماثلة (17.5 م)',ctx:'urban',row:17.5,src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 2',
+  mr2:{g:'حضري – مجال الشارع',n:'النمط 2 – محلي، أرصفة غير متماثلة (17.5 م)',ctx:'urban',row:17.5,src:'مجال الشارع 2020، النمط 2 (ص 115)',
        cells:[C('front',0.3),C('walk',1.6),C('aux',1.2),C('parkX',5.0),C('lane',2.75,'down'),C('lane',2.75,'up'),C('parkP',2.0),C('walk',1.6),C('front',0.3)],eL:E_BLD,eR:E_BLD},
-  mr3:{g:'حضري – مجال الشارع',n:'النمط 3 – محلي، بناء متوسط (16.0 م)',ctx:'urban',row:16,src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 3',
+  mr3:{g:'حضري – مجال الشارع',n:'النمط 3 – محلي، بناء متوسط (16.0 م)',ctx:'urban',row:16,src:'مجال الشارع 2020، النمط 3 (ص 117)',
        cells:sym([C('front',0.3),C('walk',2.0),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
-  mr4:{g:'حضري – مجال الشارع',n:'النمط 4 – محلي/مجمّع 1، متوسط (22.0 م)',ctx:'urban',row:22,src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 4',
+  mr4:{g:'حضري – مجال الشارع',n:'النمط 4 – محلي/مجمّع 1، متوسط (22.0 م)',ctx:'urban',row:22,src:'مجال الشارع 2020، النمط 4 (ص 119)',
        cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
-  mr5:{g:'حضري – مجال الشارع',n:'النمط 5 – محلي، بناء مرتفع (24.0 م)',ctx:'urban',row:24,src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 5',
+  mr5:{g:'حضري – مجال الشارع',n:'النمط 5 – محلي، بناء مرتفع (24.0 م)',ctx:'urban',row:24,src:'مجال الشارع 2020، النمط 5 (ص 121)',
        cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkX',5.0),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
-  mr7:{g:'حضري – مجال الشارع',n:'النمط 7 – محلي/مجمّع 1، مرتفع (24.0 م)',ctx:'urban',row:24,src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 7',
+  mr7:{g:'حضري – مجال الشارع',n:'النمط 7 – محلي/مجمّع 1، مرتفع (24.0 م)',ctx:'urban',row:24,src:'مجال الشارع 2020، النمط 7 (ص 125)',
        cells:sym([C('front',0.5),C('walk',3.3),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
-  mr9:{g:'حضري – مجال الشارع',n:'النمط 9 – مجمّع 2، واجهة نشطة (36.0 م)',ctx:'urban',row:36,src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 9',
+  mr9:{g:'حضري – مجال الشارع',n:'النمط 9 – مجمّع 2، واجهة نشطة (36.0 م)',ctx:'urban',row:36,src:'مجال الشارع 2020، النمط 9 (ص 129)',
        cells:sym([C('front',2.5),C('walk',2.8),C('aux',1.2),C('bikeP',2.0,'down'),C('parkP',2.0),C('lane',3.0,'down'),C('lane',3.0,'down'),C('median',1.5)]),eL:E_BLD,eR:E_BLD},
-  mr10:{g:'حضري – مجال الشارع',n:'النمط 10 – شرياني درجة 1 (36.0 م)',ctx:'urban',row:36,src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 10',
+  mr10:{g:'حضري – مجال الشارع',n:'النمط 10 – شرياني درجة 1 (36.0 م)',ctx:'urban',row:36,src:'مجال الشارع 2020، النمط 10 (ص 131)',
        cells:sym([C('walk',2.5),C('aux',1.5),C('bikeP',2.5,'down'),C('aux',1.5),C('lane',3.5,'down'),C('lane',3.5,'down'),C('median',3.0)]),eL:E_BLD,eR:E_BLD},
   ex1:{g:'حضري – أمثلة',n:'جزيرة مشجَّرة + حرم BRT (42.0 م)',ctx:'urban',row:42,src:'وفق الرسم المرفوع (الشكل 1)',
        cells:[C('plaza',12.0),C('brt',3.5,'down'),C('brt',3.5,'up'),C('median',3.5),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.5),C('lane',3.25,'up'),C('lane',3.25,'up'),C('walk',4.0)],eL:E_NONE,eR:E_BLD},
@@ -509,20 +509,20 @@ const TS_PRESETS = {
        cells:sym([C('walk',7.7),C('bikeP',1.5,'down'),C('aux',2.0),C('bus',3.6,'down'),C('lane',3.1,'down'),C('lane',3.1,'down'),C('median',1.0)]),eL:E_BLD,eR:E_BLD},
   ex3:{g:'حضري – أمثلة',n:'السكة الخفيفة في المنتصف + حرم النقل العام (مثال)',ctx:'urban',row:0,src:'مثال تخطيطي (الشكل 8) – عروض السكة الخفيفة مقترحة ويجب التحقق منها',
        cells:[C('green',2.0),C('bikeP',3.0,'both'),C('median',1.0),C('lrt',3.5,'up'),C('lrt',3.5,'down'),C('median',2.0),C('bus',3.6,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.0),C('lane',3.25,'up'),C('lane',3.25,'up'),C('lane',3.25,'up'),C('bus',3.6,'up'),C('walk',2.0),C('green',2.0),C('bikeP',3.0,'both'),C('walk',3.0)],eL:E_NONE,eR:E_BLD},
-  iuL:{g:'بين-مدني – دليل RTA',n:'أحادية المسرب محلية ووصول',ctx:'inter',row:0,src:'دليل RTA للتصميم الهندسي، جداول 3.1–3.2: مسرب 3.3، كتف 2.0',
+  iuL:{g:'بين-مدني – المجلد 1',n:'أحادية المسرب محلية ووصول',ctx:'inter',row:0,src:'المجلد 1، جداول 3.1–3.2: مسرب 3.3، كتف 2.0',
        cells:[C('active',1.0),C('shR',2.0),C('lane',3.3,'down'),C('lane',3.3,'up'),C('shR',2.0),C('active',1.0)],eL:E_FILL,eR:E_CUT},
-  iuR:{g:'بين-مدني – دليل RTA',n:'أحادية المسرب رئيسية/إقليمية (80 كم/س)',ctx:'inter',row:0,src:'دليل RTA للتصميم الهندسي، جداول 3.1–3.2: مسرب 3.6، كتف 3.0',
+  iuR:{g:'بين-مدني – المجلد 1',n:'أحادية المسرب رئيسية/إقليمية (80 كم/س)',ctx:'inter',row:0,src:'المجلد 1، جداول 3.1–3.2: مسرب 3.6، كتف 3.0',
        cells:[C('active',1.0),C('shR',3.0),C('lane',3.6,'down'),C('lane',3.6,'up'),C('shR',3.0),C('active',1.0)],eL:E_FILL,eR:E_FILL},
-  iuD:{g:'بين-مدني – دليل RTA',n:'ثنائية المسرب رئيسية 2+2',ctx:'inter',row:0,src:'دليل RTA / أبوظبي TR-514: مسرب 3.6، الكتف الأيمن 3.5، الكتف الأيسر 1.2، جزيرة وسطى 2.4 + حاجز (البند 3.4.2)',
+  iuD:{g:'بين-مدني – المجلد 1',n:'ثنائية المسرب رئيسية 2+2',ctx:'inter',row:0,src:'المجلد 1: مسرب 3.6، الكتف الأيمن 3.5، الكتف الأيسر 1.2، جزيرة وسطى 2.4 + حاجز (البند 3.4.2)',
        cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',1.2)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]),eL:E_FILL,eR:E_FILL},
-  iuF:{g:'بين-مدني – دليل RTA',n:'طريق سريع 3+3',ctx:'inter',row:0,src:'دليل RTA / أبوظبي TR-514 / دليل GCC: مسرب 3.6–3.7، الكتف الأيمن 3.5، الكتف الأيسر 1.2؛ جزيرة وسطى 6.0 + حواجز عند 120 كم/س',
+  iuF:{g:'بين-مدني – المجلد 1',n:'طريق سريع 3+3',ctx:'inter',row:0,src:'المجلد 1: مسرب 3.6–3.7، الكتف الأيمن 3.5، الكتف الأيسر 1.2؛ جزيرة وسطى 6.0 + حواجز عند 120 كم/س',
        cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',3.0)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]),eL:E_CUT,eR:E_FILL},
   ex4:{g:'بين-مدني – أمثلة',n:'المقطع النموذجي 5-5 (الشكل 6)',ctx:'inter',row:0,src:'وفق الرسم المرفوع (الشكل 6)',
        cells:[C('active',1.1),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',1.5),C('barrier',0.6),C('shL',1.5),C('lane',3.6,'up'),C('lane',3.6,'up'),C('shR',3.5),C('active',1.1)],eL:E_CUT,eR:E_FILL}
 };
 
 
-/* أنواع الخلايا لأداة المقطع تُدخل أيضاً كأنواع أشرطة */
+/* أنواع התאים لـ أداة المقطع נכנסים أيضاً هي كأنواع أشرطة */
 Object.entries(TS_T).forEach(([k,v])=>{
   const key = k==='median' ? 'medRow' : k;
   if(!TYPES[key]) TYPES[key]={he:v.n, c:v.col, w:v.w};
@@ -533,7 +533,7 @@ TYPES.cut ={he:'حفر', c:'#9c8a66', w:4.5};
 const VEH=new Set(['lane','bus','brt','lrt']);
 const isLane=t=>t==='lane'||t==='bus'||t==='brt';
 
-/* تحويل مقطع أداة المقطع (خلايا من اليسار إلى اليمين) إلى البنية: جزيرة وسطى + أشرطة لكل اتجاه من المحور للخارج */
+/* המרת مقطع لـ أداة المقطع (תאים משמאל לימין) למבנה: جزيرة وسطى + أشرطة لكل جانب من المحور العابر */
 function tsToSec(sec, key){
   const cells=sec.cells, n=cells.length;
   const W=c=>+c.w||0, rowOf=c=>({type: c.t==='median'?'medRow':c.t, w:W(c)});
@@ -576,30 +576,31 @@ const $ = id => document.getElementById(id);
 const cv = $('cv'), ctx = cv.getContext('2d');
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-/* ---------- تحويلات ---------- */
+/* ---------- טרנספורמציות ---------- */
 function w2s(p){ const v=S.view; return { x:(p.x-v.cx)*v.scale+cv.width/2/dpr(), y:-(p.y-v.cy)*v.scale+cv.height/2/dpr() }; }
 function s2w(x,y){ const v=S.view; return { x:(x-cv.width/2/dpr())/v.scale+v.cx, y:-(y-cv.height/2/dpr())/v.scale+v.cy }; }
 function dpr(){ return window.devicePixelRatio||1; }
 
-/* ---------- متجهات ---------- */
+/* ---------- וקטורים ---------- */
 const sub=(a,b)=>({x:a.x-b.x,y:a.y-b.y}), add=(a,b)=>({x:a.x+b.x,y:a.y+b.y});
 const mul=(a,k)=>({x:a.x*k,y:a.y*k}), len=a=>Math.hypot(a.x,a.y);
 const unit=a=>{const l=len(a);return l?mul(a,1/l):{x:0,y:0};};
 const dot=(a,b)=>a.x*b.x+a.y*b.y, cross=(a,b)=>a.x*b.y-a.y*b.x;
 
 /* ============================================================
-   هندسة: حساب قوس في كل PI داخلي مع R>0
+   גאומטריה: חישוב قوس في كل PI داخلي مع R>0
    ============================================================ */
 function arcAt(i){
   const P=S.pis; const pi=P[i];
   if(i<=0||i>=P.length-1||!(pi.R>0)) return null;
   const u1=unit(sub(pi,P[i-1])), u2=unit(sub(P[i+1],pi));
-  const D=Math.atan2(cross(u1,u2),dot(u1,u2));
+  const D=Math.atan2(cross(u1,u2),dot(u1,u2));        // انحراف موقَّع (+ = يساراً)
   const aD=Math.abs(D);
   if(aD<1e-6 || aD>Math.PI-1e-3) return {i,invalid:true,D};
-  const n={x:-u1.y,y:u1.x};
+  const n={x:-u1.y,y:u1.x};                            // العمودي الأيسر
   const sg=Math.sign(D), R=pi.R, Ls=pi.Ls>0?pi.Ls:0;
   if(Ls>0){
+    // كلوثويد – قوس – كلوثويد סימטרית (فصل 5.5)
     const th=Ls/(2*R);
     if(2*th>=aD) return {i,invalid:true,D,why:'Ls طويل جداً بالنسبة للزاوية'};
     const X=clX(Ls,R,Ls), Y=clY(Ls,R,Ls), pp=Y-R*(1-Math.cos(th)), kk=X-R*Math.sin(th);
@@ -615,22 +616,23 @@ function arcAt(i){
   const c=add(tc,mul(n,R*sg));
   return {i,D,T,R,tc,ct,c,L:R*aD};
 }
-/* كلوثويد: نظام محلي من نقطة التماس للمستقيم */
+/* كلوثويد: מערכת محلية من نقطة نقطة التماس لمستقيم */
 function clX(l,R,Ls){ const a=R*R*Ls*Ls; return l - Math.pow(l,5)/(40*a) + Math.pow(l,9)/(3456*a*a); }
 function clY(l,R,Ls){ const a=R*Ls; return Math.pow(l,3)/(6*a) - Math.pow(l,7)/(336*a*a*a); }
 const rotV=(v,t)=>({x:v.x*Math.cos(t)-v.y*Math.sin(t), y:v.x*Math.sin(t)+v.y*Math.cos(t)});
 
-/* الفحوصات + بناء سلسلة العناصر ("دمج") */
+/* فحوصات תקינות + بناء تسلسل عناصر ("دمج") */
 function solve(){
   const P=S.pis, arcs=P.map((_,i)=>arcAt(i)), errs=[];
   const T=i=>(arcs[i]&&!arcs[i].invalid)?arcs[i].T:0;
 
-  arcs.forEach(a=>{ if(a&&a.invalid) errs.push({i:a.i,m:`نقطة ${a.i}: ${a.why||'الزاوية لا تسمح بقوس'}`}); });
+  arcs.forEach(a=>{ if(a&&a.invalid) errs.push({i:a.i,m:`نقطة ${a.i}: ${a.why||'زاوية لا מאפשרת قوس'}`}); });
   for(let i=0;i<P.length-1;i++){
     const L=len(sub(P[i+1],P[i])), need=T(i)+T(i+1);
-    if(need>L+1e-6) errs.push({seg:i,m:`مقطع ${i}–${i+1}: الأقواس متداخلة (${need.toFixed(1)} > ${L.toFixed(1)} من)`});
+    if(need>L+1e-6) errs.push({seg:i,m:`جزء ${i}–${i+1}: الأقواس חופפות (${need.toFixed(1)} > ${L.toFixed(1)} من')`});
   }
 
+  // تسلسل عناصر مع كيلومتراج'
   const els=[]; let st=0;
   if(P.length>=2){
     let start={x:P[0].x,y:P[0].y};
@@ -657,24 +659,24 @@ function solve(){
 }
 
 /* ============================================================
-   قواعد التخطيط الأفقي – دليل RTA للتصميم الهندسي (دبي) / أبوظبي TR-514 / USDM
+   כללי התוויה אופקית – إرشادات بين-مدنيות المجلد 1 فصل 5 (04/2018)
    ============================================================ */
-const IU_RMIN  ={60:110,70:170,80:220,90:340,100:440,110:565,120:670};      // RTA GDM / TR-514 جدول 5.1
-const IU_RTRAN ={60:460,70:630,80:820,90:1050,100:1300,110:1550,120:1850};  // جدول 5.13 – أعلاه لا حاجة لمنحنى انتقال
+const IU_RMIN  ={60:110,70:170,80:220,90:340,100:440,110:565,120:670};      // جدول 5.1
+const IU_RTRAN ={60:460,70:630,80:820,90:1050,100:1300,110:1550,120:1850};  // جدول 5.13 – מעליו لا يوجد צורך بمنحنى معبر
 const IU_BRK2  ={60:1,70:1,80:1};
-const IU_C     ={60:1.0,70:0.917,80:0.833,90:0.75,100:0.667,110:0.583,120:0.5};   // RTA GDM جدول 5.12
-const IU_LSMAX ={60:51,70:64,80:73,90:91,100:103,110:117,120:127};             // RTA GDM جدول 5.12أ
-function lsMin(V,R){ const v=near(V,[60,70,80,90,100,110,120]); return Math.ceil(Math.max(Math.pow(v,3)/(Math.pow(3.6,3)*IU_C[v]*R), 2*v/3.6)); }
+const IU_C     ={60:1.0,70:0.917,80:0.833,90:0.75,100:0.667,110:0.583,120:0.5};   // جدول 5.12
+const IU_LSMAX ={60:51,70:64,80:73,90:91,100:103,110:117,120:127};             // جدول 5.12أ
+function lsMin(V,R){ const v=near(V,[60,70,80,90,100,110,120]); return Math.ceil(Math.max(Math.pow(v,3)/(Math.pow(3.6,3)*IU_C[v]*R), 2*v/3.6)); }                                          // جدول 5.5 – ثنائي المسرب (מעלות)
 const IU_BRKD  ={80:0.5,90:0.5,100:0.5,110:0.25,120:0.25};                  // جدول 5.5 – ثنائي المسرب
 function axisRules(a,R){
   const W=[], V=a.V, P=a.pis, deg=x=>x*180/Math.PI;
   if(S.env==='urban'){
-    W.push('حضري: قاعدة الانكسار بين المستقيمات غير محددة في الأداة (بانتظار توضيح)؛ قوس بسيط بدون كلوثويد.');
+    W.push('حضري: قاعدة الانكسار بين مستقيمات بعد لا מוגדר بأداة (ממתין להבהרה); قوس פשוטה بدون كلوثويد.');
     return W;
   }
-  if(!(V in IU_RMIN)){ W.push(`سرعة التصميم ${V} خارج جداول الفصل 5 (60–120 كم/س)`); return W; }
+  if(!(V in IU_RMIN)){ W.push(`سرعة التصميم ${V} خارج لجداول فصل 5 (60–120 كم/س)`); return W; }
   const divided = !!(a.sec && (a.sec.median>0 || a.sec.left.concat(a.sec.right).some(r=>r.type==='barrier')));
-  // منحنى كامل لكل نقطة (بما في ذلك الكلوثويدات): بداية ونهاية
+  // منحنى שלם لكل نقطة (כולל קלוטואידות): תחילה ونهاية
   const arcs=[]; R.els.forEach(e=>{ if(e.type==='line') return; let g=arcs.find(x=>x.pi===e.pi);
     if(!g){ g={pi:e.pi,sta0:e.sta0,length:0,dir:e.dir}; arcs.push(g); } g.length=e.sta0+e.length-g.sta0; if(e.dir) g.dir=e.dir;
     if(e.type==='spiral') g.dir=e.sg>0?'left':'right'; });
@@ -684,37 +686,37 @@ function axisRules(a,R){
       const u1=unit(sub(P[i],P[i-1])), u2=unit(sub(P[i+1],P[i]));
       const d=Math.abs(deg(Math.atan2(cross(u1,u2),dot(u1,u2)))), lim=(divided?IU_BRKD:IU_BRK2)[V];
       if(d<1e-3) continue;
-      if(lim===undefined) W.push(`نقطة ${i}: انكسار ${d.toFixed(2)}° – غير مسموح بـ${V} كم/س عند ${divided?'ثنائي المسرب':'ثنائي المسرب'}; مطلوب قوس (جدول 5.5)`);
-      else if(d>lim) W.push(`نقطة ${i}: انكسار ${d.toFixed(2)}° > ${lim}° المسموح بها (جدول 5.5); مطلوب قوس`);
+      if(lim===undefined) W.push(`نقطة ${i}: انكسار ${d.toFixed(2)}° – لا מותרת بـ${V} كم/س عند${divided?'ثنائي المسرب':'ثنائي المسرب'}; مطلوبة قوس (جدول 5.5)`);
+      else if(d>lim) W.push(`نقطة ${i}: انكسار ${d.toFixed(2)}° > ${lim}° المسموح بها (جدول 5.5); مطلوبة قوس`);
       continue;
     }
     if(!A||A.invalid) continue;
     const L=A.L, D=deg(Math.abs(A.D));
     if(P[i].R<IU_RMIN[V]) W.push(`نقطة ${i}: R${P[i].R} < ${IU_RMIN[V]} الأدنى لـ-${V} كم/س (جدول 5.1)`);
-    if(P[i].R<IU_RTRAN[V] && !(P[i].Ls>0)) W.push(`نقطة ${i}: R${P[i].R} < ${IU_RTRAN[V]} – مطلوب منحنى انتقال (جدول 5.13); أدخلوا Ls`);
+    if(P[i].R<IU_RTRAN[V] && !(P[i].Ls>0)) W.push(`نقطة ${i}: R${P[i].R} < ${IU_RTRAN[V]} – مطلوب منحنى معبر (جدول 5.13); הזינו Ls`);
     if(P[i].Ls>0){
       const Lmin=lsMin(V,P[i].R), Lmax=IU_LSMAX[V], pp=A.p;
       if(P[i].Ls<Lmin-0.5) W.push(`نقطة ${i}: Ls ${P[i].Ls} < ${Lmin} الأدنى (بند 5.5.2)`);
-      if(P[i].Ls>Lmax) W.push(`نقطة ${i}: Ls ${P[i].Ls} > ${Lmax} الأقصى (جدول 5.12أ)`);
-      if(pp<0.2) W.push(`نقطة ${i}: إزاحة القوس p=${pp.toFixed(2)} < 0.20 – تحقق إذا كان مطلوباً منحنى انتقال (5.5.3)`);
+      if(P[i].Ls>Lmax) W.push(`نقطة ${i}: Ls ${P[i].Ls} > ${Lmax} המרבי (جدول 5.12أ)`);
+      if(pp<0.2) W.push(`نقطة ${i}: إزاحة القوس p=${pp.toFixed(2)} < 0.20 – לבדוק إذا مطلوب منحنى معبر (5.5.3)`);
     }
-    if(L<3*V) W.push(`نقطة ${i}: طول القوس ${L.toFixed(0)} < ${3*V} (3·V، بند 5.2.5)`);
+    if(L<3*V) W.push(`نقطة ${i}: طول القوس ${L.toFixed(0)} < ${3*V} (3·V, بند 5.2.5)`);
     if(L>12*V) W.push(`نقطة ${i}: طول القوس ${L.toFixed(0)} > ${12*V} (12·V)`);
-    if(D<5&&L<150) W.push(`نقطة ${i}: زاوية مركزية ${D.toFixed(1)}° < 5° – يُنصح بطول قوس فوق 150 م`);
+    if(D<5&&L<150) W.push(`نقطة ${i}: زاوية مركزية ${D.toFixed(1)}° < 5° – מומלץ طول القوس من على 150 م`);
   }
-  // المستقيمات بين الأقواس المتتالية
+  // مستقيمات بين أقواس עוקבות
   for(let q=0;q<arcs.length-1;q++){
     const a1=arcs[q], a2=arcs[q+1], Ls=a2.sta0-(a1.sta0+a1.length);
     const same=a1.dir===a2.dir, need=same?5*V:2*V;
-    if(Ls<need) W.push(`بين نقاط ${a1.pi} و${a2.pi}: مستقيم ${Ls.toFixed(0)} م < ${need} (${same?'منحنيات بنفس الاتجاه 5·V، بند 5.7.1':'منحنيات متعاكسة 2·V، بند 5.7.2'})`);
+    if(Ls<need) W.push(`بين نقاط ${a1.pi} ו-${a2.pi}: مستقيم ${Ls.toFixed(0)} م < ${need} (${same?'منحنيات لنفسه اتجاه 5·V, بند 5.7.1':'منحنيات מנוגדים 2·V, بند 5.7.2'})`);
   }
-  R.els.forEach(e=>{ if(e.type==='line'&&e.length>20*V) W.push(`مقطع مستقيم ${e.length.toFixed(0)} م > ${20*V} (20·V، بند 5.9)`); });
+  R.els.forEach(e=>{ if(e.type==='line'&&e.length>20*V) W.push(`مقطع مستقيم ${e.length.toFixed(0)} م > ${20*V} (20·V, بند 5.9)`); });
   return W;
 }
 
 /* ============================================================
-   الإزاحات: d>0 يساراً من اتجاه التقدم، d<0 يميناً.
-   مستقيم – إزاحة موازية. قوس – قوس متحد المركز بنصف قطر R∓d.
+   אופסטים: d>0 يساراً مناتجاه ההתקדמות, d<0 يميناً.
+   مستقيم – إزاحة موازٍ. قوس – قوس קונצנטרית بـنصف القطر R∓d.
    ============================================================ */
 function arcSweep(e){
   const a0=Math.atan2(e.from.y-e.center.y,e.from.x-e.center.x);
@@ -723,6 +725,7 @@ function arcSweep(e){
   if(e.dir==='right'&&sw>0) sw-=2*Math.PI;
   return {a0,sw};
 }
+/* מסגרת بكيلومتراج': نقطة على المحور + العمودي الأيسر */
 function frameAt(els,sta){
   let e=els[els.length-1];
   for(const x of els){ if(sta<=x.sta0+x.length+1e-9){ e=x; break; } }
@@ -741,6 +744,7 @@ function frameAt(els,sta){
   const tg={x:-sg*Math.sin(a), y:sg*Math.cos(a)};
   return {p:{x:e.center.x+e.R*Math.cos(a), y:e.center.y+e.R*Math.sin(a)}, n:{x:-tg.y,y:tg.x}, e};
 }
+/* قائمة كيلومتراج'ים לדגימה: حدود عناصر, צפיפות بأقواس, ونقاط انكسار لـ عرض */
 function stationList(els,extra){
   const total=els.reduce((m,e)=>Math.max(m,e.sta0+e.length),0), set=[0,total];
   els.forEach(e=>{
@@ -754,6 +758,7 @@ function stationList(els,extra){
   set.sort((a,b)=>a-b);
   return set.filter((v,k)=>k===0||v-set[k-1]>1e-6);
 }
+/* d יכול להיות عدد أو פונקציה لـ كيلومتراج' */
 function offsetPts(els,d,stas){
   const f=typeof d==='function'?d:()=>d, out=[]; let bad=false;
   (stas||stationList(els)).forEach(st=>{
@@ -763,6 +768,7 @@ function offsetPts(els,d,stas){
   });
   return {pts:out,bad};
 }
+/* قصّ الطرف 1:1 – طول المعبر שווה بعرض האלמנט */
 function rowWidth(r,sta){
   if(!r.ranges||!r.ranges.length) return r.w;
   let f=0;
@@ -776,6 +782,7 @@ function rowBreaks(){
   }));
   return b;
 }
+/* أشرطة المقطع: لكل אחת d0(sta), d1(sta) */
 function strips(){
   const sec=S.sec, res=[]; if(!sec) return res;
   const m=sec.median/2, zs=S.axes[S.cur]._zones||[];
@@ -798,21 +805,21 @@ function strips(){
   return res;
 }
 /* ============================================================
-   شبكة: تحديد التقاطعات ومناطق التأثير
-   توسيع الفاصل إلى 2.5 م باتجاه التقاطع.
-   إزاحة لكل اتجاه w = (2.5 − جزيرة وسطى قائمة)/2.
-   بين-مدني: L = الحد الأدنى بين إزاحة بزاوية (0.5° لسرعة ≥90، 1° لسرعة ≤80)
-               وبين منحنى معاكس بنصف قطر الحد الأدنى بدون ميل عرضي.
+   شبكة: تحديد تقاطعات ومناطق تأثير
+   توسيع الفاصل ל־2.5 م לקראת التقاطع.
+   إزاحة لكل جانب w = (2.5 − جزيرة وسطى قائمة)/2.
+   بين-مدني: L = الحد الأدنى بين إزاحة بزاوية (0.5° بسرعة ≥90, 1° بسرعة ≤80)
+               وبين منحنى معاكس بنصف قطر הالحد الأدنى بدون ميل عرضي.
    حضري:     منحنى معاكس بنصف قطر وصلة (الحد الأدنى 90 م).
-   منحنى معاكس (قوسان R): L = √(4Rw − w²)
+   منحنى معاكس (اثنتين أقواس R): L = √(4Rw − w²)
    ============================================================ */
 const MEDIAN_JCT = 2.5;
-/* إزاحة خط التوقف 810 من خط الدخول للتقاطع (م) */
+/* נסיגת خط التوقف 810 منخط الدخول للتقاطع (م) */
 const STOP_SET = {urban:1.0, inter:1.5};
 /* نصف قطر أدنى لمسار انعطاف يساراً داخل التقاطع (م) */
 const LEFT_R_MIN = ()=>S.env==='urban'?12:15;
-/* تحديد عرض الجزيرة الوسطى بالتقاطع، لكل اتجاه من المحور:
-   1.25 + (n − 0.5)·wL  عند وجود n مسارب الانعطاف يساراً (n=1 → نصف مسرب، n=2 → مسرب ونصف) */
+/* نصف عرض הالجزيرة الوسطى بالتقاطع, لكل جانب من المحور:
+   1.25 + (n − 0.5)·wL  عند وجود n مسارب الانعطاف يساراً (n=1 → نصف مسرب, n=2 → مسرب ونصف) */
 function jctHalf(nL,wL){ return MEDIAN_JCT/2 + (nL>0 ? (nL-0.5)*wL : 0); }
 function zoneDesign(a,H){
   const m=a.sec?a.sec.median:0, w=H-m/2;
@@ -838,7 +845,7 @@ function armCfg(k,sj,side){
   const key=armKey(k,sj,side);
   if(!S.armCfg[key]){
     const a=S.axes[k], w=laneOf(a), sec=a.sec||{left:[],right:[]};
-    const appr = side==='before' ? sec.right : sec.left;
+    const appr = side==='before' ? sec.right : sec.left;   // حركة בימין الطريق
     const dep  = side==='before' ? sec.left  : sec.right;
     S.armCfg[key]={thru:Math.max(1,nLanes(appr)), out:Math.max(1,nLanes(dep)), left:1, right:0,
       wT:w, wL:w, wR:w, taperL:30, storeL:40, taperR:30, storeR:40, nQ:3, userL:false, userR:false, RL:0};
@@ -847,8 +854,8 @@ function armCfg(k,sj,side){
 }
 /* ============================================================
    أنصاف أقطار الانعطاف يميناً من المسرب (بدون جزيرة حركة / انعطاف حرة)
-   حضري:     دليل تصميم التقاطعات (RTA دبي)، جدول 5.10 – نصف قطر حجر الحافة وفق الشوارع المتقاطعة
-   بين-مدني: دليل GCC لتصميم الطرق السريعة، جدول 6.1 – حافلة، منحنى دائري منفرد
+   حضري:     حركة في التقاطعات 2020, جدول 5.10 – نصف قطر حجر الحافة وفق الشوارع הנפגשים
+   بين-مدني: إرشادات بين-مدنية مجلد 2, جدول 6.1 – حافلة, منحنى دائري منفرد
    ============================================================ */
 const TURN_U = {
   res:{ll:[5,7],lc:[5,7],cc:[7,10],ca:[7,10],aa:[15,null]},
@@ -858,18 +865,19 @@ const TURN_U_PAIR = {ll:'محلي – محلي',lc:'محلي – مجمّع',cc:
 const TURN_I_BUS = {75:20, 90:15, 105:13};
 function jctKey(J){ return `${Math.round(J.p.x)},${Math.round(J.p.y)}`; }
 function jctCfg(J){ const k=jctKey(J); const c=S.jctCfg[k] || (S.jctCfg[k]={pair:'lc',area:'res'});
-  if(!c.control) c.control='priority';
+  if(!c.control) c.control='priority';        // 'priority' – طريق עיקרית ומשנית | 'signal' – مُشار/وقوف في كل الأذرع
   return c; }
 function tableRadius(J,defl){
   if(S.env==='urban'){
     const c=jctCfg(J), r=TURN_U[c.area][c.pair];
-    return {R:r[0], txt:r[1]?`${r[0]}–${r[1]}`:`${r[0]} فأعلى`, src:'دليل تصميم التقاطعات (RTA)، جدول 5.10'};
+    return {R:r[0], txt:r[1]?`${r[0]}–${r[1]}`:`${r[0]} ומעלה`, src:'الحركة في التقاطعات، جدول 5.10'};
   }
   const a=[75,90,105].reduce((b,v)=>Math.abs(v-defl)<Math.abs(b-defl)?v:b,90);
-  return {R:TURN_I_BUS[a], txt:`${TURN_I_BUS[a]} (انحراف ${a}°)`, src:'دليل GCC لتصميم الطرق السريعة، جدول 6.1'};
+  return {R:TURN_I_BUS[a], txt:`${TURN_I_BUS[a]} (انحراف ${a}°)`, src:'بين-مدني، المجلد 2، جدول 6.1'};
 }
 const rotL=v=>({x:-v.y,y:v.x}), rotR=v=>({x:v.y,y:-v.x});
 function lineX(p,u,q,v){ const d=cross(u,v); if(Math.abs(d)<1e-9) return null; const t=cross(sub(q,p),v)/d; return add(p,mul(u,t)); }
+/* أذرع التقاطع: لكل ذراع – المحور, جانب الحركة, عرض حافة دخول/خروج في التقاطع */
 function junctionArms(n){
   const J=S.junctions[n], arms=[];
   [J.major,J.minor].forEach(k=>{
@@ -880,6 +888,7 @@ function junctionArms(n){
       const c=A.cfg, dirS=A.side==='before'?-1:1;
       const dd=Math.min(zE(z,A.side)||12,12), s2=Math.max(0,Math.min(R_.total,z.sj+dirS*dd));
       const out=unit(sub(frameAt(els,s2).p,J.p));
+      // كيلومتراج على طول הזרועה, من التقاطع العابر
       const far=dirS<0?0:R_.total, gap=A.side==='before'?z.gapB:z.gapA;
       const reach=Math.min(Math.abs(far-z.sj), Math.max(zE(z,A.side)||0,80), isFinite(gap)?gap/2:Infinity);
       const N=Math.max(40,Math.ceil(reach/0.5)), stas=[];
@@ -892,7 +901,7 @@ function junctionArms(n){
   arms.sort((p,q)=>p.ang-q.ang);
   return arms;
 }
-function polyX(A,B){
+function polyX(A,B){   // قطع أول (הקרוב للتقاطع) بين اثنتين פוליליינים مع كيلومتراج
   let best=null;
   for(let a=0;a<A.length-1;a++) for(let b=0;b<B.length-1;b++){
     const p=A[a].p, r=sub(A[a+1].p,p), q=B[b].p, u=sub(B[b+1].p,q), den=cross(r,u);
@@ -906,11 +915,13 @@ function polyX(A,B){
 }
 const edgePoly=(arm,d)=>arm.stas.map(st=>{ const F=frameAt(arm.els,st); return {s:st,p:add(F.p,mul(F.n,d))}; });
 const edgePt=(arm,st,d)=>{ const F=frameAt(arm.els,st); return add(F.p,mul(F.n,d)); };
+/* الكيلومتراج היחסי שבו حافة لـ ذراع (אופסט d) פוגשת  خط الامتداد لـ حافة الطريق العابر */
 function crossData(J,arms,a){
   const B=arms.filter(b=>b.k!==a.k); if(!B.length) return null;
   const bb=B[0], F=frameAt(bb.els,bb.sj), t={x:F.n.y,y:-F.n.x};
   let Ep=0,Em=0;
   B.forEach(b=>{ const c=b.cfg||{}; const sgA=b.sgA;
+    // جانب + للمحور B: الدخول إذا sgA>0, خروج آخر
     Ep=Math.max(Ep, sgA>0?b.Ein:b.Eout); Em=Math.max(Em, sgA>0?b.Eout:b.Ein); });
   return {C:F.p,n:F.n,t,Ep,Em};
 }
@@ -925,16 +936,16 @@ function crossU(J,arms,a,off){
   return best===Infinity?0:best;
 }
 
-/* ركن: مركز القوس يُنشأ على مسافة R من الحافتين، أي في تقاطع الإزاحات E+R لذراعَين */
-const FREE_W={urban:4.5, inter:5.5};
-const ISLAND_MIN=5;
+/* ركن: مركز القوس يوجد במרחק R من اثنتين الحواف, أي بقطع האופסטים E+R لـ اثنتين الأذرع */
+const FREE_W={urban:4.5, inter:5.5};          // عرض طريق الانعطاف عند نقطة האמצע
+const ISLAND_MIN=5;                             // مساحة جزيرة دنيا – قيمة مؤقت (م²)
 function junctionCorners(n,armsIn){
   const J=S.junctions[n], arms=armsIn||junctionArms(n), res=[];
   if(arms.length<2) return res;
   arms.forEach((ai,idx)=>{
     const aj=arms[(idx+1)%arms.length];
     let alpha=aj.ang-ai.ang; if(alpha<=0) alpha+=2*Math.PI;
-    const dIn = ai.sgA*ai.Ein, dOut = -aj.sgA*aj.Eout;
+    const dIn = ai.sgA*ai.Ein, dOut = -aj.sgA*aj.Eout;              // حافة دخول i, حافة خروج j
     const P1=edgePt(ai,ai.sj,dIn), P2=edgePt(aj,aj.sj,dOut);
     const key=`${jctKey(J)}|${ai.id}>${aj.id}`;
     const defl=180-alpha*180/Math.PI;
@@ -961,13 +972,15 @@ function junctionCorners(n,armsIn){
     const pts=[], N=Math.max(10,Math.ceil(Math.abs(sw)*R/0.5));
     for(let q=0;q<=N;q++){ const t=a0+sw*q/N; pts.push({x:Cc.x+R*Math.cos(t),y:Cc.y+R*Math.sin(t)}); }
     const warn=[];
-    if(defl<70||defl>110) warn.push(`انحراف ${defl.toFixed(0)}° – خارج النطاق 70°–110°`);
+    if(defl<70||defl>110) warn.push(`انحراف ${defl.toFixed(0)}° – خارج לתחום 70°–110°`);
     const uA=Math.abs(cx.sA-ai.sj), uB=Math.abs(cx.sB-aj.sj);
     if(uA>ai.reach||uB>aj.reach) warn.push('نقطة التماس خارج منطقة التأثير');
+    // קטעי الحافة من التقاطع حتى نقاط نقطة التماس (לסגירת سطح التقاطع)
     const runA=ai.stas.filter(v=>Math.abs(v-ai.sj)<uA).map(v=>edgePt(ai,v,dIn));
     const runB=aj.stas.filter(v=>Math.abs(v-aj.sj)<uB).map(v=>edgePt(aj,v,dOutX)).reverse();
     let island=null;
     if(free){
+      // جزيرة حركة: بين القوس R + عرض طريق الانعطاف (مركز القوس في جانب הקרקע) وبين حواف المسارب المستقيمة (+0.5 م)
       const Wt=FREE_W[S.env], Rin=R+Wt, c=ai.cfg;
       const dA=ai.sgA*(ai.Ein-c.right*c.wR+0.5), dB=-aj.sgA*(aj.Eout+0.5);
       const lineA=[edgePt(ai,ai.sj,dA),ai.out], lineB=[edgePt(aj,aj.sj,dB),aj.out];
@@ -983,34 +996,36 @@ function junctionCorners(n,armsIn){
         poly.push(Pb);
         let A=0; poly.forEach((p,q)=>{ const r=poly[(q+1)%poly.length]; A+=p.x*r.y-r.x*p.y; }); A=Math.abs(A)/2;
         island={poly,area:A,Wt,Rin};
-        if(A<ISLAND_MIN) warn.push(`مساحة الجزيرة ${A.toFixed(1)} م² أصغر من ${ISLAND_MIN} (قيمة مؤقتة)`);
+        if(A<ISLAND_MIN) warn.push(`مساحة الجزيرة ${A.toFixed(1)} م² أصغر من${ISLAND_MIN} (قيمة مؤقت)`);
         if(!c.right) warn.push('لا يوجد مسرب يمين حصري في الذراع الداخلة');
-      } else warn.push(`لا يوجد مكان للجزيرة: القوس R${R}+${Wt} م لا يقطع حواف المسارب المستقيمة`);
+      } else warn.push(`لا يوجد مكان لجزيرة: القوس R${R}+${Wt} م لا חותכת  حواف المسارب المستقيمة`);
     }
     res.push({...base,R,T1,T2,Cc,pts,tab,manual:!!(man.R>0||man.Rf>0),warn,sA:cx.sA,sB:cx.sB,uA,uB,runA,runB,free,island,a0,sw,dOutX});
   });
   return res;
 }
 
+/* שימוש بمسارب الدخول: כמה مسارب משרתים كل حركة, וחיצים لكل مسرب (מבפנים العابر) */
 function laneUse(c){
   const n=c.thru, arrows=[];
   for(let i=0;i<n;i++) arrows.push(c.noThru?[]:['S']);
   if(c.noThru){
+    // دخول بدون مستقيم: פנימיים يساراً, חיצוניים يميناً, مسرب منفرد משותף
     if(c.hasL&&c.hasR){ if(n===1) arrows[0]=['L','R']; else for(let i=0;i<n;i++) arrows[i]=[i<Math.ceil(n/2)?'L':'R']; }
     else if(c.hasL) arrows.forEach(a=>a.push('L'));
     else if(c.hasR) arrows.forEach(a=>a.push('R'));
   } else if(n){
-    if(c.hasL&&!c.left) arrows[0].unshift('L');
-    if(c.hasR&&!c.right) arrows[n-1].push('R');
+    if(c.hasL&&!c.left) arrows[0].unshift('L');          // مستقيم+يساراً في المسرب الداخلي
+    if(c.hasR&&!c.right) arrows[n-1].push('R');           // مستقيم+يميناً في المسرب الخارجي
   }
   const cnt=k=>arrows.filter(a=>a.includes(k)).length;
   return {arrows, thru:cnt('S'), left:(c.left||0)+cnt('L'), right:(c.right||0)+cnt('R')};
 }
 
 /* ============================================================
-   الانتقالات والمسارب الخاصة وفق الإرشادات (RTA / أبوظبي / GCC)
-   بين-مدني – دليل GCC: جدول 7.1 (تباطؤ يساراً)، 7.3 (تخزين)، 6.2 (تباطؤ يميناً)، 6.5 (تسارع)
-   حضري – دليل تصميم التقاطعات (RTA): جداول 5.4–5.6 (انتقالات)، تخزين أدنى 30 م، تسارع ≥ 50 م
+   انتقالات ومسارب מיוחדים وفق الإرشادات (مصدر: המחשבון באתר)
+   بين-مدني – مجلد 2: جدول 7.1 (تباطؤ يساراً), 7.3 (تخزين), 6.2 (تباطؤ يميناً), 6.5 (تسارع)
+   حضري – حركة في التقاطعات 2020: جداول 5.4–5.6 (انتقالات), تخزين أدنى 30 م, تسارع ≥ 50 م
    ============================================================ */
 const IU_T71={50:35,60:50,70:70,80:95,90:115,100:140};
 const IU_T73={2:20,3:25,4:31,5:37,6:43,7:56,8:62,9:68,10:74};
@@ -1022,20 +1037,20 @@ function guideTurn(V,W,kind,opt){
   opt=opt||{};
   if(S.env==='urban'){
     const f=TZ_FLARE[near(V,[30,50,70])];
-    return {taper:+(W*f.sp).toFixed(1), store:Math.max(30,f.u), src:`دليل تصميم التقاطعات (RTA) – جدول 5.4 · انتقال 1:${f.sp} · تخزين 30 م`};
+    return {taper:+(W*f.sp).toFixed(1), store:Math.max(30,f.u), src:`الحركة في التقاطعات جدول 5.4 · انتقال 1:${f.sp} · تخزين 30 م`};
   }
   const v=Math.max(50,Math.min(100,near(V,[50,60,70,80,90,100]))), r=v<=70?10:15;
   if(kind==='L'){
     const n=opt.n||3;
-    return {taper:+(W*r).toFixed(1), store:IU_T71[v]+IU_T73[n], src:`دليل GCC – جداول 7.1+7.3 · انتقال 1:${r} · تباطؤ ${IU_T71[v]} + تخزين ${IU_T73[n]} (${n} مركبات)`};
+    return {taper:+(W*r).toFixed(1), store:IU_T71[v]+IU_T73[n], src:`مجلد 2 جداول 7.1+7.3 · انتقال 1:${r} · تباطؤ ${IU_T71[v]} + تخزين ${IU_T73[n]} (${n} مركبات)`};
   }
   const d=IU_DEC[v][opt.free?1:0];
-  return {taper:+(W*r).toFixed(1), store:d, src:`دليل GCC – جدول 6.2 · انتقال 1:${r} · تباطؤ ${opt.free?'حتى 25 كم/س':'حتى التوقف الكامل'} ${d}`};
+  return {taper:+(W*r).toFixed(1), store:d, src:`مجلد 2 جدول 6.2 · انتقال 1:${r} · تباطؤ ${opt.free?'حتى 25 كم/س':'حتى توقف'} ${d}`};
 }
 function guideMerge(V,W){
   if(S.env==='urban'){ const f=TZ_FLARE[near(V,[30,50,70])]; return {Lp:50,Lt:+(W*f.dR).toFixed(1),src:`تسارع 50 م · إغلاق 1:${f.dR}`}; }
   const v=near(Math.max(70,Math.min(100,V)),[70,80,90,100]);
-  return {Lp:v>=80?Math.max(140,IU_ACC[v]):IU_ACC[v], Lt:+(W*25).toFixed(1), src:`دليل GCC – جدول 6.5 · تسارع ${IU_ACC[v]} · إغلاق 1:25 (مدى 1:20–1:35)`};
+  return {Lp:v>=80?Math.max(140,IU_ACC[v]):IU_ACC[v], Lt:+(W*25).toFixed(1), src:`مجلد 2 جدول 6.5 · تسارع ${IU_ACC[v]} · إغلاق 1:25 (مدى 1:20–1:35)`};
 }
 function guideFreeR(defl){
   if(S.env==='urban') return {R:30,tmp:true};
@@ -1043,11 +1058,15 @@ function guideFreeR(defl){
 }
 
 const zE=(z,side)=>side==='before'?(z.Eb??z.E):(z.Ea??z.E);
+/* تخزين دنيا وفق אותן جداول שמהן נגזרו قيم التصميم.
+   التخزين انتقال هي درجة الحرية היחידה שמותר لأداة לקצר בה لكي להיסגר للمقطع النموذجي;
+   قيم الانحراف لـ وصلة الجزيرة الوسطى ليست قابلة للتغيير לצורך مطابقة. */
 function storeFloor(a,c){
   if(S.env==='urban') return 30;
   const v=Math.max(50,Math.min(100,near(a.V,[50,60,70,80,90,100])));
   return IU_T71[v] + IU_T73[2];
 }
+/* توزيع طول الاحتفاظ H بين تخزين لـانتقال: أولاً يتم تقصير تخزين حتى الأدنى, وفقط אז  الانتقال */
 function splitHold(H,st0,tp0,floor){
   if(H>=st0+tp0-1e-9) return {store:st0, taper:tp0};
   if(H>=floor+tp0)    return {store:+(H-tp0).toFixed(2), taper:tp0};
@@ -1055,12 +1074,18 @@ function splitHold(H,st0,tp0,floor){
   const f=(st0+tp0)>0?H/(st0+tp0):0;
   return {store:+(st0*f).toFixed(2), taper:+(tp0*f).toFixed(2)};
 }
+/* قيم التخزين/انتقال فعلياً بعد الإغلاق (إذا קוצרו) */
 const stoL=c=>c._eStoreL!==undefined?c._eStoreL:c.storeL;
 const tapL=c=>c._eTaperL!==undefined?c._eTaperL:c.taperL;
 const stoR=c=>c._eStoreR!==undefined?c._eStoreR:c.storeR;
 const tapR=c=>c._eTaperR!==undefined?c._eTaperR:c.taperR;
 
+/* فتح مسرب انعطاف: كامل حتى طول التخزين, انتقال ליניארי אחריו */
 function turnF(u,store,tap){ if(u<=store) return 1; if(u>=store+tap) return 0; return 1-(u-store)/tap; }
+/* تغيّر العرض w على طول L. t נמדד من الطرف الخارجي (0) إلى التقاطع (L).
+   'angle'  – انتقال مستقيم بزاوية الإزاحة.
+   'radius' – منحنى معاكس; R مشتق من-L ومنw (L²=4Rw−w²) بحيث المعبر תמיד ينغلق
+              בדיוק إلى المقطع النموذجي, ويمكن לדווח מהו R שהתקבל فعلياً. */
 function taperAt(w,L,method,t){
   if(!(w>0)) return 0;
   if(!(L>0)) return t>0?w:0;
@@ -1070,6 +1095,7 @@ function taperAt(w,L,method,t){
   return t<=L/2 ? h(t) : w-h(L-t);
 }
 function taper(z,t){ return taperAt(z.w,z.L,z.method,t); }
+/* سلسلة الإغلاق لـ الجانب הרלוונטי: احتفاظ (حتى نهاية انتقال השמאליות) ואז معبر الجزيرة الوسطى */
 const clOf=(z,st)=>(z.cl&&z.cl[st<z.sj?'before':'after'])||null;
 function widenAt(zones,st){
   let v=0;
@@ -1092,6 +1118,7 @@ function zoneBreaks(zones){
     if(z.L>0){ b.push(z.sj-z.L, z.sj+z.L); } });
   return b;
 }
+/* توزيع قائمة كيلومتراج לקטעים خارج لمناطق التأثير */
 function outsidePieces(zones,stas){
   if(!zones.length) return [stas];
   const out=[]; let cur=[];
@@ -1115,11 +1142,12 @@ function computeNetwork(){
         if(j===k||!h.els.length) return;
         const st=projectSta(h.els,P);
         if(len(sub(frameAt(h.els,st).p,P))>tol) return;
-        if(st<0.5||st>h.total-0.5) return;
+        if(st<0.5||st>h.total-0.5) return;      // طرف مقابل طرف = המשכיות, لا تقاطع
         S.junctions.push({type:'T',major:j,sMaj:st,minor:k,sMin:se,p:P});
       });
     });
   });
+  // تقاطع في المنتصف الثاني محاور (تقاطع X)
   const poly=g=>stationList(g.els).map(v=>({s:v,p:frameAt(g.els,v).p}));
   const PL=G.map(g=>g.els.length?poly(g):null);
   for(let i=0;i<G.length;i++) for(let j=i+1;j<G.length;j++){
@@ -1131,7 +1159,7 @@ function computeNetwork(){
       if(t<0||t>1||v<0||v>1) continue;
       const sA=A[a].s+t*(A[a+1].s-A[a].s), sB=B[b].s+v*(B[b+1].s-B[b].s);
       const nearEnd=(x,T)=>x<0.5||x>T-0.5;
-      if(nearEnd(sA,G[i].total)||nearEnd(sB,G[j].total)) continue;
+      if(nearEnd(sA,G[i].total)||nearEnd(sB,G[j].total)) continue;   // כבר טופל كتقاطع T
       if(S.junctions.some(J=>J.type==='X'&&J.major===i&&J.minor===j&&Math.abs(J.sMaj-sA)<1)) continue;
       S.junctions.push({type:'X',major:i,sMaj:sA,minor:j,sMin:sB,p:add(p,mul(r,t))});
     }
@@ -1153,6 +1181,7 @@ function computeNetwork(){
     const wL=Math.max(...arms.map(x=>x.cfg.left>0?x.cfg.wL:0),0);
     const H=jctHalf(nL,wL);
     const z=zoneDesign(a,H)||{w:0,L:0,method:'angle',ang:0,none:true};
+    // انتقال إضافة/הפחתת مسارب سير مقابل المقطع النموذجي (1:r وفق البيئة)
     const rTap = S.env==='urban' ? TZ_FLARE[near(a.V,[30,50,70])].sp
                : (near(Math.max(50,Math.min(100,a.V)),[50,60,70,80,90,100])<=70?10:15);
     arms.forEach(x=>{ const c=x.cfg;
@@ -1160,6 +1189,7 @@ function computeNetwork(){
       c.taperT=+(Math.abs(c.thru*c.wT-(c._bIn ||c.thru*c.wT))*rTap).toFixed(1);
       c.taperO=+(Math.abs(c.out *c.wT-(c._bOut||c.out *c.wT))*rTap).toFixed(1);
     });
+    // تقاطع סמוך على نفسه محور: كل تقاطع מקבל حتى نصف מהמרחק ביניהם
     const others=[]; S.junctions.forEach((Q,q)=>{ if(q===jn) return;
       if(Q.major===k) others.push(Q.sMaj); if(Q.minor===k) others.push(Q.sMin); });
     const prev=Math.max(-Infinity,...others.filter(v=>v<sj-0.5)), next=Math.min(Infinity,...others.filter(v=>v>sj+0.5));
@@ -1167,9 +1197,9 @@ function computeNetwork(){
     const jctGap =sd=> sd==='before'? (isFinite(prev)?(sj-prev)/2:Infinity) : (isFinite(next)?(next-sj)/2:Infinity);
     const availOf=sd=> Math.min(endGap(sd), jctGap(sd));
     /* ------------------------------------------------------------------
-       سلسلة الإغلاق لكل اتجاه: تقاطع → تخزين+انتقال اليسار → معبر الجزيرة الوسطى → المقطع النموذجي
-       قيم الانحراف (زاوية / نصف قطر منحنى معاكس) غير قابلة للتغيير لكي "تطابق";
-       المطابقة تُجرى فقط بدرجة الحرية للأطوال – التخزين والانتقالات.
+       سلسلة الإغلاق لكل جانب:  تقاطع → تخزين+انتقال اليسار → معبر الجزيرة الوسطى → المقطع النموذجي
+       قيم الانحراف (زاوية / نصف قطر منحنى معاكس) ليست قابلة للتغيير لكي "להתאים";
+       المطابقة נעשית فقط بدرجة الحرية لـ האורכים – التخزين والانتقالات.
        ------------------------------------------------------------------ */
     const cl={};
     arms.forEach(x=>{ const c=x.cfg, sd=x.side, avail=availOf(sd);
@@ -1181,9 +1211,11 @@ function computeNetwork(){
       const o={side:sd, holdReq, holdMin, L, need, avail, hold:holdReq, Lm:L, cut:0, short:0, status:'ok',
                storeL:c.storeL, taperL:c.taperL, why:[]};
       if(need>avail+1e-6){
-        if(avail>=holdMin+L-1e-6){ o.hold=avail-L; o.Lm=L; }
-        else if(avail>=holdMin){ o.hold=holdMin; o.Lm=avail-holdMin; }
-        else { const f=(holdMin+L)>0?avail/(holdMin+L):0;
+        // הרציפות سابقة: أولاً מבטיחים طول كامل لمعبر الجزيرة الوسطى (قيم الانحراف ليست משתנים),
+        // והשארית لاحتفاظ. مسرب الانعطاف מתכווץ יחד איתה لكي لا יישאר תלוי באוויר.
+        if(avail>=holdMin+L-1e-6){ o.hold=avail-L; o.Lm=L; }                 // يتم تقصير تخزين فقط
+        else if(avail>=holdMin){ o.hold=holdMin; o.Lm=avail-holdMin; }        // احتفاظ بأدنى, المعبر يُفرض
+        else { const f=(holdMin+L)>0?avail/(holdMin+L):0;                     // لا يوجد די طول לשניהם
                o.hold=Math.max(0,holdMin*f); o.Lm=Math.max(0,avail-o.hold); }
         o.cut=+(holdReq-o.hold).toFixed(1);
         o.short=+(need-avail).toFixed(1);
@@ -1199,6 +1231,7 @@ function computeNetwork(){
       }
       o.cause = jctGap(sd)<endGap(sd) ? 'التقاطع المجاور' : 'طرف المحور';
       o.kind  = 'قيد الطول – مطابقة للوضع القائم';
+      // דרישת العرض الخارجي (يميناً / إضافة مسرب) – تنغلق في الانتقال משלה
       o.out=Math.max(c.right?c.storeR+c.taperR:0, c.taperT||0, c.taperO||0);
       if(o.out>avail+1e-6){
         o.outShort=+(o.out-avail).toFixed(1);
@@ -1209,10 +1242,10 @@ function computeNetwork(){
       }
       if(o.status!=='ok'||o.outShort){
         const why=[];
-        if(c.left>1) why.push(`التنازل عن مسرب اليسار الثاني: الجزيرة الوسطى بالتقاطع تنخفض من ${(2*H).toFixed(2)} إلى ${(2*jctHalf(1,c.wL)).toFixed(2)} م، وكذلك التخزين يُقتَر`);
-        if(S.env!=='urban'&&c.nQ>2&&IU_T73[c.nQ-1]) why.push(`تخزين لـ-${c.nQ-1} مركبات بدلاً من ${c.nQ}: ${(IU_T73[c.nQ]-IU_T73[c.nQ-1])} م أقل (دليل GCC – جدول 7.3)`);
-        if(S.env!=='urban'&&a.V>60) why.push(`سرعة التصميم ${a.V} كم/س تحدد طول التباطؤ وزاوية الإزاحة المسموح بها; الفحص بـ${a.V-10} كم/س يقتَر كليهما`);
-        if(o.short) why.push(`إبعاد ${o.cause} بـ${o.short.toFixed(0)} م يُغلق العجز بدون تجاوز الإرشادات`);
+        if(c.left>1) why.push(`ויתור على مسرب يساراً الثاني: הالجزيرة الوسطى بالتقاطع יורדת من${(2*H).toFixed(2)} لـ${(2*jctHalf(1,c.wL)).toFixed(2)} م, وأيضاً التخزين מתקצרת`);
+        if(S.env!=='urban'&&c.nQ>2&&IU_T73[c.nQ-1]) why.push(`تخزين لـ-${c.nQ-1} مركبات بدلاً ${c.nQ}: ${(IU_T73[c.nQ]-IU_T73[c.nQ-1])} م פחות (مجلد 2, جدول 7.3)`);
+        if(S.env!=='urban'&&a.V>60) why.push(`سرعة التصميم ${a.V} كم/س קובעת  طول التباطؤ ואת زاوية الإزاحة المسموح بها; בדיקה بـ${a.V-10} كم/س תקצר  שניהם`);
+        if(o.short) why.push(`הרחקת ${o.cause} بـ${o.short.toFixed(0)} م סוגרת  החוסר بدون تجاوز عن الإرشادات`);
         o.why=why;
       }
       cl[sd]=o;
@@ -1232,6 +1265,7 @@ function computeNetwork(){
     });
   };
   build();
+  // תנועות אפשריות في كل ذراع وفق الهندسة; حركة التي لا قائمة מאופסת
   let changed=false;
   S.junctions.forEach((J,n)=>{
     const arms=junctionArms(n);
@@ -1250,14 +1284,15 @@ function computeNetwork(){
   S.junctions.forEach((J,n)=>{
     const arms=junctionArms(n); J.arms=arms;
     J.corners=junctionCorners(n,arms);
+    // قاعدة أ-ب: مسارب الخروج في الذراع ≥ عدد المسارب שנכנסים אליה من كل حركة أخرى
     J.kind = arms.length===4?'X':arms.length===3?'T':arms.length+'';
     J.control = jctCfg(J).control;
     arms.forEach(aj=>{
       const cj=aj.cfg, need=[];
       arms.forEach(ai=>{ if(ai===aj) return; const L=laneUse(ai.cfg);
-        if(ai.cfg.mv.thru===aj.id) need.push([L.thru,`مستقيم من ${ai.name}`]);
-        if(ai.cfg.mv.left.includes(aj.id)) need.push([L.left,`يساراً من ${ai.name}`]);
-        if(ai.cfg.mv.right.includes(aj.id)) need.push([L.right,`يميناً من ${ai.name}`]);
+        if(ai.cfg.mv.thru===aj.id) need.push([L.thru,`مستقيم من${ai.name}`]);
+        if(ai.cfg.mv.left.includes(aj.id)) need.push([L.left,`يساراً من${ai.name}`]);
+        if(ai.cfg.mv.right.includes(aj.id)) need.push([L.right,`يميناً من${ai.name}`]);
       });
       need.forEach(([v,why])=>{
         if(v>cj.out){ S.netWarn.push(`ت${n+1} · ${aj.name}: ${cj.out} مسارب خروج < ${v} (${why}) – قاعدة أ-ب`); S.netFix.push([cj,v]); }
@@ -1265,29 +1300,33 @@ function computeNetwork(){
       if(cj.noThru && cj.thru>0 && !cj.hasL && !cj.hasR) S.netWarn.push(`ت${n+1} · ${aj.name}: لا وجهة للانعطاف من هذه الذراع`);
       if(cj.left) (leftPaths(J)||[]).filter(pp=>pp.from===aj).forEach(pp=>{
         if(pp.R===null) S.netWarn.push(`ت${n+1} · ${aj.name}: لم يُعثر على مسار انعطاف يساراً`);
-        else if(pp.over) S.netWarn.push(`ت${n+1} · ${aj.name}: R=${cj.RL} المُدخل أكبر من المسافة بين رؤوس الجزر (حتى R${pp.Rfit}) – القوس يقصّ رأس الجزيرة`);
+        else if(pp.over) S.netWarn.push(`ت${n+1} · ${aj.name}: R=${cj.RL} שהוזן גדול מהמרווח بين رؤوس الجزر (حتى R${pp.Rfit}) – القوس يقصّ رأس الجزيرة`);
         else if(pp.R<LEFT_R_MIN()) S.netWarn.push(`ت${n+1} · ${aj.name}: نصف قطر مسار الانعطاف يساراً R${pp.R} أصغر من الحد الأدنى ${LEFT_R_MIN()} م – يجب توسيع فتحة الجزيرة الوسطى`);
       });
+      // --- דוח الإغلاق للمقطع النموذجي (רציפות אורכית) ---
       { const z=S.axes[aj.k]._zones.find(q=>q.jn===n), o=z&&z.cl&&z.cl[aj.side], base=`ت${n+1} · ${aj.name}`;
         if(o&&o.status!=='ok'){
-          const chain=`مطلوب ${o.need.toFixed(0)} م (احتفاظ ${o.holdReq.toFixed(0)} + معبر الجزيرة الوسطى ${o.L.toFixed(0)})، موجودة ${o.avail.toFixed(0)} م حتى ${o.cause}`;
+          const chain=`مطلوب ${o.need.toFixed(0)} م (احتفاظ ${o.holdReq.toFixed(0)} + معبر الجزيرة الوسطى ${o.L.toFixed(0)}), קיימים ${o.avail.toFixed(0)} م حتى ${o.cause}`;
           if(o.status==='tight')
-            S.netWarn.push(`${base}: ${chain} – الاحتفاظ قُصِّر بـ${o.cut.toFixed(0)} م (تخزين ${o.storeL.toFixed(0)} · انتقال ${o.taperL.toFixed(0)})، داخل درجة الحرية لقيم التصميم. قيم الانحراف لم تتغير والتصميم يُغلق للمقطع النموذجي.`);
+            S.netWarn.push(`${base}: ${chain} – الاحتفاظ קוצרה بـ${o.cut.toFixed(0)} م (تخزين ${o.storeL.toFixed(0)} · انتقال ${o.taperL.toFixed(0)}), داخل درجة الحرية لـ قيم التصميم. قيم الانحراف لا שונו והתכנון ينغلق للمقطع النموذجي.`);
           else {
-            S.netWarn.push(`${base}: ${chain} – ناقص ${o.short.toFixed(0)} م. الخطوط أُغلقت للمقطع النموذجي داخل الطول الموجود، بتجاوز عن الإرشادات · تصنيف: ${o.kind}.`);
-            if(o.belowMin) S.netWarn.push(`${base}: تخزين ${o.storeL.toFixed(0)} + انتقال ${o.taperL.toFixed(0)} = ${o.hold.toFixed(0)} م بدلاً من ${o.holdReq.toFixed(0)} (أدنى ${o.holdMin.toFixed(0)}) – الطابور يُتوقع أن يفيض إلى مسرب السير.`);
-            if(o.forced)   S.netWarn.push(`${base}: معبر الجزيرة الوسطى يُفرض لـ${o.Lm.toFixed(0)} م بدلاً من ${o.L.toFixed(0)} – فعلياً ${z.method==='angle'?`إزاحة ${o.angAct}° بدلاً من ${z.ang}° المسموح بها`:`R=${o.Ract} بدلاً من ${z.R}`}.`);
+            S.netWarn.push(`${base}: ${chain} – חסרים ${o.short.toFixed(0)} م. הקווים נסגרו للمقطع النموذجي داخل الطول الموجود, بتجاوز عن الإرشادات · סיווג: ${o.kind}.`);
+            if(o.belowMin) S.netWarn.push(`${base}: تخزين ${o.storeL.toFixed(0)} + انتقال ${o.taperL.toFixed(0)} = ${o.hold.toFixed(0)} م بدلاً من ${o.holdReq.toFixed(0)} (أدنى ${o.holdMin.toFixed(0)}) – התור צפוי לחרוג إلى مسرب السير.`);
+            if(o.forced)   S.netWarn.push(`${base}: معبر الجزيرة الوسطى يُفرض لـ${o.Lm.toFixed(0)} م بدلاً من ${o.L.toFixed(0)} – فعلياً ${z.method==='angle'?`إزاحة ${o.angAct}° بدلاً من ${z.ang}° המותרות`:`R=${o.Ract} بدلاً من ${z.R}`}.`);
           }
-          (o.why||[]).forEach(t=>S.netWarn.push(`${base} · قيم تصميم (درجة حرية): ${t}`));
+          (o.why||[]).forEach(t=>S.netWarn.push(`${base} · قيم تصميم (درجة חופש): ${t}`));
         }
         if(o&&o.outShort)
-          S.netWarn.push(`${base}: مسرب الانعطاف يميناً / إضافة المسرب يتطلبان ${o.out.toFixed(0)} م والمتوفر ${o.avail.toFixed(0)} – ناقص ${o.outShort.toFixed(0)} م، الانتقال مقطوع (${o.cause}).`);
+          S.netWarn.push(`${base}: مسرب הانعطاف يميناً / إضافة المسرب דורשים ${o.out.toFixed(0)} م ويجب ${o.avail.toFixed(0)} – חסרים ${o.outShort.toFixed(0)} م, الانتقال נקטע (${o.cause}).`);
       }
     });
+    // انعطاف حرة: مسرب اليميناً נגמר عند نقطة نقطة التماس لـ القوس, اسم طريق الانعطاف
     (J.corners||[]).forEach(c=>{ if(!c.free) return;
       const z=S.axes[c.from.k]._zones.find(q=>q.jn===n); if(!z) return;
       z.freeR=z.freeR||{}; z.freeR[c.from.side]=c.uA;
     });
+    // --- (1) חרטום الجزيرة الوسطى: מטר واحد من خط الامتداد لـ حافة الطريق العابر ---
+    //     מחושב أول, כי أيضاً خطوط التوقف وأيضاً خطوط ההכוונה 809 נשענים עליו
     arms.forEach(a=>{
       const z=S.axes[a.k]._zones.find(q=>q.jn===n); if(!z) return;
       const D=(S.axes[a.k].sec?S.axes[a.k].sec.median/2:0)+widenAt(S.axes[a.k]._zones,z.sj);
@@ -1296,20 +1335,23 @@ function computeNetwork(){
       a.uNose=u+1/sn;
       z.nose=z.nose||{}; z.nose[a.side]=a.uNose;
     });
+    // --- (2) خط الدخول للتقاطع وخطوط التوقف 810 ---
+    //     خط الدخول = המשך الحافة הקרובה لـ الطريق العابر, בנפרד لكل קבוצת مسارب.
+    //     خط توقف = خط الدخول + נסיגה; מסומן فقط היכן שיש חובת מתן حق الأولوية.
     {
       const set=STOP_SET[S.env]||1.0;
       arms.forEach(a=>{
         const z=S.axes[a.k]._zones.find(q=>q.jn===n); if(!z) return;
         const c=a.cfg, g=a.sgA, D=armD(a,a.sj);
         const band=(o0,o1)=>Math.max(crossU(J,arms,a,g*o0), crossU(J,arms,a,g*o1));
-        const eT=band(D, EinAt(a,a.sj));
-        const eL=c.left? band(D-c.left*c.wL, D) : eT;
+        const eT=band(D, EinAt(a,a.sj));                       // مسارب مستقيمة (+ يميناً)
+        const eL=c.left? band(D-c.left*c.wL, D) : eT;          // مسارب انعطاف يساراً
         const yields = (J.control==='signal') || (a.k===J.minor);
         let uT=null, uL=null;
-        if(yields){
+        if(yields){                                            // خط توقف واحد لكل مسارب الدخول
           uT = Math.max(eT, c.left?Math.max(eL,a.uNose||0):0) + set;
           uL = c.left? uT : null;
-        } else if(c.left){
+        } else if(c.left){                                     // فقط مسارب اليساراً עוצרים (חוצים حركة נגדית)
           uL = Math.max(eL, a.uNose||0) + set;
         }
         a.yield=yields; a.uEntry=Math.min(eT,eL); a.uStop=uT; a.uStopL=uL;
@@ -1320,6 +1362,7 @@ function computeNetwork(){
   });
 }
 
+/* הטלת نقطة على المحور → كيلومتراج' */
 function projectSta(els,w){
   const total=els.reduce((m,e)=>Math.max(m,e.sta0+e.length),0);
   let best=0,bd=Infinity; const N=Math.max(200,Math.ceil(total));
@@ -1337,9 +1380,11 @@ function resize(){
   ctx.setTransform(d,0,0,d,0,0); draw();
 }
 
+// طبقة الخلفية – سيُربط هنا GovMap בהמשך
 function drawBackground(){
   const W=cv.width/dpr(), H=cv.height/dpr();
   ctx.fillStyle=PAL.bg(); ctx.fillRect(0,0,W,H);
+  // شبكة مساعدة
   if(S.bg&&S.bg.img&&S.bg.show!==false){
     const b=S.bg, v=S.view, d=dpr(), sc=v.scale;
     ctx.save();
@@ -1372,8 +1417,8 @@ function ring(p,r,fill,stroke,dash){
   ctx.setLineDash(dash||[]); ctx.lineWidth=2.5; ctx.strokeStyle=stroke; ctx.stroke(); ctx.setLineDash([]);
 }
 /* ============================================================
-   الترميز على سطح الطريق – دليل RTA / أبوظبي للعلامات على الطريق
-   جداول 7–11 (801–809)، 810 خط التوقف، 813 الأسهم
+   ترميز على פני الطريق – תקנות وإرشادات להצבת תמרורים 2024, فصل 8
+   جداول 7–11 (801–809), 810 خط توقف, 813 أسهم (תרשים 6, جدول 1)
    ============================================================ */
 function roadClass(a){
   if(S.env==='urban') return 'urban';
@@ -1381,11 +1426,11 @@ function roadClass(a){
   return divided?'dual':'single';
 }
 const MK={
-  w:{urban:0.10, single:0.15, dual:0.15},
-  d801:{seg:{urban:[1,2],single:[2,4],dual:[3,12]},
+  w:{urban:0.10, single:0.15, dual:0.15},                               // عرض الخط (م)
+  d801:{seg:{urban:[1,2],single:[2,4],dual:[3,12]},                     // لون:فاصلة (م) – جدول 9
         jct:{urban:[1,1],single:[2,2],dual:[3,3]}},
-  d808:{urban:[1,1,0.30], single:[3,1.5,0.30], dual:[3,1.5,0.30]},
-  stop:0.50,
+  d808:{urban:[1,1,0.30], single:[3,1.5,0.30], dual:[3,1.5,0.30]},      // מלבנים – جدول 11
+  stop:0.50,                                                            // خط التوقف 810
   arrowAt:{30:[5,15,25,35],50:[5,25,45,65],70:[5,25,45,65,85],90:[5,30,55,80,105],110:[5,35,65,95,125]}
 };
 function setMark(kind,a,sub){
@@ -1399,8 +1444,11 @@ function setMark(kind,a,sub){
   ctx.lineCap='butt';
   ctx.strokeStyle= kind==='807'?PAL.edge():PAL.line();
 }
+/* أسهم 813 – מידות وفق תרשים 6 (م), y باتجاه السير, x يميناً.
+   הבנייה: גזע واحد + ראש مستقيم ו/أو ענפים ברבע מעגל לצדדים, بحيث שחץ
+   משולב (مستقيم+يساراً، يساراً+يميناً وغيره) יוצא גוף واحد أ الثاني أسهم هذا على هذا. */
 const AR = {len:2.60, w:0.32, hl:0.95, hw:0.62, r:1.30, y0:1.00};
-function ribbon(pts,w){
+function ribbon(pts,w){                       // פוליליין → مضلَّع بعرض w
   const h=w/2, L=[], R=[];
   for(let i=0;i<pts.length;i++){
     const a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)];
@@ -1444,11 +1492,16 @@ function drawArmArrows(J,a){
   const Dat=st=>armD(a,st);
   const freeR=(J.corners||[]).some(q=>q.free&&q.from===a);
   const has=v=>v!==null&&v!==undefined&&isFinite(v);
+  // ---- 810 خطوط توقف ----
+  //  ذراع שחייבת מתן حق الأولوية: خط واحد بعرض كل مسارب الدخول.
+  //  ذراع مع حق الأولوية: خط קצר فقط بعرض مسارب الانعطاف يساراً.
+  /* اتجاه خط التوقف: موازٍ للمحور الذراع العابر הקרובה – أي موازٍ لحافة
+     الطريق العابر, שהיא أيضاً خط الدخول שממנו נמדדת הנסיגה. */
   const eDir=(()=>{ const d=crossData(J,J.arms||[],a); return d&&d.t?unit(d.t):null; })();
   const bar=(u,lo,hi,ext)=>{
     if(!has(u) || u+MK.stop>lim || u<0) return;
     const s1=a.sj+sgn*u, F1=frameAt(a.els,s1);
-    const fAway=mul({x:F1.n.y,y:-F1.n.x},sgn);
+    const fAway=mul({x:F1.n.y,y:-F1.n.x},sgn);          // تصغير من التقاطع
     const o0=lo(s1), o1=hi(s1);
     const A=add(F1.p,mul(F1.n,o0)), Bp=add(F1.p,mul(F1.n,o1));
     let P1=A, P2=Bp;
@@ -1456,9 +1509,10 @@ function drawArmArrows(J,a){
       const sL=(o1-o0)/dot(eDir,F1.n);
       const c1=[A, add(A,mul(eDir,sL))], c2=[add(Bp,mul(eDir,-sL)), Bp];
       const far=c=>Math.min(dot(sub(c[0],F1.p),fAway), dot(sub(c[1],F1.p),fAway));
-      const pick = far(c1)>=far(c2)?c1:c2;
+      const pick = far(c1)>=far(c2)?c1:c2;              // الخط שאינו נכנס إلى תוך التقاطع
       P1=pick[0]; P2=pick[1];
     }
+    // הארכת الطرف الخارجي حتى قوس حجر الحافة بركن, لكي שהקו יסגור  كل عرض الدخول
     if(ext){
       const cr=(J.corners||[]).find(q=>q.from===a&&!q.straight&&!q.failed&&q.pts&&q.pts.length>1);
       if(cr){
@@ -1480,6 +1534,7 @@ function drawArmArrows(J,a){
         oOut=st=>g*(EinAt(a,st)-(freeR?c.right*c.wR:0));
   if(has(a.uStop)) bar(a.uStop, has(a.uStopL)&&Math.abs(a.uStopL-a.uStop)<0.05?oIn:oMed, oOut, !freeR);
   if(has(a.uStopL) && (!has(a.uStop)||Math.abs(a.uStopL-a.uStop)>=0.05)) bar(a.uStopL, oIn, oMed);
+  // ---- 813 أسهم – מרחקים وفق جدول 1, من خط التوقف إلى חוד החץ ----
   const V=S.env==='urban'?near(ax.V,[30,50,70]):near(ax.V,[70,90,110]);
   const dists=MK.arrowAt[V]||MK.arrowAt[50];
   const L=laneUse(c);
@@ -1502,8 +1557,10 @@ function drawArmArrows(J,a){
   for(let i=0;i<(c.right||0);i++)
     put(baseT, st=>Pin(st)+thruW(a,st)+(i+0.5)*c.wR*turnF(armU(a,st),stoR(c),tapR(c)), ['R'], c.wR, stoR(c));
 }
+/* حافة משתנה على طول ذراع: جزيرة وسطى + مسارب (+ مسرب يميناً / مسرب دمج) */
 const armD=(a,st)=>(S.axes[a.k].sec?S.axes[a.k].sec.median/2:0)+widenAt(S.axes[a.k]._zones,st);
 const armU=(a,st)=>Math.abs(st-a.sj);
+/* أشرطة المقطع النموذجي في جانب الذراع: פנימיות (الكتف الأيسر), مسارب سير, וחיצוניות */
 function rowsOf(a,which){ const sec=S.axes[a.k].sec||{left:[],right:[]};
   return which==='in' ? (a.side==='before'?sec.right:sec.left) : (a.side==='before'?sec.left:sec.right); }
 function splitRows(a,which){ const R=rowsOf(a,which)||[], i=R.findIndex(r=>isLane(r.type));
@@ -1511,9 +1568,11 @@ function splitRows(a,which){ const R=rowsOf(a,which)||[], i=R.findIndex(r=>isLan
   let j=i; while(j<R.length&&isLane(R[j].type)) j++;
   return {pre:R.slice(0,i), lanes:R.slice(i,j), outer:R.slice(j)}; }
 const sumW=rs=>(rs||[]).reduce((s,r)=>s+(+r.w||0),0);
+/* الشريط הפנימית (الكتف الأيسر) تنغلق إلى תוך مسرب الانعطاف يساراً, في نفس انتقال */
 const armPre=(a,st)=>{ const c=a.cfg, w=sumW(splitRows(a,'in').pre);
   return c.left? w*(1-turnF(armU(a,st),stoL(c),tapL(c))) : w; };
 const armPreO=a=>sumW(splitRows(a,'out').pre);
+/* عرض חבילת مسارب السير: مقطع النموذجي إلى عدد المسارب في التقاطع, في الانتقال */
 const thruW=(a,st)=>{ const c=a.cfg, b=(c._bIn!==undefined?c._bIn:sumW(splitRows(a,'in').lanes))||c.thru*c.wT;
   return b+(c.thru*c.wT-b)*turnF(armU(a,st),0,Math.max(1e-6,c.taperT||0)); };
 const outW=(a,st)=>{ const c=a.cfg, b=(c._bOut!==undefined?c._bOut:sumW(splitRows(a,'out').lanes))||c.out*c.wT;
@@ -1546,6 +1605,7 @@ function drawJunctionEdges(J,arms,cs){
     }
     setMark('807',S.axes[a.k]); shape(st.map(v=>P(v,edge(a,v)))); ctx.stroke(); ctx.lineWidth=1;
   };
+  // مسارب دمج (انعطاف حرة) على طول ذراع الخروج
   arms.forEach(a=>{ if(!a.merge) return;
     const z=zoneOf(a), sign=-a.sgA, sg=a.sgA<0?-1:1, m=a.merge, c=a.cfg, L=Math.min(m.Lp+m.Lt, z?zE(z,a.side):0, a.reach||1e9);
     const st=[]; for(let q=0;q<=40;q++) st.push(a.sj+sg*L*q/40);
@@ -1555,6 +1615,7 @@ function drawJunctionEdges(J,arms,cs){
     ctx.closePath(); ctx.fillStyle=PAL.road(); ctx.fill();
     setMark('808',S.axes[a.k]); shape(st.map(v=>P(v,base(v)))); ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth=1;
   });
+  // أشرطة חיצוניות (رصيف, كتف, מדרון...) צמודות لحافة, ועוטפות  הפינות
   cs.forEach(c=>{
     const si=Math.sign(c.from.sgA)||1, sj=-Math.sign(c.to.sgA)||1;
     const uA=c.straight||c.failed?0:c.uA, uB=c.straight||c.failed?0:c.uB;
@@ -1569,6 +1630,7 @@ function drawJunctionEdges(J,arms,cs){
       cum+=r.w;
     });
   });
+  // جزر حركة
   cs.forEach(c=>{ if(!c.island) return;
     shape(c.island.poly); ctx.closePath(); ctx.fillStyle=PAL.median(); ctx.fill();
     ctx.strokeStyle=PAL.line(); ctx.lineWidth=1.5; ctx.stroke();
@@ -1578,9 +1640,11 @@ function findCorner(key){
   for(const J of S.junctions) for(const c of (J.corners||[])) if(c.key===key) return c;
   return null;
 }
-/* ---------- مسار عمل موجَّه ---------- */
+/* ---------- مسار عمل מודרך ---------- */
 S.wizAck=S.wizAck||{};
 const finished=a=>a&&a.pis.length>=2&&!a.drawing;
+/* مرحلة 2 (مقاطع) يُفتح عند وجود לפחות محور واحد مغلق; مرحلة 3 (تقاطعات) يُفتح عندما تكون كل
+   المحاور הסגורים اعتُمدت (מקובעים + يوجد لها مقطع). */
 function stageAvail(n){
   if(n<=1) return true;
   const done=S.axes.filter(finished);
@@ -1608,27 +1672,27 @@ function goStage(n){
   draw();
 }
 const WIZ=[
-  {t:'1 · المحور الرئيسي', d:'انقر على الخريطة لإضافة نقاط انكسار وفي النهاية "إنهاء المحور".',
+  {t:'1 · المحور الرئيسي', d:'انقر على الخريطة להוספת نقاط انكسار نهاية "إنهاء المحور".',
    done:()=>finished(S.axes[0]), go:()=>{ S.stage=1; S.cur=0; S.tool='draw'; S.drawing=true; S.locked=false; }},
-  {t:'2 · أقواس بالمحور الرئيسي', d:'انقر على كل نقطة داخلية وحدد R (في البين-مدني أيضاً Ls للكلوثويد). الملاحظات البرتقالية تفحص الفصل 5.',
+  {t:'2 · أقواس في المحور הראשי', d:'انقر على كل نقطة פנימית וקבעו R (في البين-مدني أيضاً Ls لكلوثويد). ההערות הכתומות בודקות  فصل 5.',
    done:()=>!!S.wizAck.r0, go:()=>{ S.stage=1; S.cur=0; S.locked=false; S.tool='edit'; S.drawing=false; }, ack:'r0'},
-  {t:'3 · محور إضافي', d:'ارسم محوراً يبدأ/ينتهي على المحور الرئيسي (تقاطع T) أو يعبره (تقاطع X). ترتبط النقطة بمحور موجود.',
+  {t:'3 · محور إضافي', d:'שרטטו محور שמתחיל/מסתיים على المحور הראשי (تقاطع T) أو חוצה نفسه (تقاطع X). ترتبط النقطة بمحور موجود.',
    done:()=>finished(S.axes[1]), go:()=>{ S.stage=1; if(S.axes.length<2) addAxis(); else { S.cur=1; S.tool='draw'; S.drawing=true; S.locked=false; } }},
-  {t:'4 · أقواس بالمحور الإضافي', d:'مثل المرحلة 2، للمحور الإضافي (وكل محور إضافي آخر).',
+  {t:'4 · أقواس في المحور הנוסף', d:'مثل في المرحلة 2, للمحور הנוסף (وكل محور إضافي אחר).',
    done:()=>!!S.wizAck.r1, go:()=>{ S.stage=1; S.cur=Math.min(1,S.axes.length-1); S.locked=false; S.tool='edit'; S.drawing=false; }, ack:'r1'},
-  {t:'5 · مقاطع نموذجية', d:'لكل محور: تثبيت واختيار نمط من أداة المقاطع (أو استيراد JSON)، واعتماد.',
+  {t:'5 · مقاطع טיפוסיים', d:'لكل محور: קיבוע ובחירת نمط من أداة المقاطع (أو استيراد JSON), واعتماد.',
    done:()=>S.axes.filter(finished).every(a=>a.locked&&a.sec), go:()=>goStage(2)},
-  {t:'6 · الشبكة والهندسة', d:'بناء الشبكة: توسيع جزيرة وسطى، مسارب بالأذرع، أنصاف أقطار وانعطافات حرة. انقر على تقاطع أو ركن للتحرير.',
+  {t:'6 · الشبكة والهندسة', d:'بناء الشبكة: توسيع جزيرة وسطى, مسارب بأذرع, רדיוסים ופניות חופשיות. انقر على تقاطع أو ركن לעריכה.',
    done:()=>stageAvail(3)&&S.junctions.length>0, go:()=>goStage(3)}
 ];
 function renderWizard(){
   const box=$('wiz'); if(!box) return;
   const cur=WIZ.findIndex(w=>!w.done());
-  if(cur<0){ box.innerHTML=`<div class="steps">${WIZ.map(()=>'<i class="done"></i>').join('')}</div><b>✓ الهندسة مبنية</b><p>يمكن تحديث كل مرحلة; الحفظ بـ"حفظ مشروع".</p>`; return; }
+  if(cur<0){ box.innerHTML=`<div class="steps">${WIZ.map(()=>'<i class="done"></i>').join('')}</div><b>✓ الهندسة مبنية</b><p>يمكن לעדכן كل مرحلة; השמירה بـ"حفظ مشروع".</p>`; return; }
   const w=WIZ[cur];
   const html=`<div class="steps">${WIZ.map((x,k)=>`<i class="${x.done()?'done':k===cur?'cur':''}"></i>`).join('')}</div>
     <b>${w.t}</b><p>${w.d}</p>
-    <div class="row"><button class="go" id="wizGo">${w.ack?'الانتقال للمرحلة':'ابدأ'}</button>${w.ack?'<button id="wizAck">انتهيت ✓</button>':''}</div>`;
+    <div class="row"><button class="go" id="wizGo">${w.ack?'לעבור للمرحلة':'התחלה'}</button>${w.ack?'<button id="wizAck">סיימתי ✓</button>':''}</div>`;
   if(box._h!==html){ box._h=html; box.innerHTML=html;
     $('wizGo').onclick=()=>{ w.go(); draw(); };
     if(w.ack) $('wizAck').onclick=()=>{ S.wizAck[w.ack]=true; draw(); };
@@ -1648,6 +1712,7 @@ function renderSecList(){
 function renderCornerPop(){
   const pop=$('cpop'), c=S.net&&S.selCorner?findCorner(S.selCorner):null;
   if(!c||!c.pts){ pop.hidden=true; return; }
+  // إبراز الركن
   ctx.beginPath(); c.pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});
   ctx.strokeStyle=css('--sel'); ctx.lineWidth=4; ctx.stroke();
   const m=w2s(c.pts[Math.floor(c.pts.length/2)]), W=cv.width/dpr(), H=cv.height/dpr();
@@ -1665,7 +1730,7 @@ function renderCornerPop(){
     ? `العرض في المنتصف ${FREE_W[S.env]} م${c.island?` · جزيرة ${c.island.area.toFixed(1)} م²`:''}${c.warn.length?' · '+c.warn.join(' · '):''}`
     : `جدول: ${c.tab.txt} م${c.warn.length?' · '+c.warn.join(' · '):''}`;
 }
-/* ---------- خريطة خلفية: صورة GovMap + ملف إحداثيات (pgw/jgw) أو معايرة بنقطتين ---------- */
+/* ---------- خريطة خلفية: תמונה منGovMap + ملف إحداثيات (pgw/jgw) أو معايرة بنقطتين ---------- */
 function bgPixel(w){ const b=S.bg, det=b.A*b.E-b.B*b.D; const x=w.x-b.C, y=w.y-b.F; return {c:(b.E*x-b.B*y)/det, r:(-b.D*x+b.A*y)/det}; }
 function bgWorld(c,r){ const b=S.bg; return {x:b.A*c+b.B*r+b.C, y:b.D*c+b.E*r+b.F}; }
 function loadMapFiles(files){
@@ -1693,55 +1758,58 @@ function renderMapBox(){
   box.hidden=!S.bg;
   if(!S.bg) return;
   $('mapOp').value=Math.round((S.bg.op??0.85)*100);
-  $('mapGeo').textContent= S.bg.geo?'متموضعة بإحداثيات (ITM)':'غير معايَرة';
+  $('mapGeo').textContent= S.bg.geo?'ממוקמת بإحداثيات (ITM)':'غير معايَرة';
   $('bCalib').textContent= S.calib ? (S.calib.pts.length?'انقر على النقطة الثانية على الخريطة':'انقر على نقطة معروفة على الخريطة') : 'معايرة بنقطتين';
   $('bCalib').classList.toggle('on',!!S.calib);
 }
 function calibClick(w){
-  const px=bgPixel(w), t=prompt('إحداثيات النقطة (E,N) – مثلاً 200123.5,745678.2');
+  const px=bgPixel(w), t=prompt('إحداثيات النقطة (E,N) – למשל 200123.5,745678.2');
   if(!t){ S.calib=null; renderMapBox(); return; }
   const [E,N]=t.split(/[ ,;]+/).map(Number);
   if(isNaN(E)||isNaN(N)){ toast('قيم غير صالحة'); return; }
   S.calib.pts.push({c:px.c,r:px.r,E,N});
   if(S.calib.pts.length===2){
     const [p1,p2]=S.calib.pts;
+    // דמיון: [E,N] = s·Rot·[c,-r] + t
     const u={x:p2.c-p1.c,y:-(p2.r-p1.r)}, w2={x:p2.E-p1.E,y:p2.N-p1.N};
     const k=len(w2)/len(u), th=Math.atan2(w2.y,w2.x)-Math.atan2(u.y,u.x);
-    const A=k*Math.cos(th), D=k*Math.sin(th);
-    const B=k*Math.sin(th), E2=-k*Math.cos(th);
+    const A=k*Math.cos(th), D=k*Math.sin(th);          // עמודה → E,N
+    const B=k*Math.sin(th), E2=-k*Math.cos(th);        // صف (باتجاه מטה) → E,N
     const C=p1.E-(A*p1.c+B*p1.r), F=p1.N-(D*p1.c+E2*p1.r);
     Object.assign(S.bg,{A,B,C,D,E:E2,F,geo:true});
     S.calib=null; S.view.cx=p1.E; S.view.cy=p1.N;
-    toast(`تمت معايرة الخريطة · مقياس رسم ${k.toFixed(3)} م/بكسل`);
+    toast(`تمت معايرة الخريطة · קנ״מ ${k.toFixed(3)} م/פיקסל`);
   }
   renderMapBox(); draw();
 }
+/* مسار الانعطاف يساراً داخل التقاطع: قوس משיקה بين محور مسرب اليساراً للمحور مسرب الخروج */
 /* ============================================================
-   809 – خطوط التوجيه لمسارات الانعطاف يساراً
-   الخط يتابع حافة الرأس: قوس متماس مع الحافة اليسرى لمسرب الانعطاف
-   عند رأس الجزيرة الوسطى للذراع الداخلة، ومع الحافة اليسرى لمسرب الخروج المماثل
-   عند رأس الجزيرة الوسطى للذراع الخارجة – وليس من مركز مسرب لمركز مسرب.
-   نصف القطر الافتراضي: أكبر قوس لا يقطع رأسَي الجزيرتين (مقرَّب لأسفل 0.5 م)،
-   محصور بـ3× الحد الأدنى من الجدول.
+   809 – خطوط הכוונה למסלולי الانعطاف يساراً
+   الخط ממשיך  حافة החרטום: قوس המשיקה لحافة اليسرى لـ مسرب الانعطاف
+   בחרטום الجزيرة الوسطى لـ الذراع الداخلة, حافة اليسرى لـ مسرب الخروج الموازٍ
+   בחרטום الجزيرة الوسطى لـ الذراع היוצאת – أ من مركز مسرب لمركز مسرب.
+   نصف قطر ברירת המחדל: القوس הגדולה ביותר التي لا קוטמת  الثاني رؤوس الجزر
+   (מעוגלת باتجاه מטה لـ0.5 م), מוגבלת لـ3×الالحد الأدنى שבטבלה.
    ============================================================ */
 function leftPaths(J){
   const arms=J.arms||[], out=[];
   arms.forEach(ai=>{
     const c=ai.cfg; if(!c.left||!c.mv||!c.mv.left.length) return;
     const aj=arms.find(x=>x.id===c.mv.left[0]); if(!aj) return;
-    const gi=ai.sgA, sgi=gi<0?-1:1, gj=aj.sgA, sgj=gj<0?1:-1;
+    const gi=ai.sgA, sgi=gi<0?-1:1, gj=aj.sgA, sgj=gj<0?-1:1;
     const si=ai.sj+sgi*(ai.uNose||0), sj=aj.sj+sgj*(aj.uNose||0);
     const Fi=frameAt(ai.els,si), Fj=frameAt(aj.els,sj);
     const Di=armD(ai,si), Dj=armD(aj,sj);
     const Rmin=LEFT_R_MIN();
     for(let q=0;q<c.left;q++){
+      // q=0 – المسار الأيسر ביותר, הצמוד לחרטום; كل مسار נשען على שפתו اليسرى
       const offI=gi*(Di-(c.left-q)*c.wL);
       const offJ=-gj*(Dj+q*aj.cfg.wT);
-      const P1=add(Fi.p,mul(Fi.n,offI)), d1=mul(ai.out,-1);
-      const P2=add(Fj.p,mul(Fj.n,offJ)), d2=aj.out;
+      const P1=add(Fi.p,mul(Fi.n,offI)), d1=mul(ai.out,-1);            // اتجاه السير إلى التقاطع
+      const P2=add(Fj.p,mul(Fj.n,offJ)), d2=aj.out;                    // اتجاه الخروج من التقاطع
       const bad=()=>out.push({pts:[P1,P2],R:null,from:ai,to:aj,lane:q});
       const X=lineX(P1,d1,P2,d2); if(!X){ bad(); continue; }
-      const al=Math.acos(Math.max(-1,Math.min(1,dot(mul(d1,-1),d2))));
+      const al=Math.acos(Math.max(-1,Math.min(1,dot(mul(d1,-1),d2))));  // الزاوية بين הקווים
       const t1=dot(sub(X,P1),d1), t2=dot(sub(P2,X),d2);
       if(!(t1>0.05&&t2>0.05&&al>0.05&&al<Math.PI-0.05)){ bad(); continue; }
       const Rfit=Math.max(1,Math.floor(Math.min(t1,t2)*Math.tan(al/2)*2)/2);
@@ -1765,6 +1833,7 @@ function drawJunctions(){
   const gold=css('--gold1'), gold2=css('--gold2');
   if(S.net) S.junctions.forEach((J,n)=>{
     const cs=J.corners||[]; if(!cs.length) return;
+    // سطح التقاطع
     const poly=[];
     const arms=J.arms||[];
     const run=(arm,fn,sg,u0,u1)=>{ const out=[], N=Math.max(2,Math.ceil(Math.abs(u1-u0)/0.5));
@@ -1778,18 +1847,20 @@ function drawJunctions(){
     ctx.beginPath(); poly.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);}); ctx.closePath();
     ctx.fillStyle=PAL.road(); ctx.fill();
     drawJunctionEdges(J,arms,cs);
+    // أقواس الحافة
     cs.forEach(c=>{
       if(c.straight) return;
       const line=(pts,col,w)=>{ ctx.beginPath(); pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);}); ctx.strokeStyle=col; ctx.lineWidth=w; ctx.stroke(); };
       line(c.pts,c.warn.length?css('--bad'):PAL.edge(),2);
       if(n===S.selJ && S.view.scale>1.2){
         const m=c.pts[Math.floor(c.pts.length/2)], o=w2s(add(m,mul(unit(sub(c.Cc,m)),Math.min(c.R*0.6,6))));
-        ctx.font='800 12px Cairo, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=css('--accent');
+        ctx.font='800 12px Assistant, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=css('--accent');
         ctx.fillText(`R${c.R}`, o.x, o.y+4); ctx.textAlign='start';
       }
     });
   });
   if(S.net) S.junctions.forEach(J=>{
+    // 809 – خطوط توجيه لمسارات الانعطاف يساراً
     leftPaths(J).forEach(pp=>{
       ctx.beginPath(); pp.pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});
       ctx.strokeStyle=(pp.R===null||pp.over||pp.R<LEFT_R_MIN())?css('--bad'):PAL.line();
@@ -1803,9 +1874,10 @@ function drawJunctions(){
       if(n===S.selJ) ring(J.p,23,null,css('--sel')); }
     else ring(J.p,14,'rgba(242,192,74,.16)',gold2,[4,3]);
     const q=w2s(J.p);
-    ctx.font='800 12px Cairo, sans-serif'; ctx.fillStyle=css('--ink');
+    ctx.font='800 12px Assistant, sans-serif'; ctx.fillStyle=css('--ink');
     ctx.fillText(`ت${n+1}`, q.x+18, q.y-12);
   });
+  // عرض مسبقة لـ נעילה בזמן رسم
   if(S.tool==='draw'&&S.drawing&&!S.locked&&S.hover&&!drag){
     const sn=snapToAxes(S.hover);
     if(sn){ ring(sn,10,'rgba(242,192,74,.35)',gold2); ring(sn,3,gold2,gold2); }
@@ -1815,6 +1887,7 @@ function drawAxis(active){
   const P=S.pis, R=solve();
   const badSeg=new Set(R.errs.filter(e=>e.seg!=null).map(e=>e.seg));
 
+  // أشرطة المقطع (فقط بعد קיבוע محور)
   const secErr=[];
   if(S.locked && S.sec && R.els.length){
     const path=pts=>{ctx.beginPath(); pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});};
@@ -1824,8 +1897,9 @@ function drawAxis(active){
     const noseGap=st=>zs.some(z=>{ if(!z.nose) return false;
       const u=st-z.sj; return (u<=0&&z.nose.before!==undefined&&-u<z.nose.before)||(u>=0&&z.nose.after!==undefined&&u<z.nose.after); });
     ST.forEach(st=>{
-      let parts = st.type==='median' ? [stas] : pieces;
+      let parts = st.type==='median' ? [stas] : pieces;   // באזור التأثير נשארת فقط الفاصل
       if(st.type==='median' && zs.length){
+        // جزء بدون جزيرة وسطى ליד التقاطع – سطح الطريق
         const gap=[]; const keep=[]; let cur=[], g=[];
         stas.forEach(v=>{ if(noseGap(v)){ if(cur.length>1) keep.push(cur); cur=[]; g.push(v); } else { if(g.length>1) gap.push(g); g=[]; cur.push(v); } });
         if(cur.length>1) keep.push(cur); if(g.length>1) gap.push(g);
@@ -1840,8 +1914,10 @@ function drawAxis(active){
         ctx.fillStyle=PAL.fill(st.type); ctx.fill();
       });
     });
+    // خطوط فاصل بين أشرطة (דקים) להבנת הקטימות
     ctx.lineWidth=PAL.plan()?0.7:0.75; ctx.strokeStyle=PAL.sep();
     ST.forEach(st=>{ if(st.type==='median') return; pieces.forEach(ps=>{ path(offsetPts(R.els,st.d1,ps).pts); ctx.stroke(); }); });
+    // مناطق تأثير: فاصل قائمة (מקווקו) وفاصل חדשה (רציף)
     zs.forEach(z=>{
       const zp=stas.filter(v=>v>=z.s0-1e-9&&v<=z.s1+1e-9);
       const m=S.sec.median/2;
@@ -1855,6 +1931,7 @@ function drawAxis(active){
         [1,-1].forEach(sg=>{ path(offsetPts(R.els,st=>sg*(m+widenAt(zs,st)),ps).pts); ctx.stroke(); });
       });
       ctx.strokeStyle=PAL.ink();
+      // أذرع التقاطع: مسارب مستقيمة, خروج, يساراً (من ضمن الجزيرة الوسطى) ويميناً (حافة)
       const LANE=PAL.road(), LEFTC=PAL.turn(), RIGHTC=PAL.turn(), WHITE=PAL.line();
       z.arms.forEach(A=>{
         const c=A.cfg, g=A.sgA;
@@ -1865,15 +1942,16 @@ function drawAxis(active){
         if(ap.length<2) return;
         const u=st=>Math.abs(st-z.sj);
         const D=st=>m+widenAt(zs,st);
-        const PR=st=>armPre(A,st), PO=armPreO(A);
-        const TH=st=>thruW(A,st), OU=st=>outW(A,st);
-        const Bin=st=>D(st)+PR(st), Bout=st=>D(st)+PO;
+        const PR=st=>armPre(A,st), PO=armPreO(A);          // الكتف الأيسر – داخل وخارج
+        const TH=st=>thruW(A,st), OU=st=>outW(A,st);       // חבילת مسارب السير
+        const Bin=st=>D(st)+PR(st), Bout=st=>D(st)+PO;     // حافة المسرب الداخلي في كل جانب
         const fL=st=>c.left?turnF(u(st),stoL(c),tapL(c)):0;
         const fR=st=>c.right?turnF(u(st),stoR(c),tapR(c)):0;
         const band=(f0,f1,col)=>{ const a0=offsetPts(R.els,f0,apF).pts, a1=offsetPts(R.els,f1,apF).pts;
           path(a0.concat(a1.slice().reverse())); ctx.closePath(); ctx.fillStyle=col; ctx.fill(); };
         const axA=S.axes[S.cur];
         const line=(f,kind)=>{ setMark(kind||'807',axA,'jct'); path(offsetPts(R.els,f,ap).pts); ctx.stroke(); };
+        // שטחים
         { const pr=splitRows(A,'in').pre, po=splitRows(A,'out').pre;
           if(pr.length) band(st=>g*D(st), st=>g*Bin(st), PAL.fill(pr[0].type));
           if(po.length) band(st=>-g*D(st), st=>-g*Bout(st), PAL.fill(po[0].type)); }
@@ -1887,6 +1965,8 @@ function drawAxis(active){
             a1=offsetPts(R.els,st=>g*(Bin(st)+TH(st)+c.right*c.wR*fR(st)),rp).pts;
             path(a0.concat(a1.slice().reverse())); ctx.closePath(); ctx.fillStyle=RIGHTC; ctx.fill(); }
         }
+        // ترميز
+        // 807 حواف, 801 بين مسارب (في التقاطع), 808 بين مسرب انعطاف لمسرب مستقيم
         line(st=>g*Bin(st), c.left?'808':'807');
         line(st=>g*(Bin(st)+TH(st)), c.right?'808':'807');
         for(let i=1;i<c.thru;i++) line(st=>g*(Bin(st)+i*TH(st)/c.thru),'801');
@@ -1904,6 +1984,7 @@ function drawAxis(active){
         ctx.setLineDash([]); ctx.lineWidth=1;
       });
 
+      // حدود האזור ותווית
       const half=Math.max(8, (S.sec.left.concat(S.sec.right).reduce((u,r)=>u+r.w,0))/2 + m + 2);
       ctx.strokeStyle=css('--gold2'); ctx.lineWidth=2; ctx.setLineDash([4,4]);
       [z.s0,z.s1].forEach(v=>{ if(Math.abs(v-z.sj)<1e-6) return;
@@ -1912,7 +1993,7 @@ function drawAxis(active){
       ctx.setLineDash([]);
       if(active){
         const mids=[]; if(z.s0<z.sj-1) mids.push((z.s0+z.sj)/2); if(z.s1>z.sj+1) mids.push((z.s1+z.sj)/2);
-        ctx.font='700 11px Cairo, sans-serif'; ctx.fillStyle=css('--accent');
+        ctx.font='700 11px Assistant, sans-serif'; ctx.fillStyle=css('--accent');
         mids.forEach(v=>{ const F=frameAt(R.els,v), q=w2s(add(F.p,mul(F.n,-half)));
           const o=z.cl&&z.cl[v<z.sj?'before':'after'];
           if(!o){ if(z.L>0) ctx.fillText(`L=${z.L.toFixed(1)}`, q.x+4, q.y+12); return; }
@@ -1921,6 +2002,7 @@ function drawAxis(active){
           ctx.fillStyle=css('--accent'); });
       }
     });
+    // ترميز: מקווקו بين مسارب, רציף بحافة המיסעה
     ['left','right'].forEach(side=>{
       const rows=S.sec[side];
       rows.forEach((r,k)=>{
@@ -1936,20 +2018,22 @@ function drawAxis(active){
         ctx.lineWidth=1;
       });
     });
+    // תוויות أشرطة بمخطط
     if(PAL.plan() && S.view.scale>=2.2){
       const ok=pieces.filter(ps=>ps.length>1).sort((a,b)=>(b[b.length-1]-b[0])-(a[a.length-1]-a[0]))[0];
       if(ok){
         const stL=(ok[0]+ok[ok.length-1])/2, F=frameAt(R.els,stL), ang=Math.atan2(-(F.n.x),-(F.n.y));
         const short={lane:'مسرب',shR:'كتف',shL:'كتف',shoulder:'كتف',median:'جزيرة وسطى',medRow:'جزيرة وسطى',walk:'رصيف',sidewalk:'رصيف',parkP:'وقوف',parking:'وقوف',bikeL:'مسار دراجات',bikeP:'دراجات',barrier:'حاجز',active:'W',ditch:'قناة',fill:'ردم',cut:'حفر'};
-        ctx.save(); ctx.font='600 10px Cairo, sans-serif'; ctx.fillStyle='#222'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.save(); ctx.font='600 10px Assistant, sans-serif'; ctx.fillStyle='#222'; ctx.textAlign='center'; ctx.textBaseline='middle';
         ST.forEach(q=>{ const d0=q.d0(stL), d1=q.d1(stL), w=Math.abs(d1-d0); if(w*S.view.scale<14) return;
           const pt=w2s(add(F.p,mul(F.n,(d0+d1)/2)));
-          ctx.save(); ctx.translate(pt.x,pt.y);
+          ctx.save(); ctx.translate(pt.x,pt.y); let a=Math.atan2(-(F.n.x),-(F.n.y))*0; 
           const tg={x:F.n.y,y:-F.n.x}, sa=Math.atan2(-tg.y,tg.x); ctx.rotate(Math.abs(sa)>Math.PI/2?sa+Math.PI:sa);
           ctx.fillText(`${short[q.type]||(TYPES[q.type]||{}).he||''} ${w.toFixed(2)}`,0,0); ctx.restore(); });
         ctx.restore();
       }
     }
+    // ترميز مدى שנבחר לעריכה
     if(active&&S.editRow){
       const r=S.editRow;
       ctx.lineWidth=3; ctx.strokeStyle=css('--sel');
@@ -1961,11 +2045,12 @@ function drawAxis(active){
   }
   S._secErr=secErr;
 
+  // كيلومتراج' على طول المحور
   if(R.els.length){
     const total=R.total, steps=[10,20,50,100,200,500,1000];
     const step=steps.find(v=>v*S.view.scale>=70)||2000;
     ctx.fillStyle=css('--ink'); ctx.strokeStyle=css('--ink'); ctx.lineWidth=1;
-    ctx.font='600 11px Cairo, sans-serif';
+    ctx.font='600 11px Assistant, sans-serif';
     for(let st=0;st<=total+1e-6;st+=step){
       const F=frameAt(R.els,st), a=w2s(add(F.p,mul(F.n,-2))), b=w2s(add(F.p,mul(F.n,2)));
       ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
@@ -1973,9 +2058,10 @@ function drawAxis(active){
     }
   }
 
+  // اسم المحور בתחילתו
   if(P.length){
     const q=w2s(P[0]);
-    ctx.font='700 13px Cairo, sans-serif'; ctx.fillStyle=css('--ink');
+    ctx.font='700 13px Assistant, sans-serif'; ctx.fillStyle=css('--ink');
     ctx.fillText(S.axes[S.cur].name, q.x+10, q.y+18);
   }
   if(!active){
@@ -1988,6 +2074,7 @@ function drawAxis(active){
     return R;
   }
 
+  // خط PI (פוליליין أساس) – דק
   if(P.length){
     ctx.setLineDash([5,5]); ctx.lineWidth=1; ctx.strokeStyle=css('--dim');
     ctx.beginPath(); P.forEach((p,i)=>{const s=w2s(p); i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});
@@ -1995,6 +2082,7 @@ function drawAxis(active){
     ctx.stroke(); ctx.setLineDash([]);
   }
 
+  // المحور المدموج
   if(PAL.plan()) ctx.setLineDash([14,4,2,4]);
   R.els.forEach(e=>{
     ctx.lineWidth=S.locked?1.2:3;
@@ -2023,18 +2111,20 @@ function drawAxis(active){
   });
 
   ctx.setLineDash([]);
+  // نقاط PI
   P.forEach((p,i)=>{
     const s=w2s(p), sel=i===S.sel;
     ctx.beginPath(); ctx.arc(s.x,s.y,sel?7:5,0,2*Math.PI);
     ctx.fillStyle=css('--map'); ctx.fill();
     ctx.lineWidth=2; ctx.strokeStyle=sel?css('--sel'):css('--pi'); ctx.stroke();
-    ctx.fillStyle=css('--ink'); ctx.font='600 12px Cairo, sans-serif';
+    ctx.fillStyle=css('--ink'); ctx.font='600 12px Assistant, sans-serif';
     ctx.fillText(p.R>0?`${i}  R${p.R}${p.Ls>0?` Ls${p.Ls}`:''}`:`${i}`, s.x+9, s.y-8);
   });
 
   return R;
 }
 
+// מיפוי خط بتسلسل لجزء PI שלו (לצביעת שגיאות)
 function segIndexOfLine(e){
   const P=S.pis; let best=0,bd=Infinity;
   const m={x:(e.from.x+e.to.x)/2,y:(e.from.y+e.to.y)/2};
@@ -2046,7 +2136,7 @@ function distToSeg(p,a,b){
   return len(sub(p,add(a,mul(ab,t))));
 }
 
-/* ---------- لوحة ---------- */
+/* ---------- פאנל ---------- */
 function renderPanel(R){
   $('bUndo').disabled=!S.undo.length||S.locked;
 
@@ -2065,11 +2155,12 @@ function renderPanel(R){
     if(document.activeElement!==$('inR')) $('inR').value=P[i].R>0?P[i].R:'';
   }else box.hidden=true;
 
+  // شريط أدوات النقاط العلوي
   { const tb=$('ptool'), n=S.pis.length, i=S.sel, ok=(i>0&&i<n-1);
     const show = S.stage===1 && !S.locked && n>=2;
     tb.hidden=!show;
     if(show){
-      $('ptLbl').textContent = ok ? `نقطة ${i} من ${n-2}` : (n>=3?'اختر نقطة':'لا توجد نقطة انكسار');
+      $('ptLbl').textContent = ok ? `نقطة ${i} من ضمن ${n-2}` : (n>=3?'اختر نقطة':'لا توجد نقطة انكسار');
       ['ptR','ptLs','ptOk','ptLsA','ptNo'].forEach(k=>$(k).disabled=!ok);
       $('ptPrev').disabled=$('ptNext').disabled=(n<3);
       if(document.activeElement!==$('ptR')) $('ptR').value = ok&&S.pis[i].R>0?S.pis[i].R:'';
@@ -2089,6 +2180,7 @@ function renderPanel(R){
   } else pop.hidden=true;
   $('bFinish').disabled=!(S.tool==='draw'&&S.drawing&&P.length>=2);
 
+  // בורר השלבים (1 محاور · 2 مقاطع · 3 تقاطعات) וניראות המקטעים
   [1,2,3].forEach(n=>{
     const b=$('st'+n);
     b.classList.toggle('on',S.stage===n);
@@ -2114,15 +2206,16 @@ function renderPanel(R){
 
   const ul=$('msgs'); ul.innerHTML='';
   const extra=(S._secErr||[]).filter((v,k,a)=>a.findIndex(x=>x.d0===v.d0)===k)
-    .map(st=>`نصف قطر القوس أصغر من الإزاحة (${Math.max(Math.abs(st.d0),Math.abs(st.d1)).toFixed(2)} م) – الشريط ينقلب داخل المنحنى`);
+    .map(st=>`نصف قطر القوس أصغر מהאופסט (${Math.max(Math.abs(st.d0),Math.abs(st.d1)).toFixed(2)} من') – الشريط מתהפכת בפנים المنحنى`);
   extra.forEach(m=>R.errs.push({m}));
   if(S.locked&&S.sec) ['left','right'].forEach(side=>S.sec[side].forEach(r=>{
     (r.ranges||[]).forEach(g=>{
-      if(g.s1-g.s0<2*r.w) R.errs.push({m:`${TYPES[r.type].he} ${fmtSta(g.s0)}–${fmtSta(g.s1)}: النطاق أقصر من قطعتَي 1:1 (${(2*r.w).toFixed(1)} م)`});
+      if(g.s1-g.s0<2*r.w) R.errs.push({m:`${TYPES[r.type].he} ${fmtSta(g.s0)}–${fmtSta(g.s1)}: النطاق קצר من2 קטימות 1:1 (${(2*r.w).toFixed(1)} من')`});
       if(g.s1>R.total+1e-6) R.errs.push({m:`${TYPES[r.type].he} ${fmtSta(g.s0)}: نهاية النطاق بعد نهاية المحور`});
     });
   }));
   renderWizard();
+  // محدِّد المحاور
   const ax=$('axes');
   const html = S.axes.map((a,k)=>{
     const st = a.locked?'lock' : withAxis(k,()=>{ const r=k===S.cur?R:solve(); return r.els.length&&!r.errs.length?'ok':''; });
@@ -2134,11 +2227,13 @@ function renderPanel(R){
     $('bAddAxis').onclick=addAxis;
     const on=ax.querySelector('.on'); if(on){ const l=on.offsetLeft, r=l+on.offsetWidth; if(l<ax.scrollLeft||r>ax.scrollLeft+ax.clientWidth) ax.scrollLeft=l-12; }
   }
+  // محور ריק שעוד لا התחיל – لا يوجد טעם לפתוח עוד واحد
   const emptyNew = S.pis.length===0;
   $('bNewAxis').disabled=emptyNew; $('bAddAxis').disabled=emptyNew;
   if(document.activeElement!==$('inName')) $('inName').value=S.axes[S.cur].name;
   $('bDelAxis').disabled=S.axes.length<2;
 
+  // شبكة
   const A=S.axes[S.cur];
   document.querySelectorAll('#envSeg button').forEach(b=>b.classList.toggle('on',b.dataset.env===S.env));
   $('vAxName').textContent=A.name;
@@ -2154,7 +2249,7 @@ function renderPanel(R){
     S.junctions.forEach((J,n)=>{
       li(J.type==='X'
         ? `ت${n+1} · تقاطع: ${S.axes[J.major].name} عند كم ${fmtSta(J.sMaj)} × ${S.axes[J.minor].name} عند كم ${fmtSta(J.sMin)}`
-        : `ت${n+1} · تفرّع: ${S.axes[J.minor].name} ← ${S.axes[J.major].name} عند كم ${fmtSta(J.sMaj)}`,true);
+        : `ت${n+1} · הסתעפות: ${S.axes[J.minor].name} ← ${S.axes[J.major].name} عند كم ${fmtSta(J.sMaj)}`,true);
       const e=L.lastElementChild; e.classList.add('pick'); e.classList.toggle('sel',n===S.selJ);
       e.onclick=()=>{ S.selJ=n; draw(); openJct(); };
     });
@@ -2164,13 +2259,13 @@ function renderPanel(R){
       const a=S.axes[k];
       if(!a.locked) li(`${a.name}: غير مثبَّت، لا يوجد مقطع للتوسيع`);
       a._zones.forEach(z=>{
-        if(z.none){ li(`${a.name}: الجزيرة الوسطى بالتقاطع ${(2*z.H).toFixed(2)} م، القائمة عريضة بما يكفي`,true); return; }
+        if(z.none){ li(`${a.name}: الجزيرة الوسطى بالتقاطع ${(2*z.H).toFixed(2)} م, القائمة רחבה מספיק`,true); return; }
         const how = z.method==='angle' ? `إزاحة ${z.ang}°` : `منحنى معاكس R=${z.R}`;
         const alt = z.alt ? (z.alt.ang ? ` (حسب الزاوية ${z.alt.L.toFixed(1)})` : ` (وفق R=${z.alt.R}: ${z.alt.L.toFixed(1)})`) : '';
-        li(`${a.name} بت${z.jn+1}: جزيرة وسطى ${(2*z.H).toFixed(2)} م، L=${z.L.toFixed(1)} م، ${how}، إزاحة ${z.w.toFixed(2)} م لكل اتجاه${alt}`,true);
+        li(`${a.name} بت${z.jn+1}: جزيرة وسطى ${(2*z.H).toFixed(2)} م, L=${z.L.toFixed(1)} م, ${how}, إزاحة ${z.w.toFixed(2)} م لكل جانب${alt}`,true);
         ['before','after'].forEach(sd=>{ const o=z.cl&&z.cl[sd]; if(!o) return;
-          const tag=o.status==='ok'?'✓':o.status==='tight'?'⚠ قُصِّر':'✖ تجاوز';
-          li(`${sd==='before'?'قبل':'بعد'} التقاطع: احتفاظ ${o.hold.toFixed(0)} + معبر ${o.Lm.toFixed(0)} = ${(o.hold+o.Lm).toFixed(0)} م من أصل ${isFinite(o.avail)?o.avail.toFixed(0):'∞'} – ${tag}`, o.status==='ok');
+          const tag=o.status==='ok'?'✓':o.status==='tight'?'⚠ קוצר':'✖ تجاوز';
+          li(`${sd==='before'?'לפני':'بعد'} التقاطع: احتفاظ ${o.hold.toFixed(0)} + معبر ${o.Lm.toFixed(0)} = ${(o.hold+o.Lm).toFixed(0)} م من ضمن ${isFinite(o.avail)?o.avail.toFixed(0):'∞'} – ${tag}`, o.status==='ok');
         });
       });
     }));
@@ -2181,14 +2276,14 @@ function renderPanel(R){
   const pill=$('pill');
   pill.classList.toggle('bad',R.errs.length>0);
   $('pillTxt').textContent = P.length<2 ? 'لا يوجد محور'
-    : R.errs.length ? `${R.errs.length} ملاحظات`
+    : R.errs.length ? `${R.errs.length} הערות`
     : `${S.locked?'مثبَّت':'سليم'} · ${R.total.toFixed(1)} م`;
   $('pillTxt').textContent = `${S.axes[S.cur].name} · ${$('pillTxt').textContent}`;
   const warns = P.length>1 ? axisRules(S.axes[S.cur],R) : [];
   (S.netWarn||[]).forEach(w=>warns.push(w));
   if(!R.errs.length){
     const li=document.createElement('li'); li.className='ok';
-    li.textContent= P.length<2 ? 'لا يوجد محور بعد.' : `سليم. طول المحور ${R.total.toFixed(2)} م.`;
+    li.textContent= P.length<2 ? 'لا يوجد محور بعد.' : `سليم. طول محور ${R.total.toFixed(2)} من'.`;
     ul.appendChild(li);
   } else R.errs.forEach(e=>{const li=document.createElement('li');li.textContent=e.m;ul.appendChild(li);});
   warns.forEach(t=>{const li=document.createElement('li');li.className='warn';li.textContent=t;ul.appendChild(li);});
@@ -2196,7 +2291,7 @@ function renderPanel(R){
 }
 
 /* ============================================================
-   تفاعل
+   אינטראקציה
    ============================================================ */
 function snapshot(){ S.undo.push(JSON.stringify({pis:S.pis,drawing:S.drawing})); if(S.undo.length>200)S.undo.shift(); }
 function snapToAxes(w){
@@ -2227,7 +2322,7 @@ function toast(msg){
 function addAxis(){
   if(S.pis.length===0) return;
   S.cur=newAxis(); S.tool='draw'; S.sel=-1; S.editRow=null; S.pickSta=null;
-  $('insp').classList.add('min');
+  $('insp').classList.add('min');           // בטלפון: מפנים  الخريطة لرسم
   document.querySelector('.insp .scroll').scrollTop=0;
   setTimeout(resize,260);
   draw();
@@ -2278,6 +2373,7 @@ cv.addEventListener('pointerdown',e=>{
     else { S.sel=-1; drag={type:'pan',sx,sy,v:{...S.view}}; }
     draw(); return;
   }
+  // draw
   if(!S.drawing){ drag={type:'pan',sx,sy,v:{...S.view}}; return; }
   drag={type:'click',sx,sy,v:{...S.view}};
 });
@@ -2343,7 +2439,7 @@ cv.addEventListener('wheel',e=>{
 
 function renderRows(){
   const act=document.activeElement;
-  if(act && act.closest && act.closest('#secUI') && act.tagName!=='BUTTON') return;
+  if(act && act.closest && act.closest('#secUI') && act.tagName!=='BUTTON') return; // لا לדרוס בזמן הקלדה
   $('preset').value=S.sec.preset||'custom';
   $('inMed').value=S.sec.median;
   const typeOpts=(sel,extra)=>(extra||'')+Object.entries(TYPES).map(([t,v])=>`<option value="${t}"${t===sel?' selected':''}>${v.he}</option>`).join('');
@@ -2355,7 +2451,7 @@ function renderRows(){
       row.innerHTML=`<span class="sw" style="background:${TYPES[r.type].c}"></span>
         <select aria-label="نوع الشريط">${typeOpts(r.type)}</select>
         <div class="stp"><button aria-label="إنقاص">−</button><input type="number" min="0.1" step="0.05" value="${r.w}" inputmode="decimal" aria-label="عرض"><button aria-label="زيادة">+</button></div>
-        <button class="chip${nr?' on':''}" aria-expanded="${S.editRow===r}">${nr===0?'نطاق':nr===1?`<bdi dir="ltr">${Math.round(r.ranges[0].s0)}–${Math.round(r.ranges[0].s1)}</bdi>`:`${nr} نطاقات`}</button>
+        <button class="chip${nr?' on':''}" aria-expanded="${S.editRow===r}">${nr===0?'نطاق':nr===1?`<bdi dir="ltr">${Math.round(r.ranges[0].s0)}–${Math.round(r.ranges[0].s1)}</bdi>`:`${nr} מקטעים`}</button>
         <button class="del" aria-label="حذف الشريط">✕</button>`;
       const [,sel,stp,seg,del]=row.children;
       const [minus,inp,plus]=stp.children;
@@ -2373,12 +2469,12 @@ function renderRows(){
         const ed=document.createElement('div'); ed.className='rng';
         const picking=S.pickSta&&S.pickSta.row===r;
         const dr=r._draft||{};
-        const line=(a,b,del,ph)=>`<div class="rline"><span>من كم</span><input type="number" step="0.1" min="0" value="${a??''}" placeholder="${ph?0:''}" inputmode="decimal">
+        const line=(a,b,del,ph)=>`<div class="rline"><span>מקמ׳</span><input type="number" step="0.1" min="0" value="${a??''}" placeholder="${ph?0:''}" inputmode="decimal">
           <span>حتى</span><input type="number" step="0.1" min="0" value="${b??''}" placeholder="${ph?total.toFixed(0):''}" inputmode="decimal">
           ${del?'<button class="del" aria-label="حذف النطاق">✕</button>':'<span class="newtag">جديد</span>'}</div>`;
         ed.innerHTML = r.ranges.map(g=>line(g.s0,g.s1,true)).join('')
           + line(dr.s0,dr.s1,false,true)
-          + `<div class="rline fillrow"><span>خارج النطاقات</span><select>${typeOpts(r.fill,`<option value="none"${r.fill==='none'?' selected':''}>بدون, الشريط التالي ممتد</option>`)}</select></div>
+          + `<div class="rline fillrow"><span>خارج النطاقات</span><select>${typeOpts(r.fill,`<option value="none"${r.fill==='none'?' selected':''}>بدون, الشريط التالية נצמדת</option>`)}</select></div>
           <div class="row2"><button class="${picking?'live':''}">${picking?(S.pickSta.stage?'انقر على نهاية النطاق':'انقر على بداية النطاق'):'＋ تحديد نطاق على الخريطة'}</button>
           <button>على كامل الطول</button></div>`;
         const lines=[...ed.querySelectorAll('.rline:not(.fillrow)')];
@@ -2437,11 +2533,11 @@ function renderJct(){
           <div class="cell"><span class="lbl">مسارب الخروج</span>${stp('out',1,5)}</div>
           <div class="cell"><span class="lbl">مسارب الانعطاف يساراً<small>${c.hasL===false?'لا يوجد انعطاف يساراً في هذه الذراع':'تُفتح من الجزيرة الوسطى'}</small></span>${stp('left',0,c.hasL===false?0:2)}</div>
           ${c.left?`<div class="cell"><span class="lbl">يساراً: انتقال · تخزين</span><div class="two">${num('taperL')}${num('storeL')}</div></div>
-          <div class="cell"><span class="lbl">نصف قطر مسار اليسار 809<small>فارغ = مخصَّص للرؤوس · الحد الأدنى ${LEFT_R_MIN()} م</small></span><div class="two">${num('RL')}</div></div>`:''}
+          <div class="cell"><span class="lbl">نصف قطر مسار اليسار 809<small>ריק = مخصَّص לחרטומים · الحد الأدنى ${LEFT_R_MIN()} م</small></span><div class="two">${num('RL')}</div></div>`:''}
           <div class="cell"><span class="lbl">مسارب الانعطاف يميناً<small>${c.hasR===false?'لا يوجد انعطاف يميناً في هذه الذراع':'تُفتح من الحافة'}</small></span>${stp('right',0,c.hasR===false?0:2)}</div>
           ${c.right?`<div class="cell"><span class="lbl">يميناً: انتقال · تخزين</span><div class="two">${num('taperR')}${num('storeR')}</div></div>`:''}
           <div class="cell"><span class="lbl">عرض مسرب مباشر · انعطاف</span><div class="two">${num('wT')}${num('wL')}</div></div>
-          ${c.left&&S.env==='inter'?`<div class="cell"><span class="lbl">مركبات منتظرة يساراً<small>دليل GCC – جدول 7.3</small></span>${stp('nQ',2,10)}</div>`:''}
+          ${c.left&&S.env==='inter'?`<div class="cell"><span class="lbl">مركبات ממתינים يساراً<small>جدول 7.3</small></span>${stp('nQ',2,10)}</div>`:''}
           ${c.left?`<div class="tmpnote" style="color:var(--dim)">يساراً: ${c.userL?'قيم يدوية':c.srcL}</div>`:''}
           ${c.right?`<div class="tmpnote" style="color:var(--dim)">يميناً: ${c.userR?'قيم يدوية':c.srcR}</div>`:''}
           ${(()=>{ const o=z.cl&&z.cl[A.side]; if(!o) return '';
@@ -2449,10 +2545,10 @@ function renderJct(){
             const tag=o.status==='ok'?'✓':o.status==='tight'?'⚠':'✖';
             const eff=(Math.abs(o.storeL-c.storeL)>0.05||Math.abs(o.taperL-c.taperL)>0.05)
               ? ` · الانتقال فعلياً ${o.taperL.toFixed(0)} · تخزين ${o.storeL.toFixed(0)}` : '';
-            return `<div class="tmpnote" style="color:${col}">${tag} إغلاق للمقطع النموذجي: احتفاظ ${o.hold.toFixed(0)} + معبر الجزيرة الوسطى ${o.Lm.toFixed(0)} = ${(o.hold+o.Lm).toFixed(0)} م من أصل ${isFinite(o.avail)?o.avail.toFixed(0):'∞'} متاحة (مطلوب ${o.need.toFixed(0)})${eff}</div>`; })()}
+            return `<div class="tmpnote" style="color:${col}">${tag} إغلاق للمقطع النموذجي: احتفاظ ${o.hold.toFixed(0)} + معبر الجزيرة الوسطى ${o.Lm.toFixed(0)} = ${(o.hold+o.Lm).toFixed(0)} م من ضمن ${isFinite(o.avail)?o.avail.toFixed(0):'∞'} זמינים (مطلوب ${o.need.toFixed(0)})${eff}</div>`; })()}
           ${(c.userL||c.userR)?'<button class="cell btn" data-reset="1">العودة إلى قيم الإرشادات</button>':''}
         </div>
-        <p class="hint" style="margin-top:6px">الجزيرة الوسطى بالتقاطع بمحور هذا: ${(2*z.H).toFixed(2)} م (${z.H.toFixed(2)} م لكل اتجاه)</p>`;
+        <p class="hint" style="margin-top:6px">الجزيرة الوسطى بالتقاطع في المحور هذا: ${(2*z.H).toFixed(2)} م (${z.H.toFixed(2)} م لكل جانب)</p>`;
       card.querySelectorAll('.stp[data-k]').forEach(el=>{
         const key=el.dataset.k, mn=+el.dataset.min, mx=+el.dataset.max, [b1,,b2]=el.children;
         if(mx===mn){ b1.disabled=b2.disabled=true; }
@@ -2489,7 +2585,7 @@ function renderCorners(J){
   const jc=jctCfg(J);
   if(S.env==='urban'){
     cfg.innerHTML=`<div class="cell"><span class="lbl">الشوارع المتقاطعة</span><select id="jPair">${Object.entries(TURN_U_PAIR).map(([k,v])=>`<option value="${k}"${k===jc.pair?' selected':''}>${v}</option>`).join('')}</select></div>
-      <div class="cell"><span class="lbl">منطقة</span><div class="segmini" id="jArea"><button data-a="res">سكني</button><button data-a="ind">صناعي</button></div></div>`;
+      <div class="cell"><span class="lbl">אזור</span><div class="segmini" id="jArea"><button data-a="res">מגורים</button><button data-a="ind">תעשייה</button></div></div>`;
     $('jPair').onchange=e=>{ jc.pair=e.target.value; e.target.blur(); draw(); };
     cfg.querySelectorAll('#jArea button').forEach(b=>{ b.classList.toggle('on',b.dataset.a===jc.area); b.onclick=()=>{ jc.area=b.dataset.a; draw(); }; });
   } else {
@@ -2500,7 +2596,7 @@ function renderCorners(J){
   cs.forEach(c=>{
     const row=document.createElement('div'); row.className='cell';
     row.style.flexWrap='wrap';
-    row.innerHTML=`<span class="lbl">${c.from.name} ← ${c.to.name}<small>انحراف ${c.defl.toFixed(0)}° · جدول: ${c.tab.txt} م${c.failed?'':` · تماس ${c.uA.toFixed(1)} / ${c.uB.toFixed(1)} م من التقاطع`}</small>
+    row.innerHTML=`<span class="lbl">${c.from.name} ← ${c.to.name}<small>انحراف ${c.defl.toFixed(0)}° · جدول: ${c.tab.txt} م${c.failed?'':` · השקה ${c.uA.toFixed(1)} / ${c.uB.toFixed(1)} م من التقاطع`}</small>
         ${c.warn.map(w=>`<small style="color:var(--bad)">${w}</small>`).join('')}</span>
       <input type="number" min="2" step="0.5" value="${c.R}" inputmode="decimal" aria-label="نصف قطر" style="${c.manual?'':'color:var(--accent)'}">
       <button class="chip" ${c.manual?'':'disabled'}>جدول</button>
@@ -2514,8 +2610,8 @@ function renderCorners(J){
     list.appendChild(row);
   });
   $('jctSrc').textContent = S.env==='urban'
-    ? 'المصدر: دليل تصميم التقاطعات (RTA دبي) / دليل تصميم الشوارع الحضرية USDM (أبوظبي)، جدول 5.10 (نصف قطر حجر الرصيف؛ الافتراضي – القيمة الدنيا في النطاق). نصف القطر بالبرتقالي = من الجدول.'
-    : 'المصدر: دليل GCC لتصميم الطرق السريعة + دليل RTA للتصميم الهندسي (دبي)، جدول 6.1 – حافلة، منحنى دائري واحد، انعطاف حتى 15 كم/س. المركبة المفصلية تتطلب نصف قطر على انتقالات أو ثلاثي المركز (في مرحلة لاحقة).';
+    ? 'المصدر: الحركة في التقاطعات 2020، جدول 5.10 (نصف قطر حجر الرصيف؛ الافتراضي – القيمة الدنيا في النطاق). نصف القطر بالبرتقالي = من الجدول.'
+    : 'المصدر: إرشادات بين-مدنية، المجلد 2، جدول 6.1 – حافلة، منحنى دائري واحد، انعطاف حتى 15 كم/س. المركبة المفصلية تتطلب نصف قطر على انتقالات أو ثلاثي المركز (في مرحلة لاحقة).';
 }
 
 function holdRepeat(btn,fn){
@@ -2530,6 +2626,7 @@ document.querySelectorAll('[data-t="inMed"]').forEach(b=>holdRepeat(b,()=>{
 }));
 
 function finishDraw(){
+  // לחיצה כפולה מוסיפה نقطة כפולה – מנקים
   const P=S.pis;
   while(P.length>1){const a=P[P.length-1],b=P[P.length-2]; if(Math.hypot(a.x-b.x,a.y-b.y)*S.view.scale<3)P.pop(); else break;}
   S.drawing=false; S.tool='edit'; draw();
@@ -2551,6 +2648,7 @@ $('popLs').addEventListener('change',e=>{ setLs(parseFloat(e.target.value)); e.t
 $('popLsA').onclick=()=>{ const i=S.sel; if(!(S.pis[i]&&S.pis[i].R>0)) return; setLs(lsMin(S.axes[S.cur].V,S.pis[i].R)); };
 $('popNo').onclick=()=>{ $('popR').value=''; setR(0); };
 $('popR').addEventListener('keydown',e=>{ if(e.key==='Enter'){ setR(parseFloat(e.target.value)); e.target.blur(); } });
+/* شريط أدوات النقاط: معبر بين نقاط الانكسار, نصف قطر, كلوثويد וזום */
 {
   const nPI=()=>S.pis.length;
   const stepPI=d=>{ const n=nPI(); if(n<3) return;
@@ -2609,7 +2707,7 @@ $('bSecOk').onclick=()=>{
   const a=S.axes[S.cur];
   a.locked=true; S.editRow=null; S.pickSta=null;
   if(!a.sec) loadPreset(S.env==='urban'?'mr4':'iuD');
-  toast(`${a.name}: المقطع اعتُمد`);
+  toast(`${a.name}: المقطع אושר`);
   const nxt=S.axes.findIndex((x,k)=>finished(x)&&!(x.locked&&x.sec));
   if(nxt>=0) selectForSection(nxt);
   draw();
@@ -2629,7 +2727,7 @@ $('fImpSec').onchange=e=>{
       list.forEach((sec,q)=>{ const k=`imp${Object.keys(IMPORTED).length}`; IMPORTED[k]={...sec,title:sec.title||`مقطع ${q+1}`}; first=first||k; });
       $('preset').innerHTML=presetOptions();
       S.editRow=null; loadPreset(first); draw();
-      toast(`تم تحميل ${list.length} مقاطع من أداة المقطع`);
+      toast(`נטענו ${list.length} مقاطع من أداة المقطع`);
     }catch(err){ toast('ملف JSON غير مناسب'); }
     e.target.value='';
   });
@@ -2704,7 +2802,7 @@ function fit(){
 
 window.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
-  if(e.key==='n'||e.key==='N'){ addAxis(); return; }
+  if(e.key==='n'||e.key==='N'||e.key==='من'){ addAxis(); return; }
   if(e.key==='Enter'||e.key==='Escape'){ if(S.tool==='draw') finishDraw(); else {S.sel=-1;draw();} }
   else if((e.key==='Delete'||e.key==='Backspace')&&S.tool==='edit'&&!S.locked) delSel();
   else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){ e.preventDefault(); $('bUndo').click(); }
@@ -2715,7 +2813,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw
   const order=['auto','light','dark'], icon={
     auto:svg('<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/>'),
     light:svg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
-    dark:svg('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>')}, name={auto:'تلقائي',light:'نهار',dark:'ليل'};
+    dark:svg('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>')}, name={auto:'אוטומטי',light:'יום',dark:'לילה'};
   let m='auto'; try{ m=localStorage.getItem('mahalco-theme')||'auto'; }catch(_){}
   const apply=()=>{
     if(m==='auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=m;

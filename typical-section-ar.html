@@ -498,9 +498,27 @@ html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
       <div class="li"><span class="lb">السياق</span>
         <select id="ctx" class="vh" tabindex="-1" aria-hidden="true"><option value="urban">حضري</option><option value="inter">بين-مدني</option></select>
         <div class="seg" data-bind="ctx"></div></div>
+      <div class="li"><label for="cls">تصنيف الطريق (TR-514)</label>
+        <select id="cls">
+          <optgroup label="خارج الحضر">
+            <option value="rFwy">طريق سريع ريفي</option>
+            <option value="rArt">شرياني ريفي</option>
+            <option value="rCol">مجمّع ريفي</option>
+            <option value="rLoc">محلي ريفي</option>
+          </optgroup>
+          <optgroup label="حضري">
+            <option value="uFwy">طريق سريع حضري</option>
+            <option value="blvd" selected>شارع شرياني (Boulevard)</option>
+            <option value="aven">أفنيو (Avenue)</option>
+            <option value="strt">شارع (Street)</option>
+            <option value="alne">ممر وصول (Access Lane)</option>
+          </optgroup>
+        </select></div>
+      <div class="li"><label for="vDes">سرعة التصميم</label><div class="stp" data-step="10"><input id="vDes" type="number" step="10" min="20" max="140" value="60" inputmode="decimal"></div><span class="unit">كم/س</span></div>
       <div class="li"><label for="rowTarget">حق الطريق المستهدف</label><div class="stp" data-step="0.5"><input id="rowTarget" type="number" step="0.1" min="0" value="0" inputmode="decimal"></div><span class="unit">م</span></div>
     </div>
-    <p class="gf">0 = بدون هدف. عند وجود هدف، يُظهر الشريط أعلاه في كل لحظة المتبقي أو الفائض.</p>
+    <p class="gf">0 = بدون هدف. عند وجود هدف، يُظهر الشريط أعلاه في كل لحظة المتبقي أو الفائض. مقاطع USDM تُقاس من حدّ القطعة إلى حدّ القطعة، لا من حافة إلى حافة.</p>
+    <p class="gf">التصنيف وسرعة التصميم هما الضابطان اللذان تُشتق منهما قيم المقطع في TR-514؛ القيم المدرجة في الأداة عامة ولم تُربط بعد بجدول التصنيف/السرعة – يجب مراجعتها في المصدر لكل حالة.</p>
 
     <p class="gh">نمط البداية</p>
     <select id="preset" class="vh" tabindex="-1" aria-hidden="true"></select>
@@ -597,7 +615,7 @@ html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
    lvl: 'road' = منسوب الطريق، 'curb' = منسوب الرصيف (فوق حجر الرصيف)
    ====================================================================== */
 const T = {
-  walk:   {n:'شريط مشاة',           s:'مشي', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'شريط مشاة أدنى 1.5 م (USDM أبوظبي)']},
+  walk:   {n:'شريط مشاة',           s:'مشي', lvl:'curb', w:2.0,  col:'#e9e1cf', soft:[1.5,'عرض شريط المشي (منطقة العبور الصافية) يُؤخذ من جداول مرحلة المشاة في USDM'+' — مصدر غير مُتحقَّق: راجع الجدول في TR-514 / USDM حسب التصنيف والسرعة']},
   aux:    {n:'شريط مساعد / أشجار',   s:'مساعد',   lvl:'curb', w:1.2,  col:'#cfd9bf', tree:true},
   front:  {n:'شريط جانبي',           s:'جانب',  lvl:'curb', w:0.3,  col:'#ddd6c6'},
   plaza:  {n:'جزيرة مشجّرة / نشاط',  s:'جزيرة مشجّرة', lvl:'curb', w:6.0,  col:'#d9e3c6', tree:true, ppl:true},
@@ -612,9 +630,10 @@ const T = {
   bus:    {n:'حرم النقل العام',        s:'حرم النقل العام',  lvl:'road', w:3.5,  col:'#b5645a', dir:'up', car:'bus', min:[3.5,'حرم النقل العام 3.5–3.65 م (دليل RTA، الفصل 10)']},
   brt:    {n:'حرم النقل العام (مسرب منفرد)', s:'حرم النقل العام', lvl:'road', w:3.5,  col:'#c0795f', dir:'up', car:'bus', min:[3.5,'مسرب في حرم النقل العام 3.5 م (دليل RTA، الفصل 10)']},
   lrt:    {n:'مسار السكة الخفيفة (باتجاه واحد)', s:'السكة الخفيفة', lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'قيمة مقترحة – عرض شريط السكة الخفيفة غير وارد في الأدلة المرفقة؛ يجب التحقق منه مقابل تصميم السكة الحديدية'},
-  median: {n:'جزيرة وسطى مبنية',      s:'جزيرة وسطى', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'جزيرة وسطى دنيا 2.5 م بجانب مسرب اليسار (دليل تصميم التقاطعات RTA، البند 5.5.4)']},
+  median: {n:'جزيرة وسطى مبنية',      s:'جزيرة وسطى', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true,
+           soft:[2.5,'الحد الأدنى 2.5 م يسري عندما يجاور الجزيرة مسرب انعطاف يسار؛ الجزيرة المشجَّرة الضيقة في الشارع الحضري مسموحة'+' — مصدر غير مُتحقَّق: راجع الجدول في TR-514 / USDM حسب التصنيف والسرعة']},
   barrier:{n:'حاجز الجزيرة الوسطى (بين-مدني)', s:'حاجز', lvl:'road', w:0.8, col:'#a8b0b8', rail:true},
-  shR:    {n:'الكتف الأيمن',           s:'كتف', lvl:'road', w:3.0,  col:'#8c949c', min:[2.5,'الكتف الأيمن 2.5–3.5 م حسب نوع الطريق (RTA GDM / TR-514، جدول 3.2)']},
+  shR:    {n:'الكتف الأيمن',           s:'كتف', lvl:'road', w:3.0,  col:'#8c949c', soft:[2.5,'الكتف الأيمن أضيق من 2.5 م – يسري على الطرق المحلية والوصول فقط'+' — مصدر غير مُتحقَّق: راجع الجدول في TR-514 / USDM حسب التصنيف والسرعة']},
   shL:    {n:'الكتف الأيسر',           s:'الكتف الأيسر', lvl:'road', w:1.2, col:'#8c949c'},
   active: {n:'العرض الفعّال + الحاجز',  s:'W', lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'يُحدَّد العرض الفعّال W وفق نوع الحاجز ومستوى الأداء الوظيفي'},
   kerbArea:{n:'أكتاف مع حجر رصيف',     s:'أكتاف', lvl:'curb', w:0.5, col:'#cfc8b6'}
@@ -627,25 +646,25 @@ function mirror(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir
 function sym(half){ return [...half, ...mirror(half)]; }
 const E_BLD = {type:'building'}, E_FILL = {type:'fill', n:4, h:1.5}, E_CUT = {type:'cut', n:3, h:1.5, dd:0.6, db:0.6}, E_NONE={type:'none'};
 const PRESETS = {
-  mr1:{g:'حضري – مجال الشارع', n:'النمط 1 – محلي، بناء منخفض (15.0 م)', ctx:'urban', row:15, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 1',
+  mr1:{g:'حضري – مقاطع أمثلة (تُصنَّف يدوياً: شرياني/أفنيو/شارع/ممر وصول)', n:'النمط 1 – محلي، بناء منخفض (15.0 م)', ctx:'urban', row:15, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 1؛ مجموع الخلايا 15.50 م لا يطابق العرض المعلن 15.0 – يلزم التحقق من المصدر',
        cells:sym([C('front',0.3),C('walk',1.5),C('aux',1.2),C('parkP',2.0),C('lane',2.75,'down')]), eL:E_BLD, eR:E_BLD},
-  mr2:{g:'حضري – مجال الشارع', n:'النمط 2 – محلي، أرصفة غير متماثلة (17.5 م)', ctx:'urban', row:17.5, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 2',
+  mr2:{g:'حضري – مقاطع أمثلة (تُصنَّف يدوياً: شرياني/أفنيو/شارع/ممر وصول)', n:'النمط 2 – محلي، أرصفة غير متماثلة (17.5 م)', ctx:'urban', row:17.5, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 2',
        cells:[C('front',0.3),C('walk',1.6),C('aux',1.2),C('parkX',5.0),C('lane',2.75,'down'),C('lane',2.75,'up'),C('parkP',2.0),C('walk',1.6),C('front',0.3)], eL:E_BLD, eR:E_BLD},
-  mr3:{g:'حضري – مجال الشارع', n:'النمط 3 – محلي، بناء متوسط (16.0 م)', ctx:'urban', row:16, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 3',
+  mr3:{g:'حضري – مقاطع أمثلة (تُصنَّف يدوياً: شرياني/أفنيو/شارع/ممر وصول)', n:'النمط 3 – محلي، بناء متوسط (16.0 م)', ctx:'urban', row:16, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 3؛ مجموع الخلايا 16.50 م لا يطابق العرض المعلن 16.0 – يلزم التحقق من المصدر',
        cells:sym([C('front',0.3),C('walk',2.0),C('aux',1.2),C('parkP',2.0),C('lane',2.75,'down')]), eL:E_BLD, eR:E_BLD},
-  mr4:{g:'حضري – مجال الشارع', n:'النمط 4 – محلي/مجمّع 1، متوسط (22.0 م)', ctx:'urban', row:22, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 4',
+  mr4:{g:'حضري – مقاطع أمثلة (تُصنَّف يدوياً: شرياني/أفنيو/شارع/ممر وصول)', n:'النمط 4 – محلي/مجمّع 1، متوسط (22.0 م)', ctx:'urban', row:22, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 4',
        cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]), eL:E_BLD, eR:E_BLD},
-  mr5:{g:'حضري – مجال الشارع', n:'النمط 5 – محلي، بناء مرتفع (24.0 م)', ctx:'urban', row:24, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 5',
+  mr5:{g:'حضري – مقاطع أمثلة (تُصنَّف يدوياً: شرياني/أفنيو/شارع/ممر وصول)', n:'النمط 5 – محلي، بناء مرتفع (24.0 م)', ctx:'urban', row:24, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 5',
        cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkX',5.0),C('lane',3.0,'down')]), eL:E_BLD, eR:E_BLD},
-  mr7:{g:'حضري – مجال الشارع', n:'النمط 7 – محلي/مجمّع 1، مرتفع (24.0 م)', ctx:'urban', row:24, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 7',
+  mr7:{g:'حضري – مقاطع أمثلة (تُصنَّف يدوياً: شرياني/أفنيو/شارع/ممر وصول)', n:'النمط 7 – محلي/مجمّع 1، مرتفع (24.0 م)', ctx:'urban', row:24, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 7',
        cells:sym([C('front',0.5),C('walk',3.3),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]), eL:E_BLD, eR:E_BLD},
-  mr9:{g:'حضري – مجال الشارع', n:'النمط 9 – مجمّع 2، واجهة نشطة (36.0 م)', ctx:'urban', row:36, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 9',
+  mr9:{g:'حضري – مقاطع أمثلة (تُصنَّف يدوياً: شرياني/أفنيو/شارع/ممر وصول)', n:'النمط 9 – مجمّع 2، واجهة نشطة (36.0 م)', ctx:'urban', row:36, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 9',
        cells:sym([C('front',2.5),C('walk',2.8),C('aux',1.2),C('bikeP',2.0,'down'),C('parkP',2.0),C('lane',3.0,'down'),C('lane',3.0,'down'),C('median',1.5)]), eL:E_BLD, eR:E_BLD},
-  mr10:{g:'حضري – مجال الشارع', n:'النمط 10 – شرياني درجة 1 (36.0 م)', ctx:'urban', row:36, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 10',
+  mr10:{g:'حضري – مقاطع أمثلة (تُصنَّف يدوياً: شرياني/أفنيو/شارع/ممر وصول)', n:'النمط 10 – شرياني درجة 1 (36.0 م)', ctx:'urban', row:36, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 10',
        cells:sym([C('walk',2.5),C('aux',1.5),C('bikeP',2.5,'down'),C('aux',1.5),C('lane',3.5,'down'),C('lane',3.5,'down'),C('median',3.0)]), eL:E_BLD, eR:E_BLD},
-  ex1:{g:'حضري – أمثلة', n:'جزيرة مشجَّرة + حرم BRT (42.0 م)', ctx:'urban', row:42, src:'وفق الرسم المرفوع (الشكل 1)',
+  ex1:{g:'حضري – أمثلة', n:'جزيرة مشجَّرة + حرم BRT (42.0 م)', ctx:'urban', row:42, src:'وفق الرسم المرفوع (الشكل 1) – ليس مقطعاً معتمداً في USDM',
        cells:[C('plaza',12.0),C('brt',3.5,'down'),C('brt',3.5,'up'),C('median',3.5),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.5),C('lane',3.25,'up'),C('lane',3.25,'up'),C('walk',4.0)], eL:E_NONE, eR:E_BLD},
-  ex2:{g:'حضري – أمثلة', n:'حرم النقل العام ومسارات الدراجات (44.0 م)', ctx:'urban', row:44, src:'وفق الرسم المرفوع (الشكل 3)',
+  ex2:{g:'حضري – أمثلة', n:'حرم النقل العام ومسارات الدراجات (44.0 م)', ctx:'urban', row:44, src:'وفق الرسم المرفوع (الشكل 3) – مجموع الخلايا 43.80 م لا يطابق العرض المعلن 44.0؛ يلزم التحقق من المصدر',
        cells:sym([C('walk',7.7),C('bikeP',1.5,'down'),C('aux',2.0),C('bus',3.5,'down'),C('lane',3.1,'down'),C('lane',3.1,'down'),C('median',1.0)]), eL:E_BLD, eR:E_BLD},
   ex3:{g:'حضري – أمثلة', n:'السكة الخفيفة في المنتصف + حرم النقل العام (مثال)', ctx:'urban', row:0, src:'مثال تخطيطي (الشكل 8) – عروض السكة الخفيفة مقترحة ويجب التحقق منها',
        cells:[C('green',2.0),C('bikeP',3.0,'both'),C('median',1.0),C('lrt',3.5,'up'),C('lrt',3.5,'down'),C('median',2.0),C('bus',3.5,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.0),C('lane',3.25,'up'),C('lane',3.25,'up'),C('lane',3.25,'up'),C('bus',3.5,'up'),C('walk',2.0),C('green',2.0),C('bikeP',3.0,'both'),C('walk',3.0)], eL:E_NONE, eR:E_BLD},
@@ -1068,14 +1087,15 @@ function cellCheck(c){
   const t=T[c.t], ctx=$('ctx').value;
   if(c.t==='bikeP' && c.dir==='both' && c.w<3.0) return {cls:'bad',msg:'مسار دراجات ثنائي الاتجاه – عرض أدنى 3.0 م (دليل RTA، الفصل 9)'};
   if(t.min && c.w < t.min[0]-1e-9) return {cls:'bad',msg:t.min[1]};
+  if(t.soft && c.w < t.soft[0]-1e-9) return {cls:'warn',msg:t.soft[1]};
   if(t.max && c.w > t.max[0]+1e-9) return {cls:'warn',msg:t.max[1]};
   if(c.t==='lane'){
-    if(ctx==='urban' && (c.w<2.75-1e-9)) return {cls:'bad',msg:'مسرب حضري (غير منفرد) – الحد الأدنى 2.75 م (RTA GDM / USDM، جدول 3.3)'};
+    if(ctx==='urban' && (c.w<2.75-1e-9)) return {cls:'warn',msg:'مسرب حضري أضيق من 2.75 م'+' — مصدر غير مُتحقَّق: راجع الجدول في TR-514 / USDM حسب التصنيف والسرعة'};
     if(ctx==='urban' && c.w>3.65+1e-9) return {cls:'warn',msg:'مسرب حضري – الحد الأقصى 3.65 م (شرياني، RTA GDM، جدول 3.3)'};
-    if(ctx==='inter' && c.w<3.5-1e-9)  return {cls:'bad',msg:'مسرب بين-مدني – 3.5–3.75 م (RTA GDM / TR-514، جدول 3.1)'};
+    if(ctx==='inter' && c.w<3.5-1e-9)  return {cls:'warn',msg:'مسرب بين-مدني أضيق من 3.5 م – مقبول في الطرق المحلية والوصول فقط'+' — مصدر غير مُتحقَّق: راجع الجدول في TR-514 / USDM حسب التصنيف والسرعة'};
     if(ctx==='inter' && c.w>3.75+1e-9) return {cls:'warn',msg:'مسرب بين-مدني – الحد الأقصى 3.75 م (GCC Highway Design Manual)'};
   }
-  if(c.t==='shL' && c.w>1.2+1e-9 && c.w<3.0-1e-9) return {cls:'bad',msg:'يُمنع تصميم كتف أيسر بعرض بين 1.2 و3.0 م (RTA GDM / TR-514، جدول 3.2)'};
+  if(c.t==='shL' && c.w>1.2+1e-9 && c.w<3.0-1e-9) return {cls:'warn',msg:'كتف أيسر بعرض بين 1.2 و3.0 م – عرض وسيط لا يتّسع لمركبة متوقفة'+' — مصدر غير مُتحقَّق: راجع الجدول في TR-514 / USDM حسب التصنيف والسرعة'};
   return null;
 }
 
@@ -1236,7 +1256,7 @@ function edgeDraw(e, x, y, k, dir){
 /* ---------------- ورقة A0 ---------------- */
 const A0 = {w:1189, h:841};
 function curSec(){
-  return {title:$('title').value, ctx:$('ctx').value, cells:S.cells.map(c=>({...c})), eL:{...S.eL}, eR:{...S.eR},
+  return {title:$('title').value, ctx:$('ctx').value, cls:$('cls').value, vDes:num('vDes'), cells:S.cells.map(c=>({...c})), eL:{...S.eL}, eR:{...S.eR},
     curbH:num('curbH'), dSurf:num('dSurf'), dBase:num('dBase'), dSub:num('dSub'), cfRoad:num('cfRoad'), cfSide:num('cfSide'),
     pave:$('tPave').checked, rowTarget:num('rowTarget')};
 }
@@ -1298,6 +1318,24 @@ function update(rerenderCells=true){
   warn.forEach(w=>chk.push(['bad','الورقة',w]));
   { const secs = SHEET.length?SHEET:[sec]; const maxW = Math.max(...secs.map(s=>s.cells.reduce((a,c)=>a+c.w,0)+edgeExtent(s.eL).w+edgeExtent(s.eR).w));
     if(maxW*1000/D < 400) chk.push(['','الورقة',`بمقياس 1:${D} يشغل المقطع ${(maxW*1000/D).toFixed(0)} مم من أصل ~1,150 مم في عرض A0. يمكنك إضافة حتى ثلاثة مقاطع في الورقة، أو اختيار 1:100 (${(maxW*10).toFixed(0)} مم).`]); }
+  if(sec.ctx==='urban'){
+    const first=sec.cells[0], last=sec.cells[sec.cells.length-1];
+    if(!first||!last||first.t!=='front'||last.t!=='front')
+      chk.push(['warn','حدود المقطع','مقاطع USDM تُقاس من حدّ القطعة إلى حدّ القطعة: يبدأ المقطع وينتهي بشريط واجهة (front)، لا بحافة الرصيف.']);
+    const iRoad=sec.cells.findIndex(c=>levelOf(c)==='road');
+    const jRoad=sec.cells.length-1-[...sec.cells].reverse().findIndex(c=>levelOf(c)==='road');
+    [['اليسار',sec.cells.slice(0,Math.max(0,iRoad))],['اليمين',sec.cells.slice(jRoad+1)]].forEach(([nm,side])=>{
+      if(!side.length) return;
+      const has=t=>side.some(c=>c.t===t);
+      const miss=[];
+      if(!has('front')) miss.push('شريط الواجهة');
+      if(!has('walk')) miss.push('منطقة العبور (مشي)');
+      if(!['aux','green','buf','bikeP','parkP','parkX'].some(t=>has(t))) miss.push('منطقة التأثيث/الحافة');
+      if(miss.length) chk.push(['warn',`مرحلة المشاة – ${nm}`,`ينقص: ${miss.join('، ')}. تقسّم USDM مرحلة المشاة إلى واجهة + عبور صافٍ + تأثيث/حافة.`]);
+    });
+  }
+  { const cl=$('cls').options[$('cls').selectedIndex].text;
+    chk.push(['',`التصنيف والسرعة`,`${cl} · ${num('vDes')} كم/س — قيم المسارب والأكتاف والجزيرة الوسطى في TR-514 تُشتق من هذين الضابطين؛ الحدود المدرجة أدناه عامة ويجب مطابقتها بالجدول المقابل.`]); }
   if(sec.eL.type==='fill'&&sec.eL.n<4 || sec.eR.type==='fill'&&sec.eR.n<4) chk.push(['warn','منحدر الردم','ميل الردم أحدُّ من 1:4 – يلزم حاجز حماية عند حافة الكتف (RTA GDM / TR-514، البند 3.5.5: 1:4–1:6 في الردم، 1:3–1:6 في الحفر).']);
   if(!chk.length) chk.push(['','سليم','لم يتم العثور على تجاوزات مقابل قيم الإرشادات المُضمَّنة في الأداة.']);
   $('checks').innerHTML = chk.map(c=>`<div class="chk ${c[0]}"><b>${esc(c[1])}</b>${esc(c[2])}</div>`).join('');
@@ -1307,7 +1345,8 @@ function update(rerenderCells=true){
 function loadSec(s){
   S.cells = s.cells.map(c=>({...c})); S.eL={...s.eL}; S.eR={...s.eR};
   $('title').value=s.title||''; $('ctx').value=s.ctx||'urban'; $('rowTarget').value=s.rowTarget||0;
-  ['curbH','dSurf','dBase','dSub','cfRoad','cfSide'].forEach(k=>{ if(s[k]!==undefined) $(k).value=s[k]; });
+  ['curbH','dSurf','dBase','dSub','cfRoad','cfSide','vDes'].forEach(k=>{ if(s[k]!==undefined) $(k).value=s[k]; });
+  if(s.cls) $('cls').value=s.cls;
   edgeUI('L'); edgeUI('R');
 }
 function applyPreset(){

@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta name="description" content="أداة حساب مسافات الرؤية للتوقف والتجاوز والتقاطعات ومسافة الرؤية للقرار في التصميم الهندسي للطرق.">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#141a2b">
+<meta name="color-scheme" content="dark">
+<title>MAHALCO — مثلثات الرؤية على مخطط التقاطع / الدوّار</title>
+<style>
+  :root{--bg:#121624;--panel:#1b2236;--panel2:#222b42;--line:#2e3a55;--line2:#42517a;
+        --txt:#e8ecf5;--dim:#9aa6bf;--amber:#f5b82e;--amber2:#ffd166;--bad:#ff7d6a;--ok:#2dd4a0;--rail:410px}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 Cairo,ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif}
+  header{position:sticky;top:0;z-index:30;background:#141a2b;border-bottom:1px solid var(--line);display:flex;gap:9px;align-items:center;padding:9px 16px;flex-wrap:wrap}
+  .mark{display:flex;flex-direction:column;line-height:1.15;margin-left:auto}
+  .mark b{font-size:15px;letter-spacing:.14em}
+  .mark span{font-size:11.5px;color:var(--dim)}
+  button{background:#28314a;color:var(--txt);border:1px solid var(--line2);border-radius:6px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+  button:hover{background:#313c5a}
+  button.key{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+  button.on{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+  button.mini{padding:2px 7px;font-size:12px}
+  input,select{background:#131a2c;color:var(--txt);border:1px solid var(--line2);border-radius:5px;padding:5px 7px;font:inherit;font-size:13px}
+  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-items:start}
+  aside{position:sticky;top:51px;max-height:calc(100vh - 51px);overflow:auto;background:var(--panel);border-left:1px solid var(--line);padding:12px 14px 40px}
+  aside h2{font-size:11px;letter-spacing:.12em;color:var(--dim);margin:16px 0 7px;font-weight:700}
+  aside h2:first-child{margin-top:2px}
+  .row{display:grid;grid-template-columns:1fr 128px;gap:8px;align-items:center;padding:3px 0}
+  .row label{font-size:13px;color:#cdd6e6}
+  .row input,.row select{width:100%}
+  .wide{grid-template-columns:1fr}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .arm{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 8px;margin-bottom:6px}
+  .arm.sel{border-color:var(--amber)}
+  .arm .hd{display:flex;gap:6px;align-items:center;font-size:12.5px;margin-bottom:5px}
+  .arm .hd b{flex:1}
+  .arm .g{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .arm .g label{font-size:11px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+  .arm select,.arm input{width:100%;padding:3px 5px;font-size:12px}
+  main{padding:16px}
+  .bar2{display:flex;gap:8px;align-items:center;margin-bottom:9px;flex-wrap:wrap}
+  #err{display:none;background:#3a1d1d;border:1px solid var(--bad);color:#ffd9d2;border-radius:6px;padding:8px 11px;margin-bottom:8px;font-size:12.5px}
+  .stage{background:#0e1422;border:1px solid var(--line);border-radius:6px;padding:8px;overflow:auto;position:relative}
+  #plan{display:block;width:100%;height:auto;direction:ltr;cursor:crosshair;background:#0b101c;touch-action:none;user-select:none;-webkit-user-select:none}
+  #plan *{-webkit-user-drag:none}
+  .drop{display:grid;place-items:center;min-height:420px;border:2px dashed var(--line2);border-radius:8px;color:var(--dim);text-align:center;padding:24px}
+  .drop[hidden]{display:none!important}
+  .out{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px}
+  .box h3{margin:0 0 9px;font-size:12px;letter-spacing:.08em;color:var(--dim)}
+  table.t{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.t th{color:var(--dim);font-weight:600;text-align:right;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+  table.t td{padding:5px 6px;border-bottom:1px solid #243149;color:#cfd8e9}
+  table.t td b{color:var(--amber2)}
+  .chk{border-right:3px solid var(--ok);background:var(--panel2);padding:7px 10px;border-radius:4px 0 0 4px;margin-bottom:6px;font-size:12.5px}
+  .chk.warn{border-color:var(--amber)} .chk.bad{border-color:var(--bad)}
+  .chk b{display:block;font-size:11px;color:#b9c3d6}
+  .hint{font-size:12px;color:var(--dim);margin:5px 0}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#cfd8e9;margin-top:8px}
+  .legend span{display:flex;gap:5px;align-items:center}
+  .sw{width:14px;height:10px;border-radius:2px;display:inline-block}
+  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--amber);color:#161b2b;font-weight:700;padding:8px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .18s;pointer-events:none;z-index:60}
+  @media(max-width:1100px){.shell{grid-template-columns:1fr}aside{position:static;max-height:none;border-left:0;border-bottom:1px solid var(--line)}.out{grid-template-columns:1fr}}
+
+  #coach{position:fixed;left:14px;bottom:14px;width:330px;max-width:calc(100vw - 28px);z-index:60;
+    background:var(--panel);border:1px solid var(--line2);border-radius:10px;
+    box-shadow:0 14px 40px #0009;display:none;direction:rtl}
+  #coach.show{display:block}
+  #coach .ch{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line)}
+  #coach .ch b{flex:1;font-size:13px}
+  #coach .ch .no{font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+  #coach .prog{height:3px;background:#243149}
+  #coach .prog i{display:block;height:100%;background:var(--amber);transition:width .2s}
+  #coach .cb{padding:11px 12px;max-height:46vh;overflow:auto}
+  #coach h4{margin:0 0 6px;font-size:14px;color:var(--amber2)}
+  #coach p{margin:0 0 8px;font-size:12.7px;color:#cdd6e6;line-height:1.6}
+  #coach ul{margin:0 0 8px;padding-right:17px;font-size:12.5px;color:#cdd6e6;line-height:1.65}
+  #coach .st{display:flex;align-items:center;gap:7px;font-size:12.5px;padding:6px 8px;border-radius:5px;
+    background:var(--panel2);border:1px solid var(--line);margin-bottom:8px}
+  #coach .st.done{border-color:var(--ok);color:#bdf0df}
+  #coach .st .ic{font-weight:700}
+  #coach .st.done .ic{color:var(--ok)}
+  #coach .cf{display:flex;gap:6px;padding:9px 11px;border-top:1px solid var(--line);flex-wrap:wrap}
+  #coach .cf .sp{flex:1}
+  #coach .steps{display:flex;gap:3px;padding:0 11px 9px;flex-wrap:wrap}
+  #coach .steps b{width:17px;height:17px;border-radius:4px;background:#243149;color:var(--dim);
+    font-size:10.5px;display:grid;place-items:center;cursor:pointer;font-weight:600}
+  #coach .steps b.on{background:var(--amber);color:#161b2b}
+  #coach .steps b.ok{background:#1f5e4c;color:#9defcd}
+  .coach-hl{outline:2px solid var(--amber)!important;outline-offset:2px;border-radius:6px;
+    animation:coachPulse 1.3s ease-in-out 2}
+  @keyframes coachPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,184,46,.0)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.18)}}
+  @media(max-width:760px){#coach{left:8px;right:8px;width:auto}}
+
+  #mbar,#mhandle,#mscrim{display:none}
+  @media(max-width:980px){
+    header{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:6px;padding:8px 10px;
+      padding-inline-end:max(10px,env(safe-area-inset-right))}
+    header::-webkit-scrollbar{display:none}
+    header button{flex:0 0 auto;min-height:40px;font-size:12.5px}
+    .mark{flex:0 0 auto;margin-left:8px}
+    .mark b{font-size:13.5px}
+    .mark span{display:none}
+
+    .shell{display:block}
+    main{padding:10px 10px calc(88px + env(safe-area-inset-bottom))}
+    .bar2{gap:6px;margin-bottom:7px}
+    .bar2 button{min-height:42px;min-width:46px}
+    .stage{padding:5px;border-radius:8px}
+    .drop{min-height:230px;padding:18px;font-size:13px}
+    .out{grid-template-columns:1fr;gap:10px;margin-top:10px}
+    .box{padding:11px}
+    table.t{font-size:12px}
+    .legend{font-size:11.5px;gap:8px}
+
+    aside{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:70;
+      height:min(58vh,540px);max-height:none;width:auto;
+      border:0;border-top:1px solid var(--line2);border-radius:16px 16px 0 0;
+      box-shadow:0 -14px 44px rgba(0,0,0,.6);
+      transform:translateY(103%);transition:transform .26s ease;
+      overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+      padding:0 14px calc(28px + env(safe-area-inset-bottom))}
+    body.mpanel aside{transform:translateY(0)}
+    body.mpanel.mfull aside{height:min(86vh,900px)}
+    aside h2{margin:14px 0 6px;font-size:11.5px}
+    .row{grid-template-columns:1fr 140px;padding:5px 0}
+    .row label{font-size:13.5px}
+    input,select{font-size:16px;min-height:44px;padding:8px 10px}
+    .row input[type=range]{min-height:36px}
+    aside button{min-height:44px;font-size:13.5px}
+    aside button.mini{min-height:36px;font-size:12.5px}
+    .tools{gap:7px}
+    .tools button{flex:1 1 auto}
+    .arm .g{grid-template-columns:1fr 1fr;gap:7px}
+    .arm select,.arm input{font-size:15px;min-height:40px;padding:5px 7px}
+    .hint{font-size:12.5px}
+
+    #mhandle{display:flex;position:sticky;top:0;z-index:3;align-items:center;gap:9px;
+      background:var(--panel);padding:10px 0 9px;border-bottom:1px solid var(--line);margin-bottom:4px}
+    #mhandle .grip{position:absolute;top:4px;left:50%;transform:translateX(-50%);
+      width:42px;height:4px;border-radius:99px;background:var(--line2)}
+    #mhandle b{flex:1;font-size:14px}
+    #mhandle button{min-height:36px;padding:4px 10px;font-size:12.5px}
+
+    #mscrim{display:block;position:fixed;inset:0;z-index:65;background:rgba(8,11,20,.45);
+      opacity:0;pointer-events:none;transition:opacity .2s}
+    body.mpanel.mfull #mscrim{opacity:1;pointer-events:auto}
+
+    #mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:75;gap:6px;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+      background:rgba(20,26,43,.98);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+      border-top:1px solid var(--line2);overflow-x:auto;scrollbar-width:none}
+    #mbar::-webkit-scrollbar{display:none}
+    #mbar button{flex:0 0 auto;min-height:46px;font-size:13px;padding:8px 13px;white-space:nowrap}
+    #mbar button.on{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+    #mbar button.pri{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+    body.mpanel #mbar{bottom:min(58vh,540px);border-radius:0;transition:bottom .26s ease}
+    body.mpanel.mfull #mbar{bottom:min(86vh,900px)}
+
+    #coach{bottom:calc(78px + env(safe-area-inset-bottom));left:8px;right:8px;width:auto;z-index:60}
+    body.mpanel #coach{display:none}
+    #toast{bottom:calc(84px + env(safe-area-inset-bottom))}
+  }
+  @media print{#mbar,#mhandle,#mscrim{display:none!important}}
+</style>
+
+<script data-light="#FFFFFF" data-dark="#141a2b" data-slot="header">
+(function(){
+  var d=document.documentElement, K='mh-theme', G='mh-glass';
+  var me=document.currentScript||{dataset:{}};
+  var LC=me.dataset.light||'#F2F2F7', DC=me.dataset.dark||'#000000', SLOT=me.dataset.slot||'';
+  function rd(k,v){try{return localStorage.getItem(k)||v}catch(e){return v}}
+  function wr(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+  var ui=null;
+  function apply(){
+    var pref=rd(K,'auto'); if(!/^(light|dark|auto)$/.test(pref)) pref='auto';
+    var t=pref==='auto'?(mq.matches?'dark':'light'):pref, gl=rd(G,'off')==='on'?'on':'off';
+    d.setAttribute('data-theme',t); d.setAttribute('data-theme-pref',pref); d.setAttribute('data-glass',gl);
+    d.style.colorScheme=t;
+    var ms=document.querySelectorAll('meta[name="theme-color"]');
+    if(!ms.length && document.head){var m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m);ms=[m];}
+    for(var i=0;i<ms.length;i++){ms[i].removeAttribute('media');ms[i].setAttribute('content',t==='dark'?DC:LC);}
+    if(ui) ui.sync(pref,gl);
+    try{document.dispatchEvent(new CustomEvent('mh:theme',{detail:{theme:t,pref:pref,glass:gl}}));}catch(e){}
+  }
+  function soft(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},420);
+  }
+  window.MHTheme={
+    set:function(p){wr(K,p);soft();apply();},
+    glass:function(on){wr(G,on?'on':'off');soft();apply();},
+    get:function(){return {theme:d.getAttribute('data-theme'),pref:rd(K,'auto'),glass:rd(G,'off')};}
+  };
+  apply();
+  if(mq.addEventListener) mq.addEventListener('change',function(){if(rd(K,'auto')==='auto'){soft();apply();}});
+  else if(mq.addListener) mq.addListener(function(){if(rd(K,'auto')==='auto') apply();});
+  window.addEventListener('storage',function(e){if(e.key===K||e.key===G) apply();});
+
+  var ICO={
+    look:'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="currentColor"/></svg>',
+    light:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>',
+    dark:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 0 1 9.4 4a8.4 8.4 0 1 0 10.6 10.6z" fill="currentColor"/></svg>',
+    auto:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4.5" width="18" height="12" rx="2.2"/><path d="M8.5 20h7M12 16.5V20" stroke-linecap="round"/></svg>'
+  };
+  function build(){
+    if(document.getElementById('mh-look')) return;
+    var b=document.body;
+    var bg=document.createElement('div'); bg.id='mh-bg'; bg.setAttribute('aria-hidden','true'); b.insertBefore(bg,b.firstChild);
+    var btn=document.createElement('button');
+    btn.type='button'; btn.id='mh-look'; btn.className='mh-look';
+    btn.setAttribute('aria-label','مظهر العرض: نهاري، ليلي وزجاجي');
+    btn.setAttribute('aria-haspopup','dialog'); btn.setAttribute('aria-expanded','false');
+    btn.title='مظهر العرض'; btn.innerHTML=ICO.look;
+    var slot=SLOT?document.querySelector(SLOT):null;
+    if(slot){btn.classList.add('mh-inline');slot.appendChild(btn);} else {btn.classList.add('mh-float');b.appendChild(btn);}
+    var pop=document.createElement('div');
+    pop.className='mh-pop'; pop.id='mh-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','مظهر العرض'); pop.hidden=true;
+    pop.innerHTML=
+      '<div class="mh-pop-h">مظهر العرض</div>'+
+      '<div class="mh-seg" role="radiogroup" aria-label="نمط الألوان">'+
+        '<span class="mh-knob" aria-hidden="true"></span>'+
+        '<button type="button" role="radio" data-v="light">'+ICO.light+'<span>نهاري</span></button>'+
+        '<button type="button" role="radio" data-v="dark">'+ICO.dark+'<span>ليلي</span></button>'+
+        '<button type="button" role="radio" data-v="auto">'+ICO.auto+'<span>حسب الجهاز</span></button>'+
+      '</div>'+
+      '<label class="mh-row"><span class="mh-row-t"><b>زجاج iOS</b><small>شفافية وضباب خلف البطاقات</small></span>'+
+      '<input type="checkbox" class="mh-sw" role="switch"></label>'+
+      '<p class="mh-foot">الاختيار محفوظ لجميع صفحات وأدوات الموقع.</p>';
+    b.appendChild(pop);
+    var seg=pop.querySelector('.mh-seg'), knob=pop.querySelector('.mh-knob'), sw=pop.querySelector('.mh-sw');
+    function place(){
+      var r=btn.getBoundingClientRect(), w=pop.offsetWidth, h=pop.offsetHeight, vw=innerWidth, vh=innerHeight;
+      var left=Math.min(Math.max(8,r.left),vw-w-8);
+      var top=(r.bottom+10+h<vh-8)?r.bottom+10:Math.max(8,r.top-h-10);
+      pop.style.left=left+'px'; pop.style.top=top+'px';
+    }
+    function moveKnob(){
+      var on=seg.querySelector('[aria-checked="true"]'); if(!on||!pop.offsetWidth) return;
+      knob.style.width=on.offsetWidth+'px'; knob.style.left=on.offsetLeft+'px';
+    }
+    function open(){pop.hidden=false;btn.setAttribute('aria-expanded','true');place();moveKnob();
+      requestAnimationFrame(function(){pop.classList.add('on');});
+      var c=seg.querySelector('[aria-checked="true"]'); if(c) c.focus({preventScroll:true});}
+    function close(f){if(pop.hidden) return; pop.classList.remove('on');btn.setAttribute('aria-expanded','false');pop.hidden=true; if(f) btn.focus();}
+    btn.addEventListener('click',function(e){e.stopPropagation(); pop.hidden?open():close();});
+    pop.addEventListener('click',function(e){e.stopPropagation();});
+    document.addEventListener('click',function(){close();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape') close(true);});
+    addEventListener('resize',function(){if(!pop.hidden){place();moveKnob();}});
+    addEventListener('scroll',function(){if(!pop.hidden) place();},{passive:true});
+    seg.addEventListener('click',function(e){var t=e.target.closest('button[data-v]'); if(t) MHTheme.set(t.dataset.v);});
+    seg.addEventListener('keydown',function(e){
+      if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
+      var bs=[].slice.call(seg.querySelectorAll('button')), i=bs.indexOf(document.activeElement); if(i<0) return;
+      i=(i+(e.key==='ArrowLeft'?1:-1)+bs.length)%bs.length; bs[i].focus(); MHTheme.set(bs[i].dataset.v); e.preventDefault();
+    });
+    sw.addEventListener('change',function(){MHTheme.glass(sw.checked);});
+    ui={sync:function(pref,gl){
+      [].forEach.call(seg.querySelectorAll('button'),function(x){var on=x.dataset.v===pref;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;});
+      sw.checked=gl==='on'; moveKnob();
+    }};
+    apply();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+})();
+</script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Cairo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+:root[data-theme="light"]{--bg:#EEF1F6;--panel:#FFFFFF;--panel2:#F3F5F9;--line:#D6DDE8;--line2:#BFC9D8;--txt:#172033;--dim:#5C6880;
+  --amber:#E0A21C;--amber2:#A86F00;--bad:#C8372D;--ok:#128A68}
+:root[data-theme="light"] header{background:rgba(255,255,255,.94)}
+:root[data-theme="light"] button{background:#F1F4F8} :root[data-theme="light"] button:hover{background:#E5EAF1}
+:root[data-theme="light"] :is(button.key,button.on){background:var(--amber)}
+:root[data-theme="light"] :is(input,select){background:#fff}
+:root[data-theme="light"] .row label{color:#34405A}
+:root[data-theme="light"] #err{background:#FDECEA;color:#8E2A1E}
+:root[data-theme="light"] .stage{background:#E6EAF0}
+:root[data-theme="light"] #plan{background:#F5F7FA}
+:root[data-theme="light"] table.t td{border-bottom-color:#E3E8EF;color:#26324A}
+:root[data-theme="light"] :is(.chk b){color:#56627A}
+:root[data-theme="light"] .legend{color:#26324A}
+:root[data-theme="light"] #coach{box-shadow:0 14px 40px rgba(0,0,0,.18)}
+:root[data-theme="light"] :is(#coach p,#coach ul){color:#34405A}
+:root[data-theme="light"] #coach .prog,:root[data-theme="light"] #coach .steps b{background:#E3E8EF}
+:root[data-theme="light"] #coach .steps b.on{background:var(--amber)}
+:root[data-theme="light"] #coach .steps b.ok{background:#D4F2E7;color:#0E6B52}
+:root[data-theme="light"] #coach .st.done{color:#0E6B52}
+@media (max-width:980px){
+  :root[data-theme="light"] #mbar{background:rgba(255,255,255,.96)}
+  :root[data-theme="light"] aside{box-shadow:0 -14px 44px rgba(0,0,0,.16)}
+}
+:root[data-theme="light"] :is(#mbar button.on,#mbar button.pri){background:var(--amber)}
+header .mh-look{margin-inline-start:auto}
+html[data-glass="on"] aside,
+html[data-glass="on"] .box,
+html[data-glass="on"] #coach{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] input,
+html[data-glass="on"] select,
+html[data-glass="on"] .stage{background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] header,
+html[data-glass="on"] #mbar{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark"><b>MAHALCO</b><span>مثلثات الرؤية – محور منحني وكل الأذرع</span></div>
+  <button id="btnUndo">تراجع عن آخر نقطة</button>
+  <button id="btnReset">صفِّر الهندسة</button>
+  <button id="btnPng" class="key">تنزيل PNG</button>
+  <button id="btnSvg">تنزيل SVG</button>
+  <button id="btnJson">حفظ JSON</button>
+  <button id="btnGuide">? الدليل</button>
+</header>
+
+<div class="shell">
+<aside>
+  <h2>1 · خلفية المخطط</h2>
+  <div class="row wide"><input id="file" type="file" accept="image/*"></div>
+  <p class="hint" id="imgInfo">حمّل صورة أو لقطة شاشة للمخطط.</p>
+
+  <h2>2 · مقياس الرسم</h2>
+  <div class="row wide"><select id="calMode">
+    <option value="line">معايرة بقطعة معروفة الطول (موصى به)</option>
+    <option value="scale">حسب مقياس الرسم ودقة المسح</option></select></div>
+  <div id="calLine">
+    <div class="row"><label for="calLen">طول القطعة المُعلَّمة (م)</label><input id="calLen" type="number" step="0.1" value="50"></div>
+    <button id="btnCal">علّم قطعة المعايرة</button>
+    <p class="hint">كلما كانت القطعة أطول، قلّ خطأ المعايرة.</p>
+  </div>
+  <div id="calScale" hidden>
+    <div class="row"><label for="scDen">مقياس الرسم 1:</label><input id="scDen" type="number" step="50" value="1000"></div>
+    <div class="row"><label for="dpi">دقة الصورة DPI</label><input id="dpi" type="number" step="1" value="150"></div>
+  </div>
+  <p class="hint" id="scaleInfo">مقياس الرسم: —</p>
+
+  <h2>3 · نوع الفحص</h2>
+  <div class="row wide"><select id="kind">
+    <option value="urban">تقاطع حضري – دليل تصميم الشوارع الحضرية (USDM أبوظبي)</option>
+    <option value="inter">تقاطع بين-مدني – RTA GDM / أبوظبي TR-514 / دليل GCC</option>
+    <option value="round">دوّار – دليل تصميم الدوّارات</option></select></div>
+  <div id="pJunction">
+    <div class="row"><label for="vMain">السرعة على الطريق الرئيسي</label><select id="vMain"></select></div>
+    <div class="row"><label for="dual">الطريق الرئيسي</label><select id="dual">
+      <option value="0">أحادي المسلك (مسرب لكل اتجاه)</option><option value="1">ثنائي المسلك (مسربان لكل اتجاه)</option></select></div>
+    <div class="row"><label for="curb">من المحور الرئيسي إلى حجر الرصيف (م)</label><input id="curb" type="number" step="0.5" value="7"></div>
+    <div class="row"><label><input type="checkbox" id="showLeft" checked> رؤية الانعطاف يساراً من الرئيسي</label><span></span></div>
+  </div>
+  <div id="pRound" hidden>
+    <div class="row"><label for="rLanes">نمط الدوّار</label><select id="rLanes">
+      <option value="1">أحادي المسرب</option><option value="2">ثنائي المسرب</option></select></div>
+    <div class="row"><label for="rDc">القطر الخارجي Dc (م)</label><input id="rDc" type="number" step="1" value="40"></div>
+    <p class="hint" id="rInfo">—</p>
+  </div>
+
+  <h2>4 · التعليم على المخطط</h2>
+  <div id="jTools">
+    <div class="tools">
+      <button id="tAxis">✎ محور الطريق الرئيسي</button>
+      <button id="tArm">+ أضف ذراعاً</button>
+      <button id="tDone">إنهاء التعليم</button>
+    </div>
+    <p class="hint" id="drawHint"></p>
+    <div id="arms"></div>
+  </div>
+  <div id="rTools" hidden>
+    <div class="tools">
+      <button id="tC">مركز الدوّار</button><button id="tE">الحافة الخارجية</button>
+      <button id="tRA">+ ذراع وصول</button><button id="tDone2">إنهاء</button>
+    </div>
+    <div id="rArms"></div>
+  </div>
+
+  <h2>الطباعة – ورقة A0</h2>
+  <div class="row"><label for="prScale">مقياس الرسم</label><select id="prScale">
+    <option value="500">1:500</option><option value="1000" selected>1:1000</option><option value="2000">1:2000</option></select></div>
+  <div class="row"><label for="prProj">المشروع</label><input id="prProj" value=""></div>
+  <div class="row"><label for="prDwg">رقم الورقة</label><input id="prDwg" value="SD-01"></div>
+  <div class="row"><label for="prBy">الراسم</label><input id="prBy" value=""></div>
+  <div class="tools"><button id="btnSheet" class="key">افتح ورقة A0</button><button id="btnSheetDl">نزّل HTML</button></div>
+  <p class="hint" id="prInfo">للطباعة: ورق A0، «الحجم الفعلي / 100%»، بدون هوامش.</p>
+
+  <h2>العرض</h2>
+  <div class="row"><label for="man">الحركة المعروضة</label><select id="man">
+    <option value="left">انعطاف يساراً من الثانوي</option>
+    <option value="cross">العبور</option>
+    <option value="right">انعطاف يميناً</option>
+    <option value="all">الكل معاً</option></select></div>
+  <div class="row"><label for="armSel">الذراع المعروض</label><select id="armSel"><option value="-1">كل الأذرع</option></select></div>
+  <div class="row"><label for="opac">شفافية المثلثات</label><input id="opac" type="range" min="10" max="80" value="34"></div>
+  <div class="row"><label><input type="checkbox" id="tLbl" checked> تسميات الأبعاد</label><span></span></div>
+  <div class="row"><label><input type="checkbox" id="tChord" checked> خط الرؤية (وتر المثلث)</label><span></span></div>
+  <div class="row"><label><input type="checkbox" id="tGrid"> شبكة 10 م</label><span></span></div>
+</aside>
+
+<main>
+  <div class="bar2"><button id="zIn">+</button><button id="zOut">−</button><button id="zFit">ملاءمة الشاشة</button>
+    <span class="hint" id="cursorInfo"></span></div>
+  <div id="err"></div>
+  <div class="stage" id="stage">
+    <div class="drop" id="drop">اسحب صورة المخطط إلى هنا، أو اختر ملفاً من اللوحة اليسرى</div>
+    <svg id="plan" hidden xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="out">
+    <div class="box"><h3>قيم التصميم حسب الذراع</h3><div id="res"></div></div>
+    <div class="box"><h3>الفحوصات والملاحظات</h3><div id="checks"></div></div>
+  </div>
+</main>
+</div>
+<div id="coach" role="dialog" aria-label="دليل موجَّه للأداة">
+  <div class="ch"><b>دليل موجَّه</b><span class="no" id="cNo">1 / 9</span>
+    <button class="mini" id="cClose" title="إغلاق">✕</button></div>
+  <div class="prog"><i id="cBar" style="width:11%"></i></div>
+  <div class="cb" id="cBody"></div>
+  <div class="steps" id="cDots"></div>
+  <div class="cf">
+    <button class="mini" id="cPrev">→ السابق</button>
+    <button class="mini key" id="cDo">نفّذ</button>
+    <span class="sp"></span>
+    <button class="mini" id="cSkip">لا تُظهره عند البدء</button>
+    <button class="mini" id="cNext">التالي ←</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ============================ بيانات الإرشادات ============================ */
+const U_NOSTOP={calm:{L2:15,cross:15,turn:15,add:0},30:{L2:12,cross:55,turn:65,add:4,alt:'45 / 45'},
+  50:{L2:12,cross:90,turn:110,add:7,alt:'75 / 75'},70:{L2:12,cross:125,turn:155,add:10,alt:'100 / 100'}};
+const U_STOP={calm:{L2:3,cross:25,left:30,add:0},30:{L2:3,cross:55,left:60,add:4},
+  50:{L2:3,cross:90,left:105,add:7},70:{L2:3,cross:125,left:145,add:10}};
+const U_LEFTMAIN={50:{d:75,add:7},70:{d:105,add:10}};
+const U_GRADE={calm:{u4:1.1,u5:1.1,u6:1.1,d4:1.0,d5:1.0,d6:1.0},30:{u4:1.1,u5:1.1,u6:1.1,d4:1.0,d5:1.0,d6:1.0},
+  50:{u4:1.1,u5:1.1,u6:1.1,d4:1.0,d5:0.9,d6:0.9},70:{u4:1.1,u5:1.1,u6:1.1,d4:0.9,d5:0.9,d6:0.9}};
+const I_GAPS={0:{car:{cross:6.5,left:7.5},truck:{cross:8.5,left:9.5}},
+              1:{car:{cross:7.0,left:8.0},truck:{cross:9.2,left:10.2}}};
+const I_LEFTMAIN={car:{near:5.5,far:6.0},truck:{near:6.5,far:7.5}};
+const I_L2={'302':2.0,'301':12.0};
+const R_SSD={10:8.1,20:18.5,30:31.2,40:46.2,50:63.4,60:83.0,70:104.9};
+const R_T27={1:[[30,11,21,54,41],[35,13,23,61,43],[40,16,25,69,45],[45,19,26,73,46]],
+             2:[[45,15,24,65,44],[50,17,25,69,45],[55,20,27,78,47],[60,23,28,83,48],[65,25,29,88,49],[70,28,30,93,50]]};
+const R_TC=6.5, R_APPROACH=15;
+
+/* ============================ الحالة ============================ */
+const $=id=>document.getElementById(id);
+const S={img:null,iw:0,ih:0,pxPerM:0,axis:[],arms:[],round:{C:null,E:null,arms:[]},tool:null,cur:-1,cal:[],drag:null};
+const f1=v=>(Math.round(v*10)/10).toFixed(1);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const V=(x,y)=>({x,y}), sub=(a,b)=>V(a.x-b.x,a.y-b.y), add=(a,b)=>V(a.x+b.x,a.y+b.y), mul=(a,s)=>V(a.x*s,a.y*s);
+const nrm=a=>Math.hypot(a.x,a.y), unit=a=>{const l=nrm(a)||1;return V(a.x/l,a.y/l);};
+const dot2=(a,b)=>a.x*b.x+a.y*b.y;
+const angDeg=(a,b)=>Math.acos(Math.max(-1,Math.min(1,dot2(unit(a),unit(b)))))*180/Math.PI;
+const M2P=m=>m*S.pxPerM;
+let toastT; function toast(m){const t=$('toast');t.textContent=m;t.style.opacity='1';clearTimeout(toastT);toastT=setTimeout(()=>t.style.opacity='0',1500);}
+
+/* ===================== هندسة على خط مكسور ===================== */
+function meta(poly){
+  const segs=[]; let tot=0;
+  for(let i=0;i<poly.length-1;i++){ const d=nrm(sub(poly[i+1],poly[i])); segs.push({a:poly[i],b:poly[i+1],len:d,s0:tot}); tot+=d; }
+  return {poly,segs,total:tot};
+}
+function ptAt(M,s){
+  if(!M.segs.length) return M.poly[0];
+  s=Math.max(0,Math.min(M.total,s));
+  for(const g of M.segs) if(s<=g.s0+g.len+1e-9){ const t=g.len?(s-g.s0)/g.len:0; return add(g.a,mul(sub(g.b,g.a),t)); }
+  return M.poly[M.poly.length-1];
+}
+function tanAt(M,s){
+  if(!M.segs.length) return V(1,0);
+  s=Math.max(0,Math.min(M.total,s));
+  for(const g of M.segs) if(s<=g.s0+g.len+1e-9) return unit(sub(g.b,g.a));
+  const g=M.segs[M.segs.length-1]; return unit(sub(g.b,g.a));
+}
+function proj(M,p){
+  let best={s:0,d:1e18,pt:M.poly[0]};
+  for(const g of M.segs){
+    const ab=sub(g.b,g.a), L2=dot2(ab,ab)||1;
+    let t=dot2(sub(p,g.a),ab)/L2; t=Math.max(0,Math.min(1,t));
+    const q=add(g.a,mul(ab,t)), d=nrm(sub(p,q));
+    if(d<best.d) best={s:g.s0+t*g.len,d,pt:q};
+  }
+  return best;
+}
+function walk(M,s0,dist,dir){
+  const out=[ptAt(M,s0)]; const tgt=s0+dir*dist;
+  const lo=Math.min(s0,tgt), hi=Math.max(s0,tgt), verts=[];
+  for(const g of M.segs){ const sv=g.s0+g.len; if(sv>lo+1e-6 && sv<hi-1e-6) verts.push(sv); }
+  if(dir<0) verts.reverse();
+  verts.forEach(sv=>out.push(ptAt(M,sv)));
+  out.push(ptAt(M,Math.max(0,Math.min(M.total,tgt))));
+  return {pts:out,end:out[out.length-1],clipped:tgt<-1e-6||tgt>M.total+1e-6,
+          got:Math.min(Math.abs(tgt-s0), dir>0?M.total-s0:s0)};
+}
+
+/* ============================ الحساب ============================ */
+function armCalc(arm){
+  const kind=$('kind').value, dual=+$('dual').value, sp=$('vMain').value;
+  const veh=arm.veh||'car', xtra=Math.max(0,+arm.xtra||0), ctrl=arm.ctrl||'302';
+  if(kind==='urban'){
+    const gf=(!arm.grade||arm.grade==='0')?1:(U_GRADE[sp]||U_GRADE[50])[arm.grade];
+    if(ctrl==='301'){ const t=U_NOSTOP[sp];
+      return {L2:t.L2,left:(t.cross+t.add*xtra)*gf,right:(t.turn+t.add*xtra)*gf,gf,
+        nLeft:'L1 للعبور',nRight:'L1 للانعطاف',
+        leftMain:$('showLeft').checked&&U_LEFTMAIN[sp]?U_LEFTMAIN[sp].d+U_LEFTMAIN[sp].add*xtra:0}; }
+    const t=U_STOP[sp];
+    return {L2:t.L2,left:(t.cross+t.add*xtra)*gf,right:(t.left+t.add*xtra)*gf,gf,
+      nLeft:'L1 للعبور والانعطاف يميناً',nRight:'L1 للانعطاف يساراً',
+      leftMain:$('showLeft').checked&&U_LEFTMAIN[sp]?U_LEFTMAIN[sp].d+U_LEFTMAIN[sp].add*xtra:0};
+  }
+  const V0=+sp, G=I_GAPS[dual][veh], k=(veh==='truck'?1.0:0.5)*xtra;
+  const tcL=G.cross+k, tcR=G.left+k, lm=I_LEFTMAIN[veh], tcLM=(dual?lm.far:lm.near)+k;
+  return {L2:I_L2[ctrl],left:0.278*V0*tcL,right:0.278*V0*tcR,tcL,tcR,
+    nLeft:'L1 للعبور / يميناً',nRight:'L1 للانعطاف يساراً',
+    leftMain:$('showLeft').checked?0.278*V0*tcLM:0,tcLM};
+}
+function roundCalc(){
+  const lanes=+$('rLanes').value, Dc=+$('rDc').value, T=R_T27[lanes];
+  let row=T[0]; for(const r of T) if(Dc>=r[0]) row=r;
+  const Vc=row[2], ssdV=Object.keys(R_SSD).map(Number).reduce((a,b)=>Math.abs(b-Vc)<Math.abs(a-Vc)?b:a);
+  return {Dc,exact:T.some(r=>r[0]===Dc),R4:row[1],Vc,R1:row[3],Ve:row[4],d:R_SSD[ssdV],ssdV,b:0.278*Vc*R_TC,row};
+}
+
+/* ============================ الرسم ============================ */
+function draw(){ try{ draw_(); $('err').style.display='none'; }
+  catch(e){ const el=$('err'); el.style.display='block'; el.textContent='خطأ في الرسم: '+e.message; console.error(e); } }
+function draw_(pr){
+  if(!pr){ renderArms(); updateInfo(); }
+  const svg=$('plan'); if(!S.img){ if(!pr) report([],[]); return null; }
+  const W=S.iw,H=S.ih, shown=svg.getBoundingClientRect().width||W, u=W/shown;
+  const sw=pr?pr.sw:Math.max(1.2,1.6*u), fs=pr?pr.fs:Math.max(11,14*u), op=(+$('opac').value)/100;
+  const lbl=$('tLbl').checked, chord=$('tChord').checked;
+  const T=(x,y,s,col,size)=>`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" fill="${col}" font-size="${size||fs}" font-family="Arial" font-weight="700" text-anchor="middle" paint-order="stroke" stroke="#0b101c" stroke-width="${(size||fs)*0.24}" stroke-linejoin="round">${esc(s)}</text>`;
+  const dot=(p,col,r)=>`<g><circle cx="${p.x}" cy="${p.y}" r="${(r||sw*3)*1.9}" fill="${col}" opacity=".2"/><circle cx="${p.x}" cy="${p.y}" r="${r||sw*3}" fill="${col}" stroke="#0b101c" stroke-width="${sw*0.8}"/></g>`;
+  const path=pts=>pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+  let g='', rows=[], notes=[];
+  if($('tGrid').checked&&S.pxPerM){ const st=M2P(10); let gr='';
+    for(let x=0;x<W;x+=st) gr+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`;
+    for(let y=0;y<H;y+=st) gr+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`;
+    g+=`<g stroke="#5fa8ff" stroke-width="${sw*0.35}" opacity=".3">${gr}</g>`; }
+
+  if($('kind').value==='round'){
+    const R=roundCalc(), C=S.round.C, E=S.round.E;
+    if(C) g+=dot(C,'#5fa8ff');
+    if(C&&E){
+      const Rout=nrm(sub(E,C));
+      g+=`<circle cx="${C.x}" cy="${C.y}" r="${Rout}" fill="none" stroke="#5fa8ff" stroke-width="${sw}" stroke-dasharray="${sw*4} ${sw*3}"/>`+dot(E,'#5fa8ff');
+      if(S.pxPerM){
+        const rP=Math.max(2,Rout-M2P(2));
+        g+=`<circle cx="${C.x}" cy="${C.y}" r="${rP}" fill="none" stroke="#2dd4a0" stroke-width="${sw*0.8}" stroke-dasharray="${sw*2} ${sw*2}"/>`;
+        S.round.arms.forEach((AR,i)=>{
+          const A=AR.p||AR;
+          const uu=unit(sub(A,C)), ent=add(C,mul(uu,Rout));
+          let appM=R_APPROACH, eye;
+          if(AR.stop){ const rr=Math.max(Rout+1, dot2(sub(AR.stop,C),uu)); appM=(rr-Rout)/S.pxPerM; eye=add(C,mul(uu,rr)); }
+          else eye=add(ent,mul(uu,M2P(R_APPROACH)));
+          const a0=Math.atan2(uu.y,uu.x), sb=M2P(R.b)/rP, sd=M2P(R.d)/rP, P=[],Q=[];
+          for(let j=0;j<=40;j++){const a=a0+sb*j/40;P.push(add(C,V(Math.cos(a)*rP,Math.sin(a)*rP)));}
+          for(let j=0;j<=40;j++){const a=a0-sd*j/40;Q.push(add(C,V(Math.cos(a)*rP,Math.sin(a)*rP)));}
+          g+=`<path d="M${eye.x.toFixed(1)} ${eye.y.toFixed(1)} ${path(P).slice(1)} Z" fill="#f5b82e" fill-opacity="${op}" stroke="#f5b82e" stroke-width="${sw}"/>`;
+          if(chord) g+=`<line x1="${eye.x}" y1="${eye.y}" x2="${P[40].x}" y2="${P[40].y}" stroke="#f5b82e" stroke-width="${sw*0.9}" stroke-dasharray="${sw*3} ${sw*2}"/>`;
+          g+=`<path d="${path(Q)}" fill="none" stroke="#2dd4a0" stroke-width="${sw*2.2}" stroke-linecap="round" opacity=".9"/>`;
+          g+=dot(ent,'#f5b82e',sw*2.2)+dot(eye,'#ff9d6a');
+          if(AR.stop){ const nn=V(uu.y,-uu.x), wdt=M2P(4);
+            g+=`<line x1="${(eye.x-nn.x*wdt/2).toFixed(1)}" y1="${(eye.y-nn.y*wdt/2).toFixed(1)}" x2="${(eye.x+nn.x*wdt/2).toFixed(1)}" y2="${(eye.y+nn.y*wdt/2).toFixed(1)}" stroke="#ffffff" stroke-width="${sw*2.4}"/>`;
+            if(appM>R_APPROACH+0.5) notes.push(['warn',`ذراع ${i+1} – ضلع الوصول`,`خط التوقف يبعد ${f1(appM)} م من الحافة الخارجية. توصي الإرشادات بتحديد ضلع الوصول بـ15 م (البند 2.14.3).`]);
+          } else notes.push(['',`ذراع ${i+1} – خط التوقف`,'لم يُعلَّم خط توقف؛ يُقاس المثلث من 15 م قبل الحافة الخارجية.']);
+          if(lbl){ g+=T(eye.x,eye.y-fs*0.8,`ذراع ${i+1} · ${f1(appM)} م`+(AR.stop?' من خط التوقف':''),'#ff9d6a')
+            +T(P[20].x,P[20].y,`b = ${f1(R.b)} م`,'#f5b82e')+T(Q[20].x,Q[20].y,`d = ${f1(R.d)} م`,'#2dd4a0'); }
+          rows.push([`ذراع ${i+1}`,`<b>${f1(R.b)}</b>`,`<b>${f1(R.d)}</b>`,`<b>${f1(appM)}</b>`,AR.stop?'خط توقف':'افتراضي']);
+        });
+        if(lbl) g+=T(C.x,C.y-Rout-fs*0.6,`Dc = ${f1(2*Rout/S.pxPerM)} م`,'#5fa8ff');
+      }
+    }
+    notes.push(['','معطيات الدوّار',`R4 = ${R.R4} م · دوران ${R.Vc} كم/س · R1 = ${R.R1} م · دخول ${R.Ve} كم/س`+(R.exact?'':` (وفق Dc = ${R.row[0]} م من الجدول)`)],
+      ['','ما يُرسم','الأصفر – مثلث رؤية اليسار من مدخل الذراع (b، فجوة 6.5 ث، ضلع وصول 15 م). الأخضر – مسافة رؤية التوقف d على طول مسار السير، 2 م من حافة الجزيرة.']);
+  } else {
+    const A=meta(S.axis);
+    if(S.axis.length>1) g+=`<path d="${path(S.axis)}" fill="none" stroke="#5fa8ff" stroke-width="${sw*1.1}" stroke-dasharray="${sw*6} ${sw*4}"/>`;
+    S.axis.forEach(p=>g+=dot(p,'#5fa8ff',sw*2));
+
+    const only=+($('armSel')?$('armSel').value:-1);
+    S.arms.forEach((arm,ai)=>{
+      arm.pts.forEach(p=>g+=dot(p,'#c9b6ff',sw*2));
+      if(arm.stop) g+=dot(arm.stop,'#ffffff',sw*2.2);
+      if(only>=0 && only!==ai) return;
+      if(!arm.pts.length||S.axis.length<2||!S.pxPerM) return;
+      const J=proj(A,arm.pts[0]);
+      const AP=meta([J.pt,...arm.pts]);
+      const C=armCalc(arm);
+      /* عين السائق: إذا عُلِّم خط توقف – 1.5 م خلفه؛ وإلا وفق L2 من حافة حجر الرصيف */
+      let eyeS, stopS=null;
+      if(arm.stop){ stopS=proj(AP,arm.stop).s; eyeS=Math.min(AP.total, stopS+M2P(1.5)); }
+      else eyeS=Math.min(AP.total, M2P(+$('curb').value+C.L2));
+      const eye=ptAt(AP,eyeS);
+      const solid=walk(AP,0,eyeS,1).pts;
+      g+=`<path d="${path(solid)}" fill="none" stroke="#c9b6ff" stroke-width="${sw*1.1}"/>`;
+      if(AP.total>eyeS) g+=`<path d="${path(walk(AP,eyeS,AP.total-eyeS,1).pts)}" fill="none" stroke="#c9b6ff" stroke-width="${sw*0.7}" stroke-dasharray="${sw*4} ${sw*4}" opacity=".45"/>`;
+      if(arm.stop){ const tg=tanAt(AP,stopS), nn=V(tg.y,-tg.x), sp=ptAt(AP,stopS), wdt=M2P(3.5);
+        g+=`<line x1="${(sp.x-nn.x*wdt/2).toFixed(1)}" y1="${(sp.y-nn.y*wdt/2).toFixed(1)}" x2="${(sp.x+nn.x*wdt/2).toFixed(1)}" y2="${(sp.y+nn.y*wdt/2).toFixed(1)}" stroke="#ffffff" stroke-width="${sw*2.4}" stroke-linecap="butt"/>`;
+        if(lbl) g+=T(sp.x,sp.y+fs*0.9,'خط توقف','#ffffff',fs*0.8); }
+      const head=unit(sub(J.pt,eye));                 // من العين إلى التقاطع
+      const leftV=V(head.y,-head.x);                  // يسار السائق (شاشة y لأسفل)
+      const t=tanAt(A,J.s);
+      const dirLeft=dot2(t,leftV)>=0?1:-1;
+      const man=$('man').value;
+      const LGS={
+        right:[{v:C.left,dir:dirLeft,col:'#f5b82e',n:'رؤية يساراً – انعطاف يميناً'}],
+        cross:[{v:C.left,dir:dirLeft,col:'#f5b82e',n:'رؤية يساراً – عبور'},
+               {v:C.left,dir:-dirLeft,col:'#ff9d6a',n:'رؤية يميناً – عبور'}],
+        left:[{v:C.left,dir:dirLeft,col:'#f5b82e',n:'رؤية يساراً – عبور المسرب القريب'},
+              {v:C.right,dir:-dirLeft,col:'#ff9d6a',n:'رؤية يميناً – انعطاف يساراً'}],
+        all:[{v:C.left,dir:dirLeft,col:'#f5b82e',n:C.nLeft},{v:C.right,dir:-dirLeft,col:'#ff9d6a',n:C.nRight}]
+      };
+      const legs=LGS[man]||LGS.all;
+      const cells=[];
+      legs.forEach((L,i)=>{
+        const w=walk(A,J.s,M2P(L.v),L.dir);
+        g+=`<path d="M${eye.x.toFixed(1)} ${eye.y.toFixed(1)} ${path(w.pts).slice(1)} Z" fill="${L.col}" fill-opacity="${op}" stroke="${L.col}" stroke-width="${sw}"/>`;
+        if(chord) g+=`<line x1="${eye.x}" y1="${eye.y}" x2="${w.end.x}" y2="${w.end.y}" stroke="${L.col}" stroke-width="${sw*0.9}" stroke-dasharray="${sw*3} ${sw*2}"/>`;
+        g+=dot(w.end,L.col,sw*2.2);
+        if(lbl){ const mp=w.pts[Math.max(1,Math.min(w.pts.length-1,Math.floor(w.pts.length*(i?0.75:0.45))))];
+          g+=T(mp.x,mp.y-fs*(i?1.7:0.7)+ai*fs*1.25,`${L.n} = ${f1(L.v)} م`,L.col); }
+        cells.push(w.clipped?`<b style="color:#ff7d6a">${f1(L.v)} ✕</b>`:`<b>${f1(L.v)}</b>`);
+        if(w.clipped) notes.push(['warn',`ذراع ${ai+1} – ${L.n}`,`مطلوب ${f1(L.v)} م، والمُعلَّم على المحور ${f1(w.got/S.pxPerM)} م فقط. مدّ المحور يكشف إن كان هناك عائق في الجزء الناقص.`]);
+      });
+      if(C.leftMain){
+        [1,-1].forEach(dr=>{ const w=walk(A,J.s,M2P(C.leftMain),dr);
+          g+=`<path d="${path(w.pts)}" fill="none" stroke="#2dd4a0" stroke-width="${sw*2.2}" stroke-linecap="round" opacity=".85"/>`; });
+        if(lbl){ const w=walk(A,J.s,M2P(C.leftMain),dirLeft);
+          const mp=w.pts[Math.max(1,Math.floor(w.pts.length/2))];
+          g+=T(mp.x,mp.y+fs*(1.5+ai*1.25),`انعطاف يساراً من الرئيسي = ${f1(C.leftMain)} م`,'#2dd4a0'); }
+      }
+      g+=dot(eye,'#ff5fa8',sw*3.2);
+      if(lbl) g+=T(eye.x,eye.y+fs*(1.4+ai*1.25), arm.stop
+        ? `ذراع ${ai+1} · عين السائق، 1.5 م من خط التوقف`
+        : `ذراع ${ai+1} · L2 = ${f1(C.L2)} م (بدون خط توقف)`,'#ff5fa8');
+      const armDir=sub(ptAt(AP,Math.min(AP.total,Math.max(M2P(10),AP.total*0.3))),J.pt);
+      let ang=angDeg(armDir,t); if(ang>90) ang=180-ang;
+      const manN={right:'انعطاف يميناً',cross:'عبور',left:'انعطاف يساراً',all:'الكل'}[man];
+      rows.push([`ذراع ${ai+1}`,manN,cells[0]||'—',cells[1]||'—',
+        arm.stop? f1(stopS/S.pxPerM)+' *' : f1(C.L2),
+        C.leftMain?f1(C.leftMain):'—',Math.round(ang)+'°']);
+      if(ang<75) notes.push(['warn',`ذراع ${ai+1} – الزاوية`,`الزاوية إلى المحور الرئيسي ≈${Math.round(ang)}°. دون 75° يجب إطالة L1 بنحو 3 م لكل 5° (البند 5.10.9) – الإضافة غير محسوبة هنا.`]);
+      if(!arm.stop) notes.push(['','ذراع '+(ai+1)+' – خط التوقف','لم يُعلَّم خط توقف. وُضعت العين على '+f1(+$('curb').value+C.L2)+' م من محور الطريق الرئيسي وفق L2 من الجدول. علّم خط التوقف الفعلي لقياس المثلث منه.']);
+      if(arm.stop && stopS/S.pxPerM < +$('curb').value) notes.push(['warn','ذراع '+(ai+1)+' – خط التوقف','خط التوقف قريب جداً من محور الطريق الرئيسي ('+f1(stopS/S.pxPerM)+' م) – تحقق أنه بعد معبر المشاة وبعد حجر الرصيف.']);
+      if(J.d>M2P(3)) notes.push(['warn',`ذراع ${ai+1} – الموضع`,'النقطة الأولى للذراع بعيدة عن المحور الرئيسي. علّم الذراع من التقاطع إلى الخارج.']);
+    });
+  }
+  if(S.cal.length){ const a=S.cal[0],b=S.cal[1]; g+=dot(a,'#ff5fa8',sw*2.4);
+    if(b) g+=dot(b,'#ff5fa8',sw*2.4)+`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#ff5fa8" stroke-width="${sw*1.6}"/>`
+      +T((a.x+b.x)/2,(a.y+b.y)/2-fs*0.5,`${f1(+$('calLen').value)} م`,'#ff5fa8'); }
+  if(S.pxPerM){ const L=M2P(20), x0=W*0.02, y0=H-Math.max(18,H*0.03); let bar='';
+    for(let i=0;i<4;i++) bar+=`<rect x="${x0+i*L/4}" y="${y0}" width="${L/4}" height="${sw*3}" fill="${i%2?'#fff':'#0b101c'}" stroke="#0b101c" stroke-width="${sw*0.5}"/>`;
+    g+=`<g opacity=".95">${bar}${T(x0+L/2,y0-sw*4,'20 م','#fff',fs*0.8)}</g>`; }
+
+  const imgTag=`<image href="${S.img}" xlink:href="${S.img}" x="0" y="0" width="${W}" height="${H}" style="pointer-events:none;-webkit-user-drag:none"/>`;
+  if(pr) return {g:imgTag+g,W,H,rows,notes};
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML=imgTag+g;
+  report(rows,notes);
+}
+
+/* ============================ الإخراج ============================ */
+function report(rows,notes){
+  notes=notes||[];
+  const round=$('kind').value==='round';
+  const head=round?['ذراع','b (م)','d (م)','ضلع الوصول (م)','المصدر']:['ذراع','الحركة','رؤية يساراً','رؤية يميناً','L2 / خط التوقف','يسار من الرئيسي','الزاوية'];
+  $('res').innerHTML=rows.length
+    ? `<table class="t"><thead><tr>${head.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${
+        rows.map(r=>`<tr>${r.map(c=>`<td>${String(c).indexOf('<b')>=0?c:esc(String(c))}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+      +`<p class="hint">${round?'جداول 2.6–2.7 · فجوة 6.5 ث · ارتفاع العين 1.08 م':($('kind').value==='urban'?'جداول 5.13–5.15 · ارتفاع العين والجسم 1.05 م':'جداول 4.3–4.5 · L1 = 0.278·V·tc')} · * مسافة خط التوقف المُعلَّم من محور الطريق الرئيسي؛ عين السائق 1.5 م خلفه</p>`
+    : '<p class="hint">علِّم المحور والأذرع للحصول على القيم.</p>';
+  const c=[...notes];
+  if(!S.img) c.unshift(['bad','المخطط','حمّل صورة المخطط.']);
+  else if(!S.pxPerM) c.unshift(['bad','مقياس الرسم','نفّذ المعايرة – بدون مقياس رسم لا يمكن الرسم.']);
+  else { const mpp=1/S.pxPerM;
+    if(mpp>0.5) c.push(['warn','الدقة',`البكسل ≈ ${f1(mpp)} م – خطأ تعليم بمقدار بكسلين يعني نحو ${f1(2*mpp)} م.`]);
+    if(S.cal.length===2){ const d=nrm(sub(S.cal[0],S.cal[1]))/S.pxPerM;
+      if(d<15) c.push(['warn','قطعة المعايرة',`تمت المعايرة على ${f1(d)} م فقط – القطعة القصيرة تكبّر خطأ مقياس الرسم في كل المسافات.`]); } }
+  if(!round){
+    if(S.axis.length<2) c.push(['bad','المحور الرئيسي','علِّم نقطتين على الأقل على طول محور الطريق الرئيسي.']);
+    else if(S.axis.length<4) c.push(['','الانحناء','على محور منحنٍ علِّم 4–8 نقاط على طوله، حتى يُقاس الضلع على طول الطريق لا في الهواء.']);
+    if(!S.arms.length) c.push(['bad','الأذرع','أضف ذراعاً واحدة على الأقل – كل ذراع تأخذ مثلثَي الرؤية الخاصَّين بها.']);
+    c.push(['','المساحة الحرة','لا يجوز وضع عوائق الرؤية داخل المثلث. يجب أيضاً فحص مخروط الرؤية عند فتحة الشارع ومنطقة الرؤية في الجزيرة الوسطى (10 / 20 / 30 م، جدول 5.11).']);
+  }
+  if(!c.length) c.push(['','جاهز','علِّم الهندسة.']);
+  $('checks').innerHTML=c.map(x=>`<div class="chk ${x[0]}"><b>${esc(x[1])}</b>${esc(x[2])}</div>`).join('');
+  $('legend').innerHTML=(round
+    ? [['#f5b82e','مثلث رؤية عند المدخل (b)'],['#2dd4a0','مسافة رؤية التوقف (d)'],['#ff9d6a','عين السائق'],['#5fa8ff','هندسة الدوّار']]
+    : [['#f5b82e','رؤية يساراً – عبور / يميناً'],['#ff9d6a','رؤية يميناً – انعطاف يساراً'],['#2dd4a0','انعطاف يساراً من الرئيسي'],['#5fa8ff','المحور الرئيسي'],['#c9b6ff','محور الذراع'],['#ff5fa8','عين السائق / المعايرة']]
+  ).map(x=>`<span><i class="sw" style="background:${x[0]}"></i>${esc(x[1])}</span>`).join('');
+}
+function updateInfo(){
+  $('scaleInfo').textContent=S.pxPerM?`مقياس الرسم: ${f1(S.pxPerM)} بكسل/متر · البكسل ≈ ${(1/S.pxPerM).toFixed(2)} م`:'مقياس الرسم: —';
+  $('imgInfo').textContent=S.img?`صورة ${S.iw}×${S.ih} بكسل`+(S.pxPerM?` · ${f1(S.iw/S.pxPerM)}×${f1(S.ih/S.pxPerM)} م`:''):'حمّل صورة أو لقطة شاشة للمخطط.';
+  if($('kind').value==='round'){ const R=roundCalc();
+    $('rInfo').textContent=`R4 = ${R.R4} م · دوران ${R.Vc} كم/س · R1 = ${R.R1} م · دخول ${R.Ve} كم/س · d = ${f1(R.d)} م · b = ${f1(R.b)} م`; }
+  const h={axis:'انقر على طول محور الطريق الرئيسي – حتى في الانحناءات. الإنهاء: زر «إنهاء التعليم» أو Esc.',
+           arm:'انقر على طول الذراع – من التقاطع إلى الخارج. الإنهاء: «إنهاء التعليم».',
+           cal:'انقر نقطتين معلومتَي المسافة بينهما.',
+           stop:'انقر على خط التوقف في الذراع – منه يُقاس L2 ومنه يبدأ المثلث.',
+           rc:'انقر على مركز الدوّار.',re:'انقر على الحافة الخارجية.',ra:'كل نقرة تضيف ذراع وصول.',
+           rstop:'انقر على خط التوقف / خط إعطاء الأولوية في الذراع.'}[S.tool];
+  $('drawHint').textContent=h||'علِّم محور الطريق الرئيسي (حتى لو منحنٍ)، ثم أضف ذراعاً لكل مدخل. يمكن سحب كل نقطة.';
+  [['axis','tAxis'],['arm','tArm'],['rc','tC'],['re','tE'],['ra','tRA']].forEach(([k,id])=>{
+    const el=$(id); if(el) el.classList.toggle('on',S.tool===k); });
+  $('btnCal').classList.toggle('on',S.tool==='cal');
+}
+function renderArms(){
+  if($('kind').value==='round'){
+    $('rArms').innerHTML=S.round.arms.map((a,i)=>`<div class="arm ${i===S.cur?'sel':''}"><div class="hd"><b>ذراع ${i+1}</b>
+      <button class="mini" data-rs="${i}">${a.stop?'✓ خط توقف':'خط توقف'}</button>
+      <button class="mini" data-ra="${i}">✕</button></div></div>`).join('')
+      ||'<p class="hint">أضف أذرع وصول.</p>';
+    $('rArms').querySelectorAll('[data-ra]').forEach(b=>b.onclick=()=>{S.round.arms.splice(+b.dataset.ra,1);S.cur=-1;draw();});
+    $('rArms').querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{S.cur=+b.dataset.rs;S.tool='rstop';toast('انقر على خط التوقف في الذراع');draw();});
+    return;
+  }
+  const urban=$('kind').value==='urban';
+  $('arms').innerHTML=S.arms.map((a,i)=>`<div class="arm ${i===S.cur?'sel':''}">
+    <div class="hd"><b>ذراع ${i+1} (${a.pts.length} نقطة)</b>
+      <button class="mini" data-s="${i}">${a.stop?'✓ خط توقف':'خط توقف'}</button>
+      <button class="mini" data-e="${i}">متابعة التعليم</button><button class="mini" data-d="${i}">✕</button></div>
+    <div class="g">
+      <label>التحكم<select data-i="${i}" data-k="ctrl">
+        <option value="302" ${a.ctrl==='302'?'selected':''}>توقف / إيقاف</option>
+        <option value="301" ${a.ctrl==='301'?'selected':''}>تباطؤ (301)</option></select></label>
+      <label>مركبة التصميم<select data-i="${i}" data-k="veh">
+        <option value="car" ${a.veh==='car'?'selected':''}>خصوصية</option>
+        <option value="truck" ${a.veh==='truck'?'selected':''}>شاحنة/حافلة</option></select></label>
+      <label>مسارب إضافية<input data-i="${i}" data-k="xtra" type="number" min="0" max="6" value="${a.xtra||0}"></label>
+      ${urban?`<label>الميل<select data-i="${i}" data-k="grade">${
+        [['0','حتى 3%'],['u4','صعود 4%'],['u5','صعود 5%'],['u6','صعود 6%'],['d4','نزول 4%'],['d5','نزول 5%'],['d6','نزول 6%']]
+        .map(o=>`<option value="${o[0]}" ${a.grade===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></label>`:'<span></span>'}
+    </div></div>`).join('')||'<p class="hint">لا أذرع. اضغط «+ أضف ذراعاً».</p>';
+  $('arms').querySelectorAll('[data-k]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{
+    S.arms[+el.dataset.i][el.dataset.k]=el.type==='number'?+el.value:el.value; draw(); }));
+  $('arms').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{S.arms.splice(+b.dataset.d,1);S.cur=-1;draw();});
+  $('arms').querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{S.cur=+b.dataset.e;S.tool='arm';draw();});
+  $('arms').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{S.cur=+b.dataset.s;S.tool='stop';toast('انقر على خط التوقف في الذراع');draw();});
+  const sel=$('armSel'); if(sel){ const v=sel.value;
+    sel.innerHTML='<option value="-1">كل الأذرع</option>'+S.arms.map((a,i)=>`<option value="${i}">ذراع ${i+1}</option>`).join('');
+    sel.value = (+v<S.arms.length)? v : '-1'; }
+}
+
+/* ============================ التفاعل ============================ */
+function svgPt(ev){ const svg=$('plan'),r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;
+  return V((ev.clientX-r.left)/r.width*vb.width,(ev.clientY-r.top)/r.height*vb.height); }
+function allHandles(){
+  const h=[];
+  S.axis.forEach((p,i)=>h.push({p,set:q=>S.axis[i]=q}));
+  S.arms.forEach(a=>{ a.pts.forEach((p,i)=>h.push({p,set:q=>a.pts[i]=q})); if(a.stop) h.push({p:a.stop,set:q=>a.stop=q}); });
+  if(S.round.C) h.push({p:S.round.C,set:q=>S.round.C=q});
+  if(S.round.E) h.push({p:S.round.E,set:q=>S.round.E=q});
+  S.round.arms.forEach((a,i)=>{ h.push({p:a.p,set:q=>S.round.arms[i].p=q}); if(a.stop) h.push({p:a.stop,set:q=>S.round.arms[i].stop=q}); });
+  S.cal.forEach((p,i)=>h.push({p,set:q=>{S.cal[i]=q;
+    if(S.cal.length===2){const d=nrm(sub(S.cal[0],S.cal[1])),L=+$('calLen').value; if(L>0)S.pxPerM=d/L;}}}));
+  return h;
+}
+$('plan').addEventListener('dragstart',e=>e.preventDefault());
+$('plan').addEventListener('pointerdown',e=>{
+  if(!S.img) return; e.preventDefault(); const p=svgPt(e);
+  const shown=$('plan').getBoundingClientRect().width||S.iw, R=Math.max(10,14*S.iw/shown);
+  let best=null,bd=1e18; allHandles().forEach(h=>{const d=nrm(sub(h.p,p)); if(d<bd){bd=d;best=h;}});
+  if(!S.tool && best && bd<R){ S.drag=best; try{$('plan').setPointerCapture(e.pointerId);}catch(_){} return; }
+  switch(S.tool){
+    case 'cal': S.cal.push(p);
+      if(S.cal.length===2){ const d=nrm(sub(S.cal[0],S.cal[1])),L=+$('calLen').value;
+        if(d>2&&L>0) S.pxPerM=d/L; S.tool=null; toast('تم تحديث مقياس الرسم'); } break;
+    case 'axis': S.axis.push(p); toast(`المحور الرئيسي · ${S.axis.length} نقطة`); break;
+    case 'arm': if(S.cur<0){ S.arms.push({pts:[],ctrl:'302',veh:'car',xtra:0,grade:'0'}); S.cur=S.arms.length-1; }
+      S.arms[S.cur].pts.push(p); toast(`ذراع ${S.cur+1} · ${S.arms[S.cur].pts.length} نقطة`); break;
+    case 'stop': if(S.cur>=0&&S.arms[S.cur]){ S.arms[S.cur].stop=p; S.tool=null; toast('تم تعليم خط التوقف'); } break;
+    case 'rc': S.round.C=p; S.tool='re'; toast('الآن علِّم الحافة الخارجية'); break;
+    case 're': S.round.E=p; S.tool=null; toast('تم تحديد قطر الدوّار'); break;
+    case 'ra': S.round.arms.push({p,stop:null}); toast(`ذراع ${S.round.arms.length}`); break;
+    case 'rstop': if(S.cur>=0&&S.round.arms[S.cur]){ S.round.arms[S.cur].stop=p; S.tool=null; toast('تم تعليم خط التوقف'); } break;
+    default: toast('اختر أداة تعليم من اللوحة اليسرى');
+  }
+  draw();
+});
+$('plan').addEventListener('pointermove',e=>{ if(!S.img) return; const p=svgPt(e);
+  if(S.drag){ S.drag.set(p); draw(); }
+  if(S.pxPerM) $('cursorInfo').textContent=`X ${f1(p.x/S.pxPerM)} م · Y ${f1(p.y/S.pxPerM)} م`; });
+addEventListener('pointerup',()=>{S.drag=null;});
+addEventListener('keydown',e=>{ if(e.key==='Escape'){S.tool=null;S.cur=-1;draw();} });
+$('tAxis').onclick=()=>{S.tool='axis';S.cur=-1;draw();};
+$('tArm').onclick=()=>{ if(S.axis.length<2){toast('علِّم أولاً محور الطريق الرئيسي');return;}
+  S.arms.push({pts:[],ctrl:'302',veh:'car',xtra:0,grade:'0'}); S.cur=S.arms.length-1; S.tool='arm'; draw(); };
+$('tDone').onclick=()=>{S.tool=null;S.cur=-1;draw();};
+$('tC').onclick=()=>{S.tool='rc';draw();}; $('tE').onclick=()=>{S.tool='re';draw();};
+$('tRA').onclick=()=>{S.tool='ra';draw();}; $('tDone2').onclick=()=>{S.tool=null;draw();};
+$('btnCal').onclick=()=>{S.tool=S.tool==='cal'?null:'cal';S.cal=[];draw();};
+$('btnUndo').onclick=()=>{
+  if(S.tool==='arm'&&S.cur>=0&&S.arms[S.cur].pts.length) S.arms[S.cur].pts.pop();
+  else if(S.tool==='axis'&&S.axis.length) S.axis.pop();
+  else if(S.arms.length&&S.arms[S.arms.length-1].pts.length) S.arms[S.arms.length-1].pts.pop();
+  else if(S.axis.length) S.axis.pop();
+  draw(); };
+$('btnReset').onclick=()=>{S.axis=[];S.arms=[];S.round={C:null,E:null,arms:[]};S.cal=[];S.cur=-1;S.tool=null;draw();};
+$('zIn').onclick=()=>zoom(1.25); $('zOut').onclick=()=>zoom(1/1.25);
+$('zFit').onclick=()=>{$('plan').style.width='100%';draw();};
+function zoom(f){const el=$('plan');const w=parseFloat(el.style.width)||100;el.style.width=Math.max(30,Math.min(1500,w*f))+'%';draw();}
+$('plan').addEventListener('wheel',e=>{ if(!e.ctrlKey) return; e.preventDefault(); zoom(e.deltaY<0?1.1:1/1.1); },{passive:false});
+addEventListener('resize',()=>{ if(S.img) draw(); });
+
+function loadFile(f){ if(!f||!f.type.startsWith('image/'))return;
+  const rd=new FileReader();
+  rd.onload=()=>{const im=new Image(); im.onload=()=>{ S.img=rd.result;S.iw=im.naturalWidth;S.ih=im.naturalHeight;
+    S.axis=[];S.arms=[];S.round={C:null,E:null,arms:[]};S.cal=[];S.cur=-1;S.tool=null;
+    if($('calMode').value==='scale') applyScaleDpi();
+    $('drop').hidden=true; $('plan').removeAttribute('hidden'); draw(); }; im.src=rd.result; };
+  rd.readAsDataURL(f); }
+$('file').onchange=e=>loadFile(e.target.files[0]);
+['dragover','drop'].forEach(t=>$('stage').addEventListener(t,e=>{e.preventDefault(); if(t==='drop') loadFile(e.dataTransfer.files[0]);}));
+function applyScaleDpi(){const den=+$('scDen').value,dpi=+$('dpi').value; if(den>0&&dpi>0) S.pxPerM=dpi/0.0254/den;}
+$('calMode').onchange=()=>{const m=$('calMode').value;$('calLine').hidden=m!=='line';$('calScale').hidden=m!=='scale';if(m==='scale')applyScaleDpi();draw();};
+['scDen','dpi'].forEach(id=>$(id).addEventListener('input',()=>{if($('calMode').value==='scale'){applyScaleDpi();draw();}}));
+$('calLen').addEventListener('input',()=>{if(S.cal.length===2){const d=nrm(sub(S.cal[0],S.cal[1])),L=+$('calLen').value;if(L>0)S.pxPerM=d/L;}draw();});
+function fillKind(){
+  const k=$('kind').value;
+  $('pJunction').hidden=k==='round'; $('pRound').hidden=k!=='round';
+  $('jTools').hidden=k==='round'; $('rTools').hidden=k!=='round';
+  $('vMain').innerHTML=k==='urban'
+    ?`<option value="calm">منطقة تهدئة مرورية</option><option value="30">30 كم/س</option><option value="50" selected>50 كم/س</option><option value="70">70 كم/س</option>`
+    :[30,40,50,60,70,80,90,100].map(s=>`<option value="${s}" ${s===80?'selected':''}>${s} كم/س</option>`).join('');
+  S.tool=null; draw();
+}
+$('kind').onchange=fillKind;
+['vMain','dual','curb','showLeft','opac','tLbl','tChord','tGrid','rLanes','rDc','man','armSel','prScale']
+  .forEach(id=>$(id).addEventListener($(id).type==='checkbox'||$(id).tagName==='SELECT'?'change':'input',draw));
+
+function sheetSVG(){
+  const N=+$('prScale').value, k=(1000/N)/S.pxPerM;
+  const c=draw_({sw:0.40/k, fs:3.3/k});
+  if(!c) return null;
+  const A0={w:1189,h:841}, fl=20, fr=10, tbW=200, tbH=56;
+  const area={x:fl+6,y:fr+8,w:A0.w-fl-fr-12,h:A0.h-2*fr-tbH-24};
+  const all=[...S.axis]; S.arms.forEach(a=>{all.push(...a.pts); if(a.stop) all.push(a.stop);});
+  if(S.round.C) all.push(S.round.C); if(S.round.E) all.push(S.round.E);
+  S.round.arms.forEach(a=>{ all.push(a.p||a); if(a.stop) all.push(a.stop); });
+  const cx=all.length?all.reduce((s,p)=>s+p.x,0)/all.length:c.W/2,
+        cy=all.length?all.reduce((s,p)=>s+p.y,0)/all.length:c.H/2;
+  const tx=area.x+area.w/2-cx*k, ty=area.y+area.h/2-cy*k;
+  const esc2=esc;
+  const T=(x,y,s,size,anchor,w)=>`<text x="${x}" y="${y}" font-size="${size}" text-anchor="${anchor||'middle'}" font-weight="${w||400}" font-family="Arial" fill="#14171a">${esc2(s)}</text>`;
+  const mm=20*1000/N; let bar='';
+  const bx=fl+10, by=A0.h-fr-14;
+  for(let i=0;i<4;i++) bar+=`<rect x="${bx+i*mm/4}" y="${by}" width="${mm/4}" height="2" fill="${i%2?'#fff':'#14171a'}" stroke="#14171a" stroke-width="0.25"/>`;
+  bar+=T(bx+mm/2,by-1.6,`20 م = ${mm.toFixed(0)} مم · 1:${N}`,2.8);
+  const cell=(x,y,w,hh,lab,val,big)=>`<rect x="${x}" y="${y}" width="${w}" height="${hh}" fill="none" stroke="#14171a" stroke-width="0.35"/>`
+    +T(x+w-2,y+4,lab,2.3,'end')+T(x+w-2,y+hh-3,val,big?5:3.4,'end',big?700:400);
+  const tbX=A0.w-fr-tbW, tbY=A0.h-fr-tbH, today=new Date().toLocaleDateString('ar-EG');
+  let tb=`<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="#fff" stroke="#14171a" stroke-width="0.6"/>`
+    +cell(tbX,tbY,tbW,15,'الجهة','MAHALCO – الهندسة المدنية والنقل',true)
+    +cell(tbX,tbY,tbW*0.0,0,'','')
+    +cell(tbX,tbY+15,tbW,13,'المشروع',$('prProj').value||'—')
+    +cell(tbX,tbY+28,tbW,13,'المحتوى',{urban:'فحص مسافات الرؤية – تقاطع حضري',inter:'فحص مسافات الرؤية – تقاطع بين-مدني',round:'فحص مسافات الرؤية – دوّار'}[$('kind').value])
+    +cell(tbX+140,tbY+41,60,15,'مقياس الرسم',`1:${N}`,true)+cell(tbX+95,tbY+41,45,15,'الورقة',$('prDwg').value||'—')
+    +cell(tbX+48,tbY+41,47,15,'التاريخ',today)+cell(tbX,tbY+41,48,15,'الراسم',$('prBy').value||'—');
+  const round=$('kind').value==='round';
+  const strip=s=>String(s).replace(/<[^>]*>/g,'');
+  let tbl=T(fl+10,A0.h-fr-tbH+6,round?'ذراع · b · d · ضلع الوصول':'ذراع · الحركة · رؤية يساراً · رؤية يميناً · L2/خط التوقف',3,'start',700);
+  (c.rows||[]).slice(0,6).forEach((r,i)=>{ tbl+=T(fl+10,A0.h-fr-tbH+11+i*4.4, r.map(strip).join(' · '),3,'start'); });
+  const note=T(fl+10,A0.h-fr-tbH-4,'الأبعاد بالأمتار. تُقاس المثلثات على طول محور الطريق ومن خط التوقف. فحص مبدئي – لا يُغني عن التحقق من خلو المجال من العوائق عند الارتفاع المطلوب.',2.8,'start');
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${A0.w}mm" height="${A0.h}mm" viewBox="0 0 ${A0.w} ${A0.h}" style="direction:ltr">
+<rect width="${A0.w}" height="${A0.h}" fill="#ffffff"/>
+<defs><clipPath id="cp"><rect x="${area.x}" y="${area.y}" width="${area.w}" height="${area.h}"/></clipPath></defs>
+<g clip-path="url(#cp)"><g transform="translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${k})">${c.g}</g></g>
+<rect x="${area.x}" y="${area.y}" width="${area.w}" height="${area.h}" fill="none" stroke="#8a9099" stroke-width="0.3"/>
+<rect x="${fl}" y="${fr}" width="${A0.w-fl-fr}" height="${A0.h-2*fr}" fill="none" stroke="#14171a" stroke-width="0.7"/>
+${bar}${note}${tbl}${tb}</svg>`;
+}
+function sheetHTML(){
+  const s=sheetSVG(); if(!s){ toast('حمّل المخطط وعلِّم الهندسة'); return null; }
+  const N=$('prScale').value;
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${esc($('prDwg').value||'SD')} · 1:${N}</title>
+<style>@page{size:1189mm 841mm;margin:0}html,body{margin:0;padding:0;background:#fff}svg{display:block;width:1189mm;height:841mm}
+.noprint{position:fixed;top:8px;left:8px;background:#fffbe6;border:1px solid #c9a227;padding:8px 12px;font:13px Arial;direction:rtl}
+@media print{.noprint{display:none}}</style></head><body>
+<div class="noprint">ورقة A0 (1189×841 مم)، مقياس 1:${N}. للطباعة/PDF: ورق A0، «الحجم الفعلي / 100%»، بدون هوامش. تحقق من مسطرة المقياس.</div>
+${s}</body></html>`;
+}
+$('btnSheet').onclick=()=>{ const t=sheetHTML(); if(!t) return; const w=window.open('','_blank'); w.document.write(t); w.document.close(); };
+$('btnSheetDl').onclick=()=>{ const t=sheetHTML(); if(!t) return;
+  save(new Blob([t],{type:'text/html;charset=utf-8'}),`MAHALCO_${$('prDwg').value||'SD'}_A0_1-${$('prScale').value}.html`); };
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+function svgText(){return '<?xml version="1.0" encoding="UTF-8"?>\n'+$('plan').outerHTML;}
+$('btnSvg').onclick=()=>{if(S.img)save(new Blob([svgText()],{type:'image/svg+xml;charset=utf-8'}),'MAHALCO_sight.svg');};
+$('btnPng').onclick=()=>{ if(!S.img)return; const img=new Image();
+  const url=URL.createObjectURL(new Blob([svgText()],{type:'image/svg+xml;charset=utf-8'}));
+  img.onload=()=>{const c=document.createElement('canvas');c.width=S.iw;c.height=S.ih;
+    c.getContext('2d').drawImage(img,0,0,S.iw,S.ih);URL.revokeObjectURL(url);c.toBlob(b=>save(b,'MAHALCO_sight.png'));};
+  img.src=url; };
+$('btnJson').onclick=()=>save(new Blob([JSON.stringify({kind:$('kind').value,pxPerM:S.pxPerM,axis:S.axis,arms:S.arms,round:S.round,
+  main:{speed:$('vMain').value,dual:$('dual').value,curb:$('curb').value},
+  note:'قيم مبدئية لفحص أولي – ليست للتنفيذ.'},null,2)],{type:'application/json'}),'sight-distance.json');
+
+fillKind();
+
+/* ============================ الدليل الموجَّه ============================ */
+(function(){
+  const SEEN='mahalco_sd_guide_v1';
+  const isRound=()=>$('kind').value==='round';
+
+  const armPts=()=>S.arms.filter(a=>a.pts.length>=2).length;
+
+  const STEPS=[
+    { t:'خلفية المخطط',
+      hl:'#file',
+      html:`<p>يبدأ كل شيء من صورة المخطط: لقطة شاشة، PDF محوَّل إلى صورة أو ملف مسح. اسحب الملف إلى منطقة العرض أو اختره من الحقل في اللوحة الجانبية.</p>
+            <ul><li>كلما كانت الصورة أوضح كان التعليم أدق.</li><li>بعد التحميل تُعرَض أبعاد الصورة بالبكسل.</li></ul>`,
+      chk:()=>!!S.img, chkT:'تم تحميل صورة الخلفية',
+      doT:'اختر ملفاً', run:()=>$('file').click() },
+
+    { t:'معايرة مقياس الرسم',
+      hl:'#calLine',
+      html:`<p>بدون معايرة لا توجد أمتار — فقط بكسلات. الطريقة الموصى بها: علِّم قطعة معلومة الطول على المخطط (عرض طريق، مسافة بين خطوط شبكة، مسطرة مقياس)، أدخل طولها بالأمتار ثم انقر على نقطتي طرفيها.</p>
+            <ul><li>القطعة الطويلة تُصغّر خطأ المعايرة.</li><li>بدلاً من ذلك انتقل إلى «حسب مقياس الرسم والدقة» وأدخل 1:N وDPI.</li></ul>`,
+      chk:()=>S.pxPerM>0, chkT:'مقياس الرسم محدد',
+      doT:'علِّم قطعة معايرة', run:()=>$('btnCal').click() },
+
+    { t:'نوع الفحص وقيم التصميم',
+      hl:'#kind',
+      html:`<p>اختر نوع التقاطع — حضري (دليل تصميم الشوارع الحضرية USDM / RTA GDM دبي)، بين-مدني (RTA GDM / أبوظبي TR-514 / دليل GCC) أو دوّار. الاختيار يحدد الجدول الذي تُستخرج منه قيم الرؤية.</p>
+            <ul><li>في التقاطع: السرعة على الطريق الرئيسي، أحادي/ثنائي المسلك، والمسافة من المحور الرئيسي إلى حجر الرصيف.</li><li>في الدوّار: نمط الدوّار والقطر الخارجي Dc.</li></ul>
+            <p>توقف هنا وتحقق من القيم مقابل المخطط — كل ما يُحسب لاحقاً يعتمد عليها.</p>`,
+      chk:()=>true, chkT:'القيم تحققت يدوياً',
+      doT:'إبراز', run:()=>{} },
+
+    { t:()=>isRound()?'مركز الدوّار والحافة':'محور الطريق الرئيسي',
+      hl:'#jTools', roundHl:'#rTools',
+      html:()=>isRound()
+        ? `<p>في الدوّار علِّم أولاً <b>مركز الدوّار</b> ثم نقطة على <b>الحافة الخارجية</b> — من هاتين النقطتين يُشتق القطر الفعلي ويُفحص مقابل Dc المُدخل.</p>`
+        : `<p>اضغط على «محور الطريق الرئيسي» وعلِّم نقاطاً على طول الطريق. في محور مستقيم تكفي نقطتان؛ <b>في محور منحنٍ علِّم 4–8 نقاط</b>، حتى يُقاس ضلع المثلث على طول الطريق لا في الهواء.</p>
+             <ul><li>«تراجع عن آخر نقطة» يصحح خطأ نقطياً.</li><li>يمكن سحب نقطة قائمة لدقة أعلى.</li></ul>`,
+      chk:()=>isRound() ? !!(S.round.C&&S.round.E) : S.axis.length>=2,
+      chkT:()=>isRound()?'تم تعليم المركز والحافة':'تم تعليم المحور',
+      doT:()=>isRound()?'علِّم المركز':'ارسم المحور',
+      run:()=>isRound()?$('tC').click():$('tAxis').click() },
+
+    { t:()=>isRound()?'أذرع الوصول':'الأذرع',
+      hl:'#arms', roundHl:'#rArms',
+      html:()=>isRound()
+        ? `<p>أضف ذراع وصول لكل مدخل للدوّار. لكل ذراع يمكن أيضاً تعليم خط إعطاء الأولوية، ومنه يُقاس المثلث.</p>`
+        : `<p>«+ أضف ذراعاً»، ثم انقر على طول محور الذراع الثانوي — من مدخل التقاطع إلى الخارج. كل ذراع تأخذ مثلثَي الرؤية الخاصَّين بها.</p>
+           <ul><li>لكل ذراع حدِّد التحكم (توقف / تباطؤ)، مركبة التصميم، المسارب الإضافية وفي الحضري أيضاً الميل.</li><li>«متابعة التعليم» يضيف نقاطاً لذراع قائمة.</li></ul>`,
+      chk:()=>isRound() ? S.round.arms.length>=1 : armPts()>=1,
+      chkT:'تم تعليم ذراع واحد على الأقل',
+      doT:'أضف ذراعاً',
+      run:()=>isRound()?$('tRA').click():$('tArm').click() },
+
+    { t:()=>isRound()?'خط إعطاء الأولوية':'خط التوقف',
+      hl:'#arms', roundHl:'#rArms',
+      html:`<p>هذه هي الخطوة التي تغيّر النتيجة أكثر من أي خطوة أخرى. بدون تعليم خط التوقف تفترض الأداة عين السائق وفق L2 من الجدول — افتراض تحفظي قد لا يعكس الحالة الفعلية على الأرض.</p>
+            <ul><li>في بطاقة الذراع اضغط «خط توقف» ثم انقر على الخط في المخطط.</li><li>تأكد أن الخط بعد معبر المشاة وبعد حجر الرصيف.</li></ul>`,
+      chk:()=>isRound()? S.round.arms.some(a=>a.stop) : S.arms.some(a=>a.stop),
+      chkT:'تم تعليم خط توقف في ذراع واحد على الأقل', opt:true,
+      doT:'إبراز', run:()=>{} },
+
+    { t:'العرض والتحقق البصري',
+      hl:'#man',
+      html:`<p>تنقّل بين الحركات — انعطاف يساراً من الثانوي، عبور، انعطاف يميناً أو الكل معاً — وتأكد أن المثلثات في المكان المتوقع.</p>
+            <ul><li>«الذراع المعروض» يعزل ذراعاً واحدة عند ازدحام الصورة.</li><li>شبكة 10 م فحص سريع لصحة المعايرة.</li></ul>`,
+      chk:()=>true, chkT:'تم الفحص البصري',
+      doT:'إبراز', run:()=>{} },
+
+    { t:'الفحوصات والملاحظات',
+      hl:'#checks',
+      html:`<p>اللوحة السفلية تجمع ما وجدته الأداة: نواقص في التعليم، قيم شاذة، الافتراضات المتخذة. الأحمر = نقص حرج، البرتقالي = للفحص.</p>
+            <p>لا تُصدّر ورقة ما دام هناك بند أحمر مفتوح.</p>`,
+      chk:()=>true, chkT:'تمت قراءة الملاحظات',
+      doT:'إبراز', run:()=>{} },
+
+    { t:'تصدير الورقة',
+      hl:'#btnSheet',
+      html:`<p>املأ اسم المشروع ورقم الورقة واسم الراسم، اختر مقياس الطباعة ثم افتح ورقة A0. عند الطباعة: ورق A0، «الحجم الفعلي / 100%»، بدون هوامش — ثم تحقق من مسطرة المقياس على الورق.</p>
+            <ul><li>PNG لصورة سريعة، SVG للفيكتور، JSON لحفظ العمل لاحقاً.</li></ul>`,
+      chk:()=>true, chkT:'جاهز للتصدير',
+      doT:'افتح ورقة A0', run:()=>$('btnSheet').click() }
+  ];
+
+  let ix=0, tmr=null, lastHl=null;
+  const val=(v)=>typeof v==='function'?v():v;
+
+  function highlight(sel){
+    if(lastHl){ lastHl.classList.remove('coach-hl'); lastHl=null; }
+    const el=sel?document.querySelector(sel):null;
+    if(!el) return;
+    el.classList.add('coach-hl'); lastHl=el;
+    if(typeof el.scrollIntoView==='function'){
+      try{ el.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){}
+    }
+  }
+
+  function render(){
+    const s=STEPS[ix], done=!!val(s.chk);
+    $('cNo').textContent=(ix+1)+' / '+STEPS.length;
+    $('cBar').style.width=((ix+1)/STEPS.length*100)+'%';
+    $('cBody').innerHTML='<h4>'+(ix+1)+'. '+val(s.t)+'</h4>'+val(s.html)+
+      '<div class="st'+(done?' done':'')+'"><span class="ic">'+(done?'✓':'○')+'</span><span>'+
+      val(s.chkT)+(s.opt&&!done?' · اختياري':'')+'</span></div>';
+    $('cDo').textContent=val(s.doT);
+    $('cDots').innerHTML=STEPS.map((st,i)=>'<b class="'+(i===ix?'on':(val(st.chk)?'ok':''))+'" data-i="'+i+'">'+(i+1)+'</b>').join('');
+    $('cDots').querySelectorAll('b').forEach(b=>b.onclick=()=>{ix=+b.dataset.i;render();highlight(target());});
+    $('cPrev').disabled=ix===0;
+  }
+  function target(){ const s=STEPS[ix]; return (isRound()&&s.roundHl)?s.roundHl:s.hl; }
+
+  function open(){
+    $('coach').classList.add('show');
+    render(); highlight(target());
+    clearInterval(tmr); tmr=setInterval(render,500);
+  }
+  function close(){ $('coach').classList.remove('show'); clearInterval(tmr);
+    if(lastHl){lastHl.classList.remove('coach-hl');lastHl=null;} }
+
+  $('btnGuide').onclick=()=>$('coach').classList.contains('show')?close():open();
+  $('cClose').onclick=close;
+  $('cNext').onclick=()=>{ if(ix<STEPS.length-1){ix++;render();highlight(target());} else close(); };
+  $('cPrev').onclick=()=>{ if(ix>0){ix--;render();highlight(target());} };
+  $('cDo').onclick=()=>{ highlight(target()); val(STEPS[ix].run); };
+  $('cSkip').onclick=()=>{ try{localStorage.setItem(SEEN,'1');}catch(e){} close(); toast('لن يُفتح الدليل تلقائياً. زر «? الدليل» يبقى متاحاً'); };
+  document.addEventListener('keydown',e=>{
+    if(e.key==='?'||(e.key==='/'&&e.shiftKey)){ e.preventDefault(); $('coach').classList.contains('show')?close():open(); }
+    else if(e.key==='Escape'&&$('coach').classList.contains('show')) close();
+  });
+
+  let seen=false; try{ seen=localStorage.getItem(SEEN)==='1'; }catch(e){}
+  if(!seen) setTimeout(open,400);
+})();
+
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var MQ = window.matchMedia('(max-width:980px)');
+  var aside = document.querySelector('aside');
+  var byId = function (id) { return document.getElementById(id); };
+  if (!aside) return;
+
+  var handle = document.createElement('div');
+  handle.id = 'mhandle';
+  handle.innerHTML = '<span class="grip"></span><b>لوحة التحكم</b>' +
+    '<button type="button" id="mFullBtn">تكبير</button>' +
+    '<button type="button" id="mCloseBtn">إغلاق ✕</button>';
+  aside.insertBefore(handle, aside.firstChild);
+
+  var scrim = document.createElement('div');
+  scrim.id = 'mscrim';
+  document.body.appendChild(scrim);
+  scrim.addEventListener('click', function () { setPanel(false); });
+
+  function setPanel(open, full) {
+    document.body.classList.toggle('mpanel', !!open);
+    if (!open) document.body.classList.remove('mfull');
+    else if (full !== undefined) document.body.classList.toggle('mfull', !!full);
+    var b = byId('mPanelBtn');
+    if (b) b.classList.toggle('on', !!open);
+    var f = byId('mFullBtn');
+    if (f) f.textContent = document.body.classList.contains('mfull') ? 'تصغير' : 'تكبير';
+  }
+  byId('mCloseBtn').addEventListener('click', function () { setPanel(false); });
+  byId('mFullBtn').addEventListener('click', function () {
+    setPanel(true, !document.body.classList.contains('mfull'));
+  });
+  handle.addEventListener('click', function (e) {
+    if (e.target === handle || e.target.tagName === 'B' || e.target.className === 'grip')
+      setPanel(true, !document.body.classList.contains('mfull'));
+  });
+
+  var y0 = null;
+  handle.addEventListener('touchstart', function (e) { y0 = e.touches[0].clientY; }, { passive: true });
+  handle.addEventListener('touchmove', function (e) {
+    if (y0 === null) return;
+    var dy = e.touches[0].clientY - y0;
+    if (dy > 46) { setPanel(false); y0 = null; }
+    else if (dy < -46) { setPanel(true, true); y0 = null; }
+  }, { passive: true });
+  handle.addEventListener('touchend', function () { y0 = null; }, { passive: true });
+
+  var bar = document.createElement('div');
+  bar.id = 'mbar';
+  bar.setAttribute('aria-label', 'إجراءات سريعة');
+  document.body.appendChild(bar);
+
+  function mk(label, opts) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    if (opts && opts.cls) b.className = opts.cls;
+    if (opts && opts.id) b.id = opts.id;
+    return b;
+  }
+  function mirror(src, dst) {
+    if (!src) return;
+    var sync = function () { dst.classList.toggle('on', src.classList.contains('on')); };
+    new MutationObserver(sync).observe(src, { attributes: true, attributeFilter: ['class'] });
+    sync();
+  }
+  function proxy(label, srcId, closePanel) {
+    var src = byId(srcId);
+    var b = mk(label);
+    b.addEventListener('click', function () {
+      if (!src) return;
+      src.click();
+      if (closePanel !== false) setPanel(false);
+    });
+    mirror(src, b);
+    return b;
+  }
+
+  function buildBar() {
+    bar.innerHTML = '';
+    var round = (byId('kind') || {}).value === 'round';
+
+    var p = mk('⚙ تحكم', { cls: 'pri', id: 'mPanelBtn' });
+    p.addEventListener('click', function () {
+      setPanel(!document.body.classList.contains('mpanel'));
+    });
+    bar.appendChild(p);
+
+    var img = mk('🖼 مخطط');
+    img.addEventListener('click', function () { var f = byId('file'); if (f) f.click(); });
+    bar.appendChild(img);
+
+    if (round) {
+      bar.appendChild(proxy('◎ مركز', 'tC'));
+      bar.appendChild(proxy('○ حافة', 'tE'));
+      bar.appendChild(proxy('+ ذراع', 'tRA'));
+      bar.appendChild(proxy('✓ إنهاء', 'tDone2'));
+    } else {
+      bar.appendChild(proxy('✎ محور', 'tAxis'));
+      bar.appendChild(proxy('+ ذراع', 'tArm'));
+      bar.appendChild(proxy('✓ إنهاء', 'tDone'));
+    }
+    bar.appendChild(proxy('📏 معايرة', 'btnCal'));
+    bar.appendChild(proxy('↺ تراجع', 'btnUndo', false));
+    bar.appendChild(proxy('⤢ ملاءمة', 'zFit', false));
+
+    var res = mk('📋 النتائج');
+    res.addEventListener('click', function () {
+      setPanel(false);
+      var o = document.querySelector('.out');
+      if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    bar.appendChild(res);
+  }
+  buildBar();
+  var kind = byId('kind');
+  if (kind) kind.addEventListener('change', buildBar);
+
+  var file = byId('file');
+  if (file) file.addEventListener('change', function () { if (MQ.matches) setPanel(false); });
+
+  function apply() {
+    if (!MQ.matches) setPanel(false);
+  }
+  (MQ.addEventListener ? MQ.addEventListener('change', apply) : MQ.addListener(apply));
+  apply();
+})();
+</script>
+</body>
+</html>

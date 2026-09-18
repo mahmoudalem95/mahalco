@@ -44,12 +44,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 button:disabled{opacity:.38;cursor:default}
 :focus-visible{outline:3px solid var(--arc);outline-offset:2px;border-radius:10px}
-
-/* ---------- מפה ---------- */
 .stage{position:fixed;inset:0;background:var(--map)}
 canvas{display:block;width:100%;height:100%;touch-action:none}
-
-/* ---------- סרגל עליון ---------- */
 .bar{position:fixed;top:calc(10px + env(safe-area-inset-top));inset-inline:10px;height:56px;border-radius:18px;
   display:flex;align-items:center;gap:10px;padding:0 10px 0 8px;z-index:5}
 .back{display:flex;align-items:center;gap:4px;color:var(--accent);font-weight:600;font-size:16px;text-decoration:none;padding:8px 6px;border-radius:10px}
@@ -62,8 +58,6 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .pill.bad i{background:var(--bad)}
 .icon.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
 .icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px;background:var(--fill)}
-
-/* ---------- מקטע שלבים ---------- */
 .wiz{background:var(--glass2);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
 .wiz .steps{display:flex;gap:4px}
 .wiz .steps i{flex:1;height:5px;border-radius:3px;background:var(--line)}
@@ -96,8 +90,6 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .segctl button span{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--line);font-size:12px}
 .segctl button.on{background:var(--glass2);box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .segctl button.on span{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
-
-/* ---------- מפקח ---------- */
 .insp{position:fixed;top:calc(76px + env(safe-area-inset-top));bottom:10px;inset-inline-start:10px;width:360px;border-radius:22px;
   z-index:4;display:flex;flex-direction:column;overflow:hidden}
 .grab{display:none}
@@ -125,8 +117,6 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 .msgs li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;margin-top:6px;background:var(--bad)}
 .msgs li.ok::before{background:var(--ok)}
 .msgs li.warn::before{background:#f0a020}
-
-/* שורות חתך */
 .srow{display:grid;grid-template-columns:6px minmax(92px,1fr) auto auto auto;gap:8px;align-items:center;min-height:52px;padding:6px 10px 6px 8px;border-bottom:1px solid var(--line)}
 .sw{width:6px;height:34px;border-radius:3px}
 .srow select{width:100%}
@@ -146,8 +136,6 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 .side-h{display:flex;align-items:center;justify-content:space-between;padding:0 6px 6px}
 .side-h h3{padding:0;margin:0}
 .side-h button{color:var(--accent);font-weight:600;font-size:15px;padding:4px}
-
-/* ---------- כלי מפה צפים ---------- */
 .fab{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));inset-inline-end:14px;display:flex;gap:4px;padding:5px;border-radius:18px;z-index:4}
 .fab button{height:44px;min-width:44px;padding:0 12px;border-radius:13px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
 .fab button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
@@ -157,8 +145,6 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 .toast[hidden]{display:none}
 .status{position:fixed;top:calc(76px + env(safe-area-inset-top));left:14px;border-radius:999px;padding:6px 12px;font-size:12.5px;direction:ltr;
   font-variant-numeric:tabular-nums;z-index:3}
-
-/* חלונית רדיוס */
 .pop{position:absolute;border-radius:16px;padding:8px;display:flex;gap:6px;align-items:center;z-index:6}
 .pop[hidden]{display:none}
 .cpop{flex-direction:column;align-items:stretch;gap:8px;min-width:210px;padding:10px 12px}
@@ -167,7 +153,6 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 .cpop .segmini button{flex:1;height:36px;font-size:15px}
 .cpr{display:flex;align-items:center;gap:8px;font-size:14px}
 .cpop small{color:var(--dim);font-size:12px;line-height:1.4}
-/* סרגל נקודות עליון */
 .ptool{position:absolute;top:calc(74px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);
   display:flex;gap:6px;align-items:center;border-radius:14px;padding:6px 8px;z-index:6;max-width:calc(100% - 20px);
   flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
@@ -183,8 +168,6 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 .pop #popLs{width:64px}
 .pop button{height:34px;padding:0 12px;border-radius:9px;font-weight:700;font-size:14px;background:var(--fill)}
 .pop button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
-
-/* ---------- טאבלט / טלפון ---------- */
 @media (max-width:820px){
   .insp{top:auto;bottom:0;inset-inline:0;width:auto;height:46vh;border-radius:22px 22px 0 0;transition:height .25s ease;padding-bottom:env(safe-area-inset-bottom)}
   .insp.min{height:170px}
@@ -240,6 +223,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
   <button class="icon" id="bMap" aria-label="מפת רקע" title="ייבוא מפת רקע (GovMap)">🗺</button>
   <input type="file" id="fMap" accept="image/*,.pgw,.jgw,.tfw,.wld,.png,.jpg,.jpeg" multiple hidden>
   <button class="icon" id="bPlan" aria-label="תצוגת תכנית" title="תצוגת תכנית הנדסית">📐</button>
+  <button class="icon" id="bDxf" aria-label="ייצוא DXF" title="ייצוא DXF ל-CAD (AutoCAD)">⤓</button>
   <button class="icon" id="bTheme" aria-label="מצב תצוגה" title="מצב תצוגה"></button>
 </header>
 
@@ -356,6 +340,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
         <button class="cell btn" id="bExport">שמירת פרויקט / ייצוא JSON</button>
         <button class="cell btn" id="bOpen">פתיחת פרויקט</button>
         <input type="file" id="fOpen" accept=".json,application/json" hidden>
+        <button class="cell btn" id="bDxfSheet">ייצוא DXF ל-CAD (AutoCAD)</button>
         <button class="cell btn danger" id="bClear">ניקוי הציר הזה</button>
         <button class="cell btn danger" id="bDelAxis">מחיקת הציר הזה</button>
       </div>
@@ -377,29 +362,15 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
    כל הגאומטריה נגזרת מהרשימה.
    קואורדינטות עולם: מטרים, Y כלפי מעלה (מוכן ל-ITM).
    ============================================================ */
-let drag=null; // {type:'pan'|'click'|'pi', ...}
+let drag=null;
 const S = {
-  axes: [],           // [{name,pis,locked,sec,drawing,undo}]
-  cur: 0,
-  net: false,         // האם הרשת בנויה (זיהוי צמתים + אזורי השפעה)
-  env: 'inter',       // 'urban' | 'inter'
-  junctions: [],
-  armCfg: {},
-  jctCfg: {},         // הגדרות צומת (מדרג רחובות / רכב תכן)
-  cornerCfg: {},      // רדיוס פנייה ימינה ידני לכל פינה         // תצורת זרועות צומת, לפי מפתח ציר|קמ׳|צד
-  selJ: -1,
-  stage: 1,           // 1 צירים · 2 חתכים · 3 צמתים
-  tool: 'draw',       // 'draw' | 'edit'
-  sel: -1,
-  hover: null,        // נקודת עכבר בעולם (לתצוגה מקדימה)
+  axes: [], cur: 0, net: false, env: 'inter',
+  junctions: [], armCfg: {}, jctCfg: {}, cornerCfg: {}, selJ: -1,
+  stage: 1, tool: 'draw', sel: -1, hover: null,
   view: { cx: 0, cy: 0, scale: 2, mode:'map' },
-  bg: null,          // מפת רקע: {img, A,B,C,D,E,F, op}
-  calib: null,       // כיול בשתי נקודות // scale = פיקסלים למטר
-  editRow: null,   // שורה שהטווח שלה בעריכה
-  pickSta: null    // מצב סימון במפה: {row, stage:0|1}
+  bg: null, calib: null, editRow: null, pickSta: null
 };
 
-/* המאפיינים של הציר הפעיל – כל הקוד עובד מול S.pis/S.sec וכו׳ */
 ['pis','locked','sec','drawing','undo'].forEach(k=>Object.defineProperty(S,k,{
   get(){ return S.axes[S.cur][k]; }, set(v){ S.axes[S.cur][k]=v; }
 }));
@@ -412,7 +383,6 @@ function newAxis(){
 newAxis();
 function withAxis(k,fn){ const c=S.cur; S.cur=k; try{ return fn(); } finally{ S.cur=c; } }
 
-/* סוגי רצועות בחתך */
 const TYPES = {
   lane:     {he:'נתיב',        c:'#3d4349', w:3.6},
   shoulder: {he:'שול',         c:'#6a7079', w:2.5},
@@ -423,16 +393,15 @@ const TYPES = {
   open:     {he:'שטח פתוח',    c:'#8ea56c', w:3.0}
 };
 const MEDIAN_C = '#6f8a55';
-/* פלטת ציור: 'map' – מצב צבעוני, 'plan' – תכנית קווית בסגנון גיליון הנדסי */
 const PAL = {
   plan: ()=>S.view.mode==='plan',
   bg:   ()=>PAL.plan()?'#ffffff':PAL.areas()?'#f4f4f2':css('--map'),
   grid: ()=>PAL.plan()||PAL.areas()?'rgba(0,0,0,.06)':css('--grid'),
   road: ()=>PAL.plan()?'#ffffff':PAL.areas()?'#9b9b9b':TYPES.lane.c,
-  turn: ()=>PAL.road(),        // נתיבי פנייה באותו גוון כמו נתיבי הנסיעה
+  turn: ()=>PAL.road(),
   median:()=>PAL.plan()?'#d8d8d8':PAL.areas()?'#d24b43':MEDIAN_C,
   line: ()=>PAL.plan()?'#111111':PAL.areas()?'#ffffff':'#f2f2f2',
-  edge: ()=>PAL.plan()?'#d9a400':PAL.areas()?'#ffffff':'#f2f2f2',       // קו שפה צהוב (807)
+  edge: ()=>PAL.plan()?'#d9a400':PAL.areas()?'#ffffff':'#f2f2f2',
   sep:  ()=>PAL.plan()?'#111111':PAL.areas()?'rgba(0,0,0,.25)':'rgba(0,0,0,.35)',
   axis: ()=>PAL.plan()||PAL.areas()?'#c0392b':css('--axis'),
   ink:  ()=>PAL.plan()||PAL.areas()?'#111111':css('--ink'),
@@ -447,82 +416,65 @@ const PAL = {
       return '#9b9b9b';
     }
     if(!PAL.plan()) return t==='median'?MEDIAN_C:(TYPES[t]||TYPES.lane).c;
-             if(t==='median'||t==='medRow'||t==='barrier') return '#d8d8d8';
-             if(t==='fill'||t==='cut') return '#f3efe6';
-             if(['walk','front','plaza','aux','green','kerbArea','sidewalk'].includes(t)) return '#f7f7f7';
-             return '#ffffff'; }
+    if(t==='median'||t==='medRow'||t==='barrier') return '#d8d8d8';
+    if(t==='fill'||t==='cut') return '#f3efe6';
+    if(['walk','front','plaza','aux','green','kerbArea','sidewalk'].includes(t)) return '#f7f7f7';
+    return '#ffffff'; }
 };
 
-/* ============================================================
-   קטלוג החתכים הטיפוסיים – מועתק מ-typical-section.html
-   ============================================================ */
 const TS_T = {
-  walk:   {n:'רצועת הליכה',        s:'הליכה', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'רצועת הליכה מזערית 1.5 מ׳ (מרחב הרחוב, תבנית 1)']},
+  walk:   {n:'רצועת הליכה',        s:'הליכה', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'רצועת הליכה מזערית 1.5 מ׳']},
   aux:    {n:'רצועת עזר / עצים',   s:'עזר',   lvl:'curb', w:1.2,  col:'#cfd9bf', tree:true},
   front:  {n:'רצועת דופן',         s:'דופן',  lvl:'curb', w:0.3,  col:'#ddd6c6'},
   plaza:  {n:'שדירה / פעילות',     s:'שדירה', lvl:'curb', w:6.0,  col:'#d9e3c6', tree:true, ppl:true},
   green:  {n:'גינון',              s:'גינון', lvl:'curb', w:2.0,  col:'#b9cfa3', tree:true},
   bikeP:  {n:'שביל אופניים',       s:'אופניים',lvl:'curb', w:2.5, col:'#e8b9a8', dir:'up', bike:true,
-           min:[1.5,'שביל חד-סטרי מזערי 1.5 מ׳, דו-סטרי 3.0 מ׳ (כרך 1 פרק 9)']},
+           min:[1.5,'שביל חד-סטרי מזערי 1.5 מ׳, דו-סטרי 3.0 מ׳']},
   bikeL:  {n:'נתיב אופניים',       s:'נ. אופניים',lvl:'road', w:1.5, col:'#e39c86', dir:'up', bike:true, min:[1.5,'נתיב אופניים 1.5–2.0 מ׳']},
   buf:    {n:'רצועת הפרדה',        s:'הפרדה', lvl:'road', w:0.5,  col:'#c9ced3'},
-  parkP:  {n:'חנייה מקבילה',       s:'חנייה', lvl:'road', w:2.0,  col:'#9aa4ad', car:'park', max:[2.25,'אין לתכנן מפרץ חנייה מקביל רחב מ-2.25 מ׳ (רכב מנועי 3.3.4)']},
+  parkP:  {n:'חנייה מקבילה',       s:'חנייה', lvl:'road', w:2.0,  col:'#9aa4ad', car:'park', max:[2.25,'אין לתכנן מפרץ חנייה מקביל רחב מ-2.25 מ׳']},
   parkX:  {n:'חנייה ניצבת',        s:'ח. ניצבת',lvl:'road', w:5.0, col:'#9aa4ad', car:'park'},
   lane:   {n:'נתיב נסיעה',         s:'נתיב',  lvl:'road', w:3.25, col:'#6d7680', dir:'up', car:'car'},
-  bus:    {n:'נת״צ',               s:'נת״צ',  lvl:'road', w:3.6,  col:'#b5645a', dir:'up', car:'bus', min:[3.6,'נת״צ 3.6–4.0 מ׳ (כרך 1 פרק 10)']},
-  brt:    {n:'מת״צ (נתיב בודד)',   s:'מת״צ',  lvl:'road', w:3.6,  col:'#c0795f', dir:'up', car:'bus', min:[3.6,'נתיב במת״צ 3.6 מ׳ (כרך 1 פרק 10)']},
-  lrt:    {n:'מסילת רק״ל (לכיוון)',s:'רק״ל',  lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'ערך מוצע – רוחב רצועת רק״ל אינו בספרים המצורפים; לאמת מול תכנון הרכבת'},
-  median: {n:'מפרדה בנויה',        s:'מפרדה', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'מפרדה מזערית 2.5 מ׳ לצד נתיב שמאלה (תנועה בצמתים 5.5.4)']},
+  bus:    {n:'נת״צ',               s:'נת״צ',  lvl:'road', w:3.6,  col:'#b5645a', dir:'up', car:'bus', min:[3.6,'נת״צ 3.6–4.0 מ׳']},
+  brt:    {n:'מת״צ (נתיב בודד)',   s:'מת״צ',  lvl:'road', w:3.6,  col:'#c0795f', dir:'up', car:'bus', min:[3.6,'נתיב במת״צ 3.6 מ׳']},
+  lrt:    {n:'מסילת רק״ל (לכיוון)',s:'רק״ל',  lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'ערך מוצע – לאמת מול תכנון הרכבת'},
+  median: {n:'מפרדה בנויה',        s:'מפרדה', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'מפרדה מזערית 2.5 מ׳']},
   barrier:{n:'מעקה מפרדה (בין-עירוני)',s:'מעקה',lvl:'road', w:0.8, col:'#a8b0b8', rail:true},
-  shR:    {n:'שול ימני',           s:'שול',   lvl:'road', w:3.0,  col:'#8c949c', min:[2.0,'שול ימני 2.0–3.5 מ׳ לפי סוג הדרך (כרך 1 טבלה 3.2)']},
+  shR:    {n:'שול ימני',           s:'שול',   lvl:'road', w:3.0,  col:'#8c949c', min:[2.0,'שול ימני 2.0–3.5 מ׳']},
   shL:    {n:'שול שמאלי',          s:'שול שמאלי',lvl:'road', w:1.2, col:'#8c949c'},
-  active: {n:'רוחב פעיל + מעקה',   s:'W',     lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'הרוחב הפעיל W נקבע לפי סוג המעקה ורמת התפקוד'},
+  active: {n:'רוחב פעיל + מעקה',   s:'W',     lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'הרוחב הפעיל W לפי סוג המעקה'},
   kerbArea:{n:'שוליים עם אבן שפה', s:'שוליים', lvl:'curb', w:0.5, col:'#cfc8b6'}
 };
-const TS_DIRS = [['up','↑'],['down','↓'],['both','⇅'],['none','–']];
 
-/* ---------------- תבניות ---------------- */
 const C = (t,w,dir)=>({t, w:(w===undefined?TS_T[t].w:w), dir: dir || TS_T[t].dir || 'none'});
 function mirror(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir==='up'?'down':c.dir==='down'?'up':c.dir})); }
-function sym(half){ return [...half, ...mirror(half)]; }  // half = מהקצה השמאלי עד הציר, בכיוון "down"
+function sym(half){ return [...half, ...mirror(half)]; }
 const E_BLD = {type:'building'}, E_FILL = {type:'fill', n:4, h:1.5}, E_CUT = {type:'cut', n:3, h:1.5, dd:0.6, db:0.6}, E_NONE={type:'none'};
 const TS_PRESETS = {
-  mr1:{g:'עירוני – מרחב הרחוב',n:'תבנית 1 – מקומי, בינוי נמוך (15.0 מ׳)',ctx:'urban',row:15,src:'מרחב הרחוב 2020, תבנית 1 (עמ׳ 113 בקובץ)',
+  mr1:{g:'עירוני – מרחב הרחוב',n:'תבנית 1 – מקומי, בינוי נמוך (15.0 מ׳)',ctx:'urban',row:15,src:'מרחב הרחוב 2020',
        cells:sym([C('front',0.3),C('walk',1.5),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
-  mr2:{g:'עירוני – מרחב הרחוב',n:'תבנית 2 – מקומי, מדרכות אסימטריות (17.5 מ׳)',ctx:'urban',row:17.5,src:'מרחב הרחוב 2020, תבנית 2 (עמ׳ 115)',
-       cells:[C('front',0.3),C('walk',1.6),C('aux',1.2),C('parkX',5.0),C('lane',2.75,'down'),C('lane',2.75,'up'),C('parkP',2.0),C('walk',1.6),C('front',0.3)],eL:E_BLD,eR:E_BLD},
-  mr3:{g:'עירוני – מרחב הרחוב',n:'תבנית 3 – מקומי, בינוי בינוני (16.0 מ׳)',ctx:'urban',row:16,src:'מרחב הרחוב 2020, תבנית 3 (עמ׳ 117)',
+  mr3:{g:'עירוני – מרחב הרחוב',n:'תבנית 3 – מקומי, בינוי בינוני (16.0 מ׳)',ctx:'urban',row:16,src:'מרחב הרחוב 2020',
        cells:sym([C('front',0.3),C('walk',2.0),C('aux',1.2),C('parkP',2.0),C('lane',2.5,'down')]),eL:E_BLD,eR:E_BLD},
-  mr4:{g:'עירוני – מרחב הרחוב',n:'תבנית 4 – מקומי/מאסף 1, בינוני (22.0 מ׳)',ctx:'urban',row:22,src:'מרחב הרחוב 2020, תבנית 4 (עמ׳ 119)',
+  mr4:{g:'עירוני – מרחב הרחוב',n:'תבנית 4 – מקומי/מאסף 1 (22.0 מ׳)',ctx:'urban',row:22,src:'מרחב הרחוב 2020',
        cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
-  mr5:{g:'עירוני – מרחב הרחוב',n:'תבנית 5 – מקומי, בינוי גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 5 (עמ׳ 121)',
-       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkX',5.0),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
-  mr7:{g:'עירוני – מרחב הרחוב',n:'תבנית 7 – מקומי/מאסף 1, גבוה (24.0 מ׳)',ctx:'urban',row:24,src:'מרחב הרחוב 2020, תבנית 7 (עמ׳ 125)',
-       cells:sym([C('front',0.5),C('walk',3.3),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]),eL:E_BLD,eR:E_BLD},
-  mr9:{g:'עירוני – מרחב הרחוב',n:'תבנית 9 – מאסף 2, חזית פעילה (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 9 (עמ׳ 129)',
+  mr9:{g:'עירוני – מרחב הרחוב',n:'תבנית 9 – מאסף 2 (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020',
        cells:sym([C('front',2.5),C('walk',2.8),C('aux',1.2),C('bikeP',2.0,'down'),C('parkP',2.0),C('lane',3.0,'down'),C('lane',3.0,'down'),C('median',1.5)]),eL:E_BLD,eR:E_BLD},
-  mr10:{g:'עירוני – מרחב הרחוב',n:'תבנית 10 – עורק רמה 1 (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020, תבנית 10 (עמ׳ 131)',
+  mr10:{g:'עירוני – מרחב הרחוב',n:'תבנית 10 – עורק רמה 1 (36.0 מ׳)',ctx:'urban',row:36,src:'מרחב הרחוב 2020',
        cells:sym([C('walk',2.5),C('aux',1.5),C('bikeP',2.5,'down'),C('aux',1.5),C('lane',3.5,'down'),C('lane',3.5,'down'),C('median',3.0)]),eL:E_BLD,eR:E_BLD},
-  ex1:{g:'עירוני – דוגמאות',n:'שדרה + מת״צ BRT (42.0 מ׳)',ctx:'urban',row:42,src:'לפי השרטוט שהועלה (צילום 1)',
+  ex1:{g:'עירוני – דוגמאות',n:'שדרה + מת״צ BRT (42.0 מ׳)',ctx:'urban',row:42,src:'צילום 1',
        cells:[C('plaza',12.0),C('brt',3.5,'down'),C('brt',3.5,'up'),C('median',3.5),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.5),C('lane',3.25,'up'),C('lane',3.25,'up'),C('walk',4.0)],eL:E_NONE,eR:E_BLD},
-  ex2:{g:'עירוני – דוגמאות',n:'נת״צ ושבילי אופניים (44.0 מ׳)',ctx:'urban',row:44,src:'לפי השרטוט שהועלה (צילום 3)',
-       cells:sym([C('walk',7.7),C('bikeP',1.5,'down'),C('aux',2.0),C('bus',3.6,'down'),C('lane',3.1,'down'),C('lane',3.1,'down'),C('median',1.0)]),eL:E_BLD,eR:E_BLD},
-  ex3:{g:'עירוני – דוגמאות',n:'רק״ל במרכז + נת״צ (דוגמה)',ctx:'urban',row:0,src:'דוגמה סכמטית (צילום 8) – רוחבי הרק״ל מוצעים ויש לאמת',
-       cells:[C('green',2.0),C('bikeP',3.0,'both'),C('median',1.0),C('lrt',3.5,'up'),C('lrt',3.5,'down'),C('median',2.0),C('bus',3.6,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.0),C('lane',3.25,'up'),C('lane',3.25,'up'),C('lane',3.25,'up'),C('bus',3.6,'up'),C('walk',2.0),C('green',2.0),C('bikeP',3.0,'both'),C('walk',3.0)],eL:E_NONE,eR:E_BLD},
-  iuL:{g:'בין-עירוני – כרך 1',n:'חד-מסלולית מקומית וגישה',ctx:'inter',row:0,src:'כרך 1 טבלאות 3.1–3.2: נתיב 3.3, שול 2.0',
+  iuL:{g:'בין-עירוני – כרך 1',n:'חד-מסלולית מקומית וגישה',ctx:'inter',row:0,src:'כרך 1 טבלאות 3.1–3.2',
        cells:[C('active',1.0),C('shR',2.0),C('lane',3.3,'down'),C('lane',3.3,'up'),C('shR',2.0),C('active',1.0)],eL:E_FILL,eR:E_CUT},
-  iuR:{g:'בין-עירוני – כרך 1',n:'חד-מסלולית ראשית/אזורית (80 קמ״ש)',ctx:'inter',row:0,src:'כרך 1 טבלאות 3.1–3.2: נתיב 3.6, שול 3.0',
+  iuR:{g:'בין-עירוני – כרך 1',n:'חד-מסלולית ראשית/אזורית (80 קמ״ש)',ctx:'inter',row:0,src:'כרך 1 טבלאות 3.1–3.2',
        cells:[C('active',1.0),C('shR',3.0),C('lane',3.6,'down'),C('lane',3.6,'up'),C('shR',3.0),C('active',1.0)],eL:E_FILL,eR:E_FILL},
-  iuD:{g:'בין-עירוני – כרך 1',n:'דו-מסלולית ראשית 2+2',ctx:'inter',row:0,src:'כרך 1: נתיב 3.6, שול ימני 3.5, שול שמאלי 1.2, מפרדה 2.4 + מעקה (סעיף 3.4.2)',
+  iuD:{g:'בין-עירוני – כרך 1',n:'דו-מסלולית ראשית 2+2',ctx:'inter',row:0,src:'כרך 1: מפרדה 2.4 + מעקה',
        cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',1.2)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]),eL:E_FILL,eR:E_FILL},
-  iuF:{g:'בין-עירוני – כרך 1',n:'דרך מהירה 3+3',ctx:'inter',row:0,src:'כרך 1: נתיב 3.6–3.7, שול ימני 3.5, שול שמאלי 1.2; מפרדה 6.0 + מעקות ב-120 קמ״ש',
+  iuF:{g:'בין-עירוני – כרך 1',n:'דרך מהירה 3+3',ctx:'inter',row:0,src:'כרך 1: מפרדה 6.0 + מעקות',
        cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',3.0)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]),eL:E_CUT,eR:E_FILL},
-  ex4:{g:'בין-עירוני – דוגמאות',n:'חתך טיפוסי 5-5 (צילום 6)',ctx:'inter',row:0,src:'לפי השרטוט שהועלה (צילום 6)',
+  ex4:{g:'בין-עירוני – דוגמאות',n:'חתך טיפוסי 5-5',ctx:'inter',row:0,src:'צילום 6',
        cells:[C('active',1.1),C('shR',3.5),C('lane',3.6,'down'),C('lane',3.6,'down'),C('shL',1.5),C('barrier',0.6),C('shL',1.5),C('lane',3.6,'up'),C('lane',3.6,'up'),C('shR',3.5),C('active',1.1)],eL:E_CUT,eR:E_FILL}
 };
 
-
-/* סוגי התאים של כלי החתך נכנסים גם הם כסוגי רצועות */
 Object.entries(TS_T).forEach(([k,v])=>{
   const key = k==='median' ? 'medRow' : k;
   if(!TYPES[key]) TYPES[key]={he:v.n, c:v.col, w:v.w};
@@ -533,13 +485,12 @@ TYPES.cut ={he:'חפירה', c:'#9c8a66', w:4.5};
 const VEH=new Set(['lane','bus','brt','lrt']);
 const isLane=t=>t==='lane'||t==='bus'||t==='brt';
 
-/* המרת חתך של כלי החתך (תאים משמאל לימין) למבנה: מפרדה + רצועות לכל צד מהציר החוצה */
 function tsToSec(sec, key){
   const cells=sec.cells, n=cells.length;
   const W=c=>+c.w||0, rowOf=c=>({type: c.t==='median'?'medRow':c.t, w:W(c)});
   let iD=-1; cells.forEach((c,k)=>{ if(VEH.has(c.t)&&c.dir==='down') iD=k; });
   let iU=-1; for(let k=iD+1;k<n;k++){ if(VEH.has(cells[k].t)&&cells[k].dir==='up'){ iU=k; break; } }
-  let a,b,median=0;                       // תאי המפרדה: [a,b)
+  let a,b,median=0;
   if(iD<0||iU<0){
     const tot=cells.reduce((u,c)=>u+W(c),0); let acc=0; a=b=n;
     for(let k=0;k<n;k++){ if(acc+W(cells[k])/2>=tot/2){ a=b=k; break; } acc+=W(cells[k]); }
@@ -576,31 +527,25 @@ const $ = id => document.getElementById(id);
 const cv = $('cv'), ctx = cv.getContext('2d');
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-/* ---------- טרנספורמציות ---------- */
 function w2s(p){ const v=S.view; return { x:(p.x-v.cx)*v.scale+cv.width/2/dpr(), y:-(p.y-v.cy)*v.scale+cv.height/2/dpr() }; }
 function s2w(x,y){ const v=S.view; return { x:(x-cv.width/2/dpr())/v.scale+v.cx, y:-(y-cv.height/2/dpr())/v.scale+v.cy }; }
 function dpr(){ return window.devicePixelRatio||1; }
 
-/* ---------- וקטורים ---------- */
 const sub=(a,b)=>({x:a.x-b.x,y:a.y-b.y}), add=(a,b)=>({x:a.x+b.x,y:a.y+b.y});
 const mul=(a,k)=>({x:a.x*k,y:a.y*k}), len=a=>Math.hypot(a.x,a.y);
 const unit=a=>{const l=len(a);return l?mul(a,1/l):{x:0,y:0};};
 const dot=(a,b)=>a.x*b.x+a.y*b.y, cross=(a,b)=>a.x*b.y-a.y*b.x;
 
-/* ============================================================
-   גאומטריה: חישוב קשת בכל PI פנימי עם R>0
-   ============================================================ */
 function arcAt(i){
   const P=S.pis; const pi=P[i];
   if(i<=0||i>=P.length-1||!(pi.R>0)) return null;
   const u1=unit(sub(pi,P[i-1])), u2=unit(sub(P[i+1],pi));
-  const D=Math.atan2(cross(u1,u2),dot(u1,u2));        // סטייה חתומה (+ = שמאלה)
+  const D=Math.atan2(cross(u1,u2),dot(u1,u2));
   const aD=Math.abs(D);
   if(aD<1e-6 || aD>Math.PI-1e-3) return {i,invalid:true,D};
-  const n={x:-u1.y,y:u1.x};                            // נורמל שמאלי
+  const n={x:-u1.y,y:u1.x};
   const sg=Math.sign(D), R=pi.R, Ls=pi.Ls>0?pi.Ls:0;
   if(Ls>0){
-    // קלוטואידה – קשת – קלוטואידה סימטרית (פרק 5.5)
     const th=Ls/(2*R);
     if(2*th>=aD) return {i,invalid:true,D,why:'Ls ארוך מדי לזווית'};
     const X=clX(Ls,R,Ls), Y=clY(Ls,R,Ls), pp=Y-R*(1-Math.cos(th)), kk=X-R*Math.sin(th);
@@ -616,23 +561,18 @@ function arcAt(i){
   const c=add(tc,mul(n,R*sg));
   return {i,D,T,R,tc,ct,c,L:R*aD};
 }
-/* קלוטואידה: מערכת מקומית מנקודת ההשקה לישר */
 function clX(l,R,Ls){ const a=R*R*Ls*Ls; return l - Math.pow(l,5)/(40*a) + Math.pow(l,9)/(3456*a*a); }
 function clY(l,R,Ls){ const a=R*Ls; return Math.pow(l,3)/(6*a) - Math.pow(l,7)/(336*a*a*a); }
 const rotV=(v,t)=>({x:v.x*Math.cos(t)-v.y*Math.sin(t), y:v.x*Math.sin(t)+v.y*Math.cos(t)});
 
-/* בדיקות תקינות + בניית רצף אלמנטים ("מיזוג") */
 function solve(){
   const P=S.pis, arcs=P.map((_,i)=>arcAt(i)), errs=[];
   const T=i=>(arcs[i]&&!arcs[i].invalid)?arcs[i].T:0;
-
   arcs.forEach(a=>{ if(a&&a.invalid) errs.push({i:a.i,m:`נקודה ${a.i}: ${a.why||'זווית לא מאפשרת קשת'}`}); });
   for(let i=0;i<P.length-1;i++){
     const L=len(sub(P[i+1],P[i])), need=T(i)+T(i+1);
     if(need>L+1e-6) errs.push({seg:i,m:`קטע ${i}–${i+1}: הקשתות חופפות (${need.toFixed(1)} > ${L.toFixed(1)} מ')`});
   }
-
-  // רצף אלמנטים עם קילומטראז'
   const els=[]; let st=0;
   if(P.length>=2){
     let start={x:P[0].x,y:P[0].y};
@@ -658,16 +598,13 @@ function solve(){
   return {arcs,errs,els,total:st};
 }
 
-/* ============================================================
-   כללי התוויה אופקית – הנחיות בין-עירוניות כרך 1 פרק 5 (04/2018)
-   ============================================================ */
-const IU_RMIN  ={60:110,70:170,80:220,90:340,100:440,110:565,120:670};      // טבלה 5.1
-const IU_RTRAN ={60:460,70:630,80:820,90:1050,100:1300,110:1550,120:1850};  // טבלה 5.13 – מעליו אין צורך בעקום מעבר
+const IU_RMIN  ={60:110,70:170,80:220,90:340,100:440,110:565,120:670};
+const IU_RTRAN ={60:460,70:630,80:820,90:1050,100:1300,110:1550,120:1850};
 const IU_BRK2  ={60:1,70:1,80:1};
-const IU_C     ={60:1.0,70:0.917,80:0.833,90:0.75,100:0.667,110:0.583,120:0.5};   // טבלה 5.12
-const IU_LSMAX ={60:51,70:64,80:73,90:91,100:103,110:117,120:127};             // טבלה 5.12א
-function lsMin(V,R){ const v=near(V,[60,70,80,90,100,110,120]); return Math.ceil(Math.max(Math.pow(v,3)/(Math.pow(3.6,3)*IU_C[v]*R), 2*v/3.6)); }                                          // טבלה 5.5 – דו-נתיבי (מעלות)
-const IU_BRKD  ={80:0.5,90:0.5,100:0.5,110:0.25,120:0.25};                  // טבלה 5.5 – דו-מסלולי
+const IU_C     ={60:1.0,70:0.917,80:0.833,90:0.75,100:0.667,110:0.583,120:0.5};
+const IU_LSMAX ={60:51,70:64,80:73,90:91,100:103,110:117,120:127};
+function lsMin(V,R){ const v=near(V,[60,70,80,90,100,110,120]); return Math.ceil(Math.max(Math.pow(v,3)/(Math.pow(3.6,3)*IU_C[v]*R), 2*v/3.6)); }
+const IU_BRKD  ={80:0.5,90:0.5,100:0.5,110:0.25,120:0.25};
 function axisRules(a,R){
   const W=[], V=a.V, P=a.pis, deg=x=>x*180/Math.PI;
   if(S.env==='urban'){
@@ -676,7 +613,6 @@ function axisRules(a,R){
   }
   if(!(V in IU_RMIN)){ W.push(`מהירות תכן ${V} מחוץ לטבלאות פרק 5 (60–120 קמ״ש)`); return W; }
   const divided = !!(a.sec && (a.sec.median>0 || a.sec.left.concat(a.sec.right).some(r=>r.type==='barrier')));
-  // עקום שלם לכל נקודה (כולל קלוטואידות): תחילה וסוף
   const arcs=[]; R.els.forEach(e=>{ if(e.type==='line') return; let g=arcs.find(x=>x.pi===e.pi);
     if(!g){ g={pi:e.pi,sta0:e.sta0,length:0,dir:e.dir}; arcs.push(g); } g.length=e.sta0+e.length-g.sta0; if(e.dir) g.dir=e.dir;
     if(e.type==='spiral') g.dir=e.sg>0?'left':'right'; });
@@ -686,7 +622,7 @@ function axisRules(a,R){
       const u1=unit(sub(P[i],P[i-1])), u2=unit(sub(P[i+1],P[i]));
       const d=Math.abs(deg(Math.atan2(cross(u1,u2),dot(u1,u2)))), lim=(divided?IU_BRKD:IU_BRK2)[V];
       if(d<1e-3) continue;
-      if(lim===undefined) W.push(`נקודה ${i}: שבירה ${d.toFixed(2)}° – לא מותרת ב-${V} קמ״ש ב${divided?'דו-מסלולי':'דו-נתיבי'}; נדרשת קשת (טבלה 5.5)`);
+      if(lim===undefined) W.push(`נקודה ${i}: שבירה ${d.toFixed(2)}° – לא מותרת ב-${V} קמ״ש; נדרשת קשת (טבלה 5.5)`);
       else if(d>lim) W.push(`נקודה ${i}: שבירה ${d.toFixed(2)}° > ${lim}° המותרת (טבלה 5.5); נדרשת קשת`);
       continue;
     }
@@ -704,7 +640,6 @@ function axisRules(a,R){
     if(L>12*V) W.push(`נקודה ${i}: אורך קשת ${L.toFixed(0)} > ${12*V} (12·V)`);
     if(D<5&&L<150) W.push(`נקודה ${i}: זווית מרכזית ${D.toFixed(1)}° < 5° – מומלץ אורך קשת מעל 150 מ׳`);
   }
-  // ישרים בין קשתות עוקבות
   for(let q=0;q<arcs.length-1;q++){
     const a1=arcs[q], a2=arcs[q+1], Ls=a2.sta0-(a1.sta0+a1.length);
     const same=a1.dir===a2.dir, need=same?5*V:2*V;
@@ -714,10 +649,6 @@ function axisRules(a,R){
   return W;
 }
 
-/* ============================================================
-   אופסטים: d>0 שמאלה מכיוון ההתקדמות, d<0 ימינה.
-   ישר – הסטה מקבילה. קשת – קשת קונצנטרית ברדיוס R∓d.
-   ============================================================ */
 function arcSweep(e){
   const a0=Math.atan2(e.from.y-e.center.y,e.from.x-e.center.x);
   let sw=Math.atan2(e.to.y-e.center.y,e.to.x-e.center.x)-a0;
@@ -725,7 +656,6 @@ function arcSweep(e){
   if(e.dir==='right'&&sw>0) sw-=2*Math.PI;
   return {a0,sw};
 }
-/* מסגרת בקילומטראז': נקודה על הציר + נורמל שמאלי */
 function frameAt(els,sta){
   let e=els[els.length-1];
   for(const x of els){ if(sta<=x.sta0+x.length+1e-9){ e=x; break; } }
@@ -744,7 +674,6 @@ function frameAt(els,sta){
   const tg={x:-sg*Math.sin(a), y:sg*Math.cos(a)};
   return {p:{x:e.center.x+e.R*Math.cos(a), y:e.center.y+e.R*Math.sin(a)}, n:{x:-tg.y,y:tg.x}, e};
 }
-/* רשימת קילומטראז'ים לדגימה: גבולות אלמנטים, צפיפות בקשתות, ונקודות שבירה של רוחב */
 function stationList(els,extra){
   const total=els.reduce((m,e)=>Math.max(m,e.sta0+e.length),0), set=[0,total];
   els.forEach(e=>{
@@ -758,7 +687,6 @@ function stationList(els,extra){
   set.sort((a,b)=>a-b);
   return set.filter((v,k)=>k===0||v-set[k-1]>1e-6);
 }
-/* d יכול להיות מספר או פונקציה של קילומטראז' */
 function offsetPts(els,d,stas){
   const f=typeof d==='function'?d:()=>d, out=[]; let bad=false;
   (stas||stationList(els)).forEach(st=>{
@@ -768,7 +696,6 @@ function offsetPts(els,d,stas){
   });
   return {pts:out,bad};
 }
-/* חיתוך קצה 1:1 – אורך המעבר שווה לרוחב האלמנט */
 function rowWidth(r,sta){
   if(!r.ranges||!r.ranges.length) return r.w;
   let f=0;
@@ -782,7 +709,6 @@ function rowBreaks(){
   }));
   return b;
 }
-/* רצועות החתך: לכל אחת d0(sta), d1(sta) */
 function strips(){
   const sec=S.sec, res=[]; if(!sec) return res;
   const m=sec.median/2, zs=S.axes[S.cur]._zones||[];
@@ -804,22 +730,9 @@ function strips(){
   });
   return res;
 }
-/* ============================================================
-   רשת: זיהוי צמתים ואזורי השפעה
-   הרחבת ההפרדה ל־2.5 מ׳ לקראת הצומת.
-   היסט לכל צד w = (2.5 − מפרדה קיימת)/2.
-   בין־עירוני: L = מינימום בין הסטה בזווית (0.5° במהירות ≥90, 1° במהירות ≤80)
-               לבין עקומה הפוכה ברדיוס המינימלי ללא הגבהה.
-   עירוני:     עקומה הפוכה ברדיוס חיבור (מינימום 90 מ׳).
-   עקומה הפוכה (שתי קשתות R): L = √(4Rw − w²)
-   ============================================================ */
 const MEDIAN_JCT = 2.5;
-/* נסיגת קו העצירה 810 מקו הכניסה לצומת (מ׳) */
 const STOP_SET = {urban:1.0, inter:1.5};
-/* רדיוס מזערי למסלול פנייה שמאלה בתוך הצומת (מ׳) */
 const LEFT_R_MIN = ()=>S.env==='urban'?12:15;
-/* חצי רוחב המפרדה בצומת, לכל צד מהציר:
-   1.25 + (n − 0.5)·wL  כשיש n נתיבי שמאלה (n=1 → חצי נתיב, n=2 → נתיב וחצי) */
 function jctHalf(nL,wL){ return MEDIAN_JCT/2 + (nL>0 ? (nL-0.5)*wL : 0); }
 function zoneDesign(a,H){
   const m=a.sec?a.sec.median:0, w=H-m/2;
@@ -845,18 +758,13 @@ function armCfg(k,sj,side){
   const key=armKey(k,sj,side);
   if(!S.armCfg[key]){
     const a=S.axes[k], w=laneOf(a), sec=a.sec||{left:[],right:[]};
-    const appr = side==='before' ? sec.right : sec.left;   // תנועה בימין הדרך
+    const appr = side==='before' ? sec.right : sec.left;
     const dep  = side==='before' ? sec.left  : sec.right;
     S.armCfg[key]={thru:Math.max(1,nLanes(appr)), out:Math.max(1,nLanes(dep)), left:1, right:0,
       wT:w, wL:w, wR:w, taperL:30, storeL:40, taperR:30, storeR:40, nQ:3, userL:false, userR:false, RL:0};
   }
   return S.armCfg[key];
 }
-/* ============================================================
-   רדיוסי פנייה ימינה מהנתיב (ללא אי תנועה / פנייה חופשית)
-   עירוני:     תנועה בצמתים 2020, טבלה 5.10 – רדיוס אבן השפה לפי הרחובות הנפגשים
-   בין־עירוני: הנחיות בין־עירוניות כרך 2, טבלה 6.1 – אוטובוס, עקום מעגלי יחיד
-   ============================================================ */
 const TURN_U = {
   res:{ll:[5,7],lc:[5,7],cc:[7,10],ca:[7,10],aa:[15,null]},
   ind:{ll:[8,10],lc:[8,10],cc:[10,12],ca:[10,12],aa:[15,null]}
@@ -865,7 +773,7 @@ const TURN_U_PAIR = {ll:'מקומי – מקומי',lc:'מקומי – מאסף'
 const TURN_I_BUS = {75:20, 90:15, 105:13};
 function jctKey(J){ return `${Math.round(J.p.x)},${Math.round(J.p.y)}`; }
 function jctCfg(J){ const k=jctKey(J); const c=S.jctCfg[k] || (S.jctCfg[k]={pair:'lc',area:'res'});
-  if(!c.control) c.control='priority';        // 'priority' – דרך עיקרית ומשנית | 'signal' – מרומזר/עצור בכל הזרועות
+  if(!c.control) c.control='priority';
   return c; }
 function tableRadius(J,defl){
   if(S.env==='urban'){
@@ -877,7 +785,6 @@ function tableRadius(J,defl){
 }
 const rotL=v=>({x:-v.y,y:v.x}), rotR=v=>({x:v.y,y:-v.x});
 function lineX(p,u,q,v){ const d=cross(u,v); if(Math.abs(d)<1e-9) return null; const t=cross(sub(q,p),v)/d; return add(p,mul(u,t)); }
-/* זרועות הצומת: לכל זרוע – הציר, צד התנועה, רוחב שפת כניסה/יציאה בצומת */
 function junctionArms(n){
   const J=S.junctions[n], arms=[];
   [J.major,J.minor].forEach(k=>{
@@ -888,7 +795,6 @@ function junctionArms(n){
       const c=A.cfg, dirS=A.side==='before'?-1:1;
       const dd=Math.min(zE(z,A.side)||12,12), s2=Math.max(0,Math.min(R_.total,z.sj+dirS*dd));
       const out=unit(sub(frameAt(els,s2).p,J.p));
-      // קילומטראז׳ לאורך הזרועה, מהצומת החוצה
       const far=dirS<0?0:R_.total, gap=A.side==='before'?z.gapB:z.gapA;
       const reach=Math.min(Math.abs(far-z.sj), Math.max(zE(z,A.side)||0,80), isFinite(gap)?gap/2:Infinity);
       const N=Math.max(40,Math.ceil(reach/0.5)), stas=[];
@@ -901,7 +807,7 @@ function junctionArms(n){
   arms.sort((p,q)=>p.ang-q.ang);
   return arms;
 }
-function polyX(A,B){   // חיתוך ראשון (הקרוב לצומת) בין שתי פוליליינים עם קילומטראז׳
+function polyX(A,B){
   let best=null;
   for(let a=0;a<A.length-1;a++) for(let b=0;b<B.length-1;b++){
     const p=A[a].p, r=sub(A[a+1].p,p), q=B[b].p, u=sub(B[b+1].p,q), den=cross(r,u);
@@ -915,13 +821,11 @@ function polyX(A,B){   // חיתוך ראשון (הקרוב לצומת) בין �
 }
 const edgePoly=(arm,d)=>arm.stas.map(st=>{ const F=frameAt(arm.els,st); return {s:st,p:add(F.p,mul(F.n,d))}; });
 const edgePt=(arm,st,d)=>{ const F=frameAt(arm.els,st); return add(F.p,mul(F.n,d)); };
-/* הקילומטראז׳ היחסי שבו שפה של זרוע (אופסט d) פוגשת את קו ההמשך של שפת הדרך החוצה */
 function crossData(J,arms,a){
   const B=arms.filter(b=>b.k!==a.k); if(!B.length) return null;
   const bb=B[0], F=frameAt(bb.els,bb.sj), t={x:F.n.y,y:-F.n.x};
   let Ep=0,Em=0;
   B.forEach(b=>{ const c=b.cfg||{}; const sgA=b.sgA;
-    // צד + של ציר B: כניסה אם sgA>0, יציאה אחרת
     Ep=Math.max(Ep, sgA>0?b.Ein:b.Eout); Em=Math.max(Em, sgA>0?b.Eout:b.Ein); });
   return {C:F.p,n:F.n,t,Ep,Em};
 }
@@ -935,17 +839,15 @@ function crossU(J,arms,a,off){
   });
   return best===Infinity?0:best;
 }
-
-/* פינה: מרכז הקשת נמצא במרחק R משתי השפות, כלומר בחיתוך האופסטים E+R של שתי הזרועות */
-const FREE_W={urban:4.5, inter:5.5};          // רוחב דרך הפנייה בנקודת האמצע
-const ISLAND_MIN=5;                             // שטח אי מזערי – ערך זמני (מ״ר)
+const FREE_W={urban:4.5, inter:5.5};
+const ISLAND_MIN=5;
 function junctionCorners(n,armsIn){
   const J=S.junctions[n], arms=armsIn||junctionArms(n), res=[];
   if(arms.length<2) return res;
   arms.forEach((ai,idx)=>{
     const aj=arms[(idx+1)%arms.length];
     let alpha=aj.ang-ai.ang; if(alpha<=0) alpha+=2*Math.PI;
-    const dIn = ai.sgA*ai.Ein, dOut = -aj.sgA*aj.Eout;              // שפת כניסה של i, שפת יציאה של j
+    const dIn = ai.sgA*ai.Ein, dOut = -aj.sgA*aj.Eout;
     const P1=edgePt(ai,ai.sj,dIn), P2=edgePt(aj,aj.sj,dOut);
     const key=`${jctKey(J)}|${ai.id}>${aj.id}`;
     const defl=180-alpha*180/Math.PI;
@@ -975,12 +877,10 @@ function junctionCorners(n,armsIn){
     if(defl<70||defl>110) warn.push(`סטייה ${defl.toFixed(0)}° – מחוץ לתחום 70°–110°`);
     const uA=Math.abs(cx.sA-ai.sj), uB=Math.abs(cx.sB-aj.sj);
     if(uA>ai.reach||uB>aj.reach) warn.push('נקודת ההשקה מחוץ לאזור ההשפעה');
-    // קטעי השפה מהצומת עד נקודות ההשקה (לסגירת משטח הצומת)
     const runA=ai.stas.filter(v=>Math.abs(v-ai.sj)<uA).map(v=>edgePt(ai,v,dIn));
     const runB=aj.stas.filter(v=>Math.abs(v-aj.sj)<uB).map(v=>edgePt(aj,v,dOutX)).reverse();
     let island=null;
     if(free){
-      // אי תנועה: בין הקשת R + רוחב דרך הפנייה (מרכז הקשת בצד הקרקע) לבין שפות הנתיבים הישירים (+0.5 מ׳)
       const Wt=FREE_W[S.env], Rin=R+Wt, c=ai.cfg;
       const dA=ai.sgA*(ai.Ein-c.right*c.wR+0.5), dB=-aj.sgA*(aj.Eout+0.5);
       const lineA=[edgePt(ai,ai.sj,dA),ai.out], lineB=[edgePt(aj,aj.sj,dB),aj.out];
@@ -1005,28 +905,21 @@ function junctionCorners(n,armsIn){
   return res;
 }
 
-/* שימוש בנתיבי הכניסה: כמה נתיבים משרתים כל תנועה, וחיצים לכל נתיב (מבפנים החוצה) */
 function laneUse(c){
   const n=c.thru, arrows=[];
   for(let i=0;i<n;i++) arrows.push(c.noThru?[]:['S']);
   if(c.noThru){
-    // כניסה ללא ישר: פנימיים שמאלה, חיצוניים ימינה, נתיב יחיד משותף
     if(c.hasL&&c.hasR){ if(n===1) arrows[0]=['L','R']; else for(let i=0;i<n;i++) arrows[i]=[i<Math.ceil(n/2)?'L':'R']; }
     else if(c.hasL) arrows.forEach(a=>a.push('L'));
     else if(c.hasR) arrows.forEach(a=>a.push('R'));
   } else if(n){
-    if(c.hasL&&!c.left) arrows[0].unshift('L');          // ישר+שמאלה בנתיב הפנימי
-    if(c.hasR&&!c.right) arrows[n-1].push('R');           // ישר+ימינה בנתיב החיצוני
+    if(c.hasL&&!c.left) arrows[0].unshift('L');
+    if(c.hasR&&!c.right) arrows[n-1].push('R');
   }
   const cnt=k=>arrows.filter(a=>a.includes(k)).length;
   return {arrows, thru:cnt('S'), left:(c.left||0)+cnt('L'), right:(c.right||0)+cnt('R')};
 }
 
-/* ============================================================
-   לוכסנים ונתיבים מיוחדים לפי ההנחיות (מקור: המחשבון באתר)
-   בין-עירוני – כרך 2: טבלה 7.1 (האטה שמאלה), 7.3 (אחסנה), 6.2 (האטה ימינה), 6.5 (האצה)
-   עירוני – תנועה בצמתים 2020: טבלאות 5.4–5.6 (לוכסנים), אחסון מזערי 30 מ׳, האצה ≥ 50 מ׳
-   ============================================================ */
 const IU_T71={50:35,60:50,70:70,80:95,90:115,100:140};
 const IU_T73={2:20,3:25,4:31,5:37,6:43,7:56,8:62,9:68,10:74};
 const IU_DEC={50:[36,24],60:[50,38],70:[69,57],80:[95,82],90:[114,102],100:[139,127]};
@@ -1058,15 +951,11 @@ function guideFreeR(defl){
 }
 
 const zE=(z,side)=>side==='before'?(z.Eb??z.E):(z.Ea??z.E);
-/* אחסנה מזערית לפי אותן טבלאות שמהן נגזרו ערכי התכן.
-   האחסנה והלוכסן הם דרגת החופש היחידה שמותר לכלי לקצר בה כדי להיסגר לחתך הטיפוסי;
-   ערכי ההטיה של חיבור המפרדה אינם ניתנים לשינוי לצורך התאמה. */
 function storeFloor(a,c){
   if(S.env==='urban') return 30;
   const v=Math.max(50,Math.min(100,near(a.V,[50,60,70,80,90,100])));
   return IU_T71[v] + IU_T73[2];
 }
-/* חלוקת אורך האחזקה H בין אחסנה ללוכסן: קודם מקצרים אחסנה עד המזערי, ורק אז את הלוכסן */
 function splitHold(H,st0,tp0,floor){
   if(H>=st0+tp0-1e-9) return {store:st0, taper:tp0};
   if(H>=floor+tp0)    return {store:+(H-tp0).toFixed(2), taper:tp0};
@@ -1074,18 +963,12 @@ function splitHold(H,st0,tp0,floor){
   const f=(st0+tp0)>0?H/(st0+tp0):0;
   return {store:+(st0*f).toFixed(2), taper:+(tp0*f).toFixed(2)};
 }
-/* ערכי האחסנה/לוכסן בפועל אחרי הסגירה (אם קוצרו) */
 const stoL=c=>c._eStoreL!==undefined?c._eStoreL:c.storeL;
 const tapL=c=>c._eTaperL!==undefined?c._eTaperL:c.taperL;
 const stoR=c=>c._eStoreR!==undefined?c._eStoreR:c.storeR;
 const tapR=c=>c._eTaperR!==undefined?c._eTaperR:c.taperR;
 
-/* פתיחת נתיב פנייה: מלא עד אורך האגירה, לוכסן ליניארי אחריו */
 function turnF(u,store,tap){ if(u<=store) return 1; if(u>=store+tap) return 0; return 1-(u-store)/tap; }
-/* מעבר רוחב w לאורך L. t נמדד מהקצה החיצוני (0) אל הצומת (L).
-   'angle'  – לוכסן ישר בזווית ההסטה.
-   'radius' – עקומה הפוכה; R נגזר מ-L ומ-w (L²=4Rw−w²) כך שהמעבר תמיד נסגר
-              בדיוק אל החתך הטיפוסי, ואפשר לדווח מהו R שהתקבל בפועל. */
 function taperAt(w,L,method,t){
   if(!(w>0)) return 0;
   if(!(L>0)) return t>0?w:0;
@@ -1095,7 +978,6 @@ function taperAt(w,L,method,t){
   return t<=L/2 ? h(t) : w-h(L-t);
 }
 function taper(z,t){ return taperAt(z.w,z.L,z.method,t); }
-/* שרשרת הסגירה של הצד הרלוונטי: אחזקה (עד סוף לוכסן השמאליות) ואז מעבר המפרדה */
 const clOf=(z,st)=>(z.cl&&z.cl[st<z.sj?'before':'after'])||null;
 function widenAt(zones,st){
   let v=0;
@@ -1118,7 +1000,6 @@ function zoneBreaks(zones){
     if(z.L>0){ b.push(z.sj-z.L, z.sj+z.L); } });
   return b;
 }
-/* חלוקת רשימת קילומטראז׳ לקטעים שמחוץ לאזורי ההשפעה */
 function outsidePieces(zones,stas){
   if(!zones.length) return [stas];
   const out=[]; let cur=[];
@@ -1142,12 +1023,11 @@ function computeNetwork(){
         if(j===k||!h.els.length) return;
         const st=projectSta(h.els,P);
         if(len(sub(frameAt(h.els,st).p,P))>tol) return;
-        if(st<0.5||st>h.total-0.5) return;      // קצה מול קצה = המשכיות, לא צומת
+        if(st<0.5||st>h.total-0.5) return;
         S.junctions.push({type:'T',major:j,sMaj:st,minor:k,sMin:se,p:P});
       });
     });
   });
-  // הצטלבות באמצע שני צירים (צומת X)
   const poly=g=>stationList(g.els).map(v=>({s:v,p:frameAt(g.els,v).p}));
   const PL=G.map(g=>g.els.length?poly(g):null);
   for(let i=0;i<G.length;i++) for(let j=i+1;j<G.length;j++){
@@ -1159,7 +1039,7 @@ function computeNetwork(){
       if(t<0||t>1||v<0||v>1) continue;
       const sA=A[a].s+t*(A[a+1].s-A[a].s), sB=B[b].s+v*(B[b+1].s-B[b].s);
       const nearEnd=(x,T)=>x<0.5||x>T-0.5;
-      if(nearEnd(sA,G[i].total)||nearEnd(sB,G[j].total)) continue;   // כבר טופל כצומת T
+      if(nearEnd(sA,G[i].total)||nearEnd(sB,G[j].total)) continue;
       if(S.junctions.some(J=>J.type==='X'&&J.major===i&&J.minor===j&&Math.abs(J.sMaj-sA)<1)) continue;
       S.junctions.push({type:'X',major:i,sMaj:sA,minor:j,sMin:sB,p:add(p,mul(r,t))});
     }
@@ -1181,7 +1061,6 @@ function computeNetwork(){
     const wL=Math.max(...arms.map(x=>x.cfg.left>0?x.cfg.wL:0),0);
     const H=jctHalf(nL,wL);
     const z=zoneDesign(a,H)||{w:0,L:0,method:'angle',ang:0,none:true};
-    // לוכסן תוספת/הפחתת נתיבי נסיעה מול החתך הטיפוסי (1:r לפי הסביבה)
     const rTap = S.env==='urban' ? TZ_FLARE[near(a.V,[30,50,70])].sp
                : (near(Math.max(50,Math.min(100,a.V)),[50,60,70,80,90,100])<=70?10:15);
     arms.forEach(x=>{ const c=x.cfg;
@@ -1189,18 +1068,12 @@ function computeNetwork(){
       c.taperT=+(Math.abs(c.thru*c.wT-(c._bIn ||c.thru*c.wT))*rTap).toFixed(1);
       c.taperO=+(Math.abs(c.out *c.wT-(c._bOut||c.out *c.wT))*rTap).toFixed(1);
     });
-    // צומת סמוך על אותו ציר: כל צומת מקבל עד חצי מהמרחק ביניהם
     const others=[]; S.junctions.forEach((Q,q)=>{ if(q===jn) return;
       if(Q.major===k) others.push(Q.sMaj); if(Q.minor===k) others.push(Q.sMin); });
     const prev=Math.max(-Infinity,...others.filter(v=>v<sj-0.5)), next=Math.min(Infinity,...others.filter(v=>v>sj+0.5));
     const endGap =sd=> sd==='before'? sj : T-sj;
     const jctGap =sd=> sd==='before'? (isFinite(prev)?(sj-prev)/2:Infinity) : (isFinite(next)?(next-sj)/2:Infinity);
     const availOf=sd=> Math.min(endGap(sd), jctGap(sd));
-    /* ------------------------------------------------------------------
-       שרשרת הסגירה לכל צד:  צומת → אחסנה+לוכסן שמאליות → מעבר מפרדה → חתך טיפוסי
-       ערכי ההטיה (זווית / רדיוס עקומה הפוכה) אינם ניתנים לשינוי כדי "להתאים";
-       ההתאמה נעשית רק בדרגת החופש של האורכים – אחסנה ולוכסנים.
-       ------------------------------------------------------------------ */
     const cl={};
     arms.forEach(x=>{ const c=x.cfg, sd=x.side, avail=availOf(sd);
       delete c._eStoreL; delete c._eTaperL; delete c._eStoreR; delete c._eTaperR;
@@ -1211,11 +1084,9 @@ function computeNetwork(){
       const o={side:sd, holdReq, holdMin, L, need, avail, hold:holdReq, Lm:L, cut:0, short:0, status:'ok',
                storeL:c.storeL, taperL:c.taperL, why:[]};
       if(need>avail+1e-6){
-        // הרציפות קודמת: קודם מבטיחים אורך מלא למעבר המפרדה (ערכי ההטיה אינם משתנים),
-        // והשארית לאחזקה. נתיב הפנייה מתכווץ יחד איתה כדי שלא יישאר תלוי באוויר.
-        if(avail>=holdMin+L-1e-6){ o.hold=avail-L; o.Lm=L; }                 // מקצרים אחסנה בלבד
-        else if(avail>=holdMin){ o.hold=holdMin; o.Lm=avail-holdMin; }        // אחזקה במזערי, המעבר נכפה
-        else { const f=(holdMin+L)>0?avail/(holdMin+L):0;                     // אין די אורך לשניהם
+        if(avail>=holdMin+L-1e-6){ o.hold=avail-L; o.Lm=L; }
+        else if(avail>=holdMin){ o.hold=holdMin; o.Lm=avail-holdMin; }
+        else { const f=(holdMin+L)>0?avail/(holdMin+L):0;
                o.hold=Math.max(0,holdMin*f); o.Lm=Math.max(0,avail-o.hold); }
         o.cut=+(holdReq-o.hold).toFixed(1);
         o.short=+(need-avail).toFixed(1);
@@ -1231,7 +1102,6 @@ function computeNetwork(){
       }
       o.cause = jctGap(sd)<endGap(sd) ? 'הצומת הסמוך' : 'קצה הציר';
       o.kind  = 'אילוץ אורך – התאמה למצב קיים';
-      // דרישת הרוחב החיצוני (ימינה / תוספת נתיב) – נסגרת בלוכסן משלה
       o.out=Math.max(c.right?c.storeR+c.taperR:0, c.taperT||0, c.taperO||0);
       if(o.out>avail+1e-6){
         o.outShort=+(o.out-avail).toFixed(1);
@@ -1265,7 +1135,6 @@ function computeNetwork(){
     });
   };
   build();
-  // תנועות אפשריות בכל זרוע לפי הגאומטריה; תנועה שאינה קיימת מאופסת
   let changed=false;
   S.junctions.forEach((J,n)=>{
     const arms=junctionArms(n);
@@ -1284,7 +1153,6 @@ function computeNetwork(){
   S.junctions.forEach((J,n)=>{
     const arms=junctionArms(n); J.arms=arms;
     J.corners=junctionCorners(n,arms);
-    // כלל א-ב: נתיבי היציאה בזרוע ≥ מספר הנתיבים שנכנסים אליה מכל תנועה אחרת
     J.kind = arms.length===4?'X':arms.length===3?'T':arms.length+'';
     J.control = jctCfg(J).control;
     arms.forEach(aj=>{
@@ -1303,7 +1171,6 @@ function computeNetwork(){
         else if(pp.over) S.netWarn.push(`צ${n+1} · ${aj.name}: R=${cj.RL} שהוזן גדול מהמרווח בין החרטומים (עד R${pp.Rfit}) – הקשת קוטמת את החרטום`);
         else if(pp.R<LEFT_R_MIN()) S.netWarn.push(`צ${n+1} · ${aj.name}: רדיוס מסלול הפנייה שמאלה R${pp.R} קטן מהמינימום ${LEFT_R_MIN()} מ׳ – יש להרחיב את פתח המפרדה`);
       });
-      // --- דוח הסגירה לחתך הטיפוסי (רציפות אורכית) ---
       { const z=S.axes[aj.k]._zones.find(q=>q.jn===n), o=z&&z.cl&&z.cl[aj.side], base=`צ${n+1} · ${aj.name}`;
         if(o&&o.status!=='ok'){
           const chain=`נדרש ${o.need.toFixed(0)} מ׳ (אחזקה ${o.holdReq.toFixed(0)} + מעבר מפרדה ${o.L.toFixed(0)}), קיימים ${o.avail.toFixed(0)} מ׳ עד ${o.cause}`;
@@ -1320,13 +1187,10 @@ function computeNetwork(){
           S.netWarn.push(`${base}: נתיב הפנייה ימינה / תוספת הנתיב דורשים ${o.out.toFixed(0)} מ׳ ויש ${o.avail.toFixed(0)} – חסרים ${o.outShort.toFixed(0)} מ׳, הלוכסן נקטע (${o.cause}).`);
       }
     });
-    // פנייה חופשית: נתיב הימינה נגמר בנקודת ההשקה של הקשת, ומשם דרך הפנייה
     (J.corners||[]).forEach(c=>{ if(!c.free) return;
       const z=S.axes[c.from.k]._zones.find(q=>q.jn===n); if(!z) return;
       z.freeR=z.freeR||{}; z.freeR[c.from.side]=c.uA;
     });
-    // --- (1) חרטום המפרדה: מטר אחד מקו ההמשך של שפת הדרך החוצה ---
-    //     מחושב ראשון, כי גם קווי העצירה וגם קווי ההכוונה 809 נשענים עליו
     arms.forEach(a=>{
       const z=S.axes[a.k]._zones.find(q=>q.jn===n); if(!z) return;
       const D=(S.axes[a.k].sec?S.axes[a.k].sec.median/2:0)+widenAt(S.axes[a.k]._zones,z.sj);
@@ -1335,23 +1199,20 @@ function computeNetwork(){
       a.uNose=u+1/sn;
       z.nose=z.nose||{}; z.nose[a.side]=a.uNose;
     });
-    // --- (2) קו הכניסה לצומת וקווי העצירה 810 ---
-    //     קו הכניסה = המשך השפה הקרובה של הדרך החוצה, בנפרד לכל קבוצת נתיבים.
-    //     קו עצירה = קו הכניסה + נסיגה; מסומן רק היכן שיש חובת מתן זכות קדימה.
     {
       const set=STOP_SET[S.env]||1.0;
       arms.forEach(a=>{
         const z=S.axes[a.k]._zones.find(q=>q.jn===n); if(!z) return;
         const c=a.cfg, g=a.sgA, D=armD(a,a.sj);
         const band=(o0,o1)=>Math.max(crossU(J,arms,a,g*o0), crossU(J,arms,a,g*o1));
-        const eT=band(D, EinAt(a,a.sj));                       // נתיבים ישירים (+ ימינה)
-        const eL=c.left? band(D-c.left*c.wL, D) : eT;          // נתיבי פנייה שמאלה
+        const eT=band(D, EinAt(a,a.sj));
+        const eL=c.left? band(D-c.left*c.wL, D) : eT;
         const yields = (J.control==='signal') || (a.k===J.minor);
         let uT=null, uL=null;
-        if(yields){                                            // קו עצירה אחד לכל נתיבי הכניסה
+        if(yields){
           uT = Math.max(eT, c.left?Math.max(eL,a.uNose||0):0) + set;
           uL = c.left? uT : null;
-        } else if(c.left){                                     // רק נתיבי השמאלה עוצרים (חוצים תנועה נגדית)
+        } else if(c.left){
           uL = Math.max(eL, a.uNose||0) + set;
         }
         a.yield=yields; a.uEntry=Math.min(eT,eL); a.uStop=uT; a.uStopL=uL;
@@ -1362,7 +1223,6 @@ function computeNetwork(){
   });
 }
 
-/* הטלת נקודה על הציר → קילומטראז' */
 function projectSta(els,w){
   const total=els.reduce((m,e)=>Math.max(m,e.sta0+e.length),0);
   let best=0,bd=Infinity; const N=Math.max(200,Math.ceil(total));
@@ -1371,20 +1231,14 @@ function projectSta(els,w){
 }
 const fmtSta=v=>{const km=Math.floor(v/1000); return `${km}+${(v-km*1000).toFixed(1).padStart(5,'0')}`;};
 
-/* ============================================================
-   ציור
-   ============================================================ */
 function resize(){
   const r=$('stage').getBoundingClientRect(), d=dpr();
   cv.width=r.width*d; cv.height=r.height*d;
   ctx.setTransform(d,0,0,d,0,0); draw();
 }
-
-// שכבת רקע – כאן יתחבר GovMap בהמשך
 function drawBackground(){
   const W=cv.width/dpr(), H=cv.height/dpr();
   ctx.fillStyle=PAL.bg(); ctx.fillRect(0,0,W,H);
-  // רשת עזר
   if(S.bg&&S.bg.img&&S.bg.show!==false){
     const b=S.bg, v=S.view, d=dpr(), sc=v.scale;
     ctx.save();
@@ -1400,7 +1254,6 @@ function drawBackground(){
   for(let y=Math.floor(a.y/step)*step;y<=b.y;y+=step){const s=w2s({x:0,y}).y;ctx.moveTo(0,s);ctx.lineTo(W,s);}
   ctx.stroke();
 }
-
 function draw(){
   computeNetwork();
   drawBackground();
@@ -1416,21 +1269,17 @@ function ring(p,r,fill,stroke,dash){
   if(fill){ ctx.fillStyle=fill; ctx.fill(); }
   ctx.setLineDash(dash||[]); ctx.lineWidth=2.5; ctx.strokeStyle=stroke; ctx.stroke(); ctx.setLineDash([]);
 }
-/* ============================================================
-   סימון על פני הדרך – תקנות והנחיות להצבת תמרורים 2024, פרק 8
-   טבלאות 7–11 (801–809), 810 קו עצירה, 813 חצים (תרשים 6, טבלה 1)
-   ============================================================ */
 function roadClass(a){
   if(S.env==='urban') return 'urban';
   const divided=!!(a&&a.sec&&(a.sec.median>0||a.sec.left.concat(a.sec.right).some(r=>r.type==='barrier')));
   return divided?'dual':'single';
 }
 const MK={
-  w:{urban:0.10, single:0.15, dual:0.15},                               // רוחב קו (מ׳)
-  d801:{seg:{urban:[1,2],single:[2,4],dual:[3,12]},                     // צבע:רווח (מ׳) – טבלה 9
+  w:{urban:0.10, single:0.15, dual:0.15},
+  d801:{seg:{urban:[1,2],single:[2,4],dual:[3,12]},
         jct:{urban:[1,1],single:[2,2],dual:[3,3]}},
-  d808:{urban:[1,1,0.30], single:[3,1.5,0.30], dual:[3,1.5,0.30]},      // מלבנים – טבלה 11
-  stop:0.50,                                                            // קו עצירה 810
+  d808:{urban:[1,1,0.30], single:[3,1.5,0.30], dual:[3,1.5,0.30]},
+  stop:0.50,
   arrowAt:{30:[5,15,25,35],50:[5,25,45,65],70:[5,25,45,65,85],90:[5,30,55,80,105],110:[5,35,65,95,125]}
 };
 function setMark(kind,a,sub){
@@ -1444,11 +1293,8 @@ function setMark(kind,a,sub){
   ctx.lineCap='butt';
   ctx.strokeStyle= kind==='807'?PAL.edge():PAL.line();
 }
-/* חצים 813 – מידות לפי תרשים 6 (מ׳), y לכיוון הנסיעה, x ימינה.
-   הבנייה: גזע אחד + ראש ישר ו/או ענפים ברבע מעגל לצדדים, כך שחץ
-   משולב (ישר+שמאלה, שמאלה+ימינה וכו׳) יוצא גוף אחד ולא שני חצים זה על זה. */
 const AR = {len:2.60, w:0.32, hl:0.95, hw:0.62, r:1.30, y0:1.00};
-function ribbon(pts,w){                       // פוליליין → מצולע ברוחב w
+function ribbon(pts,w){
   const h=w/2, L=[], R=[];
   for(let i=0;i<pts.length;i++){
     const a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)];
@@ -1492,16 +1338,11 @@ function drawArmArrows(J,a){
   const Dat=st=>armD(a,st);
   const freeR=(J.corners||[]).some(q=>q.free&&q.from===a);
   const has=v=>v!==null&&v!==undefined&&isFinite(v);
-  // ---- 810 קווי עצירה ----
-  //  זרוע שחייבת מתן זכות קדימה: קו אחד לרוחב כל נתיבי הכניסה.
-  //  זרוע עם זכות קדימה: קו קצר רק לרוחב נתיבי הפנייה שמאלה.
-  /* כיוון קו העצירה: מקביל לציר הזרוע החוצה הקרובה – כלומר מקביל לשפת
-     הדרך החוצה, שהיא גם קו הכניסה שממנו נמדדת הנסיגה. */
   const eDir=(()=>{ const d=crossData(J,J.arms||[],a); return d&&d.t?unit(d.t):null; })();
   const bar=(u,lo,hi,ext)=>{
     if(!has(u) || u+MK.stop>lim || u<0) return;
     const s1=a.sj+sgn*u, F1=frameAt(a.els,s1);
-    const fAway=mul({x:F1.n.y,y:-F1.n.x},sgn);          // התרחקות מהצומת
+    const fAway=mul({x:F1.n.y,y:-F1.n.x},sgn);
     const o0=lo(s1), o1=hi(s1);
     const A=add(F1.p,mul(F1.n,o0)), Bp=add(F1.p,mul(F1.n,o1));
     let P1=A, P2=Bp;
@@ -1509,10 +1350,9 @@ function drawArmArrows(J,a){
       const sL=(o1-o0)/dot(eDir,F1.n);
       const c1=[A, add(A,mul(eDir,sL))], c2=[add(Bp,mul(eDir,-sL)), Bp];
       const far=c=>Math.min(dot(sub(c[0],F1.p),fAway), dot(sub(c[1],F1.p),fAway));
-      const pick = far(c1)>=far(c2)?c1:c2;              // הקו שאינו נכנס אל תוך הצומת
+      const pick = far(c1)>=far(c2)?c1:c2;
       P1=pick[0]; P2=pick[1];
     }
-    // הארכת הקצה החיצוני עד קשת אבן השפה בפינה, כדי שהקו יסגור את כל רוחב הכניסה
     if(ext){
       const cr=(J.corners||[]).find(q=>q.from===a&&!q.straight&&!q.failed&&q.pts&&q.pts.length>1);
       if(cr){
@@ -1534,7 +1374,6 @@ function drawArmArrows(J,a){
         oOut=st=>g*(EinAt(a,st)-(freeR?c.right*c.wR:0));
   if(has(a.uStop)) bar(a.uStop, has(a.uStopL)&&Math.abs(a.uStopL-a.uStop)<0.05?oIn:oMed, oOut, !freeR);
   if(has(a.uStopL) && (!has(a.uStop)||Math.abs(a.uStopL-a.uStop)>=0.05)) bar(a.uStopL, oIn, oMed);
-  // ---- 813 חצים – מרחקים לפי טבלה 1, מקו העצירה אל חוד החץ ----
   const V=S.env==='urban'?near(ax.V,[30,50,70]):near(ax.V,[70,90,110]);
   const dists=MK.arrowAt[V]||MK.arrowAt[50];
   const L=laneUse(c);
@@ -1557,10 +1396,8 @@ function drawArmArrows(J,a){
   for(let i=0;i<(c.right||0);i++)
     put(baseT, st=>Pin(st)+thruW(a,st)+(i+0.5)*c.wR*turnF(armU(a,st),stoR(c),tapR(c)), ['R'], c.wR, stoR(c));
 }
-/* שפה משתנה לאורך זרוע: מפרדה + נתיבים (+ נתיב ימינה / נתיב מיזוג) */
 const armD=(a,st)=>(S.axes[a.k].sec?S.axes[a.k].sec.median/2:0)+widenAt(S.axes[a.k]._zones,st);
 const armU=(a,st)=>Math.abs(st-a.sj);
-/* רצועות החתך הטיפוסי בצד הזרוע: פנימיות (שול שמאלי), נתיבי נסיעה, וחיצוניות */
 function rowsOf(a,which){ const sec=S.axes[a.k].sec||{left:[],right:[]};
   return which==='in' ? (a.side==='before'?sec.right:sec.left) : (a.side==='before'?sec.left:sec.right); }
 function splitRows(a,which){ const R=rowsOf(a,which)||[], i=R.findIndex(r=>isLane(r.type));
@@ -1568,11 +1405,9 @@ function splitRows(a,which){ const R=rowsOf(a,which)||[], i=R.findIndex(r=>isLan
   let j=i; while(j<R.length&&isLane(R[j].type)) j++;
   return {pre:R.slice(0,i), lanes:R.slice(i,j), outer:R.slice(j)}; }
 const sumW=rs=>(rs||[]).reduce((s,r)=>s+(+r.w||0),0);
-/* הרצועה הפנימית (שול שמאלי) נסגרת אל תוך נתיב הפנייה שמאלה, באותו לוכסן */
 const armPre=(a,st)=>{ const c=a.cfg, w=sumW(splitRows(a,'in').pre);
   return c.left? w*(1-turnF(armU(a,st),stoL(c),tapL(c))) : w; };
 const armPreO=a=>sumW(splitRows(a,'out').pre);
-/* רוחב חבילת נתיבי הנסיעה: מהחתך הטיפוסי אל מספר הנתיבים בצומת, בלוכסן */
 const thruW=(a,st)=>{ const c=a.cfg, b=(c._bIn!==undefined?c._bIn:sumW(splitRows(a,'in').lanes))||c.thru*c.wT;
   return b+(c.thru*c.wT-b)*turnF(armU(a,st),0,Math.max(1e-6,c.taperT||0)); };
 const outW=(a,st)=>{ const c=a.cfg, b=(c._bOut!==undefined?c._bOut:sumW(splitRows(a,'out').lanes))||c.out*c.wT;
@@ -1605,7 +1440,6 @@ function drawJunctionEdges(J,arms,cs){
     }
     setMark('807',S.axes[a.k]); shape(st.map(v=>P(v,edge(a,v)))); ctx.stroke(); ctx.lineWidth=1;
   };
-  // נתיבי מיזוג (פנייה חופשית) לאורך זרוע היציאה
   arms.forEach(a=>{ if(!a.merge) return;
     const z=zoneOf(a), sign=-a.sgA, sg=a.sgA<0?-1:1, m=a.merge, c=a.cfg, L=Math.min(m.Lp+m.Lt, z?zE(z,a.side):0, a.reach||1e9);
     const st=[]; for(let q=0;q<=40;q++) st.push(a.sj+sg*L*q/40);
@@ -1615,7 +1449,6 @@ function drawJunctionEdges(J,arms,cs){
     ctx.closePath(); ctx.fillStyle=PAL.road(); ctx.fill();
     setMark('808',S.axes[a.k]); shape(st.map(v=>P(v,base(v)))); ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth=1;
   });
-  // רצועות חיצוניות (מדרכה, שול, מדרון...) צמודות לשפה, ועוטפות את הפינות
   cs.forEach(c=>{
     const si=Math.sign(c.from.sgA)||1, sj=-Math.sign(c.to.sgA)||1;
     const uA=c.straight||c.failed?0:c.uA, uB=c.straight||c.failed?0:c.uB;
@@ -1630,7 +1463,6 @@ function drawJunctionEdges(J,arms,cs){
       cum+=r.w;
     });
   });
-  // איי תנועה
   cs.forEach(c=>{ if(!c.island) return;
     shape(c.island.poly); ctx.closePath(); ctx.fillStyle=PAL.median(); ctx.fill();
     ctx.strokeStyle=PAL.line(); ctx.lineWidth=1.5; ctx.stroke();
@@ -1640,11 +1472,8 @@ function findCorner(key){
   for(const J of S.junctions) for(const c of (J.corners||[])) if(c.key===key) return c;
   return null;
 }
-/* ---------- מסלול עבודה מודרך ---------- */
 S.wizAck=S.wizAck||{};
 const finished=a=>a&&a.pis.length>=2&&!a.drawing;
-/* שלב 2 (חתכים) נפתח כשיש לפחות ציר אחד סגור; שלב 3 (צמתים) נפתח כשכל
-   הצירים הסגורים אושרו (מקובעים + יש להם חתך). */
 function stageAvail(n){
   if(n<=1) return true;
   const done=S.axes.filter(finished);
@@ -1712,7 +1541,6 @@ function renderSecList(){
 function renderCornerPop(){
   const pop=$('cpop'), c=S.net&&S.selCorner?findCorner(S.selCorner):null;
   if(!c||!c.pts){ pop.hidden=true; return; }
-  // הדגשת הפינה
   ctx.beginPath(); c.pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});
   ctx.strokeStyle=css('--sel'); ctx.lineWidth=4; ctx.stroke();
   const m=w2s(c.pts[Math.floor(c.pts.length/2)]), W=cv.width/dpr(), H=cv.height/dpr();
@@ -1730,7 +1558,6 @@ function renderCornerPop(){
     ? `רוחב באמצע ${FREE_W[S.env]} מ׳${c.island?` · אי ${c.island.area.toFixed(1)} מ״ר`:''}${c.warn.length?' · '+c.warn.join(' · '):''}`
     : `טבלה: ${c.tab.txt} מ׳${c.warn.length?' · '+c.warn.join(' · '):''}`;
 }
-/* ---------- מפת רקע: תמונה מ-GovMap + קובץ עולם (pgw/jgw) או כיול בשתי נקודות ---------- */
 function bgPixel(w){ const b=S.bg, det=b.A*b.E-b.B*b.D; const x=w.x-b.C, y=w.y-b.F; return {c:(b.E*x-b.B*y)/det, r:(-b.D*x+b.A*y)/det}; }
 function bgWorld(c,r){ const b=S.bg; return {x:b.A*c+b.B*r+b.C, y:b.D*c+b.E*r+b.F}; }
 function loadMapFiles(files){
@@ -1770,11 +1597,10 @@ function calibClick(w){
   S.calib.pts.push({c:px.c,r:px.r,E,N});
   if(S.calib.pts.length===2){
     const [p1,p2]=S.calib.pts;
-    // דמיון: [E,N] = s·Rot·[c,-r] + t
     const u={x:p2.c-p1.c,y:-(p2.r-p1.r)}, w2={x:p2.E-p1.E,y:p2.N-p1.N};
     const k=len(w2)/len(u), th=Math.atan2(w2.y,w2.x)-Math.atan2(u.y,u.x);
-    const A=k*Math.cos(th), D=k*Math.sin(th);          // עמודה → E,N
-    const B=k*Math.sin(th), E2=-k*Math.cos(th);        // שורה (כלפי מטה) → E,N
+    const A=k*Math.cos(th), D=k*Math.sin(th);
+    const B=k*Math.sin(th), E2=-k*Math.cos(th);
     const C=p1.E-(A*p1.c+B*p1.r), F=p1.N-(D*p1.c+E2*p1.r);
     Object.assign(S.bg,{A,B,C,D,E:E2,F,geo:true});
     S.calib=null; S.view.cx=p1.E; S.view.cy=p1.N;
@@ -1782,15 +1608,6 @@ function calibClick(w){
   }
   renderMapBox(); draw();
 }
-/* מסלול הפנייה שמאלה בתוך הצומת: קשת משיקה בין ציר נתיב השמאלה לציר נתיב היציאה */
-/* ============================================================
-   809 – קווי הכוונה למסלולי הפנייה שמאלה
-   הקו ממשיך את שפת החרטום: קשת המשיקה לשפה השמאלית של נתיב הפנייה
-   בחרטום המפרדה של הזרוע הנכנסת, ולשפה השמאלית של נתיב היציאה המקביל
-   בחרטום המפרדה של הזרוע היוצאת – ולא ממרכז נתיב למרכז נתיב.
-   רדיוס ברירת המחדל: הקשת הגדולה ביותר שאינה קוטמת את שני החרטומים
-   (מעוגלת כלפי מטה ל-0.5 מ׳), מוגבלת ל-3×המינימום שבטבלה.
-   ============================================================ */
 function leftPaths(J){
   const arms=J.arms||[], out=[];
   arms.forEach(ai=>{
@@ -1802,14 +1619,13 @@ function leftPaths(J){
     const Di=armD(ai,si), Dj=armD(aj,sj);
     const Rmin=LEFT_R_MIN();
     for(let q=0;q<c.left;q++){
-      // q=0 – המסלול השמאלי ביותר, הצמוד לחרטום; כל מסלול נשען על שפתו השמאלית
       const offI=gi*(Di-(c.left-q)*c.wL);
       const offJ=-gj*(Dj+q*aj.cfg.wT);
-      const P1=add(Fi.p,mul(Fi.n,offI)), d1=mul(ai.out,-1);            // כיוון הנסיעה אל הצומת
-      const P2=add(Fj.p,mul(Fj.n,offJ)), d2=aj.out;                    // כיוון היציאה מהצומת
+      const P1=add(Fi.p,mul(Fi.n,offI)), d1=mul(ai.out,-1);
+      const P2=add(Fj.p,mul(Fj.n,offJ)), d2=aj.out;
       const bad=()=>out.push({pts:[P1,P2],R:null,from:ai,to:aj,lane:q});
       const X=lineX(P1,d1,P2,d2); if(!X){ bad(); continue; }
-      const al=Math.acos(Math.max(-1,Math.min(1,dot(mul(d1,-1),d2))));  // הזווית בין הקווים
+      const al=Math.acos(Math.max(-1,Math.min(1,dot(mul(d1,-1),d2))));
       const t1=dot(sub(X,P1),d1), t2=dot(sub(P2,X),d2);
       if(!(t1>0.05&&t2>0.05&&al>0.05&&al<Math.PI-0.05)){ bad(); continue; }
       const Rfit=Math.max(1,Math.floor(Math.min(t1,t2)*Math.tan(al/2)*2)/2);
@@ -1833,7 +1649,6 @@ function drawJunctions(){
   const gold=css('--gold1'), gold2=css('--gold2');
   if(S.net) S.junctions.forEach((J,n)=>{
     const cs=J.corners||[]; if(!cs.length) return;
-    // משטח הצומת
     const poly=[];
     const arms=J.arms||[];
     const run=(arm,fn,sg,u0,u1)=>{ const out=[], N=Math.max(2,Math.ceil(Math.abs(u1-u0)/0.5));
@@ -1847,7 +1662,6 @@ function drawJunctions(){
     ctx.beginPath(); poly.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);}); ctx.closePath();
     ctx.fillStyle=PAL.road(); ctx.fill();
     drawJunctionEdges(J,arms,cs);
-    // קשתות שפה
     cs.forEach(c=>{
       if(c.straight) return;
       const line=(pts,col,w)=>{ ctx.beginPath(); pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);}); ctx.strokeStyle=col; ctx.lineWidth=w; ctx.stroke(); };
@@ -1860,7 +1674,6 @@ function drawJunctions(){
     });
   });
   if(S.net) S.junctions.forEach(J=>{
-    // 809 – קווי הנחיה למסלולי הפנייה שמאלה
     leftPaths(J).forEach(pp=>{
       ctx.beginPath(); pp.pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});
       ctx.strokeStyle=(pp.R===null||pp.over||pp.R<LEFT_R_MIN())?css('--bad'):PAL.line();
@@ -1877,7 +1690,6 @@ function drawJunctions(){
     ctx.font='800 12px Assistant, sans-serif'; ctx.fillStyle=css('--ink');
     ctx.fillText(`צ${n+1}`, q.x+18, q.y-12);
   });
-  // תצוגה מקדימה של נעילה בזמן שרטוט
   if(S.tool==='draw'&&S.drawing&&!S.locked&&S.hover&&!drag){
     const sn=snapToAxes(S.hover);
     if(sn){ ring(sn,10,'rgba(242,192,74,.35)',gold2); ring(sn,3,gold2,gold2); }
@@ -1886,8 +1698,6 @@ function drawJunctions(){
 function drawAxis(active){
   const P=S.pis, R=solve();
   const badSeg=new Set(R.errs.filter(e=>e.seg!=null).map(e=>e.seg));
-
-  // רצועות החתך (רק אחרי קיבוע ציר)
   const secErr=[];
   if(S.locked && S.sec && R.els.length){
     const path=pts=>{ctx.beginPath(); pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});};
@@ -1897,9 +1707,8 @@ function drawAxis(active){
     const noseGap=st=>zs.some(z=>{ if(!z.nose) return false;
       const u=st-z.sj; return (u<=0&&z.nose.before!==undefined&&-u<z.nose.before)||(u>=0&&z.nose.after!==undefined&&u<z.nose.after); });
     ST.forEach(st=>{
-      let parts = st.type==='median' ? [stas] : pieces;   // באזור ההשפעה נשארת רק ההפרדה
+      let parts = st.type==='median' ? [stas] : pieces;
       if(st.type==='median' && zs.length){
-        // קטע ללא מפרדה ליד הצומת – משטח כביש
         const gap=[]; const keep=[]; let cur=[], g=[];
         stas.forEach(v=>{ if(noseGap(v)){ if(cur.length>1) keep.push(cur); cur=[]; g.push(v); } else { if(g.length>1) gap.push(g); g=[]; cur.push(v); } });
         if(cur.length>1) keep.push(cur); if(g.length>1) gap.push(g);
@@ -1914,10 +1723,8 @@ function drawAxis(active){
         ctx.fillStyle=PAL.fill(st.type); ctx.fill();
       });
     });
-    // קווי הפרדה בין רצועות (דקים) להבנת הקטימות
     ctx.lineWidth=PAL.plan()?0.7:0.75; ctx.strokeStyle=PAL.sep();
     ST.forEach(st=>{ if(st.type==='median') return; pieces.forEach(ps=>{ path(offsetPts(R.els,st.d1,ps).pts); ctx.stroke(); }); });
-    // אזורי השפעה: הפרדה קיימת (מקווקו) והפרדה חדשה (רציף)
     zs.forEach(z=>{
       const zp=stas.filter(v=>v>=z.s0-1e-9&&v<=z.s1+1e-9);
       const m=S.sec.median/2;
@@ -1931,7 +1738,6 @@ function drawAxis(active){
         [1,-1].forEach(sg=>{ path(offsetPts(R.els,st=>sg*(m+widenAt(zs,st)),ps).pts); ctx.stroke(); });
       });
       ctx.strokeStyle=PAL.ink();
-      // זרועות הצומת: נתיבים ישירים, יציאה, שמאלה (מתוך המפרדה) וימינה (מהשפה)
       const LANE=PAL.road(), LEFTC=PAL.turn(), RIGHTC=PAL.turn(), WHITE=PAL.line();
       z.arms.forEach(A=>{
         const c=A.cfg, g=A.sgA;
@@ -1942,16 +1748,15 @@ function drawAxis(active){
         if(ap.length<2) return;
         const u=st=>Math.abs(st-z.sj);
         const D=st=>m+widenAt(zs,st);
-        const PR=st=>armPre(A,st), PO=armPreO(A);          // שול שמאלי – נכנס ויוצא
-        const TH=st=>thruW(A,st), OU=st=>outW(A,st);       // חבילת נתיבי הנסיעה
-        const Bin=st=>D(st)+PR(st), Bout=st=>D(st)+PO;     // שפת הנתיב הפנימי בכל צד
+        const PR=st=>armPre(A,st), PO=armPreO(A);
+        const TH=st=>thruW(A,st), OU=st=>outW(A,st);
+        const Bin=st=>D(st)+PR(st), Bout=st=>D(st)+PO;
         const fL=st=>c.left?turnF(u(st),stoL(c),tapL(c)):0;
         const fR=st=>c.right?turnF(u(st),stoR(c),tapR(c)):0;
         const band=(f0,f1,col)=>{ const a0=offsetPts(R.els,f0,apF).pts, a1=offsetPts(R.els,f1,apF).pts;
           path(a0.concat(a1.slice().reverse())); ctx.closePath(); ctx.fillStyle=col; ctx.fill(); };
         const axA=S.axes[S.cur];
         const line=(f,kind)=>{ setMark(kind||'807',axA,'jct'); path(offsetPts(R.els,f,ap).pts); ctx.stroke(); };
-        // שטחים
         { const pr=splitRows(A,'in').pre, po=splitRows(A,'out').pre;
           if(pr.length) band(st=>g*D(st), st=>g*Bin(st), PAL.fill(pr[0].type));
           if(po.length) band(st=>-g*D(st), st=>-g*Bout(st), PAL.fill(po[0].type)); }
@@ -1965,8 +1770,6 @@ function drawAxis(active){
             a1=offsetPts(R.els,st=>g*(Bin(st)+TH(st)+c.right*c.wR*fR(st)),rp).pts;
             path(a0.concat(a1.slice().reverse())); ctx.closePath(); ctx.fillStyle=RIGHTC; ctx.fill(); }
         }
-        // סימון
-        // 807 שפות, 801 בין נתיבים (בצומת), 808 בין נתיב פנייה לנתיב ישר
         line(st=>g*Bin(st), c.left?'808':'807');
         line(st=>g*(Bin(st)+TH(st)), c.right?'808':'807');
         for(let i=1;i<c.thru;i++) line(st=>g*(Bin(st)+i*TH(st)/c.thru),'801');
@@ -1983,8 +1786,6 @@ function drawAxis(active){
         }
         ctx.setLineDash([]); ctx.lineWidth=1;
       });
-
-      // גבולות האזור ותווית
       const half=Math.max(8, (S.sec.left.concat(S.sec.right).reduce((u,r)=>u+r.w,0))/2 + m + 2);
       ctx.strokeStyle=css('--gold2'); ctx.lineWidth=2; ctx.setLineDash([4,4]);
       [z.s0,z.s1].forEach(v=>{ if(Math.abs(v-z.sj)<1e-6) return;
@@ -2002,7 +1803,6 @@ function drawAxis(active){
           ctx.fillStyle=css('--accent'); });
       }
     });
-    // סימון: מקווקו בין נתיבים, רציף בשפת המיסעה
     ['left','right'].forEach(side=>{
       const rows=S.sec[side];
       rows.forEach((r,k)=>{
@@ -2018,7 +1818,6 @@ function drawAxis(active){
         ctx.lineWidth=1;
       });
     });
-    // תוויות רצועות בתכנית
     if(PAL.plan() && S.view.scale>=2.2){
       const ok=pieces.filter(ps=>ps.length>1).sort((a,b)=>(b[b.length-1]-b[0])-(a[a.length-1]-a[0]))[0];
       if(ok){
@@ -2027,13 +1826,12 @@ function drawAxis(active){
         ctx.save(); ctx.font='600 10px Assistant, sans-serif'; ctx.fillStyle='#222'; ctx.textAlign='center'; ctx.textBaseline='middle';
         ST.forEach(q=>{ const d0=q.d0(stL), d1=q.d1(stL), w=Math.abs(d1-d0); if(w*S.view.scale<14) return;
           const pt=w2s(add(F.p,mul(F.n,(d0+d1)/2)));
-          ctx.save(); ctx.translate(pt.x,pt.y); let a=Math.atan2(-(F.n.x),-(F.n.y))*0; 
+          ctx.save(); ctx.translate(pt.x,pt.y);
           const tg={x:F.n.y,y:-F.n.x}, sa=Math.atan2(-tg.y,tg.x); ctx.rotate(Math.abs(sa)>Math.PI/2?sa+Math.PI:sa);
           ctx.fillText(`${short[q.type]||(TYPES[q.type]||{}).he||''} ${w.toFixed(2)}`,0,0); ctx.restore(); });
         ctx.restore();
       }
     }
-    // סימון טווח שנבחר לעריכה
     if(active&&S.editRow){
       const r=S.editRow;
       ctx.lineWidth=3; ctx.strokeStyle=css('--sel');
@@ -2044,8 +1842,6 @@ function drawAxis(active){
     }
   }
   S._secErr=secErr;
-
-  // קילומטראז' לאורך הציר
   if(R.els.length){
     const total=R.total, steps=[10,20,50,100,200,500,1000];
     const step=steps.find(v=>v*S.view.scale>=70)||2000;
@@ -2057,8 +1853,6 @@ function drawAxis(active){
       if(!S.locked||S.view.scale>0.4) ctx.fillText(fmtSta(st).split('.')[0], b.x+4, b.y-4);
     }
   }
-
-  // שם הציר בתחילתו
   if(P.length){
     const q=w2s(P[0]);
     ctx.font='700 13px Assistant, sans-serif'; ctx.fillStyle=css('--ink');
@@ -2073,16 +1867,12 @@ function drawAxis(active){
     if(R.els.length===0&&P.length){ ctx.beginPath(); P.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);}); ctx.stroke(); }
     return R;
   }
-
-  // קו PI (פוליליין בסיס) – דק
   if(P.length){
     ctx.setLineDash([5,5]); ctx.lineWidth=1; ctx.strokeStyle=css('--dim');
     ctx.beginPath(); P.forEach((p,i)=>{const s=w2s(p); i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});
     if(S.tool==='draw'&&S.drawing&&S.hover){const s=w2s(S.hover);ctx.lineTo(s.x,s.y);}
     ctx.stroke(); ctx.setLineDash([]);
   }
-
-  // הציר הממוזג
   if(PAL.plan()) ctx.setLineDash([14,4,2,4]);
   R.els.forEach(e=>{
     ctx.lineWidth=S.locked?1.2:3;
@@ -2109,9 +1899,7 @@ function drawAxis(active){
       ctx.stroke();
     }
   });
-
   ctx.setLineDash([]);
-  // נקודות PI
   P.forEach((p,i)=>{
     const s=w2s(p), sel=i===S.sel;
     ctx.beginPath(); ctx.arc(s.x,s.y,sel?7:5,0,2*Math.PI);
@@ -2120,11 +1908,8 @@ function drawAxis(active){
     ctx.fillStyle=css('--ink'); ctx.font='600 12px Assistant, sans-serif';
     ctx.fillText(p.R>0?`${i}  R${p.R}${p.Ls>0?` Ls${p.Ls}`:''}`:`${i}`, s.x+9, s.y-8);
   });
-
   return R;
 }
-
-// מיפוי קו ברצף לקטע PI שלו (לצביעת שגיאות)
 function segIndexOfLine(e){
   const P=S.pis; let best=0,bd=Infinity;
   const m={x:(e.from.x+e.to.x)/2,y:(e.from.y+e.to.y)/2};
@@ -2135,17 +1920,13 @@ function distToSeg(p,a,b){
   const ab=sub(b,a), t=Math.max(0,Math.min(1,dot(sub(p,a),ab)/(dot(ab,ab)||1)));
   return len(sub(p,add(a,mul(ab,t))));
 }
-
-/* ---------- פאנל ---------- */
 function renderPanel(R){
   $('bUndo').disabled=!S.undo.length||S.locked;
-
   $('hint').textContent = S.stage===3
     ? 'הקישו על צומת ברשימה או במפה כדי לערוך את נתיביו, ועל פינה לקביעת פנייה חופשית.'
     : S.locked ? (S.pickSta ? (S.pickSta.stage?'לחצו על המפה בסוף המקטע.':'לחצו על המפה בתחילת המקטע.') : 'הציר מקובע. "מקטע" ליד רצועה מגביל אותה לטווח קילומטראז׳, עם קטימה 1:1 בקצוות. כדי לשנות את הציר חזרו לשלב הצירים.') : S.tool==='draw'
     ? (S.drawing ? 'הקישו על המפה כדי להוסיף נקודות שבירה, ובסוף "סיום ציר".' : 'הציר סגור. הקישו "ציר" שוב כדי להמשיך מהקצה.')
     : 'גררו נקודה כדי להזיז אותה. הקישו על נקודה פנימית כדי לקבוע רדיוס.';
-
   const box=$('piBox'), i=S.sel, P=S.pis;
   if(S.stage===1 && !S.locked && S.tool==='edit' && i>=0 && i<P.length){
     box.hidden=false;
@@ -2154,8 +1935,6 @@ function renderPanel(R){
     $('inR').disabled=!interior; $('bNoArc').disabled=!interior||!(P[i].R>0);
     if(document.activeElement!==$('inR')) $('inR').value=P[i].R>0?P[i].R:'';
   }else box.hidden=true;
-
-  // סרגל הנקודות העליון
   { const tb=$('ptool'), n=S.pis.length, i=S.sel, ok=(i>0&&i<n-1);
     const show = S.stage===1 && !S.locked && n>=2;
     tb.hidden=!show;
@@ -2179,8 +1958,6 @@ function renderPanel(R){
     $('popLs').hidden=$('popLsA').hidden=S.env==='urban';
   } else pop.hidden=true;
   $('bFinish').disabled=!(S.tool==='draw'&&S.drawing&&P.length>=2);
-
-  // בורר השלבים (1 צירים · 2 חתכים · 3 צמתים) וניראות המקטעים
   [1,2,3].forEach(n=>{
     const b=$('st'+n);
     b.classList.toggle('on',S.stage===n);
@@ -2203,7 +1980,6 @@ function renderPanel(R){
     $('bSecOk').textContent = ok?'✓ החתך אושר לציר זה':'אישור החתך לציר זה';
     renderSecList();
   }
-
   const ul=$('msgs'); ul.innerHTML='';
   const extra=(S._secErr||[]).filter((v,k,a)=>a.findIndex(x=>x.d0===v.d0)===k)
     .map(st=>`רדיוס הקשת קטן מהאופסט (${Math.max(Math.abs(st.d0),Math.abs(st.d1)).toFixed(2)} מ') – הרצועה מתהפכת בפנים העקומה`);
@@ -2215,7 +1991,6 @@ function renderPanel(R){
     });
   }));
   renderWizard();
-  // בורר צירים
   const ax=$('axes');
   const html = S.axes.map((a,k)=>{
     const st = a.locked?'lock' : withAxis(k,()=>{ const r=k===S.cur?R:solve(); return r.els.length&&!r.errs.length?'ok':''; });
@@ -2227,13 +2002,10 @@ function renderPanel(R){
     $('bAddAxis').onclick=addAxis;
     const on=ax.querySelector('.on'); if(on){ const l=on.offsetLeft, r=l+on.offsetWidth; if(l<ax.scrollLeft||r>ax.scrollLeft+ax.clientWidth) ax.scrollLeft=l-12; }
   }
-  // ציר ריק שעוד לא התחיל – אין טעם לפתוח עוד אחד
   const emptyNew = S.pis.length===0;
   $('bNewAxis').disabled=emptyNew; $('bAddAxis').disabled=emptyNew;
   if(document.activeElement!==$('inName')) $('inName').value=S.axes[S.cur].name;
   $('bDelAxis').disabled=S.axes.length<2;
-
-  // רשת
   const A=S.axes[S.cur];
   document.querySelectorAll('#envSeg button').forEach(b=>b.classList.toggle('on',b.dataset.env===S.env));
   $('vAxName').textContent=A.name;
@@ -2270,9 +2042,7 @@ function renderPanel(R){
       });
     }));
   }
-
   renderJct();
-
   const pill=$('pill');
   pill.classList.toggle('bad',R.errs.length>0);
   $('pillTxt').textContent = P.length<2 ? 'אין ציר'
@@ -2289,10 +2059,6 @@ function renderPanel(R){
   warns.forEach(t=>{const li=document.createElement('li');li.className='warn';li.textContent=t;ul.appendChild(li);});
   $('bFixNet').hidden=!(S.netFix&&S.netFix.length);
 }
-
-/* ============================================================
-   אינטראקציה
-   ============================================================ */
 function snapshot(){ S.undo.push(JSON.stringify({pis:S.pis,drawing:S.drawing})); if(S.undo.length>200)S.undo.shift(); }
 function snapToAxes(w){
   let best=null,bd=12/S.view.scale;
@@ -2322,7 +2088,7 @@ function toast(msg){
 function addAxis(){
   if(S.pis.length===0) return;
   S.cur=newAxis(); S.tool='draw'; S.sel=-1; S.editRow=null; S.pickSta=null;
-  $('insp').classList.add('min');           // בטלפון: מפנים את המפה לשרטוט
+  $('insp').classList.add('min');
   document.querySelector('.insp .scroll').scrollTop=0;
   setTimeout(resize,260);
   draw();
@@ -2339,7 +2105,6 @@ function pickPI(sx,sy){
   S.pis.forEach((p,i)=>{const s=w2s(p),d=Math.hypot(s.x-sx,s.y-sy); if(d<bd){bd=d;best=i;}});
   return best;
 }
-
 const touches=new Map();
 function pinchInfo(){ const [a,b]=[...touches.values()]; return {d:Math.hypot(a.x-b.x,a.y-b.y), mx:(a.x+b.x)/2, my:(a.y+b.y)/2}; }
 cv.addEventListener('pointerdown',e=>{
@@ -2373,7 +2138,6 @@ cv.addEventListener('pointerdown',e=>{
     else { S.sel=-1; drag={type:'pan',sx,sy,v:{...S.view}}; }
     draw(); return;
   }
-  // draw
   if(!S.drawing){ drag={type:'pan',sx,sy,v:{...S.view}}; return; }
   drag={type:'click',sx,sy,v:{...S.view}};
 });
@@ -2436,10 +2200,9 @@ cv.addEventListener('wheel',e=>{
   const after=s2w(e.offsetX,e.offsetY);
   S.view.cx+=before.x-after.x; S.view.cy+=before.y-after.y; draw();
 },{passive:false});
-
 function renderRows(){
   const act=document.activeElement;
-  if(act && act.closest && act.closest('#secUI') && act.tagName!=='BUTTON') return; // לא לדרוס בזמן הקלדה
+  if(act && act.closest && act.closest('#secUI') && act.tagName!=='BUTTON') return;
   $('preset').value=S.sec.preset||'custom';
   $('inMed').value=S.sec.median;
   const typeOpts=(sel,extra)=>(extra||'')+Object.entries(TYPES).map(([t,v])=>`<option value="${t}"${t===sel?' selected':''}>${v.he}</option>`).join('');
@@ -2462,7 +2225,6 @@ function renderRows(){
       seg.onclick=()=>{ S.editRow = S.editRow===r ? null : r; S.pickSta=null; draw(); };
       del.onclick=()=>{ if(S.editRow===r) S.editRow=null; S.sec[side].splice(k,1); draw(); };
       box.appendChild(row);
-
       if(S.editRow===r){
         const total=solve().total;
         r.ranges=r.ranges||[]; if(!r.fill) r.fill='none';
@@ -2505,7 +2267,6 @@ function renderRows(){
     });
   });
 }
-
 function openJct(){
   if(matchMedia('(max-width:820px)').matches) $('insp').classList.remove('min');
   setTimeout(()=>$('jctBox').scrollIntoView({block:'start',behavior:'smooth'}),30);
@@ -2568,7 +2329,6 @@ function renderJct(){
   });
   renderCorners(J);
 }
-
 function renderJctCtl(J){
   const jc=jctCfg(J), box=$('jctCtl');
   const opts=[['priority','עדיפות: ראשית/משנית'],['signal','מרומזר / עצור בכל הזרועות']];
@@ -2611,9 +2371,8 @@ function renderCorners(J){
   });
   $('jctSrc').textContent = S.env==='urban'
     ? 'מקור: תנועה בצמתים 2020, טבלה 5.10 (רדיוס אבן השפה; ברירת מחדל – הערך הנמוך בטווח). רדיוס בכתום = מהטבלה.'
-    : 'מקור: הנחיות בין־עירוניות כרך 2, טבלה 6.1 – אוטובוס, עקום מעגלי יחיד, פנייה עד 15 קמ״ש. רכב מורכב דורש רדיוס על לוכסנים או תלת־מרכזי (בשלב הבא).';
+    : 'מקור: הנחיות בין־עירוניות כרך 2, טבלה 6.1 – אוטובוס, עקום מעגלי יחיד, פנייה עד 15 קמ״ש.';
 }
-
 function holdRepeat(btn,fn){
   let t1=null,t2=null;
   const stop=()=>{clearTimeout(t1);clearInterval(t2);t1=t2=null;};
@@ -2624,9 +2383,7 @@ function holdRepeat(btn,fn){
 document.querySelectorAll('[data-t="inMed"]').forEach(b=>holdRepeat(b,()=>{
   if(!S.sec) return; S.sec.median=Math.max(0,Math.round((S.sec.median+parseFloat(b.dataset.d))*10)/10); S.sec.preset=null; draw();
 }));
-
 function finishDraw(){
-  // לחיצה כפולה מוסיפה נקודה כפולה – מנקים
   const P=S.pis;
   while(P.length>1){const a=P[P.length-1],b=P[P.length-2]; if(Math.hypot(a.x-b.x,a.y-b.y)*S.view.scale<3)P.pop(); else break;}
   S.drawing=false; S.tool='edit'; draw();
@@ -2635,7 +2392,6 @@ function setR(v){
   const i=S.sel; if(i<=0||i>=S.pis.length-1) return;
   snapshot(); S.pis[i].R = v>0? v : 0; draw();
 }
-
 const unlock=()=>{ S.locked=false; S.editRow=null; S.pickSta=null; };
 $('tDraw').onclick=()=>{unlock();S.tool='draw';S.drawing=true;S.sel=-1;draw();};
 $('tEdit').onclick=()=>{unlock();S.tool='edit';S.drawing=false;draw();};
@@ -2648,7 +2404,6 @@ $('popLs').addEventListener('change',e=>{ setLs(parseFloat(e.target.value)); e.t
 $('popLsA').onclick=()=>{ const i=S.sel; if(!(S.pis[i]&&S.pis[i].R>0)) return; setLs(lsMin(S.axes[S.cur].V,S.pis[i].R)); };
 $('popNo').onclick=()=>{ $('popR').value=''; setR(0); };
 $('popR').addEventListener('keydown',e=>{ if(e.key==='Enter'){ setR(parseFloat(e.target.value)); e.target.blur(); } });
-/* סרגל הנקודות: מעבר בין נקודות השבירה, רדיוס, קלוטואידה וזום */
 {
   const nPI=()=>S.pis.length;
   const stepPI=d=>{ const n=nPI(); if(n<3) return;
@@ -2753,7 +2508,7 @@ function openProject(st){
 }
 $('bOpen').onclick=()=>$('fOpen').click();
 $('fOpen').onchange=e=>{ const f=e.target.files[0]; if(!f) return;
-  f.text().then(t=>{ try{ const j=JSON.parse(t); if(!j.state) throw 0; openProject(j.state); }catch(err){ toast('קובץ פרויקט לא תקין (נדרש ייצוא מגרסה זו)'); } e.target.value=''; }); };
+  f.text().then(t=>{ try{ const j=JSON.parse(t); if(!j.state) throw 0; openProject(j.state); }catch(err){ toast('קובץ פרויקט לא תקין'); } e.target.value=''; }); };
 $('bMap').onclick=()=>$('fMap').click();
 $('fMap').onchange=e=>{ if(e.target.files.length) loadMapFiles(e.target.files); e.target.value=''; };
 $('mapOp').oninput=e=>{ if(S.bg){ S.bg.op=e.target.value/100; draw(); } };
@@ -2770,7 +2525,6 @@ $('bPlan').onclick=()=>{
   draw();
 };
 $('bExport').onclick=()=>{
-  const R=solve();
   const out={ version:4, crs:S.bg&&S.bg.geo?'ITM (לפי מפת הרקע)':'local-m', env:S.env, median_at_junction:MEDIAN_JCT,
     state:projectState(),
     junctions:S.junctions.map(J=>({type:J.type, point:J.p,
@@ -2785,7 +2539,6 @@ $('bExport').onclick=()=>{
   const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='alignments.json'; a.click();
 };
-
 function delSel(){
   if(S.sel<0)return; snapshot(); S.pis.splice(S.sel,1);
   if(S.pis.length){ S.pis[0].R=0; S.pis[S.pis.length-1].R=0; }
@@ -2799,7 +2552,6 @@ function fit(){
   S.view.cx=(Math.max(...xs)+Math.min(...xs))/2; S.view.cy=(Math.max(...ys)+Math.min(...ys))/2;
   S.view.scale=Math.min(W/dx,H/dy)*0.8; draw();
 }
-
 window.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
   if(e.key==='n'||e.key==='N'||e.key==='מ'){ addAxis(); return; }
@@ -2828,6 +2580,331 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw
 })();
 window.addEventListener('resize',resize);
 resize();
+</script>
+
+<!-- ==================================================================
+     ייצוא DXF ל-CAD (AutoCAD) – מייצא את כל הצירים ללא בחירה
+     ================================================================== -->
+<script>
+/* ======================================================================
+   CAD – DXF R2000 (AC1015)
+   מייצא את כל הצירים שצוירו: ישרים/קשתות/קלוטואידות + נקודות PI,
+   קילומטראז', שפות חתך, פינות צומת ומסלולי פנייה שמאלה.
+   קלוטואידות מקורבות כפוליליין עם 24 מקטעים.
+   ====================================================================== */
+const CAD = (function(){
+  function enc(s, rtl){
+    s = String(s==null?'':s);
+    if(rtl) s = s.replace(/[\u0590-\u05FF][\u0590-\u05FF\s"'\u05F3\u05F4.\-()+%]*/g, m=>[...m].reverse().join(''));
+    return s.replace(/[^\x20-\x7E]/g, ch=>'\\U+'+ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0'));
+  }
+  const LAYERS = [
+    ['AX-CENTER',   7, 'CENTER2',    25],
+    ['AX-EDGE-L',   5, 'CONTINUOUS', 18],
+    ['AX-EDGE-R',   5, 'CONTINUOUS', 18],
+    ['AX-PI',       1, 'CONTINUOUS', 35],
+    ['AX-STATION',  4, 'CONTINUOUS', 13],
+    ['AX-TEXT',     7, 'CONTINUOUS', 18],
+    ['JCT-CURVE',   2, 'CONTINUOUS', 25],
+    ['JCT-ARROW',   3, 'CONTINUOUS', 18],
+    ['JCT-TEXT',    7, 'CONTINUOUS', 18],
+    ['AX-AREA',     9, 'CONTINUOUS',  9]
+  ];
+  const STYLE = 'MAHALCO';
+  const H_BR='1', H_LAYER='2', H_STYLE='3', H_LTYPE='5', H_VIEW='6', H_UCS='7', H_VPORT='8', H_APPID='9',
+        H_DIMS='E', H_MS='A', H_PS='B', H_DICT='C', H_GROUP='D';
+  function Doc(){
+    let hx = 0x100;
+    const nh = ()=> (hx++).toString(16).toUpperCase();
+    const ents = [];
+    const ext = {x0:1e18, y0:1e18, x1:-1e18, y1:-1e18};
+    const g = (c,v)=>c+'\n'+v+'\n';
+    const n = v => (Math.abs(v)<1e-9?0:v).toFixed(6);
+    const see = (x,y)=>{ if(x<ext.x0)ext.x0=x; if(y<ext.y0)ext.y0=y; if(x>ext.x1)ext.x1=x; if(y>ext.y1)ext.y1=y; };
+    const head = (type, lay)=> g(0,type)+g(5,nh())+g(330,H_MS)+g(100,'AcDbEntity')+g(8,lay);
+    const api = {
+      point(lay,x,y){ see(x,y); ents.push(head('POINT',lay)+g(100,'AcDbPoint')+g(10,n(x))+g(20,n(y))+g(30,0)); },
+      line(lay,x1,y1,x2,y2){ see(x1,y1); see(x2,y2);
+        ents.push(head('LINE',lay)+g(100,'AcDbLine')+g(10,n(x1))+g(20,n(y1))+g(30,0)+g(11,n(x2))+g(21,n(y2))+g(31,0)); },
+      poly(lay,pts,closed){ if(!pts||pts.length<2)return; pts.forEach(p=>see(p[0],p[1]));
+        let s=head('LWPOLYLINE',lay)+g(100,'AcDbPolyline')+g(90,pts.length)+g(70,closed?1:0);
+        pts.forEach(p=>{ s+=g(10,n(p[0]))+g(20,n(p[1])); });
+        ents.push(s); },
+      arc(lay,cx,cy,r,a0deg,a1deg){ see(cx-r,cy-r); see(cx+r,cy+r);
+        ents.push(head('ARC',lay)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))
+          +g(100,'AcDbArc')+g(50,n(a0deg))+g(51,n(a1deg))); },
+      circle(lay,cx,cy,r){ if(!(r>0))return; see(cx-r,cy-r); see(cx+r,cy+r);
+        ents.push(head('CIRCLE',lay)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))); },
+      text(lay,x,y,ht,s,o){ o=o||{}; const len=String(s).replace(/\\U\+[0-9A-F]{4}/g,'x').length, wd=ht*0.7*len, ha=o.ha||0;
+        see(ha===2?x-wd:ha===1?x-wd/2:x, y); see(ha===2?x:ha===1?x+wd/2:x+wd, y+ht);
+        ents.push(head('TEXT',lay)+g(100,'AcDbText')+g(10,n(x))+g(20,n(y))+g(30,0)+g(40,n(ht))+g(1,s)
+          +g(50,n(o.rot||0))+g(41,1)+g(51,0)+g(7,STYLE)+g(71,0)+g(72,o.ha||0)
+          +g(11,n(x))+g(21,n(y))+g(31,0)+g(100,'AcDbText')+g(73,o.va||0)); },
+      out(){
+        const sp = Math.max(5,(ext.x1-ext.x0)*0.02);
+        const x0 = ext.x0<1e17?ext.x0-sp:0, y0 = ext.y0<1e17?ext.y0-sp:0;
+        const x1 = ext.x1>-1e17?ext.x1+sp:100, y1 = ext.y1>-1e17?ext.y1+sp:100;
+        const tbl = (name, handle, count, body)=> g(0,'TABLE')+g(2,name)+g(5,handle)+g(330,0)+g(100,'AcDbSymbolTable')+g(70,count)+body+g(0,'ENDTAB');
+        const rec = (type, sub, owner, name, extra, handle)=> g(0,type)+g(5,handle||nh())+g(330,owner)+g(100,'AcDbSymbolTableRecord')+g(100,sub)+g(2,name)+extra;
+        let s = '';
+        s += g(0,'SECTION')+g(2,'HEADER')
+          + g(9,'$ACADVER')+g(1,'AC1015')
+          + g(9,'$HANDSEED')+g(5,(hx+0x1000).toString(16).toUpperCase())
+          + g(9,'$INSUNITS')+g(70,6) + g(9,'$MEASUREMENT')+g(70,1) + g(9,'$LUNITS')+g(70,2) + g(9,'$LUPREC')+g(70,3) + g(9,'$AUNITS')+g(70,0)
+          + g(9,'$DIMSCALE')+g(40,1) + g(9,'$LTSCALE')+g(40,1) + g(9,'$CELTSCALE')+g(40,1)
+          + g(9,'$TEXTSTYLE')+g(7,STYLE) + g(9,'$CLAYER')+g(8,'AX-CENTER')
+          + g(9,'$EXTMIN')+g(10,n(x0))+g(20,n(y0))+g(30,0)
+          + g(9,'$EXTMAX')+g(10,n(x1))+g(20,n(y1))+g(30,0)
+          + g(9,'$LIMMIN')+g(10,n(x0))+g(20,n(y0))
+          + g(9,'$LIMMAX')+g(10,n(x1))+g(20,n(y1))
+          + g(0,'ENDSEC');
+        s += g(0,'SECTION')+g(2,'TABLES');
+        s += tbl('VPORT',H_VPORT,1, rec('VPORT','AcDbViewportTableRecord',H_VPORT,'*ACTIVE',
+              g(70,0)+g(10,0)+g(20,0)+g(11,1)+g(21,1)
+              +g(12,n((x0+x1)/2))+g(22,n((y0+y1)/2))+g(13,0)+g(23,0)+g(14,1)+g(24,1)+g(15,0)+g(25,0)
+              +g(16,0)+g(26,0)+g(36,1)+g(17,0)+g(27,0)+g(37,0)
+              +g(40,n(Math.max(10,y1-y0)))+g(41,n(1.6))+g(42,50)+g(43,0)+g(44,0)+g(50,0)+g(51,0)
+              +g(71,0)+g(72,1000)+g(73,1)+g(74,3)+g(75,0)+g(76,0)+g(77,0)+g(78,0)+g(65,1)+g(60,3)+g(61,5)+g(281,0)+g(79,0)+g(146,0)));
+        let lt = rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'ByBlock', g(70,0)+g(3,'')+g(72,65)+g(73,0)+g(40,0))
+               + rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'ByLayer', g(70,0)+g(3,'')+g(72,65)+g(73,0)+g(40,0))
+               + rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'CONTINUOUS', g(70,0)+g(3,'Solid line')+g(72,65)+g(73,0)+g(40,0));
+        const pat=(name,desc,total,dashes)=>{ let b=g(70,0)+g(3,desc)+g(72,65)+g(73,dashes.length)+g(40,n(total));
+          dashes.forEach(d=>{ b+=g(49,n(d))+g(74,0); }); return rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,name,b); };
+        lt += pat('DASHED','Dashed __ __ __ __', 0.75, [0.5,-0.25]);
+        lt += pat('DASHDOT','Dash dot __ . __ . __', 1.0, [0.5,-0.25,0,-0.25]);
+        lt += pat('CENTER2','Center ____ _ ____ _ ____', 6.0, [3.0,-0.5,0.5,-0.5]);
+        s += tbl('LTYPE',H_LTYPE,6,lt);
+        let la = rec('LAYER','AcDbLayerTableRecord',H_LAYER,'0', g(70,0)+g(62,7)+g(6,'CONTINUOUS')+g(370,-3)+g(390,'F'));
+        LAYERS.forEach(L=>{ la += rec('LAYER','AcDbLayerTableRecord',H_LAYER,L[0], g(70,0)+g(62,L[1])+g(6,L[2])+g(370,L[3])+g(390,'F')); });
+        s += tbl('LAYER',H_LAYER,LAYERS.length+1,la);
+        let st = rec('STYLE','AcDbTextStyleTableRecord',H_STYLE,'Standard', g(70,0)+g(40,0)+g(41,1)+g(50,0)+g(71,0)+g(42,2.5)+g(3,'txt')+g(4,''))
+               + rec('STYLE','AcDbTextStyleTableRecord',H_STYLE,STYLE, g(70,0)+g(40,0)+g(41,1)+g(50,0)+g(71,0)+g(42,2.5)+g(3,'arial.ttf')+g(4,''));
+        s += tbl('STYLE',H_STYLE,2,st);
+        s += tbl('VIEW',H_VIEW,0,'');
+        s += tbl('UCS',H_UCS,0,'');
+        s += tbl('APPID',H_APPID,1, rec('APPID','AcDbRegAppTableRecord',H_APPID,'ACAD', g(70,0)));
+        s += g(0,'TABLE')+g(2,'DIMSTYLE')+g(5,H_DIMS)+g(330,0)+g(100,'AcDbSymbolTable')+g(100,'AcDbDimStyleTable')+g(70,1)
+           + g(0,'DIMSTYLE')+g(105,nh())+g(330,H_DIMS)+g(100,'AcDbSymbolTableRecord')+g(100,'AcDbDimStyleTableRecord')+g(2,'Standard')
+           + g(70,0)+g(40,1)+g(41,n(2.5))+g(42,n(0.625))+g(43,n(3.75))+g(44,n(1.25))+g(140,n(2.5))+g(141,n(2.5))
+           + g(147,n(0.625))+g(171,3)+g(172,1)+g(271,3)+g(272,3)
+           + g(0,'ENDTAB');
+        s += tbl('BLOCK_RECORD',H_BR,2,
+              rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Model_Space', g(70,0)+g(280,1)+g(281,0), H_MS)
+            + rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Paper_Space', g(70,0)+g(280,1)+g(281,0), H_PS));
+        s += g(0,'ENDSEC');
+        const blk = (name, owner)=> g(0,'BLOCK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')+g(8,'0')+g(100,'AcDbBlockBegin')
+                   +g(2,name)+g(70,0)+g(10,0)+g(20,0)+g(30,0)+g(3,name)+g(1,'')
+                   +g(0,'ENDBLK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')+g(8,'0')+g(100,'AcDbBlockEnd');
+        s += g(0,'SECTION')+g(2,'BLOCKS')+blk('*Model_Space',H_MS)+blk('*Paper_Space',H_PS)+g(0,'ENDSEC');
+        s += g(0,'SECTION')+g(2,'ENTITIES')+ents.join('')+g(0,'ENDSEC');
+        s += g(0,'SECTION')+g(2,'OBJECTS')
+          + g(0,'DICTIONARY')+g(5,H_DICT)+g(330,0)+g(100,'AcDbDictionary')+g(281,1)+g(3,'ACAD_GROUP')+g(350,H_GROUP)
+          + g(0,'DICTIONARY')+g(5,H_GROUP)+g(330,H_DICT)+g(100,'AcDbDictionary')+g(281,1)
+          + g(0,'ENDSEC');
+        return s + g(0,'EOF');
+      }
+    };
+    return api;
+  }
+  function build(data, opts){
+    opts = opts || {};
+    const o = {
+      stations: opts.stations !== false,
+      pi:       opts.pi       !== false,
+      edges:    opts.edges    !== false,
+      turnPaths: opts.turnPaths !== false,
+      labels:   opts.labels   !== false,
+      stationStep: opts.stationStep || 100,
+      labelH:   opts.labelH   || 3.0,
+      stationH: opts.stationH || 1.8,
+      rtl:      !!opts.rtl
+    };
+    const d = Doc();
+    const warn = [];
+    function drawSpiral(els, e){
+      const N = Math.max(12, Math.ceil(e.Ls*2));
+      const pts = [];
+      for(let k=0;k<=N;k++){ const st=e.sta0+e.length*k/N; pts.push([frameAt(els,st).p.x, frameAt(els,st).p.y]); }
+      d.poly('AX-CENTER', pts, false);
+    }
+    function drawArc(e){
+      const {a0, sw} = arcSweep(e);
+      let d0 = a0*180/Math.PI, d1 = (a0+sw)*180/Math.PI;
+      if(sw>0 && d1<d0) d1+=360;
+      if(sw<0 && d1>d0) d1-=360;
+      d.arc('AX-CENTER', e.center.x, e.center.y, e.R, Math.min(d0,d1), Math.max(d0,d1));
+    }
+    (data.axes||[]).forEach((ax, k)=>{
+      const els = ax.els || [];
+      const total = ax.total || 0;
+      els.forEach(e=>{
+        if(e.type==='line')   d.line('AX-CENTER', e.from.x, e.from.y, e.to.x, e.to.y);
+        if(e.type==='arc')    drawArc(e);
+        if(e.type==='spiral') drawSpiral(els, e);
+      });
+      if(o.edges && ax.sec){
+        const stas = stationList(els);
+        const m = ax.sec.median/2;
+        const wL = (ax.sec.left||[]).reduce((s,r)=>s+(+r.w||0),0);
+        const wR = (ax.sec.right||[]).reduce((s,r)=>s+(+r.w||0),0);
+        if(m>0){
+          d.poly('AX-AREA', stas.map(v=>{ const F=frameAt(els,v); return [F.p.x+m*F.n.x, F.p.y+m*F.n.y]; }), false);
+          d.poly('AX-AREA', stas.map(v=>{ const F=frameAt(els,v); return [F.p.x-m*F.n.x, F.p.y-m*F.n.y]; }), false);
+        }
+        if(wL>0) d.poly('AX-EDGE-L', stas.map(v=>{ const F=frameAt(els,v); const D=m+wL; return [F.p.x+D*F.n.x, F.p.y+D*F.n.y]; }), false);
+        if(wR>0) d.poly('AX-EDGE-R', stas.map(v=>{ const F=frameAt(els,v); const D=m+wR; return [F.p.x-D*F.n.x, F.p.y-D*F.n.y]; }), false);
+      }
+      if(o.pi && ax.pis){
+        ax.pis.forEach((p,i)=>{
+          d.circle('AX-PI', p.x, p.y, 1.5);
+          d.circle('AX-PI', p.x, p.y, 0.4);
+          let label = `PI${i}`;
+          if(p.R>0) label += `  R${p.R}`;
+          if(p.Ls>0) label += `  Ls${p.Ls}`;
+          if(o.labels) d.text('AX-TEXT', p.x + 2.5, p.y + 2.5, o.labelH, enc(label, o.rtl), {ha:0});
+        });
+      }
+      if(o.stations && total>0){
+        const step = o.stationStep;
+        for(let st=0; st<=total+1e-6; st+=step){
+          const F = frameAt(els, st);
+          const tx = {x:F.n.y, y:-F.n.x};
+          const half = 2.0;
+          d.line('AX-STATION', F.p.x - half*tx.x, F.p.y - half*tx.y, F.p.x + half*tx.x, F.p.y + half*tx.y);
+          const km = Math.floor(st/1000);
+          const mm = st - km*1000;
+          const label = `${km}+${mm.toFixed(0).padStart(3,'0')}`;
+          if(o.labels){
+            const off = 3.0;
+            const rot = Math.atan2(tx.y, tx.x)*180/Math.PI;
+            let ang = rot;
+            if(ang>90) ang -= 180; if(ang<-90) ang += 180;
+            d.text('AX-TEXT', F.p.x - off*F.n.x, F.p.y - off*F.n.y, o.stationH, enc(label,o.rtl), {ha:1, rot:ang});
+          }
+        }
+      }
+      if(o.labels && els.length){
+        const F = frameAt(els, 0);
+        const nx = F.p.x + 5*F.n.x, ny = F.p.y + 5*F.n.y;
+        d.text('AX-TEXT', nx, ny, o.labelH*1.2, enc(ax.name || `Axis ${k+1}`, o.rtl), {ha:0});
+      }
+    });
+    if(o.turnPaths && data.junctions){
+      data.junctions.forEach((J,n)=>{
+        (J.corners||[]).forEach(c=>{
+          if(c.straight || c.failed || !c.pts) return;
+          d.poly('JCT-CURVE', c.pts.map(p=>[p.x,p.y]), false);
+          if(o.labels && c.R && c.Cc){
+            const m = c.pts[Math.floor(c.pts.length/2)];
+            const dx = m.x - c.Cc.x, dy = m.y - c.Cc.y;
+            const L = Math.hypot(dx,dy)||1;
+            const lx = m.x + dx/L*3, ly = m.y + dy/L*3;
+            d.text('JCT-TEXT', lx, ly, o.labelH, enc(`R${c.R}`, o.rtl), {ha:1});
+          }
+        });
+        (J.leftPaths||[]).forEach(pp=>{
+          if(!pp.pts || pp.R===null) return;
+          d.poly('JCT-ARROW', pp.pts.map(p=>[p.x,p.y]), false);
+        });
+      });
+    }
+    return {dxf: d.out(), warn};
+  }
+  return {build};
+})();
+
+/* ======================================================================
+   ייצוא DXF – מיידי, ללא דיאלוגים. מייצא את כל הצירים שצוירו.
+   ====================================================================== */
+function exportAllDXF(){
+  try{
+    const S_ = (typeof S !== 'undefined') ? S : window.S;
+    if(!S_ || !S_.axes || !S_.axes.length){
+      if(typeof toast === 'function') toast('אין ציר לייצוא – ציירו ציר תחילה');
+      else alert('אין ציר לייצוא');
+      return;
+    }
+    const axes = [];
+    const cur0 = S_.cur;
+    S_.axes.forEach(function(a, k){
+      S_.cur = k;
+      try{
+        const R = (typeof solve === 'function') ? solve() : {els:[], total:0};
+        axes.push({
+          name: a.name || ('ציר ' + (k+1)),
+          els:  R.els  || [],
+          total: R.total || 0,
+          sec:  a.sec || null,
+          pis:  a.pis || []
+        });
+      }catch(e){
+        console.warn('axis', k, e);
+        axes.push({name:a.name||('ציר '+(k+1)), els:[], total:0, sec:a.sec||null, pis:a.pis||[]});
+      }
+    });
+    S_.cur = cur0;
+    const jcts = [];
+    try{
+      const Sn = (typeof S !== 'undefined') ? S : window.S;
+      if(Sn && Sn.net && Sn.junctions && Sn.junctions.length){
+        Sn.junctions.forEach(function(J){
+          const corners = (J.corners || []).map(function(c){
+            return {straight:c.straight, failed:c.failed, pts:c.pts, R:c.R, Cc:c.Cc};
+          });
+          let lp = [];
+          try{ lp = (typeof leftPaths === 'function') ? (leftPaths(J)||[]) : []; }catch(e){}
+          jcts.push({p:J.p, corners:corners, leftPaths:lp});
+        });
+      }
+    }catch(e){ console.warn('junctions', e); }
+    const totalEls = axes.reduce((s,a)=>s+(a.els?a.els.length:0), 0);
+    if(totalEls===0 && axes.every(a=>!a.pis || !a.pis.length)){
+      if(typeof toast === 'function') toast('אין גאומטריה לייצוא – ציירו ציר תחילה');
+      else alert('אין גאומטריה לייצוא');
+      return;
+    }
+    const res = CAD.build(
+      { axes: axes, junctions: jcts },
+      {
+        stations: true,
+        pi: true,
+        edges: true,
+        turnPaths: true,
+        labels: true,
+        rtl: false,
+        stationStep: 100,
+        labelH: 3.0,
+        stationH: 1.8
+      }
+    );
+    const name = 'alignment-' + new Date().toISOString().slice(0,10) + '.dxf';
+    const blob = new Blob([res.dxf], {type:'application/dxf'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 2000);
+    const kb = (res.dxf.length/1024).toFixed(0);
+    if(typeof toast === 'function') toast('נוצר ' + name + ' · ' + kb + ' KB · ' + axes.length + ' צירים');
+  }catch(err){
+    console.error(err);
+    if(typeof toast === 'function') toast('שגיאה בייצוא: ' + (err.message || err));
+    else alert('שגיאה בייצוא: ' + err);
+  }
+}
+
+/* חיבור לכפתורים */
+function wireDxfButtons(){
+  const bTop   = document.getElementById('bDxf');
+  const bPanel = document.getElementById('bDxfSheet');
+  if(bTop)   bTop.onclick   = exportAllDXF;
+  if(bPanel) bPanel.onclick = exportAllDXF;
+}
+document.addEventListener('DOMContentLoaded', wireDxfButtons);
+if(document.readyState !== 'loading') wireDxfButtons();
+window.exportAllDXF = exportAllDXF;
+window.exportDXF    = exportAllDXF;
 </script>
 </body>
 </html>

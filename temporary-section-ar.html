@@ -559,7 +559,7 @@ html[data-glass="on"] .seg button[aria-pressed="true"]{background:var(--card)}
         </section>
       </div>
     </div>
-    <p class="src">مستند إلى «دليل إدارة المرور في مواقع العمل — الترتيبات المرورية المؤقتة في مواقع العمل الحضرية» (RTA دبي / وزارة الطاقة والبنية التحتية – الإمارات، ودليل أبوظبي DMT لتصميم الشوارع الحضرية)، الجداول 2.3.1–2.3.7 و2.9.1 والبنود 2.3.4 و2.3.5؛ وإلى تعميم RTA بشأن ألوان العلامات في مواقع العمل. أنماط الطرق مستعارة من أداة المقطع النموذجي (USDM أبوظبي). الأداة مبدئية ولا تُغني عن التصميم التفصيلي واعتماد سلطة الإشارات المرورية.</p>
+    <p class="src"><b>تنبيه مصدر:</b> المراجع الإماراتية المعتمدة لمواقع العمل هي: <b>TR-531</b> – الدليل الإرشادي لإدارة المرور المؤقتة، دائرة البلديات والنقل – أبوظبي؛ <b>TR-511</b> – دليل أبوظبي لوسائل التحكم المروري الموحد (MUTCD)، الطبعة الرابعة، يونيو 2024، وفيه فصل التحكم المروري المؤقت؛ و<b>دليل إدارة المرور في مواقع العمل</b> الصادر عن هيئة الطرق والمواصلات في دبي. الجداول المدمجة في هذه الأداة (2.3.1–2.3.7، 2.9.1، البندان 2.3.4 و2.3.5)، وسلّم السرعات 30/50/70 كم/س، وأرقام الأجهزة 930/932 — <b>لم تُطابَق بأي من هذه المراجع</b> وبنيتها مأخوذة من دليل آخر. تعامل مع كل قيمة كقيمة مبدئية حتى مراجعتها في TR-531/TR-511 أو دليل RTA. الأداة لا تُغني عن التصميم التفصيلي واعتماد الجهة المختصة.</p>
   </div>
 </main>
 <script>
@@ -745,7 +745,7 @@ function mirrorCells(cells){ return cells.slice().reverse().map(c=>({...c, dir: 
 
 function laneReq(tab, P, bikeRow){
   const T_ = TAB[tab]; const row = (bikeRow && P.speed===30) ? T_.rows.b30 : T_.rows[P.speed];
-  const tag = `جدول ${T_.id}`;
+  const tag = `جدول ${T_.id}`+' — مصدر غير مُتحقَّق';
   if(!row) return {err:`${tag} لا يحدد قيمة عند ${P.speed} كم/س – يلزم خفض السرعة في الموقع`, tab:T_, tag};
   let v = row[P.tc];
   if(v==null) return {err:`${tag}: التركيبة «${TC[P.tc]}»${bikeRow?' مع الدراجات':''} غير ذات صلة عند ${P.speed} كم/س`, tab:T_, tag, d:row.d};
@@ -757,15 +757,15 @@ function pedReq(P){
   let v = PED[P.st].v[DUR[P.dur].i], note=[];
   if(P.shop){ v+=0.5; note.push('+0.5 واجهة تجارية'); }
   if(P.dev==='wall'){ v+=0.5; note.push('+0.5 جدار/سياج مصمت'); }
-  return {v:r2(v), tag:'جدول 2.3.6'+(note.length?' ('+note.join(', ')+')':'')};
+  return {v:r2(v), tag:'جدول 2.3.6'+(note.length?' ('+note.join(', ')+')':'')+' — مصدر غير مُتحقَّق'};
 }
 function bikeReq(P, two){
   const i = (P.dur==='h2'?0:2) + (two?1:0);
-  return {v:BIKE[P.bv].v[i], tag:`جدول 2.3.7 (${BIKE[P.bv].n}، ${two?'ثنائي':'أحادي'}-الاتجاه)`};
+  return {v:BIKE[P.bv].v[i], tag:`جدول 2.3.7 (${BIKE[P.bv].n}، ${two?'ثنائي':'أحادي'}-الاتجاه)`+' — مصدر غير مُتحقَّق'};
 }
 function ptReq(P){
   const m = {base:[3.0,'البند 2.3.4 أ'], col:[3.25,'البند 2.3.4 ب – مجمّع، ≥10 حافلات'], art:[3.10,'البند 2.3.4 ج – حافلة مزدوجة'], rail:[3.5,'البند 2.3.4 د – محصور بين الحواجز']}[P.pt];
-  return {v:m[0], tag:m[1]};
+  return {v:m[0], tag:m[1]+' — مصدر غير مُتحقَّق'};
 }
 function device(P){
   const short = DUR[P.dur].short;
@@ -784,6 +784,8 @@ function build(base, P, K){
   const S = split(cells);
   const out = {checks:[], notes:[], info:{}};
   const chk = (g,t,v,r,s,ref)=>out.checks.push({g,t,v,r,s,ref});
+  chk('المصدر','مرجع القيم', null, null, 'warn',
+      'الجداول وسلّم السرعات 30/50/70 والأجهزة 930/932 لم تُطابَق بـ TR-531 / TR-511 (أبوظبي) ولا بدليل مواقع العمل لدى RTA دبي – قيم مبدئية للمراجعة');
   const dv = device(P); P.dev = dv.dev;
   const kind = K.kind;
   out.info.dev = dv;

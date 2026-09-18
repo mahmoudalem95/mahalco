@@ -223,7 +223,7 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
   <button class="icon" id="bMap" aria-label="מפת רקע" title="ייבוא מפת רקע (GovMap)">🗺</button>
   <input type="file" id="fMap" accept="image/*,.pgw,.jgw,.tfw,.wld,.png,.jpg,.jpeg" multiple hidden>
   <button class="icon" id="bPlan" aria-label="תצוגת תכנית" title="תצוגת תכנית הנדסית">📐</button>
-  <button class="icon" id="bDxf" aria-label="ייצוא DXF" title="ייצוא DXF ל-CAD (AutoCAD)">⤓</button>
+  <button class="icon" id="bDxf" aria-label="ייצוא DWG" title="ייצוא DWG ל-CAD (AutoCAD)">⤓</button>
   <button class="icon" id="bTheme" aria-label="מצב תצוגה" title="מצב תצוגה"></button>
 </header>
 
@@ -340,7 +340,8 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
         <button class="cell btn" id="bExport">שמירת פרויקט / ייצוא JSON</button>
         <button class="cell btn" id="bOpen">פתיחת פרויקט</button>
         <input type="file" id="fOpen" accept=".json,application/json" hidden>
-        <button class="cell btn" id="bDxfSheet">ייצוא DXF ל-CAD (AutoCAD)</button>
+        <button class="cell btn" id="bDxfSheet">ייצוא DWG ל-CAD (AutoCAD)</button>
+        <div class="cell"><span class="lbl">שירות המרה ל-DWG</span><input id="dwgSvc" type="url" placeholder="https://…/dxf2dwg" style="width:150px;text-align:left;direction:ltr;font:inherit;height:34px;border:0;border-radius:9px;background:var(--fill);color:var(--ink);padding:0 10px"></div>
         <button class="cell btn danger" id="bClear">ניקוי הציר הזה</button>
         <button class="cell btn danger" id="bDelAxis">מחיקת הציר הזה</button>
       </div>
@@ -2600,6 +2601,15 @@ const CAD = (function(){
   }
   const LAYERS = [
     ['AX-CENTER',   7, 'CENTER2',    25],
+    ['AX-LANE',     7, 'CONTINUOUS', 25],
+    ['AX-SHOULDER', 8, 'CONTINUOUS', 18],
+    ['AX-PARKING',  9, 'CONTINUOUS', 18],
+    ['AX-SIDEWALK', 30,'CONTINUOUS', 18],
+    ['AX-DITCH',    5, 'CONTINUOUS', 18],
+    ['AX-WALL',     6, 'CONTINUOUS', 25],
+    ['AX-OPEN',     3, 'CONTINUOUS',  9],
+    ['AX-MEDIAN',   3, 'CONTINUOUS', 25],
+    ['AX-BARRIER',  1, 'CONTINUOUS', 25],
     ['AX-EDGE-L',   5, 'CONTINUOUS', 18],
     ['AX-EDGE-R',   5, 'CONTINUOUS', 18],
     ['AX-PI',       1, 'CONTINUOUS', 35],
@@ -2607,6 +2617,7 @@ const CAD = (function(){
     ['AX-TEXT',     7, 'CONTINUOUS', 18],
     ['JCT-CURVE',   2, 'CONTINUOUS', 25],
     ['JCT-ARROW',   3, 'CONTINUOUS', 18],
+    ['JCT-ISLAND',  3, 'CONTINUOUS', 18],
     ['JCT-TEXT',    7, 'CONTINUOUS', 18],
     ['AX-AREA',     9, 'CONTINUOUS',  9]
   ];
@@ -2742,17 +2753,14 @@ const CAD = (function(){
         if(e.type==='arc')    drawArc(e);
         if(e.type==='spiral') drawSpiral(els, e);
       });
-      if(o.edges && ax.sec){
-        const stas = stationList(els);
-        const m = ax.sec.median/2;
-        const wL = (ax.sec.left||[]).reduce((s,r)=>s+(+r.w||0),0);
-        const wR = (ax.sec.right||[]).reduce((s,r)=>s+(+r.w||0),0);
-        if(m>0){
-          d.poly('AX-AREA', stas.map(v=>{ const F=frameAt(els,v); return [F.p.x+m*F.n.x, F.p.y+m*F.n.y]; }), false);
-          d.poly('AX-AREA', stas.map(v=>{ const F=frameAt(els,v); return [F.p.x-m*F.n.x, F.p.y-m*F.n.y]; }), false);
-        }
-        if(wL>0) d.poly('AX-EDGE-L', stas.map(v=>{ const F=frameAt(els,v); const D=m+wL; return [F.p.x+D*F.n.x, F.p.y+D*F.n.y]; }), false);
-        if(wR>0) d.poly('AX-EDGE-R', stas.map(v=>{ const F=frameAt(els,v); const D=m+wR; return [F.p.x-D*F.n.x, F.p.y-D*F.n.y]; }), false);
+      /* רצועות החתך: כל קו היסט בשכבה של סוג הרצועה.
+         קטע ישר -> LINE, קטע קשת ברוחב קבוע -> ARC אמיתי, אחרת פוליליין. */
+      if(o.edges && ax.offsets){
+        ax.offsets.forEach(g=>{
+          if(g.t==='line')      d.line(g.lay, g.x1, g.y1, g.x2, g.y2);
+          else if(g.t==='arc')  d.arc(g.lay, g.cx, g.cy, g.r, g.a0, g.a1);
+          else if(g.pts && g.pts.length>1) d.poly(g.lay, g.pts, false);
+        });
       }
       if(o.pi && ax.pis){
         ax.pis.forEach((p,i)=>{
@@ -2802,6 +2810,10 @@ const CAD = (function(){
             d.text('JCT-TEXT', lx, ly, o.labelH, enc(`R${c.R}`, o.rtl), {ha:1});
           }
         });
+        (J.corners||[]).forEach(c=>{
+          if(c.island && c.island.poly && c.island.poly.length>2)
+            d.poly('JCT-ISLAND', c.island.poly.map(p=>[p.x,p.y]), true);
+        });
         (J.leftPaths||[]).forEach(pp=>{
           if(!pp.pts || pp.R===null) return;
           d.poly('JCT-ARROW', pp.pts.map(p=>[p.x,p.y]), false);
@@ -2814,84 +2826,193 @@ const CAD = (function(){
 })();
 
 /* ======================================================================
-   ייצוא DXF – מיידי, ללא דיאלוגים. מייצא את כל הצירים שצוירו.
+   ייצוא ל-CAD – מייצא את כל הצירים שצוירו.
+   ----------------------------------------------------------------------
+   DWG הוא פורמט בינארי סגור של Autodesk ואין ספרייה שכותבת אותו בדפדפן,
+   ולכן הכלי בונה DXF R2000 (קואורדינטות עולם במטרים) ושולח אותו לשירות
+   המרה קטן שמחזיר DWG אמיתי (dxf2dwg של LibreDWG). ללא שירות – יורד DXF,
+   ש-AutoCAD פותח ושומר בשם (Save As) ל-DWG.
    ====================================================================== */
-function exportAllDXF(){
-  try{
-    const S_ = (typeof S !== 'undefined') ? S : window.S;
-    if(!S_ || !S_.axes || !S_.axes.length){
-      if(typeof toast === 'function') toast('אין ציר לייצוא – ציירו ציר תחילה');
-      else alert('אין ציר לייצוא');
-      return;
+const DWG_SERVICE = 'https://mahalco-dwg.onrender.com/dxf2dwg';      /* לדוגמה: 'https://mahalco-cad.onrender.com/dxf2dwg' */
+function dwgService(){
+  try{ return (localStorage.getItem('mahalco-dwg-service') || DWG_SERVICE || '').trim(); }
+  catch(e){ return DWG_SERVICE || ''; }
+}
+
+/* ---- תחנות לייצוא: צפיפות קבועה לפי סטיית מיתר, ללא תלות בזום ---- */
+function exportStations(els, extra){
+  const total = els.reduce((mx,e)=>Math.max(mx, e.sta0+e.length), 0);
+  const set = [0, total];
+  els.forEach(e=>{
+    set.push(e.sta0, e.sta0+e.length);
+    if(e.type==='arc' || e.type==='spiral'){
+      const R = Math.abs(e.R||200);
+      const step = Math.max(0.5, Math.min(5, 2*Math.sqrt(2*R*0.01)));   /* סטייה ≤ 1 ס״מ */
+      const n = Math.max(8, Math.ceil(e.length/step));
+      for(let q=1;q<n;q++) set.push(e.sta0 + e.length*q/n);
     }
-    const axes = [];
-    const cur0 = S_.cur;
-    S_.axes.forEach(function(a, k){
-      S_.cur = k;
-      try{
-        const R = (typeof solve === 'function') ? solve() : {els:[], total:0};
-        axes.push({
-          name: a.name || ('ציר ' + (k+1)),
-          els:  R.els  || [],
-          total: R.total || 0,
-          sec:  a.sec || null,
-          pis:  a.pis || []
-        });
-      }catch(e){
-        console.warn('axis', k, e);
-        axes.push({name:a.name||('ציר '+(k+1)), els:[], total:0, sec:a.sec||null, pis:a.pis||[]});
+  });
+  (extra||[]).forEach(v=>{ if(v>0 && v<total) set.push(v); });
+  set.sort((a,b)=>a-b);
+  return set.filter((v,q)=>q===0 || v-set[q-1]>1e-6);
+}
+
+const CAD_LAYER = {
+  lane:'AX-LANE', shoulder:'AX-SHOULDER', parking:'AX-PARKING', sidewalk:'AX-SIDEWALK',
+  ditch:'AX-DITCH', wall:'AX-WALL', open:'AX-OPEN',
+  median:'AX-MEDIAN', medRow:'AX-MEDIAN', barrier:'AX-BARRIER'
+};
+
+/* ---- קווי ההיסט של ציר אחד. חייב לרוץ בתוך withAxis ---- */
+function axisOffsets(els){
+  const out = [];
+  if(!els.length || typeof strips !== 'function') return out;
+  let sts = [];
+  try{ sts = strips() || []; }catch(e){ return out; }
+  if(!sts.length) return out;
+
+  const zones = (S.axes[S.cur] && S.axes[S.cur]._zones) || [];
+  const breaks = [];
+  try{ (rowBreaks()||[]).forEach(v=>breaks.push(v)); }catch(e){}
+  zones.forEach(z=>{ breaks.push(z.s0, z.sj, z.s1); });
+  const stas = exportStations(els, breaks);
+
+  const dAt = (f, st)=> (typeof f==='function' ? f(st) : f);
+
+  function emit(lay, f){
+    els.forEach(e=>{
+      const s0 = e.sta0, s1 = e.sta0 + e.length;
+      /* האם ההיסט קבוע לאורך הקטע? */
+      let d0 = dAt(f, s0), constant = true;
+      for(let q=1;q<=6;q++){
+        const v = dAt(f, s0 + e.length*q/6);
+        if(Math.abs(v - d0) > 1e-6){ constant = false; break; }
       }
+      if(constant && Math.abs(d0) < 1e-9 && e.type!=='spiral') return;   /* הציר עצמו */
+      if(constant && e.type==='line'){
+        const A = frameAt(els, s0), B = frameAt(els, s1 - 1e-9);
+        out.push({t:'line', lay,
+          x1:A.p.x + d0*A.n.x, y1:A.p.y + d0*A.n.y,
+          x2:B.p.x + d0*B.n.x, y2:B.p.y + d0*B.n.y});
+        return;
+      }
+      if(constant && e.type==='arc'){
+        const sw = arcSweep(e).sw, sg = sw>0 ? 1 : -1;
+        const r = e.R - sg*d0;
+        if(r > 0.05){
+          const a0 = Math.atan2(e.from.y-e.center.y, e.from.x-e.center.x)*180/Math.PI;
+          let a1 = a0 + sw*180/Math.PI;
+          out.push({t:'arc', lay, cx:e.center.x, cy:e.center.y, r:r,
+                    a0: Math.min(a0,a1), a1: Math.max(a0,a1)});
+          return;
+        }
+      }
+      const pts = stas.filter(v=>v>=s0-1e-6 && v<=s1+1e-6).map(v=>{
+        const F = frameAt(els, v), dv = dAt(f, v);
+        return [F.p.x + dv*F.n.x, F.p.y + dv*F.n.y];
+      });
+      if(pts.length>1) out.push({t:'poly', lay, pts});
     });
-    S_.cur = cur0;
-    const jcts = [];
-    try{
-      const Sn = (typeof S !== 'undefined') ? S : window.S;
-      if(Sn && Sn.net && Sn.junctions && Sn.junctions.length){
-        Sn.junctions.forEach(function(J){
-          const corners = (J.corners || []).map(function(c){
-            return {straight:c.straight, failed:c.failed, pts:c.pts, R:c.R, Cc:c.Cc};
-          });
-          let lp = [];
-          try{ lp = (typeof leftPaths === 'function') ? (leftPaths(J)||[]) : []; }catch(e){}
-          jcts.push({p:J.p, corners:corners, leftPaths:lp});
+  }
+
+  sts.forEach(s=>{
+    const lay = CAD_LAYER[s.type] || 'AX-EDGE-L';
+    if(s.type==='median'){ emit('AX-MEDIAN', s.d0); emit('AX-MEDIAN', s.d1); }
+    else emit(lay, s.d1);
+  });
+  return out;
+}
+
+function buildExportData(){
+  const S_ = (typeof S !== 'undefined') ? S : window.S;
+  if(!S_ || !S_.axes || !S_.axes.length) return null;
+  const axes = [];
+  S_.axes.forEach(function(a, k){
+    withAxis(k, function(){
+      let R = {els:[], total:0};
+      try{ if(typeof solve === 'function') R = solve(); }catch(e){ console.warn('axis', k, e); }
+      let offs = [];
+      try{ offs = axisOffsets(R.els||[]); }catch(e){ console.warn('offsets', k, e); }
+      axes.push({
+        name: a.name || ('ציר ' + (k+1)),
+        els: R.els || [], total: R.total || 0,
+        sec: a.sec || null, pis: a.pis || [], offsets: offs
+      });
+    });
+  });
+  const jcts = [];
+  try{
+    if(S_.net && S_.junctions && S_.junctions.length){
+      S_.junctions.forEach(function(J){
+        const corners = (J.corners||[]).map(function(c){
+          return {straight:c.straight, failed:c.failed, pts:c.pts, R:c.R, Cc:c.Cc, island:c.island};
         });
-      }
-    }catch(e){ console.warn('junctions', e); }
-    const totalEls = axes.reduce((s,a)=>s+(a.els?a.els.length:0), 0);
-    if(totalEls===0 && axes.every(a=>!a.pis || !a.pis.length)){
-      if(typeof toast === 'function') toast('אין גאומטריה לייצוא – ציירו ציר תחילה');
-      else alert('אין גאומטריה לייצוא');
-      return;
+        let lp = [];
+        try{ lp = (typeof leftPaths === 'function') ? (leftPaths(J)||[]) : []; }catch(e){}
+        jcts.push({p:J.p, corners:corners, leftPaths:lp});
+      });
     }
-    const res = CAD.build(
-      { axes: axes, junctions: jcts },
-      {
-        stations: true,
-        pi: true,
-        edges: true,
-        turnPaths: true,
-        labels: true,
-        rtl: false,
-        stationStep: 100,
-        labelH: 3.0,
-        stationH: 1.8
+  }catch(e){ console.warn('junctions', e); }
+  return {axes:axes, junctions:jcts};
+}
+
+async function exportAllDXF(){
+  try{
+    const data = buildExportData();
+    if(!data){ toast('אין ציר לייצוא – ציירו ציר תחילה'); return; }
+    const totalEls = data.axes.reduce((s,a)=>s+(a.els?a.els.length:0), 0);
+    if(totalEls===0 && data.axes.every(a=>!a.pis || !a.pis.length)){
+      toast('אין גאומטריה לייצוא – ציירו ציר תחילה'); return;
+    }
+    const res = CAD.build(data, {
+      stations:true, pi:true, edges:true, turnPaths:true, labels:true,
+      rtl:false, stationStep:100, labelH:3.0, stationH:1.8
+    });
+
+    const stamp = new Date().toISOString().slice(0,10);
+    const base  = 'MAHALCO_alignment_' + stamp;
+    const nOff  = data.axes.reduce((s,a)=>s+(a.offsets?a.offsets.length:0), 0);
+    const dl = (blob, name)=>{
+      const url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = name; a.style.display='none';
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 2000);
+    };
+    const svc = dwgService();
+
+    if(svc){
+      toast('ממיר ל-DWG בשירות ההמרה…');
+      try{
+        const r = await fetch(svc, {method:'POST', headers:{'Content-Type':'application/dxf'}, body:res.dxf});
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        const blob = await r.blob();
+        if(blob.size < 512) throw new Error('תשובה ריקה מהשירות');
+        dl(blob, base + '.dwg');
+        toast('נוצר ' + base + '.dwg · ' + (blob.size/1024).toFixed(0) + ' KB · '
+              + data.axes.length + ' צירים · ' + nOff + ' קווי היסט');
+        return;
+      }catch(err){
+        dl(new Blob([res.dxf],{type:'application/dxf'}), base + '.dxf');
+        toast('ההמרה ל-DWG נכשלה (' + (err.message||err) + ') – הורד DXF');
+        return;
       }
-    );
-    const name = 'alignment-' + new Date().toISOString().slice(0,10) + '.dxf';
-    const blob = new Blob([res.dxf], {type:'application/dxf'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = name; a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 2000);
-    const kb = (res.dxf.length/1024).toFixed(0);
-    if(typeof toast === 'function') toast('נוצר ' + name + ' · ' + kb + ' KB · ' + axes.length + ' צירים');
+    }
+    dl(new Blob([res.dxf],{type:'application/dxf'}), base + '.dxf');
+    toast('נוצר ' + base + '.dxf · ' + (res.dxf.length/1024).toFixed(0) + ' KB · '
+          + data.axes.length + ' צירים · ' + nOff + ' קווי היסט · לקבלת DWG הגדירו שירות המרה');
   }catch(err){
     console.error(err);
-    if(typeof toast === 'function') toast('שגיאה בייצוא: ' + (err.message || err));
-    else alert('שגיאה בייצוא: ' + err);
+    toast('שגיאה בייצוא: ' + (err.message || err));
   }
+}
+
+/* ---- כתובת שירות ההמרה ל-DWG ---- */
+function wireDwgService(){
+  const inp = document.getElementById('dwgSvc');
+  if(!inp) return;
+  inp.value = dwgService();
+  inp.onchange = ()=>{ try{ localStorage.setItem('mahalco-dwg-service', inp.value.trim()); }catch(e){}
+    toast(inp.value.trim() ? 'שירות ההמרה נשמר – הייצוא יחזיר DWG' : 'ללא שירות – הייצוא יחזיר DXF'); };
 }
 
 /* חיבור לכפתורים */
@@ -2900,6 +3021,7 @@ function wireDxfButtons(){
   const bPanel = document.getElementById('bDxfSheet');
   if(bTop)   bTop.onclick   = exportAllDXF;
   if(bPanel) bPanel.onclick = exportAllDXF;
+  wireDwgService();
 }
 document.addEventListener('DOMContentLoaded', wireDxfButtons);
 if(document.readyState !== 'loading') wireDxfButtons();

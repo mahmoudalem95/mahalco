@@ -1692,7 +1692,7 @@ function renderWizard(){
   const w=WIZ[cur];
   const html=`<div class="steps">${WIZ.map((x,k)=>`<i class="${x.done()?'done':k===cur?'cur':''}"></i>`).join('')}</div>
     <b>${w.t}</b><p>${w.d}</p>
-    <div class="row"><button class="go" id="wizGo">${w.ack?'לעבור للمرحلة':'התחלה'}</button>${w.ack?'<button id="wizAck">סיימתי ✓</button>':''}</div>`;
+    <div class="row"><button class="go" id="wizGo">${w.ack? للمرحلة'ابدا'}</button>${w.ack?'<button id="wizAck">انهي ✓</button>':''}</div>`;
   if(box._h!==html){ box._h=html; box.innerHTML=html;
     $('wizGo').onclick=()=>{ w.go(); draw(); };
     if(w.ack) $('wizAck').onclick=()=>{ S.wizAck[w.ack]=true; draw(); };

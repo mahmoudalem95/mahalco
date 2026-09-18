@@ -1495,17 +1495,42 @@ function drawArmArrows(J,a){
   // ---- 810 קווי עצירה ----
   //  זרוע שחייבת מתן זכות קדימה: קו אחד לרוחב כל נתיבי הכניסה.
   //  זרוע עם זכות קדימה: קו קצר רק לרוחב נתיבי הפנייה שמאלה.
-  const bar=(u,lo,hi)=>{
+  /* כיוון קו העצירה: מקביל לציר הזרוע החוצה הקרובה – כלומר מקביל לשפת
+     הדרך החוצה, שהיא גם קו הכניסה שממנו נמדדת הנסיגה. */
+  const eDir=(()=>{ const d=crossData(J,J.arms||[],a); return d&&d.t?unit(d.t):null; })();
+  const bar=(u,lo,hi,ext)=>{
     if(!has(u) || u+MK.stop>lim || u<0) return;
-    const s1=a.sj+sgn*u, s2=a.sj+sgn*(u+MK.stop), F1=frameAt(a.els,s1), F2=frameAt(a.els,s2);
-    const P=(F,o)=>w2s(add(F.p,mul(F.n,o)));
-    const q=[P(F1,lo(s1)),P(F1,hi(s1)),P(F2,hi(s2)),P(F2,lo(s2))];
+    const s1=a.sj+sgn*u, F1=frameAt(a.els,s1);
+    const fAway=mul({x:F1.n.y,y:-F1.n.x},sgn);          // התרחקות מהצומת
+    const o0=lo(s1), o1=hi(s1);
+    const A=add(F1.p,mul(F1.n,o0)), Bp=add(F1.p,mul(F1.n,o1));
+    let P1=A, P2=Bp;
+    if(eDir && Math.abs(dot(eDir,F1.n))>0.2 && Math.abs(o1-o0)>1e-6){
+      const sL=(o1-o0)/dot(eDir,F1.n);
+      const c1=[A, add(A,mul(eDir,sL))], c2=[add(Bp,mul(eDir,-sL)), Bp];
+      const far=c=>Math.min(dot(sub(c[0],F1.p),fAway), dot(sub(c[1],F1.p),fAway));
+      const pick = far(c1)>=far(c2)?c1:c2;              // הקו שאינו נכנס אל תוך הצומת
+      P1=pick[0]; P2=pick[1];
+    }
+    // הארכת הקצה החיצוני עד קשת אבן השפה בפינה, כדי שהקו יסגור את כל רוחב הכניסה
+    if(ext){
+      const cr=(J.corners||[]).find(q=>q.from===a&&!q.straight&&!q.failed&&q.Cc&&q.R>0);
+      if(cr){
+        const eo=unit(sub(P2,P1)), fv=sub(P2,cr.Cc);
+        const b2=dot(fv,eo), cq=dot(fv,fv)-cr.R*cr.R, disc=b2*b2-cq;
+        if(disc>=0){
+          const sc=[-b2-Math.sqrt(disc),-b2+Math.sqrt(disc)].filter(v=>v>0.01&&v<15).sort((x,y)=>x-y)[0];
+          if(sc!==undefined) P2=add(P2,mul(eo,sc));
+        }
+      }
+    }
+    const q=[P1,P2,add(P2,mul(fAway,MK.stop)),add(P1,mul(fAway,MK.stop))].map(w2s);
     ctx.beginPath(); q.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.closePath();
     ctx.fillStyle=PAL.line(); ctx.fill();
   };
   const oIn=st=>g*(Dat(st)-(c.left||0)*c.wL), oMed=st=>g*Dat(st),
         oOut=st=>g*(EinAt(a,st)-(freeR?c.right*c.wR:0));
-  if(has(a.uStop)) bar(a.uStop, has(a.uStopL)&&Math.abs(a.uStopL-a.uStop)<0.05?oIn:oMed, oOut);
+  if(has(a.uStop)) bar(a.uStop, has(a.uStopL)&&Math.abs(a.uStopL-a.uStop)<0.05?oIn:oMed, oOut, !freeR);
   if(has(a.uStopL) && (!has(a.uStop)||Math.abs(a.uStopL-a.uStop)>=0.05)) bar(a.uStopL, oIn, oMed);
   // ---- 813 חצים – מרחקים לפי טבלה 1, מקו העצירה אל חוד החץ ----
   const V=S.env==='urban'?near(ax.V,[30,50,70]):near(ax.V,[70,90,110]);

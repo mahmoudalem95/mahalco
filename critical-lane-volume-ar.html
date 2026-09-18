@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#12121e">
+<meta name="description" content="حاسبة حجم المسرب الحرج (Critical Lane Volume) لتقاطع بإشارات مرور — ثلاث طرق للأطوار، دعم تقاطع T، مسرب مشترك مستقيم+يمين وانعطاف يمين حر.">
+<title>حجم المسرب الحرج — حاسبة الأطوار لتقاطع بإشارات مرور</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
+        onerror="this.onerror=null;var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';document.head.appendChild(s);"></script>
+<style>
+:root{
+  --bg:#12121e; --surface:#1a1a2e; --sunk:#22223a;
+  --ink:#EDEBF2; --ink2:#9A96AB; --ink3:#6B6780;
+  --rule:rgba(255,255,255,.09); --rule2:rgba(255,255,255,.05);
+  --pick:#E8A33D; --pick-bg:rgba(232,163,61,.16);
+  --warn:#F35B5B; --warn-bg:rgba(243,91,91,.15);
+  --ok:#4ADE80; --ok-bg:rgba(74,222,128,.14);
+  --mid:#E8A33D; --mid-bg:rgba(232,163,61,.14);
+  --dir-n:#4ADE80; --dir-s:#22D3EE; --dir-e:#E8A33D; --dir-w:#A78BFA;
+  --r:8px;
+  --shadow:0 1px 2px rgba(0,0,0,.24), 0 4px 10px rgba(0,0,0,.16);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Cairo',system-ui,'Segoe UI',sans-serif;font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1120px;margin:0 auto;padding:36px 20px 88px}
+h1{font-size:29px;font-weight:700;margin:0 0 8px;letter-spacing:-.015em}
+h2{font-size:20px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em;display:flex;align-items:center;gap:9px}
+h2::before{content:'';flex:none;width:4px;height:15px;background:var(--pick);border-radius:2px}
+h3{font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:-.005em}
+p{margin:0 0 12px}
+.lede{color:var(--ink2);max-width:66ch;margin:0 0 32px;font-size:15.5px}
+section{margin-bottom:48px}
+.sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px;
+  border-bottom:1px solid var(--rule2);padding-bottom:10px}
+.sec-head .meta{color:var(--ink3);font-size:13px}
+.mono{font-family:var(--mono)}
+.skip{position:absolute;right:-9999px;top:auto}
+.skip:focus{right:12px;top:12px;background:var(--pick);color:#12121e;padding:8px 14px;
+  border-radius:4px;z-index:9;font-weight:600}
+
+.cross{direction:ltr;display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr;
+  grid-template-areas:". n ." "w c e" ". s ."}
+.cell-n{grid-area:n}.cell-s{grid-area:s}.cell-e{grid-area:e}.cell-w{grid-area:w}.cell-c{grid-area:c}
+.arm{direction:rtl;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);
+  padding:14px 16px;box-shadow:var(--shadow);transition:opacity .2s,border-color .2s}
+.arm.off{background:var(--sunk);border-style:dashed}
+.arm.off .fields,.arm.off .toggles{opacity:.35;pointer-events:none}
+.arm-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.arm-name{font-weight:600;font-size:15px}
+.arm-name i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-left:6px;vertical-align:baseline}
+.fields{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 8px;align-items:center;font-size:13px}
+.fields .lbl{color:var(--ink2)}
+.fields .hd{color:var(--ink3);font-size:11.5px}
+input[type="number"]{width:100%;font-family:var(--mono);font-size:13px;padding:5px 7px;
+  border:1px solid var(--rule2);border-radius:4px;background:var(--sunk);color:var(--ink)}
+input[type="number"]:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+input[type="number"]:disabled{opacity:.45;background:var(--bg);cursor:not-allowed}
+input.dashed{border:1px dashed var(--pick)}
+.toggles{margin-top:10px;display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--ink2)}
+label.chk{display:flex;align-items:center;gap:6px;cursor:pointer}
+input[type="checkbox"]{accent-color:var(--pick);width:15px;height:15px;cursor:pointer;margin:0;flex:none}
+input[type="checkbox"]:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.cell-c{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px;min-height:220px}
+.cell-c .cap{direction:rtl;font-size:12px;color:var(--ink3);margin-top:6px;text-align:center}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+button{font-family:inherit;font-size:14px;padding:7px 14px;border-radius:4px;cursor:pointer;
+  border:1px solid var(--rule2);background:var(--surface);color:var(--ink);
+  transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink3);background:var(--sunk)}
+button:focus-visible{outline:2px solid var(--pick);outline-offset:1px}
+button.solid{background:var(--pick);color:#12121e;border-color:var(--pick);font-weight:600}
+button.solid:hover{background:#c9862f}
+.thr{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink2);
+  margin-inline-start:auto;background:var(--surface);border:1px solid var(--rule);
+  border-radius:var(--r);padding:6px 12px;box-shadow:var(--shadow)}
+.thr input{width:88px}
+
+.drop{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);
+  transition:border-color .15s,background .15s}
+.drop.over{border-color:var(--pick);background:var(--pick-bg)}
+.drop .meta{color:var(--ink3);font-size:13px}
+.imp-status{margin-top:10px;font-size:13px;color:var(--ink2);min-height:20px}
+.imp-status.err{color:var(--warn)}
+.imp-status.ok{color:var(--ok)}
+.kv{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:13px;color:var(--ink2);margin:14px 0 10px}
+.kv b{color:var(--ink);font-weight:600}
+select{font-family:inherit;font-size:13.5px;padding:6px 8px;border-radius:4px;
+  background:var(--sunk);color:var(--ink);border:1px solid var(--rule2);max-width:100%}
+select:focus-visible{outline:2px solid var(--pick);outline-offset:1px}
+.imp-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+.imp-ctl label{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.chartwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:4px 0 18px}
+svg.hist{display:block}
+svg.hist g{cursor:pointer}
+svg.hist g:hover rect{opacity:.85}
+.imp-grid{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.imp-scheme{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px;
+  text-align:center;box-shadow:var(--shadow)}
+.imp-scheme .cap{font-size:12px;color:var(--ink3);margin-top:6px}
+.paste{margin-top:12px}
+.paste ol{margin:8px 0 10px;padding-right:20px;font-size:13.5px;color:var(--ink2)}
+.paste li{margin-bottom:5px}
+textarea#pasteBox{width:100%;min-height:130px;font-family:var(--mono);font-size:12px;direction:ltr;
+  text-align:left;padding:10px;border-radius:var(--r);background:var(--sunk);color:var(--ink);
+  border:1px solid var(--rule2);resize:vertical}
+textarea#pasteBox:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+@media (max-width:820px){.imp-grid{grid-template-columns:1fr}}
+
+.copyguide{display:flex;flex-direction:column;gap:16px;margin:14px 0 18px;background:var(--sunk);
+  border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px}
+.cg-step{display:flex;gap:12px;align-items:flex-start}
+.cg-num{flex:none;width:22px;height:22px;border-radius:50%;background:var(--pick);color:#12121e;
+  font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.cg-body{flex:1;min-width:0}
+.cg-label{font-size:13.5px;color:var(--ink);margin:0 0 8px;font-weight:600}
+.tabs-mock{display:flex;gap:3px;flex-wrap:wrap;background:var(--bg);padding:6px 6px 0;border-radius:4px 4px 0 0}
+.tabs-mock .tm{font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:3px 3px 0 0;
+  background:var(--surface);color:var(--ink3);white-space:nowrap;position:relative}
+.tabs-mock .tm.hl{background:var(--pick);color:#12121e;font-weight:700;
+  box-shadow:0 0 0 2px var(--warn),0 0 0 4px var(--sunk)}
+.tabs-mock .tm.hl2{background:var(--surface);color:var(--ink);font-weight:600;
+  box-shadow:0 0 0 2px var(--warn),0 0 0 4px var(--sunk);border:1px dashed var(--warn)}
+.cg-caption{font-size:12.5px;color:var(--ink2);margin:8px 0 0}
+.cg-caption b{color:var(--ink)}
+.table-mock-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.table-mock{border-collapse:collapse;font-size:11px;min-width:560px;direction:rtl}
+table.table-mock td{border:1px solid var(--rule);padding:5px 7px;white-space:nowrap;color:var(--ink2);text-align:center}
+table.table-mock tr.tm-title td{background:var(--bg);font-weight:600;color:var(--ink);font-size:11.5px}
+table.table-mock tr.tm-hl td{background:var(--pick-bg);color:var(--ink);box-shadow:inset 0 0 0 1px var(--pick);font-weight:500}
+table.table-mock tr.tm-data td{background:var(--surface);font-family:var(--mono)}
+table.table-mock tr.tm-data.dim td{opacity:.4}
+.tm-flag{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--pick);font-weight:600}
+.tm-flag svg{flex:none}
+
+.los{display:inline-block;min-width:22px;text-align:center;font-weight:700;font-size:12.5px;
+  border-radius:3px;padding:1px 7px;font-family:var(--mono)}
+.los-A{background:#34D399;color:#04150E}.los-B{background:#A3E635;color:#101A02}
+.los-C{background:#FACC15;color:#1A1403}.los-D{background:#FB923C;color:#1A0D02}
+.los-E{background:#F35B5B;color:#210505}.los-F{background:#E11D48;color:#fff}
+.fc-inputs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 14px;margin-bottom:16px}
+.fc-inputs .f{display:flex;flex-direction:column;gap:5px;font-family:inherit}
+.fc-inputs label{font-size:12.5px;color:var(--ink2)}
+.fc-inputs input[type="text"],.fc-inputs input[type="number"]{width:100%;font-family:var(--mono);font-size:13px;
+  padding:6px 8px;border:1px solid var(--rule2);border-radius:4px;background:var(--sunk);color:var(--ink)}
+.fc-inputs input:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+.fc-inputs .chk{flex-direction:row;align-items:center;gap:7px;font-size:12.5px;color:var(--ink2);align-self:end;padding-bottom:6px}
+@media (max-width:820px){.fc-inputs{grid-template-columns:1fr 1fr}}
+.fc-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.fc-cards .c{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:13px 15px;
+  box-shadow:var(--shadow)}
+.fc-cards .k{font-size:12px;color:var(--ink2);margin-bottom:3px}
+.fc-cards .v{font-family:var(--mono);font-size:21px;font-weight:500;line-height:1.15}
+.fc-cards .v small{font-size:12px;color:var(--ink3);font-family:'Cairo',sans-serif}
+@media (max-width:820px){.fc-cards{grid-template-columns:1fr 1fr}}
+table.fc td.cell{text-align:center;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+table.fc td.cell .sub2{display:block;color:var(--ink3);font-size:11px;margin-top:3px}
+table.fc th.yr{text-align:center}
+
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:24px;border-radius:var(--r);
+  box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);
+  border-radius:var(--r);overflow:hidden;min-width:560px}
+caption{caption-side:top;text-align:right;color:var(--ink3);font-size:12.5px;padding:2px 2px 10px;line-height:1.55}
+th{text-align:right;font-weight:600;color:var(--ink2);font-size:12.5px;padding:10px 12px;
+  border-bottom:1px solid var(--rule2);white-space:nowrap;letter-spacing:.01em}
+td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+.f{font-family:var(--mono);font-size:12.5px}
+.sub{font-family:var(--mono);font-size:11.5px;color:var(--ink3);display:block;margin-top:3px}
+.val{font-family:var(--mono);font-size:15px;font-weight:500;text-align:left;direction:ltr;white-space:nowrap}
+tr.total td{background:var(--pick);color:#12121e;font-weight:600;border-bottom:none}
+tr.total .val{color:#12121e}
+tr.grp td{background:var(--sunk);font-size:13.5px}
+tr.grp .alt{color:var(--ink3);font-size:12.5px;font-family:var(--mono)}
+.pill{display:inline-block;background:var(--pick-bg);color:var(--pick);border-radius:3px;
+  padding:1px 7px;font-size:12px;font-weight:600}
+.note{font-size:13px;color:var(--ink2);line-height:1.65;margin:12px 0 0;max-width:74ch}
+svg.ph{display:block;background:transparent;border-radius:4px}
+svg.ph .vlab{font-family:var(--mono);font-size:5px;font-weight:600;text-anchor:middle;
+  dominant-baseline:central;pointer-events:none;paint-order:stroke;
+  stroke:rgba(18,18,30,.9);stroke-width:.45px}
+svg.ph .vlab.hl{font-size:5.5px;font-weight:700}
+.phase-row{cursor:pointer;transition:background .15s;border-right:4px solid transparent}
+.phase-row.dir-N{border-right-color:var(--dir-n)}
+.phase-row.dir-S{border-right-color:var(--dir-s)}
+.phase-row.dir-E{border-right-color:var(--dir-e)}
+.phase-row.dir-W{border-right-color:var(--dir-w)}
+.phase-row:hover td,.phase-row:focus-within td,
+.phase-row.hl td,.phase-row.is-selected td{background:var(--pick-bg)}
+.phase-row:focus{outline:none}
+.phase-row:focus-visible td:first-child{box-shadow:inset 0 0 0 2px var(--pick)}
+.direction-key{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 16px;color:var(--ink2);font-size:12px}
+.direction-key span{display:inline-flex;align-items:center;gap:5px}
+.direction-key i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.schematic-cell{width:104px;min-width:104px;text-align:center}
+.schematic-cell svg.ph{width:92px;height:92px;margin:0 auto}
+
+.cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.cmp .card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--shadow)}
+.cmp .card.best{border-color:var(--pick);border-width:2px;background:var(--pick-bg)}
+.cmp .k{font-size:13px;color:var(--ink2);margin-bottom:5px}
+.cmp .n{font-family:var(--mono);font-size:28px;font-weight:500;line-height:1.15}
+.cmp .n small{font-size:14px;color:var(--ink2);font-family:'Cairo',sans-serif}
+.cmp .d{font-size:12.5px;color:var(--ink3);margin-top:5px}
+.cmp .tag{display:inline-block;margin-top:9px;font-size:11.5px;font-weight:600;
+  padding:2px 8px;border-radius:3px;background:var(--pick);color:#12121e}
+.capline{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:var(--r);padding:13px 16px;margin-bottom:28px;
+  font-size:13.5px;box-shadow:var(--shadow)}
+.capline .badge{font-weight:700;padding:2px 10px;border-radius:3px;font-size:12.5px}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.mid{background:var(--mid-bg);color:var(--mid)}
+.badge.bad{background:var(--warn-bg);color:var(--warn)}
+.meter{flex:1 1 180px;height:8px;background:var(--sunk);border-radius:99px;overflow:hidden;min-width:120px}
+.meter i{display:block;height:100%;border-radius:99px}
+.warnbox{background:var(--warn-bg);border-right:3px solid var(--warn);border-radius:0 var(--r) var(--r) 0;
+  padding:13px 16px;font-size:13.5px;line-height:1.6;color:var(--ink);margin-bottom:18px}
+.warnbox ul{margin:8px 0 0;padding-right:18px}
+.warnbox li{margin-bottom:5px}
+.warnbox.soft{background:var(--pick-bg);border-right-color:var(--pick)}
+pre{background:var(--sunk);color:var(--ink);border-radius:var(--r);padding:14px 16px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.55;direction:ltr;text-align:left;margin:0;
+  border:1px solid var(--rule)}
+details{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px 16px}
+summary{cursor:pointer;font-weight:500}
+summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.movement-hint{font-size:11px;color:var(--ink3);text-align:center;margin-top:4px}
+#liveSchematic svg{display:block;margin:0 auto}
+.foot{color:var(--ink3);font-size:12.5px;border-top:1px solid var(--rule2);padding-top:14px}
+
+@media (max-width:820px){
+  .cross{grid-template-columns:1fr;grid-template-areas:"c" "n" "s" "e" "w"}
+  .cmp{grid-template-columns:1fr}
+  .wrap{padding:24px 14px 60px}
+  .cell-c{min-height:180px}
+  .thr{margin-inline-start:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--sunk:#f4f4f6;--ink:#111;--ink2:#444;--ink3:#666;
+    --rule:#ccc;--rule2:#e2e2e2;--pick-bg:#f6ecd9}
+  body{background:#fff;color:#111}
+  .bar,.movement-hint,.skip,details,#jsonOut{display:none!important}
+  .drop,.imp-ctl,.imp-status,.chartwrap,.paste{display:none!important}
+  .imp-scheme{border-color:#ccc}
+  .wrap{max-width:none;padding:0}
+  table{min-width:0}
+  section{break-inside:avoid}
+  tr.total td{background:#f0d9b0;color:#111}
+}
+
+#mTop,#mRes,#mArms{display:none}
+@media (max-width:900px){
+  .wrap{max-width:none;padding:0 14px calc(104px + env(safe-area-inset-bottom))}
+  h1{font-size:24px;margin-top:12px}
+  .lede{font-size:14.5px;line-height:1.6;margin-bottom:18px}
+  section{margin-bottom:34px;scroll-margin-top:66px}
+  .sec-head{margin-bottom:14px}
+  .sec-head h2{font-size:18px}
+  .sec-head .meta{font-size:12px}
+
+  #mTop{display:flex;position:sticky;top:0;z-index:55;gap:6px;overflow-x:auto;
+    background:rgba(18,18,30,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--rule);padding:8px 14px;margin:0 -14px 4px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  #mTop::-webkit-scrollbar{display:none}
+  #mTop button{flex:0 0 auto;font-size:13px;padding:8px 13px;border-radius:99px;
+    min-height:42px;white-space:nowrap;background:var(--sunk)}
+  #mTop button.on{background:var(--pick);color:#12121e;border-color:var(--pick);font-weight:600}
+
+  .cross{display:flex;flex-direction:column;gap:10px}
+  #mArms{order:0;position:sticky;top:58px;z-index:45;display:flex;gap:6px;
+    background:var(--bg);padding:8px 0 9px;border-bottom:1px solid var(--rule2)}
+  #mArms button{flex:1;min-height:50px;font-size:13px;font-weight:600;border-radius:8px;padding:5px 2px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.15}
+  #mArms button small{font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink3)}
+  #mArms button.on{background:var(--pick);color:#12121e;border-color:var(--pick)}
+  #mArms button.on small{color:#4a3505}
+  #mArms button.armoff{opacity:.42}
+  .cell-c{order:1;min-height:0;padding:8px}
+  .cell-c svg{max-height:158px;height:auto;width:auto}
+  .cell-c .cap{font-size:11.5px;line-height:1.5}
+  .movement-hint{display:none}
+  .arm{order:2;display:none;padding:12px 13px}
+  .arm.m-on{display:block}
+  .arm-name{font-size:14.5px}
+  .fields{font-size:13.5px;gap:7px}
+  .fields .hd{font-size:11.5px}
+  .fields input[type=number]{font-size:16px;padding:10px 6px;min-height:46px;text-align:center}
+  .toggles{margin-top:13px;gap:2px;font-size:13.5px}
+  label.chk{min-height:44px}
+  input[type=checkbox]{width:20px;height:20px}
+
+  .bar{gap:8px;margin-top:14px}
+  .bar button{flex:1 1 calc(50% - 8px);min-height:48px;font-size:14.5px}
+  .thr{width:100%;margin-inline-start:0;justify-content:space-between;padding:8px 12px}
+  .thr input{width:92px;min-height:44px;font-size:16px}
+  select,input[type=text],.fc-inputs input{font-size:16px;min-height:44px}
+  .fc-inputs{gap:10px}
+  .fc-inputs label{font-size:12.5px}
+  .drop{padding:14px;gap:9px}
+  .drop button{width:100%;min-height:48px}
+  .drop .meta{font-size:12.5px}
+  details{padding:10px 13px}
+  summary{min-height:44px;display:flex;align-items:center}
+  pre{font-size:11.5px}
+  .capline{padding:12px 13px;font-size:13px}
+  .cmp .card{padding:14px}
+  .warnbox{font-size:13px}
+
+  .m-swipe{font-size:11.5px;color:var(--ink3);margin:0 0 6px;display:flex;align-items:center;gap:5px}
+  .tblwrap,.chartwrap{scroll-snap-type:x proximity}
+  table{font-size:13.5px}
+  th,td{padding:8px 10px}
+  .schematic-cell{width:78px;min-width:78px}
+  .schematic-cell svg.ph{width:70px;height:70px}
+
+  #mRes{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:center;gap:11px;
+    padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+    background:rgba(26,26,46,.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    border-top:1px solid var(--rule2);box-shadow:0 -6px 18px rgba(0,0,0,.35)}
+  #mRes .k{font-size:11px;color:var(--ink2);display:block;line-height:1.3}
+  #mRes .v{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1.1}
+  #mRes .v span{font-size:11px;color:var(--ink3);font-family:'Cairo',sans-serif}
+  #mRes .badge{font-weight:700;padding:4px 9px;border-radius:4px;font-size:11.5px;white-space:nowrap}
+  #mRes .go{margin-inline-start:auto;min-height:44px;font-size:13px;padding:8px 12px;white-space:nowrap}
+}
+@media print{#mTop,#mRes,#mArms,.m-swipe{display:none!important}.arm{display:block!important}}
+</style>
+
+<script data-light="#F4F4F7" data-dark="#12121e">
+(function(){
+  var d=document.documentElement, K='mh-theme', G='mh-glass';
+  var me=document.currentScript||{dataset:{}};
+  var LC=me.dataset.light||'#F2F2F7', DC=me.dataset.dark||'#000000', SLOT=me.dataset.slot||'';
+  function rd(k,v){try{return localStorage.getItem(k)||v}catch(e){return v}}
+  function wr(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+  var ui=null;
+  function apply(){
+    var pref=rd(K,'auto'); if(!/^(light|dark|auto)$/.test(pref)) pref='auto';
+    var t=pref==='auto'?(mq.matches?'dark':'light'):pref, gl=rd(G,'off')==='on'?'on':'off';
+    d.setAttribute('data-theme',t); d.setAttribute('data-theme-pref',pref); d.setAttribute('data-glass',gl);
+    d.style.colorScheme=t;
+    var ms=document.querySelectorAll('meta[name="theme-color"]');
+    if(!ms.length && document.head){var m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m);ms=[m];}
+    for(var i=0;i<ms.length;i++){ms[i].removeAttribute('media');ms[i].setAttribute('content',t==='dark'?DC:LC);}
+    if(ui) ui.sync(pref,gl);
+    try{document.dispatchEvent(new CustomEvent('mh:theme',{detail:{theme:t,pref:pref,glass:gl}}));}catch(e){}
+  }
+  function soft(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},420);
+  }
+  window.MHTheme={
+    set:function(p){wr(K,p);soft();apply();},
+    glass:function(on){wr(G,on?'on':'off');soft();apply();},
+    get:function(){return {theme:d.getAttribute('data-theme'),pref:rd(K,'auto'),glass:rd(G,'off')};}
+  };
+  apply();
+  if(mq.addEventListener) mq.addEventListener('change',function(){if(rd(K,'auto')==='auto'){soft();apply();}});
+  else if(mq.addListener) mq.addListener(function(){if(rd(K,'auto')==='auto') apply();});
+  window.addEventListener('storage',function(e){if(e.key===K||e.key===G) apply();});
+
+  var ICO={
+    look:'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="currentColor"/></svg>',
+    light:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>',
+    dark:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 0 1 9.4 4a8.4 8.4 0 1 0 10.6 10.6z" fill="currentColor"/></svg>',
+    auto:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4.5" width="18" height="12" rx="2.2"/><path d="M8.5 20h7M12 16.5V20" stroke-linecap="round"/></svg>'
+  };
+  function build(){
+    if(document.getElementById('mh-look')) return;
+    var b=document.body;
+    var bg=document.createElement('div'); bg.id='mh-bg'; bg.setAttribute('aria-hidden','true'); b.insertBefore(bg,b.firstChild);
+    var btn=document.createElement('button');
+    btn.type='button'; btn.id='mh-look'; btn.className='mh-look';
+    btn.setAttribute('aria-label','مظهر العرض: نهاري، ليلي وزجاجي');
+    btn.setAttribute('aria-haspopup','dialog'); btn.setAttribute('aria-expanded','false');
+    btn.title='مظهر العرض'; btn.innerHTML=ICO.look;
+    var slot=SLOT?document.querySelector(SLOT):null;
+    if(slot){btn.classList.add('mh-inline');slot.appendChild(btn);} else {btn.classList.add('mh-float');b.appendChild(btn);}
+    var pop=document.createElement('div');
+    pop.className='mh-pop'; pop.id='mh-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','مظهر العرض'); pop.hidden=true;
+    pop.innerHTML=
+      '<div class="mh-pop-h">مظهر العرض</div>'+
+      '<div class="mh-seg" role="radiogroup" aria-label="نمط الألوان">'+
+        '<span class="mh-knob" aria-hidden="true"></span>'+
+        '<button type="button" role="radio" data-v="light">'+ICO.light+'<span>نهاري</span></button>'+
+        '<button type="button" role="radio" data-v="dark">'+ICO.dark+'<span>ليلي</span></button>'+
+        '<button type="button" role="radio" data-v="auto">'+ICO.auto+'<span>حسب الجهاز</span></button>'+
+      '</div>'+
+      '<label class="mh-row"><span class="mh-row-t"><b>زجاج iOS</b><small>شفافية وضباب خلف البطاقات</small></span>'+
+      '<input type="checkbox" class="mh-sw" role="switch"></label>'+
+      '<p class="mh-foot">الاختيار محفوظ لجميع صفحات وأدوات الموقع.</p>';
+    b.appendChild(pop);
+    var seg=pop.querySelector('.mh-seg'), knob=pop.querySelector('.mh-knob'), sw=pop.querySelector('.mh-sw');
+    function place(){
+      var r=btn.getBoundingClientRect(), w=pop.offsetWidth, h=pop.offsetHeight, vw=innerWidth, vh=innerHeight;
+      var left=Math.min(Math.max(8,r.left),vw-w-8);
+      var top=(r.bottom+10+h<vh-8)?r.bottom+10:Math.max(8,r.top-h-10);
+      pop.style.left=left+'px'; pop.style.top=top+'px';
+    }
+    function moveKnob(){
+      var on=seg.querySelector('[aria-checked="true"]'); if(!on||!pop.offsetWidth) return;
+      knob.style.width=on.offsetWidth+'px'; knob.style.left=on.offsetLeft+'px';
+    }
+    function open(){pop.hidden=false;btn.setAttribute('aria-expanded','true');place();moveKnob();
+      requestAnimationFrame(function(){pop.classList.add('on');});
+      var c=seg.querySelector('[aria-checked="true"]'); if(c) c.focus({preventScroll:true});}
+    function close(f){if(pop.hidden) return; pop.classList.remove('on');btn.setAttribute('aria-expanded','false');pop.hidden=true; if(f) btn.focus();}
+    btn.addEventListener('click',function(e){e.stopPropagation(); pop.hidden?open():close();});
+    pop.addEventListener('click',function(e){e.stopPropagation();});
+    document.addEventListener('click',function(){close();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape') close(true);});
+    addEventListener('resize',function(){if(!pop.hidden){place();moveKnob();}});
+    addEventListener('scroll',function(){if(!pop.hidden) place();},{passive:true});
+    seg.addEventListener('click',function(e){var t=e.target.closest('button[data-v]'); if(t) MHTheme.set(t.dataset.v);});
+    seg.addEventListener('keydown',function(e){
+      if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
+      var bs=[].slice.call(seg.querySelectorAll('button')), i=bs.indexOf(document.activeElement); if(i<0) return;
+      i=(i+(e.key==='ArrowLeft'?1:-1)+bs.length)%bs.length; bs[i].focus(); MHTheme.set(bs[i].dataset.v); e.preventDefault();
+    });
+    sw.addEventListener('change',function(){MHTheme.glass(sw.checked);});
+    ui={sync:function(pref,gl){
+      [].forEach.call(seg.querySelectorAll('button'),function(x){var on=x.dataset.v===pref;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;});
+      sw.checked=gl==='on'; moveKnob();
+    }};
+    apply();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+})();
+</script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Cairo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+:root[data-theme="light"]{--bg:#F4F4F7;--surface:#FFFFFF;--sunk:#F1F1F5;--ink:#17161F;--ink2:#55536A;--ink3:#86849A;
+  --rule:rgba(20,20,40,.13);--rule2:rgba(20,20,40,.08);--pick-bg:rgba(232,163,61,.16);--warn:#C8372D;--warn-bg:rgba(200,55,45,.10);
+  --ok:#1E8A4C;--ok-bg:rgba(30,138,76,.12);--mid:#B87308;--dir-n:#1E9E57;--dir-s:#0E9AB5;--dir-e:#C77F12;--dir-w:#7C5BD6;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 18px rgba(20,20,40,.07)}
+@media (max-width:900px){
+  :root[data-theme="light"] #mTop{background:rgba(244,244,247,.94)}
+  :root[data-theme="light"] #mRes{background:rgba(255,255,255,.96);box-shadow:0 -6px 18px rgba(0,0,0,.08)}
+  :root[data-theme="light"] #mArms button.on small{color:#4a3505}
+  .mh-look.mh-float{--mh-fab-b:92px}
+}
+html[data-glass="on"] .arm,
+html[data-glass="on"] .cell-c,
+html[data-glass="on"] details,
+html[data-glass="on"] .drop{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] input[type="number"],
+html[data-glass="on"] button:not(.solid):not(.on){background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] #mTop,
+html[data-glass="on"] #mRes{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] :is(.arm,.cell-c,details){border-radius:16px}
+</style>
+</head>
+<body>
+<a class="skip" href="#results">تخطَّ إلى النتائج</a>
+<div class="wrap">
+
+  <h1>حجم المسرب الحرج</h1>
+  <p class="lede">حاسبة أطوار لتقاطع بإشارات مرور. أدخل الأحجام وأعداد المسارب لكل ذراع، واحصل على الحجم الحرج في ثلاث طرق للأطوار: أذرع مقسومة، فصل الانعطافات اليسرى، وطور متصل (دمج الطريقتين). يعمل أيضاً على تقاطع T وعلى الأذرع متعددة المسارب، ويتعامل مع مسرب مشترك مستقيم+يمين ويمين حرّ لكل ذراع على حدة. <strong>الحساب والمخطط يُحدَّثان في الوقت الحقيقي — لا حاجة للضغط على "احسب".</strong></p>
+
+  <section>
+    <div class="sec-head"><h2>استيراد الأحجام من ملف العدّ</h2>
+      <span class="meta">جدول 2.4 / 2.2 — توزيع الحركة حسب الأذرع</span></div>
+    <p class="lede" style="margin-bottom:14px">حمّل ملف عدّ أحجام بصيغة ‎XLSX‎. الصفحة تلتمس جدول 2.4 (وإن وُجد أيضاً 2.2 / 2.3 / 2.1)،
+      تبني مخطّط الحركة الساعية، تعرض أحجام ساعة الذروة على مخطط التقاطع وتُدخلها في حساب الحجم الحرج.
+      إذا كان بنية الملف مختلفة عمّا يتعرّف عليه القارئ — يمكن لصق الخلايا يدوياً في أسفل القسم.</p>
+    <div class="drop" id="dropZone">
+      <input type="file" id="xlsFile" accept=".xlsx,.xlsm,.xls" hidden>
+      <button class="solid" id="btnPick">اختر ملف العدّ</button>
+      <span class="meta">أو اسحب ملف ‎.xlsx‎ هنا — يُقرأ الملف في المتصفح فقط ولا يُرسَل إلى أي خادم</span>
+    </div>
+    <div class="imp-status" id="impStatus" role="status"></div>
+    <div id="impPanel" hidden></div>
+
+    <details class="paste">
+      <summary>لم يُقرأ الملف؟ الصق الخلايا يدوياً</summary>
+      <p class="note" style="margin-top:10px">بنية التقارير تختلف بين فرق العدّ. إذا فشلت القراءة التلقائية، انسخ الجدول من Excel والصقه هنا:</p>
+
+      <div class="copyguide">
+        <div class="cg-step">
+          <div class="cg-num">1</div>
+          <div class="cg-body">
+            <p class="cg-label">في أسفل ملف Excel، اعثر على تبويب الورقة الذي يحتوي جدول 2.4 (أو 2.2)</p>
+            <div class="tabs-mock" dir="ltr">
+              <span class="tm">3.1</span>
+              <span class="tm hl">2.3-2.4</span>
+              <span class="tm hl2">2.1-2.2</span>
+              <span class="tm">1.3</span>
+              <span class="tm">1.2</span>
+              <span class="tm">1.1</span>
+              <span class="tm">Chart 4</span>
+              <span class="tm">Chart 3</span>
+            </div>
+            <p class="cg-caption">جدول 2.4 (PCU، الموصى به) موجود في الورقة <b>2.3-2.4</b>. إذا لم يكن موجوداً في ملفكم، ابحث عن جدول 2.2 في الورقة <b>2.1-2.2</b> بدلاً منه.</p>
+          </div>
+        </div>
+
+        <div class="cg-step">
+          <div class="cg-num">2</div>
+          <div class="cg-body">
+            <p class="cg-label">داخل الورقة، حدِّد فقط هذه الكتلة — صفوف العنوان الثلاثة وصفوف الساعات أسفلها</p>
+            <div class="table-mock-wrap">
+              <table class="table-mock" aria-hidden="true">
+                <tbody>
+                  <tr class="tm-title"><td colspan="6">توزيع الحركة حسب أذرع الخروج — جدول رقم 2.4</td></tr>
+                  <tr class="tm-hl"><td>رقم الطريق/الشارع</td><td colspan="2">طريق 444 — شمالاً</td><td colspan="2">طريق 444 — جنوباً</td><td>الإجمالي بالتقاطع</td></tr>
+                  <tr class="tm-hl"><td>الاتجاه من -</td><td>شمال</td><td>شمال</td><td>جنوب</td><td>جنوب</td><td></td></tr>
+                  <tr class="tm-hl"><td>الساعة</td><td>شرق &gt;</td><td>مستقيم ^</td><td>مستقيم ^</td><td>غرب &lt;</td><td></td></tr>
+                  <tr class="tm-data"><td>06:00-07:00</td><td>61</td><td>485</td><td>514</td><td>141</td><td>1,518</td></tr>
+                  <tr class="tm-data dim"><td>07:00-08:00</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+                  <tr class="tm-data dim"><td>⋮ (بقية ساعات اليوم)</td><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="tm-flag">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              انسخ (‎Ctrl+C‎) من صف "رقم الطريق/الشارع" حتى صف الساعة الأخير في الجدول — بما في ذلك جميع أعمدة الاتجاهات.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <ol>
+        <li>افتح في Excel الورقة التي بها جدول 2.4 (أو 2.2).</li>
+        <li>حدِّد الكتلة كاملة: <b>صف أسماء الطرق</b> (رقم الطريق/الشارع … شمالاً/جنوباً)، <b>صف الاتجاهات</b> (شمال / جنوب / شرق / غرب)،
+          <b>صف الحركات</b> (يمين / مستقيم / يسار، أو ‎&lt; ^ &gt;‎)، وكل صفوف الساعات أسفلها.</li>
+        <li>‎Ctrl+C‎ في Excel، ثم ‎Ctrl+V‎ في المربع أدناه، ثم اضغط "اقرأ البيانات الملصقة".</li>
+      </ol>
+      <p class="note">صفوف العنوان الثلاثة ضرورية: بدونها لا يمكن معرفة لأي ذراع وأي حركة ينتمي كل عمود.
+        صف الساعات يجب أن يبدأ بخلية بصيغة ‎07:00-08:00‎. أعمدة الإجمالي ("الإجمالي") تُفحَص وتُتجاهَل تلقائياً.</p>
+      <pre style="direction:ltr;text-align:left">رقم الطريق/الشارع   طريق 444           شمالاً   طريق 444           جنوباً ...
+الاتجاه من -        شمال  شمال  شمال   الإجمالي  جنوب  جنوب  جنوب   الإجمالي ...
+الساعة              يمين مستقيم يسار             يمين مستقيم يسار        ...
+07:00-08:00         0     952   304    1256     107   1032  0      1139  ...</pre>
+      <textarea id="pasteBox" placeholder="الصق هنا الخلايا المنسوخة من Excel…" aria-label="لصق خلايا من Excel"></textarea>
+      <div class="bar">
+        <button class="solid" id="btnPaste">اقرأ البيانات الملصقة</button>
+        <button id="btnPasteClear">مسح</button>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>معطيات التقاطع</h2><span class="meta">الأذرع مرتّبة حسب موقعها في الموقع</span></div>
+    <div class="cross" id="cross">
+      <div class="arm cell-n" data-arm="N"></div>
+      <div class="arm cell-w" data-arm="W"></div>
+      <div class="cell-c">
+        <div id="liveSchematic"></div>
+        <div class="cap" id="liveCap"></div>
+        <div class="movement-hint">مرّر المؤشر (أو Tab + Enter) فوق صفوف الأطوار لإبراز الحركات</div>
+      </div>
+      <div class="arm cell-e" data-arm="E"></div>
+      <div class="arm cell-s" data-arm="S"></div>
+    </div>
+    <div class="bar">
+      <button class="solid" id="btnExample">حمّل مثالاً</button>
+      <button id="btnClear">صفّر الكل</button>
+      <button id="btnPrint">طباعة / PDF</button>
+      <label class="thr">عتبة التخطيط:
+        <input type="number" id="threshold" min="100" step="50" value="1500" inputmode="numeric"
+               aria-label="عتبة التخطيط للحجم الحرج، مركبة/ساعة/مسرب">
+        <span>م/س/مسرب</span>
+      </label>
+    </div>
+  </section>
+
+  <div id="results" tabindex="-1"></div>
+
+  <section>
+    <div class="sec-head"><h2>مستوى الخدمة والتنبؤ للسنوات المستقبلية</h2>
+      <span class="meta">تقاطع بإشارات — دورة Webster، تأخير وفق HCM</span></div>
+    <p class="lede" style="margin-bottom:16px">تُترجَم الأحجام الحرجة المحسوبة أعلاه إلى أزمنة أطوار، نسبة الطلب/السعة، تأخير ومستوى خدمة.
+      الحساب نفسه يُعاد على أحجام نامية بمعدل سنوي ثابت، فينتج جدول مستويات خدمة لسنوات التنبؤ.
+      الحساب يُحدَّث لحظياً مع بقية الصفحة.</p>
+    <div class="fc-inputs">
+      <div class="f"><label for="fcMethod">طريقة الأطوار للحساب</label>
+        <select id="fcMethod">
+          <option value="best">الأدنى (تلقائي)</option>
+          <option value="1">الطريقة 1 — أذرع مقسومة</option>
+          <option value="2">الطريقة 2 — فصل الانعطافات اليسرى</option>
+          <option value="3">الطريقة 3 — طور متصل</option>
+        </select></div>
+      <div class="f"><label for="fcSat">تدفق التشبّع الأساسي (مركبة/ساعة/مسرب أخضر)</label>
+        <input type="number" id="fcSat" value="1900" min="1200" max="2200" step="50" inputmode="numeric"></div>
+      <div class="f"><label for="fcLost">زمن ضائع لكل طور (ثانية)</label>
+        <input type="number" id="fcLost" value="4" min="0" max="10" step="0.5" inputmode="decimal"></div>
+      <div class="f"><label for="fcCycle">طول الدورة (ثانية) — فارغ = Webster</label>
+        <input type="number" id="fcCycle" placeholder="أمثل" min="30" max="200" step="5" inputmode="numeric"></div>
+      <div class="f"><label for="fcGmin">أدنى أخضر لكل طور (ثانية)</label>
+        <input type="number" id="fcGmin" value="7" min="0" max="30" step="1" inputmode="numeric"></div>
+      <div class="f"><label for="fcHV">المركبات الثقيلة (%)</label>
+        <input type="number" id="fcHV" value="0" min="0" max="50" step="0.5" inputmode="decimal"></div>
+      <div class="f chk"><label class="chk" style="display:flex;align-items:center;gap:7px;cursor:pointer">
+        <input type="checkbox" id="fcPCU"> الأحجام أصلاً بـ PCU — لا تُطبَّق معامل المركبات الثقيلة</label></div>
+      <div class="f"><label for="fcBase">سنة الأساس</label>
+        <input type="number" id="fcBase" value="2026" min="1990" max="2100" step="1" inputmode="numeric"></div>
+      <div class="f"><label for="fcRates">معدلات النمو (%/سنة)</label>
+        <input type="text" id="fcRates" value="3" inputmode="decimal"></div>
+      <div class="f"><label for="fcYears">سنوات التنبؤ</label>
+        <input type="text" id="fcYears" value="2031, 2036, 2041" inputmode="numeric"></div>
+    </div>
+    <div id="fcOut"></div>
+  </section>
+
+
+  <section>
+    <div class="sec-head"><h2>حدود الطريقة</h2></div>
+    <div class="warnbox">
+      <strong>ما لا يغطيه هذا الحساب.</strong> الحجم الحرج هو طرف واحد فقط من المعادلة، وهناك حالات لا يمثّلها النموذج:
+      <ul>
+        <li>الانعطاف اليسار المسموح (permitted) — هنا كل الانعطافات اليسرى محمية. الانعطاف اليسار الذي يمرّ خلال فجوات يتطلب معامل تحويل لمكافئ مستقيم.</li>
+        <li>المشاة — زمن العبور الأدنى قد يُقيّد طوراً حجم المركبات فيه منخفض.</li>
+        <li>الزمن الضائع — لكل طور 3–5 ثوانٍ ضائعة. طريقة بأطوار أكثر تدفع ثمنها، وهذا يخصم جزءاً من ميزة صف الحجم.</li>
+        <li>عدم تجانس استخدام المسارب داخل مجموعة المسارب، والمركبات الثقيلة / الميول (لا يوجد هنا تحويل إلى pcu).</li>
+        <li>عتبة التخطيط معامل يحدده المستخدم. القيمة الافتراضية (1500) قيمة إرشادية شائعة في أدبيات CLV ولا تُغني عن إرشادات الجهة المالكة.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>عدد الأطوار الموصى به حسب نوع التقاطع</h2></div>
+    <details>
+      <summary>جدول مرجعي — عدد المراحل الرئيسية (الأطوار) في الدورة</summary>
+      <div class="warnbox soft">
+        <p><strong>1. تقاطع بثلاث مداخل (تقاطع T)</strong></p>
+        <ul>
+          <li>بدون انعطافات يسرى محمية (تدفق حر/مسموح): طوران — الطور 1: المدخل المستقيم (الطريق الرئيسي)؛ الطور 2: المدخل المُندمج (ذراع الـ T).</li>
+          <li>مع انعطاف يسار محمي: 3 أطوار. يُخصَّص طور منفصل للانعطاف اليسار من الطريق الرئيسي لتفادي التعارض مع الحركة المعاكسة.</li>
+        </ul>
+        <p><strong>2. تقاطع بأربع مداخل (تقاطع X)</strong></p>
+        <ul>
+          <li>تقاطع عادي (بدون أحجام انعطاف يسار غير اعتيادية): 2 إلى 3 أطوار — الطور 1: المحور شمال-جنوب (مستقيم + يمين)؛ الطور 2: المحور شرق-غرب (مستقيم + يمين)؛ الطور 3 (اختياري): طور مشترك للمشاة.</li>
+          <li>مع انعطافات يسرى محمية (حجم مرور مرتفع لليسار): 3 إلى 4 أطوار — أطوار مخصّصة للانعطافات اليسرى (مثلاً: طور لليسار شمال+جنوب، ثم طور للمستقيم شمال+جنوب).</li>
+        </ul>
+        <p><strong>3. دمج الانعطافات اليسرى (محمية أو مشروطة)</strong></p>
+        <ul>
+          <li>انعطاف يسار مشروط (مسموح خلال التعارض): 0 أطوار إضافية — يُنفَّذ مع الحركة المستقيمة، والسائق مطالب بإعطاء حق الأولوية.</li>
+          <li>انعطاف يسار محمي (سهم أخضر فقط): يضيف طوراً واحداً لكل محور (شمال/جنوب أو شرق/غرب).</li>
+        </ul>
+        <p><strong>4. دمج النقل العام (مسرب باصات / سكة خفيفة)</strong></p>
+        <ul>
+          <li>مسرب نقل عام أيمن أو أيسر عادي (باصات): عادة لا يضيف طوراً — يسير مع طور المركبات العامة، وأحياناً مع تقديم بضع ثوانٍ ("الانطلاق المبكر بالأخضر").</li>
+          <li>السكة الخفيفة (LRT) أو مسرب نقل عام مركزي مع انعطافات يسرى عابرة: يضيف 1 إلى 2 طور مخصّص لعبور آمن، يُدار عادة عبر نظام أفضلية ديناميكي.</li>
+        </ul>
+        <p class="meta">الطريقة 3 (طور متصل) تتكيّف تلقائياً مع تقاطع T: المحور ذو الذراع الواحد يلعب دائماً دور "المحور المقسوم" (طور فردي)، والمعالجة الهجينة تطبق على المحور ذي الذراعين — فتنتج 4 أطوار بدلاً من 5، بما يتوافق مع النطاق الموصى به في الجدول أعلاه.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>الاستدعاء من الكود</h2><span class="meta">الدالة مكشوفة عالمياً</span></div>
+    <details>
+      <summary>عقد الإدخال والإخراج</summary>
+      <pre id="apidoc"></pre>
+    </details>
+    <div class="bar">
+      <button id="btnJson" aria-expanded="false" aria-controls="jsonOut">اعرض JSON للحساب الحالي</button>
+      <button id="btnCopy">انسخ JSON</button>
+      <span id="copyMsg" class="meta" role="status" style="color:var(--pick)"></span>
+    </div>
+    <pre id="jsonOut" hidden style="margin-top:12px"></pre>
+  </section>
+
+  <p class="foot">تُحفظ البيانات محلياً في المتصفح فقط ولا تُرسَل إلى أي خادم.</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     0. الثوابت
+     ============================================================ */
+  var ARMS = ['N', 'S', 'E', 'W'];
+  var HE = { N: 'شمال', S: 'جنوب', E: 'شرق', W: 'غرب' };
+  var DIR_COLORS = { N: '#4ADE80', S: '#22D3EE', E: '#E8A33D', W: '#A78BFA' };
+  var STORE_KEY = 'clv.state.v1';
+
+  // Right-hand traffic: from N (heading south) left goes to E, right goes to W.
+  var DEST = {
+    N: { S: 'S', L: 'E', R: 'W' },
+    S: { S: 'N', L: 'W', R: 'E' },
+    E: { S: 'W', L: 'S', R: 'N' },
+    W: { S: 'E', L: 'N', R: 'S' }
+  };
+  var AXES = [
+    { id: 'NS', he: 'شمال–جنوب', arms: ['N', 'S'] },
+    { id: 'EW', he: 'شرق–غرب', arms: ['E', 'W'] }
+  ];
+
+  var MOVE = {
+    NS: { d: 'M41,6 L41,89', t: 'M41,95L38,88.5L44,88.5Z' },
+    NL: { d: 'M46,6 L46,33 A26,26 0 0 0 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z' },
+    NR: { d: 'M36,6 L36,33 A8,8 0 0 1 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z' },
+    SS: { d: 'M59,94 L59,11', t: 'M59,5L56,11.5L62,11.5Z' },
+    SL: { d: 'M54,94 L54,67 A26,26 0 0 0 28,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z' },
+    SR: { d: 'M64,94 L64,67 A8,8 0 0 1 72,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z' },
+    ES: { d: 'M94,41 L11,41', t: 'M5,41L11.5,38L11.5,44Z' },
+    EL: { d: 'M94,46 L67,46 A26,26 0 0 0 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z' },
+    ER: { d: 'M94,36 L67,36 A8,8 0 0 1 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z' },
+    WS: { d: 'M6,59 L89,59', t: 'M95,59L88.5,56L88.5,62Z' },
+    WL: { d: 'M6,54 L33,54 A26,26 0 0 0 59,28 L59,11', t: 'M59,5L56,11.5L62,11.5Z' },
+    WR: { d: 'M6,64 L33,64 A8,8 0 0 1 41,72 L41,89', t: 'M41,95L38,88.5L44,88.5Z' }
+  };
+
+  var LABEL_POS = {
+    N: { L: [46, 5.5, -90], S: [41, 5.5, -90], R: [36, 5.5, -90] },
+    S: { L: [54, 94.5, 90], S: [59, 94.5, 90], R: [64, 94.5, 90] },
+    E: { L: [94.5, 46, 0], S: [94.5, 41, 0], R: [94.5, 36, 0] },
+    W: { L: [5.5, 54, 0], S: [5.5, 59, 0], R: [5.5, 64, 0] }
+  };
+
+  var MOVE_HE = { L: 'يسار', S: 'مستقيم', R: 'يمين' };
+
+  var EXAMPLE = {
+    N: { exists: true, L: 220, nL: 1, S: 650, nS: 2, R: 120, nR: 1, sharedSR: true, freeRight: false },
+    S: { exists: true, L: 180, nL: 1, S: 580, nS: 2, R: 110, nR: 1, sharedSR: true, freeRight: false },
+    E: { exists: true, L: 140, nL: 1, S: 320, nS: 1, R: 90, nR: 1, sharedSR: true, freeRight: false },
+    W: { exists: true, L: 160, nL: 1, S: 380, nS: 1, R: 80, nR: 1, sharedSR: true, freeRight: false }
+  };
+
+  function blankArm() {
+    return { exists: true, L: 0, nL: 1, S: 0, nS: 1, R: 0, nR: 1, sharedSR: true, freeRight: false };
+  }
+  function cloneCfg(src) {
+    var out = {};
+    ARMS.forEach(function (a) {
+      var has = !!(src && src[a]);
+      var s = has ? src[a] : {};
+      var b = blankArm();
+      b.exists = has && s.exists !== false;
+      ['L', 'nL', 'S', 'nS', 'R', 'nR'].forEach(function (f) {
+        var v = Number(s[f]);
+        if (isFinite(v) && v >= 0) b[f] = f.charAt(0) === 'n' ? Math.max(1, Math.round(v)) : Math.round(v);
+      });
+      b.sharedSR = !!s.sharedSR;
+      b.freeRight = !!s.freeRight;
+      out[a] = b;
+    });
+    return out;
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ============================================================
+     1. المحرك الأساسي
+     ============================================================ */
+  function allMoves(present) {
+    var out = [];
+    present.forEach(function (a) {
+      ['L', 'S', 'R'].forEach(function (m) {
+        if (present.indexOf(DEST[a][m]) > -1) out.push(a + m);
+      });
+    });
+    return out;
+  }
+
+  function armGroups(arm, cfg, present) {
+    var a = cfg[arm], g = { left: null, other: [] };
+    if (!a || !a.exists) return g;
+    var hasL = present.indexOf(DEST[arm].L) > -1;
+    var hasS = present.indexOf(DEST[arm].S) > -1;
+    var hasR = present.indexOf(DEST[arm].R) > -1;
+
+    if (hasL) {
+      var nl = Math.max(1, a.nL || 1);
+      g.left = { key: arm + '.L', arm: arm, moves: [arm + 'L'], vol: a.L || 0, lanes: nl, q: (a.L || 0) / nl };
+    }
+    var rActive = hasR && !a.freeRight;
+    if (a.sharedSR && hasS && rActive) {
+      var ns = Math.max(1, a.nS || 1), vol = (a.S || 0) + (a.R || 0);
+      g.other.push({ key: arm + '.SR', arm: arm, moves: [arm + 'S', arm + 'R'], vol: vol, lanes: ns, q: vol / ns });
+    } else {
+      if (hasS) {
+        var n2 = Math.max(1, a.nS || 1);
+        g.other.push({ key: arm + '.S', arm: arm, moves: [arm + 'S'], vol: a.S || 0, lanes: n2, q: (a.S || 0) / n2 });
+      }
+      if (rActive) {
+        var n3 = Math.max(1, a.nR || 1);
+        g.other.push({ key: arm + '.R', arm: arm, moves: [arm + 'R'], vol: a.R || 0, lanes: n3, q: (a.R || 0) / n3 });
+      }
+    }
+    return g;
+  }
+
+  function maxQ(list) {
+    var v = list.filter(Boolean).map(function (x) { return x.q; });
+    return v.length ? Math.max.apply(null, v) : 0;
+  }
+  function movesOf(terms) {
+    var out = [];
+    terms.filter(Boolean).forEach(function (t) {
+      t.moves.forEach(function (m) { if (out.indexOf(m) < 0) out.push(m); });
+    });
+    return out;
+  }
+  function directionClass(moves) {
+    return 'dir-' + ((moves && moves.length) ? moves[0].charAt(0) : 'N');
+  }
+
+  function buildWarnings(cfg, present) {
+    var w = [];
+    if (present.length < 3) {
+      w.push('أقل من ثلاثة أذرع فعّالة — التقاطع ليس تقاطعاً بإشارات صالحاً، والنتائج للتوضيح فقط.');
+    }
+    present.forEach(function (a) {
+      var arm = cfg[a];
+      ['L', 'S', 'R'].forEach(function (m) {
+        if ((arm[m] || 0) > 0 && present.indexOf(DEST[a][m]) === -1) {
+          w.push('ذراع ' + HE[a] + ': حجم ' + MOVE_HE[m] + ' (' + arm[m] + ') غير محتسب — ذراع الهدف (' + HE[DEST[a][m]] + ') مطفأة.');
+        }
+      });
+      if (arm.freeRight && (arm.R || 0) > 0 && present.indexOf(DEST[a].R) > -1) {
+        w.push('ذراع ' + HE[a] + ': اليمين معرَّف حراً، ولذلك ' + arm.R + ' مركبة/ساعة لا تُحتسب في الحجم الحرج.');
+      }
+    });
+    return w;
+  }
+
+  function compute(cfgRaw) {
+    var cfg = cloneCfg(cfgRaw);
+    var present = ARMS.filter(function (a) { return cfg[a] && cfg[a].exists; });
+    var G = {};
+    present.forEach(function (a) { G[a] = armGroups(a, cfg, present); });
+    var allOf = function (a) { return [G[a].left].concat(G[a].other).filter(Boolean); };
+
+    /* --- الطريقة 1: ذراع مقسوم --- */
+    var t1 = present.map(function (a) {
+      var terms = allOf(a);
+      return { arm: a, he: HE[a], terms: terms, moves: movesOf(terms), value: maxQ(terms) };
+    });
+    var t1total = t1.reduce(function (s, p) { return s + p.value; }, 0);
+
+    /* --- الطريقة 2: فصل الانعطافات اليسرى، لكل محور --- */
+    var t2 = [];
+    AXES.forEach(function (ax) {
+      var arms = ax.arms.filter(function (a) { return present.indexOf(a) > -1; });
+      if (!arms.length) return;
+
+      if (arms.length === 1) {
+        var a = arms[0], terms = allOf(a);
+        t2.push({
+          axis: ax.id, he: ax.he, arms: arms, degenerate: true,
+          phases: [{ label: 'ذراع ' + HE[a] + ' وحده', moves: movesOf(terms), value: maxQ(terms) }],
+          optionA: maxQ(terms), optionB: null, chosen: 'أ', value: maxQ(terms)
+        });
+        return;
+      }
+
+      var a1 = arms[0], a2 = arms[1];
+      var lefts = [G[a1].left, G[a2].left].filter(Boolean);
+      var others = G[a1].other.concat(G[a2].other);
+
+      var phasesA = [];
+      if (lefts.length) {
+        phasesA.push({ label: 'يسار ' + HE[a1] + ' + ' + HE[a2], moves: movesOf(lefts), value: maxQ(lefts) });
+      }
+      if (others.length) {
+        phasesA.push({ label: 'مستقيم ويمين ' + HE[a1] + ' + ' + HE[a2], moves: movesOf(others), value: maxQ(others) });
+      }
+      var optA = phasesA.reduce(function (s, p) { return s + p.value; }, 0);
+
+      var phasesB = arms.map(function (a) {
+        var terms = allOf(a);
+        return { label: 'ذراع ' + HE[a] + ' وحده', moves: movesOf(terms), value: maxQ(terms) };
+      });
+      var optB = phasesB.reduce(function (s, p) { return s + p.value; }, 0);
+
+      var takesB = optB < optA;
+      t2.push({
+        axis: ax.id, he: ax.he, arms: arms, degenerate: false,
+        phasesA: phasesA, phasesB: phasesB,
+        phases: takesB ? phasesB : phasesA,
+        optionA: optA, optionB: optB,
+        chosen: takesB ? 'ب' : 'أ',
+        value: Math.min(optA, optB)
+      });
+    });
+    var t2A = t2.reduce(function (s, x) { return s + x.optionA; }, 0);
+    var t2best = t2.reduce(function (s, x) { return s + x.value; }, 0);
+
+    /* --- الطريقة 3: طور متصل --- */
+    function splitPhase(arm) {
+      var terms = allOf(arm);
+      return {
+        arm: arm, he: HE[arm], label: 'ذراع ' + HE[arm],
+        moves: movesOf(terms), value: maxQ(terms),
+        detail: 'طور منفصل (بدون مشاركة يسار)'
+      };
+    }
+    function hybridScenario(hybridAxis, otherAxis) {
+      var hArms = hybridAxis.arms.filter(function (a) { return present.indexOf(a) > -1; });
+      var oArms = otherAxis.arms.filter(function (a) { return present.indexOf(a) > -1; });
+      var phases = [], total = 0;
+
+      if (hArms.length >= 2) {
+        var a1 = hArms[0], a2 = hArms[1];
+        var tr1 = maxQ(G[a1].other), tr2 = maxQ(G[a2].other);
+        var l1 = G[a1].left ? G[a1].left.q : 0, l2 = G[a2].left ? G[a2].left.q : 0;
+        var excess1 = Math.max(0, l1 - tr1), excess2 = Math.max(0, l2 - tr2);
+        var sharedVal = Math.max(excess1, excess2);
+
+        var served1 = sharedVal > 0 ? Math.min(l1, sharedVal) : 0;
+        var served2 = sharedVal > 0 ? Math.min(l2, sharedVal) : 0;
+        var own1 = l1 - served1, own2 = l2 - served2;
+
+        var sharedMoves = [];
+        if (served1 > 0 && G[a1].left) sharedMoves = sharedMoves.concat(G[a1].left.moves);
+        if (served2 > 0 && G[a2].left) sharedMoves = sharedMoves.concat(G[a2].left.moves);
+
+        function ownDetail(he, tr, l, own) {
+          var base = 'مستقيم/يمين ' + he + ' (' + Math.round(tr) + ')';
+          if (l <= 0) return base;
+          if (own <= 0) return base + ' · يسار (' + Math.round(l) + ') بالكامل انتقل إلى طور البينية';
+          if (own >= l) return base + ' · يسار (' + Math.round(l) + ') بالكامل يدخل هنا';
+          return base + ' · يتبقى من يسار (' + Math.round(own) + ') هنا، والباقي في طور البينية';
+        }
+        function sharedDetail(he, l, served) {
+          if (served <= 0) return null;
+          if (served >= l) return 'يسار ' + he + ' بالكامل (' + Math.round(served) + ') يمر هنا';
+          return 'من ' + he + ' يمر هنا ' + Math.round(served) + ' من أصل ' + Math.round(l);
+        }
+
+        phases.push({
+          arm: a1, he: HE[a1], label: 'ذراع ' + HE[a1],
+          moves: movesOf(allOf(a1)), value: tr1,
+          detail: ownDetail(HE[a1], tr1, l1, own1)
+        });
+        if (sharedVal > 0) {
+          phases.push({
+            arm: null, he: null, label: 'يسار ' + HE[a1] + ' + ' + HE[a2] + ' (مشترك)',
+            moves: sharedMoves, value: sharedVal,
+            detail: [sharedDetail(HE[a1], l1, served1), sharedDetail(HE[a2], l2, served2)]
+              .filter(Boolean).join(' + ')
+          });
+        }
+        phases.push({
+          arm: a2, he: HE[a2], label: 'ذراع ' + HE[a2],
+          moves: movesOf(allOf(a2)), value: tr2,
+          detail: ownDetail(HE[a2], tr2, l2, own2)
+        });
+        total += tr1 + sharedVal + tr2;
+      } else if (hArms.length === 1) {
+        var p = splitPhase(hArms[0]);
+        p.detail = 'ذراع وحيد على المحور — طور عادي';
+        phases.push(p);
+        total += p.value;
+      }
+
+      oArms.forEach(function (a) {
+        var p = splitPhase(a);
+        phases.push(p);
+        total += p.value;
+      });
+
+      return { hybridAxis: hybridAxis.id, hybridHe: hybridAxis.he, otherHe: otherAxis.he, phases: phases, total: total };
+    }
+
+    var t3scenarios = AXES.map(function (ax, i) { return hybridScenario(ax, AXES[1 - i]); })
+      .filter(function (s) { return s.phases.length; });
+    var t3 = t3scenarios.length
+      ? t3scenarios.reduce(function (best, s) { return (!best || s.total < best.total) ? s : best; }, null)
+      : { hybridHe: '', otherHe: '', phases: [], total: 0 };
+    var t3alt = t3scenarios.length > 1
+      ? t3scenarios.filter(function (s) { return s !== t3; })[0]
+      : null;
+    var t3total = t3.total;
+    var t3phaseCount = t3.phases.length;
+    var t3hidden = present.length === 4 && t3phaseCount === 5;
+
+    return {
+      present: present,
+      groups: G,
+      warnings: buildWarnings(cfg, present),
+      table1: { phases: t1, total: t1total },
+      table2: { axes: t2, totalOptionA: t2A, totalBest: t2best },
+      table3: { hybridHe: t3.hybridHe, otherHe: t3.otherHe, phases: t3.phases, total: t3total, alt: t3alt ? t3alt.total : null, hidden: t3hidden },
+      best: t3hidden ? Math.min(t1total, t2best) : Math.min(t1total, t2best, t3total)
+    };
+  }
+
+  /* ============================================================
+     2. رسم المخطط
+     ============================================================ */
+  function buildVolMap(cfg, present) {
+    var map = { __arms: {} };
+    present.forEach(function (a) {
+      var arm = cfg[a];
+      if (!arm || !arm.exists) return;
+      ['L', 'S', 'R'].forEach(function (m) {
+        if (present.indexOf(DEST[a][m]) === -1) return;
+        var lanes = Math.max(1, arm['n' + m] || 1);
+        if (m === 'R' && arm.sharedSR && !arm.freeRight) lanes = Math.max(1, arm.nS || 1);
+        map[a + m] = { vol: arm[m] || 0, lanes: lanes, freeRight: (m === 'R' && !!arm.freeRight) };
+      });
+      map.__arms[a] = arm;
+    });
+    return map;
+  }
+
+  function laneCountFor(arm, armData, present) {
+    if (!armData) return 1;
+    var count = 0;
+    if (present.indexOf(DEST[arm].L) > -1) count += Math.max(1, armData.nL || 1);
+    if (present.indexOf(DEST[arm].S) > -1) count += Math.max(1, armData.nS || 1);
+    if (present.indexOf(DEST[arm].R) > -1 && !armData.sharedSR) count += Math.max(1, armData.nR || 1);
+    if (count < 1) count = 1;
+    if (count > 5) count = 5;
+    return count;
+  }
+
+  function laneDividers(arm, totalLanes, freeRight) {
+    if (totalLanes < 2) return '';
+    var out = '';
+    for (var i = 1; i < totalLanes; i++) {
+      var t = i / totalLanes;
+      var dashed = (i === totalLanes - 1) && freeRight;
+      var dash = dashed ? ' stroke-dasharray="3,2.5"' : '';
+      var attrs = ' stroke="#FFFFFF" stroke-width="0.9" opacity="0.7"' + dash + '/>';
+      if (arm === 'N') { var xn = 30 + 40 * t; out += '<line x1="' + xn + '" y1="0" x2="' + xn + '" y2="30"' + attrs; }
+      else if (arm === 'S') { var xs = 30 + 40 * t; out += '<line x1="' + xs + '" y1="70" x2="' + xs + '" y2="100"' + attrs; }
+      else if (arm === 'W') { var yw = 30 + 40 * t; out += '<line x1="0" y1="' + yw + '" x2="30" y2="' + yw + '"' + attrs; }
+      else if (arm === 'E') { var ye = 30 + 40 * t; out += '<line x1="70" y1="' + ye + '" x2="100" y2="' + ye + '"' + attrs; }
+    }
+    return out;
+  }
+
+  function schematic(present, active, volMap, highlight, size, opts) {
+    opts = opts || {};
+    size = size || 180;
+    var activeSet = {}, hlSet = {};
+    (active || []).forEach(function (m) { activeSet[m] = true; });
+    (highlight || []).forEach(function (m) { hlSet[m] = true; });
+
+    var a11y = opts.decorative
+      ? ' aria-hidden="true" focusable="false"'
+      : ' role="img" aria-label="' + esc(opts.label || 'مخطط التقاطع') + '"';
+
+    var svg = '<svg class="ph" viewBox="0 0 100 100" width="' + size + '" height="' + size + '"' + a11y + '>';
+    svg += '<rect width="100" height="100" fill="#2A2A3A" rx="6"/>';
+    if (present.indexOf('N') > -1) svg += '<rect x="30" y="0" width="40" height="30" fill="#3A3A4A"/>';
+    if (present.indexOf('S') > -1) svg += '<rect x="30" y="70" width="40" height="30" fill="#3A3A4A"/>';
+    if (present.indexOf('W') > -1) svg += '<rect x="0" y="30" width="30" height="40" fill="#3A3A4A"/>';
+    if (present.indexOf('E') > -1) svg += '<rect x="70" y="30" width="30" height="40" fill="#3A3A4A"/>';
+    svg += '<rect x="30" y="30" width="40" height="40" fill="#3A3A4A"/>';
+
+    present.forEach(function (a) {
+      var armData = volMap && volMap.__arms ? volMap.__arms[a] : null;
+      svg += laneDividers(a, laneCountFor(a, armData, present), armData ? !!armData.freeRight : false);
+    });
+
+    if (present.indexOf('N') > -1) svg += '<line x1="30" y1="30" x2="70" y2="30" stroke="#FFFFFF" stroke-width="1.5"/>';
+    if (present.indexOf('S') > -1) svg += '<line x1="30" y1="70" x2="70" y2="70" stroke="#FFFFFF" stroke-width="1.5"/>';
+    if (present.indexOf('W') > -1) svg += '<line x1="30" y1="30" x2="30" y2="70" stroke="#FFFFFF" stroke-width="1.5"/>';
+    if (present.indexOf('E') > -1) svg += '<line x1="70" y1="30" x2="70" y2="70" stroke="#FFFFFF" stroke-width="1.5"/>';
+
+    var paths = '', labels = '';
+    allMoves(present).forEach(function (m) {
+      var info = MOVE[m];
+      if (!info) return;
+      var armKey = m.charAt(0), turn = m.charAt(1);
+      var isActive = !!activeSet[m], isHl = !!hlSet[m];
+      var vd = volMap ? volMap[m] : null;
+      var vol = vd ? vd.vol : 0;
+      var isFree = !!(vd && vd.freeRight);
+      var dirColor = DIR_COLORS[armKey] || '#A0AEC0';
+
+      var stroke = dirColor, opacity = 0.14, width = 0.6;
+      if (isHl) { stroke = '#F35B5B'; opacity = 1; width = 2.3; }
+      else if (isFree) { stroke = '#E8A33D'; opacity = 0.7; width = 0.9; }
+      else if (isActive && vol > 0) { opacity = 0.95; width = 2; }
+      else if (isActive) { opacity = 0.45; width = 1.1; }
+
+      var dash = isFree ? ' stroke-dasharray="4,3"' : '';
+      paths += '<path d="' + info.d + '" fill="none" stroke="' + stroke + '" stroke-width="' + width +
+               '" stroke-linecap="round" opacity="' + opacity + '"' + dash + '/>';
+      paths += '<path d="' + info.t + '" fill="' + stroke + '" opacity="' + opacity + '"/>';
+
+      var pos = LABEL_POS[armKey] && LABEL_POS[armKey][turn];
+      if (pos && vd) {
+        labels += '<text x="' + pos[0] + '" y="' + pos[1] + '" transform="rotate(' + pos[2] + ' ' + pos[0] + ' ' + pos[1] + ')"' +
+                  ' class="vlab' + (isHl ? ' hl' : '') + '" fill="' + (isFree ? '#E8A33D' : dirColor) + '"' +
+                  ' opacity="' + (isHl || isActive ? 1 : 0.55) + '">' + Math.round(vol) + '</text>';
+      }
+    });
+
+    return svg + paths + labels + '</svg>';
+  }
+
+  function movesLabel(moves) {
+    return (moves || []).map(function (m) {
+      return HE[m.charAt(0)] + ' ' + MOVE_HE[m.charAt(1)];
+    }).join(', ');
+  }
+
+  /* ============================================================
+     3. الحالة
+     ============================================================ */
+  var state = cloneCfg(EXAMPLE);
+  var threshold = 1500;
+  var highlightMoves = null;
+  var selectedMoves = null;
+  var selectedKey = null;
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      if (saved && saved.state) state = cloneCfg(saved.state);
+      if (saved && isFinite(saved.threshold) && saved.threshold > 0) threshold = saved.threshold;
+    } catch (e) { }
+  }
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ state: state, threshold: threshold })); }
+    catch (e) { }
+  }
+
+  /* ============================================================
+     4. العرض
+     ============================================================ */
+  function renderArm(armKey) {
+    var box = document.querySelector('.arm[data-arm="' + armKey + '"]');
+    if (!box) return;
+    var d = state[armKey];
+    var idp = 'f-' + armKey + '-';
+
+    function num(field, min, val, disabled, dashed, label) {
+      return '<input type="number" inputmode="numeric" step="1" min="' + min + '" value="' + val + '"' +
+        ' id="' + idp + field + '" data-arm="' + armKey + '" data-field="' + field + '"' +
+        ' aria-label="' + esc(label) + '"' + (disabled ? ' disabled' : '') + (dashed ? ' class="dashed"' : '') + '>';
+    }
+
+    var rOwnLanes = !d.sharedSR && !d.freeRight;
+    var h = '';
+    h += '<div class="arm-top">';
+    h += '<span class="arm-name"><i style="background:' + DIR_COLORS[armKey] + '"></i>ذراع ' + HE[armKey] + ' (' + armKey + ')</span>';
+    h += '<label class="chk"><input type="checkbox" data-arm="' + armKey + '" data-field="exists"' +
+         (d.exists ? ' checked' : '') + '> ذراع فعّال</label>';
+    h += '</div>';
+
+    h += '<div class="fields">';
+    h += '<div></div><div class="hd">الحجم (م/س)</div><div class="hd">المسارب</div>';
+
+    h += '<span class="lbl">يسار (L):</span>';
+    h += num('L', 0, d.L, false, false, 'ذراع ' + HE[armKey] + ' — حجم يسار');
+    h += num('nL', 1, d.nL, false, false, 'ذراع ' + HE[armKey] + ' — مسارب يسار');
+
+    h += '<span class="lbl">مستقيم (S):</span>';
+    h += num('S', 0, d.S, false, false, 'ذراع ' + HE[armKey] + ' — حجم مستقيم');
+    h += num('nS', 1, d.nS, false, false, 'ذراع ' + HE[armKey] + ' — مسارب مستقيم' + (d.sharedSR ? ' (مشتركة مع اليمين)' : ''));
+
+    h += '<span class="lbl">يمين (R):</span>';
+    h += num('R', 0, d.R, false, d.freeRight, 'ذراع ' + HE[armKey] + ' — حجم يمين');
+    h += num('nR', 1, d.nR, !rOwnLanes, d.freeRight, 'ذراع ' + HE[armKey] + ' — مسارب يمين' +
+         (d.sharedSR ? ' (مُلغاة: مسرب مشترك)' : (d.freeRight ? ' (مُلغاة: يمين حر)' : '')));
+    h += '</div>';
+
+    h += '<div class="toggles">';
+    h += '<label class="chk"><input type="checkbox" data-arm="' + armKey + '" data-field="sharedSR"' +
+         (d.sharedSR ? ' checked' : '') + '> مسرب مشترك مستقيم+يمين</label>';
+    h += '<label class="chk"><input type="checkbox" data-arm="' + armKey + '" data-field="freeRight"' +
+         (d.freeRight ? ' checked' : '') + '> يمين حر (بدون إشارة)</label>';
+    h += '</div>';
+
+    box.innerHTML = h;
+    box.classList.toggle('off', !d.exists);
+  }
+
+  function renderAllArms() { ARMS.forEach(renderArm); }
+
+  function renderLive(res, volMap) {
+    var hl = highlightMoves || selectedMoves;
+    document.getElementById('liveSchematic').innerHTML =
+      schematic(res.present, allMoves(res.present), volMap, hl, 200, { label: 'مخطط التقاطع مع كل الحركات' });
+
+    var missing = ARMS.filter(function (a) { return res.present.indexOf(a) === -1; });
+    var cap = 'الحجم لكل مدخل/مسرب: L/S/R · عدد المسارب: ×N<br>الأذرع الفعّالة: ' +
+      (res.present.length ? res.present.map(function (a) { return HE[a]; }).join('، ') : '—');
+    if (missing.length === 1) cap += '<br><strong>حالة T: بدون ذراع ' + HE[missing[0]] + '</strong>';
+    else if (missing.length > 1) cap += '<br><strong>' + res.present.length + ' أذرع فعّالة فقط</strong>';
+    document.getElementById('liveCap').innerHTML = cap;
+  }
+
+  function phaseRow(key, cls, moves, cells) {
+    return '<tr class="phase-row ' + cls + (selectedKey === key ? ' is-selected' : '') + '" tabindex="0"' +
+      ' data-key="' + esc(key) + '" data-moves="' + moves.join(',') + '">' + cells + '</tr>';
+  }
+
+  function capacityBlock(best) {
+    var pct = threshold > 0 ? (best / threshold) * 100 : 0;
+    var cls = pct <= 85 ? 'ok' : (pct <= 100 ? 'mid' : 'bad');
+    var word = pct <= 85 ? 'أقل من العتبة' : (pct <= 100 ? 'حدّي' : 'يتجاوز العتبة');
+    var color = cls === 'ok' ? 'var(--ok)' : (cls === 'mid' ? 'var(--mid)' : 'var(--warn)');
+    return '<div class="capline">' +
+      '<span>أدنى حجم حرج: <strong class="mono">' + Math.round(best) + '</strong> م/س/مسرب</span>' +
+      '<span class="badge ' + cls + '">' + word + ' · ' + Math.round(pct) + '% من العتبة</span>' +
+      '<span class="meter"><i style="width:' + Math.max(2, Math.min(100, pct)) + '%;background:' + color + '"></i></span>' +
+      '<span style="color:var(--ink3);font-size:12.5px">العتبة الحالية: ' + Math.round(threshold) + ' — قابلة للتعديل أعلاه</span>' +
+      '</div>';
+  }
+
+  function renderResults(res, volMap) {
+    var t1 = res.table1.total, t2 = res.table2.totalBest, t3 = res.table3.total;
+    var minVal = res.table3.hidden ? Math.min(t1, t2) : Math.min(t1, t2, t3);
+    var sc = function (moves, label) {
+      return schematic(res.present, moves, volMap, null, 92, { decorative: true, label: label });
+    };
+
+    var h = '';
+
+    if (res.warnings.length) {
+      h += '<div class="warnbox soft"><strong>تنبيه</strong><ul>' +
+        res.warnings.map(function (w) { return '<li>' + esc(w) + '</li>'; }).join('') + '</ul></div>';
+    }
+    if (res.table3.hidden) {
+      h += '<div class="warnbox soft"><strong>الطريقة 3 غير معروضة.</strong> في تقاطع بأربع مداخل دون نقل عام، تصل المعالجة الهجينة إلى 5 أطوار — وهذا يتجاوز النطاق الموصى به لهذا النوع من التقاطعات (2–4 أطوار).</div>';
+    }
+
+    h += '<div class="direction-key" aria-label="مفتاح ألوان الاتجاهات">' +
+      ARMS.map(function (a) {
+        return '<span><i style="background:' + DIR_COLORS[a] + '"></i>' + HE[a] + '</span>';
+      }).join('') + '</div>';
+
+    var methods = [
+      { name: 'الطريقة 1: أذرع مقسومة', val: t1, desc: 'طور منفصل لكل ذراع مدخل' },
+      { name: 'الطريقة 2: فصل الانعطاف اليسار المحمي', val: t2, desc: 'أطوار مشتركة للمحاور + طور الانعطافات اليسرى' }
+    ];
+    if (!res.table3.hidden) {
+      methods.push({ name: 'الطريقة 3: طور متصل (دمج 1+2)', val: t3, desc: 'طور مستقل لكل ذراع + طور بينية للانعطافات اليسرى الزائدة' });
+    }
+    h += '<div class="cmp">';
+    methods.forEach(function (m) {
+      var isBest = m.val === minVal;
+      h += '<div class="card' + (isBest ? ' best' : '') + '">';
+      h += '<div class="k">' + m.name + '</div>';
+      h += '<div class="n">' + Math.round(m.val) + ' <small>م/س/مسرب</small></div>';
+      h += '<div class="d">' + m.desc + '</div>';
+      if (isBest) h += '<span class="tag">الأدنى</span>';
+      h += '</div>';
+    });
+    h += '</div>';
+    h += capacityBlock(minVal);
+
+    /* --- الجدول 1 --- */
+    h += '<section><div class="sec-head"><h2>الطريقة 1 — طور منفصل لكل ذراع (Split Approach)</h2></div>';
+    h += '<div class="tblwrap"><table><caption>الحجم الحرج لكل طور هو أعلى q في الذراع؛ والمجموع هو V<sub>c</sub>.</caption>';
+    h += '<thead><tr><th>الطور</th><th>المخطط</th><th>الحركات المشمولة</th><th>الحجم الحرج q = V/n</th></tr></thead><tbody>';
+    res.table1.phases.forEach(function (p, i) {
+      h += phaseRow('t1-' + p.arm, directionClass(p.moves), p.moves,
+        '<td><strong>طور ' + (i + 1) + ' (' + p.he + ')</strong></td>' +
+        '<td class="schematic-cell">' + sc(p.moves) + '</td>' +
+        '<td><span class="f">' + p.moves.join(', ') + '</span><span class="sub">' + esc(movesLabel(p.moves)) + '</span></td>' +
+        '<td class="val">' + Math.round(p.value) + '</td>');
+    });
+    h += '<tr class="total"><td colspan="3">إجمالي الحجم الحرج (V<sub>c</sub>)</td><td class="val">' +
+      Math.round(res.table1.total) + '</td></tr>';
+    h += '</tbody></table></div></section>';
+
+    /* --- الجدول 2 --- */
+    h += '<section><div class="sec-head"><h2>الطريقة 2 — فصل الانعطافات اليسرى حسب المحاور (Protected Left Separation)</h2></div>';
+    h += '<div class="tblwrap"><table><caption>لكل محور يُختار البديل الأرخص: أ = أطوار مشتركة للمحور، ب = تقسيم المحور إلى ذراعين. الصفوف المعروضة هي البديل المُختار.</caption>';
+    h += '<thead><tr><th>المحور / الأطوار</th><th>المخطط</th><th>الحركات</th><th>الحجم الحرج q</th></tr></thead><tbody>';
+    res.table2.axes.forEach(function (ax) {
+      var alt = ax.degenerate ? '' :
+        '<span class="alt"> · أ = ' + Math.round(ax.optionA) + ' · ب = ' + Math.round(ax.optionB) + '</span>';
+      h += '<tr class="grp"><td colspan="4"><strong>محور ' + ax.he + '</strong> — البديل ' + ax.chosen +
+        ' <span class="pill">' + Math.round(ax.value) + '</span>' + alt + '</td></tr>';
+      ax.phases.forEach(function (p, i) {
+        h += phaseRow('t2-' + ax.axis + '-' + i, directionClass(p.moves), p.moves,
+          '<td style="padding-right:24px">• ' + esc(p.label) + '</td>' +
+          '<td class="schematic-cell">' + sc(p.moves) + '</td>' +
+          '<td><span class="f">' + p.moves.join(', ') + '</span><span class="sub">' + esc(movesLabel(p.moves)) + '</span></td>' +
+          '<td class="val">' + Math.round(p.value) + '</td>');
+      });
+    });
+    h += '<tr class="total"><td colspan="3">إجمالي الحجم الحرج (V<sub>c</sub>)</td><td class="val">' +
+      Math.round(res.table2.totalBest) + '</td></tr>';
+    h += '</tbody></table></div>';
+    h += '<p class="note">للمقارنة، مجموع البديل أ على كل المحاور: <span class="mono">' +
+      Math.round(res.table2.totalOptionA) + '</span> م/س/مسرب.</p></section>';
+
+    /* --- الجدول 3 --- */
+    if (!res.table3.hidden) {
+      h += '<section><div class="sec-head"><h2>الطريقة 3 — الطور المتصل (دمج الطريقة 1 + الطريقة 2)</h2></div>';
+      h += '<div class="tblwrap"><table><caption>محور واحد يحصل على معالجة هجينة: كل ذراع فيه يحتفظ بطور مستقل (مثل الطريقة 1)، لكن حجمه يُحدَّد فقط وفق المستقيم/اليمين — والانعطاف اليسار "يستقل بالمجان" حتى هذا الحجم، ويُدفع الفائض (إن وُجد) إلى طور بينية مشترك مع فائض الانعطاف اليسار في الذراع المقابل. المحور الثاني مقسوم إلى ذراعين منفصلين دون مشاركة انعطاف يسار، كما في الطريقة 1. يُختار المحور الهجين الأقل مجموعاً.</caption>';
+      h += '<thead><tr><th>الطور</th><th>المخطط</th><th>الحركات / الحساب</th><th>الحجم الحرج</th></tr></thead><tbody>';
+      if (res.table3.phases.length) {
+        h += '<tr class="grp"><td colspan="4"><strong>المحور الهجين: ' + esc(res.table3.hybridHe) +
+          '</strong> · المحور المقسوم: ' + esc(res.table3.otherHe) +
+          (res.table3.alt != null ? '<span class="alt"> · مقابل البديل المعاكس: ' + Math.round(res.table3.alt) + '</span>' : '') +
+          '</td></tr>';
+        res.table3.phases.forEach(function (p, i) {
+          h += phaseRow('t3-' + i, directionClass(p.moves), p.moves,
+            '<td><strong>طور ' + (i + 1) + (p.he ? ' (' + p.he + ')' : '') + '</strong><div class="sub">' + esc(p.label) + '</div></td>' +
+            '<td class="schematic-cell">' + sc(p.moves) + '</td>' +
+            '<td><span class="f">' + (p.moves.length ? p.moves.join(', ') : '—') + '</span><span class="sub">' + esc(p.detail) + '</span></td>' +
+            '<td class="val">' + Math.round(p.value) + '</td>');
+        });
+      }
+      h += '<tr class="total"><td colspan="3">إجمالي الحجم الحرج (V<sub>c</sub>)</td><td class="val">' +
+        Math.round(res.table3.total) + '</td></tr>';
+      h += '</tbody></table></div></section>';
+    }
+
+    document.getElementById('results').innerHTML = h;
+    wireRows();
+  }
+
+  function wireRows() {
+    var rows = document.querySelectorAll('.phase-row');
+    function movesOfRow(row) {
+      var s = row.getAttribute('data-moves');
+      return s ? s.split(',').filter(Boolean) : [];
+    }
+    rows.forEach(function (row) {
+      row.addEventListener('mouseenter', function () { highlightMoves = movesOfRow(row); refreshLive(); });
+      row.addEventListener('mouseleave', function () { highlightMoves = null; refreshLive(); });
+      row.addEventListener('focus', function () { highlightMoves = movesOfRow(row); refreshLive(); });
+      row.addEventListener('blur', function () { highlightMoves = null; refreshLive(); });
+      row.addEventListener('click', function () { toggleSelect(row, movesOfRow(row)); });
+      row.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSelect(row, movesOfRow(row)); }
+      });
+    });
+  }
+
+  function toggleSelect(row, moves) {
+    var key = row.getAttribute('data-key');
+    if (selectedKey === key) { selectedKey = null; selectedMoves = null; }
+    else { selectedKey = key; selectedMoves = moves; }
+    document.querySelectorAll('.phase-row').forEach(function (r) {
+      r.classList.toggle('is-selected', r.getAttribute('data-key') === selectedKey);
+    });
+    refreshLive();
+  }
+
+  /* ============================================================
+     5. دورة التحديث
+     ============================================================ */
+  var cache = { res: null, volMap: null };
+
+  function recompute() {
+    cache.res = compute(state);
+    cache.volMap = buildVolMap(cloneCfg(state), cache.res.present);
+    return cache.res;
+  }
+  function refreshLive() {
+    if (!cache.res) recompute();
+    renderLive(cache.res, cache.volMap);
+  }
+  function refreshOutputs() {
+    var res = recompute();
+    renderLive(res, cache.volMap);
+    renderResults(res, cache.volMap);
+    renderForecast();
+    updateJson();
+    save();
+  }
+  function refreshAll() {
+    renderAllArms();
+    refreshOutputs();
+  }
+
+  function updateJson() {
+    var pre = document.getElementById('jsonOut');
+    if (pre.hidden) return;
+    pre.textContent = JSON.stringify({ input: state, threshold: threshold, result: cache.res }, null, 2);
+  }
+
+  /* ============================================================
+     6. الأحداث
+     ============================================================ */
+  function readField(el) {
+    var arm = el.getAttribute('data-arm'), field = el.getAttribute('data-field');
+    if (!arm || !field || !state[arm]) return null;
+    if (el.type === 'checkbox') { state[arm][field] = el.checked; return { arm: arm, field: field, structural: true }; }
+    var v = parseInt(el.value, 10);
+    state[arm][field] = isFinite(v) && v > 0 ? v : 0;
+    return { arm: arm, field: field, structural: false };
+  }
+
+  function initEvents() {
+    var cross = document.getElementById('cross');
+
+    cross.addEventListener('input', function (e) {
+      var el = e.target;
+      if (!el.matches('input[data-field]')) return;
+      var info = readField(el);
+      if (!info) return;
+      if (info.structural) {
+        renderArm(info.arm);
+        var again = document.querySelector('.arm[data-arm="' + info.arm + '"] input[data-field="' + info.field + '"]');
+        if (again && again.focus) again.focus();
+      }
+      refreshOutputs();
+    });
+
+    cross.addEventListener('change', function (e) {
+      var el = e.target;
+      if (!el.matches('input[type="number"][data-field]')) return;
+      var field = el.getAttribute('data-field');
+      var arm = el.getAttribute('data-arm');
+      var min = field.charAt(0) === 'n' ? 1 : 0;
+      var v = parseInt(el.value, 10);
+      if (!isFinite(v) || v < min) v = min;
+      state[arm][field] = v;
+      el.value = v;
+      refreshOutputs();
+    });
+
+    document.getElementById('threshold').addEventListener('input', function () {
+      var v = parseInt(this.value, 10);
+      threshold = isFinite(v) && v > 0 ? v : 1500;
+      refreshOutputs();
+    });
+
+    document.getElementById('btnExample').addEventListener('click', function () {
+      state = cloneCfg(EXAMPLE);
+      selectedKey = null; selectedMoves = null;
+      refreshAll();
+    });
+
+    document.getElementById('btnClear').addEventListener('click', function () {
+      ARMS.forEach(function (a) { state[a] = blankArm(); });
+      selectedKey = null; selectedMoves = null;
+      refreshAll();
+    });
+
+    document.getElementById('btnPrint').addEventListener('click', function () { window.print(); });
+
+    document.getElementById('btnJson').addEventListener('click', function () {
+      var pre = document.getElementById('jsonOut');
+      pre.hidden = !pre.hidden;
+      this.setAttribute('aria-expanded', String(!pre.hidden));
+      this.textContent = pre.hidden ? 'اعرض JSON للحساب الحالي' : 'أخفِ JSON';
+      updateJson();
+    });
+
+    document.getElementById('btnCopy').addEventListener('click', function () {
+      var payload = JSON.stringify({ input: state, threshold: threshold, result: compute(state) }, null, 2);
+      var msg = document.getElementById('copyMsg');
+      function done(ok) {
+        msg.textContent = ok ? 'تم النسخ بنجاح!' : 'فشل النسخ — افتح JSON وانسخ يدوياً.';
+        setTimeout(function () { msg.textContent = ''; }, 3000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).then(function () { done(true); }, function () { done(false); });
+      } else {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = payload;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          done(ok);
+        } catch (err) { done(false); }
+      }
+    });
+
+    window.computeCriticalVolume = function (cfg) { return compute(cfg || state); };
+  }
+
+  function initApiDoc() {
+    document.getElementById('apidoc').textContent = [
+      '// استدعاء عالمي في المتصفح:',
+      'const res = window.computeCriticalVolume(config);',
+      '',
+      '// الإدخال (config) — لكل ذراع: N / S / E / W',
+      '{',
+      '  "N": {',
+      '    "exists":   true,   // هل الذراع موجود بالتقاطع',
+      '    "L": 220, "nL": 1,  // حجم يسار [م/س] وعدد مسارب اليسار',
+      '    "S": 650, "nS": 2,  // حجم مستقيم وعدد مسارب المستقيم',
+      '    "R": 120, "nR": 1,  // حجم يمين وعدد مسارب اليمين',
+      '    "sharedSR": true,   // اليمين يشارك مسارب المستقيم (nR تُتجاهل)',
+      '    "freeRight": false  // يمين حر — لا يُحتسب في الحجم الحرج',
+      '  },',
+      '  "S": { ... }, "E": { ... }, "W": { ... }',
+      '}',
+      '',
+      '// الإخراج:',
+      '{',
+      '  present: ["N","S","E","W"],',
+      '  warnings: [ ... ],',
+      '  table1: { phases:[{arm,he,moves,value}], total },',
+      '  table2: { axes:[{he,chosen,optionA,optionB,phases,value}], totalOptionA, totalBest },',
+      '  table3: { hybridHe, otherHe, phases:[{arm,he,label,moves,detail,value}], total, alt, hidden },',
+      '  best: <الأدنى من الطرق الثلاث>',
+      '}'
+    ].join('\n');
+  }
+
+
+    var DIR_WORDS = [
+      { re: /شمال/, arm: 'N' },
+      { re: /جنوب/, arm: 'S' },
+      { re: /شرق/, arm: 'E' },
+      { re: /غرب/, arm: 'W' }
+    ];
+    var ARMS4 = ['N', 'S', 'E', 'W'];
+    var MAP_A = { '<': 'R', '^': 'S', '>': 'L' };
+    var MAP_B = { '<': 'L', '^': 'S', '>': 'R' };
+    var SYMS = { '<': 1, '>': 1, '^': 1, '\u02c4': 1, '\u2227': 1, '\u2191': 1 };
+    var TURN_WORDS = {
+      'يمين': 'R', 'يمينا': 'R', 'يميناً': 'R', 'انعطاف يمين': 'R', 'انعطاف يميناً': 'R',
+      'يسار': 'L', 'يسارا': 'L', 'يساراً': 'L', 'انعطاف يسار': 'L', 'انعطاف يساراً': 'L',
+      'مستقيم': 'S', 'مستقيمة': 'S', 'الاستمرار مباشر': 'S'
+    };
+    var DESTI = {
+      N: { S: 'S', L: 'E', R: 'W' },
+      S: { S: 'N', L: 'W', R: 'E' },
+      E: { S: 'W', L: 'S', R: 'N' },
+      W: { S: 'E', L: 'N', R: 'S' }
+    };
+    var TITLE_RE = /توزيع\s+الحركة\s+حسب\s+أذرع/;
+
+    function isDate(v) { return Object.prototype.toString.call(v) === '[object Date]'; }
+    function txt(v) {
+      if (v === null || v === undefined) return '';
+      if (isDate(v)) return fmtTime(v);
+      return String(v).trim();
+    }
+    function num(v) {
+      if (typeof v === 'number') return isFinite(v) ? v : 0;
+      if (v === null || v === undefined) return 0;
+      var n = parseFloat(String(v).replace(/[,\s]/g, '').trim());
+      return isFinite(n) ? n : 0;
+    }
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function fmtTime(d) {
+      if (isDate(d)) return pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes());
+      if (typeof d === 'number' && d >= 0 && d < 1) {
+        var m = Math.round(d * 1440);
+        return pad(Math.floor(m / 60) % 24) + ':' + pad(m % 60);
+      }
+      return (d === null || d === undefined) ? '' : String(d).trim();
+    }
+    function fmtDate(d) {
+      if (isDate(d)) return pad(d.getUTCDate()) + '/' + pad(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear();
+      return txt(d);
+    }
+    function armOf(s) {
+      for (var i = 0; i < DIR_WORDS.length; i++) if (DIR_WORDS[i].re.test(s)) return DIR_WORDS[i].arm;
+      return null;
+    }
+    function minutesOf(label) {
+      var m = /(\d{1,2}):(\d{2})/.exec(label);
+      return m ? (+m[1]) * 60 + (+m[2]) : null;
+    }
+    function turnCell(s) {
+      if (!s) return null;
+      if (SYMS[s]) return { sym: s };
+      var t = s.replace(/["'׳״.]/g, '').replace(/\s+/g, ' ').trim();
+      if (TURN_WORDS[t]) return { turn: TURN_WORDS[t] };
+      return null;
+    }
+    function rowText(row) { return (row || []).map(txt).join(' ').replace(/\s{2,}/g, ' ').trim(); }
+
+    /* --- تحديد الجداول --- */
+    function findTables(rows, sheetName) {
+      var out = [], titleRows = [];
+      for (var r = 0; r < rows.length; r++) if (TITLE_RE.test(rowText(rows[r]))) titleRows.push(r);
+
+      titleRows.forEach(function (r, ix) {
+        var line = rowText(rows[r]);
+        var stop = (ix + 1 < titleRows.length) ? titleRows[ix + 1] : rows.length;
+        var id = null;
+        var m = /جدول\s*رقم['׳"]?\s*:?\s*(2\.[1-4])/.exec(line);
+        if (m) id = m[1];
+        for (var k = r + 1; !id && k < Math.min(stop, r + 10); k++) {
+          var m2 = /جدول\s*رقم['׳"]?\s*:?\s*(2\.[1-4])/.exec(rowText(rows[k]));
+          if (m2) id = m2[1];
+        }
+        var kind = /خروج|יציא/.test(line) ? 'exit' : 'entry';
+        var unit = /pcu|PCU|ير["׳']?\s*מ|יחידות\s+רכב/.test(line) ? 'pcu' : 'veh';
+        if (!id) id = (kind === 'exit' ? (unit === 'pcu' ? '2.4' : '2.3') : (unit === 'pcu' ? '2.2' : '2.1'));
+        out.push({ sheet: sheetName, row: r, stop: stop, id: id, kind: kind, unit: unit, title: line });
+      });
+      return out;
+    }
+
+    function findTurnRow(rows, from, to) {
+      for (var r = Math.max(0, from); r < Math.min(to, rows.length); r++) {
+        var row = rows[r] || [], hits = 0;
+        for (var c = 0; c < row.length; c++) if (turnCell(txt(row[c]))) hits++;
+        if (hits >= 3) return r;
+      }
+      return -1;
+    }
+
+    /* --- قراءة جدول واحد --- */
+    function readTableAt(rows, turnRow) {
+      if (turnRow < 1) throw new Error('صف الاتجاهات (شمال / جنوب / شرق / غرب) مفقود فوق صف الحركات.');
+      var c, i, r;
+      var turnRowArr = rows[turnRow] || [];
+      var dirRow = rows[turnRow - 1] || [];
+      var headRow = (turnRow >= 2 ? rows[turnRow - 2] : []) || [];
+
+      var cols = [];
+      for (c = 0; c < turnRowArr.length; c++) {
+        var tc = turnCell(txt(turnRowArr[c]));
+        if (!tc) continue;
+        var arm = armOf(txt(dirRow[c]));
+        if (!arm) continue;
+        cols.push({ col: c, arm: arm, sym: tc.sym || null, turn: tc.turn || null });
+      }
+      if (!cols.length) throw new Error('لم يتم التعرّف على أعمدة الحركة — تأكد أن الصف فوق الحركات يحتوي على اتجاهات الأذرع.');
+
+      var roads = {};
+      for (c = 0; c < headRow.length; c++) {
+        var t = txt(headRow[c]);
+        if (!/^(من|إلى)?\s*(شمال|جنوب|شرق|غرب)$/.test(t)) continue;
+        var a = armOf(t);
+        if (!a || roads[a]) continue;
+        for (var k = c - 1; k >= Math.max(0, c - 4); k--) {
+          var nm = txt(headRow[k]);
+          if (nm && !/^(من|إلى)?\s*(شمال|جنوب|شرق|غرب)$/.test(nm) && !/رقم\s*الطريق|شارع|اتجاه/.test(nm)) {
+            roads[a] = nm; break;
+          }
+        }
+      }
+
+      var raw = [];
+      for (r = turnRow + 1; r < rows.length; r++) {
+        var row2 = rows[r] || [];
+        var label = '';
+        for (c = 0; c < Math.min(row2.length, 3) && !label; c++) {
+          var cand = fmtTime(row2[c]);
+          if (/\d{1,2}:\d{2}/.test(cand)) label = cand;
+          else if (/إجمالي|الإجمالي|סה["׳']?\s*כ/.test(cand)) { label = 'TOTAL'; }
+        }
+        if (label === 'TOTAL') break;
+        var rng = /(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/.exec(label);
+        if (!rng) { if (raw.length) break; else continue; }
+        var vals = [];
+        for (i = 0; i < cols.length; i++) vals.push(num(row2[cols[i].col]));
+        raw.push({ label: rng[1] + '\u2013' + rng[2], from: rng[1], to: rng[2], start: minutesOf(rng[1]), vals: vals });
+      }
+      if (!raw.length) throw new Error('لم تُعثر على صفوف ساعية (بصيغة 07:00-08:00) أسفل صف الحركات.');
+
+      var dayByCol = [];
+      for (i = 0; i < cols.length; i++) {
+        var s = 0;
+        for (r = 0; r < raw.length; r++) s += raw[r].vals[i];
+        dayByCol.push(s);
+      }
+      var present = {};
+      ARMS4.forEach(function (a) {
+        var road = roads[a] || '';
+        var sum = 0;
+        cols.forEach(function (cc, ix) { if (cc.arm === a) sum += dayByCol[ix]; });
+        present[a] = sum > 0;
+        if (!present[a] && road && road !== '0' && !/^0+$/.test(road)) present[a] = true;
+      });
+
+      function score(map) {
+        var bad = 0;
+        cols.forEach(function (cc, ix) {
+          if (!cc.sym) return;
+          var turn = map[cc.sym];
+          if (turn && !present[DESTI[cc.arm][turn]]) bad += dayByCol[ix];
+        });
+        return bad;
+      }
+      var sA = score(MAP_A), sB = score(MAP_B);
+      var map = (sB < sA) ? MAP_B : MAP_A;
+      var hasSyms = cols.some(function (cc) { return !!cc.sym; });
+
+      var hours = raw.map(function (rw) {
+        var rec = { label: rw.label, from: rw.from, to: rw.to, start: rw.start, total: 0, arms: {} };
+        ARMS4.forEach(function (a) { rec.arms[a] = { L: 0, S: 0, R: 0, tot: 0 }; });
+        cols.forEach(function (cc, ix) {
+          var turn = cc.turn || map[cc.sym];
+          if (!turn) return;
+          rec.arms[cc.arm][turn] += rw.vals[ix];
+          rec.arms[cc.arm].tot += rw.vals[ix];
+          rec.total += rw.vals[ix];
+        });
+        return rec;
+      });
+
+      return {
+        hours: hours, roads: roads, present: present,
+        turnLabels: hasSyms ? 'arrows' : 'words',
+        mapping: hasSyms ? ((map === MAP_A) ? 'mirrored' : 'literal') : 'explicit',
+        mapScore: { mirrored: sA, literal: sB }
+      };
+    }
+
+    var META_KEYS = [
+      ['name', /اسم\s*التقاطع|שם\s*הצומת/],
+      ['junction', /رقم\s*التقاطع|מס['׳"]?\s*הצומת/],
+      ['survey', /رقم\s*المسح|מס['׳"]?\s*סקר/],
+      ['date', /تاريخ\s*العدّ|תאריך\s*הספירה/],
+      ['day', /يوم\s*العدّ|יום\s*הספירה/],
+      ['by', /منفّذ\s*العدّ|מבצע\s*הספירה/]
+    ];
+    function isLabel(t) {
+      for (var i = 0; i < META_KEYS.length; i++) if (META_KEYS[i][1].test(t)) return true;
+      return false;
+    }
+    function readMeta(sheets) {
+      var meta = {};
+      sheets.forEach(function (sh) {
+        var rows = sh.rows;
+        for (var r = 0; r < Math.min(rows.length, 30); r++) {
+          var row = rows[r] || [];
+          for (var c = 0; c < row.length; c++) {
+            var t = txt(row[c]);
+            if (!t) continue;
+            for (var p = 0; p < META_KEYS.length; p++) {
+              var key = META_KEYS[p][0];
+              if (meta[key] || !META_KEYS[p][1].test(t)) continue;
+              var inline = t.indexOf(':') > -1 ? t.split(':').slice(1).join(':').trim() : '';
+              if (inline) { meta[key] = inline; break; }
+              var v = null;
+              for (var k = c + 1; k < Math.min(row.length, c + 5) && v === null; k++) {
+                if (row[k] === null || row[k] === undefined || txt(row[k]) === '') continue;
+                if (isLabel(txt(row[k]))) break;
+                v = row[k];
+              }
+              if (v === null && rows[r + 1] && rows[r + 1][c] !== null && rows[r + 1][c] !== undefined &&
+                  txt(rows[r + 1][c]) !== '' && !META_KEYS[p][1].test(txt(rows[r + 1][c]))) v = rows[r + 1][c];
+              if (v === null) break;
+              meta[key] = (key === 'date') ? fmtDate(v) : txt(v);
+              if (key === 'date' && !meta.day) {
+                for (var j = 0; j < row.length; j++) {
+                  var dt = txt(row[j]);
+                  if (/^يوم\s*[أ-ي]/.test(dt)) { meta.day = dt; break; }
+                }
+              }
+              break;
+            }
+          }
+        }
+      });
+      return meta;
+    }
+
+    function readReportedPeaks(sheets) {
+      var out = [];
+      for (var s = 0; s < sheets.length; s++) {
+        var rows = sheets[s].rows;
+        for (var r = 0; r < rows.length; r++) {
+          var row = rows[r] || [], lbl = null, idx = -1;
+          for (var c = 0; c < row.length; c++) {
+            var t = txt(row[c]);
+            if (/ساعة\s*الذروة|שעת\s*שיא/.test(t) && !/نصف|חצי/.test(t)) { lbl = t.replace(/[:\s]+$/, ''); idx = c; break; }
+          }
+          if (!lbl) continue;
+          var times = [], vol = null;
+          for (var k = idx + 1; k < row.length; k++) {
+            var v = row[k];
+            if (v === null || v === undefined || txt(v) === '' || txt(v) === '-') continue;
+            if (isDate(v) || (typeof v === 'number' && v > 0 && v < 1)) times.push(fmtTime(v));
+            else if (typeof v === 'number') { vol = v; break; }
+          }
+          if (times.length === 2) { times.sort(); out.push({ label: lbl, range: times[0] + '\u2013' + times[1], vol: vol }); }
+        }
+        if (out.length) break;
+      }
+      return out;
+    }
+
+    function parseCountWorkbook(wb, XLSX) {
+      var sheets = wb.SheetNames.map(function (n) {
+        return { name: n, rows: XLSX.utils.sheet_to_json(wb.Sheets[n], { header: 1, raw: true, defval: null, blankrows: true }) };
+      });
+      var found = [];
+      sheets.forEach(function (s) { found = found.concat(findTables(s.rows, s.name)); });
+      if (!found.length) throw new Error('لم يُعثر في الملف على جدول "توزيع الحركة حسب الأذرع" (جداول 2.1–2.4).');
+
+      var order = { '2.4': 0, '2.2': 1, '2.3': 2, '2.1': 3 };
+      found.sort(function (a, b) {
+        var oa = order[a.id] === undefined ? 9 : order[a.id], ob = order[b.id] === undefined ? 9 : order[b.id];
+        return oa - ob;
+      });
+
+      var seen = {}, tables = [], firstErr = null;
+      found.forEach(function (t) {
+        if (seen[t.id]) return;
+        var rows = null;
+        for (var i = 0; i < sheets.length; i++) if (sheets[i].name === t.sheet) rows = sheets[i].rows;
+        try {
+          var tr = findTurnRow(rows, t.row + 1, Math.min(t.stop, t.row + 20));
+          if (tr < 0) throw new Error('لم يُعثر على صف الحركات (يمين / مستقيم / يسار أو أسهم) أسفل عنوان الجدول.');
+          t.data = readTableAt(rows, tr);
+          seen[t.id] = 1;
+          tables.push(t);
+        } catch (e) { if (!firstErr) firstErr = e.message; }
+      });
+      if (!tables.length) throw new Error('تم تحديد الجدول في الملف لكن لم يمكن قراءة بيانات منه' + (firstErr ? ' — ' + firstErr : '.'));
+
+      return { meta: readMeta(sheets), reportedPeaks: readReportedPeaks(sheets), tables: tables };
+    }
+
+    function parsePastedCells(text) {
+      var lines = String(text).replace(/\r/g, '').split('\n');
+      while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+      var rows = lines.map(function (ln) {
+        return ln.split(ln.indexOf('\t') > -1 ? '\t' : /\s{2,}|,/).map(function (x) { return x.trim(); });
+      });
+      if (rows.length < 3) throw new Error('الصق ثلاث صفوف على الأقل: أسماء الطرق، اتجاهات الأذرع، صف الحركات والساعات.');
+      var tr = findTurnRow(rows, 0, rows.length);
+      if (tr < 0) throw new Error('لم يُعثر على صف الحركات. تأكد أنك نسخت أيضاً الصف الذي به يمين / مستقيم / يسار (أو < ^ >).');
+      var data = readTableAt(rows, tr);
+      var title = rowText(rows[0]);
+      return {
+        meta: {},
+        reportedPeaks: [],
+        tables: [{
+          sheet: 'لصق', row: 0, id: 'لصق', kind: /^ل/.test(title) ? 'exit' : 'entry',
+          unit: 'unknown', title: 'بيانات ملصقة', data: data
+        }]
+      };
+    }
+
+  /* ============================================================
+     6b. استيراد ملف العدّ — الواجهة
+     ============================================================ */
+  var imp = { book: null, tableIx: 0, hourIx: 0 };
+
+  function impStatus(msg, cls) {
+    var el = document.getElementById('impStatus');
+    el.className = 'imp-status' + (cls ? ' ' + cls : '');
+    el.textContent = msg || '';
+  }
+  function curTable() { return imp.book ? imp.book.tables[imp.tableIx] : null; }
+  function curHours() { var t = curTable(); return t ? t.data.hours : []; }
+  function unitOf(t) { return t.unit === 'pcu' ? 'PCU' : (t.unit === 'veh' ? 'م/س' : 'وحدة'); }
+  function tableLabel(t) {
+    if (t.id === 'لصق') return 'بيانات ملصقة';
+    return 'جدول ' + t.id + ' — ' + (t.kind === 'exit' ? 'أذرع الخروج' : 'أذرع الدخول') +
+           '، ' + (t.unit === 'pcu' ? 'PCU' : 'مركبات فعلية');
+  }
+
+  function peakIndex(hours, lo, hi) {
+    var best = -1, bv = -1;
+    hours.forEach(function (hh, i) {
+      if (lo !== null && hh.start < lo) return;
+      if (hi !== null && hh.start >= hi) return;
+      if (hh.total > bv) { bv = hh.total; best = i; }
+    });
+    return best < 0 ? 0 : best;
+  }
+
+  function applyImportedHour() {
+    var t = curTable();
+    if (!t) return;
+    var hh = t.data.hours[imp.hourIx];
+    if (!hh) return;
+    var pcuBox = document.getElementById('fcPCU');
+    if (pcuBox && t.unit === 'pcu') pcuBox.checked = true;
+    ARMS.forEach(function (a) {
+      var st = state[a];
+      st.exists = !!t.data.present[a];
+      st.L = Math.round(hh.arms[a].L);
+      st.S = Math.round(hh.arms[a].S);
+      st.R = Math.round(hh.arms[a].R);
+    });
+    selectedKey = null; selectedMoves = null;
+    refreshAll();
+  }
+
+  function histogram(hours, sel) {
+    var bw = 27, w = hours.length * bw + 14, ht = 78, max = 1;
+    hours.forEach(function (hh) { if (hh.total > max) max = hh.total; });
+    var s = '<svg class="hist" viewBox="0 0 ' + w + ' ' + ht + '" width="' + Math.max(w, 300) +
+            '" height="' + ht + '" role="img" aria-label="مخطط الحركة الساعية في التقاطع">';
+    hours.forEach(function (hh, i) {
+      var bh = Math.max(2, 46 * hh.total / max), x = 7 + i * bw, y = 60 - bh, on = (i === sel);
+      s += '<g data-hour="' + i + '" tabindex="0" role="button" aria-label="' + esc(hh.label) + '">';
+      s += '<rect x="' + x + '" y="' + y + '" width="' + (bw - 7) + '" height="' + bh + '" rx="2" fill="' +
+           (on ? '#E8A33D' : 'rgba(232,163,61,.3)') + '"><title>' + esc(hh.label) + ' — ' +
+           Math.round(hh.total) + '</title></rect>';
+      s += '<text x="' + (x + (bw - 7) / 2) + '" y="70" text-anchor="middle" font-size="7.5" font-family="monospace" fill="' +
+           (on ? '#E8A33D' : '#6B6780') + '">' + esc(hh.from.slice(0, 2)) + '</text>';
+      if (on) {
+        s += '<text x="' + (x + (bw - 7) / 2) + '" y="' + Math.max(7, y - 3) +
+             '" text-anchor="middle" font-size="8" font-weight="600" font-family="monospace" fill="#E8A33D">' +
+             Math.round(hh.total) + '</text>';
+      }
+      s += '</g>';
+    });
+    return s + '</svg>';
+  }
+
+  function renderImport() {
+    var panel = document.getElementById('impPanel');
+    if (!imp.book) { panel.hidden = true; panel.innerHTML = ''; return; }
+    var t = curTable(), d = t.data, hours = d.hours, hh = hours[imp.hourIx], m = imp.book.meta || {};
+    var unit = unitOf(t);
+    var res = cache.res || recompute();
+    var h = '';
+
+    if (m.name || m.date || m.by || m.junction) {
+      h += '<div class="kv">';
+      if (m.name) h += '<span>التقاطع: <b>' + esc(m.name) + '</b></span>';
+      if (m.junction) h += '<span>رقم التقاطع: <b>' + esc(m.junction) + '</b></span>';
+      if (m.date) h += '<span>تاريخ العدّ: <b>' + esc(m.date) + (m.day ? ' · ' + esc(m.day) : '') + '</b></span>';
+      if (m.by) h += '<span>المنفّذ: <b>' + esc(m.by) + '</b></span>';
+      h += '</div>';
+    }
+
+    h += '<div class="imp-ctl">';
+    if (imp.book.tables.length > 1) {
+      h += '<label>جدول المصدر: <select id="impTable">' + imp.book.tables.map(function (tb, i) {
+        return '<option value="' + i + '"' + (i === imp.tableIx ? ' selected' : '') + '>' + esc(tableLabel(tb)) + '</option>';
+      }).join('') + '</select></label>';
+    }
+    h += '<label>الساعة: <select id="impHour">' + hours.map(function (x, i) {
+      return '<option value="' + i + '"' + (i === imp.hourIx ? ' selected' : '') + '>' + esc(x.label) +
+        ' — ' + Math.round(x.total) + ' ' + unit + '</option>';
+    }).join('') + '</select></label>';
+    h += '<button data-peak="am">ذروة الصباح</button>';
+    h += '<button data-peak="pm">ذروة العصر</button>';
+    h += '<button data-peak="day">الذروة اليومية</button>';
+    h += '</div>';
+
+    h += '<div class="chartwrap">' + histogram(hours, imp.hourIx) + '</div>';
+
+    h += '<div class="imp-grid">';
+    h += '<div class="imp-scheme">' +
+         schematic(res.present, allMoves(res.present), cache.volMap, null, 230,
+                   { label: 'أحجام ساعة ' + hh.label + ' على مخطط التقاطع' }) +
+         '<div class="cap">' + esc(hh.label) + ' · ' + Math.round(hh.total) + ' ' + unit + ' في التقاطع</div></div>';
+
+    h += '<div><div class="tblwrap"><table><caption>أحجام المرور في ساعة ' + esc(hh.label) +
+         ' حسب ذراع الدخول (' + unit + ')، كما أُدخلت إلى الحاسبة.</caption>' +
+         '<thead><tr><th>الذراع</th><th>طريق / شارع</th><th>يسار</th><th>مستقيم</th><th>يمين</th><th>الإجمالي</th></tr></thead><tbody>';
+    ARMS.forEach(function (a) {
+      if (!d.present[a]) return;
+      h += '<tr><td><strong>' + HE[a] + ' (' + a + ')</strong></td>' +
+           '<td>' + esc(d.roads[a] || '—') + '</td>' +
+           '<td class="val">' + Math.round(hh.arms[a].L) + '</td>' +
+           '<td class="val">' + Math.round(hh.arms[a].S) + '</td>' +
+           '<td class="val">' + Math.round(hh.arms[a].R) + '</td>' +
+           '<td class="val">' + Math.round(hh.arms[a].tot) + '</td></tr>';
+    });
+    h += '<tr class="total"><td colspan="5">الإجمالي في التقاطع</td><td class="val">' + Math.round(hh.total) + '</td></tr>';
+    h += '</tbody></table></div>';
+
+    var off = ARMS.filter(function (a) { return !d.present[a]; });
+    var notes = [];
+    notes.push('تم إدخال الأحجام إلى الحاسبة. عدد المسارب، المسرب المشترك مستقيم+يمين واليمين الحر تبقى كما حدّدتها في النموذج — الاستيراد لا يمسّها.');
+    if (off.length) notes.push('ذراع ' + off.map(function (a) { return HE[a]; }).join('، ') + ' لا يحمل حركة في الجدول وعُلّم كذراع غير فعّال.');
+    if (t.unit === 'pcu') notes.push('القيم بـ PCU (وحدات مركبات الركاب) — أي أنها تتضمن بالفعل تحويل المركبات الثقيلة؛ مُقرَّبة إلى عدد صحيح.');
+    else if (t.unit === 'veh') notes.push('القيم بعدد المركبات الفعلي، دون تحويل إلى PCU. لحساب الحجم الحرج يُفضَّل عادةً جدول 2.4 أو 2.2 (PCU).');
+    else notes.push('الوحدات كما لُصقت — PCU أو مركبات فعلية، حسب الجدول الذي نُسخت منه.');
+    if (d.turnLabels === 'arrows') {
+      notes.push('أعمدة الحركة في الملف مرمّزة بالأسهم. في ورقة RTL تُحفظ الأسهم معكوسة عمّا تبدو عليه، ولذلك يُحدَّد الاتجاه بفحص اتساق مع الأذرع الموجودة (‎' +
+                 (d.mapping === 'mirrored' ? '\u003c = يمين' : '\u003c = يسار') + '‎). يُستحسن المقارنة مع المخطط في الملف.');
+    }
+    if (imp.book.reportedPeaks && imp.book.reportedPeaks.length) {
+      notes.push('ساعات الذروة حسب منفّذ العدّ (قائمة على ربع ساعة): ' +
+        imp.book.reportedPeaks.map(function (p) {
+          return p.label + ' ' + p.range + (p.vol ? ' · ' + Math.round(p.vol) + ' PCU' : '');
+        }).join(' · ') + '. الجدول هنا بساعات مدوّرة، ولذلك قد يظهر فرق صغير مقابل ساعة الذروة المتحركة.');
+    }
+    var badDest = 0;
+    ARMS.forEach(function (a) {
+      if (!d.present[a]) return;
+      ['L', 'S', 'R'].forEach(function (mv) { if (hh.arms[a][mv] > 0 && !d.present[DEST[a][mv]]) badDest++; });
+    });
+    if (badDest) notes.push('تنبيه: هناك حركات هدفها ذراع غير فعّال — تحقق من بنية الجدول في الملف.');
+    h += '<p class="note">' + notes.map(esc).join('<br>') + '</p></div>';
+    h += '</div>';
+
+    panel.innerHTML = h;
+    panel.hidden = false;
+
+    var selT = document.getElementById('impTable');
+    if (selT) selT.addEventListener('change', function () {
+      var prev = curHours()[imp.hourIx];
+      imp.tableIx = parseInt(this.value, 10) || 0;
+      var hrs = curHours(), ix = 0;
+      if (prev) hrs.forEach(function (x, i) { if (x.label === prev.label) ix = i; });
+      imp.hourIx = ix;
+      applyImportedHour(); renderImport();
+    });
+    document.getElementById('impHour').addEventListener('change', function () {
+      imp.hourIx = parseInt(this.value, 10) || 0;
+      applyImportedHour(); renderImport();
+    });
+    panel.querySelectorAll('button[data-peak]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = this.getAttribute('data-peak');
+        imp.hourIx = k === 'am' ? peakIndex(curHours(), 0, 720)
+                   : k === 'pm' ? peakIndex(curHours(), 720, null)
+                   : peakIndex(curHours(), null, null);
+        applyImportedHour(); renderImport();
+      });
+    });
+    function pickBar(e) {
+      var n = e.target;
+      for (var i = 0; i < 4 && n; i++) {
+        if (n.getAttribute && n.getAttribute('data-hour') !== null) {
+          imp.hourIx = parseInt(n.getAttribute('data-hour'), 10) || 0;
+          applyImportedHour(); renderImport();
+          return;
+        }
+        n = n.parentNode;
+      }
+    }
+    var chart = panel.querySelector('svg.hist');
+    if (chart) {
+      chart.addEventListener('click', pickBar);
+      chart.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickBar(e); }
+      });
+    }
+  }
+
+  function adoptBook(book, okMsg) {
+    imp.book = book;
+    imp.tableIx = 0;
+    imp.hourIx = peakIndex(curHours(), null, null);
+    applyImportedHour();
+    renderImport();
+    impStatus(okMsg + ' · ' + curHours().length + ' ساعة عدّ · تم إدخال ساعة الذروة ' + curHours()[imp.hourIx].label, 'ok');
+  }
+  function importFailed(err) {
+    imp.book = null;
+    renderImport();
+    impStatus((err && err.message ? err.message : String(err)) +
+              ' — يمكن لصق الخلايا يدوياً (زر "لم يُقرأ الملف؟" أدناه).', 'err');
+  }
+
+  function handleImportFile(file) {
+    if (!file) return;
+    if (typeof XLSX === 'undefined') {
+      impStatus('مكتبة قراءة ملفات Excel لم تُحمَّل. تحقق من الاتصال بالإنترنت وأعد تحميل الصفحة، أو الصق الخلايا يدوياً.', 'err');
+      return;
+    }
+    impStatus('جارٍ قراءة ' + file.name + '…');
+    var fr = new FileReader();
+    fr.onload = function () {
+      try {
+        var wb = XLSX.read(new Uint8Array(fr.result), { type: 'array', cellDates: true });
+        var book = parseCountWorkbook(wb, XLSX);
+        adoptBook(book, 'حُمِّل: ' + file.name + ' · ' + tableLabel(book.tables[0]));
+      } catch (err) { importFailed(err); }
+    };
+    fr.onerror = function () { impStatus('فشلت قراءة الملف.', 'err'); };
+    fr.readAsArrayBuffer(file);
+  }
+
+  function handlePaste() {
+    var raw = document.getElementById('pasteBox').value;
+    if (!raw.trim()) { impStatus('المربع فارغ — الصق أولاً الخلايا من Excel.', 'err'); return; }
+    try {
+      var book = parsePastedCells(raw);
+      adoptBook(book, 'قُرئت البيانات الملصقة');
+    } catch (err) { importFailed(err); }
+  }
+
+  function initImport() {
+    var input = document.getElementById('xlsFile'), zone = document.getElementById('dropZone');
+    document.getElementById('btnPick').addEventListener('click', function () { input.click(); });
+    input.addEventListener('change', function () {
+      if (this.files && this.files[0]) handleImportFile(this.files[0]);
+      this.value = '';
+    });
+    ['dragenter', 'dragover'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('over'); });
+    });
+    ['dragleave', 'dragend'].forEach(function (ev) {
+      zone.addEventListener(ev, function () { zone.classList.remove('over'); });
+    });
+    zone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      zone.classList.remove('over');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) handleImportFile(e.dataTransfer.files[0]);
+    });
+    document.getElementById('btnPaste').addEventListener('click', handlePaste);
+    document.getElementById('btnPasteClear').addEventListener('click', function () {
+      document.getElementById('pasteBox').value = '';
+    });
+  }
+
+
+  /* ============================================================
+     6c. توقيت الإشارة، التأخير، LOS والتنبؤ بالنمو
+     ============================================================ */
+  var LOS_BOUNDS = [[10, 'A'], [20, 'B'], [35, 'C'], [55, 'D'], [80, 'E']];
+  function losOf(delay) {
+    for (var i = 0; i < LOS_BOUNDS.length; i++) if (delay <= LOS_BOUNDS[i][0]) return LOS_BOUNDS[i][1];
+    return 'F';
+  }
+  function losChip(l) { return '<span class="los los-' + l + '">' + l + '</span>'; }
+
+  function fcNum(id, dflt) {
+    var el = document.getElementById(id);
+    if (!el) return dflt;
+    var v = parseFloat(el.value);
+    return isFinite(v) ? v : dflt;
+  }
+  function fcList(id) {
+    var el = document.getElementById(id);
+    if (!el) return [];
+    return el.value.split(/[,;\s]+/).map(parseFloat).filter(function (v) { return isFinite(v); });
+  }
+  function fcOpts() {
+    var cyc = document.getElementById('fcCycle');
+    var cycVal = cyc && cyc.value !== '' ? parseFloat(cyc.value) : null;
+    var pcu = document.getElementById('fcPCU');
+    return {
+      method: (document.getElementById('fcMethod') || { value: 'best' }).value,
+      sat: Math.max(1000, fcNum('fcSat', 1900)),
+      lost: Math.max(0, fcNum('fcLost', 4)),
+      gmin: Math.max(0, fcNum('fcGmin', 7)),
+      cycle: (cycVal && isFinite(cycVal) && cycVal > 0) ? cycVal : null,
+      hv: Math.min(50, Math.max(0, fcNum('fcHV', 0))),
+      alreadyPcu: !!(pcu && pcu.checked),
+      base: Math.round(fcNum('fcBase', 2026)),
+      rates: fcList('fcRates'),
+      years: fcList('fcYears').map(Math.round)
+    };
+  }
+
+  function phasesForMethod(res, method) {
+    if (method === '1') {
+      return { name: 'الطريقة 1', phases: res.table1.phases.map(function (p) {
+        return { label: 'ذراع ' + p.he, value: p.value, moves: p.moves }; }) };
+    }
+    if (method === '2') {
+      var out = [];
+      res.table2.axes.forEach(function (ax) {
+        ax.phases.forEach(function (p) { out.push({ label: p.label, value: p.value, moves: p.moves }); });
+      });
+      return { name: 'الطريقة 2', phases: out };
+    }
+    if (method === '3' && !res.table3.hidden) {
+      return { name: 'الطريقة 3', phases: res.table3.phases.map(function (p) {
+        return { label: p.label, value: p.value, moves: p.moves }; }) };
+    }
+    var cands = [{ k: '1', t: res.table1.total }, { k: '2', t: res.table2.totalBest }];
+    if (!res.table3.hidden) cands.push({ k: '3', t: res.table3.total });
+    var bestK = cands.reduce(function (a, b) { return b.t < a.t ? b : a; }).k;
+    return phasesForMethod(res, bestK);
+  }
+
+  function volOfMoves(cfg, moves) {
+    var seen = {}, v = 0;
+    (moves || []).forEach(function (m) {
+      if (seen[m]) return;
+      seen[m] = 1;
+      var arm = cfg[m.charAt(0)];
+      if (arm) v += arm[m.charAt(1)] || 0;
+    });
+    return v;
+  }
+
+  function hcmDelay(q, sat, C, g) {
+    var gc = C > 0 ? g / C : 0;
+    var cap = sat * gc;
+    if (cap <= 0) return 999;
+    var X = q / cap;
+    var d1 = 0.5 * C * Math.pow(1 - gc, 2) / Math.max(0.05, 1 - Math.min(1, X) * gc);
+    var T = 0.25, k = 0.5, I = 1;
+    var d2 = 900 * T * ((X - 1) + Math.sqrt(Math.pow(X - 1, 2) + (8 * k * I * X) / (cap * T)));
+    return { X: X, cap: cap, d: Math.min(999, d1 + d2), d1: d1, d2: d2 };
+  }
+
+  function signalAnalysis(cfgRaw, o) {
+    var res = compute(cfgRaw);
+    var cfg = cloneCfg(cfgRaw);
+    var pack = phasesForMethod(res, o.method);
+    var phases = pack.phases.filter(function (p) { return p.value > 0 || (p.moves && p.moves.length); });
+    var n = phases.length;
+    var fHV = o.alreadyPcu ? 1 : (100 / (100 + o.hv * (2 - 1)));
+    var sat = o.sat * fHV;
+    var Vc = phases.reduce(function (s, p) { return s + p.value; }, 0);
+    var Y = Vc / sat;
+    var L = n * o.lost;
+
+    var C;
+    if (o.cycle) C = o.cycle;
+    else if (Y < 0.95) C = Math.min(150, Math.max(40, Math.round(((1.5 * L + 5) / (1 - Y)) / 5) * 5));
+    else C = 150;
+
+    var eff = Math.max(1, C - L);
+    var greens = phases.map(function (p) {
+      var raw = (Y > 0) ? eff * (p.value / sat) / Y : eff / Math.max(1, n);
+      return Math.max(o.gmin, raw);
+    });
+    var sumG = greens.reduce(function (a, b) { return a + b; }, 0);
+    var stretched = false;
+    if (sumG > eff + 0.01) { C = Math.min(200, L + sumG); stretched = true; }
+
+    var totalVol = 0, wDelay = 0;
+    var rows = phases.map(function (p, ix) {
+      var y = p.value / sat;
+      var g = greens[ix];
+      var dd = hcmDelay(p.value, sat, C, g);
+      var vol = volOfMoves(cfg, p.moves);
+      totalVol += vol;
+      wDelay += dd.d * vol;
+      return {
+        label: p.label, q: p.value, y: y, g: g, gc: g / C, X: dd.X, cap: dd.cap,
+        delay: dd.d, los: losOf(dd.d), vol: vol, moves: p.moves
+      };
+    });
+
+    var delay = totalVol > 0 ? wDelay / totalVol : (rows.length ? rows[0].delay : 0);
+    var Xc = (C > L) ? Y * C / (C - L) : 99;
+
+    return {
+      res: res, method: pack.name, phases: rows, n: n, sat: sat, fHV: fHV,
+      Vc: Vc, Y: Y, L: L, C: C, Xc: Xc, delay: delay, los: losOf(delay),
+      stretched: stretched, gmin: o.gmin, totalVol: totalVol
+    };
+  }
+
+  function grownCfg(cfg, factor) {
+    var out = cloneCfg(cfg);
+    ARMS.forEach(function (a) {
+      ['L', 'S', 'R'].forEach(function (m) { out[a][m] = Math.round((out[a][m] || 0) * factor); });
+    });
+    return out;
+  }
+
+  function renderForecast() {
+    var box = document.getElementById('fcOut');
+    if (!box) return;
+    var o = fcOpts();
+    var base = signalAnalysis(state, o);
+    var h = '';
+
+    if (!base.n) {
+      box.innerHTML = '<div class="warnbox">لا أطوار للحساب — فعِّل ثلاثة أذرع على الأقل وأدخل الأحجام.</div>';
+      return;
+    }
+
+    h += '<div class="fc-cards">';
+    h += '<div class="c"><div class="k">الحجم الحرج V<sub>c</sub></div><div class="v">' + Math.round(base.Vc) +
+         ' <small>م/س</small></div></div>';
+    h += '<div class="c"><div class="k">الدورة' + (o.cycle ? ' (محدَّدة)' : ' (Webster)') + '</div><div class="v">' +
+         Math.round(base.C) + ' <small>ث · ' + base.n + ' أطوار</small></div></div>';
+    h += '<div class="c"><div class="k">نسبة الطلب/السعة X<sub>c</sub></div><div class="v">' +
+         base.Xc.toFixed(2) + '</div></div>';
+    h += '<div class="c"><div class="k">متوسط تأخير التحكم</div><div class="v">' + base.delay.toFixed(1) +
+         ' <small>ث/مركبة</small></div></div>';
+    h += '<div class="c"><div class="k">مستوى الخدمة — ' + o.base + '</div><div class="v">' + losChip(base.los) +
+         '</div></div>';
+    h += '</div>';
+
+    /* --- توقيت سنة الأساس --- */
+    h += '<div class="tblwrap"><table><caption>توقيت سنة الأساس وفق ' + esc(base.method) +
+         ' — الأخضر الفعّال موزّع بنسبة التدفقات الحرجة (Webster)، التأخير وفق HCM.</caption>' +
+         '<thead><tr><th>الطور</th><th class="val">q الحرج</th><th class="val">y = q/s</th>' +
+         '<th class="val">أخضر (ث)</th><th class="val">g/C</th><th class="val">سعة/مسرب</th>' +
+         '<th class="val">v/c</th><th class="val">تأخير</th><th class="val">مستوى الخدمة</th></tr></thead><tbody>';
+    base.phases.forEach(function (p) {
+      h += '<tr><td>' + esc(p.label) + '<span class="sub">' + esc(movesLabel(p.moves)) + '</span></td>' +
+        '<td class="val">' + Math.round(p.q) + '</td>' +
+        '<td class="val">' + p.y.toFixed(3) + '</td>' +
+        '<td class="val">' + p.g.toFixed(1) + '</td>' +
+        '<td class="val">' + p.gc.toFixed(2) + '</td>' +
+        '<td class="val">' + Math.round(p.cap) + '</td>' +
+        '<td class="val">' + p.X.toFixed(2) + '</td>' +
+        '<td class="val">' + p.delay.toFixed(1) + '</td>' +
+        '<td class="val">' + losChip(p.los) + '</td></tr>';
+    });
+    h += '<tr class="total"><td>التقاطع بالكامل</td><td class="val">' + Math.round(base.Vc) + '</td>' +
+      '<td class="val">' + base.Y.toFixed(3) + '</td><td class="val">' + Math.round(base.C - base.L) + '</td>' +
+      '<td class="val">—</td><td class="val">—</td><td class="val">' + base.Xc.toFixed(2) + '</td>' +
+      '<td class="val">' + base.delay.toFixed(1) + '</td><td class="val">' + losChip(base.los) + '</td></tr>';
+    h += '</tbody></table></div>';
+
+    /* --- شبكة التنبؤ --- */
+    var rates = o.rates.length ? o.rates : [3];
+    var years = o.years.filter(function (y) { return y >= o.base; }).sort(function (a, b) { return a - b; });
+    if (years.length) {
+      h += '<div class="tblwrap"><table class="fc"><caption>مستوى الخدمة حسب معدل النمو وسنة التنبؤ — الأحجام تنمو بفائدة مركبة ' +
+        'والحساب كاملاً (الحجم الحرج، الدورة، الأزمنة، التأخير) يُعاد تنفيذه لكل سيناريو.</caption>';
+      h += '<thead><tr><th>النمو</th><th class="yr">' + o.base + ' (الأساس)</th>' +
+        years.map(function (y) { return '<th class="yr">' + y + '</th>'; }).join('') + '</tr></thead><tbody>';
+
+      var saturation = [];
+      rates.forEach(function (r) {
+        h += '<tr><td><strong>' + r + '%</strong> سنوياً</td>';
+        h += '<td class="cell">' + losChip(base.los) + '<span class="sub2">' + base.delay.toFixed(0) + ' ث · V<sub>c</sub> ' +
+             Math.round(base.Vc) + '</span></td>';
+        years.forEach(function (y) {
+          var f = Math.pow(1 + r / 100, y - o.base);
+          var a = signalAnalysis(grownCfg(state, f), o);
+          h += '<td class="cell">' + losChip(a.los) + '<span class="sub2">' + a.delay.toFixed(0) +
+               ' ث · V<sub>c</sub> ' + Math.round(a.Vc) + '<br>X<sub>c</sub> ' + a.Xc.toFixed(2) + '</span></td>';
+        });
+        h += '</tr>';
+
+        var yr = null, cap = null;
+        for (var k = 1; k <= 40 && (!yr || !cap); k++) {
+          var aa = signalAnalysis(grownCfg(state, Math.pow(1 + r / 100, k)), o);
+          if (!yr && 'EF'.indexOf(aa.los) > -1) yr = o.base + k;
+          if (!cap && aa.Xc >= 1) cap = o.base + k;
+        }
+        saturation.push({ r: r, losYear: yr, capYear: cap });
+      });
+      h += '</tbody></table></div>';
+
+      h += '<p class="note"><strong>سنة التشبّع.</strong> ' + saturation.map(function (s) {
+        return 'بنمو ' + s.r + '%: ' + (s.losYear ? 'هبوط إلى مستوى خدمة E في سنة ' + s.losYear : 'لا يهبط عن مستوى خدمة D خلال 40 سنة') +
+          ' · ' + (s.capYear ? 'X<sub>c</sub> يبلغ 1.00 سنة ' + s.capYear : 'X<sub>c</sub> يبقى دون 1.00');
+      }).join('<br>') + '</p>';
+    }
+
+    var notes = [];
+    notes.push('طريقة الأطوار المستخدمة: ' + base.method + ' · ' + base.n + ' أطوار · زمن ضائع إجمالي ' +
+               Math.round(base.L) + ' ث للدورة.');
+    notes.push('تدفق التشبّع الفعلي ' + Math.round(base.sat) + ' مركبة/ساعة/مسرب' +
+               (o.alreadyPcu ? ' (الأحجام بـ PCU — لم يُطبَّق معامل المركبات الثقيلة).' :
+                ' (معامل المركبات الثقيلة f_HV = ' + base.fHV.toFixed(3) + ' وفق ' + o.hv + '% و‎E_T = 2.0).'));
+    if (base.stretched) notes.push('مدّت الدورة إلى ' + Math.round(base.C) + ' ث لإتاحة أخضر أدنى ' + base.gmin + ' ث لكل طور.');
+    notes.push('التوزيع بين الأطوار نسبي للتدفقات الحرجة، ولذلك كل الأطوار تصل إلى نفس v/c — وهو توقيت أمثل، لا التخطيط القائم بالضرورة.');
+    notes.push('التأخير هو تأخير تحكّم وفق HCM (مكوّن منتظم + مكوّن إضافي، T=15 دقيقة، k=0.5، PF=1). لا يُشمل التنسيق بين تقاطعات، المشاة، النقل العام، حجب الفتحات أو الانعطاف اليسار المشروط.');
+    notes.push('التنبؤ يفترض نمواً موحّداً في كل الحركات وفي كل الأذرع، دون تغيير في الهندسة، عدد المسارب أو طريقة الأطوار.');
+    h += '<p class="note">' + notes.map(esc).join('<br>') + '</p>';
+
+    box.innerHTML = h;
+  }
+
+  function initForecast() {
+    ['fcMethod', 'fcSat', 'fcLost', 'fcCycle', 'fcGmin', 'fcHV', 'fcPCU', 'fcBase', 'fcRates', 'fcYears']
+      .forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener(el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'input', function () {
+          renderForecast();
+        });
+      });
+  }
+
+  /* ============================================================
+     7. الإقلاع
+     ============================================================ */
+  load();
+  document.getElementById('threshold').value = threshold;
+  initEvents();
+  initImport();
+  initForecast();
+  initApiDoc();
+  refreshAll();
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var MQ = window.matchMedia('(max-width:900px)');
+  var HEB = { N: 'شمال', S: 'جنوب', E: 'شرق', W: 'غرب' };
+  var ORDER = ['N', 'S', 'E', 'W'];
+  var wrap = document.querySelector('.wrap');
+  var cross = document.getElementById('cross');
+  if (!wrap || !cross) return;
+
+  var secs = wrap.querySelectorAll(':scope > section');
+  var targets = [
+    { el: secs[1], t: 'معطيات التقاطع' },
+    { el: document.getElementById('results'), t: 'النتائج' },
+    { el: secs[2], t: 'مستوى الخدمة' },
+    { el: secs[0], t: 'استيراد العدّ' },
+    { el: secs[4] || secs[3], t: 'مساعدة' }
+  ].filter(function (x) { return x.el; });
+
+  var nav = document.createElement('nav');
+  nav.id = 'mTop';
+  nav.setAttribute('aria-label', 'تنقّل سريع في الصفحة');
+  targets.forEach(function (x, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = x.t;
+    b.addEventListener('click', function () {
+      x.el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    x.btn = b;
+    nav.appendChild(b);
+  });
+  wrap.insertBefore(nav, wrap.firstChild);
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        targets.forEach(function (x) { x.btn.classList.toggle('on', x.el === e.target); });
+      });
+    }, { rootMargin: '-64px 0px -70% 0px' });
+    targets.forEach(function (x) { io.observe(x.el); });
+  }
+
+  var armTabs = document.createElement('div');
+  armTabs.id = 'mArms';
+  armTabs.setAttribute('role', 'tablist');
+  armTabs.setAttribute('aria-label', 'اختيار الذراع للتحرير');
+  var btns = {};
+  ORDER.forEach(function (k) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.innerHTML = HEB[k] + '<small>—</small>';
+    b.addEventListener('click', function () { showArm(k); });
+    btns[k] = b;
+    armTabs.appendChild(b);
+  });
+  cross.insertBefore(armTabs, cross.firstChild);
+
+  var current = 'N';
+  function armBox(k) { return cross.querySelector('.arm[data-arm="' + k + '"]'); }
+  function showArm(k) {
+    current = k;
+    ORDER.forEach(function (a) {
+      var box = armBox(a);
+      if (box) box.classList.toggle('m-on', a === k);
+      btns[a].classList.toggle('on', a === k);
+      btns[a].setAttribute('aria-selected', a === k ? 'true' : 'false');
+    });
+    syncTabs();
+  }
+  function val(id) { var el = document.getElementById(id); return el ? (parseFloat(el.value) || 0) : 0; }
+  function syncTabs() {
+    ORDER.forEach(function (a) {
+      var box = armBox(a), on = box && !box.classList.contains('off');
+      var tot = val('f-' + a + '-L') + val('f-' + a + '-S') + val('f-' + a + '-R');
+      btns[a].classList.toggle('armoff', !on);
+      var s = btns[a].querySelector('small');
+      if (s) s.textContent = on ? (tot ? tot.toLocaleString('ar-EG') : '0') : 'مطفأة';
+    });
+  }
+
+  var bar = document.createElement('div');
+  bar.id = 'mRes';
+  bar.innerHTML =
+    '<div><span class="k">الحجم الحرج (الطريقة الأفضل)</span>' +
+    '<span class="v" id="mResV">—</span></div>' +
+    '<span class="badge" id="mResB">—</span>' +
+    '<button type="button" class="go">إلى النتائج ↓</button>';
+  document.body.appendChild(bar);
+  bar.querySelector('.go').addEventListener('click', function () {
+    var r = document.getElementById('results');
+    if (r) r.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  function paint() {
+    if (typeof window.computeCriticalVolume !== 'function') return;
+    var best;
+    try { best = window.computeCriticalVolume().best; } catch (e) { return; }
+    var thrEl = document.getElementById('threshold');
+    var thr = thrEl ? (parseFloat(thrEl.value) || 0) : 0;
+    var v = document.getElementById('mResV'), b = document.getElementById('mResB');
+    if (!isFinite(best)) { v.textContent = '—'; b.textContent = '—'; return; }
+    v.innerHTML = Math.round(best) + ' <span>م/س/مسرب</span>';
+    if (!thr) { b.textContent = ''; return; }
+    var pct = (best / thr) * 100;
+    var ok = pct <= 85, mid = pct > 85 && pct <= 100;
+    b.textContent = (ok ? 'دون العتبة' : mid ? 'حدّي' : 'يتجاوز') + ' · ' + Math.round(pct) + '%';
+    b.style.background = ok ? 'var(--ok-bg)' : mid ? 'var(--mid-bg)' : 'var(--warn-bg)';
+    b.style.color = ok ? 'var(--ok)' : mid ? 'var(--mid)' : 'var(--warn)';
+  }
+
+  var t;
+  function refresh() { clearTimeout(t); t = setTimeout(function () { paint(); syncTabs(); }, 120); }
+  document.addEventListener('input', refresh, true);
+  document.addEventListener('change', refresh, true);
+
+  function hints() {
+    if (!MQ.matches) return;
+    document.querySelectorAll('.tblwrap,.chartwrap,.table-mock-wrap').forEach(function (w) {
+      if (w.dataset.hinted) return;
+      if (w.scrollWidth - w.clientWidth < 24) return;
+      w.dataset.hinted = '1';
+      var p = document.createElement('p');
+      p.className = 'm-swipe';
+      p.textContent = '↔ اسحب جانبياً لعرض جميع الأعمدة';
+      w.parentNode.insertBefore(p, w);
+    });
+  }
+
+  function apply() {
+    if (MQ.matches) {
+      showArm(current);
+      paint();
+      setTimeout(hints, 400);
+    } else {
+      ORDER.forEach(function (a) { var b = armBox(a); if (b) b.classList.remove('m-on'); });
+    }
+  }
+  (MQ.addEventListener ? MQ.addEventListener('change', apply) : MQ.addListener(apply));
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
+  else apply();
+  setTimeout(apply, 300);
+  window.addEventListener('load', function () { setTimeout(hints, 600); });
+})();
+</script>
+</body>
+</html>

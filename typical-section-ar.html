@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="مقطع نموذجي حضري وبين-مدني – بناء مقطع عرضي وفق دليل تصميم الشوارع الحضرية (USDM أبوظبي) ودليل RTA للتصميم الهندسي (دبي) وأبوظبي TR-514 ودليل GCC للطرق السريعة. فحوصات حيّة مقابل الإرشادات، دليل الإرشادات الكامل، وورقة A0 بمقياس رسم حقيقي.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>MAHALCO — المقطع النموذجي + دليل الإرشادات</title>
+<style>
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF; --fill:#EFEFF4; --fill-2:#E4E4EA; --label:#1C1C1E; --label-2:#6C6C70; --label-3:#9A9AA0;
+  --sep:rgba(60,60,67,.16); --tint:#1F5FA8; --tint-soft:rgba(31,95,168,.12); --hi:#E9A21F; --hi-soft:rgba(233,162,31,.18);
+  --red:#D93A2B; --red-soft:rgba(217,58,43,.10); --amber:#B97A08; --amber-soft:rgba(233,162,31,.14); --green:#2E9D55; --green-soft:rgba(46,157,85,.12);
+  --paper:#fbfaf6; --bar:rgba(242,242,247,.82); --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06);
+  --r-l:14px; --r-m:10px; --r-s:8px; --insp:420px; --ease:cubic-bezier(.2,.8,.2,1);
+}
+:root[data-theme="dark"]{ --bg:#000; --card:#1C1C1E; --fill:#2C2C2E; --fill-2:#3A3A3C; --label:#F2F2F7; --label-2:#AEAEB2; --label-3:#7C7C80;
+    --sep:rgba(84,84,88,.55); --tint:#5AA0F2; --tint-soft:rgba(90,160,242,.16); --bar:rgba(18,18,20,.8);
+    --red:#FF6B5E; --red-soft:rgba(255,107,94,.14); --amber:#F2B53A; --green:#4CD27B; --shadow:none }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--label);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Cairo",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--tint);outline-offset:2px;border-radius:6px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- navigation bar ---------- */
+.nav{position:sticky;top:0;z-index:40;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--sep);padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+.nav-in{display:flex;align-items:center;gap:10px;min-height:56px}
+.nav h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.nav h1 small{display:block;font-size:12.5px;font-weight:500;color:var(--label-2);letter-spacing:0}
+.nav .sp{flex:1}
+.nbtn{min-width:44px;height:40px;padding:0 12px;border:0;border-radius:20px;background:var(--fill);color:var(--tint);font-size:15px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.nbtn:disabled{color:var(--label-3);cursor:default}
+.nbtn.primary{background:var(--tint);color:#fff}
+.nbtn svg{width:19px;height:19px}
+.pill{white-space:nowrap;flex:none;height:32px;padding:0 12px;border:0;border-radius:16px;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:background .3s,color .3s}
+.pill.ok{background:var(--green-soft);color:var(--green)}
+.pill.bad{background:var(--red-soft);color:var(--red)}
+.pill.warn{background:var(--amber-soft);color:var(--amber)}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
+
+/* ---------- layout ---------- */
+.shell{display:grid;grid-template-columns:minmax(0,1fr) var(--insp);gap:18px;padding:16px max(16px,env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  max-width:1500px;margin:0 auto;align-items:start}
+.stage{grid-column:1;grid-row:1;position:sticky;top:74px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.insp{grid-column:2;grid-row:1;min-width:0}
+@media (max-width:1023px){
+  .shell{grid-template-columns:1fr;gap:12px}
+  .stage{grid-column:1;grid-row:1;top:62px;z-index:20}
+  .insp{grid-column:1;grid-row:2}
+}
+
+/* ---------- canvas card ---------- */
+.canvas{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);overflow:hidden}
+.canvas-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:.5px solid var(--sep)}
+.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;position:relative;isolation:isolate}
+.seg button{position:relative;z-index:1;border:0;background:none;min-height:32px;padding:0 13px;border-radius:7px;font-size:14px;font-weight:500;color:var(--label);white-space:nowrap}
+.seg .knob{position:absolute;z-index:0;top:2px;bottom:2px;border-radius:7px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);transition:left .32s var(--ease),width .32s var(--ease)}
+:root[data-theme="dark"] .seg .knob{background:#636366}
+.seg button[aria-pressed="true"]{font-weight:600}
+.seg.full{display:flex}
+.seg.full button{flex:1;padding:0 6px}
+.zoom{margin-inline-start:auto;display:flex;gap:4px}
+.zoom button{width:36px;height:32px;border:0;border-radius:8px;background:var(--fill);color:var(--tint);font-size:17px;font-weight:600}
+.zoom output{min-width:48px;text-align:center;font-size:13px;color:var(--label-2);align-self:center;font-variant-numeric:tabular-nums}
+.sheetwrap{background:var(--paper);overflow:auto;touch-action:pan-x pan-y;max-height:58vh;-webkit-overflow-scrolling:touch}
+@media (max-width:1023px){ .sheetwrap{max-height:34vh} }
+#drawing{padding:8px;min-width:100%;transition:width .25s var(--ease)}
+#drawing svg{direction:ltr;display:block;width:100%;height:auto;background:var(--paper)}
+#drawing .selrect{fill:var(--hi-soft);stroke:var(--hi);stroke-width:.6;transition:x .25s var(--ease),width .25s var(--ease)}
+
+/* ---------- ribbon (the live strip) ---------- */
+.ribbon-wrap{padding:10px 12px 12px;border-top:.5px solid var(--sep)}
+.ribbon-head{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;font-size:13px;color:var(--label-2)}
+.ribbon-head b{color:var(--label);font-size:15px;font-variant-numeric:tabular-nums}
+.ribbon-head .gap{margin-inline-start:auto;font-weight:600}
+.ribbon-head .gap.bad{color:var(--red)} .ribbon-head .gap.ok{color:var(--green)}
+.ribbon{direction:ltr;display:flex;height:46px;border-radius:9px;overflow:hidden;background:var(--fill);position:relative;user-select:none;-webkit-user-select:none;touch-action:none}
+.rb{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:rgba(0,0,0,.72);
+  transition:flex-grow .28s var(--ease),box-shadow .2s;overflow:hidden;white-space:nowrap;cursor:pointer;border-right:1px solid rgba(255,255,255,.7)}
+.rb:last-child{border-right:0}
+.rb span{pointer-events:none;padding:0 2px;text-overflow:clip;overflow:hidden}
+.rb.sel{box-shadow:inset 0 0 0 3px var(--hi)}
+.rb.bad::after,.rb.warn::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.rb.warn::after{background:var(--hi)}
+.ribbon.dragging .rb{transition:none}
+.grip{position:absolute;top:0;bottom:0;width:26px;margin-left:-13px;z-index:2;cursor:ew-resize;display:flex;align-items:center;justify-content:center}
+.grip::before{content:"";width:4px;height:22px;border-radius:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.22),0 1px 4px rgba(0,0,0,.25);transition:transform .15s,height .15s}
+.grip.on::before{height:34px;transform:scaleX(1.4);background:var(--hi)}
+.ribbon-hint{font-size:12px;color:var(--label-3);margin-top:6px}
+.tip{position:fixed;z-index:80;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;font-size:13px;font-weight:600;padding:6px 10px;border-radius:9px;transform:translate(-50%,-120%);direction:ltr;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ---------- readouts ---------- */
+.readouts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:1023px){ .readouts{grid-template-columns:1fr} }
+.box{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:14px 16px}
+.box h3{margin:0 0 10px;font-size:15px;font-weight:700}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--fill);border-radius:var(--r-m);padding:9px 11px}
+.stat span{display:block;font-size:12px;color:var(--label-2);line-height:1.25}
+.stat b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat b small{font-size:12px;font-weight:500;color:var(--label-2)}
+.stat.pulse{animation:pulse .5s var(--ease)}
+@keyframes pulse{40%{background:var(--tint-soft)}}
+.chk{position:relative;padding:9px 12px 9px 12px;padding-inline-start:34px;border-radius:var(--r-m);background:var(--green-soft);margin-bottom:6px;font-size:14px;line-height:1.4}
+.chk::before{content:"✓";position:absolute;inset-inline-start:10px;top:9px;width:17px;height:17px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.chk.warn{background:var(--amber-soft)} .chk.warn::before{content:"!";background:var(--hi)}
+.chk.bad{background:var(--red-soft)} .chk.bad::before{content:"!";background:var(--red)}
+.chk b{display:block;font-size:12.5px;color:var(--label-2)}
+.chk.new{animation:chkin .4s var(--ease)}
+@keyframes chkin{from{opacity:0;transform:translateY(-4px)}}
+.sheetlist{display:flex;flex-direction:column;gap:6px}
+.sheetlist div{display:flex;gap:8px;align-items:center;background:var(--fill);border-radius:var(--r-m);padding:6px 6px 6px 12px;padding-inline-start:12px;font-size:14px}
+.sheetlist div span{flex:1}
+.sheetlist button{border:0;min-height:36px;padding:0 12px;border-radius:9px;background:var(--card);color:var(--tint);font-weight:600;font-size:14px}
+.sheetlist button[data-a="rm"]{color:var(--red)}
+.hint{font-size:13px;color:var(--label-2);margin:6px 0 0;line-height:1.45}
+
+/* ---------- inspector ---------- */
+.tabs{position:sticky;top:74px;z-index:15;background:var(--bg);padding:0 0 10px}
+@media (max-width:1023px){ .tabs{position:static} }
+.pane{display:none}
+.pane.on{display:block;animation:panein .28s var(--ease)}
+@keyframes panein{from{opacity:0;transform:translateY(6px)}}
+.gh{margin:18px 16px 6px;font-size:13px;color:var(--label-2)}
+.gh:first-child{margin-top:4px}
+.gf{margin:6px 16px 0;font-size:12.5px;color:var(--label-2);line-height:1.45}
+.group{background:var(--card);border-radius:var(--r-l);overflow:hidden;box-shadow:var(--shadow)}
+.li{display:flex;align-items:center;gap:12px;min-height:50px;padding:6px 16px;position:relative}
+.li+.li::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.li>label,.li>.lb{flex:1;min-width:0;font-size:16px}
+.li input[type=text],.li input:not([type]){flex:1.2;min-width:0;border:0;background:none;text-align:left;direction:rtl;text-align:end;color:var(--label-2);font-size:16px;padding:8px 0}
+.li input:not([type]):focus{color:var(--label);outline:none}
+.li .sel-wrap{position:relative}
+select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;color:var(--label-2);font-size:16px;padding:8px 18px 8px 0;text-align:end;max-width:100%}
+.chev{pointer-events:none;position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--label-3);font-size:13px}
+
+/* stepper */
+.stp{display:inline-flex;align-items:center;background:var(--fill);border-radius:9px;height:34px;direction:ltr;flex:none}
+.stp button{width:38px;height:34px;border:0;background:none;color:var(--label);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;border-radius:9px}
+.stp button:active{background:var(--fill-2)}
+.stp input{width:62px;height:34px;border:0;border-left:.5px solid var(--sep);border-right:.5px solid var(--sep);background:none;text-align:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;padding:0;-moz-appearance:textfield}
+.stp input::-webkit-outer-spin-button,.stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stp input:disabled{color:var(--label-3)}
+.stp.off{opacity:.45;pointer-events:none}
+.unit{font-size:13px;color:var(--label-2);margin-inline-start:-6px}
+
+/* switch */
+.sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--fill-2);position:relative;flex:none;cursor:pointer;transition:background .25s;margin:0}
+.sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s var(--ease)}
+.sw:checked{background:var(--green)}
+.sw:checked::after{transform:translateX(-20px)}
+
+/* presets */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:10px}
+.pcard{border:0;text-align:start;background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:10px;display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s,box-shadow .2s}
+.pcard:active{transform:scale(.97)}
+.pcard[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--tint),var(--shadow)}
+.pcard .thumb{direction:ltr;display:flex;height:30px;border-radius:6px;overflow:hidden;background:var(--fill)}
+.pcard .thumb i{display:block;height:100%}
+.pcard b{font-size:14px;font-weight:600;line-height:1.3}
+.pcard small{font-size:12px;color:var(--label-2)}
+.pcard .ck{position:absolute;top:8px;inset-inline-start:8px;width:20px;height:20px;border-radius:50%;background:var(--tint);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center}
+.pcard[aria-pressed="true"] .ck{display:flex}
+#presetSrc{margin:10px 4px 0}
+#presetFilter{overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+#presetFilter::-webkit-scrollbar{display:none}
+#presetFilter button{flex:0 0 auto;padding:0 12px}
+.stat b{white-space:nowrap}
+
+/* cells */
+.cells{display:flex;flex-direction:column}
+.cell{position:relative;padding:10px 12px 10px 12px;padding-inline-start:16px;background:var(--card);transition:background .25s}
+.cell+.cell{border-top:.5px solid var(--sep)}
+.cell::after{content:"";position:absolute;top:8px;bottom:8px;inset-inline-start:0;width:4px;border-radius:0 3px 3px 0;background:transparent;transition:background .25s}
+[dir=rtl] .cell::after{border-radius:3px 0 0 3px}
+.cell.bad::after{background:var(--red)} .cell.warn::after{background:var(--hi)}
+.cell.sel{background:var(--hi-soft)}
+.cell.flash{animation:flash .9s var(--ease)}
+@keyframes flash{0%{background:var(--tint-soft)}100%{background:var(--card)}}
+.cell.drag{z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.22);border-radius:12px;transform:scale(1.02);background:var(--card)}
+.c-top{display:flex;align-items:center;gap:10px}
+.c-sw{width:26px;height:26px;border-radius:7px;flex:none;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.15)}
+.c-name{flex:1;min-width:0;position:relative}
+.c-name select{width:100%;font-weight:600;color:var(--label);padding:6px 18px 6px 0;text-align:start}
+.c-name .chev{left:0}
+.c-more,.c-handle{width:36px;height:36px;border:0;border-radius:18px;background:var(--fill);color:var(--label-2);font-size:18px;display:flex;align-items:center;justify-content:center;flex:none}
+.c-handle{background:none;cursor:grab;touch-action:none;font-size:20px;color:var(--label-3)}
+.c-bot{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;padding-inline-start:36px}
+.c-bot .seg button{min-height:30px;padding:0 11px;font-size:16px}
+.c-msg{margin:7px 0 0;padding-inline-start:36px;font-size:12.5px;line-height:1.4;color:var(--red);display:none}
+.cell.bad .c-msg,.cell.warn .c-msg{display:block}
+.cell.warn .c-msg{color:var(--amber)}
+.c-idx{font-size:12px;color:var(--label-3);font-variant-numeric:tabular-nums;min-width:18px;text-align:center}
+.empty{padding:26px 16px;text-align:center;color:var(--label-2);font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.tile{border:0;background:var(--card);border-radius:12px;box-shadow:var(--shadow);min-height:52px;padding:8px 10px;display:flex;align-items:center;gap:8px;text-align:start;font-size:13.5px;font-weight:500;line-height:1.2;transition:transform .12s}
+.tile:active{transform:scale(.95)}
+.tile i{width:16px;height:28px;border-radius:4px;flex:none}
+.rowbtns{display:flex;gap:8px;margin-top:10px}
+.rowbtns button{flex:1;min-height:44px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--shadow);color:var(--tint);font-weight:600;font-size:15px}
+.rowbtns button.danger{color:var(--red)}
+
+/* edges */
+.edgecard .li.sub{transition:opacity .2s}
+.edgecard .li.sub[hidden]{display:none}
+
+/* action sheet */
+.scrim{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:91;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));width:min(420px,calc(100% - 24px));transform:translate(-50%,120%);transition:transform .35s var(--ease)}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .grp{background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.sheet .ttl{padding:12px 16px;text-align:center;font-size:13px;color:var(--label-2);border-bottom:.5px solid var(--sep)}
+.sheet button,.sheet label.act{display:flex;width:100%;min-height:56px;align-items:center;justify-content:center;border:0;background:none;font-size:18px;color:var(--tint);cursor:pointer}
+.sheet .grp>*+*{border-top:.5px solid var(--sep)}
+.sheet button.danger{color:var(--red)}
+.sheet button.cancel{background:var(--card);border-radius:14px;font-weight:600}
+.sheet button:disabled{color:var(--label-3)}
+
+/* toast */
+.toast{position:fixed;z-index:95;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;border-radius:22px;padding:10px 8px 10px 18px;padding-inline-start:18px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;transition:transform .35s var(--ease),opacity .25s;max-width:calc(100% - 32px)}
+.toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.toast button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:14px;min-height:30px;padding:0 12px;font-weight:600;font-size:14px}
+.toast button[hidden]{display:none}
+
+@media (max-width:600px){
+  .stage{position:static}
+  .nav h1 small{display:none}
+  .nav h1{white-space:nowrap;font-size:17px}
+  .nav-in{gap:6px}
+  .nbtn{min-width:40px;padding:0 9px}
+  .nbtn .t{display:none}
+  .grid3{grid-template-columns:1fr 1fr}
+  .stp input{width:54px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{.nav,.insp,.canvas-bar,.ribbon-wrap,.guide-ov{display:none}}
+
+/* ---------- guide overlay ---------- */
+.guide-ov{position:fixed;inset:0;z-index:200;background:var(--bg);opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .28s var(--ease),transform .28s var(--ease)}
+.guide-ov.on{opacity:1;pointer-events:auto;transform:none}
+.guide-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;min-height:56px;padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));
+  background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--sep)}
+.guide-bar b{font-size:16px;font-weight:700}
+.guide-bar small{display:block;font-size:12px;font-weight:500;color:var(--label-2)}
+.guide-ov iframe{display:block;width:100%;height:calc(100% - 56px - env(safe-area-inset-top));border:0;background:var(--bg)}
+@media (max-width:600px){.guide-bar b{font-size:15px}.guide-bar small{display:none}}
+</style>
+
+<script data-light="#F2F2F7" data-dark="#000000" data-slot=".nav-in">
+(function(){
+  var d=document.documentElement, K='mh-theme', G='mh-glass';
+  var me=document.currentScript||{dataset:{}};
+  var LC=me.dataset.light||'#F2F2F7', DC=me.dataset.dark||'#000000', SLOT=me.dataset.slot||'';
+  function rd(k,v){try{return localStorage.getItem(k)||v}catch(e){return v}}
+  function wr(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+  var ui=null;
+  function apply(){
+    var pref=rd(K,'auto'); if(!/^(light|dark|auto)$/.test(pref)) pref='auto';
+    var t=pref==='auto'?(mq.matches?'dark':'light'):pref, gl=rd(G,'off')==='on'?'on':'off';
+    d.setAttribute('data-theme',t); d.setAttribute('data-theme-pref',pref); d.setAttribute('data-glass',gl);
+    d.style.colorScheme=t;
+    var ms=document.querySelectorAll('meta[name="theme-color"]');
+    if(!ms.length && document.head){var m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m);ms=[m];}
+    for(var i=0;i<ms.length;i++){ms[i].removeAttribute('media');ms[i].setAttribute('content',t==='dark'?DC:LC);}
+    if(ui) ui.sync(pref,gl);
+    try{document.dispatchEvent(new CustomEvent('mh:theme',{detail:{theme:t,pref:pref,glass:gl}}));}catch(e){}
+  }
+  function soft(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},420);
+  }
+  window.MHTheme={
+    set:function(p){wr(K,p);soft();apply();},
+    glass:function(on){wr(G,on?'on':'off');soft();apply();},
+    get:function(){return {theme:d.getAttribute('data-theme'),pref:rd(K,'auto'),glass:rd(G,'off')};}
+  };
+  apply();
+  if(mq.addEventListener) mq.addEventListener('change',function(){if(rd(K,'auto')==='auto'){soft();apply();}});
+  else if(mq.addListener) mq.addListener(function(){if(rd(K,'auto')==='auto') apply();});
+  window.addEventListener('storage',function(e){if(e.key===K||e.key===G) apply();});
+
+  var ICO={
+    look:'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="currentColor"/></svg>',
+    light:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>',
+    dark:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 0 1 9.4 4a8.4 8.4 0 1 0 10.6 10.6z" fill="currentColor"/></svg>',
+    auto:'<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4.5" width="18" height="12" rx="2.2"/><path d="M8.5 20h7M12 16.5V20" stroke-linecap="round"/></svg>'
+  };
+  function build(){
+    if(document.getElementById('mh-look')) return;
+    var b=document.body;
+    var bg=document.createElement('div'); bg.id='mh-bg'; bg.setAttribute('aria-hidden','true'); b.insertBefore(bg,b.firstChild);
+    var btn=document.createElement('button');
+    btn.type='button'; btn.id='mh-look'; btn.className='mh-look';
+    btn.setAttribute('aria-label','مظهر العرض: نهاري وليلي وزجاجي');
+    btn.setAttribute('aria-haspopup','dialog'); btn.setAttribute('aria-expanded','false');
+    btn.title='مظهر العرض'; btn.innerHTML=ICO.look;
+    var slot=SLOT?document.querySelector(SLOT):null;
+    if(slot){btn.classList.add('mh-inline');slot.appendChild(btn);} else {btn.classList.add('mh-float');b.appendChild(btn);}
+    var pop=document.createElement('div');
+    pop.className='mh-pop'; pop.id='mh-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','مظهر العرض'); pop.hidden=true;
+    pop.innerHTML=
+      '<div class="mh-pop-h">مظهر العرض</div>'+
+      '<div class="mh-seg" role="radiogroup" aria-label="نمط الألوان">'+
+        '<span class="mh-knob" aria-hidden="true"></span>'+
+        '<button type="button" role="radio" data-v="light">'+ICO.light+'<span>نهاري</span></button>'+
+        '<button type="button" role="radio" data-v="dark">'+ICO.dark+'<span>ليلي</span></button>'+
+        '<button type="button" role="radio" data-v="auto">'+ICO.auto+'<span>حسب الجهاز</span></button>'+
+      '</div>'+
+      '<label class="mh-row"><span class="mh-row-t"><b>زجاج iOS</b><small>شفافية وضباب خلف البطاقات</small></span>'+
+      '<input type="checkbox" class="mh-sw" role="switch"></label>'+
+      '<p class="mh-foot">الاختيار محفوظ لجميع صفحات وأدوات الموقع.</p>';
+    b.appendChild(pop);
+    var seg=pop.querySelector('.mh-seg'), knob=pop.querySelector('.mh-knob'), sw=pop.querySelector('.mh-sw');
+    function place(){
+      var r=btn.getBoundingClientRect(), w=pop.offsetWidth, h=pop.offsetHeight, vw=innerWidth, vh=innerHeight;
+      var left=Math.min(Math.max(8,r.left),vw-w-8);
+      var top=(r.bottom+10+h<vh-8)?r.bottom+10:Math.max(8,r.top-h-10);
+      pop.style.left=left+'px'; pop.style.top=top+'px';
+    }
+    function moveKnob(){
+      var on=seg.querySelector('[aria-checked="true"]'); if(!on||!pop.offsetWidth) return;
+      knob.style.width=on.offsetWidth+'px'; knob.style.left=on.offsetLeft+'px';
+    }
+    function open(){pop.hidden=false;btn.setAttribute('aria-expanded','true');place();moveKnob();
+      requestAnimationFrame(function(){pop.classList.add('on');});
+      var c=seg.querySelector('[aria-checked="true"]'); if(c) c.focus({preventScroll:true});}
+    function close(f){if(pop.hidden) return; pop.classList.remove('on');btn.setAttribute('aria-expanded','false');pop.hidden=true; if(f) btn.focus();}
+    btn.addEventListener('click',function(e){e.stopPropagation(); pop.hidden?open():close();});
+    pop.addEventListener('click',function(e){e.stopPropagation();});
+    document.addEventListener('click',function(){close();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape') close(true);});
+    addEventListener('resize',function(){if(!pop.hidden){place();moveKnob();}});
+    addEventListener('scroll',function(){if(!pop.hidden) place();},{passive:true});
+    seg.addEventListener('click',function(e){var t=e.target.closest('button[data-v]'); if(t) MHTheme.set(t.dataset.v);});
+    seg.addEventListener('keydown',function(e){
+      if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
+      var bs=[].slice.call(seg.querySelectorAll('button')), i=bs.indexOf(document.activeElement); if(i<0) return;
+      i=(i+(e.key==='ArrowLeft'?1:-1)+bs.length)%bs.length; bs[i].focus(); MHTheme.set(bs[i].dataset.v); e.preventDefault();
+    });
+    sw.addEventListener('change',function(){MHTheme.glass(sw.checked);});
+    ui={sync:function(pref,gl){
+      [].forEach.call(seg.querySelectorAll('button'),function(x){var on=x.dataset.v===pref;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;});
+      sw.checked=gl==='on'; moveKnob();
+    }};
+    apply();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+})();
+</script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Cairo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+html[data-glass="on"] .canvas,
+html[data-glass="on"] .box,
+html[data-glass="on"] .group,
+html[data-glass="on"] .pcard,
+html[data-glass="on"] .tile,
+html[data-glass="on"] .rowbtns button,
+html[data-glass="on"] .welcome,
+html[data-glass="on"] .dayhead,
+html[data-glass="on"] .note-card{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] .stat,
+html[data-glass="on"] .stp,
+html[data-glass="on"] .sheetlist div,
+html[data-glass="on"] .seg:not(.full),
+html[data-glass="on"] .pchip:not([aria-pressed="true"]){background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .nav,
+html[data-glass="on"] .tabbar,
+html[data-glass="on"] .savebar,
+html[data-glass="on"] .tabs{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .cell:not(.sel):not(.drag){background:transparent!important}
+html[data-glass="on"] .sheetwrap{background:color-mix(in srgb,var(--paper) 92%,transparent)}
+html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-in">
+    <div><h1>مقطع نموذجي<small>حضري وبين-مدني · ورقة A0 بمقياس رسم</small></h1></div>
+    <span class="sp"></span>
+    <button class="pill ok" id="statusPill" type="button" aria-live="polite"><i></i><span>سليم</span></button>
+    <button class="nbtn" id="btnGuide" type="button" title="دليل الإرشادات – الفصل 3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="t">الدليل</span></button>
+    <button class="nbtn" id="btnUndo" type="button" aria-label="تراجع" title="تراجع" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h-7a5 5 0 0 0 0 10h3"/><path d="M12 4l3 3-3 3"/></svg></button>
+    <button class="nbtn" id="btnRedo" type="button" aria-label="إعادة" title="إعادة" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h7a5 5 0 0 1 0 10h-3"/><path d="M12 4L9 7l3 3"/></svg></button>
+    <button class="nbtn" id="btnAddSheet" type="button" title="إضافة المقطع الحالي إلى الورقة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg><span class="t">إلى الورقة</span></button>
+    <button class="nbtn primary" id="btnShare" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="t">تصدير</span></button>
+  </div>
+</header>
+
+<div class="shell">
+<section class="stage" aria-label="الرسم">
+  <div class="canvas">
+    <div class="canvas-bar">
+      <div class="seg" id="viewSeg" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" aria-pressed="true" data-v="section">مقطع مكبَّر</button>
+        <button class="tab" role="tab" aria-selected="false" aria-pressed="false" data-v="sheet">ورقة A0</button>
+      </div>
+      <div class="zoom"><button type="button" id="zOut" aria-label="تصغير">−</button><output id="zVal">100%</output><button type="button" id="zIn" aria-label="تكبير">+</button></div>
+    </div>
+    <div class="sheetwrap" id="sheetwrap"><div id="drawing"></div></div>
+    <div class="ribbon-wrap">
+      <div class="ribbon-head"><span>العرض الكلي</span><b id="rbTot">0.00 م</b><span class="gap" id="rbGap"></span></div>
+      <div class="ribbon" id="ribbon" aria-label="شريط العروض – اسحب الفواصل لتغيير العرض"></div>
+      <div class="ribbon-hint">انقر على خلية للاختيار. اسحب فاصلاً بين خليتين لنقل العرض بينهما – يبقى العرض الكلي محفوظاً.</div>
+    </div>
+  </div>
+  <div class="readouts" id="readouts">
+    <div class="box"><h3>بيانات المقطع</h3><div class="grid3" id="stats"></div></div>
+    <div class="box" id="checksBox"><h3>الفحوصات مقابل الإرشادات</h3><div id="checks"></div></div>
+  </div>
+</section>
+
+<aside class="insp" aria-label="الإعدادات">
+  <div class="tabs"><div class="seg full" id="paneSeg">
+    <button type="button" data-p="p-start" aria-pressed="true">البداية</button>
+    <button type="button" data-p="p-cells" aria-pressed="false">الخلايا</button>
+    <button type="button" data-p="p-edges" aria-pressed="false">الأطراف</button>
+    <button type="button" data-p="p-pave" aria-pressed="false">البنية</button>
+    <button type="button" data-p="p-sheet" aria-pressed="false">الورقة</button>
+  </div></div>
+
+  <div class="pane on" id="p-start">
+    <p class="gh">بيانات المقطع</p>
+    <div class="group">
+      <div class="li"><label for="title">العنوان</label><input id="title" value="مقطع نموذجي"></div>
+      <div class="li"><span class="lb">السياق</span>
+        <select id="ctx" class="vh" tabindex="-1" aria-hidden="true"><option value="urban">حضري</option><option value="inter">بين-مدني</option></select>
+        <div class="seg" data-bind="ctx"></div></div>
+      <div class="li"><label for="rowTarget">حق الطريق المستهدف</label><div class="stp" data-step="0.5"><input id="rowTarget" type="number" step="0.1" min="0" value="0" inputmode="decimal"></div><span class="unit">م</span></div>
+    </div>
+    <p class="gf">0 = بدون هدف. عند وجود هدف، يُظهر الشريط أعلاه في كل لحظة المتبقي أو الفائض.</p>
+
+    <p class="gh">نمط البداية</p>
+    <select id="preset" class="vh" tabindex="-1" aria-hidden="true"></select>
+    <div class="seg full" id="presetFilter"></div>
+    <div class="pgrid" id="presetGrid"></div>
+    <p class="hint" id="presetSrc"></p>
+  </div>
+
+  <div class="pane" id="p-cells">
+    <p class="gh">الخلايا، من اليسار إلى اليمين في الرسم</p>
+    <div class="group"><div class="cells" id="cells"></div></div>
+    <div class="rowbtns"><button id="btnMirror" type="button">انعكاس – إكمال الجانب الثاني</button><button id="btnClear" type="button" class="danger">مسح</button></div>
+    <p class="gh">إضافة خلية <span id="addWhere" style="color:var(--label-3)"></span></p>
+    <select id="addType" class="vh" tabindex="-1" aria-hidden="true"></select>
+    <button id="btnAdd" class="vh" tabindex="-1" type="button">إضافة</button>
+    <div class="tiles" id="tiles"></div>
+  </div>
+
+  <div class="pane" id="p-edges">
+    <p class="gh">الطرف الأيسر</p><div class="group edgecard" id="edgeL"></div>
+    <p class="gh">الطرف الأيمن</p><div class="group edgecard" id="edgeR"></div>
+    <p class="gf">في الردم والحفر: ميل 1:n وارتفاع المنحدر. في الحفر يُضاف عمق القناة.</p>
+  </div>
+
+  <div class="pane" id="p-pave">
+    <p class="gh">بنية الرصف</p>
+    <div class="group">
+      <div class="li"><label for="dSurf">طبقات الأسفلت</label><div class="stp" data-step="0.01"><input id="dSurf" type="number" step="0.01" value="0.10" inputmode="decimal"></div><span class="unit">م</span></div>
+      <div class="li"><label for="dBase">القاعدة</label><div class="stp" data-step="0.05"><input id="dBase" type="number" step="0.01" value="0.25" inputmode="decimal"></div><span class="unit">م</span></div>
+      <div class="li"><label for="dSub">القاعدة السفلى / الطبقة التحتية</label><div class="stp" data-step="0.05"><input id="dSub" type="number" step="0.01" value="0.30" inputmode="decimal"></div><span class="unit">م</span></div>
+      <div class="li"><label for="tPave">إظهار بنية الرصف</label><input type="checkbox" class="sw" id="tPave" checked></div>
+    </div>
+    <p class="gh">الميول وحجر الرصيف</p>
+    <div class="group">
+      <div class="li"><label for="cfRoad">الميل العرضي للطريق</label><div class="stp" data-step="0.5"><input id="cfRoad" type="number" step="0.1" value="2.0" inputmode="decimal"></div><span class="unit">%</span></div>
+      <div class="li"><label for="cfSide">ميل الرصيف / الكتف</label><div class="stp" data-step="0.5"><input id="cfSide" type="number" step="0.1" value="2.0" inputmode="decimal"></div><span class="unit">%</span></div>
+      <div class="li"><label for="curbH">ارتفاع حجر الرصيف</label><div class="stp" data-step="0.01"><input id="curbH" type="number" step="0.01" value="0.15" inputmode="decimal"></div><span class="unit">م</span></div>
+    </div>
+  </div>
+
+  <div class="pane" id="p-sheet">
+    <p class="gh">مقياس الرسم</p>
+    <select id="scale" class="vh" tabindex="-1" aria-hidden="true"><option value="100">1:100</option><option value="200" selected>1:200</option><option value="250">1:250</option><option value="500">1:500</option></select>
+    <div class="seg full" data-bind="scale"></div>
+    <p class="gh">عنوان الورقة</p>
+    <div class="group">
+      <div class="li"><label for="proj">المشروع</label><input id="proj" value="" placeholder="اسم المشروع"></div>
+      <div class="li"><label for="drawn">رسمه</label><input id="drawn" value="" placeholder="الاسم"></div>
+      <div class="li"><label for="dwg">رقم الورقة</label><input id="dwg" value="TS-01"></div>
+    </div>
+    <p class="gh">ما يظهر في الرسم</p>
+    <div class="group">
+      <div class="li"><label for="tIcons">المركبات والأشخاص</label><input type="checkbox" class="sw" id="tIcons" checked></div>
+      <div class="li"><label for="tTrees">الأشجار</label><input type="checkbox" class="sw" id="tTrees" checked></div>
+      <div class="li"><label for="tCf">أسهم الميل</label><input type="checkbox" class="sw" id="tCf" checked></div>
+      <div class="li"><label for="tNames">أسماء الخلايا</label><input type="checkbox" class="sw" id="tNames" checked></div>
+    </div>
+    <p class="gh">المقاطع في الورقة (حتى ثلاثة في A0)</p>
+    <div class="box"><div class="sheetlist" id="sheetList"></div>
+      <p class="hint">تصدير HTML ينتج ورقة A0 أفقية (1189×841 مم). اطبع بنسبة 100% بدون ملاءمة للصفحة، وتحقق من مسطرة المقياس في الورقة.</p></div>
+  </div>
+</aside>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grp" id="sheetGrp"></div><button class="cancel" type="button" id="sheetCancel">إلغاء</button></div>
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><button type="button" id="toastAct" hidden>تراجع</button></div>
+
+<div class="guide-ov" id="guideOv" role="dialog" aria-modal="true" aria-label="دليل الإرشادات">
+  <div class="guide-bar">
+    <button class="nbtn" id="btnGuideClose" type="button" aria-label="إغلاق الدليل" title="إغلاق"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div><b>دليل الإرشادات</b><small>إرشادات التصميم الهندسي للطرق · الفصل 3</small></div>
+  </div>
+  <iframe id="guideFrame" title="المقطع العرضي للطريق – دليل الإرشادات"></iframe>
+</div>
+<textarea id="guideSrc" hidden aria-hidden="true">__GUIDE_HTML__</textarea>
+
+<div hidden>
+  <button id="btnHtml" type="button">تصدير ورقة A0 (HTML)</button>
+  <button id="btnSvg" type="button">تنزيل SVG</button>
+  <button id="btnPrint" type="button">طباعة</button>
+  <button id="btnJson" type="button">حفظ JSON</button>
+  <input type="file" id="fileJson" accept=".json,application/json">
+</div>
+
+<script>
+
+/* ======================================================================
+   أنواع الخلايا – القيم الافتراضية والحدود من أدلة الإمارات:
+   · دليل RTA للتصميم الهندسي (دبي) GDM
+   · دليل أبوظبي لتصميم الطرق TR-514 (بين-مدني)
+   · دليل تصميم الشوارع الحضرية USDM (أبوظبي)
+   · دليل GCC للطرق السريعة
+   lvl: 'road' = منسوب الطريق، 'curb' = منسوب الرصيف (فوق حجر الرصيف)
+   ====================================================================== */
+const T = {
+  walk:   {n:'شريط مشاة',           s:'مشي', lvl:'curb', w:2.0,  col:'#e9e1cf', min:[1.5,'شريط مشاة أدنى 1.5 م (USDM أبوظبي)']},
+  aux:    {n:'شريط مساعد / أشجار',   s:'مساعد',   lvl:'curb', w:1.2,  col:'#cfd9bf', tree:true},
+  front:  {n:'شريط جانبي',           s:'جانب',  lvl:'curb', w:0.3,  col:'#ddd6c6'},
+  plaza:  {n:'جزيرة مشجّرة / نشاط',  s:'جزيرة مشجّرة', lvl:'curb', w:6.0,  col:'#d9e3c6', tree:true, ppl:true},
+  green:  {n:'تشجير',                s:'تشجير', lvl:'curb', w:2.0,  col:'#b9cfa3', tree:true},
+  bikeP:  {n:'مسار دراجات',          s:'دراجات',lvl:'curb', w:2.5, col:'#e8b9a8', dir:'up', bike:true,
+           min:[1.5,'المسار أحادي الاتجاه أدنى 1.5 م، ثنائي الاتجاه 3.0 م (دليل RTA، الفصل 9)']},
+  bikeL:  {n:'مسرب دراجات',          s:'مسار دراجات',lvl:'road', w:1.5, col:'#e39c86', dir:'up', bike:true, min:[1.5,'مسرب دراجات 1.5–2.0 م']},
+  buf:    {n:'شريط فاصل',            s:'فاصل', lvl:'road', w:0.5,  col:'#c9ced3'},
+  parkP:  {n:'وقوف موازٍ',           s:'وقوف', lvl:'road', w:2.0,  col:'#9aa4ad', car:'park', max:[2.5,'يُمنع تصميم جيب وقوف موازٍ أعرض من 2.5 م (RTA GDM – المركبات الآلية 3.3.4)']},
+  parkX:  {n:'وقوف عمودي',            s:'وقوف عمودي',lvl:'road', w:5.0, col:'#9aa4ad', car:'park'},
+  lane:   {n:'مسرب سير',              s:'مسرب',  lvl:'road', w:3.25, col:'#6d7680', dir:'up', car:'car'},
+  bus:    {n:'حرم النقل العام',        s:'حرم النقل العام',  lvl:'road', w:3.5,  col:'#b5645a', dir:'up', car:'bus', min:[3.5,'حرم النقل العام 3.5–3.65 م (دليل RTA، الفصل 10)']},
+  brt:    {n:'حرم النقل العام (مسرب منفرد)', s:'حرم النقل العام', lvl:'road', w:3.5,  col:'#c0795f', dir:'up', car:'bus', min:[3.5,'مسرب في حرم النقل العام 3.5 م (دليل RTA، الفصل 10)']},
+  lrt:    {n:'مسار السكة الخفيفة (باتجاه واحد)', s:'السكة الخفيفة', lvl:'road', w:3.5,  col:'#8f9aa6', dir:'up', car:'lrt', note:'قيمة مقترحة – عرض شريط السكة الخفيفة غير وارد في الأدلة المرفقة؛ يجب التحقق منه مقابل تصميم السكة الحديدية'},
+  median: {n:'جزيرة وسطى مبنية',      s:'جزيرة وسطى', lvl:'curb', w:2.5,  col:'#b9cfa3', tree:true, min:[2.5,'جزيرة وسطى دنيا 2.5 م بجانب مسرب اليسار (دليل تصميم التقاطعات RTA، البند 5.5.4)']},
+  barrier:{n:'حاجز الجزيرة الوسطى (بين-مدني)', s:'حاجز', lvl:'road', w:0.8, col:'#a8b0b8', rail:true},
+  shR:    {n:'الكتف الأيمن',           s:'كتف', lvl:'road', w:3.0,  col:'#8c949c', min:[2.5,'الكتف الأيمن 2.5–3.5 م حسب نوع الطريق (RTA GDM / TR-514، جدول 3.2)']},
+  shL:    {n:'الكتف الأيسر',           s:'الكتف الأيسر', lvl:'road', w:1.2, col:'#8c949c'},
+  active: {n:'العرض الفعّال + الحاجز',  s:'W', lvl:'road', w:1.0,  col:'#b8bdc1', rail:true, note:'يُحدَّد العرض الفعّال W وفق نوع الحاجز ومستوى الأداء الوظيفي'},
+  kerbArea:{n:'أكتاف مع حجر رصيف',     s:'أكتاف', lvl:'curb', w:0.5, col:'#cfc8b6'}
+};
+const DIRS = [['up','↑'],['down','↓'],['both','⇅'],['none','–']];
+
+/* ---------------- الأنماط ---------------- */
+const C = (t,w,dir)=>({t, w:(w===undefined?T[t].w:w), dir: dir || T[t].dir || 'none'});
+function mirror(cells){ return cells.slice().reverse().map(c=>({...c, dir: c.dir==='up'?'down':c.dir==='down'?'up':c.dir})); }
+function sym(half){ return [...half, ...mirror(half)]; }
+const E_BLD = {type:'building'}, E_FILL = {type:'fill', n:4, h:1.5}, E_CUT = {type:'cut', n:3, h:1.5, dd:0.6, db:0.6}, E_NONE={type:'none'};
+const PRESETS = {
+  mr1:{g:'حضري – مجال الشارع', n:'النمط 1 – محلي، بناء منخفض (15.0 م)', ctx:'urban', row:15, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 1',
+       cells:sym([C('front',0.3),C('walk',1.5),C('aux',1.2),C('parkP',2.0),C('lane',2.75,'down')]), eL:E_BLD, eR:E_BLD},
+  mr2:{g:'حضري – مجال الشارع', n:'النمط 2 – محلي، أرصفة غير متماثلة (17.5 م)', ctx:'urban', row:17.5, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 2',
+       cells:[C('front',0.3),C('walk',1.6),C('aux',1.2),C('parkX',5.0),C('lane',2.75,'down'),C('lane',2.75,'up'),C('parkP',2.0),C('walk',1.6),C('front',0.3)], eL:E_BLD, eR:E_BLD},
+  mr3:{g:'حضري – مجال الشارع', n:'النمط 3 – محلي، بناء متوسط (16.0 م)', ctx:'urban', row:16, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 3',
+       cells:sym([C('front',0.3),C('walk',2.0),C('aux',1.2),C('parkP',2.0),C('lane',2.75,'down')]), eL:E_BLD, eR:E_BLD},
+  mr4:{g:'حضري – مجال الشارع', n:'النمط 4 – محلي/مجمّع 1، متوسط (22.0 م)', ctx:'urban', row:22, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 4',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]), eL:E_BLD, eR:E_BLD},
+  mr5:{g:'حضري – مجال الشارع', n:'النمط 5 – محلي، بناء مرتفع (24.0 م)', ctx:'urban', row:24, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 5',
+       cells:sym([C('front',0.3),C('walk',2.5),C('aux',1.2),C('parkX',5.0),C('lane',3.0,'down')]), eL:E_BLD, eR:E_BLD},
+  mr7:{g:'حضري – مجال الشارع', n:'النمط 7 – محلي/مجمّع 1، مرتفع (24.0 م)', ctx:'urban', row:24, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 7',
+       cells:sym([C('front',0.5),C('walk',3.3),C('aux',1.2),C('parkP',2.0),C('bikeL',1.5,'down'),C('buf',0.5),C('lane',3.0,'down')]), eL:E_BLD, eR:E_BLD},
+  mr9:{g:'حضري – مجال الشارع', n:'النمط 9 – مجمّع 2، واجهة نشطة (36.0 م)', ctx:'urban', row:36, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 9',
+       cells:sym([C('front',2.5),C('walk',2.8),C('aux',1.2),C('bikeP',2.0,'down'),C('parkP',2.0),C('lane',3.0,'down'),C('lane',3.0,'down'),C('median',1.5)]), eL:E_BLD, eR:E_BLD},
+  mr10:{g:'حضري – مجال الشارع', n:'النمط 10 – شرياني درجة 1 (36.0 م)', ctx:'urban', row:36, src:'دليل تصميم الشوارع الحضرية USDM (أبوظبي)، النمط 10',
+       cells:sym([C('walk',2.5),C('aux',1.5),C('bikeP',2.5,'down'),C('aux',1.5),C('lane',3.5,'down'),C('lane',3.5,'down'),C('median',3.0)]), eL:E_BLD, eR:E_BLD},
+  ex1:{g:'حضري – أمثلة', n:'جزيرة مشجَّرة + حرم BRT (42.0 م)', ctx:'urban', row:42, src:'وفق الرسم المرفوع (الشكل 1)',
+       cells:[C('plaza',12.0),C('brt',3.5,'down'),C('brt',3.5,'up'),C('median',3.5),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.5),C('lane',3.25,'up'),C('lane',3.25,'up'),C('walk',4.0)], eL:E_NONE, eR:E_BLD},
+  ex2:{g:'حضري – أمثلة', n:'حرم النقل العام ومسارات الدراجات (44.0 م)', ctx:'urban', row:44, src:'وفق الرسم المرفوع (الشكل 3)',
+       cells:sym([C('walk',7.7),C('bikeP',1.5,'down'),C('aux',2.0),C('bus',3.5,'down'),C('lane',3.1,'down'),C('lane',3.1,'down'),C('median',1.0)]), eL:E_BLD, eR:E_BLD},
+  ex3:{g:'حضري – أمثلة', n:'السكة الخفيفة في المنتصف + حرم النقل العام (مثال)', ctx:'urban', row:0, src:'مثال تخطيطي (الشكل 8) – عروض السكة الخفيفة مقترحة ويجب التحقق منها',
+       cells:[C('green',2.0),C('bikeP',3.0,'both'),C('median',1.0),C('lrt',3.5,'up'),C('lrt',3.5,'down'),C('median',2.0),C('bus',3.5,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('lane',3.25,'down'),C('median',2.0),C('lane',3.25,'up'),C('lane',3.25,'up'),C('lane',3.25,'up'),C('bus',3.5,'up'),C('walk',2.0),C('green',2.0),C('bikeP',3.0,'both'),C('walk',3.0)], eL:E_NONE, eR:E_BLD},
+  iuL:{g:'بين-مدني – دليل RTA / أبوظبي TR-514', n:'أحادية المسرب محلية ووصول', ctx:'inter', row:0, src:'RTA GDM / أبوظبي TR-514، جداول 3.1–3.2: مسرب 3.3، كتف 2.0',
+       cells:[C('active',1.0),C('shR',2.0),C('lane',3.3,'down'),C('lane',3.3,'up'),C('shR',2.0),C('active',1.0)], eL:E_FILL, eR:E_CUT},
+  iuR:{g:'بين-مدني – دليل RTA / أبوظبي TR-514', n:'أحادية المسرب رئيسية/إقليمية (80 كم/س)', ctx:'inter', row:0, src:'RTA GDM / TR-514، جداول 3.1–3.2: مسرب 3.65، كتف 3.0',
+       cells:[C('active',1.0),C('shR',3.0),C('lane',3.65,'down'),C('lane',3.65,'up'),C('shR',3.0),C('active',1.0)], eL:E_FILL, eR:E_FILL},
+  iuD:{g:'بين-مدني – دليل RTA / أبوظبي TR-514', n:'ثنائية المسرب رئيسية 2+2', ctx:'inter', row:0, src:'RTA GDM / أبوظبي TR-514 / GCC: مسرب 3.65، الكتف الأيمن 3.5، الكتف الأيسر 1.2، جزيرة وسطى 2.4 + حاجز (البند 3.4.2)',
+       cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.65,'down'),C('lane',3.65,'down'),C('shL',1.2)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]), eL:E_FILL, eR:E_FILL},
+  iuF:{g:'بين-مدني – دليل RTA / أبوظبي TR-514', n:'طريق سريع 3+3', ctx:'inter', row:0, src:'RTA GDM / TR-514 / GCC: مسرب 3.65–3.75، الكتف الأيمن 3.5، الكتف الأيسر 1.2؛ جزيرة وسطى 6.0 + حواجز عند 120 كم/س',
+       cells:sym([C('active',1.0),C('shR',3.5),C('lane',3.65,'down'),C('lane',3.65,'down'),C('lane',3.65,'down'),C('shL',3.0)]).flatMap((c,i,a)=> i===a.length/2 ? [C('barrier',0.8),c] : [c]), eL:E_CUT, eR:E_FILL},
+  ex4:{g:'بين-مدني – أمثلة', n:'المقطع النموذجي 5-5 (الشكل 6)', ctx:'inter', row:0, src:'وفق الرسم المرفوع (الشكل 6)',
+       cells:[C('active',1.1),C('shR',3.5),C('lane',3.65,'down'),C('lane',3.65,'down'),C('shL',1.5),C('barrier',0.6),C('shL',1.5),C('lane',3.65,'up'),C('lane',3.65,'up'),C('shR',3.5),C('active',1.1)], eL:E_CUT, eR:E_FILL}
+};
+
+/* ---------------- الحالة ---------------- */
+let S = { cells:[], eL:{...E_BLD}, eR:{...E_BLD} };
+let SHEET = [];
+let VIEW = 'section';
+const $ = id => document.getElementById(id);
+const num = id => parseFloat($(id).value) || 0;
+const f2 = v => (Math.round(v*100)/100).toFixed(2);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------------- محرر الخلايا (واجهة لمسية) ---------------- */
+let SEL = -1;
+const DIR_LBL = {up:'↑', down:'↓', both:'⇅', none:'–'};
+function renderCells(){
+  const box = $('cells');
+  if(!S.cells.length){ box.innerHTML = '<div class="empty">لا توجد خلايا بعد. اختر نمطاً من تبويب «البداية» أو أضف خلية من القائمة أدناه.</div>'; SEL=-1; return; }
+  if(SEL >= S.cells.length) SEL = S.cells.length-1;
+  box.innerHTML = S.cells.map((c,i)=>{
+    const t = T[c.t], hasDir = !!t.dir, st = cellCheck(c);
+    return `<div class="cell ${st?st.cls:''}" data-row="${i}" title="${esc(st?st.msg:t.n)}">
+      <div class="c-top">
+        <span class="c-idx">${i+1}</span>
+        <span class="c-sw" style="background:${t.col}"></span>
+        <div class="c-name"><select class="plain" data-i="${i}" data-k="t" aria-label="نوع الخلية">${Object.keys(T).map(k=>`<option value="${k}" ${k===c.t?'selected':''}>${T[k].n}</option>`).join('')}</select><span class="chev">⌄</span></div>
+        <button type="button" class="c-more" data-more="${i}" aria-label="إجراءات للخلية ${i+1}">⋯</button>
+        <button type="button" class="c-handle" data-drag="${i}" aria-label="سحب لإعادة الترتيب">≡</button>
+      </div>
+      <div class="c-bot">
+        <div class="stp" data-step="0.05" data-big="0.25"><input data-i="${i}" data-k="w" type="number" step="0.05" min="0.05" value="${f2(c.w)}" inputmode="decimal" aria-label="العرض (م)"></div><span class="unit">م</span>
+        ${hasDir?`<div class="seg" data-dir="${i}" role="group" aria-label="الاتجاه">${DIRS.map(d=>`<button type="button" data-d="${d[0]}" aria-pressed="${d[0]===c.dir}" aria-label="${d[0]}">${d[1]}</button>`).join('')}</div>`:''}
+      </div>
+      <p class="c-msg">${esc(st?st.msg:'')}</p>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('[data-k]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{
+    const i=+el.dataset.i, k=el.dataset.k;
+    if(k==='w') S.cells[i].w = Math.max(0.05, parseFloat(el.value)||0.05);
+    else if(k==='t'){ S.cells[i].t = el.value; S.cells[i].w = T[el.value].w; S.cells[i].dir = T[el.value].dir || 'none'; SEL=i; renderCells(); }
+    if(k!=='t') update(false); else update();
+  }));
+  box.querySelectorAll('[data-dir]').forEach(g=>g.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const i=+g.dataset.dir; S.cells[i].dir=b.dataset.d;
+    g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); UI.segKnob(g); update(false);
+  }));
+  box.querySelectorAll('.cell').forEach(r=>r.addEventListener('pointerdown',e=>{
+    if(e.target.closest('input,select,button')) return; UI.select(+r.dataset.row);
+  }));
+  box.querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>UI.cellMenu(+b.dataset.more));
+  box.querySelectorAll('[data-drag]').forEach(h=>UI.dragRow(h));
+  UI.enhance(box);
+}
+function cellAction(i,a){
+  const arr=S.cells;
+  if(a==='up' && i>0){ [arr[i-1],arr[i]]=[arr[i],arr[i-1]]; SEL=i-1; }
+  if(a==='dn' && i<arr.length-1){ [arr[i+1],arr[i]]=[arr[i],arr[i+1]]; SEL=i+1; }
+  if(a==='dup'){ arr.splice(i+1,0,{...arr[i]}); SEL=i+1; }
+  if(a==='del'){ arr.splice(i,1); SEL=Math.min(i,arr.length-1); }
+  renderCells(); update();
+}
+const EDGE_TYPES = [['none','بدون'],['building','مبنى'],['fill','ردم'],['cut','حفر']];
+function edgeUI(side){
+  const e = side==='L'?S.eL:S.eR, id = side==='L'?'edgeL':'edgeR';
+  const slope = e.type==='fill'||e.type==='cut', cut = e.type==='cut';
+  $(id).innerHTML = `
+    <div class="li"><div class="seg full" style="flex:1" role="group" aria-label="${side==='L'?'الطرف الأيسر':'الطرف الأيمن'}">${EDGE_TYPES.map(t=>`<button type="button" data-et="${t[0]}" aria-pressed="${e.type===t[0]}">${t[1]}</button>`).join('')}</div></div>
+    <div class="li sub" ${slope?'':'hidden'}><span class="lb">ميل 1:n</span><div class="stp" data-step="0.5"><input data-e="n" type="number" step="0.5" value="${e.n??4}" inputmode="decimal" aria-label="ميل 1:n"></div></div>
+    <div class="li sub" ${slope?'':'hidden'}><span class="lb">ارتفاع المنحدر</span><div class="stp" data-step="0.1"><input data-e="h" type="number" step="0.1" value="${e.h??1.5}" inputmode="decimal" aria-label="الارتفاع (م)"></div><span class="unit">م</span></div>
+    <div class="li sub" ${cut?'':'hidden'}><span class="lb">عمق القناة</span><div class="stp" data-step="0.05"><input data-e="dd" type="number" step="0.05" value="${e.dd??0.6}" inputmode="decimal" aria-label="عمق القناة"></div><span class="unit">م</span></div>`;
+  $(id).querySelectorAll('[data-et]').forEach(b=>b.onclick=()=>{
+    e.type=b.dataset.et;
+    if(e.type==='fill'){e.n=e.n||4;e.h=e.h||1.5;} if(e.type==='cut'){e.n=e.n||3;e.h=e.h||1.5;e.dd=e.dd||0.6;e.db=0.6;}
+    edgeUI(side); update(false);
+  });
+  $(id).querySelectorAll('[data-e]').forEach(el=>el.addEventListener('input',()=>{
+    e[el.dataset.e] = parseFloat(el.value)||0; update(false);
+  }));
+  UI.enhance($(id));
+}
+
+/* ======================================================================
+   طبقة الواجهة – لوحي / iOS: شريط العروض الحيّ، الخطوات، ورقة الإجراءات، تراجع/إعادة
+   ====================================================================== */
+const UI = (()=>{
+  const U = {};
+  const vib = ms => { try{ navigator.vibrate && navigator.vibrate(ms||8); }catch(e){} };
+  let zoom = 1;
+
+  U.segKnob = seg => {
+    let k = seg.querySelector(':scope > .knob');
+    if(!k){ k=document.createElement('span'); k.className='knob'; seg.prepend(k); }
+    const on = seg.querySelector(':scope > button[aria-pressed="true"]');
+    if(!on || !on.offsetWidth){ k.style.width='0'; return; }
+    k.style.left = on.offsetLeft+'px'; k.style.width = on.offsetWidth+'px';
+  };
+  U.segAll = () => document.querySelectorAll('.seg').forEach(U.segKnob);
+
+  U.enhance = root => {
+    root.querySelectorAll('.stp:not([data-ok])').forEach(w=>{
+      w.dataset.ok=1;
+      const inp = w.querySelector('input'), step = parseFloat(w.dataset.step)||0.1;
+      const dec = Math.max(0, (String(step).split('.')[1]||'').length, (String(inp.step).split('.')[1]||'').length);
+      const mk = (sgn,label)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=label; b.setAttribute('aria-label', sgn>0?'زيادة':'إنقاص');
+        let t1, t2;
+        const bump = ()=>{ if(inp.disabled) return; const min = inp.min!==''?parseFloat(inp.min):-Infinity;
+          let v = (parseFloat(inp.value)||0) + sgn*step; v = Math.max(min, Math.round(v/step)*step);
+          inp.value = v.toFixed(dec); inp.dispatchEvent(new Event('input',{bubbles:true})); vib(4); };
+        const stop = ()=>{ clearTimeout(t1); clearInterval(t2); };
+        b.addEventListener('pointerdown', e=>{ e.preventDefault(); bump(); t1=setTimeout(()=>{ t2=setInterval(bump,70); },380); });
+        ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
+        b.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); bump(); } });
+        return b; };
+      w.prepend(mk(-1,'−')); w.append(mk(1,'+'));
+      inp.addEventListener('focus', ()=>setTimeout(()=>inp.select(),0));
+    });
+    root.querySelectorAll('.seg').forEach(U.segKnob);
+  };
+
+  U.bindSelect = seg => {
+    const sel = $(seg.dataset.bind);
+    seg.innerHTML = [...sel.options].map(o=>`<button type="button" data-v="${o.value}" aria-pressed="${o.value===sel.value}">${o.text}</button>`).join('');
+    seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      sel.value=b.dataset.v; sel.dispatchEvent(new Event('input',{bubbles:true})); sel.dispatchEvent(new Event('change',{bubbles:true}));
+      sync(); vib(); });
+    const sync = ()=>{ seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.v===sel.value)); U.segKnob(seg); };
+    seg._sync = sync;
+  };
+
+  U.select = (i, scroll) => {
+    SEL = (SEL===i && !scroll) ? -1 : i;
+    U.after(true);
+    if(SEL>=0 && scroll){
+      const row = document.querySelector(`#cells .cell[data-row="${SEL}"]`);
+      if(row){ U.pane('p-cells'); row.scrollIntoView({block:'nearest',behavior:'smooth'}); row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
+    }
+    vib(6);
+  };
+
+  function ribbon(){
+    const rb = $('ribbon'), cells = S.cells, tot = cells.reduce((a,c)=>a+c.w,0);
+    if(rb.querySelectorAll('.rb').length !== cells.length || rb._n !== cells.map(c=>c.t).join()){
+      rb.innerHTML = cells.map((c,i)=>`<div class="rb" data-i="${i}"><span></span></div>`).join('');
+      rb._n = cells.map(c=>c.t).join();
+      rb.querySelectorAll('.rb').forEach(el=>el.addEventListener('click',()=>{ if(!rb._moved) U.select(+el.dataset.i, true); }));
+    }
+    [...rb.querySelectorAll('.rb')].forEach((el,i)=>{
+      const c = cells[i], t = T[c.t], st = cellCheck(c);
+      el.style.flexGrow = c.w; el.style.flexBasis = '0'; el.style.background = t.col;
+      el.className = 'rb' + (i===SEL?' sel':'') + (st?' '+st.cls:'');
+      el.title = `${i+1}. ${t.n} – ${f2(c.w)} م`;
+      el.firstChild.textContent = c.w*1 >= tot*0.06 ? `${t.s} ${f2(c.w)}` : (c.w >= tot*0.035 ? f2(c.w) : '');
+    });
+    grips(rb); clearTimeout(rb._gt); rb._gt=setTimeout(()=>grips(rb),300);
+    $('rbTot').textContent = f2(tot)+' م';
+    const tgt = num('rowTarget'), g = $('rbGap');
+    if(tgt>0){ const d = tot-tgt; g.className='gap '+(Math.abs(d)<0.005?'ok':'bad');
+      g.textContent = Math.abs(d)<0.005 ? `مطابق للهدف ${f2(tgt)} م` : (d>0?`تجاوز ${f2(d)} م`:`ناقص ${f2(-d)} م`) + ` مقابل هدف ${f2(tgt)}`; }
+    else { g.className='gap'; g.textContent=''; }
+  }
+  function grips(rb){
+    const kids=[...rb.querySelectorAll('.rb')], have=[...rb.querySelectorAll('.grip')];
+    if(have.length===Math.max(0,kids.length-1)){
+      have.forEach((g,i)=>g.style.left=(kids[i].offsetLeft+kids[i].offsetWidth)+'px'); return;
+    }
+    have.forEach(g=>g.remove());
+    for(let i=0;i<kids.length-1;i++){
+      const g=document.createElement('div'); g.className='grip'; g.dataset.i=i;
+      g.style.left = (kids[i].offsetLeft + kids[i].offsetWidth)+'px';
+      g.setAttribute('role','separator'); g.setAttribute('aria-label',`الفاصل بين الخلية ${i+1} والخلية ${i+2}`); g.tabIndex=0;
+      rb.appendChild(g); dragGrip(g, rb);
+    }
+  }
+  const tip = document.createElement('div'); tip.className='tip'; tip.hidden=true;
+  function dragGrip(g, rb){
+    const i = +g.dataset.i;
+    g.addEventListener('pointerdown', e=>{
+      e.preventDefault(); g.setPointerCapture(e.pointerId);
+      const a=S.cells[i], b=S.cells[i+1], pair=a.w+b.w, a0=a.w, x0=e.clientX;
+      const mPerPx = S.cells.reduce((s,c)=>s+c.w,0) / rb.clientWidth;
+      let raf=0, lastSnap=a0; rb._moved=false;
+      g.classList.add('on'); rb.classList.add('dragging'); document.body.appendChild(tip); tip.hidden=false; SEL=i;
+      const mv = ev=>{
+        let na = a0 + (ev.clientX-x0)*mPerPx;
+        na = Math.round(na/0.05)*0.05; na = Math.min(pair-0.05, Math.max(0.05, na));
+        if(Math.abs(ev.clientX-x0)>3) rb._moved=true;
+        if(Math.abs(na-lastSnap)>1e-9){ lastSnap=na; vib(3); }
+        a.w = +na.toFixed(2); b.w = +(pair-na).toFixed(2);
+        tip.style.left=ev.clientX+'px'; tip.style.top=rb.getBoundingClientRect().top+'px';
+        tip.textContent = `\u2066${f2(a.w)}  ⟷  ${f2(b.w)}\u2069`;
+        if(!raf) raf=requestAnimationFrame(()=>{ raf=0; syncWidths(); update(false); });
+      };
+      const up = ()=>{ g.removeEventListener('pointermove',mv); g.classList.remove('on'); rb.classList.remove('dragging'); tip.hidden=true;
+        setTimeout(()=>rb._moved=false,50); syncWidths(); update(false); };
+      g.addEventListener('pointermove',mv); g.addEventListener('pointerup',up,{once:true}); g.addEventListener('pointercancel',up,{once:true});
+    });
+    g.addEventListener('keydown', e=>{
+      const d = e.key==='ArrowRight'?0.05:e.key==='ArrowLeft'?-0.05:0; if(!d) return; e.preventDefault();
+      const a=S.cells[i], b=S.cells[i+1]; if(a.w+d<0.05||b.w-d<0.05) return;
+      a.w=+(a.w+d).toFixed(2); b.w=+(b.w-d).toFixed(2); syncWidths(); update(false);
+    });
+  }
+  function syncWidths(){ document.querySelectorAll('#cells input[data-k="w"]').forEach(inp=>{ const c=S.cells[+inp.dataset.i]; if(c && document.activeElement!==inp) inp.value=f2(c.w); }); }
+
+  function drawingOverlay(){
+    const svg = $('secSVG'); if(!svg || VIEW!=='section') return;
+    const sec = curSec(), D=+$('scale').value, k=1000/D, xL=edgeExtent(sec.eL).w*k;
+    const vb = svg.viewBox.baseVal;
+    svg._geom = {k, xL};
+    if(SEL<0 || !S.cells[SEL]) return;
+    const x0 = S.cells.slice(0,SEL).reduce((a,c)=>a+c.w,0);
+    const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('class','selrect'); r.setAttribute('x', xL+x0*k); r.setAttribute('width', S.cells[SEL].w*k);
+    r.setAttribute('y', vb.y); r.setAttribute('height', vb.height);
+    svg.appendChild(r);
+  }
+  $('drawing').addEventListener('click', e=>{
+    const svg = $('secSVG'); if(!svg || !svg._geom || VIEW!=='section') return;
+    const pt = svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+    const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const m = (p.x - svg._geom.xL)/svg._geom.k; let acc=0;
+    for(let i=0;i<S.cells.length;i++){ acc+=S.cells[i].w; if(m>=acc-S.cells[i].w && m<acc){ U.select(i,true); return; } }
+  });
+  const setZoom = z => { zoom = Math.min(4, Math.max(1, z)); $('drawing').style.width = (zoom*100)+'%'; $('zVal').textContent = Math.round(zoom*100)+'%'; };
+  $('zIn').onclick = ()=>setZoom(zoom*1.4);
+  $('zOut').onclick = ()=>setZoom(zoom/1.4);
+  (function pinch(){
+    const w=$('sheetwrap'), pts=new Map(); let d0=0, z0=1;
+    const dist=()=>{ const [a,b]=[...pts.values()]; return Math.hypot(a.x-b.x,a.y-b.y); };
+    w.addEventListener('pointerdown',e=>{ if(e.pointerType!=='touch') return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===2){ d0=dist(); z0=zoom; } });
+    w.addEventListener('pointermove',e=>{ if(!pts.has(e.pointerId)) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===2 && d0){ setZoom(z0*dist()/d0); } });
+    ['pointerup','pointercancel','pointerleave'].forEach(ev=>w.addEventListener(ev,e=>{ pts.delete(e.pointerId); if(pts.size<2) d0=0; }));
+    w.addEventListener('gesturestart',e=>e.preventDefault());
+    w.addEventListener('wheel',e=>{ if(e.ctrlKey){ e.preventDefault(); setZoom(zoom*(e.deltaY<0?1.08:0.92)); } },{passive:false});
+  })();
+
+  U.dragRow = h => {
+    h.addEventListener('pointerdown', e=>{
+      e.preventDefault(); h.setPointerCapture(e.pointerId);
+      const from=+h.dataset.drag, row=h.closest('.cell'), rows=[...document.querySelectorAll('#cells .cell')];
+      const rects=rows.map(r=>r.getBoundingClientRect()), y0=e.clientY; let to=from;
+      row.classList.add('drag'); vib(10);
+      const mv = ev=>{
+        const dy=ev.clientY-y0; row.style.transform=`translateY(${dy}px) scale(1.02)`;
+        const cy=rects[from].top+rects[from].height/2+dy; to=from;
+        rects.forEach((r,i)=>{ if(i<from && cy<r.bottom) to=Math.min(to,i); if(i>from && cy>r.top) to=Math.max(to,i); });
+        rows.forEach((r,i)=>{ if(i===from) return; let s=0; if(from<to && i>from && i<=to) s=-rects[from].height; if(from>to && i<from && i>=to) s=rects[from].height;
+          r.style.transition='transform .2s var(--ease)'; r.style.transform=s?`translateY(${s}px)`:''; });
+      };
+      const up = ()=>{ h.removeEventListener('pointermove',mv);
+        rows.forEach(r=>{ r.style.transform=''; r.style.transition=''; }); row.classList.remove('drag');
+        if(to!==from){ const [c]=S.cells.splice(from,1); S.cells.splice(to,0,c); SEL=to; renderCells(); update(); vib(12); } };
+      h.addEventListener('pointermove',mv); h.addEventListener('pointerup',up,{once:true}); h.addEventListener('pointercancel',up,{once:true});
+    });
+  };
+
+  U.sheet = (title, items) => {
+    const g=$('sheetGrp');
+    g.innerHTML = (title?`<div class="ttl">${esc(title)}</div>`:'') + items.map((it,i)=>`<button type="button" data-x="${i}" class="${it.danger?'danger':''}" ${it.disabled?'disabled':''}>${esc(it.label)}</button>`).join('');
+    g.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{ close(); items[+b.dataset.x].run(); });
+    $('scrim').classList.add('on'); $('sheet').classList.add('on');
+    setTimeout(()=>{ const f=g.querySelector('button:not([disabled])'); f&&f.focus(); },60);
+  };
+  const close = ()=>{ $('scrim').classList.remove('on'); $('sheet').classList.remove('on'); };
+  $('scrim').onclick = close; $('sheetCancel').onclick = close;
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+  U.cellMenu = i => {
+    const c=S.cells[i];
+    U.sheet(`خلية ${i+1} – ${T[c.t].n}, ${f2(c.w)} م`, [
+      {label:'تحريك لليسار في الرسم', disabled:i===0, run:()=>cellAction(i,'up')},
+      {label:'تحريك لليمين في الرسم', disabled:i===S.cells.length-1, run:()=>cellAction(i,'dn')},
+      {label:'تكرار الخلية', run:()=>{ cellAction(i,'dup'); U.toast('تم تكرار الخلية'); }},
+      {label:'حذف الخلية', danger:true, run:()=>{ cellAction(i,'del'); U.toast('تم حذف الخلية', 'تراجع', U.undo); }}
+    ]);
+  };
+  $('btnShare').onclick = ()=> U.sheet('تصدير وحفظ', [
+    {label:'تصدير ورقة A0 (HTML)', run:()=>{ $('btnHtml').click(); U.toast('تم تصدير الورقة'); }},
+    {label:'تنزيل SVG', run:()=>$('btnSvg').click()},
+    {label:'طباعة', run:()=>$('btnPrint').click()},
+    {label:'حفظ JSON', run:()=>{ $('btnJson').click(); U.toast('تم حفظ الملف'); }},
+    {label:'تحميل JSON…', run:()=>$('fileJson').click()}
+  ]);
+
+  let tt;
+  U.toast = (msg, act, fn) => {
+    $('toastMsg').textContent = msg; const b=$('toastAct');
+    b.hidden = !act; if(act){ b.textContent=act; b.onclick=()=>{ fn(); $('toast').classList.remove('on'); }; }
+    $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'), act?4500:2200);
+  };
+  window.alert = m => U.toast(String(m));
+
+  const H = {stack:[], i:-1, lock:false, t:0};
+  const snap = () => JSON.stringify({sec:curSec(), sheet:SHEET, scale:$('scale').value, proj:$('proj').value, drawn:$('drawn').value, dwg:$('dwg').value,
+    tog:['tIcons','tTrees','tCf','tNames'].map(id=>$(id).checked), preset:$('preset').value});
+  const push = () => { if(H.lock) return; const s=snap(); if(H.stack[H.i]===s) return; H.stack.splice(H.i+1); H.stack.push(s); if(H.stack.length>80) H.stack.shift(); H.i=H.stack.length-1; btns(); };
+  const btns = () => { $('btnUndo').disabled = H.i<=0; $('btnRedo').disabled = H.i>=H.stack.length-1; };
+  const restore = s => { H.lock=true; const j=JSON.parse(s);
+    SHEET=j.sheet; loadSec(j.sec); $('tPave').checked=j.sec.pave; $('scale').value=j.scale; $('proj').value=j.proj; $('drawn').value=j.drawn; $('dwg').value=j.dwg;
+    ['tIcons','tTrees','tCf','tNames'].forEach((id,i)=>$(id).checked=j.tog[i]); $('preset').value=j.preset;
+    update(); H.lock=false; };
+  U.undo = () => { if(H.i>0){ H.i--; restore(H.stack[H.i]); btns(); vib(); } };
+  U.redo = () => { if(H.i<H.stack.length-1){ H.i++; restore(H.stack[H.i]); btns(); vib(); } };
+  $('btnUndo').onclick = U.undo; $('btnRedo').onclick = U.redo;
+  document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='z' && !/INPUT|SELECT/.test(document.activeElement.tagName)){ e.preventDefault(); e.shiftKey?U.redo():U.undo(); } });
+
+  let prevStats = [];
+  function stats(){
+    [...$('stats').querySelectorAll('.stat b')].forEach((b,i)=>{
+      const node=b.firstChild, txt=node.textContent, prev=prevStats[i];
+      if(prev!==undefined && prev!==txt){
+        b.parentNode.classList.remove('pulse'); void b.offsetWidth; b.parentNode.classList.add('pulse');
+        const a=parseFloat(prev), z=parseFloat(txt);
+        if(/^-?\d+(\.\d+)?$/.test(txt) && !isNaN(a)){ const d=(txt.split('.')[1]||'').length, t0=performance.now();
+          const step=now=>{ const p=Math.min(1,(now-t0)/260), e=1-Math.pow(1-p,3); node.textContent=(a+(z-a)*e).toFixed(d); if(p<1) requestAnimationFrame(step); };
+          node.textContent=prev; requestAnimationFrame(step); }
+      }
+      prevStats[i]=txt;
+    });
+    const all=[...$('checks').querySelectorAll('.chk')];
+    const bad=all.filter(c=>c.classList.contains('bad')).length, warn=all.filter(c=>c.classList.contains('warn')).length;
+    const p=$('statusPill'), prevKey=p.dataset.k, key=`${bad}/${warn}`;
+    p.className='pill '+(bad?'bad':warn?'warn':'ok');
+    p.querySelector('span').textContent = bad? `${bad} تجاوزات` : warn? `${warn} ملاحظات` : 'سليم';
+    if(prevKey && prevKey!==key){ all.forEach(c=>c.classList.add('new')); }
+    p.dataset.k=key;
+  }
+  $('statusPill').onclick = ()=>{ $('checksBox').scrollIntoView({behavior:'smooth',block:'center'}); };
+
+  U.pane = id => {
+    document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on', p.id===id));
+    $('paneSeg').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.p===id));
+    U.segAll();
+  };
+  $('paneSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ U.pane(b.dataset.p); vib(); });
+
+  let pFilter = null;
+  U.presets = () => {
+    const groups=[...new Set(Object.values(PRESETS).map(p=>p.g))];
+    if(!pFilter) pFilter = PRESETS[$('preset').value].g;
+    $('presetFilter').innerHTML = groups.map(g=>`<button type="button" data-g="${esc(g)}" aria-pressed="${g===pFilter}">${esc(g.replace(/^(حضري|بين-مدني) – /,'$1 · '))}</button>`).join('');
+    $('presetFilter').querySelectorAll('button').forEach(b=>b.onclick=()=>{ pFilter=b.dataset.g; U.presets(); vib(); });
+    $('presetGrid').innerHTML = Object.entries(PRESETS).filter(([,p])=>p.g===pFilter).map(([k,p])=>{
+      const tot=p.cells.reduce((a,c)=>a+c.w,0);
+      return `<button type="button" class="pcard" data-p="${k}" aria-pressed="${k===$('preset').value}">
+        <span class="ck">✓</span>
+        <span class="thumb">${p.cells.map(c=>`<i style="width:${(c.w/tot*100).toFixed(2)}%;background:${T[c.t].col}"></i>`).join('')}</span>
+        <b>${esc(p.n.replace(/\s*\(.*\)$/,''))}</b><small>${f2(tot)} م · ${p.cells.length} خلايا</small></button>`; }).join('');
+    $('presetGrid').querySelectorAll('.pcard').forEach(b=>b.onclick=()=>{
+      $('preset').value=b.dataset.p; SEL=-1; applyPreset(); vib(10);
+      U.toast('تم تحميل النمط – يمكنك تحرير الخلايا', 'إلى الخلايا', ()=>U.pane('p-cells'));
+    });
+    U.segKnob($('presetFilter'));
+  };
+
+  U.tiles = () => {
+    $('tiles').innerHTML = Object.keys(T).map(k=>`<button type="button" class="tile" data-t="${k}"><i style="background:${T[k].col}"></i>${esc(T[k].n)}</button>`).join('');
+    $('tiles').querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+      const t=b.dataset.t, at = SEL>=0 ? SEL+1 : S.cells.length;
+      S.cells.splice(at,0,{t, w:T[t].w, dir:T[t].dir||'none'}); SEL=at; update(); vib(10);
+      const row=document.querySelector(`#cells .cell[data-row="${at}"]`); if(row){ row.classList.add('flash'); row.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+    });
+  };
+
+  U.after = (selOnly) => {
+    document.querySelectorAll('#cells .cell').forEach((el,i)=>{
+      el.classList.toggle('sel', i===SEL);
+      const st = S.cells[i] && cellCheck(S.cells[i]); const m=el.querySelector('.c-msg'); if(m) m.textContent = st?st.msg:'';
+    });
+    if(selOnly){
+      const old=document.querySelector('#secSVG .selrect'); old&&old.remove(); drawingOverlay();
+      $('ribbon').querySelectorAll('.rb').forEach((el,i)=>el.classList.toggle('sel',i===SEL));
+    } else { drawingOverlay(); ribbon(); stats(); }
+    $('addWhere').textContent = SEL>=0 && S.cells[SEL] ? `– بعد خلية ${SEL+1}` : '– في نهاية المقطع';
+    document.querySelectorAll('.pcard').forEach(b=>b.setAttribute('aria-pressed', b.dataset.p===$('preset').value));
+    document.querySelectorAll('[data-bind]').forEach(s=>s._sync&&s._sync());
+    if(!selOnly){ clearTimeout(H.t); H.t=setTimeout(push, 450); }
+  };
+  U.push = push;
+
+  document.querySelectorAll('#viewSeg .tab').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#viewSeg .tab').forEach(x=>x.setAttribute('aria-pressed', x===b)); U.segKnob($('viewSeg')); vib();
+  }));
+
+  const mq = matchMedia('(max-width:1023px)');
+  const place = () => {
+    const ro=$('readouts');
+    if(mq.matches){ let p=$('p-checks'); if(!p){ p=document.createElement('div'); p.className='pane'; p.id='p-checks'; document.querySelector('.insp').appendChild(p);
+        const b=document.createElement('button'); b.type='button'; b.dataset.p='p-checks'; b.textContent='الفحوصات'; b.setAttribute('aria-pressed','false'); b.onclick=()=>U.pane('p-checks'); $('paneSeg').appendChild(b); }
+      p.appendChild(ro); }
+    else { const p=$('p-checks'); document.querySelector('.stage').appendChild(ro);
+      if(p){ if(p.classList.contains('on')) U.pane('p-start'); p.remove(); $('paneSeg').querySelector('[data-p="p-checks"]').remove(); } }
+    U.segAll(); requestAnimationFrame(()=>grips($('ribbon')));
+  };
+  (mq.addEventListener?mq.addEventListener('change',place):mq.addListener(place));
+  U.place = place;
+  window.addEventListener('resize', ()=>{ U.segAll(); grips($('ribbon')); });
+  $('statusPill').addEventListener('click', ()=>{ if(mq.matches) U.pane('p-checks'); });
+  return U;
+})();
+
+const _coreUpdate = update;
+update = function(rerender){ _coreUpdate(rerender); UI.after(false); };
+
+function levelOf(c){ return T[c.t].lvl; }
+
+/* ---------------- الفحوصات ---------------- */
+function cellCheck(c){
+  const t=T[c.t], ctx=$('ctx').value;
+  if(c.t==='bikeP' && c.dir==='both' && c.w<3.0) return {cls:'bad',msg:'مسار دراجات ثنائي الاتجاه – عرض أدنى 3.0 م (دليل RTA، الفصل 9)'};
+  if(t.min && c.w < t.min[0]-1e-9) return {cls:'bad',msg:t.min[1]};
+  if(t.max && c.w > t.max[0]+1e-9) return {cls:'warn',msg:t.max[1]};
+  if(c.t==='lane'){
+    if(ctx==='urban' && (c.w<2.75-1e-9)) return {cls:'bad',msg:'مسرب حضري (غير منفرد) – الحد الأدنى 2.75 م (RTA GDM / USDM، جدول 3.3)'};
+    if(ctx==='urban' && c.w>3.65+1e-9) return {cls:'warn',msg:'مسرب حضري – الحد الأقصى 3.65 م (شرياني، RTA GDM، جدول 3.3)'};
+    if(ctx==='inter' && c.w<3.5-1e-9)  return {cls:'bad',msg:'مسرب بين-مدني – 3.5–3.75 م (RTA GDM / TR-514، جدول 3.1)'};
+    if(ctx==='inter' && c.w>3.75+1e-9) return {cls:'warn',msg:'مسرب بين-مدني – الحد الأقصى 3.75 م (GCC Highway Design Manual)'};
+  }
+  if(c.t==='shL' && c.w>1.2+1e-9 && c.w<3.0-1e-9) return {cls:'bad',msg:'يُمنع تصميم كتف أيسر بعرض بين 1.2 و3.0 م (RTA GDM / TR-514، جدول 3.2)'};
+  return null;
+}
+
+/* ======================================================================
+   رسم المقطع – الوحدات: مم على الورق. k = مم لكل متر = 1000 / مقياس الرسم
+   ====================================================================== */
+const TXT = 'font-family:Arial,Helvetica,sans-serif';
+function tx(x,y,s,size,o={}){
+  const a=o.anchor||'middle', w=o.weight||400, c=o.color||'#14171a', r=o.rot?` transform="rotate(${o.rot} ${x} ${y})"`:'';
+  return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-size="${size}" text-anchor="${a}" font-weight="${w}" fill="${c}" style="${TXT}"${r}>${esc(s)}</text>`;
+}
+function arrowV(x,yTop,len,dir,col,wd){
+  const h=len, head=Math.min(h*0.4, wd*1.6), sw=wd*0.45;
+  if(dir==='up') return `<path d="M${x} ${yTop} l${wd} ${head} h${-wd+sw} v${h-head} h${-sw*2} v${-(h-head)} h${-wd+sw} z" fill="${col}"/>`;
+  return `<path d="M${x} ${yTop+h} l${wd} ${-head} h${-wd+sw} v${-(h-head)} h${-sw*2} v${h-head} h${-wd+sw} z" fill="${col}"/>`;
+}
+function iCar(cx,yG,k,col){ const w=1.8*k,h=1.45*k; return `<g><rect x="${cx-w*.36}" y="${yG-h}" width="${w*.72}" height="${h*.42}" rx="${h*.1}" fill="${col}"/><rect x="${cx-w*.3}" y="${yG-h+h*.07}" width="${w*.6}" height="${h*.22}" fill="#dfe6ea"/><rect x="${cx-w/2}" y="${yG-h*.62}" width="${w}" height="${h*.44}" rx="${h*.09}" fill="${col}"/><rect x="${cx-w*.46}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/><rect x="${cx+w*.30}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/></g>`; }
+function iBus(cx,yG,k,col){ const w=2.55*k,h=3.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.93}" rx="${w*.08}" fill="${col}"/><rect x="${cx-w*.42}" y="${yG-h*.88}" width="${w*.84}" height="${h*.36}" fill="#e3eaee"/><rect x="${cx-w*.36}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx+w*.18}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx-w*.46}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/><rect x="${cx+w*.3}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/></g>`; }
+function iLrt(cx,yG,k,col){ const w=2.65*k,h=3.6*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.92}" rx="${w*.14}" fill="${col}"/><rect x="${cx-w*.4}" y="${yG-h*.86}" width="${w*.8}" height="${h*.4}" rx="${w*.05}" fill="#dfe8ef"/><path d="M${cx-w*.25} ${yG-h} l${w*.25} ${-h*.35} l${w*.25} ${h*.35}" fill="none" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><line x1="${cx-w*.5}" y1="${yG-h*1.35}" x2="${cx+w*.5}" y2="${yG-h*1.35}" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><rect x="${cx-w*.42}" y="${yG-k*.18}" width="${w*.84}" height="${k*.18}" fill="#555"/></g>`; }
+function iPerson(cx,yG,k,col){ const h=1.7*k,w=.46*k,hd=.2*k; return `<g fill="${col}" opacity=".85"><circle cx="${cx}" cy="${yG-h+hd}" r="${hd}"/><path d="M${cx-w/2} ${yG-h+hd*2.1} h${w} v${h*.42} l${-w*.28} 0 v${h*.44} h${-w*.16} v${-h*.44} h${-w*.12} v${h*.44} h${-w*.16} v${-h*.44} l${-w*.28} 0 z"/></g>`; }
+function iBike(cx,yG,k,col){ const w=.7*k,h=1.75*k,sw=Math.max(.15,k*.035); return `<g><circle cx="${cx}" cy="${yG-h*.16}" r="${h*.16}" fill="none" stroke="#3b3f44" stroke-width="${sw}"/><line x1="${cx-w/2}" y1="${yG-h*.52}" x2="${cx+w/2}" y2="${yG-h*.52}" stroke="#3b3f44" stroke-width="${sw}"/><circle cx="${cx}" cy="${yG-h*.9}" r="${h*.1}" fill="${col}"/><path d="M${cx-w*.34} ${yG-h*.76} h${w*.68} v${h*.34} h${-w*.68} z" fill="${col}"/></g>`; }
+function iTree(cx,yG,k,col){ const h=6*k,r=h*.28,tw=Math.max(.3,h*.04); return `<g><rect x="${cx-tw/2}" y="${yG-h*.58}" width="${tw}" height="${h*.58}" fill="#6b5a44"/><circle cx="${cx}" cy="${yG-h*.72}" r="${r}" fill="${col}" opacity=".9"/><circle cx="${cx-r*.6}" cy="${yG-h*.56}" r="${r*.7}" fill="${col}" opacity=".82"/><circle cx="${cx+r*.6}" cy="${yG-h*.57}" r="${r*.66}" fill="${col}" opacity=".82"/></g>`; }
+function iRail(cx,yG,k){ const h=.8*k,w=.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h}" fill="#555"/><rect x="${cx-w*1.6}" y="${yG-h*.95}" width="${w*3.2}" height="${h*.35}" fill="#8a9097"/></g>`; }
+function iBuilding(x,yG,k,dir){ const w=5*k,h=9*k, x0=dir>0?x:x-w; let win=''; for(let r=0;r<4;r++)for(let c=0;c<3;c++) win+=`<rect x="${x0+w*.12+c*w*.29}" y="${yG-h+h*.1+r*h*.21}" width="${w*.18}" height="${h*.1}" fill="#f0f3f6"/>`; return `<g><rect x="${x0}" y="${yG-h}" width="${w}" height="${h}" fill="#9aa1a7" opacity=".55"/>${win}</g>`; }
+
+function edgeExtent(e){
+  if(!e || e.type==='none') return {w:1.0, dep:0};
+  if(e.type==='building') return {w:5.5, dep:0};
+  if(e.type==='fill') return {w: e.h*e.n + 2.0, dep: e.h};
+  if(e.type==='cut') return {w: (e.dd||0.6)*3 + (e.db||0.6) + (e.h+(e.dd||0.6))*e.n + 2.0, dep: (e.dd||0.6)};
+  return {w:1,dep:0};
+}
+
+function sectionSVG(sec, D, opt){
+  const k = 1000/D;
+  const cells = sec.cells.filter(c=>c.w>0);
+  const tot = cells.reduce((a,c)=>a+c.w,0);
+  const eL = edgeExtent(sec.eL), eR = edgeExtent(sec.eR);
+  const curbH = sec.curbH;
+  const topM = 9.5;
+  const titleH = 14;
+  const xL = eL.w*k, yG = titleH + topM*k;
+  const pave = sec.pave ? (sec.dSurf+sec.dBase+sec.dSub) : 0;
+  const depth = Math.max(pave+0.2, eL.dep, eR.dep) * k;
+  let out = '';
+  const X = m => xL + m*k;
+  const Z = z => yG - z*k;
+
+  let x = 0; const P = cells.map(c=>{ const o={...c, x0:x, x1:x+c.w, z:(levelOf(c)==='curb'?curbH:0)}; x+=c.w; return o; });
+
+  out += tx(X(tot/2), 7, sec.title || 'مقطع نموذجي', 6, {weight:700});
+  out += tx(X(tot/2), 12.5, `مقياس الرسم 1:${D}`, 3.2, {color:'#585f66'});
+
+  const baseZ = -(Math.max(pave,0.35)+0.15);
+  P.forEach(p=>{
+    const t=T[p.t];
+    if(levelOf(p)==='road' && sec.pave){
+      const ys = Z(0), a=sec.dSurf*k, b=sec.dBase*k, c=sec.dSub*k;
+      out += `<rect x="${X(p.x0)}" y="${ys}" width="${p.w*k}" height="${a}" fill="#3c4146"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys+a}" width="${p.w*k}" height="${b}" fill="#c9b98f"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys+a+b}" width="${p.w*k}" height="${c}" fill="#e0d6b8"/>`;
+    } else {
+      out += `<rect x="${X(p.x0)}" y="${Z(p.z)}" width="${p.w*k}" height="${(p.z-baseZ)*k}" fill="${levelOf(p)==='curb'?'#e6e1d4':'#d9d3c4'}"/>`;
+    }
+    out += `<rect x="${X(p.x0)}" y="${Z(p.z)-0.08*k}" width="${p.w*k}" height="${0.08*k}" fill="${t.col}"/>`;
+  });
+  let d = `M${X(0)} ${Z(P.length?P[0].z:0)}`;
+  P.forEach((p,i)=>{ d += ` L${X(p.x0)} ${Z(p.z)} L${X(p.x1)} ${Z(p.z)}`; if(i<P.length-1 && P[i+1].z!==p.z) d += ` L${X(p.x1)} ${Z(P[i+1].z)}`; });
+  out += `<path d="${d}" fill="none" stroke="#14171a" stroke-width="0.35"/>`;
+  P.forEach((p,i)=>{ const n=P[i+1]; if(n && n.z!==p.z){ const xx=X(p.x1), zz=Math.max(p.z,n.z), cw=0.15*k, sgn = p.z>n.z?-1:0; out += `<rect x="${xx + sgn*cw}" y="${Z(zz)}" width="${cw}" height="${(zz+0.25)*k}" fill="#b9b4a8" stroke="#14171a" stroke-width="0.15"/>`; } });
+
+  const z0L = P.length?P[0].z:0, z0R = P.length?P[P.length-1].z:0;
+  out += edgeDraw(sec.eL, X(0), Z(z0L), k, -1);
+  out += edgeDraw(sec.eR, X(tot), Z(z0R), k, 1);
+
+  P.forEach((p,i)=>{ const n=P[i+1]; if(!n) return;
+    const road = t=>['lane','bus','brt'].includes(t);
+    if(road(p.t)&&road(n.t)){ const same = p.dir===n.dir; out += `<line x1="${X(p.x1)}" y1="${Z(0)-0.02*k}" x2="${X(p.x1)}" y2="${Z(0)-0.02*k}" stroke="#fff"/>`;
+      out += `<rect x="${X(p.x1)-0.06*k}" y="${Z(0)-0.05*k}" width="${0.12*k}" height="${0.05*k}" fill="${same?'#ffffff':'#f2c94c'}" stroke="#14171a" stroke-width="0.05"/>`; }
+  });
+
+  P.forEach(p=>{
+    const t=T[p.t], cx=X((p.x0+p.x1)/2), yS=Z(p.z);
+    if(opt.icons){
+      if(t.car==='car') out += iCar(cx,yS,k,'#5c6e82');
+      if(t.car==='park') out += iCar(cx,yS,k,'#9aa7b3');
+      if(t.car==='bus') out += iBus(cx,yS,k,'#c4574a');
+      if(t.car==='lrt') out += iLrt(cx,yS,k,'#2f6db3');
+      if(t.bike){ if(p.dir==='both' && p.w>=2){ out += iBike(X(p.x0+p.w*0.3),yS,k,'#b0503a')+iBike(X(p.x0+p.w*0.7),yS,k,'#b0503a'); } else out += iBike(cx,yS,k,'#b0503a'); }
+      if(p.t==='walk' || (t.ppl && p.w>=3)){ const n=Math.max(1,Math.min(4,Math.floor(p.w/1.2))); for(let j=0;j<n;j++) out += iPerson(X(p.x0+(j+0.5)*p.w/n),yS,k,'#3d4650'); }
+    }
+    if(opt.trees && t.tree && p.w>=1.0){ const n=p.t==='plaza'?Math.max(1,Math.floor(p.w/6)):1; for(let j=0;j<n;j++) out += iTree(X(p.x0+(j+0.5)*p.w/n),yS,k,'#6f9a55'); }
+    if(t.rail) out += iRail(p.t==='barrier'?cx:X(p.x0+Math.min(0.5,p.w/2)),yS,k);
+    if(t.dir && p.dir && p.dir!=='none' && (t.car||t.bike)){
+      const top = yS - (t.car==='lrt'?5.8:t.car==='bus'?4.4:t.bike?2.8:2.6)*k, len=1.4*k, wd=0.35*k;
+      if(p.dir==='both'){ out += arrowV(cx-wd*1.4,top-len,len,'up','#14171a',wd)+arrowV(cx+wd*1.4,top-len,len,'down','#14171a',wd); }
+      else out += arrowV(cx,top-len,len,p.dir,t.car==='bus'||t.car==='lrt'?'#c49a1a':'#14171a',wd);
+    }
+  });
+
+  if(opt.cf){
+    const isRoad = p=>levelOf(p)==='road' && !['barrier','active'].includes(p.t);
+    let groups=[], cur=null;
+    P.forEach((p,i)=>{ if(isRoad(p)){ if(!cur){cur={a:i,b:i}; groups.push(cur);} else cur.b=i; } else cur=null; });
+    groups.forEach(g=>{
+      const x0=P[g.a].x0, x1=P[g.b].x1, mid=(x0+x1)/2;
+      [[x0,mid],[mid,x1]].forEach(([a,b],j)=>{ if(b-a<1.2) return; const cx=X((a+b)/2), y=yG+depth+2.2;
+        const dir = j===0?-1:1;
+        out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a"/>`;
+        out += tx(cx, y-1.0, sec.cfRoad.toFixed(1)+'%', 2.5, {color:'#2b5c8a'}); });
+    });
+    P.forEach((p,i)=>{ if(levelOf(p)!=='curb' || p.w<2.0 || T[p.t].tree && p.t!=='plaza') return;
+      let dL=1e9,dR=1e9; for(let j=i-1;j>=0;j--) if(levelOf(P[j])==='road'){dL=i-j;break;} for(let j=i+1;j<P.length;j++) if(levelOf(P[j])==='road'){dR=j-i;break;}
+      const dir = dR<dL?1:-1, cx=X((p.x0+p.x1)/2), y=yG+depth+2.2;
+      out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a"/>`;
+      out += tx(cx, y-1.0, sec.cfSide.toFixed(1)+'%', 2.5, {color:'#2b5c8a'}); });
+  }
+
+  let yD = yG + depth + (opt.cf?11:7);
+  const tick = (x,y)=>`<line x1="${x-0.9}" y1="${y+0.9}" x2="${x+0.9}" y2="${y-0.9}" stroke="#14171a" stroke-width="0.3"/>`;
+  function chain(segs, y, size, labels){
+    let s = `<line x1="${X(segs[0].a)}" y1="${y}" x2="${X(segs[segs.length-1].b)}" y2="${y}" stroke="#14171a" stroke-width="0.2"/>`;
+    segs.forEach(g=>{ const a=X(g.a), b=X(g.b), wmm=b-a, val=f2(g.b-g.a);
+      s += tick(a,y)+tick(b,y)+`<line x1="${a}" y1="${y-2.2}" x2="${a}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12"/><line x1="${b}" y1="${y-2.2}" x2="${b}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12"/>`;
+      const need = val.length*size*0.55;
+      if(wmm >= need+0.6) s += tx((a+b)/2, y-0.9, val, size);
+      else s += tx((a+b)/2+size*0.35, y-1.2, val, size*0.85, {anchor:'start', rot:-90});
+      if(labels && g.l){ const need2 = g.l.length*2.1*0.55; if(wmm>=need2+0.8) s += tx((a+b)/2, y+3.6, g.l, 2.1, {color:'#585f66'}); else s += tx((a+b)/2+0.8, y+2.2, g.l, 1.9, {anchor:'end', rot:-90, color:'#585f66'}); }
+    });
+    return s;
+  }
+  out += chain(P.map(p=>({a:p.x0,b:p.x1,l:opt.names?T[p.t].s:''})), yD, 2.7, opt.names);
+  const cat = p => ['median','barrier'].includes(p.t)?'جزيرة وسطى' : (p.t==='lrt'?'سكة خفيفة' : (levelOf(p)==='road'?(sec.ctx==='inter'?'رصف + أكتاف':'طريق'):(p.t==='plaza'?'جزيرة مشجّرة':'رصيف')));
+  let G=[]; P.forEach(p=>{ const c=cat(p); const last=G[G.length-1]; if(last && last.l===c) last.b=p.x1; else G.push({a:p.x0,b:p.x1,l:c}); });
+  const row2Y = yD + (opt.names?14:9);
+  if(G.length>1) out += chain(G, row2Y, 2.9, true);
+  const row3Y = row2Y + (G.length>1?11:0);
+  out += chain([{a:0,b:tot,l:'العرض الكلي'}], row3Y, 3.3, true);
+  [0,tot].forEach(m=>{ out += `<line x1="${X(m)}" y1="${Z(4.5)}" x2="${X(m)}" y2="${row3Y+2}" stroke="#b03a2e" stroke-width="0.25" stroke-dasharray="3 1.2 0.6 1.2"/>`; });
+  out += tx(X(0)-1, Z(4.8), 'حد حق الطريق', 2.3, {anchor:'end', color:'#b03a2e'}) + tx(X(tot)+1, Z(4.8), 'حد حق الطريق', 2.3, {anchor:'start', color:'#b03a2e'});
+
+  const W = (eL.w + tot + eR.w)*k;
+  return {g: out, w: W, h: row3Y + 6, tot};
+}
+function edgeDraw(e, x, y, k, dir){
+  if(!e || e.type==='none') return '';
+  if(e.type==='building') return iBuilding(x + dir*0.4*k, y, k, dir) + `<line x1="${x+dir*0.4*k}" y1="${y-9.5*k}" x2="${x+dir*0.4*k}" y2="${y+0.5*k}" stroke="#585f66" stroke-width="0.25" stroke-dasharray="2 1"/>`;
+  if(e.type==='fill'){ const run=e.h*e.n*k, dy=e.h*k;
+    return `<path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy} L${x+dir*(run+2*k)} ${y+dy+1*k} L${x} ${y+dy+1*k} Z" fill="#e4dcc6" stroke="none"/><path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+
+      tx(x+dir*run*0.5, y+dy*0.5-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a'}); }
+  if(e.type==='cut'){ const dd=(e.dd||0.6)*k, f=dd*3, b=(e.db||0.6)*k, up=(e.h+(e.dd||0.6))*k, br=up*e.n;
+    const p1=[x+dir*f, y+dd], p2=[x+dir*(f+b), y+dd], p3=[x+dir*(f+b+br), y+dd-up], p4=[x+dir*(f+b+br+2*k), y+dd-up];
+    return `<path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4} L${p4[0]} ${y+dd+1*k} L${x} ${y+dd+1*k} Z" fill="#e4dcc6"/><path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+
+      tx((p2[0]+p3[0])/2, (p2[1]+p3[1])/2-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a'})+tx((p1[0]+p2[0])/2, y+dd+3, 'قناة', 2.2, {color:'#585f66'}); }
+  return '';
+}
+
+/* ---------------- ورقة A0 ---------------- */
+const A0 = {w:1189, h:841};
+function curSec(){
+  return {title:$('title').value, ctx:$('ctx').value, cells:S.cells.map(c=>({...c})), eL:{...S.eL}, eR:{...S.eR},
+    curbH:num('curbH'), dSurf:num('dSurf'), dBase:num('dBase'), dSub:num('dSub'), cfRoad:num('cfRoad'), cfSide:num('cfSide'),
+    pave:$('tPave').checked, rowTarget:num('rowTarget')};
+}
+function opts(){ return {icons:$('tIcons').checked, trees:$('tTrees').checked, cf:$('tCf').checked, names:$('tNames').checked}; }
+function sheetSVG(){
+  const D = +$('scale').value, secs = SHEET.length? SHEET : [curSec()];
+  const frameL=20, frame=10, tbW=180, tbH=62;
+  const drawW = A0.w - frameL - frame - 10, availH = A0.h - 2*frame - tbH - 20;
+  const blocks = secs.map(s=>sectionSVG(s, D, opts()));
+  const totalH = blocks.reduce((a,b)=>a+b.h,0) + 12*(blocks.length-1);
+  let y = frame + 12 + Math.max(0,(availH-totalH)/2), body='', warn=[];
+  blocks.forEach((b,i)=>{ const x = frameL + 5 + Math.max(0,(drawW-b.w)/2); if(b.w>drawW) warn.push(`المقطع ${i+1} أعرض من الورقة (${Math.round(b.w)} مم)`);
+    body += `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">${b.g}</g>`; y += b.h + 12; });
+  if(totalH > availH) warn.push('ارتفاع المقاطع يتجاوز المساحة المتاحة في الورقة');
+  const k=1000/D, sbX=frameL+10, sbY=A0.h-frame-12; let sb='';
+  for(let i=0;i<5;i++) sb += `<rect x="${sbX+i*2*k}" y="${sbY}" width="${2*k}" height="2" fill="${i%2?'#fff':'#14171a'}" stroke="#14171a" stroke-width="0.2"/>`;
+  sb += tx(sbX, sbY-1.5, '0', 2.5)+tx(sbX+5*k, sbY-1.5, '5', 2.5)+tx(sbX+10*k, sbY-1.5, '10 م', 2.5)+tx(sbX+5*k, sbY+6, `مسطرة المقياس 1:${D} – 10 م = ${(10*k).toFixed(0)} مم`, 2.5, {color:'#585f66'});
+  const tbX = A0.w-frame-tbW, tbY=A0.h-frame-tbH, today=new Date().toLocaleDateString('ar-EG');
+  const cellT = (x,y,w,h,lab,val,big)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+tx(x+w-2,y+4,lab,2.3,{anchor:'end',color:'#585f66'})+tx(x+w-2,y+h-3,val,big?5:3.4,{anchor:'end',weight:big?700:400});
+  let tb = `<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="#fff" stroke="#14171a" stroke-width="0.6"/>`;
+  tb += cellT(tbX,tbY,tbW,16,'الجهة','MAHALCO – الهندسة المدنية والنقل',true);
+  tb += cellT(tbX,tbY+16,tbW,14,'المشروع',$('proj').value||'—');
+  tb += cellT(tbX,tbY+30,tbW,14,'محتوى الورقة', secs.map(s=>s.title).join(' | '));
+  tb += cellT(tbX+120,tbY+44,60,18,'مقياس الرسم',`1:${D}`,true)+cellT(tbX+80,tbY+44,40,18,'الورقة',$('dwg').value||'—')+cellT(tbX+40,tbY+44,40,18,'التاريخ',today)+cellT(tbX,tbY+44,40,18,'الراسم',$('drawn').value||'—');
+  const notes = tx(frameL+10, A0.h-frame-26, 'ملاحظات: الأبعاد بالأمتار. الارتفاعات والميول معروضة بمقياس موحَّد (بدون مبالغة رأسية). بنية الرصف إرشادية – وفق تصميم الرصف. مقطع مبدئي – ليس للتنفيذ.', 2.8, {anchor:'start'});
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${A0.w}mm" height="${A0.h}mm" viewBox="0 0 ${A0.w} ${A0.h}" id="sheetSVG" style="direction:ltr">
+<rect width="${A0.w}" height="${A0.h}" fill="#ffffff"/>
+<rect x="${frameL}" y="${frame}" width="${A0.w-frameL-frame}" height="${A0.h-2*frame}" fill="none" stroke="#14171a" stroke-width="0.7"/>
+${body}${sb}${notes}${tb}</svg>`;
+  return {svg, warn};
+}
+
+/* ---------------- العرض والإحصاءات والفحوصات ---------------- */
+function update(rerenderCells=true){
+  if(rerenderCells) renderCells(); else document.querySelectorAll('#cells .cell').forEach((el,i)=>{ const st=cellCheck(S.cells[i]); el.className='cell '+(st?st.cls:''); el.title=st?st.msg:T[S.cells[i].t].n; });
+  const sec = curSec(), D = +$('scale').value;
+  let warn=[];
+  if(VIEW==='section'){
+    const b = sectionSVG(sec, D, opts()), pad=6;
+    $('drawing').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-pad} ${-pad} ${b.w+2*pad} ${b.h+2*pad}" id="secSVG" style="direction:ltr"><rect x="${-pad}" y="${-pad}" width="${b.w+2*pad}" height="${b.h+2*pad}" fill="#fbfaf6"/>${b.g}</svg>`;
+  } else {
+    const s = sheetSVG(); warn = s.warn;
+    $('drawing').innerHTML = s.svg;
+  }
+  const tot = sec.cells.reduce((a,c)=>a+c.w,0);
+  const road = sec.cells.filter(c=>levelOf(c)==='road').reduce((a,c)=>a+c.w,0);
+  const lanesDn = sec.cells.filter(c=>['lane'].includes(c.t)&&c.dir==='down').length, lanesUp = sec.cells.filter(c=>['lane'].includes(c.t)&&c.dir==='up').length;
+  const busN = sec.cells.filter(c=>['bus','brt'].includes(c.t)).length;
+  const walk = sec.cells.filter(c=>c.t==='walk').reduce((a,c)=>a+c.w,0);
+  const k = 1000/D;
+  $('stats').innerHTML = [['العرض الكلي',f2(tot),'م'],['منسوب الطريق (مع الأكتاف)',f2(road),'م'],['مسارب ↓ / ↑',`${lanesDn} / ${lanesUp}`,''],['مسارب النقل العام',busN,''],['أشرطة المشي',f2(walk),'م'],[`العرض على الورق 1:${D}`,(tot*k).toFixed(0),'مم']]
+    .map(r=>`<div class="stat"><span>${r[0]}</span><b>${r[1]}<small> ${r[2]}</small></b></div>`).join('');
+  const chk=[];
+  if(sec.rowTarget>0){ const df=tot-sec.rowTarget; chk.push(Math.abs(df)<0.005?['','حق الطريق',`مجموع الخلايا ${f2(tot)} م مطابق لعرض الهدف.`]:['bad','حق الطريق',`مجموع الخلايا ${f2(tot)} م – ${df>0?'تجاوز بمقدار ':'ناقص '}${f2(Math.abs(df))} م مقابل هدف ${f2(sec.rowTarget)} م.`]); }
+  sec.cells.forEach((c,i)=>{ const st=cellCheck(c); if(st) chk.push([st.cls,`خلية ${i+1} – ${T[c.t].n} ${f2(c.w)} م`,st.msg]); });
+  sec.cells.forEach((c,i)=>{ if(T[c.t].note) chk.push(['warn',`خلية ${i+1} – ${T[c.t].n}`,T[c.t].note]); });
+  if(sec.ctx==='inter' && sec.cells.some(c=>c.t==='barrier')){ const iB=sec.cells.findIndex(c=>c.t==='barrier'); const nb=sec.cells[iB-1], na=sec.cells[iB+1]; const med=(nb&&nb.t==='shL'?nb.w:0)+(na&&na.t==='shL'?na.w:0);
+    chk.push([med>=2.4-1e-9?'':'bad','الجزيرة الوسطى بين-مدني',`الأكتاف اليسرى ${f2(med)} م + حاجز – الحد الأدنى 2.4 م + عرض الحواجز في مسربين أو ثلاثة؛ 6.0 م في 4 مسارب أو في طريق سريع 120 (RTA GDM / TR-514، البند 3.4.2).`]); }
+  warn.forEach(w=>chk.push(['bad','الورقة',w]));
+  { const secs = SHEET.length?SHEET:[sec]; const maxW = Math.max(...secs.map(s=>s.cells.reduce((a,c)=>a+c.w,0)+edgeExtent(s.eL).w+edgeExtent(s.eR).w));
+    if(maxW*1000/D < 400) chk.push(['','الورقة',`بمقياس 1:${D} يشغل المقطع ${(maxW*1000/D).toFixed(0)} مم من أصل ~1,150 مم في عرض A0. يمكنك إضافة حتى ثلاثة مقاطع في الورقة، أو اختيار 1:100 (${(maxW*10).toFixed(0)} مم).`]); }
+  if(sec.eL.type==='fill'&&sec.eL.n<4 || sec.eR.type==='fill'&&sec.eR.n<4) chk.push(['warn','منحدر الردم','ميل الردم أحدُّ من 1:4 – يلزم حاجز حماية عند حافة الكتف (RTA GDM / TR-514، البند 3.5.5: 1:4–1:6 في الردم، 1:3–1:6 في الحفر).']);
+  if(!chk.length) chk.push(['','سليم','لم يتم العثور على تجاوزات مقابل قيم الإرشادات المُضمَّنة في الأداة.']);
+  $('checks').innerHTML = chk.map(c=>`<div class="chk ${c[0]}"><b>${esc(c[1])}</b>${esc(c[2])}</div>`).join('');
+  $('sheetList').innerHTML = SHEET.map((s,i)=>`<div><span>${i+1}. ${esc(s.title)} – ${f2(s.cells.reduce((a,c)=>a+c.w,0))} م</span><button class="mini" data-s="${i}" data-a="load">تحرير</button><button class="mini" data-s="${i}" data-a="rm">✕</button></div>`).join('') || '<p class="hint">ستُدرج الورقة المقطع الحالي.</p>';
+  $('sheetList').querySelectorAll('button').forEach(b=>b.onclick=()=>{ const i=+b.dataset.s; if(b.dataset.a==='rm') SHEET.splice(i,1); else loadSec(SHEET[i]); update(); });
+}
+function loadSec(s){
+  S.cells = s.cells.map(c=>({...c})); S.eL={...s.eL}; S.eR={...s.eR};
+  $('title').value=s.title||''; $('ctx').value=s.ctx||'urban'; $('rowTarget').value=s.rowTarget||0;
+  ['curbH','dSurf','dBase','dSub','cfRoad','cfSide'].forEach(k=>{ if(s[k]!==undefined) $(k).value=s[k]; });
+  edgeUI('L'); edgeUI('R');
+}
+function applyPreset(){
+  const p = PRESETS[$('preset').value];
+  S.cells = p.cells.map(c=>({...c})); S.eL={...p.eL}; S.eR={...p.eR};
+  $('title').value = p.n.replace(/\s*\(.*\)$/,''); $('ctx').value=p.ctx; $('rowTarget').value=p.row||0;
+  $('presetSrc').textContent = 'المصدر: '+p.src;
+  edgeUI('L'); edgeUI('R'); update();
+}
+
+/* ---------------- تصدير ---------------- */
+function save(blob, name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); }
+function a0Html(){
+  const {svg} = sheetSVG();
+  return `<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${esc(($('dwg').value||'TS')+' – '+(SHEET.length?SHEET.map(s=>s.title).join(', '):$('title').value))}</title>
+<style>
+@page{size:1189mm 841mm;margin:0}
+html,body{margin:0;padding:0;background:#fff}
+svg{display:block;width:1189mm;height:841mm}
+.noprint{position:fixed;top:8px;left:8px;background:#fffbe6;border:1px solid #c9a227;padding:8px 12px;font:13px Arial;direction:rtl}
+@media print{.noprint{display:none}}
+</style></head><body>
+<div class="noprint">ورقة A0 أفقية (1189×841 مم)، مقياس 1:${$('scale').value}. للطباعة/PDF: مقاس الورق A0، «الحجم الفعلي / 100%»، بدون هوامش. تحقق من مسطرة المقياس: 10 م = ${(10000/ +$('scale').value).toFixed(0)} مم.</div>
+${svg}
+</body></html>`;
+}
+$('btnHtml').onclick = ()=> save(new Blob([a0Html()],{type:'text/html;charset=utf-8'}), `MAHALCO_${$('dwg').value||'TS'}_A0_1-${$('scale').value}.html`);
+$('btnSvg').onclick = ()=> { const {svg}=sheetSVG(); save(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+svg],{type:'image/svg+xml;charset=utf-8'}), `MAHALCO_${$('dwg').value||'TS'}_A0.svg`); };
+$('btnPrint').onclick = ()=> { const w=window.open('','_blank'); w.document.write(a0Html()); w.document.close(); setTimeout(()=>w.print(),400); };
+$('btnJson').onclick = ()=> save(new Blob([JSON.stringify({version:1, sheet:SHEET, current:curSec(), scale:+$('scale').value, proj:$('proj').value, dwg:$('dwg').value},null,2)],{type:'application/json'}), 'typical-section.json');
+$('fileJson').onchange = e=>{ const f=e.target.files[0]; if(!f) return; f.text().then(t=>{ try{ const j=JSON.parse(t); SHEET=j.sheet||[]; if(j.current) loadSec(j.current); if(j.scale) $('scale').value=j.scale; if(j.proj!==undefined) $('proj').value=j.proj; if(j.dwg) $('dwg').value=j.dwg; update(); }catch(err){ alert('ملف JSON غير صالح'); } }); };
+$('btnAddSheet').onclick = ()=>{ if(SHEET.length>=3){ alert('حتى ثلاثة مقاطع في ورقة A0 واحدة'); return; } SHEET.push(curSec()); update(); };
+$('btnAdd').onclick = ()=>{ const t=$('addType').value; S.cells.push({t, w:T[t].w, dir:T[t].dir||'none'}); update(); };
+$('btnMirror').onclick = ()=>{ S.cells = [...S.cells, ...mirror(S.cells)]; const e=S.eL; S.eR={...e}; edgeUI('R'); update(); };
+$('btnClear').onclick = ()=>{ S.cells=[]; update(); };
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{ VIEW=b.dataset.v; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b)); update(false); });
+['title','rowTarget','ctx','dSurf','dBase','dSub','cfRoad','cfSide','curbH','scale','proj','drawn','dwg','tIcons','tTrees','tCf','tPave','tNames'].forEach(id=>$(id).addEventListener(id.startsWith('t')&&$(id).type==='checkbox'?'change':'input',()=>update(id==='ctx')));
+$('ctx').addEventListener('change',()=>update());
+
+/* ---------------- التهيئة ---------------- */
+(function init(){
+  const groups={}; Object.entries(PRESETS).forEach(([k,p])=>{ (groups[p.g]=groups[p.g]||[]).push([k,p.n]); });
+  $('preset').innerHTML = Object.entries(groups).map(([g,a])=>`<optgroup label="${g}">${a.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('')}</optgroup>`).join('');
+  $('preset').onchange = applyPreset;
+  $('addType').innerHTML = Object.keys(T).map(k=>`<option value="${k}">${T[k].n}</option>`).join('');
+  $('preset').value='ex1'; applyPreset();
+})();
+
+(function(){ const q=new URLSearchParams(location.search).get('ctx');
+  if(q==='inter' && PRESETS.iuR){ $('preset').value='iuR'; applyPreset(); } })();
+document.querySelectorAll('[data-bind]').forEach(UI.bindSelect);
+UI.presets(); UI.tiles(); UI.enhance(document); UI.place();
+UI.after(false);
+requestAnimationFrame(()=>{ UI.segAll(); UI.after(false); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>UI.segAll());
+</script>
+
+<script>
+(function(){
+  var ov = document.getElementById('guideOv'), frame = document.getElementById('guideFrame'),
+      openBtn = document.getElementById('btnGuide'), closeBtn = document.getElementById('btnGuideClose'),
+      loaded = false, lastFocus = null;
+  function load(){
+    if(loaded) return;
+    var src = document.getElementById('guideSrc').value;
+    frame.srcdoc = src;
+    loaded = true;
+  }
+  function open(){
+    load();
+    lastFocus = document.activeElement;
+    ov.classList.add('on');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+  function close(){
+    ov.classList.remove('on');
+    document.body.style.overflow = '';
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && ov.classList.contains('on')) close(); });
+})();
+</script>
+</body>
+</html>

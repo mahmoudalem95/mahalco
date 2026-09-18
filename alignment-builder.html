@@ -167,6 +167,18 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 .cpop .segmini button{flex:1;height:36px;font-size:15px}
 .cpr{display:flex;align-items:center;gap:8px;font-size:14px}
 .cpop small{color:var(--dim);font-size:12px;line-height:1.4}
+/* סרגל נקודות עליון */
+.ptool{position:absolute;top:calc(74px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;align-items:center;border-radius:14px;padding:6px 8px;z-index:6;max-width:calc(100% - 20px);
+  flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.ptool[hidden]{display:none}
+.ptool::-webkit-scrollbar{display:none}
+.ptool b{font-size:12.5px;white-space:nowrap;padding:0 4px;color:var(--dim)}
+.ptool input{width:72px;height:34px}
+.ptool button{height:34px;min-width:34px;padding:0 9px;border-radius:9px;font-weight:700;font-size:14px;background:var(--fill)}
+.ptool button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.ptool .sepv{width:1px;height:22px;background:var(--line);flex:none}
+@media (max-width:820px){ .ptool{top:calc(70px + env(safe-area-inset-top));gap:4px;padding:5px 6px} .ptool input{width:60px} }
 .pop input{width:86px}
 .pop #popLs{width:64px}
 .pop button{height:34px;padding:0 12px;border-radius:9px;font-weight:700;font-size:14px;background:var(--fill)}
@@ -195,6 +207,21 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
     <div class="segmini" id="cpMode"><button data-m="0">רגילה</button><button data-m="1">חופשית</button></div>
     <label class="cpr">R <input id="cpR" type="number" min="2" step="0.5" inputmode="decimal"> מ׳</label>
     <small id="cpInfo"></small>
+  </div>
+  <div class="ptool glass" id="ptool" hidden>
+    <button id="ptPrev" title="נקודה קודמת">‹</button>
+    <b id="ptLbl">נקודה</b>
+    <button id="ptNext" title="נקודה הבאה">›</button>
+    <span class="sepv"></span>
+    <input id="ptR" type="number" min="0" step="1" placeholder="R מ׳" inputmode="decimal" aria-label="רדיוס">
+    <button id="ptOk" class="go" title="החלת הרדיוס">קשת</button>
+    <input id="ptLs" type="number" min="0" step="1" placeholder="Ls" inputmode="decimal" aria-label="אורך קלוטואידה">
+    <button id="ptLsA" title="Ls מזערי לפי פרק 5">Ls↺</button>
+    <button id="ptNo" title="הסרת הקשת">ללא</button>
+    <span class="sepv"></span>
+    <button id="ptZo" title="התרחקות">−</button>
+    <button id="ptZi" title="התקרבות">+</button>
+    <button id="ptFit" title="התמרכזות על הציר">⤢</button>
   </div>
   <div class="pop glass" id="pop" hidden>
     <input id="popR" type="number" min="0" step="1" placeholder="R מ׳" inputmode="decimal" aria-label="רדיוס">
@@ -1500,7 +1527,8 @@ function drawArmArrows(J,a){
   const Pin=st=>Dat(st)+armPre(a,st);
   L.arrows.forEach((k,i)=>{ if(k.length) put(baseT, st=>Pin(st)+(i+0.5)*thruW(a,st)/c.thru, k, c.wT); });
   for(let i=0;i<(c.left||0);i++)  put(baseL, st=>Dat(st)-(i+0.5)*c.wL, ['L'], c.wL, stoL(c));
-  for(let i=0;i<(c.right||0);i++) put(baseT, st=>Pin(st)+thruW(a,st)+(i+0.5)*c.wR, ['R'], c.wR, stoR(c));
+  for(let i=0;i<(c.right||0);i++)
+    put(baseT, st=>Pin(st)+thruW(a,st)+(i+0.5)*c.wR*turnF(armU(a,st),stoR(c),tapR(c)), ['R'], c.wR, stoR(c));
 }
 /* שפה משתנה לאורך זרוע: מפרדה + נתיבים (+ נתיב ימינה / נתיב מיזוג) */
 const armD=(a,st)=>(S.axes[a.k].sec?S.axes[a.k].sec.median/2:0)+widenAt(S.axes[a.k]._zones,st);
@@ -2100,6 +2128,19 @@ function renderPanel(R){
     if(document.activeElement!==$('inR')) $('inR').value=P[i].R>0?P[i].R:'';
   }else box.hidden=true;
 
+  // סרגל הנקודות העליון
+  { const tb=$('ptool'), n=S.pis.length, i=S.sel, ok=(i>0&&i<n-1);
+    const show = S.stage===1 && !S.locked && n>=2;
+    tb.hidden=!show;
+    if(show){
+      $('ptLbl').textContent = ok ? `נקודה ${i} מתוך ${n-2}` : (n>=3?'בחרו נקודה':'אין נקודת שבירה');
+      ['ptR','ptLs','ptOk','ptLsA','ptNo'].forEach(k=>$(k).disabled=!ok);
+      $('ptPrev').disabled=$('ptNext').disabled=(n<3);
+      if(document.activeElement!==$('ptR')) $('ptR').value = ok&&S.pis[i].R>0?S.pis[i].R:'';
+      if(document.activeElement!==$('ptLs')) $('ptLs').value = ok&&S.pis[i].Ls>0?S.pis[i].Ls:'';
+      $('ptLs').hidden=$('ptLsA').hidden=(S.env==='urban');
+    }
+  }
   const pop=$('pop');
   if(S.stage===1 && !S.locked && S.tool==='edit' && i>0 && i<P.length-1 && !drag){
     const s=w2s(P[i]), W=cv.width/dpr();
@@ -2580,6 +2621,27 @@ $('popLs').addEventListener('change',e=>{ setLs(parseFloat(e.target.value)); e.t
 $('popLsA').onclick=()=>{ const i=S.sel; if(!(S.pis[i]&&S.pis[i].R>0)) return; setLs(lsMin(S.axes[S.cur].V,S.pis[i].R)); };
 $('popNo').onclick=()=>{ $('popR').value=''; setR(0); };
 $('popR').addEventListener('keydown',e=>{ if(e.key==='Enter'){ setR(parseFloat(e.target.value)); e.target.blur(); } });
+/* סרגל הנקודות: מעבר בין נקודות השבירה, רדיוס, קלוטואידה וזום */
+{
+  const nPI=()=>S.pis.length;
+  const stepPI=d=>{ const n=nPI(); if(n<3) return;
+    S.tool='edit'; let i=S.sel;
+    if(!(i>0&&i<n-1)) i = d>0?0:n-1;
+    i+=d; if(i<1) i=n-2; if(i>n-2) i=1;
+    S.sel=i; const p=S.pis[i]; S.view.cx=p.x; S.view.cy=p.y; draw();
+  };
+  $('ptPrev').onclick=()=>stepPI(-1);
+  $('ptNext').onclick=()=>stepPI(+1);
+  $('ptOk').onclick=()=>{ setR(parseFloat($('ptR').value)); $('ptR').blur(); };
+  $('ptR').addEventListener('keydown',e=>{ if(e.key==='Enter'){ setR(parseFloat(e.target.value)); e.target.blur(); } });
+  $('ptR').addEventListener('change',e=>{ setR(parseFloat(e.target.value)); e.target.blur(); });
+  $('ptLs').addEventListener('change',e=>{ setLs(parseFloat(e.target.value)); e.target.blur(); });
+  $('ptLsA').onclick=()=>{ const i=S.sel; if(!(S.pis[i]&&S.pis[i].R>0)) return; setLs(lsMin(S.axes[S.cur].V,S.pis[i].R)); };
+  $('ptNo').onclick=()=>{ $('ptR').value=''; setR(0); };
+  const zoom=f=>{ S.view.scale=Math.max(0.02,Math.min(40,S.view.scale*f)); draw(); };
+  $('ptZi').onclick=()=>zoom(1.3); $('ptZo').onclick=()=>zoom(1/1.3);
+  $('ptFit').onclick=()=>fit();
+}
 $('bFinish').onclick=()=>finishDraw();
 $('bDelPI').onclick=()=>delSel();
 $('bClear').onclick=()=>{ if(!S.pis.length)return; if(!confirm(`לנקות את ${S.axes[S.cur].name}?`))return; S.locked=false; snapshot(); S.pis=[]; S.sel=-1; S.drawing=true; S.tool='draw'; draw(); };

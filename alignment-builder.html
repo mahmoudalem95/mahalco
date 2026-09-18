@@ -224,9 +224,12 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
     <div class="wiz" id="wiz"></div>
     <div class="axes" id="axes" role="tablist" aria-label="צירים"></div>
     <div class="segctl" role="tablist" aria-label="שלבי עבודה">
-      <button id="tDraw" role="tab"><span>1</span>ציר</button>
-      <button id="tEdit" role="tab"><span>2</span>קשתות</button>
-      <button id="bLock" role="tab"><span>3</span>חתך</button>
+      <button id="st1" role="tab"><span>1</span>צירים</button>
+      <button id="st2" role="tab"><span>2</span>חתכים</button>
+      <button id="st3" role="tab"><span>3</span>צמתים</button>
+    </div>
+    <div class="segmini" id="drawMode" hidden style="margin-top:8px">
+      <button id="tDraw" style="flex:1">✎ שרטוט הציר</button><button id="tEdit" style="flex:1">◠ קשתות ורדיוסים</button>
     </div>
     <p class="hint" id="hint"></p>
 
@@ -240,8 +243,14 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
       </div>
     </section>
 
+    <section class="grp" id="secList" hidden>
+      <h3>חתך טיפוסי – לכל ציר</h3>
+      <div class="list" id="secListRows"></div>
+      <p class="hint" style="margin-top:6px">בוחרים ציר ברשימה, מגדירים לו חתך למטה, ומאשרים. המעבר לשלב הצמתים נפתח כשכל הצירים אושרו.</p>
+    </section>
+
     <section class="grp" id="secUI" hidden>
-      <h3>חתך בסיס</h3>
+      <h3>חתך בסיס · <span id="secAxName"></span></h3>
       <div class="list">
         <div class="cell"><span class="lbl">תבנית</span>
           <select id="preset">
@@ -260,10 +269,13 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
       <div style="height:18px"></div>
       <div class="side-h"><h3>ימין הציר · מהמפרדה החוצה</h3><button id="addR">＋ רצועה</button></div>
       <div class="list" id="rowsR"></div>
+
+      <div style="height:16px"></div>
+      <div class="list"><button class="cell primary" id="bSecOk">אישור החתך לציר זה</button></div>
     </section>
 
-    <section class="grp">
-      <h3>רשת וצמתים</h3>
+    <section class="grp" id="grpAxis">
+      <h3>נתוני תכן</h3>
       <div class="list">
         <div class="cell"><span class="lbl">סביבה</span>
           <div class="segmini" id="envSeg"><button data-env="urban">עירוני</button><button data-env="inter">בין־עירוני</button></div></div>
@@ -274,13 +286,17 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
           <input id="inRmin" type="number" min="1" step="10" placeholder="לפי זווית" inputmode="decimal"><span style="color:var(--dim)">מ׳</span></div>
         <div class="cell" id="rowRc" hidden><span class="lbl">רדיוס חיבור (מינ׳ 90)</span>
           <input id="inRc" type="number" min="90" step="5" inputmode="decimal"><span style="color:var(--dim)">מ׳</span></div>
-        <button class="cell primary" id="bNet">בניית רשת</button>
       </div>
-      <div class="list" style="margin-top:8px" id="netBox" hidden><ul class="msgs" id="netList"></ul></div>
+    </section>
+
+    <section class="grp" id="grpNet" hidden>
+      <h3>צמתים ברשת</h3>
+      <div class="list" id="netBox"><ul class="msgs" id="netList"></ul></div>
     </section>
 
     <section class="grp" id="jctBox" hidden>
       <h3 id="jctTitle">צומת</h3>
+      <div class="list" id="jctCtl" style="margin-bottom:12px"></div>
       <div id="jctArms"></div>
       <div class="side-h" style="margin-top:6px"><h3>רדיוסי פנייה ימינה מהנתיב</h3></div>
       <div class="list" id="jctTurnCfg"></div>
@@ -345,6 +361,7 @@ const S = {
   jctCfg: {},         // הגדרות צומת (מדרג רחובות / רכב תכן)
   cornerCfg: {},      // רדיוס פנייה ימינה ידני לכל פינה         // תצורת זרועות צומת, לפי מפתח ציר|קמ׳|צד
   selJ: -1,
+  stage: 1,           // 1 צירים · 2 חתכים · 3 צמתים
   tool: 'draw',       // 'draw' | 'edit'
   sel: -1,
   hover: null,        // נקודת עכבר בעולם (לתצוגה מקדימה)
@@ -770,6 +787,10 @@ function strips(){
    עקומה הפוכה (שתי קשתות R): L = √(4Rw − w²)
    ============================================================ */
 const MEDIAN_JCT = 2.5;
+/* נסיגת קו העצירה 810 מקו הכניסה לצומת (מ׳) */
+const STOP_SET = {urban:1.0, inter:1.5};
+/* רדיוס מזערי למסלול פנייה שמאלה בתוך הצומת (מ׳) */
+const LEFT_R_MIN = ()=>S.env==='urban'?12:15;
 /* חצי רוחב המפרדה בצומת, לכל צד מהציר:
    1.25 + (n − 0.5)·wL  כשיש n נתיבי שמאלה (n=1 → חצי נתיב, n=2 → נתיב וחצי) */
 function jctHalf(nL,wL){ return MEDIAN_JCT/2 + (nL>0 ? (nL-0.5)*wL : 0); }
@@ -816,7 +837,9 @@ const TURN_U = {
 const TURN_U_PAIR = {ll:'מקומי – מקומי',lc:'מקומי – מאסף',cc:'מאסף – מאסף',ca:'מאסף – עורק',aa:'עורק – עורק'};
 const TURN_I_BUS = {75:20, 90:15, 105:13};
 function jctKey(J){ return `${Math.round(J.p.x)},${Math.round(J.p.y)}`; }
-function jctCfg(J){ const k=jctKey(J); return S.jctCfg[k] || (S.jctCfg[k]={pair:'lc',area:'res'}); }
+function jctCfg(J){ const k=jctKey(J); const c=S.jctCfg[k] || (S.jctCfg[k]={pair:'lc',area:'res'});
+  if(!c.control) c.control='priority';        // 'priority' – דרך עיקרית ומשנית | 'signal' – מרומזר/עצור בכל הזרועות
+  return c; }
 function tableRadius(J,defl){
   if(S.env==='urban'){
     const c=jctCfg(J), r=TURN_U[c.area][c.pair];
@@ -1137,6 +1160,7 @@ function computeNetwork(){
     J.corners=junctionCorners(n,arms);
     // כלל א-ב: נתיבי היציאה בזרוע ≥ מספר הנתיבים שנכנסים אליה מכל תנועה אחרת
     J.kind = arms.length===4?'X':arms.length===3?'T':arms.length+'';
+    J.control = jctCfg(J).control;
     arms.forEach(aj=>{
       const cj=aj.cfg, need=[];
       arms.forEach(ai=>{ if(ai===aj) return; const L=laneUse(ai.cfg);
@@ -1150,7 +1174,8 @@ function computeNetwork(){
       if(cj.noThru && cj.thru>0 && !cj.hasL && !cj.hasR) S.netWarn.push(`צ${n+1} · ${aj.name}: אין לאן לפנות מזרוע זו`);
       if(cj.left) (leftPaths(J)||[]).filter(pp=>pp.from===aj).forEach(pp=>{
         if(pp.R===null) S.netWarn.push(`צ${n+1} · ${aj.name}: לא נמצא מסלול פנייה שמאלה`);
-        else if(pp.fit) S.netWarn.push(`צ${n+1} · ${aj.name}: מסלול השמאלה הוקטן ל-R${pp.R} (הצומת צר מ-${cj.RL>0?cj.RL:LEFT_R_DEF()})`);
+        else if(pp.over) S.netWarn.push(`צ${n+1} · ${aj.name}: R=${cj.RL} שהוזן גדול מהמרווח בין החרטומים (עד R${pp.Rfit}) – הקשת קוטמת את החרטום`);
+        else if(pp.R<LEFT_R_MIN()) S.netWarn.push(`צ${n+1} · ${aj.name}: רדיוס מסלול הפנייה שמאלה R${pp.R} קטן מהמינימום ${LEFT_R_MIN()} מ׳ – יש להרחיב את פתח המפרדה`);
       });
       { const z=S.axes[aj.k]._zones.find(q=>q.jn===n), gap=aj.side==='before'?z.gapB:z.gapA;
         if(isFinite(gap)){
@@ -1158,32 +1183,45 @@ function computeNetwork(){
           if(need>gap/2) S.netWarn.push(`צ${n+1} · ${aj.name}: הצומת הסמוך במרחק ${gap.toFixed(0)} מ׳ – נתיבי הפנייה/הרחבת המפרדה (${need.toFixed(0)} מ׳) נקטעים באמצע`);
         } }
     });
-    // קו העצירה: 1.5 מ׳ לאחור מסיום קטימת רדיוס הפינה
-    (J.corners||[]).forEach(c=>{ if(c.straight||c.failed) return;
-      const z=S.axes[c.from.k]._zones.find(q=>q.jn===n); if(!z) return;
-      z.cut=z.cut||{}; z.cut[c.from.side]=Math.max(z.cut[c.from.side]||0, c.uA);
-    });
-    arms.forEach(a=>{
-      const z=S.axes[a.k]._zones.find(q=>q.jn===n); if(!z) return;
-      z.stop=z.stop||{};
-      const cut=(z.cut&&z.cut[a.side])||0;
-      z.stop[a.side]=Math.max((a.uNose||8)-1, cut+1.5);
-      a.uStop=z.stop[a.side];
-    });
     // פנייה חופשית: נתיב הימינה נגמר בנקודת ההשקה של הקשת, ומשם דרך הפנייה
     (J.corners||[]).forEach(c=>{ if(!c.free) return;
       const z=S.axes[c.from.k]._zones.find(q=>q.jn===n); if(!z) return;
       z.freeR=z.freeR||{}; z.freeR[c.from.side]=c.uA;
     });
-    // קצה המפרדה: מטר אחד מקו ההמשך של שפת הדרך החוצה
+    // --- (1) חרטום המפרדה: מטר אחד מקו ההמשך של שפת הדרך החוצה ---
+    //     מחושב ראשון, כי גם קווי העצירה וגם קווי ההכוונה 809 נשענים עליו
     arms.forEach(a=>{
-      const z=S.axes[a.k]._zones.find(q=>q.jn===n);
+      const z=S.axes[a.k]._zones.find(q=>q.jn===n); if(!z) return;
       const D=(S.axes[a.k].sec?S.axes[a.k].sec.median/2:0)+widenAt(S.axes[a.k]._zones,z.sj);
       const u=Math.max(crossU(J,arms,a,D),crossU(J,arms,a,-D));
       const sn=Math.max(0.2,crossSin(J,arms,a));
       a.uNose=u+1/sn;
       z.nose=z.nose||{}; z.nose[a.side]=a.uNose;
     });
+    // --- (2) קו הכניסה לצומת וקווי העצירה 810 ---
+    //     קו הכניסה = המשך השפה הקרובה של הדרך החוצה, בנפרד לכל קבוצת נתיבים.
+    //     קו עצירה = קו הכניסה + נסיגה; מסומן רק היכן שיש חובת מתן זכות קדימה.
+    {
+      const set=STOP_SET[S.env]||1.0;
+      arms.forEach(a=>{
+        const z=S.axes[a.k]._zones.find(q=>q.jn===n); if(!z) return;
+        const c=a.cfg, g=a.sgA, D=armD(a,a.sj);
+        const band=(o0,o1)=>Math.max(crossU(J,arms,a,g*o0), crossU(J,arms,a,g*o1));
+        const eT=band(D, EinAt(a,a.sj));                       // נתיבים ישירים (+ ימינה)
+        const eL=c.left? band(D-c.left*c.wL, D) : eT;          // נתיבי פנייה שמאלה
+        const yields = (J.control==='signal') || (a.k===J.minor);
+        let uT=null, uL=null;
+        if(yields){                                            // קו עצירה אחד לכל נתיבי הכניסה
+          uT = Math.max(eT, c.left?Math.max(eL,a.uNose||0):0) + set;
+          uL = c.left? uT : null;
+        } else if(c.left){                                     // רק נתיבי השמאלה עוצרים (חוצים תנועה נגדית)
+          uL = Math.max(eL, a.uNose||0) + set;
+        }
+        a.yield=yields; a.uEntry=Math.min(eT,eL); a.uStop=uT; a.uStopL=uL;
+        z.entry=z.entry||{}; z.stop=z.stop||{}; z.stopL=z.stopL||{};
+        z.entry[a.side]=a.uEntry; z.stop[a.side]=uT; z.stopL[a.side]=uL;
+      });
+    }
   });
 }
 
@@ -1269,55 +1307,89 @@ function setMark(kind,a,sub){
   ctx.lineCap='butt';
   ctx.strokeStyle= kind==='807'?PAL.edge():PAL.line();
 }
-/* חצים 813 – מידות לפי תרשים 6 (מ׳), y לכיוון הנסיעה, x ימינה */
-function arrowPolys(k){
-  if(k==='S') return [[[-0.125,0],[0.125,0],[0.125,0.9],[0.55,0.9],[0,2.4],[-0.55,0.9],[-0.125,0.9]]];
-  const m=k==='L'?-1:1, Ro=1.675, Ri=1.30, cx=Ro, pts=[];
-  const e=Math.PI*0.62, N=14;                          // קשת הגבעול עד לבסיס הראש
-  for(let q=0;q<=N;q++){ const t=Math.PI-(Math.PI-e)*q/N; pts.push([cx+Ro*Math.cos(t), Ro*Math.sin(t)]); }
-  const ang=e-Math.PI/2, tx=Math.cos(ang), ty=Math.sin(ang);      // כיוון המשיק בקצה
-  const cE=[cx+(Ro+Ri)/2*Math.cos(e),(Ro+Ri)/2*Math.sin(e)], nx=Math.cos(e), ny=Math.sin(e);
-  const head=[[cE[0]+nx*0.74,cE[1]+ny*0.74],[cE[0]+tx*1.0,cE[1]+ty*1.0],[cE[0]-nx*0.74,cE[1]-ny*0.74]];
-  const inner=[]; for(let q=N;q>=0;q--){ const t=Math.PI-(Math.PI-e)*q/N; inner.push([cx+Ri*Math.cos(t), Ri*Math.sin(t)]); }
-  const poly=[...pts,[cx+Ro*Math.cos(e),Ro*Math.sin(e)],...head,[cx+Ri*Math.cos(e),Ri*Math.sin(e)],...inner].map(([x,y])=>[m*(x-0.1875),y]);
-  return [poly];
+/* חצים 813 – מידות לפי תרשים 6 (מ׳), y לכיוון הנסיעה, x ימינה.
+   הבנייה: גזע אחד + ראש ישר ו/או ענפים ברבע מעגל לצדדים, כך שחץ
+   משולב (ישר+שמאלה, שמאלה+ימינה וכו׳) יוצא גוף אחד ולא שני חצים זה על זה. */
+const AR = {len:2.60, w:0.32, hl:0.95, hw:0.62, r:1.30, y0:1.00};
+function ribbon(pts,w){                       // פוליליין → מצולע ברוחב w
+  const h=w/2, L=[], R=[];
+  for(let i=0;i<pts.length;i++){
+    const a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)];
+    let tx=b[0]-a[0], ty=b[1]-a[1]; const l=Math.hypot(tx,ty)||1; tx/=l; ty/=l;
+    const nx=-ty*h, ny=tx*h;
+    L.push([pts[i][0]+nx,pts[i][1]+ny]); R.push([pts[i][0]-nx,pts[i][1]-ny]);
+  }
+  return L.concat(R.reverse());
+}
+function headTri(p,tx,ty,hl,hw){
+  return [[p[0]-ty*hw,p[1]+tx*hw],[p[0]+tx*hl,p[1]+ty*hl],[p[0]+ty*hw,p[1]-tx*hw]];
+}
+function arrowPolys(kinds){
+  const A=AR, out=[], has=k=>kinds.indexOf(k)>=0;
+  const top = has('S') ? A.len-A.hl : A.y0;
+  out.push(ribbon([[0,0],[0,top]],A.w));
+  if(has('S')) out.push(headTri([0,top],0,1,A.hl,A.hw));
+  [['L',-1],['R',1]].forEach(([k,m])=>{
+    if(!has(k)) return;
+    const cx=m*A.r, cy=A.y0, pts=[], N=12;
+    for(let q=0;q<=N;q++){ const t=Math.PI/2*q/N; pts.push([cx-m*A.r*Math.cos(t), cy+A.r*Math.sin(t)]); }
+    out.push(ribbon(pts,A.w));
+    out.push(headTri(pts[N],m,0,A.hl,A.hw));
+  });
+  return out;
 }
 function drawArrow(p,f,kinds,scale){
   const r={x:f.y,y:-f.x}, k0=scale||1;
   const W=(x,y)=>w2s(add(p,add(mul(r,x*k0),mul(f,y*k0))));
   ctx.fillStyle=PAL.line(); ctx.setLineDash([]);
-  kinds.forEach(k=>arrowPolys(k).forEach(poly=>{
+  arrowPolys(kinds).forEach(poly=>{
     ctx.beginPath(); poly.forEach(([x,y],i)=>{ const q=W(x,y); i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y); }); ctx.closePath(); ctx.fill();
-  }));
+  });
 }
 function drawArmArrows(J,a){
   if(S.view.scale<1.2) return;
-  const c=a.cfg, z=S.axes[a.k]._zones.find(q=>q.jn===S.junctions.indexOf(J)); if(!z) return;
+  const n=S.junctions.indexOf(J);
+  const c=a.cfg, z=S.axes[a.k]._zones.find(q=>q.jn===n); if(!z) return;
   const g=a.sgA, sgn=g<0?-1:1, ax=S.axes[a.k];
-  const u0=Math.max(0, a.uStop!==undefined?a.uStop:(a.uNose||8)-1);   // 1.5 מ׳ מאחורי קטימת רדיוס הפינה
-  if(u0+MK.stop>Math.min(zE(z,a.side),a.reach||1e9)) return;
+  const lim=Math.min(zE(z,a.side), a.reach||1e9);
   const Dat=st=>armD(a,st);
-  // 810 קו עצירה לרוחב נתיבי הכניסה
-  {
-    const s1=a.sj+sgn*u0, s2=a.sj+sgn*(u0+MK.stop), F1=frameAt(a.els,s1), F2=frameAt(a.els,s2);
-    const freeR=(S.junctions[S.junctions.indexOf(J)].corners||[]).some(q=>q.free&&q.from===a);
-    const lo=g*(Dat(s1)-(c.left||0)*c.wL), hi=g*(EinAt(a,s1)-(freeR?c.right*c.wR:0));
+  const freeR=(J.corners||[]).some(q=>q.free&&q.from===a);
+  const has=v=>v!==null&&v!==undefined&&isFinite(v);
+  // ---- 810 קווי עצירה ----
+  //  זרוע שחייבת מתן זכות קדימה: קו אחד לרוחב כל נתיבי הכניסה.
+  //  זרוע עם זכות קדימה: קו קצר רק לרוחב נתיבי הפנייה שמאלה.
+  const bar=(u,lo,hi)=>{
+    if(!has(u) || u+MK.stop>lim || u<0) return;
+    const s1=a.sj+sgn*u, s2=a.sj+sgn*(u+MK.stop), F1=frameAt(a.els,s1), F2=frameAt(a.els,s2);
     const P=(F,o)=>w2s(add(F.p,mul(F.n,o)));
-    const q=[P(F1,lo),P(F1,hi),P(F2,hi),P(F2,lo)];
-    ctx.beginPath(); q.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.closePath(); ctx.fillStyle=PAL.line(); ctx.fill();
-  }
-  // 813 חצים – מרחקים לפי טבלה 1
-  const V=S.env==='urban'?near(ax.V,[30,50,70]):near(ax.V,[90,110]);
+    const q=[P(F1,lo(s1)),P(F1,hi(s1)),P(F2,hi(s2)),P(F2,lo(s2))];
+    ctx.beginPath(); q.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.closePath();
+    ctx.fillStyle=PAL.line(); ctx.fill();
+  };
+  const oIn=st=>g*(Dat(st)-(c.left||0)*c.wL), oMed=st=>g*Dat(st),
+        oOut=st=>g*(EinAt(a,st)-(freeR?c.right*c.wR:0));
+  if(has(a.uStop)) bar(a.uStop, has(a.uStopL)&&Math.abs(a.uStopL-a.uStop)<0.05?oIn:oMed, oOut);
+  if(has(a.uStopL) && (!has(a.uStop)||Math.abs(a.uStopL-a.uStop)>=0.05)) bar(a.uStopL, oIn, oMed);
+  // ---- 813 חצים – מרחקים לפי טבלה 1, מקו העצירה אל חוד החץ ----
+  const V=S.env==='urban'?near(ax.V,[30,50,70]):near(ax.V,[70,90,110]);
   const dists=MK.arrowAt[V]||MK.arrowAt[50];
   const L=laneUse(c);
-  const put=(off,kinds,w,maxU)=>dists.forEach(d=>{
-    const u=u0+MK.stop+d; if(maxU!==undefined&&u+2.4>maxU) return; if(u+2.4>Math.min(zE(z,a.side),a.reach||1e9)) return;
-    const st=a.sj+sgn*u, F=frameAt(a.els,st), f=mul({x:F.n.y,y:-F.n.x},-sgn);
-    drawArrow(add(F.p,mul(F.n,g*off(st))),f,kinds, w<3.2?0.75:1);
-  });
-  L.arrows.forEach((k,i)=>{ if(k.length) put(st=>Dat(st)+(i+0.5)*c.wT,k,c.wT); });
-  for(let i=0;i<(c.left||0);i++) put(st=>Dat(st)-(i+0.5)*c.wL,['L'],c.wL,c.storeL);
-  for(let i=0;i<(c.right||0);i++) put(st=>Dat(st)+c.thru*c.wT+(i+0.5)*c.wR,['R'],c.wR,c.storeR);
+  const put=(base,off,kinds,w,maxU)=>{
+    if(!has(base)) return;
+    const k0=(w<3.2?0.75:1), len=AR.len*k0;
+    dists.forEach(d=>{
+      const u=base+MK.stop+d+len;
+      if(maxU!==undefined&&u>maxU) return;
+      if(u>lim) return;
+      const st=a.sj+sgn*u, F=frameAt(a.els,st), f=mul({x:F.n.y,y:-F.n.x},-sgn);
+      drawArrow(add(F.p,mul(F.n,g*off(st))),f,kinds,k0);
+    });
+  };
+  const baseT = has(a.uStop)?a.uStop:(has(a.uEntry)?a.uEntry:0);
+  const baseL = has(a.uStopL)?a.uStopL:baseT;
+  L.arrows.forEach((k,i)=>{ if(k.length) put(baseT, st=>Dat(st)+(i+0.5)*c.wT, k, c.wT); });
+  for(let i=0;i<(c.left||0);i++)  put(baseL, st=>Dat(st)-(i+0.5)*c.wL, ['L'], c.wL, c.storeL);
+  for(let i=0;i<(c.right||0);i++) put(baseT, st=>Dat(st)+c.thru*c.wT+(i+0.5)*c.wR, ['R'], c.wR, c.storeR);
 }
 /* שפה משתנה לאורך זרוע: מפרדה + נתיבים (+ נתיב ימינה / נתיב מיזוג) */
 const armD=(a,st)=>(S.axes[a.k].sec?S.axes[a.k].sec.median/2:0)+widenAt(S.axes[a.k]._zones,st);
@@ -1388,20 +1460,47 @@ function findCorner(key){
 /* ---------- מסלול עבודה מודרך ---------- */
 S.wizAck=S.wizAck||{};
 const finished=a=>a&&a.pis.length>=2&&!a.drawing;
+/* שלב 2 (חתכים) נפתח כשיש לפחות ציר אחד סגור; שלב 3 (צמתים) נפתח כשכל
+   הצירים הסגורים אושרו (מקובעים + יש להם חתך). */
+function stageAvail(n){
+  if(n<=1) return true;
+  const done=S.axes.filter(finished);
+  if(n===2) return done.length>0;
+  return done.length>0 && done.every(a=>a.locked&&a.sec);
+}
+function selectForSection(k){
+  if(k<0||k>=S.axes.length) return;
+  S.cur=k; S.sel=-1; S.editRow=null; S.pickSta=null;
+  const a=S.axes[k];
+  S.locked=true; S.tool='edit'; S.drawing=false;
+  if(!a.sec) loadPreset(S.env==='urban'?'mr4':'iuD');
+}
+function goStage(n){
+  if(!stageAvail(n)) return;
+  S.stage=n;
+  if(n===1){ S.tool = (S.drawing&&!S.locked) ? 'draw' : 'edit'; }
+  else if(n===2){
+    const cur=S.axes[S.cur];
+    const k = finished(cur) ? S.cur : S.axes.findIndex(finished);
+    if(k>=0) selectForSection(k);
+  } else if(n===3){
+    S.net=true; if(S.selJ<0&&S.junctions.length) S.selJ=0;
+  }
+  draw();
+}
 const WIZ=[
   {t:'1 · ציר ראשי', d:'הקישו על המפה להוספת נקודות שבירה ובסוף "סיום ציר".',
-   done:()=>finished(S.axes[0]), go:()=>{ S.cur=0; S.tool='draw'; S.drawing=true; S.locked=false; }},
+   done:()=>finished(S.axes[0]), go:()=>{ S.stage=1; S.cur=0; S.tool='draw'; S.drawing=true; S.locked=false; }},
   {t:'2 · קשתות בציר הראשי', d:'הקישו על כל נקודה פנימית וקבעו R (בבין-עירוני גם Ls לקלוטואידה). ההערות הכתומות בודקות את פרק 5.',
-   done:()=>!!S.wizAck.r0, go:()=>{ S.cur=0; S.locked=false; S.tool='edit'; S.drawing=false; }, ack:'r0'},
+   done:()=>!!S.wizAck.r0, go:()=>{ S.stage=1; S.cur=0; S.locked=false; S.tool='edit'; S.drawing=false; }, ack:'r0'},
   {t:'3 · ציר נוסף', d:'שרטטו ציר שמתחיל/מסתיים על הציר הראשי (צומת T) או חוצה אותו (צומת X). נקודה ננעלת על ציר קיים.',
-   done:()=>finished(S.axes[1]), go:()=>{ if(S.axes.length<2) addAxis(); else { S.cur=1; S.tool='draw'; S.drawing=true; S.locked=false; } }},
+   done:()=>finished(S.axes[1]), go:()=>{ S.stage=1; if(S.axes.length<2) addAxis(); else { S.cur=1; S.tool='draw'; S.drawing=true; S.locked=false; } }},
   {t:'4 · קשתות בציר הנוסף', d:'כמו בשלב 2, לציר הנוסף (וכל ציר נוסף אחר).',
-   done:()=>!!S.wizAck.r1, go:()=>{ S.cur=Math.min(1,S.axes.length-1); S.locked=false; S.tool='edit'; S.drawing=false; }, ack:'r1'},
-  {t:'5 · חתכים טיפוסיים', d:'לכל ציר: קיבוע ובחירת תבנית מכלי החתכים (או ייבוא JSON).',
-   done:()=>S.axes.filter(finished).every(a=>a.locked&&a.sec), go:()=>{
-     const k=S.axes.findIndex(a=>finished(a)&&!a.locked); if(k<0) return; S.cur=k; S.locked=true; S.tool='edit'; S.drawing=false; if(!S.sec) loadPreset(S.env==='urban'?'mr4':'iuD'); }},
+   done:()=>!!S.wizAck.r1, go:()=>{ S.stage=1; S.cur=Math.min(1,S.axes.length-1); S.locked=false; S.tool='edit'; S.drawing=false; }, ack:'r1'},
+  {t:'5 · חתכים טיפוסיים', d:'לכל ציר: קיבוע ובחירת תבנית מכלי החתכים (או ייבוא JSON), ואישור.',
+   done:()=>S.axes.filter(finished).every(a=>a.locked&&a.sec), go:()=>goStage(2)},
   {t:'6 · רשת וגאומטריה', d:'בניית הרשת: הרחבת מפרדה, נתיבים בזרועות, רדיוסים ופניות חופשיות. הקישו על צומת או פינה לעריכה.',
-   done:()=>S.net&&S.junctions.length>0, go:()=>{ S.net=true; if(S.selJ<0&&S.junctions.length) S.selJ=0; }}
+   done:()=>stageAvail(3)&&S.junctions.length>0, go:()=>goStage(3)}
 ];
 function renderWizard(){
   const box=$('wiz'); if(!box) return;
@@ -1414,6 +1513,17 @@ function renderWizard(){
   if(box._h!==html){ box._h=html; box.innerHTML=html;
     $('wizGo').onclick=()=>{ w.go(); draw(); };
     if(w.ack) $('wizAck').onclick=()=>{ S.wizAck[w.ack]=true; draw(); };
+  }
+}
+function renderSecList(){
+  const rows=$('secListRows');
+  const items=S.axes.map((a,k)=>({a,k})).filter(o=>finished(o.a));
+  const html = items.length ? items.map(({a,k})=>{
+    const ok=!!(a.locked&&a.sec);
+    return `<button class="cell${k===S.cur?' primary':''}" data-k="${k}"><span class="lbl">${ok?'✓':'○'} ${a.name.replace(/[<>&]/g,'')}</span></button>`;
+  }).join('') : '<div class="cell"><span class="lbl" style="color:var(--dim)">אין עדיין ציר סגור. חזרו לשלב הצירים.</span></div>';
+  if(rows._html!==html){ rows._html=html; rows.innerHTML=html;
+    rows.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{ selectForSection(+b.dataset.k); draw(); });
   }
 }
 function renderCornerPop(){
@@ -1489,38 +1599,49 @@ function calibClick(w){
   }
   renderMapBox(); draw();
 }
-const LEFT_R_DEF=()=>S.env==='urban'?12:20;     // רדיוס מסלול פנייה שמאלה – ברירת מחדל זמנית
 /* מסלול הפנייה שמאלה בתוך הצומת: קשת משיקה בין ציר נתיב השמאלה לציר נתיב היציאה */
+/* ============================================================
+   809 – קווי הכוונה למסלולי הפנייה שמאלה
+   הקו ממשיך את שפת החרטום: קשת המשיקה לשפה השמאלית של נתיב הפנייה
+   בחרטום המפרדה של הזרוע הנכנסת, ולשפה השמאלית של נתיב היציאה המקביל
+   בחרטום המפרדה של הזרוע היוצאת – ולא ממרכז נתיב למרכז נתיב.
+   רדיוס ברירת המחדל: הקשת הגדולה ביותר שאינה קוטמת את שני החרטומים
+   (מעוגלת כלפי מטה ל-0.5 מ׳), מוגבלת ל-3×המינימום שבטבלה.
+   ============================================================ */
 function leftPaths(J){
   const arms=J.arms||[], out=[];
   arms.forEach(ai=>{
     const c=ai.cfg; if(!c.left||!c.mv||!c.mv.left.length) return;
     const aj=arms.find(x=>x.id===c.mv.left[0]); if(!aj) return;
-    const R=c.RL>0?c.RL:LEFT_R_DEF();
     const gi=ai.sgA, sgi=gi<0?-1:1, gj=aj.sgA, sgj=gj<0?-1:1;
-    const Di=armD(ai,ai.sj), Dj=armD(aj,aj.sj);
+    const si=ai.sj+sgi*(ai.uNose||0), sj=aj.sj+sgj*(aj.uNose||0);
+    const Fi=frameAt(ai.els,si), Fj=frameAt(aj.els,sj);
+    const Di=armD(ai,si), Dj=armD(aj,sj);
+    const Rmin=LEFT_R_MIN();
     for(let q=0;q<c.left;q++){
-      const offI=gi*(Di-(q+0.5)*c.wL), offJ=-gj*(Dj+(q+0.5)*aj.cfg.wT);
-      const s1=ai.sj+sgi*(ai.uStop||6), F1=frameAt(ai.els,s1);
-      const P1=add(F1.p,mul(F1.n,offI)), d1=mul(ai.out,-1);            // כיוון הנסיעה אל הצומת
-      const F2=frameAt(aj.els,aj.sj), P2=add(F2.p,mul(F2.n,offJ)), d2=aj.out;
-      const X=lineX(P1,d1,P2,d2); if(!X){ out.push({pts:[P1,P2],R:null}); continue; }
-      let al=Math.acos(Math.max(-1,Math.min(1,dot(mul(d1,-1),d2))));   // הזווית בין הקווים
+      // q=0 – המסלול השמאלי ביותר, הצמוד לחרטום; כל מסלול נשען על שפתו השמאלית
+      const offI=gi*(Di-(c.left-q)*c.wL);
+      const offJ=-gj*(Dj+q*aj.cfg.wT);
+      const P1=add(Fi.p,mul(Fi.n,offI)), d1=mul(ai.out,-1);            // כיוון הנסיעה אל הצומת
+      const P2=add(Fj.p,mul(Fj.n,offJ)), d2=aj.out;                    // כיוון היציאה מהצומת
+      const bad=()=>out.push({pts:[P1,P2],R:null,from:ai,to:aj,lane:q});
+      const X=lineX(P1,d1,P2,d2); if(!X){ bad(); continue; }
+      const al=Math.acos(Math.max(-1,Math.min(1,dot(mul(d1,-1),d2))));  // הזווית בין הקווים
       const t1=dot(sub(X,P1),d1), t2=dot(sub(P2,X),d2);
-      if(!(t1>0&&t2>0)){ out.push({pts:[P1,P2],R:null}); continue; }
-      const Rfit=Math.min(t1,t2)*Math.tan(al/2);
-      let Ruse=R, fit=false;
-      if(R>Rfit){ Ruse=Rfit; fit=true; }
+      if(!(t1>0.05&&t2>0.05&&al>0.05&&al<Math.PI-0.05)){ bad(); continue; }
+      const Rfit=Math.max(1,Math.floor(Math.min(t1,t2)*Math.tan(al/2)*2)/2);
+      const Ruse=c.RL>0?c.RL:Math.min(Rfit,3*Rmin);
+      const over=c.RL>0&&c.RL>Rfit+0.01;
       const T=Ruse/Math.tan(al/2);
       const T1=add(X,mul(d1,-T)), T2=add(X,mul(d2,T));
       const bis=unit(add(mul(d1,-1),d2)), Cc=add(X,mul(bis,Ruse/Math.sin(al/2)));
       const a0=Math.atan2(T1.y-Cc.y,T1.x-Cc.x), a1=Math.atan2(T2.y-Cc.y,T2.x-Cc.x);
       let sw=a1-a0; while(sw>Math.PI) sw-=2*Math.PI; while(sw<-Math.PI) sw+=2*Math.PI;
-      const pts=[P1]; const N=Math.max(8,Math.ceil(Math.abs(sw)*Ruse/0.7));
-      if(t1>T) pts.push(T1);
+      const N=Math.max(8,Math.ceil(Math.abs(sw)*Ruse/0.7)), pts=[];
+      if(t1>T+0.05) pts.push(P1);
       for(let k=0;k<=N;k++){ const t=a0+sw*k/N; pts.push({x:Cc.x+Ruse*Math.cos(t),y:Cc.y+Ruse*Math.sin(t)}); }
-      pts.push(P2);
-      out.push({pts,R:+Ruse.toFixed(1),fit,from:ai,to:aj});
+      if(t2>T+0.05) pts.push(P2);
+      out.push({pts,R:+Ruse.toFixed(2),Rfit,over,from:ai,to:aj,lane:q});
     }
   });
   return out;
@@ -1559,7 +1680,7 @@ function drawJunctions(){
     // 809 – קווי הנחיה למסלולי הפנייה שמאלה
     leftPaths(J).forEach(pp=>{
       ctx.beginPath(); pp.pts.forEach((p,k)=>{const q=w2s(p); k?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});
-      ctx.strokeStyle=pp.R===null?css('--bad'):PAL.line();
+      ctx.strokeStyle=(pp.R===null||pp.over||pp.R<LEFT_R_MIN())?css('--bad'):PAL.line();
       ctx.lineWidth=Math.max(1,0.10*S.view.scale); ctx.setLineDash([Math.max(2,1*S.view.scale),Math.max(2,1*S.view.scale)]);
       ctx.stroke(); ctx.setLineDash([]);
     });
@@ -1625,7 +1746,8 @@ function drawAxis(active){
       const LANE=PAL.road(), LEFTC=PAL.turn(), RIGHTC=PAL.turn(), WHITE=PAL.line();
       z.arms.forEach(A=>{
         const c=A.cfg, g=A.sgA;
-        const u0=Math.max(0,(z.stop&&z.stop[A.side]!==undefined)?z.stop[A.side]:((z.nose&&z.nose[A.side]!==undefined?z.nose[A.side]:0)-1));
+        const u0=Math.max(0,(z.entry&&z.entry[A.side]!==undefined&&z.entry[A.side]!==null)?z.entry[A.side]
+                 :((z.nose&&z.nose[A.side]!==undefined?z.nose[A.side]:0)-1));
         const ap=zp.filter(v=> (g<0 ? v<=z.sj+1e-9 : v>=z.sj-1e-9) && Math.abs(v-z.sj)>=u0-1e-9);
         const apF=zp.filter(v=> g<0 ? v<=z.sj+1e-9 : v>=z.sj-1e-9);
         if(ap.length<2) return;
@@ -1819,12 +1941,14 @@ function distToSeg(p,a,b){
 function renderPanel(R){
   $('bUndo').disabled=!S.undo.length||S.locked;
 
-  $('hint').textContent = S.locked ? (S.pickSta ? (S.pickSta.stage?'לחצו על המפה בסוף המקטע.':'לחצו על המפה בתחילת המקטע.') : 'הציר מקובע. "מקטע" ליד רצועה מגביל אותה לטווח קילומטראז׳, עם קטימה 1:1 בקצוות. כדי לשנות את הציר חזרו לשלב 1 או 2.') : S.tool==='draw'
+  $('hint').textContent = S.stage===3
+    ? 'הקישו על צומת ברשימה או במפה כדי לערוך את נתיביו, ועל פינה לקביעת פנייה חופשית.'
+    : S.locked ? (S.pickSta ? (S.pickSta.stage?'לחצו על המפה בסוף המקטע.':'לחצו על המפה בתחילת המקטע.') : 'הציר מקובע. "מקטע" ליד רצועה מגביל אותה לטווח קילומטראז׳, עם קטימה 1:1 בקצוות. כדי לשנות את הציר חזרו לשלב הצירים.') : S.tool==='draw'
     ? (S.drawing ? 'הקישו על המפה כדי להוסיף נקודות שבירה, ובסוף "סיום ציר".' : 'הציר סגור. הקישו "ציר" שוב כדי להמשיך מהקצה.')
     : 'גררו נקודה כדי להזיז אותה. הקישו על נקודה פנימית כדי לקבוע רדיוס.';
 
   const box=$('piBox'), i=S.sel, P=S.pis;
-  if(!S.locked && S.tool==='edit' && i>=0 && i<P.length){
+  if(S.stage===1 && !S.locked && S.tool==='edit' && i>=0 && i<P.length){
     box.hidden=false;
     const interior=i>0&&i<P.length-1;
     $('piTitle').textContent= interior?`נקודת שבירה ${i}`:`נקודת קצה ${i}`;
@@ -1833,7 +1957,7 @@ function renderPanel(R){
   }else box.hidden=true;
 
   const pop=$('pop');
-  if(!S.locked && S.tool==='edit' && i>0 && i<P.length-1 && !drag){
+  if(S.stage===1 && !S.locked && S.tool==='edit' && i>0 && i<P.length-1 && !drag){
     const s=w2s(P[i]), W=cv.width/dpr();
     pop.hidden=false;
     pop.style.left=Math.max(4,Math.min(W-240,s.x+12))+'px';
@@ -1844,14 +1968,29 @@ function renderPanel(R){
   } else pop.hidden=true;
   $('bFinish').disabled=!(S.tool==='draw'&&S.drawing&&P.length>=2);
 
-  $('bLock').classList.toggle('on',S.locked);
+  // בורר השלבים (1 צירים · 2 חתכים · 3 צמתים) וניראות המקטעים
+  [1,2,3].forEach(n=>{
+    const b=$('st'+n);
+    b.classList.toggle('on',S.stage===n);
+    b.disabled=!stageAvail(n);
+  });
+  $('drawMode').hidden = S.stage!==1;
   $('tDraw').classList.toggle('on',!S.locked&&S.tool==='draw');
   $('tEdit').classList.toggle('on',!S.locked&&S.tool==='edit');
-  $('bLock').disabled=!S.locked && (R.els.length===0 || R.errs.length>0);
-  $('bLock').title=$('bLock').disabled?(R.els.length?'יש לתקן את ההערות לפני קיבוע':'יש לשרטט ציר קודם'):'';
-  $('secUI').hidden=!S.locked;
-  $('bFinish').hidden=!(S.tool==='draw'&&S.drawing&&!S.locked);
+  $('grpAxis').hidden = S.stage!==1;
+  $('secList').hidden = S.stage!==2;
+  $('secUI').hidden = !(S.stage===2 && S.locked);
+  $('grpNet').hidden = S.stage!==3;
+  $('bFinish').hidden=!(S.stage===1&&S.tool==='draw'&&S.drawing&&!S.locked);
+  $('bNewAxis').hidden = S.stage!==1;
   if(S.locked) renderRows();
+  if(S.stage===2){
+    $('secAxName').textContent=S.axes[S.cur].name;
+    const ok=!!(S.axes[S.cur].locked&&S.axes[S.cur].sec);
+    $('bSecOk').classList.toggle('on',ok);
+    $('bSecOk').textContent = ok?'✓ החתך אושר לציר זה':'אישור החתך לציר זה';
+    renderSecList();
+  }
 
   const ul=$('msgs'); ul.innerHTML='';
   const extra=(S._secErr||[]).filter((v,k,a)=>a.findIndex(x=>x.d0===v.d0)===k)
@@ -1890,8 +2029,6 @@ function renderPanel(R){
   if(document.activeElement!==$('inRmin')) $('inRmin').value=A.Rmin||'';
   if(document.activeElement!==$('inRc')) $('inRc').value=A.Rc||90;
   $('rowRmin').hidden=S.env==='urban'; $('rowRc').hidden=S.env!=='urban';
-  $('bNet').textContent=S.net?'פירוק רשת':(S.junctions.length?`בניית רשת · ${S.junctions.length} נקודות מפגש`:'בניית רשת');
-  $('bNet').classList.toggle('off',S.net);
   $('netBox').hidden=!S.net;
   if(S.net){
     const L=$('netList'); L.innerHTML='';
@@ -2164,6 +2301,7 @@ function renderJct(){
   if(act&&act.closest&&act.closest('#jctBox')&&act.tagName==='INPUT') return;
   const kindTxt={X:'צומת X (4 זרועות)',T:'צומת T (3 זרועות)'}[J.kind]||`${J.kind} זרועות`;
   $('jctTitle').textContent=`צ${S.selJ+1} · ${kindTxt} · נתיבים בזרועות (הקישו על פינה במפה לפנייה חופשית)`;
+  renderJctCtl(J);
   const wrap=$('jctArms'); wrap.innerHTML='';
   const axesIn=[J.major,J.minor];
   axesIn.forEach(k=>{
@@ -2179,7 +2317,7 @@ function renderJct(){
           <div class="cell"><span class="lbl">נתיבים ביציאה</span>${stp('out',1,5)}</div>
           <div class="cell"><span class="lbl">נתיבי שמאלה<small>${c.hasL===false?'אין פנייה שמאלה בזרוע זו':'נפתחים מתוך המפרדה'}</small></span>${stp('left',0,c.hasL===false?0:2)}</div>
           ${c.left?`<div class="cell"><span class="lbl">שמאלה: לוכסן · אגירה</span><div class="two">${num('taperL')}${num('storeL')}</div></div>
-          <div class="cell"><span class="lbl">רדיוס מסלול שמאלה<small>קשת בתוך הצומת (ברירת מחדל ${LEFT_R_DEF()} מ׳, זמני)</small></span><div class="two">${num('RL')}</div></div>`:''}
+          <div class="cell"><span class="lbl">רדיוס מסלול שמאלה 809<small>ריק = מותאם לחרטומים · מינימום ${LEFT_R_MIN()} מ׳</small></span><div class="two">${num('RL')}</div></div>`:''}
           <div class="cell"><span class="lbl">נתיבי ימינה<small>${c.hasR===false?'אין פנייה ימינה בזרוע זו':'נפתחים מהשפה'}</small></span>${stp('right',0,c.hasR===false?0:2)}</div>
           ${c.right?`<div class="cell"><span class="lbl">ימינה: לוכסן · אגירה</span><div class="two">${num('taperR')}${num('storeR')}</div></div>`:''}
           <div class="cell"><span class="lbl">רוחב נתיב ישיר · פנייה</span><div class="two">${num('wT')}${num('wL')}</div></div>
@@ -2209,6 +2347,17 @@ function renderJct(){
   renderCorners(J);
 }
 
+function renderJctCtl(J){
+  const jc=jctCfg(J), box=$('jctCtl');
+  const opts=[['priority','עדיפות: ראשית/משנית'],['signal','מרומזר / עצור בכל הזרועות']];
+  const html=`<div class="cell"><span class="lbl">סוג הבקרה בצומת</span>
+    <div class="segmini" id="jCtl">${opts.map(([k,t])=>`<button data-c="${k}">${t}</button>`).join('')}</div></div>`;
+  if(box._html!==html){ box._html=html; box.innerHTML=html; }
+  box.querySelectorAll('#jCtl button').forEach(b=>{
+    b.classList.toggle('on',b.dataset.c===jc.control);
+    b.onclick=()=>{ jc.control=b.dataset.c; draw(); };
+  });
+}
 function renderCorners(J){
   const cfg=$('jctTurnCfg'), list=$('jctCorners');
   const jc=jctCfg(J);
@@ -2297,7 +2446,6 @@ $('cpR').onchange=e=>{
   if(o.free) o.Rf=v>0?v:null; else o.R=v>0?v:null;
   e.target.blur(); draw();
 };
-$('bNet').onclick=()=>{ S.net=!S.net; if(!S.net) S.selJ=-1; else if(S.selJ<0&&S.junctions.length) S.selJ=0; draw(); if(S.net) toast(S.junctions.length===1?'נבנתה רשת: צומת אחד':S.junctions.length?`נבנתה רשת: ${S.junctions.length} צמתים`:'לא נמצאו צמתים'); };
 document.querySelectorAll('#envSeg button').forEach(b=>b.onclick=()=>{ S.env=b.dataset.env; draw(); });
 const setV=v=>{ const A=S.axes[S.cur]; A.V=Math.max(30,Math.min(130,Math.round(v/10)*10)); draw(); };
 holdRepeat($('vMinus'),()=>setV(S.axes[S.cur].V-10));
@@ -2311,10 +2459,14 @@ $('bDelAxis').onclick=()=>{
   if(!confirm(`למחוק את ${S.axes[S.cur].name}?`)) return;
   S.axes.splice(S.cur,1); selectAxis(Math.max(0,S.cur-1));
 };
-$('bLock').onclick=()=>{
-  if(S.locked) return;
-  S.locked=true; S.editRow=null; S.pickSta=null;
-  if(S.locked){ S.tool='edit'; S.sel=-1; S.drawing=false; if(!S.sec) loadPreset(S.env==='urban'?'mr4':'iuD'); }
+[1,2,3].forEach(n=>$('st'+n).onclick=()=>goStage(n));
+$('bSecOk').onclick=()=>{
+  const a=S.axes[S.cur];
+  a.locked=true; S.editRow=null; S.pickSta=null;
+  if(!a.sec) loadPreset(S.env==='urban'?'mr4':'iuD');
+  toast(`${a.name}: החתך אושר`);
+  const nxt=S.axes.findIndex((x,k)=>finished(x)&&!(x.locked&&x.sec));
+  if(nxt>=0) selectForSection(nxt);
   draw();
 };
 $('preset').onchange=e=>{ S.editRow=null; S.pickSta=null; loadPreset(e.target.value); e.target.blur(); draw(); };
@@ -2349,6 +2501,7 @@ function openProject(st){
   const cfgClean=o=>JSON.parse(JSON.stringify(o||{},(k,v)=>['mv'].includes(k)?undefined:v));
   S.axes=st.axes.map(a=>({...a, undo:[], _zones:[], drawing:!!a.drawing}));
   S.cur=0; S.env=st.env||'inter'; S.net=!!st.net;
+  S.stage = stageAvail(3) ? 3 : stageAvail(2) ? 2 : 1;
   S.armCfg=cfgClean(st.armCfg); S.cornerCfg=st.cornerCfg||{}; S.jctCfg=st.jctCfg||{};
   if(st.view) Object.assign(S.view,st.view);
   S.selJ=-1; S.selCorner=null; S.editRow=null; S.tool='edit';

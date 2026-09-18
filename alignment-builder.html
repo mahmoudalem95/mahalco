@@ -1746,7 +1746,7 @@ function drawAxis(active){
       const LANE=PAL.road(), LEFTC=PAL.turn(), RIGHTC=PAL.turn(), WHITE=PAL.line();
       z.arms.forEach(A=>{
         const c=A.cfg, g=A.sgA;
-        const u0=Math.max(0,(z.entry&&z.entry[A.side]!==undefined&&z.entry[A.side]!==null)?z.entry[A.side]
+        const u0=Math.max(0,(z.stop&&z.stop[A.side]!==undefined&&z.stop[A.side]!==null)?z.stop[A.side]
                  :((z.nose&&z.nose[A.side]!==undefined?z.nose[A.side]:0)-1));
         const ap=zp.filter(v=> (g<0 ? v<=z.sj+1e-9 : v>=z.sj-1e-9) && Math.abs(v-z.sj)>=u0-1e-9);
         const apF=zp.filter(v=> g<0 ? v<=z.sj+1e-9 : v>=z.sj-1e-9);

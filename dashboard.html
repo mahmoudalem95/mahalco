@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MahAlCo Customer Dashboard</title>
+  <meta name="description" content="MahAlCo engineering tools customer dashboard and paid API access.">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<header>
+  <div class="container header-inner">
+    <div class="brand">MahAlCo Engineering Tools<small>Customer Dashboard</small></div>
+    <div><a href="https://mahmoudalem95.github.io/mahalco/apis-ar.html" style="color:#dbeafe">Free Tools</a></div>
+  </div>
+</header>
+
+<main class="container">
+  <section id="login-card" class="card">
+    <h1>Customer access</h1>
+    <p class="muted">Sign in with the email address used for your Shopify purchase. We will send a one-time code.</p>
+    <div class="form">
+      <div>
+        <label for="email">Purchase email</label>
+        <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <button id="request-code">Send sign-in code</button>
+      <div id="code-section" class="hidden">
+        <label for="code">Six-digit code</label>
+        <input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456">
+        <button id="verify-code" style="margin-top:10px">Verify code</button>
+      </div>
+      <div id="message" class="message"></div>
+    </div>
+  </section>
+
+  <section id="dashboard-card" class="card hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <h1>Your MahAlCo access</h1>
+        <p class="muted" style="margin:0">Signed in as <strong id="customer-email"></strong></p>
+      </div>
+      <button id="logout" class="secondary">Sign out</button>
+    </div>
+
+    <div class="plan">
+      <div><strong>Plan</strong><div id="plan" class="muted">—</div></div>
+      <span id="status" class="status">—</span>
+    </div>
+    <div class="plan">
+      <div><strong>Access expiry</strong><div id="expiry" class="muted">—</div></div>
+      <span class="badge">License controlled</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Free / Trial Tools</h2>
+    <p class="muted">These links are intentionally public and can be used for trial/basic access.</p>
+    <div id="free-tools" class="grid"></div>
+  </section>
+
+  <section id="paid-section" class="card hidden">
+    <h2>Paid API Access</h2>
+    <p class="muted">Your active paid plan unlocks the server-side API gateway. The upstream provider URLs are not exposed as your authorization boundary.</p>
+
+    <div class="api-box">
+      <strong>Signalized Intersection</strong>
+      <div id="signalized-url" class="code" style="margin-top:8px"></div>
+    </div>
+    <div class="api-box">
+      <strong>Unsignalized Intersection</strong>
+      <div id="unsignalized-url" class="code" style="margin-top:8px"></div>
+    </div>
+    <div class="api-box">
+      <strong>Developer request format</strong>
+      <pre id="api-examples" class="code" style="white-space:pre-wrap"></pre>
+    </div>
+  </section>
+
+  <footer>
+    MahAlCo · Digital engineering tools · Access is granted according to the Shopify purchase/license recorded by the service.
+  </footer>
+</main>
+<script src="dashboard.js"></script>
+</body>
+</html>

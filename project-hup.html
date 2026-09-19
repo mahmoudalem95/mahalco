@@ -1,0 +1,2202 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAHALCO · תכנון כביש מקצה לקצה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f7; --card:#ffffff; --ink:#14171a; --ink2:#585f66; --line:#dfe3e8;
+  --accent:#2f6fed; --ok:#1f9d55; --warn:#d98f00; --bad:#c0392b; --fill:#eef1f5;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#14171a; --card:#1c2024; --ink:#eef1f5; --ink2:#9aa3ad; --line:#2b3138;
+         --fill:#242a30; --accent:#5b8dff; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Heebo,Arial,sans-serif}
+header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);
+  padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px}
+header .sp{flex:1}
+input,select,button,textarea{font:inherit;color:var(--ink)}
+input[type=text],input[type=url],input[type=number],select,textarea{
+  background:var(--fill);border:1px solid transparent;border-radius:9px;padding:7px 10px;min-height:36px}
+input[type=text]:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
+button{background:var(--fill);border:1px solid transparent;border-radius:10px;padding:8px 14px;cursor:pointer;
+  min-height:38px;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--accent)}
+button.pri{background:var(--accent);color:#fff;font-weight:500}
+button.pri:hover{filter:brightness(1.08)}
+button:disabled{opacity:.5;cursor:default}
+.rail{display:flex;gap:6px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line);
+  overflow-x:auto}
+.rail button{display:flex;gap:9px;align-items:center;white-space:nowrap;border-radius:12px;padding:8px 14px}
+.rail button .n{width:23px;height:23px;border-radius:50%;background:var(--line);color:var(--ink2);
+  display:grid;place-items:center;font-size:13px;font-weight:700}
+.rail button.on{background:var(--accent);color:#fff}
+.rail button.on .n{background:rgba(255,255,255,.25);color:#fff}
+.rail button.done .n{background:var(--ok);color:#fff}
+main{padding:16px;max-width:1500px;margin:0 auto}
+.step{display:none} .step.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:16px}
+.card p.sub{margin:0 0 14px;color:var(--ink2);font-size:13.5px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink2)}
+iframe{width:100%;height:78vh;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+canvas.prev{width:100%;max-width:860px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.tag{display:inline-flex;gap:6px;align-items:center;background:var(--fill);border-radius:999px;
+  padding:4px 11px;font-size:12.5px;color:var(--ink2)}
+.tag.ok{color:var(--ok)} .tag.bad{color:var(--bad)} .tag.warn{color:var(--warn)}
+.note{font-size:13px;color:var(--ink2);margin-top:8px}
+.log{font-size:13px;background:var(--fill);border-radius:10px;padding:10px 12px;margin-top:10px;
+  max-height:190px;overflow:auto;white-space:pre-wrap;direction:ltr;text-align:right}
+#toast{position:fixed;inset-inline-start:50%;transform:translateX(-50%);bottom:22px;background:#14171ae6;
+  color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;z-index:60;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+#toast.on{opacity:1}
+table.pts{border-collapse:collapse;font-size:13px;width:100%;max-width:520px}
+table.pts td,table.pts th{border-bottom:1px solid var(--line);padding:4px 8px;text-align:start}
+.hint{border-inline-start:3px solid var(--accent);padding:2px 10px;color:var(--ink2);font-size:13px;margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>MAHALCO · תכנון כביש מקצה לקצה</h1>
+  <input type="text" id="pname" placeholder="שם הפרויקט" style="width:230px">
+  <span class="sp"></span>
+  <button id="bSave">שמירת פרויקט</button>
+  <button id="bOpen">פתיחת פרויקט</button>
+  <input type="file" id="fOpen" accept=".json,.mahalco" hidden>
+</header>
+
+<div class="rail">
+  <button data-step="1" class="on"><span class="n">1</span>מדידה ורקע</button>
+  <button data-step="2"><span class="n">2</span>צירים, חתכים וצמתים</button>
+  <button data-step="3"><span class="n">3</span>ציר אנכי</button>
+  <button data-step="4"><span class="n">4</span>פלט DWG</button>
+</div>
+
+<main>
+<!-- ============ שלב 1 ============ -->
+<section class="step on" id="s1">
+  <div class="card">
+    <h2>קליטת מדידה</h2>
+    <p class="sub">קובץ DWG או DXF של מדידה עם נקודות וגבהים, קובץ נקודות טקסטואלי, או תצלום שיש בו נתוני גובה — התצלום מכויל בשתי נקודות ואפשר לסמן עליו גבהים.</p>
+    <div class="row">
+      <button class="pri" id="bSurvey">בחירת קובץ מדידה</button>
+      <input type="file" id="fSurvey" accept=".dwg,.dxf,.csv,.txt,.pts,.xyz,image/*" hidden>
+      <select id="colOrder"><option value="xyz">סדר עמודות X,Y,Z</option><option value="yxz">סדר עמודות Y,X,Z</option></select>
+      <span class="tag" id="surveyTag">אין מדידה</span>
+    </div>
+    <div class="row" id="layRow" style="margin-top:10px"></div>
+    <div class="log" id="sLog" hidden></div>
+  </div>
+
+  <div class="card" id="photoCard" hidden>
+    <h2>כיול התצלום וסימון גבהים</h2>
+    <p class="sub">הקישו על נקודה מוכרת בתצלום והזינו את הקואורדינטות שלה (E,N) — שתי נקודות מספיקות. אחר כך עברו למצב "גבהים" והקישו על כל כיתוב גובה בתצלום כדי להקליד את ערכו.</p>
+    <div class="row">
+      <button id="mCal" class="pri">מצב כיול</button>
+      <button id="mLev">מצב גבהים</button>
+      <button id="mClr">ניקוי סימונים</button>
+      <span class="tag" id="calTag">לא מכויל</span>
+    </div>
+    <canvas class="prev" id="photoCv" width="1100" height="620" style="margin-top:12px"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>תצוגת ענן הנקודות</h2>
+    <canvas class="prev" id="surveyCv" width="1100" height="430"></canvas>
+    <div class="row" style="margin-top:10px">
+      <button id="bToAxes" class="pri">העברה לשלב 2 כרקע לשרטוט הצירים</button>
+      <span class="note">המדידה נשמרת בפרויקט ומשמשת גם את הציר האנכי בשלב 3.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ שלב 2 ============ -->
+<section class="step" id="s2">
+  <div class="card">
+    <h2>צירים, חתכים וצמתים</h2>
+    <p class="sub">שרטטו את הצירים על רקע המדידה, קבעו לכל ציר את החתך הרוחבי, והוסיפו צמתים. מה שתשרטטו כאן הוא התכנית שתצא בפלט.</p>
+    <div class="row">
+      <span class="tag" id="axTag">אין צירים</span>
+      <span class="note">המדידה נטענת כרקע מאליה, והצירים נשמרים בפרויקט כשעוברים לשלב הבא.</span>
+    </div>
+  </div>
+  <iframe id="fAlign" src="alignment-builder-7.html" title="בונה הצירים"></iframe>
+</section>
+
+<!-- ============ שלב 3 ============ -->
+<section class="step" id="s3">
+  <div class="card">
+    <h2>תכנון הציר האנכי</h2>
+    <p class="sub">הצירים והמדידה מועברים לכאן אוטומטית. בנו את קו הקרקע לאורך הציר, קבעו נקודות שבירה אנכיות ובדקו מרחקי ראייה.</p>
+    <div class="row">
+      <span class="tag" id="vaTag">אין ציר אנכי</span>
+      <span class="note">הצירים והמדידה עוברים לכאן מאליהם, והתוצאה נשמרת כשעוברים לשלב הבא.</span>
+    </div>
+  </div>
+  <iframe id="fVert" src="vertical-alignment-2.html" title="ציר אנכי"></iframe>
+</section>
+
+<!-- ============ שלב 4 ============ -->
+<section class="step" id="s4">
+  <div class="card">
+    <h2>מה ייכנס לקובץ</h2>
+    <div class="grid">
+      <label class="f">קנה מידה לתכנית<select id="oPlanD">
+        <option>250</option><option selected>500</option><option>1000</option><option>2000</option></select></label>
+      <label class="f">מרווח חתכי רוחב (מ׳)<input type="number" id="oStep" value="20" min="5" max="200" step="5"></label>
+      <label class="f">קנה מידה לחתכי רוחב<select id="oXD">
+        <option>25</option><option selected>50</option><option>100</option></select></label>
+    </div>
+    <details style="margin-top:12px">
+      <summary style="cursor:pointer;color:var(--accent);font-size:13.5px">אפשרויות נוספות</summary>
+      <div class="grid" style="margin-top:10px">
+        <label class="f">קנה מידה אופקי לחתך אורך<select id="oVD">
+          <option>250</option><option>500</option><option selected>1000</option><option>2000</option></select></label>
+        <label class="f">הגזמה אנכית בחתך האורך<select id="oVE">
+          <option>5</option><option selected>10</option><option>20</option></select></label>
+        <label class="f">חתכי רוחב זמניים<select id="oTemp">
+          <option value="no" selected>לא</option><option value="yes">כן – גיליון נפרד</option></select></label>
+      </div>
+    </details>
+  </div>
+
+  <details class="card">
+    <summary style="cursor:pointer"><b>מסגרת השרטוט והלוגו</b></summary>
+    <p class="sub">העלו את מסגרת הפרויקט שלכם (DWG או DXF) והיא תוטבע בכל גיליון. כיתוב שמכיל ‎{PROJ}‎, ‎{TITLE}‎, ‎{SCALE}‎, ‎{SHEET}‎, ‎{DATE}‎, ‎{DRAWN}‎ או ‎{OFFICE}‎ יוחלף בנתוני הגיליון. בלי מסגרת — נכנסת מסגרת המשרד המובנית.</p>
+    <div class="row">
+      <button id="bFrame">בחירת קובץ מסגרת</button>
+      <input type="file" id="fFrame" accept=".dwg,.dxf" hidden>
+      <button id="bFrameClr">מסגרת מובנית</button>
+      <span class="tag" id="frameTag">מסגרת מובנית</span>
+    </div>
+    <p class="sub" style="margin:14px 0 8px">לוגו המשרד נכנס לתיבה שליד כרטיס הכותרת. קובץ SVG וקטורי נכנס כקווים אמיתיים ב-CAD; בלי לוגו נכתב שם המשרד.</p>
+    <div class="row">
+      <button id="bLogo">בחירת קובץ לוגו (SVG)</button>
+      <input type="file" id="fLogo" accept=".svg,image/svg+xml" hidden>
+      <button id="bLogoClr">בלי לוגו</button>
+      <span class="tag" id="logoTag">בלי לוגו</span>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <label class="f">משרד<input type="text" id="mOffice" value="MAHALCO – הנדסה אזרחית ותחבורה"></label>
+      <label class="f">פרויקט<input type="text" id="mProj" placeholder="שם הפרויקט"></label>
+      <label class="f">שרטט<input type="text" id="mDrawn" placeholder="שם השרטט"></label>
+      <label class="f">תאריך<input type="text" id="mDate"></label>
+    </div>
+  </details>
+
+  <div class="card">
+    <h2>יצירת הקובץ</h2>
+    <div class="row">
+      <button class="pri" id="bBuild">בניית קובץ ה-DWG</button>
+    </div>
+    <details style="margin-top:10px">
+      <summary style="cursor:pointer;color:var(--accent);font-size:13.5px">הגדרות כתיבה</summary>
+      <div class="row" style="margin-top:10px">
+        <label class="f" style="flex-direction:row;align-items:center;gap:8px">
+          <input type="checkbox" id="oFill" checked style="width:19px;height:19px;accent-color:var(--accent)">מילוי צבעוני</label>
+        <label class="f" style="flex-direction:row;align-items:center;gap:8px">
+          <input type="checkbox" id="oRtl" style="width:19px;height:19px;accent-color:var(--accent)">היפוך רצפי עברית</label>
+        <input type="url" id="oSvc" placeholder="https://…/dxf2dwg" style="width:260px;direction:ltr;text-align:left">
+      </div>
+    </details>
+    <div class="hint">המודל נכתב במטרים 1:1, וכל גיליון מקבל לשונית נייר A0 משלו. בלי שירות המרה יירד DXF.</div>
+    <div class="log" id="bLog" hidden></div>
+  </div>
+</section>
+</main>
+<div id="toast"></div>
+<script>/* ======================================================================
+   ייצוא CAD – תרגום ישיר של השרטוט שעל המסך ל-DXF R2000.
+   ----------------------------------------------------------------------
+   המנוע אינו מצייר מחדש: הוא קורא את אותו SVG שהכלי מציג ומתרגם כל
+   צורה לישות DXF, בקואורדינטות מודל במטרים (1:1). לכן הקובץ שיוצא זהה
+   לשרטוט שעל המסך – אותם מיקומים, אותן צורות, אותם צבעים.
+   · קווים ומיתארים  – בשכבות TS-* לפי התפקיד (data-lay שבשרטוט)
+   · מילוי צבעוני    – ישויות SOLID בשכבת TS-FILL (הקפאה = שרטוט קווי)
+   · מיתאר עזר       – TS-EDGE, מוקפאת כברירת מחדל (מיתאר לצורות מלאות)
+   ====================================================================== */
+const CAD = (function(){
+
+  /* ---------- שכבות ---------- */
+  const LAYERS = {
+    'TS-SURFACE'   : [7,  'CONTINUOUS', 35],
+    'TS-KERB'      : [8,  'CONTINUOUS', 25],
+    'TS-PAVE-ASP'  : [251,'CONTINUOUS', 13],
+    'TS-PAVE-BASE' : [41, 'CONTINUOUS', 13],
+    'TS-PAVE-SUB'  : [43, 'CONTINUOUS', 13],
+    'TS-EARTH'     : [33, 'CONTINUOUS', 18],
+    'TS-CELL'      : [30, 'CONTINUOUS', 13],
+    'TS-MARK'      : [7,  'CONTINUOUS', 18],
+    'TS-MARK-C'    : [2,  'CONTINUOUS', 18],
+    'TS-SYMB'      : [9,  'CONTINUOUS', 13],
+    'TS-TREE'      : [3,  'CONTINUOUS', 13],
+    'TS-BLDG'      : [8,  'CONTINUOUS', 13],
+    'TS-ARROW'     : [7,  'CONTINUOUS', 18],
+    'TS-SLOPE'     : [5,  'CONTINUOUS', 13],
+    'TS-DIM'       : [4,  'CONTINUOUS', 13],
+    'TS-TEXT'      : [7,  'CONTINUOUS', 18],
+    'TS-ROW'       : [1,  'DASHDOT',    25],
+    'TS-FRAME'     : [7,  'CONTINUOUS', 50],
+    'TS-TITLE'     : [7,  'CONTINUOUS', 35],
+    /* עבודות זמניות */
+    'TS-WORK'      : [30, 'CONTINUOUS', 35],
+    'TS-WORK-HAT'  : [30, 'CONTINUOUS', 13],
+    'TS-DEVICE'    : [1,  'CONTINUOUS', 25],
+    'TS-MARK-TMP'  : [30, 'CONTINUOUS', 25],
+    'TS-PED'       : [2,  'CONTINUOUS', 18],
+    'TS-MISC'      : [7,  'CONTINUOUS', 18],
+    /* בונה הציר – תכנית */
+    'AX-CENTER'    : [1,  'CENTER2',    25],
+    'AX-EDGE'      : [7,  'CONTINUOUS', 18],
+    'AX-MARK-801'  : [7,  'CONTINUOUS', 18],
+    'AX-MARK-807'  : [42, 'CONTINUOUS', 25],
+    'AX-MARK-808'  : [7,  'CONTINUOUS', 25],
+    'AX-MARK-803'  : [7,  'CONTINUOUS', 25],
+    'AX-MEDIAN'    : [8,  'CONTINUOUS', 18],
+    'AX-SURF'      : [9,  'CONTINUOUS', 13],
+    'AX-EARTH'     : [33, 'CONTINUOUS', 13],
+    'AX-WALK'      : [30, 'CONTINUOUS', 13],
+    'AX-ZONE'      : [2,  'CONTINUOUS', 18],
+    'AX-STATION'   : [4,  'CONTINUOUS', 13],
+    'AX-TEXT'      : [7,  'CONTINUOUS', 18],
+    'AX-PI'        : [1,  'CONTINUOUS', 35],
+    'JCT-CURVE'    : [2,  'CONTINUOUS', 25],
+    'JCT-ISLAND'   : [3,  'CONTINUOUS', 18],
+    'JCT-ARROW'    : [3,  'CONTINUOUS', 18],
+    'AX-ARROW'     : [7,  'CONTINUOUS', 18],
+    'JCT-TEXT'     : [7,  'CONTINUOUS', 18]
+  };
+  /* שכבות המילוי נגזרות אוטומטית: <שכבה>-F. הקפאת ‎*-F‎ = שרטוט קווי נקי. */
+  const FROZEN = {};
+  const STYLE = 'MAHALCO';
+  const H_BR='1', H_LAYER='2', H_STYLE='3', H_LTYPE='5', H_VIEW='6', H_UCS='7',
+        H_VPORT='8', H_APPID='9', H_DIMS='E', H_MS='A', H_PS='B', H_DICT='C', H_GROUP='D',
+        H_LAYDICT='F';
+
+  /* ---------- צבעים ---------- */
+  const ACI = ('000000ff0000ffff0000ff0000ffff0000ffff00ffffffff414141808080ff0000ffaaaa'
+    +'bf0000bf80807f00007f55555f00005f3f3f2f00002f2a2aff3f00ffbfaabf2f00bf8f807f1f007f5f553f0f003f'
+    +'2f2a7f7f00ffffaabf7f00bf8f807f00007f5f553f00003f2f2abf7f00ffbfaabf5f00bf8f807f3f007f5f553f1f'
+    +'003f2f2abfbf00ffffaabfbf00bf8f807f7f007f5f553f3f003f2f2a7fbf00ffdfaabf5f00bf9f807f3f007f6a55'
+    +'3f1f003f352a00bf00ffffdfbfbf00bf9f80807f007f6a553f3f003f352a00bf3fffffdfbfbf2fbf9f807f1f7f6a'
+    +'553f0f3f352a00bf7fffffdfbfbf5fbf9f807f3f7f6a553f1f3f352a00bfbfffffffbfbfbfbf9f807f7f7f6a553f'
+    +'3f3f352a007fbfffdfffbf5fbfbf3f7f9f7f2a3f6a35007fffffdfffbfbfbfbf7f7f9f7f553f6a35003fffbfdfff'
+    +'2fbfbf1f7f9f0f3f6a2a3f6a35007fffbfdfff5fbfbf3f7f9f1f3f6a2a3f6a3500bfffbfdfffbfbfbf7f7f9f3f3f'
+    +'6a2a3f6a35003fbfff9fdfff2f5fbf1f3f7f0f1f3f2a2a3f3f00ffbfbfdfff00bfbf00bf7f7f9f007f3f3f6a2a2a'
+    +'3f3f00ffbfbfdfff002fbf1f1f7f0f0f3f0a0a2a3f3f003fbfbfdfff005fbf3f3f7f1f1f3f2a2a3f3f003fffbfbf'
+    +'dfff2f00bf1f007f0f003f0a002a3f3f00bfffbfbfdfff5f00bf3f007f1f003f2a002a3f3f00ffffbfbfdfffbf00'
+    +'bf7f007f3f003f2a002a3f3f00ffbfbfbfdfffbf002fbf001f7f000f3f000a2a3f3f00ff3fbfbfdfffbf005fbf00'
+    +'3f7f001f3f000a2a3f3f00ff7fbfbfdfffbf009fbf007f7f003f3f002a2a3f3f00ffbfbfbfdfffbf00bfbf007f7f'
+    +'003f3f002a2a3f3f00bfffbfbfdfff5f00bfbf003f7f001f3f002a2a3f3f003fffbfbfdfff2f00bfbf001f7f000f'
+    +'3f002a2a3f3f333333' ).match(/.{6}/g) || [];
+
+  const hex = c => {
+    if(!c || c==='none') return null;
+    c = c.trim().toLowerCase();
+    if(c[0] !== '#') return null;
+    if(c.length === 4) c = '#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
+    const v = parseInt(c.slice(1,7), 16);
+    return isNaN(v) ? null : {r:(v>>16)&255, g:(v>>8)&255, b:v&255, n:v};
+  };
+  function nearestACI(col){
+    const lum = (0.2126*col.r + 0.7152*col.g + 0.0722*col.b)/255;
+    if(lum < 0.2 || lum > 0.93) return 7;            /* שחור/לבן – 7 מתאים לרקע */
+    let best=7, bd=Infinity;
+    for(let i=1;i<ACI.length;i++){
+      const v = parseInt(ACI[i],16), r=(v>>16)&255, g=(v>>8)&255, b=v&255;
+      const d = (r-col.r)**2 + (g-col.g)**2 + (b-col.b)**2;
+      if(d<bd){ bd=d; best=i; }
+    }
+    return best;
+  }
+
+  /* ---------- מנוע DXF ---------- */
+  function Doc(unit, usedLayers){
+    let hx = 0x100;
+    const nh = ()=> (hx++).toString(16).toUpperCase();
+    const ents = [], eown = [];
+    const push = (x)=>{ ents.push(x); eown.push(owner); };
+    /* פריסות נייר: כל גיליון מקבל מרחב נייר משלו ולשונית בשם שלו */
+    const layouts = [];
+    let owner = H_MS, paper = false;
+    /* סוגי קו: כל stroke-dasharray שבשרטוט הופך לסוג קו משלו, ביחידות המודל,
+       כך שהמקטעים והרווחים יוצאים באורך שנראה על המסך. */
+    const lts = {};
+    function dashLT(arr, u){
+      const uu = (u===undefined ? unit : u);
+      const key = arr.join(',') + '@' + uu;
+      if(lts[key]) return lts[key].name;
+      const name = 'TS-DASH' + (Object.keys(lts).length + 1);
+      const pat = []; let tot = 0;
+      arr.forEach((v,i)=>{ const d = v*uu; tot += d; pat.push(i%2 ? -d : d); });
+      lts[key] = {name, pat, tot};
+      return name;
+    }
+    const ext = {x0:1e18, y0:1e18, x1:-1e18, y1:-1e18};
+    const g = (c,v)=>c+'\n'+v+'\n';
+    const n = v => (Math.abs(v)<1e-9?0:v).toFixed(6);
+    const see = (x,y)=>{ if(paper) return; if(x<ext.x0)ext.x0=x; if(y<ext.y0)ext.y0=y; if(x>ext.x1)ext.x1=x; if(y>ext.y1)ext.y1=y; };
+    function head(type, layer, col, lt){
+      usedLayers[layer] = 1;
+      let s = g(0,type)+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')+(paper?g(67,1):'')+g(8,layer);
+      if(lt) s += g(6, lt);
+      if(col){ s += g(62, nearestACI(col)) + g(420, col.n); }
+      return s;
+    }
+    return {
+      dashLT,
+      /* מוסיף לשונית גיליון ומחזיר את הידית של מרחב הנייר שלה */
+      addLayout(name, w, h){
+        const i = layouts.length;
+        const brHandle = i===0 ? H_PS : nh();
+        const loHandle = nh();
+        const brName = i===0 ? '*Paper_Space' : ('*Paper_Space' + (i-1));
+        layouts.push({name, w, h, brHandle, loHandle, brName});
+        return brHandle;
+      },
+      space(h, isPaper){ owner = h; paper = !!isPaper; },
+      layoutCount(){ return layouts.length; },
+      line(lay,col,x1,y1,x2,y2,lt){ see(x1,y1); see(x2,y2);
+        push(head('LINE',lay,col,lt)+g(100,'AcDbLine')+g(10,n(x1))+g(20,n(y1))+g(30,0)+g(11,n(x2))+g(21,n(y2))+g(31,0)); },
+      poly(lay,col,pts,closed,lt){ if(!pts || pts.length<2) return; pts.forEach(p=>see(p[0],p[1]));
+        let s = head('LWPOLYLINE',lay,col,lt)+g(100,'AcDbPolyline')+g(90,pts.length)+g(70,closed?1:0);
+        pts.forEach(p=>{ s+=g(10,n(p[0]))+g(20,n(p[1])); if(p[2]) s+=g(42,n(p[2])); });
+        push(s); },
+      circle(lay,col,cx,cy,r){ if(!(r>0)) return; see(cx-r,cy-r); see(cx+r,cy+r);
+        push(head('CIRCLE',lay,col)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))); },
+      solid(lay,col,a,b,c,d){ d=d||c; [a,b,c,d].forEach(p=>see(p[0],p[1]));
+        push(head('SOLID',lay,col)+g(100,'AcDbTrace')
+          +g(10,n(a[0]))+g(20,n(a[1]))+g(30,0)+g(11,n(b[0]))+g(21,n(b[1]))+g(31,0)
+          +g(12,n(c[0]))+g(22,n(c[1]))+g(32,0)+g(13,n(d[0]))+g(23,n(d[1]))+g(33,0)); },
+      text(lay,col,x,y,ht,s,o){ o=o||{};
+        const len=String(s).replace(/\\U\+[0-9A-F]{4}/g,'x').length, wd=ht*0.7*len, ha=o.ha||0;
+        see(ha===2?x-wd:ha===1?x-wd/2:x, y); see(ha===2?x:ha===1?x+wd/2:x+wd, y+ht);
+        push(head('TEXT',lay,col)+g(100,'AcDbText')+g(10,n(x))+g(20,n(y))+g(30,0)+g(40,n(ht))+g(1,s)
+          +g(50,n(o.rot||0))+g(41,1)+g(51,0)+g(7,STYLE)+g(71,0)+g(72,ha)
+          +g(11,n(x))+g(21,n(y))+g(31,0)+g(100,'AcDbText')+g(73,o.va||0)); },
+      count(){ return ents.length; },
+      out(){
+        const sp = Math.max(0.5,(ext.x1-ext.x0)*0.02);
+        const x0 = ext.x0<1e17?ext.x0-sp:0, y0 = ext.y0<1e17?ext.y0-sp:0;
+        const x1 = ext.x1>-1e17?ext.x1+sp:100, y1 = ext.y1>-1e17?ext.y1+sp:100;
+        const tbl = (name, handle, count, body)=> g(0,'TABLE')+g(2,name)+g(5,handle)+g(330,0)+g(100,'AcDbSymbolTable')+g(70,count)+body+g(0,'ENDTAB');
+        const rec = (type, sub, owner, name, extra, handle)=> g(0,type)+g(5,handle||nh())+g(330,owner)+g(100,'AcDbSymbolTableRecord')+g(100,sub)+g(2,name)+extra;
+        let s = '';
+        s += g(0,'SECTION')+g(2,'HEADER')
+          + g(9,'$ACADVER')+g(1,'AC1015')
+          + g(9,'$DWGCODEPAGE')+g(3,'ANSI_1255')
+          + g(9,'$HANDSEED')+g(5,(hx+0x1000).toString(16).toUpperCase())
+          + g(9,'$INSUNITS')+g(70,6) + g(9,'$MEASUREMENT')+g(70,1)
+          + g(9,'$LUNITS')+g(70,2) + g(9,'$LUPREC')+g(70,3) + g(9,'$AUNITS')+g(70,0)
+          + g(9,'$DIMSCALE')+g(40,n(unit*3)) + g(9,'$LTSCALE')+g(40,1) + g(9,'$CELTSCALE')+g(40,1)
+          + g(9,'$TEXTSTYLE')+g(7,STYLE) + g(9,'$CLAYER')+g(8,'TS-SURFACE')
+          + g(9,'$EXTMIN')+g(10,n(x0))+g(20,n(y0))+g(30,0)
+          + g(9,'$EXTMAX')+g(10,n(x1))+g(20,n(y1))+g(30,0)
+          + g(9,'$LIMMIN')+g(10,n(x0))+g(20,n(y0))
+          + g(9,'$LIMMAX')+g(10,n(x1))+g(20,n(y1))
+          + g(0,'ENDSEC');
+
+        s += g(0,'SECTION')+g(2,'TABLES');
+        s += tbl('VPORT',H_VPORT,1, rec('VPORT','AcDbViewportTableRecord',H_VPORT,'*ACTIVE',
+              g(70,0)+g(10,0)+g(20,0)+g(11,1)+g(21,1)
+              +g(12,n((x0+x1)/2))+g(22,n((y0+y1)/2))+g(13,0)+g(23,0)+g(14,1)+g(24,1)+g(15,0)+g(25,0)
+              +g(16,0)+g(26,0)+g(36,1)+g(17,0)+g(27,0)+g(37,0)
+              +g(40,n(Math.max(1,y1-y0)))+g(41,n(1.6))+g(42,50)+g(43,0)+g(44,0)+g(50,0)+g(51,0)
+              +g(71,0)+g(72,1000)+g(73,1)+g(74,3)+g(75,0)+g(76,0)+g(77,0)+g(78,0)+g(65,1)+g(60,3)+g(61,5)+g(281,0)+g(79,0)+g(146,0)));
+        let lt = rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'ByBlock', g(70,0)+g(3,'')+g(72,65)+g(73,0)+g(40,0))
+               + rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'ByLayer', g(70,0)+g(3,'')+g(72,65)+g(73,0)+g(40,0))
+               + rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'CONTINUOUS', g(70,0)+g(3,'Solid line')+g(72,65)+g(73,0)+g(40,0));
+        const pat = (name,desc,total,dashes)=>{ let b=g(70,0)+g(3,desc)+g(72,65)+g(73,dashes.length)+g(40,n(total));
+          dashes.forEach(dd=>{ b+=g(49,n(dd))+g(74,0); }); return rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,name,b); };
+        lt += pat('DASHED','Dashed __ __ __ __', 3*unit, [2*unit,-1*unit]);
+        lt += pat('DASHDOT','Dash dot __ . __ . __', 6*unit, [3*unit,-1.2*unit,0.6*unit,-1.2*unit]);
+        let ltN = 5;
+        Object.keys(lts).forEach(k=>{ const L=lts[k]; ltN++;
+          lt += pat(L.name, 'MAHALCO '+k, L.tot, L.pat); });
+        s += tbl('LTYPE',H_LTYPE,ltN,lt);
+
+        const names = Object.keys(usedLayers).filter(x=>x && x!=='none').sort();
+        let la = rec('LAYER','AcDbLayerTableRecord',H_LAYER,'0', g(70,0)+g(62,7)+g(6,'CONTINUOUS')+g(370,-3)+g(390,'F'));
+        names.forEach(nm=>{ const base = nm.replace(/-F$/,''), isF = nm!==base;
+          const L = LAYERS[base] || [7,'CONTINUOUS',18];
+          la += rec('LAYER','AcDbLayerTableRecord',H_LAYER,nm,
+                g(70,FROZEN[nm]?1:0)+g(62,L[0])+g(6,isF?'CONTINUOUS':L[1])+g(370,isF?0:L[2])+g(390,'F')); });
+        s += tbl('LAYER',H_LAYER,names.length+1,la);
+
+        let st = rec('STYLE','AcDbTextStyleTableRecord',H_STYLE,'Standard', g(70,0)+g(40,0)+g(41,1)+g(50,0)+g(71,0)+g(42,2.5)+g(3,'txt')+g(4,''))
+               + rec('STYLE','AcDbTextStyleTableRecord',H_STYLE,STYLE, g(70,0)+g(40,0)+g(41,1)+g(50,0)+g(71,0)+g(42,2.5)+g(3,'arial.ttf')+g(4,''));
+        s += tbl('STYLE',H_STYLE,2,st);
+        s += tbl('VIEW',H_VIEW,0,'');
+        s += tbl('UCS',H_UCS,0,'');
+        s += tbl('APPID',H_APPID,1, rec('APPID','AcDbRegAppTableRecord',H_APPID,'ACAD', g(70,0)));
+        s += g(0,'TABLE')+g(2,'DIMSTYLE')+g(5,H_DIMS)+g(330,0)+g(100,'AcDbSymbolTable')+g(100,'AcDbDimStyleTable')+g(70,1)
+           + g(0,'DIMSTYLE')+g(105,nh())+g(330,H_DIMS)+g(100,'AcDbSymbolTableRecord')+g(100,'AcDbDimStyleTableRecord')+g(2,'Standard')
+           + g(70,0)+g(40,n(unit*3))+g(41,n(2.5))+g(42,n(0.625))+g(43,n(3.75))+g(44,n(1.25))+g(140,n(2.5))+g(141,n(2.5))
+           + g(147,n(0.625))+g(171,3)+g(172,1)+g(271,3)+g(272,3)
+           + g(0,'ENDTAB');
+        let brs = rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Model_Space', g(70,0)+g(280,1)+g(281,0), H_MS);
+        if(!layouts.length) brs += rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Paper_Space', g(70,0)+g(280,1)+g(281,0), H_PS);
+        layouts.forEach(L=>{ brs += rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,L.brName, g(70,0)+g(280,1)+g(281,0), L.brHandle); });
+        s += tbl('BLOCK_RECORD',H_BR, 1 + (layouts.length || 1), brs);
+        s += g(0,'ENDSEC');
+
+        /* תוכן לפי מרחב: המודל והגיליון הראשון נכתבים ב-ENTITIES,
+           שאר הגיליונות נכתבים בתוך הגדרת הבלוק שלהם – כך כל תוכנה קוראת אותם נכון. */
+        const bodyOf = h => ents.filter((_,i)=>eown[i]===h).join('');
+        const blk = (name, owner, body)=> g(0,'BLOCK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')
+                   +(owner===H_MS?'':g(67,1))+g(8,'0')+g(100,'AcDbBlockBegin')
+                   +g(2,name)+g(70,0)+g(10,0)+g(20,0)+g(30,0)+g(3,name)+g(1,'')
+                   +(body||'')
+                   +g(0,'ENDBLK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')
+                   +(owner===H_MS?'':g(67,1))+g(8,'0')+g(100,'AcDbBlockEnd');
+        let blocks = blk('*Model_Space',H_MS,'');
+        if(!layouts.length) blocks += blk('*Paper_Space',H_PS,'');
+        layouts.forEach((L,i)=>{ blocks += blk(L.brName, L.brHandle, i===0 ? '' : bodyOf(L.brHandle)); });
+        s += g(0,'SECTION')+g(2,'BLOCKS')+blocks+g(0,'ENDSEC');
+        const first = layouts.length ? layouts[0].brHandle : null;
+        const flat = ents.filter((_,i)=>eown[i]===H_MS || (first && eown[i]===first)).join('');
+        s += g(0,'SECTION')+g(2,'ENTITIES')+(layouts.length ? flat : ents.join(''))+g(0,'ENDSEC');
+        const modelLayout = layouts.length ? nh() : null;
+        s += g(0,'SECTION')+g(2,'OBJECTS')
+          + g(0,'DICTIONARY')+g(5,H_DICT)+g(330,0)+g(100,'AcDbDictionary')+g(281,1)
+            + g(3,'ACAD_GROUP')+g(350,H_GROUP)
+            + (layouts.length ? g(3,'ACAD_LAYOUT')+g(350,H_LAYDICT) : '')
+          + g(0,'DICTIONARY')+g(5,H_GROUP)+g(330,H_DICT)+g(100,'AcDbDictionary')+g(281,1);
+        if(layouts.length){
+          /* מילון הפריסות */
+          let dict = g(0,'DICTIONARY')+g(5,H_LAYDICT)+g(330,H_DICT)+g(100,'AcDbDictionary')+g(281,1)
+                   + g(3,'Model')+g(350,modelLayout);
+          layouts.forEach(L=>{ dict += g(3,L.name)+g(350,L.loHandle); });
+          s += dict;
+          const plot = (name,w,h)=> g(100,'AcDbPlotSettings')+g(1,'')+g(4,name)+g(6,'')
+            + g(40,0)+g(41,0)+g(42,0)+g(43,0)+g(44,n(w))+g(45,n(h))
+            + g(46,0)+g(47,0)+g(48,0)+g(49,0)+g(140,0)+g(141,0)+g(142,1)+g(143,1)
+            + g(70,1024)+g(72,1)+g(73,0)+g(74,5)+g(7,'')+g(75,16)+g(76,0)+g(77,2)+g(78,300)
+            + g(147,1)+g(148,0)+g(149,0);
+          const lay = (handle, owner2, name, tab, w, h, br)=> g(0,'LAYOUT')+g(5,handle)+g(330,owner2)
+            + plot(name==='Model'?'':'ISO_A0_(1189.00_x_841.00_MM)', w, h)
+            + g(100,'AcDbLayout')+g(1,name)+g(70,1)+g(71,tab)
+            + g(10,0)+g(20,0)+g(11,n(w))+g(21,n(h))
+            + g(12,0)+g(22,0)+g(32,0)
+            + g(14,0)+g(24,0)+g(34,0)+g(15,n(w))+g(25,n(h))+g(35,0)
+            + g(146,0)+g(13,0)+g(23,0)+g(33,0)
+            + g(16,1)+g(26,0)+g(36,0)+g(17,0)+g(27,1)+g(37,0)+g(76,0)+g(330,br);
+          s += lay(modelLayout, H_LAYDICT, 'Model', 0, 1189, 841, H_MS);
+          layouts.forEach((L,i)=>{ s += lay(L.loHandle, H_LAYDICT, L.name, i+1, L.w, L.h, L.brHandle); });
+        }
+        s += g(0,'ENDSEC');
+        return s + g(0,'EOF');
+      }
+    };
+  }
+
+  /* ---------- גזירת משולשים (ear clipping) לשטחים מלאים ---------- */
+  function area2(p){ let a=0; for(let i=0,j=p.length-1;i<p.length;j=i++) a += (p[j][0]*p[i][1] - p[i][0]*p[j][1]); return a/2; }
+  function inTri(a,b,c,p){
+    const d1=(p[0]-b[0])*(a[1]-b[1])-(a[0]-b[0])*(p[1]-b[1]);
+    const d2=(p[0]-c[0])*(b[1]-c[1])-(b[0]-c[0])*(p[1]-c[1]);
+    const d3=(p[0]-a[0])*(c[1]-a[1])-(c[0]-a[0])*(p[1]-a[1]);
+    const neg=(d1<0)||(d2<0)||(d3<0), pos=(d1>0)||(d2>0)||(d3>0);
+    return !(neg&&pos);
+  }
+  function earClip(poly){
+    const p = poly.slice();
+    if(p.length>1 && Math.abs(p[0][0]-p[p.length-1][0])<1e-12 && Math.abs(p[0][1]-p[p.length-1][1])<1e-12) p.pop();
+    if(p.length<3) return [];
+    if(area2(p) < 0) p.reverse();                         /* CCW */
+    const idx = p.map((_,i)=>i), out=[];
+    let guard = 0;
+    while(idx.length > 3 && guard++ < 4000){
+      let clipped = false;
+      for(let i=0;i<idx.length;i++){
+        const a=p[idx[(i+idx.length-1)%idx.length]], b=p[idx[i]], c=p[idx[(i+1)%idx.length]];
+        const cross = (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]);
+        if(cross <= 1e-14) continue;                      /* לא קמור */
+        let ok = true;
+        for(let j=0;j<idx.length;j++){
+          if(j===i || j===(i+idx.length-1)%idx.length || j===(i+1)%idx.length) continue;
+          if(inTri(a,b,c,p[idx[j]])){ ok=false; break; }
+        }
+        if(!ok) continue;
+        out.push([a,b,c]); idx.splice(i,1); clipped = true; break;
+      }
+      if(!clipped) break;
+    }
+    if(idx.length === 3) out.push([p[idx[0]],p[idx[1]],p[idx[2]]]);
+    return out;
+  }
+
+  /* ---------- קריאת ה-SVG ---------- */
+  const ATTR = /([\w-]+)="([^"]*)"/g;
+  function attrs(s){ const o={}; let m; ATTR.lastIndex=0; while((m=ATTR.exec(s))) o[m[1]]=m[2]; return o; }
+  const num = v => { const x = parseFloat(v); return isNaN(x)?0:x; };
+  function translateOf(t){
+    if(!t) return [0,0];
+    const m = /translate\(\s*(-?[\d.eE+-]+)(?:[ ,]+(-?[\d.eE+-]+))?\s*\)/.exec(t);
+    return m ? [parseFloat(m[1]), m[2]!==undefined?parseFloat(m[2]):0] : [0,0];
+  }
+  function scaleOf(t){
+    if(!t) return 1;
+    const m = /scale\(\s*(-?[\d.eE+-]+)/.exec(t);
+    return m ? parseFloat(m[1]) : 1;
+  }
+  function rotateOf(t){
+    if(!t) return 0;
+    const m = /rotate\(\s*(-?[\d.eE+-]+)/.exec(t);
+    return m ? parseFloat(m[1]) : 0;
+  }
+  const NUMRE = /-?\d*\.?\d+(?:[eE][-+]?\d+)?/g;
+  function pathSubs(d){
+    const subs=[]; let cur=null, x=0, y=0, sx=0, sy=0, closed=false;
+    const cmds = d.match(/[MmLlHhVvZz][^MmLlHhVvZz]*/g) || [];
+    const push = ()=>{ if(cur && cur.length>1) subs.push({pts:cur, closed}); };
+    cmds.forEach(seg=>{
+      const c = seg[0], nums = (seg.slice(1).match(NUMRE)||[]).map(Number);
+      if(c==='M'||c==='m'){
+        push(); closed=false; cur=[];
+        for(let i=0;i+1<nums.length+1 && i<nums.length;i+=2){
+          if(c==='M'){ x=nums[i]; y=nums[i+1]; } else { x+=nums[i]; y+=nums[i+1]; }
+          cur.push([x,y]); if(i===0){ sx=x; sy=y; }
+        }
+      } else if(c==='L'||c==='l'){
+        for(let i=0;i<nums.length;i+=2){ if(c==='L'){ x=nums[i]; y=nums[i+1]; } else { x+=nums[i]; y+=nums[i+1]; } cur.push([x,y]); }
+      } else if(c==='H'||c==='h'){
+        nums.forEach(v=>{ x = (c==='H')?v:x+v; cur.push([x,y]); });
+      } else if(c==='V'||c==='v'){
+        nums.forEach(v=>{ y = (c==='V')?v:y+v; cur.push([x,y]); });
+      } else if(c==='Z'||c==='z'){
+        closed = true; x=sx; y=sy;
+      }
+    });
+    push();
+    return subs;
+  }
+
+  /* ---------- התרגום עצמו ---------- */
+  /* המנוע: קורא SVG וכותב ישויות לתוך מסמך קיים.
+     U = מטרים ליחידת SVG (במודל), או 1 כשכותבים ישירות על הנייר. */
+  function walk(d, svg, U, A0h, o){
+    o = o || {};
+    const fills = o.fills !== false;
+    const st = [{tx:0, ty:0, sc:1, fill:null, stroke:null, lay:null}];
+    const P = (x,y)=>[x*U, (A0h - y)*U];
+
+    function top(){ return st[st.length-1]; }
+    function place(x,y){ const s=top(); return P(s.tx + s.sc*x, s.ty + s.sc*y); }
+    function lenOf(v){ return v * top().sc; }
+
+    const paper = col => col.r>245 && col.g>245 && col.b>245;   /* לבן = צבע הנייר */
+    function addFill(lay, col, poly){         /* poly במרחב המודל */
+      if(!fills || !col || paper(col)) return;
+      const p = poly.map(q=>[q[0],q[1]]);
+      if(p.length===4 && convexQuad(p)) d.solid(lay+'-F', col, p[0], p[1], p[3], p[2]);
+      else earClip(p).forEach(t=>d.solid(lay+'-F', col, t[0], t[1], t[2]));
+    }
+    function convexQuad(p){
+      let sgn = 0;
+      for(let i=0;i<4;i++){
+        const a=p[i], b=p[(i+1)%4], c=p[(i+2)%4];
+        const cr = (b[0]-a[0])*(c[1]-b[1]) - (b[1]-a[1])*(c[0]-b[0]);
+        if(Math.abs(cr) < 1e-14) return false;
+        const s = cr>0?1:-1;
+        if(sgn===0) sgn=s; else if(s!==sgn) return false;
+      }
+      return true;
+    }
+    function shape(lay, pts, closed, fillCol, strokeCol, lt){
+      /* pts כבר במרחב המודל. המיתאר תמיד נרשם – בצבע הקו, ואם אין קו בצבע המילוי,
+         כך שהתצוגה זהה למסך וכשמקפיאים את שכבות ‎-F‎ נשאר שרטוט קווי. */
+      if(fillCol) addFill(lay, fillCol, pts);
+      const oc = strokeCol || fillCol;
+      if(oc) d.poly(lay, oc, pts, closed, lt);
+    }
+    /* קווקוו: פסים באלכסון בתוך מלבן – בדיוק כמו התבנית שעל המסך.
+       הפס נחתך אל תוך המלבן (Sutherland–Hodgman) ונצבע כשטח מלא. */
+    function clipHalf(poly, dy, dx, c, keepGE){
+      const out = [];
+      const val = p => p[0]*dy - p[1]*dx - c;
+      for(let i=0;i<poly.length;i++){
+        const A = poly[i], B = poly[(i+1)%poly.length];
+        const va = val(A)*(keepGE?1:-1), vb = val(B)*(keepGE?1:-1);
+        if(va >= 0) out.push(A);
+        if((va >= 0) !== (vb >= 0)){
+          const t = va/(va-vb);
+          out.push([A[0]+(B[0]-A[0])*t, A[1]+(B[1]-A[1])*t]);
+        }
+      }
+      return out;
+    }
+    function hatchRect(lay, x, y, w, h, ang, gap, col, bandW){
+      if(!col) return;
+      const rad = ang*Math.PI/180, dx = Math.cos(rad), dy = Math.sin(rad);
+      const rect = [[x,y],[x+w,y],[x+w,y+h],[x,y+h]];
+      const cs = rect.map(p=>p[0]*dy - p[1]*dx);
+      const lo = Math.min.apply(null,cs), hi = Math.max.apply(null,cs);
+      const bw = bandW>0 ? bandW : 0;
+      for(let c = Math.floor(lo/gap)*gap; c <= hi+gap; c += gap){
+        if(bw > 0){
+          let poly = clipHalf(rect, dy, dx, c, true);
+          if(poly.length) poly = clipHalf(poly, dy, dx, c+bw, false);
+          if(poly.length >= 3) addFill(lay, col, poly.map(p=>place(p[0],p[1])));
+        } else {
+          const pts = [];
+          if(Math.abs(dx) > 1e-9) for(const xx of [x, x+w]){ const yy = (xx*dy - c)/dx; if(yy>=y-1e-9 && yy<=y+h+1e-9) pts.push([xx,yy]); }
+          if(Math.abs(dy) > 1e-9) for(const yy of [y, y+h]){ const xx = (c + yy*dx)/dy; if(xx>=x-1e-9 && xx<=x+w+1e-9) pts.push([xx,yy]); }
+          if(pts.length < 2) continue;
+          const A = place(pts[0][0], pts[0][1]), B = place(pts[1][0], pts[1][1]);
+          if(Math.abs(A[0]-B[0])>1e-12 || Math.abs(A[1]-B[1])>1e-12) d.line(lay, col, A[0],A[1],B[0],B[1]);
+        }
+      }
+    }
+    function dashOf(a){
+      const v = a['stroke-dasharray'];
+      if(!v || v==='none') return null;
+      const arr = v.split(/[\s,]+/).map(Number).filter(x=>!isNaN(x)).map(x=>x*top().sc);
+      return arr.length>=2 ? d.dashLT(arr, U) : null;
+    }
+
+    const tagRe = /<(\/?)([a-zA-Z]+)((?:"[^"]*"|[^>])*?)(\/?)>/g;
+    let m, skipDepth = 0;
+    while((m = tagRe.exec(svg))){
+      const close = m[1]==='/', name = m[2].toLowerCase(), a = attrs(m[3]), self = m[4]==='/';
+      if(skipDepth){                                   /* בתוך defs/pattern */
+        if(name==='defs'||name==='pattern'){ if(close) skipDepth--; else if(!self) skipDepth++; }
+        continue;
+      }
+      if(name==='defs' || name==='pattern'){ if(!close && !self) skipDepth++; continue; }
+      if(name==='svg') continue;
+      if(name==='g'){
+        if(close){ if(st.length>1) st.pop(); }
+        else {
+          const par = top(), t = translateOf(a.transform), sc = scaleOf(a.transform);
+          st.push({tx: par.tx + par.sc*t[0], ty: par.ty + par.sc*t[1], sc: par.sc*sc,
+                   fill: a.fill!==undefined ? a.fill : par.fill,
+                   stroke: a.stroke!==undefined ? a.stroke : par.stroke,
+                   lay: a['data-lay'] || par.lay});
+          if(self) st.pop();
+        }
+        continue;
+      }
+      if(close) continue;
+
+      const s = top();
+      const layer = a['data-lay'] || s.lay || 'TS-MISC';
+      if(layer === 'none') { if(name==='text') tagRe.lastIndex = svg.indexOf('</text>', tagRe.lastIndex)+7; continue; }
+      const fc = hex(a.fill !== undefined ? a.fill : s.fill);
+      const sc = hex(a.stroke !== undefined ? a.stroke : s.stroke);
+      const lt = dashOf(a);
+
+      if(name==='rect'){
+        const x=num(a.x), y=num(a.y), w=num(a.width), h=num(a.height), rx=num(a.rx||a.ry);
+        const hatch = a['data-hatch'], fillCol = hex(a['data-fill-col']);
+        let pts;
+        if(rx > 0.0001){
+          const r = Math.min(rx, w/2, h/2), B = 0.414213562;   /* tan(45°/4·2) לרבע מעגל */
+          const q = [];
+          const add = (px,py,b)=>{ const P2=place(px,py); q.push(b?[P2[0],P2[1],b]:[P2[0],P2[1]]); };
+          add(x+r, y, 0);          add(x+w-r, y, B);
+          add(x+w, y+r, 0);        add(x+w, y+h-r, B);
+          add(x+w-r, y+h, 0);      add(x+r, y+h, B);
+          add(x, y+h-r, 0);        add(x, y+r, B);
+          pts = q;
+        } else {
+          pts = [place(x,y), place(x+w,y), place(x+w,y+h), place(x,y+h)];
+        }
+        shape(layer, pts, true, fc || fillCol, sc, lt);
+        if(hatch) hatchRect(layer, x, y, w, h, +hatch, num(a['data-hatch-gap'])||10, hex(a['data-hatch-col']) || fc, num(a['data-hatch-w']));
+      }
+      else if(name==='circle'){
+        const cx=num(a.cx), cy=num(a.cy), r=num(a.r);
+        const c = place(cx,cy), rm = lenOf(r)*U;
+        if(fc && fills && !paper(fc)){
+          const N=16, ring=[];
+          for(let i=0;i<N;i++){ const t=2*Math.PI*i/N; ring.push([c[0]+rm*Math.cos(t), c[1]+rm*Math.sin(t)]); }
+          for(let i=0;i<N;i+=2) d.solid(layer+'-F', fc, ring[i], ring[(i+1)%N], c, ring[(i+2)%N]);
+        }
+        const oc = sc || fc;
+        if(oc) d.circle(layer, oc, c[0], c[1], rm);
+      }
+      else if(name==='line'){
+        const p1=place(num(a.x1),num(a.y1)), p2=place(num(a.x2),num(a.y2));
+        if(Math.abs(p1[0]-p2[0])>1e-12 || Math.abs(p1[1]-p2[1])>1e-12)
+          d.line(layer, sc || fc, p1[0],p1[1],p2[0],p2[1], lt);
+      }
+      else if(name==='path'){
+        pathSubs(a.d||'').forEach(sub=>{
+          const pts = sub.pts.map(p=>place(p[0],p[1]));
+          shape(layer, pts, sub.closed || !!fc, fc, sc, lt);
+        });
+      }
+      else if(name==='text'){
+        const end = svg.indexOf('</text>', tagRe.lastIndex);
+        const raw = end<0 ? '' : svg.slice(tagRe.lastIndex, end);
+        if(end>=0) tagRe.lastIndex = end + 7;
+        const txt = raw.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
+        const p = place(num(a.x), num(a.y));
+        const size = lenOf(num(a['font-size'])) * 0.72 * U;
+        const ha = a['text-anchor']==='middle' ? 1 : a['text-anchor']==='end' ? 2 : 0;
+        const rot = -rotateOf(a.transform);
+        d.text(layer, fc, p[0], p[1], size, enc(txt, o.rtl), {ha, rot});
+      }
+    }
+  }
+
+  function fromSVG(svg, D, o){
+    o = o || {};
+    const U = D/1000, used = {}, d = Doc(U, used);
+    walk(d, svg, U, o.sheetH || 841, o);
+    return {dxf: d.out(), entities: d.count(), layers: Object.keys(used)};
+  }
+
+  /* כתיבת רשימת פעולות (kind/lay/נקודות) לתוך מסמך קיים */
+  function putOps(d, ops, o){
+    const fills = o.fills !== false;
+    (ops || []).forEach(op=>{
+      const col = op.col ? (typeof op.col === 'string' ? hex(op.col) : op.col) : null;
+      if(op.k === 'poly'){
+        if(op.pts && op.pts.length>1) d.poly(op.lay, col, op.pts, !!op.closed, op.lt ? d.dashLT(op.lt) : null);
+      } else if(op.k === 'solid'){
+        if(!fills || !col || (col.r>245&&col.g>245&&col.b>245)) return;
+        const p = op.poly.slice();
+        if(p.length===4) d.solid(op.lay+'-F', col, p[0], p[1], p[3], p[2]);
+        else earClip(p).forEach(t=>d.solid(op.lay+'-F', col, t[0], t[1], t[2]));
+      } else if(op.k === 'circle'){
+        d.circle(op.lay, col, op.cx, op.cy, op.r);
+      } else if(op.k === 'text'){
+        d.text(op.lay, col, op.x, op.y, op.h, enc(op.s, o.rtl), {ha:op.ha||0, va:op.va||0, rot:op.rot||0});
+      }
+    });
+  }
+
+  /* סט גיליונות: תוכן במודל-ספייס (מטרים) + לשונית לכל גיליון A0 (מ״מ על הנייר).
+     כל בלוק יכול להיות SVG (svg) ו/או רשימת פעולות (ops). */
+  function fromSheets(spec, o){
+    o = o || {};
+    const used = {}, d = Doc(1, used);
+    (spec.model || []).forEach(m=>{
+      d.space(H_MS, false);
+      if(m.svg) walk(d, m.svg, (m.D || 1000)/1000, m.sheetH || 841, o);
+      if(m.ops) putOps(d, m.ops, o);
+    });
+    (spec.sheets || []).forEach(sh=>{
+      const w = sh.w || 1189, h = sh.h || 841;
+      d.space(d.addLayout(sh.name, w, h), true);
+      if(sh.svg) walk(d, sh.svg, 1, h, o);
+      if(sh.ops) putOps(d, sh.ops, o);
+    });
+    d.space(H_MS, false);
+    return {dxf: d.out(), entities: d.count(), layers: Object.keys(used),
+            sheets: (spec.sheets || []).length};
+  }
+
+  /* עברית: כל תו שאינו ASCII נכתב כ-\U+XXXX */
+  function enc(s, rtl){
+    s = String(s==null?'':s);
+    if(rtl) s = s.replace(/[֐-׿][֐-׿\s"'׳״.\-()+%]*/g, m=>[...m].reverse().join(''));
+    return s.replace(/[^\x20-\x7E]/g, ch=>'\\U+'+ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0'));
+  }
+
+  /* ---------- כתיבה מרשימת פעולות (קואורדינטות מודל במטרים) ---------- */
+  function fromOps(ops, o){
+    o = o || {};
+    const used = {};
+    const d = Doc(o.unit || 1, used);
+    const fills = o.fills !== false;
+    ops.forEach(op=>{
+      const col = op.col ? (typeof op.col === 'string' ? hex(op.col) : op.col) : null;
+      if(op.k === 'poly'){
+        if(op.pts && op.pts.length>1) d.poly(op.lay, col, op.pts, !!op.closed, op.lt ? d.dashLT(op.lt) : null);
+      } else if(op.k === 'solid'){
+        if(!fills || !col || (col.r>245&&col.g>245&&col.b>245)) return;
+        const p = op.poly.slice();
+        if(p.length===4) d.solid(op.lay+'-F', col, p[0], p[1], p[3], p[2]);
+        else earClip(p).forEach(t=>d.solid(op.lay+'-F', col, t[0], t[1], t[2]));
+      } else if(op.k === 'circle'){
+        d.circle(op.lay, col, op.cx, op.cy, op.r);
+      } else if(op.k === 'text'){
+        d.text(op.lay, col, op.x, op.y, op.h, enc(op.s, o.rtl), {ha:op.ha||0, va:op.va||0, rot:op.rot||0});
+      }
+    });
+    return {dxf: d.out(), entities: d.count(), layers: Object.keys(used)};
+  }
+
+  /* ------------------------------------------------------------------
+     קידוד הקובץ ל-Windows-1255, כפי ש-$DWGCODEPAGE מצהיר.
+     ערכי טקסט כבר נכתבו כ-\U+XXXX, כך שרק שמות הלשוניות הם מעבר ל-ASCII.
+     ------------------------------------------------------------------ */
+  const CP1255 = (function(){
+    const m = new Map();
+    /* פיסוק בתחום 0x80–0x9F */
+    const punct = {0x80:0x20AC,0x82:0x201A,0x83:0x0192,0x84:0x201E,0x85:0x2026,0x86:0x2020,
+      0x87:0x2021,0x88:0x02C6,0x89:0x2030,0x8B:0x2039,0x91:0x2018,0x92:0x2019,0x93:0x201C,
+      0x94:0x201D,0x95:0x2022,0x96:0x2013,0x97:0x2014,0x98:0x02DC,0x99:0x2122,0x9B:0x203A};
+    for(const b in punct) m.set(punct[b], +b);
+    for(let b = 0xA0; b <= 0xBF; b++) m.set(b, b);        /* זהה ל-Latin-1 */
+    m.set(0x00D7, 0xAA); m.set(0x00F7, 0xBA);
+    for(let i = 0; i <= 0x2A; i++) m.set(0x05D0 + i, 0xE0 + i);  /* אות א..ת */
+    m.set(0x05F3, 0xD7); m.set(0x05F4, 0xD8);             /* גרש וגרשיים */
+    m.set(0x200E, 0xFD); m.set(0x200F, 0xFE);
+    return m;
+  })();
+  /* תווים שאין להם מקום בדף הקוד – מוחלפים במקבילה קרובה */
+  const FOLD = {0x2018:"'",0x2019:"'",0x201C:'"',0x201D:'"',0x2212:'-',0x00A0:' '};
+  function bytes(dxf){
+    const s = String(dxf), out = new Uint8Array(s.length * 2);
+    let k = 0;
+    for(let i = 0; i < s.length; i++){
+      const c = s.codePointAt(i);
+      if(c > 0xFFFF) i++;                                  /* זוג תחליפים */
+      if(c < 0x80){ out[k++] = c; continue; }
+      const b = CP1255.get(c);
+      if(b != null){ out[k++] = b; continue; }
+      const f = FOLD[c];
+      if(f){ out[k++] = f.charCodeAt(0); continue; }
+      out[k++] = 0x3F;                                     /* ? */
+    }
+    return out.subarray(0, k);
+  }
+
+  return {fromSVG, fromSheets, fromOps, LAYERS, bytes};
+})();
+
+</script>
+<script>/* ======================================================================
+   קריאת מדידה וקריאת מסגרת שרטוט מקובצי DXF/DWG, ומענן נקודות טקסטואלי.
+   DWG נשלח לשירות ההמרה (/dwg2dxf) וחוזר כ-DXF, ומשם הכול זהה.
+   ====================================================================== */
+
+/* ---- קורא זוגות קוד/ערך של DXF ---- */
+function dxfPairs(text){
+  const L = text.split(/\r\n|\r|\n/);
+  const out = [];
+  for(let i=0; i+1 < L.length; i += 2){
+    const c = parseInt(L[i].trim(), 10);
+    if(isNaN(c)) continue;
+    out.push([c, L[i+1]]);
+  }
+  return out;
+}
+
+/* ---- פירוק ל"ישויות": כל ישות היא מפה של קוד → מערך ערכים ---- */
+function dxfEntities(text, sections){
+  sections = sections || ['ENTITIES', 'BLOCKS'];
+  const P = dxfPairs(text);
+  const ents = [];
+  let inSec = false, cur = null;
+  for(let i = 0; i < P.length; i++){
+    const [c, v] = P[i];
+    if(c === 0 && v === 'SECTION'){
+      const nm = (P[i+1] && P[i+1][0] === 2) ? P[i+1][1].trim() : '';
+      inSec = sections.indexOf(nm) >= 0;
+      continue;
+    }
+    if(c === 0 && v === 'ENDSEC'){ if(cur) ents.push(cur); cur = null; inSec = false; continue; }
+    if(!inSec) continue;
+    if(c === 0){
+      if(cur) ents.push(cur);
+      cur = {type: v.trim(), g: {}};
+      continue;
+    }
+    if(!cur) continue;
+    (cur.g[c] = cur.g[c] || []).push(v);
+  }
+  if(cur) ents.push(cur);
+  return ents;
+}
+
+const gNum = (e, c, i) => { const a = e.g[c]; return a && a[i||0] !== undefined ? parseFloat(a[i||0]) : undefined; };
+const gStr = (e, c, i) => { const a = e.g[c]; return a && a[i||0] !== undefined ? String(a[i||0]).trim() : ''; };
+
+/* ---- נקודות מדידה מתוך DXF ----
+   נאסף כל מה שנושא גובה: POINT, VERTEX, 3DFACE, קודקודי פוליליין עם גובה,
+   וכן כיתובי גובה (TEXT/MTEXT/ATTRIB שערכם מספר) – כפי שמקובל במדידות. */
+function surveyFromDXF(text, opt){
+  opt = opt || {};
+  const ents = dxfEntities(text, ['ENTITIES']);
+  const pts = [], layers = {};
+  const add = (x, y, z, lay)=>{
+    if(!isFinite(x) || !isFinite(y) || !isFinite(z)) return;
+    pts.push({x, y, z});
+    layers[lay || '0'] = (layers[lay || '0'] || 0) + 1;
+  };
+  ents.forEach(e=>{
+    const lay = gStr(e, 8) || '0';
+    switch(e.type){
+      case 'POINT':
+      case 'VERTEX':
+        add(gNum(e,10), gNum(e,20), gNum(e,30) || 0, lay); break;
+      case 'LWPOLYLINE': {
+        const el = gNum(e,38) || 0, xs = e.g[10] || [], ys = e.g[20] || [];
+        if(el) for(let i=0;i<xs.length;i++) add(parseFloat(xs[i]), parseFloat(ys[i]), el, lay);
+        break;
+      }
+      case '3DFACE': {
+        for(const c of [[10,20,30],[11,21,31],[12,22,32],[13,23,33]])
+          add(gNum(e,c[0]), gNum(e,c[1]), gNum(e,c[2]), lay);
+        break;
+      }
+      case 'INSERT':
+        if(gNum(e,30)) add(gNum(e,10), gNum(e,20), gNum(e,30), lay);
+        break;
+      case 'TEXT': case 'MTEXT': case 'ATTRIB': {
+        const raw = gStr(e,1).replace(/\\[A-Za-z][^;]*;/g, '').replace(/[{}]/g, '').trim();
+        const v = parseFloat(raw.replace(',', '.'));
+        const x = gNum(e,10), y = gNum(e,20), z0 = gNum(e,30) || 0;
+        if(z0) { add(x, y, z0, lay); break; }
+        /* כיתוב גובה: מספר סביר בלבד, כדי לא לאסוף מספרי תחנה או פיקטים */
+        if(isFinite(v) && Math.abs(v) < 4000 && /^[-+]?\d+(\.\d+)?$/.test(raw)) add(x, y, v, lay);
+        break;
+      }
+    }
+  });
+  return {pts, layers};
+}
+
+/* ---- ענן נקודות טקסטואלי: CSV / TXT / דוח מדידה ---- */
+function surveyFromText(text, order){
+  const pts = [];
+  text.split(/\r\n|\r|\n/).forEach(line=>{
+    const nums = (line.match(/-?\d+\.?\d*/g) || []).map(Number);
+    if(nums.length < 3) return;
+    const b = nums.length >= 4 ? nums.slice(1, 4) : nums.slice(0, 3);
+    const [a, c, d] = b;
+    const p = (order === 'yxz') ? {x:c, y:a, z:d} : {x:a, y:c, z:d};
+    if(isFinite(p.x) && isFinite(p.y) && isFinite(p.z)) pts.push(p);
+  });
+  return {pts, layers:{'טקסט': pts.length}};
+}
+
+/* ---- המרת DWG ל-DXF דרך שירות ההמרה ---- */
+async function dwgToDxf(buf, svc){
+  const url = (svc || '').replace(/\/dxf2dwg\/?$/, '') .replace(/\/$/, '') + '/dwg2dxf';
+  const r = await fetch(url, {method:'POST', headers:{'Content-Type':'application/octet-stream'}, body:buf});
+  if(!r.ok) throw new Error('שירות ההמרה החזיר שגיאה ' + r.status);
+  return await r.text();
+}
+
+/* ======================================================================
+   מסגרת השרטוט של המשרד: DXF/DWG → SVG במ״מ, עם שמירת שמות השכבות,
+   כך שהיא נכנסת לכל גיליון בדיוק כפי שהמשתמש שרטט אותה.
+   ====================================================================== */
+const ACI = {1:'#ff0000',2:'#ffff00',3:'#00ff00',4:'#00ffff',5:'#0000ff',6:'#ff00ff',
+             7:'#000000',8:'#808080',9:'#c0c0c0',250:'#333333',251:'#5b5b5b',252:'#848484',
+             253:'#adadad',254:'#d6d6d6',255:'#ffffff'};
+function aciHex(n){ return ACI[n] || '#000000'; }
+
+function frameFromDXF(text, sheet){
+  const W = (sheet && sheet.w) || 1189, H = (sheet && sheet.h) || 841;
+  const ents = dxfEntities(text, ['ENTITIES']);
+  const raw = [];
+  const box = {x0:1e18, y0:1e18, x1:-1e18, y1:-1e18};
+  const see = (x, y)=>{ if(!isFinite(x)||!isFinite(y)) return;
+    if(x<box.x0)box.x0=x; if(y<box.y0)box.y0=y; if(x>box.x1)box.x1=x; if(y>box.y1)box.y1=y; };
+
+  ents.forEach(e=>{
+    const lay = (gStr(e,8) || '0').replace(/[^\w֐-׿.\-]/g, '_');
+    const col = e.g[62] ? aciHex(parseInt(e.g[62][0], 10)) : '#000000';
+    switch(e.type){
+      case 'LINE': {
+        const p = [gNum(e,10), gNum(e,20), gNum(e,11), gNum(e,21)];
+        if(p.some(v=>!isFinite(v))) return;
+        see(p[0],p[1]); see(p[2],p[3]);
+        raw.push({k:'line', p, lay, col});
+        break;
+      }
+      case 'LWPOLYLINE': case 'POLYLINE': {
+        const xs = e.g[10] || [], ys = e.g[20] || [], pts = [];
+        for(let i=0;i<Math.min(xs.length, ys.length);i++){
+          const x = parseFloat(xs[i]), y = parseFloat(ys[i]);
+          if(!isFinite(x)||!isFinite(y)) continue;
+          pts.push([x, y]); see(x, y);
+        }
+        if(pts.length > 1) raw.push({k:'poly', pts, closed: ((parseInt(gStr(e,70),10)||0) & 1) === 1, lay, col});
+        break;
+      }
+      case 'CIRCLE': {
+        const x = gNum(e,10), y = gNum(e,20), r = gNum(e,40);
+        if(!isFinite(x)||!isFinite(r)) return;
+        see(x-r,y-r); see(x+r,y+r);
+        raw.push({k:'circle', x, y, r, lay, col});
+        break;
+      }
+      case 'ARC': {
+        const x = gNum(e,10), y = gNum(e,20), r = gNum(e,40);
+        const a0 = (gNum(e,50)||0) * Math.PI/180, a1 = (gNum(e,51)||0) * Math.PI/180;
+        if(!isFinite(x)||!isFinite(r)) return;
+        let da = a1 - a0; while(da <= 0) da += 2*Math.PI;
+        const n = Math.max(6, Math.ceil(da/0.15)), pts = [];
+        for(let i=0;i<=n;i++){ const a = a0 + da*i/n;
+          const px = x + r*Math.cos(a), py = y + r*Math.sin(a); pts.push([px, py]); see(px, py); }
+        raw.push({k:'poly', pts, closed:false, lay, col});
+        break;
+      }
+      case 'SOLID': {
+        const q = [[gNum(e,10),gNum(e,20)],[gNum(e,11),gNum(e,21)],[gNum(e,13),gNum(e,23)],[gNum(e,12),gNum(e,22)]]
+                  .filter(p=>isFinite(p[0])&&isFinite(p[1]));
+        q.forEach(p=>see(p[0],p[1]));
+        if(q.length>=3) raw.push({k:'poly', pts:q, closed:true, lay, col});
+        break;
+      }
+      case 'TEXT': case 'MTEXT': {
+        const s = gStr(e,1).replace(/\\[A-Za-z][^;]*;/g,'').replace(/[{}]/g,'').trim();
+        const x = gNum(e,10), y = gNum(e,20), h = gNum(e,40) || 2.5;
+        if(!s || !isFinite(x)) return;
+        const j = parseInt(gStr(e,72),10) || 0;
+        see(x, y); see(x + s.length*h*0.7, y + h);
+        raw.push({k:'text', x, y, h, s, anchor: j===1?'middle':j===2?'end':'start', lay, col,
+                  rot: gNum(e,50) || 0});
+        break;
+      }
+    }
+  });
+  if(!raw.length) throw new Error('לא נמצאו ישויות בקובץ המסגרת');
+
+  /* התאמה לגיליון: שומר יחס, ממורכז */
+  const bw = box.x1 - box.x0 || 1, bh = box.y1 - box.y0 || 1;
+  const k = Math.min(W / bw, H / bh);
+  const ox = (W - bw*k) / 2, oy = (H - bh*k) / 2;
+  const X = x => ox + (x - box.x0) * k;
+  const Y = y => H - (oy + (y - box.y0) * k);           /* SVG: ציר Y יורד */
+  const n = v => (Math.round(v*1000)/1000);
+  const escX = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const A = o => ` data-lay="FRAME-${o.lay}" stroke="${o.col}"`;
+
+  let svg = '';
+  raw.forEach(o=>{
+    if(o.k === 'line')
+      svg += `<line x1="${n(X(o.p[0]))}" y1="${n(Y(o.p[1]))}" x2="${n(X(o.p[2]))}" y2="${n(Y(o.p[3]))}"${A(o)} stroke-width="0.35" fill="none"/>`;
+    else if(o.k === 'poly'){
+      const d = o.pts.map((p,i)=>(i?'L':'M') + n(X(p[0])) + ' ' + n(Y(p[1]))).join(' ') + (o.closed ? ' Z' : '');
+      svg += `<path d="${d}"${A(o)} stroke-width="0.35" fill="none"/>`;
+    } else if(o.k === 'circle')
+      svg += `<circle cx="${n(X(o.x))}" cy="${n(Y(o.y))}" r="${n(o.r*k)}"${A(o)} stroke-width="0.35" fill="none"/>`;
+    else if(o.k === 'text')
+      svg += `<text x="${n(X(o.x))}" y="${n(Y(o.y))}" font-size="${n(o.h*k)}" text-anchor="${o.anchor}" fill="${o.col}" data-lay="FRAME-${o.lay}" style="font-family:Arial">${escX(o.s)}</text>`;
+  });
+  return {svg, entities: raw.length,
+          layers: Array.from(new Set(raw.map(o=>'FRAME-' + o.lay)))};
+}
+
+/* ======================================================================
+   לוגו המשרד: קובץ SVG וקטורי → מקטעים מתויגים לשכבת SH-LOGO.
+   נשמר עם תיבת הגבול שלו כדי שתיבת הלוגו תדע להקטין אותו למידה.
+   ====================================================================== */
+const LOGO_TAGS = 'path,rect,circle,ellipse,line,polyline,polygon,text,g';
+function logoFromSVG(text){
+  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+  const root = doc.querySelector('svg');
+  if(!root || doc.querySelector('parsererror')) throw new Error('קובץ SVG לא תקין');
+  root.querySelectorAll('script,foreignObject,image').forEach(el=>el.remove());
+  let vb = null;
+  const raw = (root.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+  if(raw.length === 4 && raw.every(v=>isFinite(v))) vb = {x:raw[0], y:raw[1], w:raw[2], h:raw[3]};
+  else{
+    const w = parseFloat(root.getAttribute('width')), h = parseFloat(root.getAttribute('height'));
+    if(isFinite(w) && isFinite(h) && w > 0 && h > 0) vb = {x:0, y:0, w, h};
+  }
+  if(!vb) throw new Error('ל-SVG אין viewBox או מידות — אי אפשר להקטין אותו לתיבה');
+  /* כל ישות ציור מקבלת שכבה, אחרת הכותב מתעלם ממנה */
+  root.querySelectorAll(LOGO_TAGS).forEach(el=>{
+    if(!el.getAttribute('data-lay')) el.setAttribute('data-lay', 'SH-LOGO');
+  });
+  return {svg: root.innerHTML, vb, entities: root.querySelectorAll(LOGO_TAGS).length};
+}
+</script>
+<script>/* ======================================================================
+   מרכיב הפלט: מכל מה שנאסף בארבעת השלבים בונה קובץ CAD אחד —
+   מודל במטרים 1:1 + לשונית נייר לכל גיליון A0, עם מסגרת המשרד.
+   ====================================================================== */
+const A0 = {w:1189, h:841};
+const ESC = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const N3 = v => (Math.round(v*1000)/1000);
+
+/* ---------- טקסט וצורות על הנייר ---------- */
+function T(x, y, s, size, o){
+  o = o || {};
+  if(s === '' || s == null) return '';
+  return `<text x="${N3(x)}" y="${N3(y)}" font-size="${size}" text-anchor="${o.anchor||'middle'}"`
+       + ` font-weight="${o.weight||400}" fill="${o.color||'#14171a'}" data-lay="${o.lay||'SH-TEXT'}"`
+       + (o.rot ? ` transform="rotate(${o.rot} ${N3(x)} ${N3(y)})"` : '')
+       + ` style="font-family:Heebo,Arial,sans-serif">${ESC(s)}</text>`;
+}
+function R(x, y, w, h, o){
+  o = o || {};
+  return `<rect x="${N3(x)}" y="${N3(y)}" width="${N3(w)}" height="${N3(h)}" fill="${o.fill||'none'}"`
+       + ` stroke="${o.stroke||'#14171a'}" stroke-width="${o.sw||0.35}" data-lay="${o.lay||'SH-FRAME'}"/>`;
+}
+function LN(x1, y1, x2, y2, o){
+  o = o || {};
+  return `<line x1="${N3(x1)}" y1="${N3(y1)}" x2="${N3(x2)}" y2="${N3(y2)}" stroke="${o.stroke||'#14171a'}"`
+       + ` stroke-width="${o.sw||0.25}"${o.dash?` stroke-dasharray="${o.dash}"`:''} data-lay="${o.lay||'SH-GRID'}"/>`;
+}
+
+/* ---------- מסגרת וכרטיס כותרת מובנים ---------- */
+const PAD = {l:20, r:10, t:10, b:10, tbW:180, tbH:62, logoW:62};
+
+/* ---------- לוגו המשרד המובנה: שרטוט הצומת מהאתר, כוקטורים ---------- */
+const LOGO_MAHALCO = {vb:{x:0, y:0, w:932, h:938}, svg:
+  '<rect x="0" y="0" width="932" height="938" fill="#DDDFD8" stroke="none" data-lay="SH-LOGO-BG"/><rect x="320" y="0" width="296" height="938" fill="#7A8088" stroke="none" data-lay="SH-LOGO-ROAD"/><rect x="0" y="321" width="932" height="296" fill="#7A8088" stroke="none" data-lay="SH-LOGO-ROAD"/><rect x="465" y="0" width="6" height="28" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="542" y="0" width="3" height="15" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="542" y="38" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="56" width="6" height="34" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="542" y="84" width="3" height="21" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="119" width="6" height="34" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="542" y="129" width="3" height="21" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="542" y="174" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="181" width="6" height="35" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="542" y="219" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="244" width="6" height="34" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="542" y="264" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="320" y="302" width="148" height="11" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="624" y="321" width="11" height="148" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="0" y="392" width="14" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="37" y="392" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="83" y="392" width="21" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="128" y="392" width="21" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="173" y="392" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="218" y="392" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="263" y="392" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="0" y="466" width="27" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="55" y="466" width="34" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="118" y="466" width="34" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="180" y="466" width="35" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="243" y="466" width="34" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="639" y="466" width="34" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="701" y="466" width="35" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="764" y="466" width="34" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="827" y="466" width="34" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="889" y="466" width="35" height="6" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="301" y="469" width="11" height="148" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="639" y="543" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="684" y="543" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="729" y="543" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="774" y="543" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="819" y="543" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="864" y="543" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="909" y="543" width="22" height="3" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="468" y="625" width="148" height="11" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="391" y="640" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="640" width="6" height="34" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="391" y="685" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="702" width="6" height="35" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="391" y="730" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="765" width="6" height="34" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="391" y="775" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="391" y="820" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="828" width="6" height="34" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="391" y="865" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="465" y="890" width="6" height="35" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/><rect x="391" y="910" width="3" height="22" fill="#FFFFFF" stroke="none" data-lay="SH-LOGO-MARK"/>'};
+
+/* ---------- תיבת הלוגו של המשרד ----------
+   meta.logo = {svg, vb:{x,y,w,h}} – נכנס כוקטורים, מוקטן למרכז התיבה.
+   בלי לוגו נכתב שם המשרד כמילון-סימן, כך שהתיבה לעולם אינה ריקה.        */
+function logoBox(x, y, w, h, meta){
+  let s = R(x, y, w, h, {lay:'SH-TITLE', sw:0.6, fill:'#ffffff'});
+  const L = (meta && meta.logo) || LOGO_MAHALCO;
+  if(L && L.svg && L.vb && L.vb.w > 0 && L.vb.h > 0){
+    const pad = 3, k = Math.min((w-2*pad)/L.vb.w, (h-2*pad)/L.vb.h);
+    const dx = x + (w - L.vb.w*k)/2 - L.vb.x*k, dy = y + (h - L.vb.h*k)/2 - L.vb.y*k;
+    s += `<g transform="translate(${N3(dx)} ${N3(dy)}) scale(${N3(k)})">` + L.svg + '</g>';
+  } else {
+    s += T(x + w/2, y + h/2 + 3.5, meta && meta.office ? String(meta.office).split('–')[0].trim() : 'MAHALCO',
+           10, {weight:700, lay:'SH-TITLE'});
+  }
+  return s;
+}
+function sheetArea(){
+  return {x: PAD.l + 5, y: PAD.t + 8,
+          w: A0.w - PAD.l - PAD.r - 10,
+          h: A0.h - PAD.t - PAD.b - PAD.tbH - 22};
+}
+function builtinFrame(meta){
+  const tbX = A0.w - PAD.r - PAD.tbW, tbY = A0.h - PAD.b - PAD.tbH;
+  const cell = (x,y,w,h,lab,val,big)=> R(x,y,w,h,{lay:'SH-TITLE', sw:0.35})
+    + T(x+w-2, y+4, lab, 2.3, {anchor:'end', color:'#585f66', lay:'SH-TITLE'})
+    + T(x+w-2, y+h-3, val, big?5:3.4, {anchor:'end', weight:big?700:400, lay:'SH-TITLE'});
+  let s = R(PAD.l, PAD.t, A0.w-PAD.l-PAD.r, A0.h-PAD.t-PAD.b, {lay:'SH-FRAME', sw:0.7});
+  s += logoBox(tbX - PAD.logoW - 3, tbY, PAD.logoW, PAD.tbH, meta);
+  s += R(tbX, tbY, PAD.tbW, PAD.tbH, {lay:'SH-TITLE', sw:0.6, fill:'#ffffff'});
+  s += cell(tbX, tbY, PAD.tbW, 16, 'משרד', meta.office || 'MAHALCO – הנדסה אזרחית ותחבורה', true);
+  s += cell(tbX, tbY+16, PAD.tbW, 14, 'פרויקט', meta.proj || '—');
+  s += cell(tbX, tbY+30, PAD.tbW, 14, 'תוכן הגיליון', meta.title || '—');
+  s += cell(tbX+120, tbY+44, 60, 18, 'קנה מידה', meta.scale || '—', true);
+  s += cell(tbX+80, tbY+44, 40, 18, 'גיליון', meta.dwg || '—');
+  s += cell(tbX+40, tbY+44, 40, 18, 'תאריך', meta.date || '');
+  s += cell(tbX, tbY+44, 40, 18, 'שרטט', meta.drawn || '—');
+  return s;
+}
+/* מסגרת המשתמש: אותה SVG בכל גיליון, עם החלפת שדות {PROJ} וכד׳ */
+function userFrame(frameSVG, meta){
+  const map = {PROJ:meta.proj, TITLE:meta.title, SCALE:meta.scale, SHEET:meta.dwg,
+               DATE:meta.date, DRAWN:meta.drawn, OFFICE:meta.office};
+  return frameSVG.replace(/\{(PROJ|TITLE|SCALE|SHEET|DATE|DRAWN|OFFICE)\}/g,
+                          (m, k) => ESC(map[k] == null ? '' : map[k]));
+}
+function wrapSheet(body, meta, frameSVG){
+  const frame = frameSVG ? userFrame(frameSVG, meta) : builtinFrame(meta);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${A0.w}mm" height="${A0.h}mm" `
+       + `viewBox="0 0 ${A0.w} ${A0.h}" style="direction:ltr">`
+       + `<rect width="${A0.w}" height="${A0.h}" fill="#ffffff" data-lay="none"/>`
+       + frame + body + '</svg>';
+}
+/* סרגל קנה מידה */
+function scaleBar(x, y, D, unitM){
+  unitM = unitM || 10;
+  const k = 1000/D * unitM / 5;                 /* מ״מ לכל מקטע (5 מקטעים) */
+  let s = '';
+  for(let i=0;i<5;i++) s += R(x+i*k, y, k, 2, {fill: i%2 ? '#ffffff' : '#14171a', lay:'SH-FRAME', sw:0.2});
+  s += T(x, y-1.5, '0', 2.5, {lay:'SH-FRAME'});
+  s += T(x+5*k, y-1.5, unitM + ' מ׳', 2.5, {lay:'SH-FRAME'});
+  s += T(x+2.5*k, y+6, `קנה מידה 1:${D}`, 2.5, {color:'#585f66', lay:'SH-FRAME'});
+  return s;
+}
+
+/* ======================================================================
+   חיתוך פעולות CAD למלבן הגיליון
+   ====================================================================== */
+function clipSeg(p, q, r){
+  let t0 = 0, t1 = 1;
+  const dx = q[0]-p[0], dy = q[1]-p[1];
+  const P = [-dx, dx, -dy, dy], Q = [p[0]-r.x0, r.x1-p[0], p[1]-r.y0, r.y1-p[1]];
+  for(let i=0;i<4;i++){
+    if(Math.abs(P[i]) < 1e-12){ if(Q[i] < 0) return null; continue; }
+    const t = Q[i]/P[i];
+    if(P[i] < 0){ if(t > t1) return null; if(t > t0) t0 = t; }
+    else { if(t < t0) return null; if(t < t1) t1 = t; }
+  }
+  return [[p[0]+t0*dx, p[1]+t0*dy], [p[0]+t1*dx, p[1]+t1*dy]];
+}
+function clipPolyline(pts, closed, r){
+  const src = closed ? pts.concat([pts[0]]) : pts;
+  const runs = []; let cur = null;
+  for(let i=0;i<src.length-1;i++){
+    const c = clipSeg(src[i], src[i+1], r);
+    if(!c){ cur = null; continue; }
+    if(cur && Math.hypot(cur[cur.length-1][0]-c[0][0], cur[cur.length-1][1]-c[0][1]) < 1e-9) cur.push(c[1]);
+    else { cur = [c[0], c[1]]; runs.push(cur); }
+  }
+  return runs;
+}
+function clipPoly(poly, r){                      /* Sutherland–Hodgman */
+  let out = poly.slice();
+  const edges = [
+    {in:p=>p[0]>=r.x0, I:(a,b)=>ix(a,b,0,r.x0)}, {in:p=>p[0]<=r.x1, I:(a,b)=>ix(a,b,0,r.x1)},
+    {in:p=>p[1]>=r.y0, I:(a,b)=>ix(a,b,1,r.y0)}, {in:p=>p[1]<=r.y1, I:(a,b)=>ix(a,b,1,r.y1)}];
+  function ix(a, b, ax, v){
+    const t = (v - a[ax]) / ((b[ax] - a[ax]) || 1e-12);
+    return [a[0] + (b[0]-a[0])*t, a[1] + (b[1]-a[1])*t];
+  }
+  edges.forEach(E=>{
+    const src = out; out = [];
+    for(let i=0;i<src.length;i++){
+      const a = src[i], b = src[(i+1)%src.length];
+      const ia = E.in(a), ib = E.in(b);
+      if(ia) out.push(a);
+      if(ia !== ib) out.push(E.I(a, b));
+    }
+  });
+  return out.length >= 3 ? out : null;
+}
+function clipOps(ops, r){
+  const out = [];
+  ops.forEach(o=>{
+    if(o.k === 'text'){ if(o.x>=r.x0 && o.x<=r.x1 && o.y>=r.y0 && o.y<=r.y1) out.push(o); return; }
+    if(o.k === 'circle'){ if(o.cx>=r.x0 && o.cx<=r.x1 && o.cy>=r.y0 && o.cy<=r.y1) out.push(o); return; }
+    if(o.k === 'solid'){ const p = clipPoly(o.poly, r); if(p) out.push(Object.assign({}, o, {poly:p})); return; }
+    if(o.k === 'poly'){
+      clipPolyline(o.pts, o.closed, r).forEach(run=>{
+        if(run.length > 1) out.push(Object.assign({}, o, {pts:run, closed:false}));
+      });
+    }
+  });
+  return out;
+}
+function opsBox(ops){
+  const b = {x0:1e18, y0:1e18, x1:-1e18, y1:-1e18};
+  const see = (x,y)=>{ if(!isFinite(x)) return;
+    if(x<b.x0)b.x0=x; if(y<b.y0)b.y0=y; if(x>b.x1)b.x1=x; if(y>b.y1)b.y1=y; };
+  ops.forEach(o=>{
+    if(o.k === 'text') see(o.x, o.y);
+    else if(o.k === 'circle'){ see(o.cx-o.r, o.cy-o.r); see(o.cx+o.r, o.cy+o.r); }
+    else (o.pts || o.poly || []).forEach(p=>see(p[0], p[1]));
+  });
+  return b;
+}
+/* העתקת פעולות ממטרים אל מ״מ על הנייר */
+function opsToPaper(ops, k, ox, oy, x0, y0){
+  const M = (x, y) => [ox + (x - x0)*k, oy + (y - y0)*k];
+  return ops.map(o=>{
+    if(o.k === 'text'){ const p = M(o.x, o.y); return Object.assign({}, o, {x:p[0], y:p[1], h:o.h*k}); }
+    if(o.k === 'circle'){ const p = M(o.cx, o.cy); return Object.assign({}, o, {cx:p[0], cy:p[1], r:o.r*k}); }
+    if(o.k === 'solid') return Object.assign({}, o, {poly:o.poly.map(p=>M(p[0], p[1]))});
+    return Object.assign({}, o, {pts:o.pts.map(p=>M(p[0], p[1])), lt:o.lt ? o.lt.map(v=>v*k) : null});
+  });
+}
+
+/* ======================================================================
+   גיליונות התכנית: פריסת התכנית על גיליונות A0 בקנה 1:D
+   ====================================================================== */
+function planSheets(ops, D, meta, frameSVG){
+  const A = sheetArea(), k = 1000/D;             /* מ״מ לכל מטר */
+  const b = opsBox(ops);
+  if(!isFinite(b.x0)) return [];
+  const Wm = A.w / k, Hm = A.h / k;              /* מטרים שנכנסים בגיליון */
+  const nx = Math.max(1, Math.ceil((b.x1 - b.x0) / Wm - 1e-9));
+  const ny = Math.max(1, Math.ceil((b.y1 - b.y0) / Hm - 1e-9));
+  const sheets = [];
+  for(let j = ny-1; j >= 0; j--){
+    for(let i = 0; i < nx; i++){
+      const x0 = b.x0 + i*Wm, y0 = b.y0 + j*Hm;
+      const rect = {x0: x0 - 0.001, y0: y0 - 0.001, x1: x0 + Wm + 0.001, y1: y0 + Hm + 0.001};
+      const part = clipOps(ops, rect);
+      if(!part.length) continue;
+      /* SVG: ציר Y יורד, לכן נקודת הייחוס היא הפינה העליונה */
+      const paper = opsToPaper(part, k, A.x, A.y + A.h, x0, y0)
+                    .map(o=>flipY(o, A.y + A.h, A.y + A.h));
+      const idx = sheets.length + 1;
+      const m = Object.assign({}, meta, {
+        title: 'תכנית – ' + (meta.projTitle || 'פריסת צירים') + (nx*ny > 1 ? ` (גיליון ${idx} מתוך ${nx*ny})` : ''),
+        scale: '1:' + D, dwg: 'P-' + String(idx).padStart(2, '0')});
+      sheets.push({name: 'תכנית ' + idx, ops: paper,
+                   svg: wrapSheet(scaleBar(PAD.l+10, A0.h-PAD.b-12, D, 10)
+                        + T(A.x + A.w/2, A.y - 2, `תכנית – קנה מידה 1:${D}`, 5, {weight:700, lay:'SH-TEXT'}),
+                        m, frameSVG)});
+    }
+  }
+  return sheets;
+}
+/* היפוך ציר Y: בפעולות ה-CAD Y עולה, בגיליון ה-SVG Y יורד */
+function flipY(o, y0){
+  const F = p => [p[0], 2*y0 - p[1]];
+  if(o.k === 'text') return Object.assign({}, o, {y: 2*y0 - o.y, rot: -(o.rot||0)});
+  if(o.k === 'circle') return Object.assign({}, o, {cy: 2*y0 - o.cy});
+  if(o.k === 'solid') return Object.assign({}, o, {poly:o.poly.map(F)});
+  return Object.assign({}, o, {pts:o.pts.map(F)});
+}
+
+/* ======================================================================
+   חתכי רוחב כל X מטר – מהתבנית של הכלי "חתך טיפוסי"
+   ====================================================================== */
+function stationLabel(s){
+  const km = Math.floor(s/1000), m = s - km*1000;
+  return km + '+' + (m < 100 ? (m < 10 ? '00' : '0') : '') + (Math.round(m*100)/100);
+}
+function crossSheets(block, rows, D, meta, frameSVG, headTitle){
+  const A = sheetArea();
+  const bw = block.w, bh = block.h + 14;         /* מקום לכותרת ולנתונים */
+  const cols = Math.max(1, Math.floor(A.w / (bw + 10)));
+  const rowsPer = Math.max(1, Math.floor((A.h - 8) / (bh + 8)));
+  const per = cols * rowsPer;
+  const sheets = [];
+  for(let p = 0; p*per < rows.length; p++){
+    const part = rows.slice(p*per, (p+1)*per);
+    let body = T(A.x + A.w/2, A.y - 2, headTitle + ` – קנה מידה 1:${D}`, 5, {weight:700, lay:'SH-TEXT'});
+    part.forEach((r, i)=>{
+      const c = i % cols, rr = Math.floor(i / cols);
+      const x = A.x + c*(bw + 10) + (A.w - cols*(bw+10) + 10)/2;
+      const y = A.y + 6 + rr*(bh + 8);
+      body += `<g transform="translate(${N3(x)} ${N3(y)})">${block.g}</g>`;
+      body += T(x + bw/2, y + block.h + 5, 'חתך ' + stationLabel(r.sta), 3.6, {weight:700, lay:'SH-TEXT'});
+      const info = [];
+      if(r.design != null) info.push('גובה מתוכנן ' + r.design.toFixed(2));
+      if(r.ground != null) info.push('גובה קרקע ' + r.ground.toFixed(2));
+      if(r.design != null && r.ground != null){
+        const d = r.design - r.ground;
+        info.push((d >= 0 ? 'מילוי ' : 'חפירה ') + Math.abs(d).toFixed(2));
+      }
+      body += T(x + bw/2, y + block.h + 10, info.join(' · '), 2.8, {color:'#585f66', lay:'SH-TEXT'});
+      body += R(x - 3, y - 3, bw + 6, bh + 3, {lay:'SH-GRID', sw:0.15, stroke:'#9aa3ad'});
+    });
+    body += scaleBar(PAD.l+10, A0.h-PAD.b-12, D, 5);
+    const idx = sheets.length + 1;
+    const m = Object.assign({}, meta, {
+      title: headTitle + ` · ${stationLabel(part[0].sta)} – ${stationLabel(part[part.length-1].sta)}`,
+      scale: '1:' + D, dwg: 'X-' + String(idx).padStart(2, '0')});
+    sheets.push({name: headTitle + ' ' + idx, svg: wrapSheet(body, m, frameSVG)});
+  }
+  return sheets;
+}
+
+/* ======================================================================
+   חתך אורך: קרקע קיימת + קו אדום מתוכנן, עם הגזמה אנכית
+   ====================================================================== */
+function designElev(x, data){
+  if(!data || !data.segs) return null;
+  const {segs, curves} = data;
+  for(const seg of segs){
+    if(x >= seg.s1 && x <= seg.s2){
+      let e = seg.e1 + seg.grade/100*(x - seg.s1);
+      for(const c of (curves||[])){
+        if(x >= c.st - c.L/2 && x <= c.st + c.L/2){
+          const g1 = c.gIn/100, g2 = c.gOut/100, xC = x - (c.st - c.L/2), y0 = c.el - g1*(c.L/2);
+          e = y0 + g1*xC + (g2-g1)/(2*c.L)*xC*xC;
+        }
+      }
+      return e;
+    }
+  }
+  return null;
+}
+function groundElev(x, ground){
+  if(!ground || !ground.length) return null;
+  if(x <= ground[0][0]) return ground[0][1];
+  if(x >= ground[ground.length-1][0]) return ground[ground.length-1][1];
+  for(let i=0;i<ground.length-1;i++){
+    const [a, za] = ground[i], [b, zb] = ground[i+1];
+    if(x >= a && x <= b) return za + (zb - za) * (x - a) / ((b - a) || 1);
+  }
+  return null;
+}
+/* נתוני עקום אנכי: VPC/VPT, ערך K ונקודת שיא/שפל — כמו בכלי הציר האנכי */
+function vCurveGeom(c){
+  const vpc=c.st-c.L/2, vpt=c.st+c.L/2, g1=c.gIn/100, g2=c.gOut/100;
+  const K=c.A>1e-9?c.L/c.A:0, y0=c.el-g1*c.L/2;
+  let hp=null;
+  if(Math.abs(g2-g1)>1e-9){
+    const xh=-g1*c.L/(g2-g1);
+    if(xh>0&&xh<c.L) hp={sta:vpc+xh, el:y0+g1*xh+(g2-g1)/(2*c.L)*xh*xh};
+  }
+  return {vpc,vpt,K,hp};
+}
+function profileSheets(vert, Dh, VE, meta, frameSVG){
+  /* Dh עשוי להתהדק למטה כדי למלא את הגיליון */
+  const ground = vert.ground || [], data = vert.data;
+  const pvi = (data && data.pvi) || vert.pvi || [];
+  if(!ground.length && !pvi.length) return [];
+  const A = sheetArea();
+  const bandH = 34;                               /* פס הנתונים מתחת לגרף */
+  const availH = A.h - bandH - 10;                /* הגובה הפנוי לגרף */
+  /* אם החתך קצר בהרבה מרוחב הגיליון, מהדקים לקנה מידה תקני שימלא אותו */
+  {
+    const gs0 = ground.length?ground[0][0]:pvi[0][0], gsN = ground.length?ground[ground.length-1][0]:0;
+    const total = Math.max(gsN, pvi.length?pvi[pvi.length-1][0]:0) - Math.min(gs0, pvi.length?pvi[0][0]:1e18);
+    const need = total*1000/A.w;
+    const fit = [100,200,250,500,1000,2000,2500,5000].find(d=>d>=need);
+    if(fit && fit < Dh) Dh = fit;
+  }
+  const k = 1000/Dh;                              /* מ״מ למטר אופקי */
+  const kv = k * VE;                              /* מ״מ למטר אנכי */
+  const sta0 = Math.min(ground.length?ground[0][0]:pvi[0][0], pvi.length?pvi[0][0]:1e18);
+  const staN = Math.max(ground.length?ground[ground.length-1][0]:0, pvi.length?pvi[pvi.length-1][0]:0);
+  const perSheet = A.w / k;                       /* מטרים לגיליון */
+  const zs = ground.map(p=>p[1]).concat(pvi.map(p=>p[1]));
+  const zmin = Math.floor(Math.min.apply(null, zs) - 2), zmax = Math.ceil(Math.max.apply(null, zs) + 2);
+  const sheets = [];
+  for(let s = sta0, idx = 1; s < staN - 1e-6; s += perSheet, idx++){
+    const sEnd = Math.min(s + perSheet, staN);
+    /* בסיס הגרף: מתחת לגובה המינימלי, עם התאמה לגובה הזמין */
+    let base = zmin;
+    const gh = Math.min(availH, Math.max(60, (zmax - zmin) * kv));
+    if((zmax - zmin) * kv > gh) base = zmax - gh/kv;
+    const X = x => A.x + (x - s)*k;
+    const Y = z => A.y + gh - (z - base)*kv;
+    let body = T(A.x + A.w/2, A.y - 2,
+                 `חתך אורך – אופקי 1:${Dh} · אנכי 1:${Math.round(Dh/VE)} (הגזמה ×${VE})`,
+                 5, {weight:700, lay:'SH-TEXT'});
+    /* רשת */
+    const gs = Dh >= 1000 ? 100 : Dh >= 500 ? 50 : 20;
+    for(let x = Math.ceil(s/gs)*gs; x <= sEnd + 1e-6; x += gs){
+      body += LN(X(x), A.y, X(x), A.y + gh, {lay:'VA-GRID', sw:0.12, stroke:'#c8ced6'});
+      body += T(X(x), A.y + gh + 4, stationLabel(x), 2.4, {lay:'VA-TEXT', rot:-90});
+    }
+    const dz = (zmax - base) > 20 ? 5 : (zmax - base) > 8 ? 2 : 1;
+    for(let z = Math.ceil(base/dz)*dz; z <= zmax + 1e-6; z += dz){
+      const yy = Y(z); if(yy < A.y - 1e-6) continue;
+      body += LN(A.x, yy, A.x + (sEnd - s)*k, yy, {lay:'VA-GRID', sw:0.12, stroke:'#c8ced6'});
+      body += T(A.x - 2, yy + 1, z.toFixed(0), 2.4, {anchor:'end', lay:'VA-TEXT'});
+    }
+    body += R(A.x, A.y, (sEnd - s)*k, gh, {lay:'VA-GRID', sw:0.3});
+    /* קו קרקע */
+    const gpts = ground.filter(p=>p[0] >= s - 1e-6 && p[0] <= sEnd + 1e-6);
+    if(gpts.length > 1)
+      body += `<path d="${gpts.map((p,i)=>(i?'L':'M')+N3(X(p[0]))+' '+N3(Y(p[1]))).join(' ')}" fill="none" stroke="#7a6a52" stroke-width="0.5" data-lay="VA-GROUND"/>`;
+    /* קו אדום מתוכנן */
+    if(data){
+      const dpts = [];
+      for(let x = s; x <= sEnd + 1e-6; x += Math.max(1, (sEnd - s)/400)){
+        const e = designElev(x, data); if(e != null) dpts.push([x, e]);
+      }
+      if(dpts.length > 1)
+        body += `<path d="${dpts.map((p,i)=>(i?'L':'M')+N3(X(p[0]))+' '+N3(Y(p[1]))).join(' ')}" fill="none" stroke="#c0392b" stroke-width="0.7" data-lay="VA-DESIGN"/>`;
+      (data.curves||[]).forEach(c=>{
+        if(c.st < s - c.L/2 || c.st > sEnd + c.L/2) return;
+        const q = vCurveGeom(c);
+        /* קצות העקום */
+        [[q.vpc,'VPC'],[q.vpt,'VPT']].forEach(([st,lab])=>{
+          if(st < s || st > sEnd) return;
+          body += LN(X(st), A.y, X(st), A.y + gh, {lay:'VA-PVI', sw:0.18, stroke:'#7a6a52', dash:'1.5 1.5'});
+          body += T(X(st), A.y + gh - 1.5, lab, 2.2, {color:'#7a6a52', lay:'VA-TEXT'});
+        });
+        if(c.st >= s && c.st <= sEnd){
+          body += LN(X(c.st), A.y, X(c.st), A.y + gh, {lay:'VA-PVI', sw:0.25, stroke:'#c0392b', dash:'2 1.5'});
+          body += T(X(c.st), A.y + 5, `PVI ${stationLabel(c.st)}  EL ${c.el.toFixed(2)}`,
+                    2.6, {color:'#c0392b', weight:700, lay:'VA-TEXT'});
+          body += T(X(c.st), A.y + 8.4, `${c.crest?'קמור':'קעור'}  A=${c.A.toFixed(2)}%  L=${c.L.toFixed(1)}  K=${q.K.toFixed(1)}`,
+                    2.6, {color:'#c0392b', lay:'VA-TEXT'});
+        }
+        /* נקודת שיא או שפל */
+        if(q.hp && q.hp.sta >= s && q.hp.sta <= sEnd){
+          const hx = X(q.hp.sta), hy = Y(q.hp.el);
+          body += LN(hx-1.8, hy, hx+1.8, hy, {lay:'VA-PVI', sw:0.4, stroke:'#1f9d55'});
+          body += LN(hx, hy-1.8, hx, hy+1.8, {lay:'VA-PVI', sw:0.4, stroke:'#1f9d55'});
+          body += T(hx, hy - 2.6, `${c.crest?'שיא':'שפל'} ${q.hp.el.toFixed(2)}`, 2.3, {color:'#1f9d55', lay:'VA-TEXT'});
+        }
+      });
+      /* שיפוע ואורך על כל משיק */
+      (data.segs||[]).forEach(sg=>{
+        const a = Math.max(sg.s1, s), b = Math.min(sg.s2, sEnd);
+        if(b - a < (sEnd-s)*0.06) return;
+        const mx = (a+b)/2, me = designElev(mx, data); if(me == null) return;
+        body += T(X(mx), Y(me) - 2.4, `${sg.grade>=0?'+':''}${sg.grade.toFixed(2)}%  L=${(sg.s2-sg.s1).toFixed(1)}`,
+                  2.5, {color:'#c0392b', lay:'VA-TEXT'});
+      });
+    }
+    /* פס נתונים: תחנה, גובה קרקע, גובה מתוכנן */
+    const by = A.y + gh + 8, rowH = (bandH - 8)/4;
+    ['תחנה', 'קרקע', 'מתוכנן', 'חפירה / מילוי'].forEach((lab, i)=>{
+      body += R(A.x - 26, by + i*rowH, 26, rowH, {lay:'VA-TEXT', sw:0.2});
+      body += T(A.x - 2, by + i*rowH + rowH - 1.4, lab, 2.4, {anchor:'end', lay:'VA-TEXT'});
+      body += R(A.x, by + i*rowH, (sEnd - s)*k, rowH, {lay:'VA-TEXT', sw:0.2});
+    });
+    for(let x = Math.ceil(s/gs)*gs; x <= sEnd + 1e-6; x += gs){
+      const g = groundElev(x, ground), d = data ? designElev(x, data) : null;
+      body += T(X(x), by + rowH - 1.4, stationLabel(x), 2.2, {lay:'VA-TEXT', rot:-90});
+      body += T(X(x), by + 2*rowH - 1.4, g == null ? '' : g.toFixed(2), 2.2, {lay:'VA-TEXT', rot:-90});
+      body += T(X(x), by + 3*rowH - 1.4, d == null ? '' : d.toFixed(2), 2.2, {lay:'VA-TEXT', rot:-90});
+      const cf = (g == null || d == null) ? null : g - d;
+      body += T(X(x), by + 4*rowH - 1.4, cf == null ? '' : (cf>=0?'+':'') + cf.toFixed(2), 2.2,
+                {lay:'VA-TEXT', rot:-90, color: cf == null ? '#14171a' : (cf>=0 ? '#1f9d55' : '#c0392b')});
+    }
+    /* ממרכזים את גוש החתך אנכית במקום להשאיר חצי גיליון ריק */
+    const oy = Math.max(0, (A.h - (gh + bandH + 10))/2);
+    if(oy > 1) body = `<g transform="translate(0 ${N3(oy)})">` + body + '</g>';
+    body += scaleBar(PAD.l+10, A0.h-PAD.b-12, Dh, Dh >= 1000 ? 50 : 20);
+    const m = Object.assign({}, meta, {
+      title: `חתך אורך ${stationLabel(s)} – ${stationLabel(sEnd)}`,
+      scale: `1:${Dh} / 1:${Math.round(Dh/VE)}`, dwg: 'V-' + String(idx).padStart(2, '0')});
+    sheets.push({name: 'חתך אורך ' + idx, svg: wrapSheet(body, m, frameSVG)});
+  }
+  /* גיליון טבלאות: עקומים אנכיים ומשיקים */
+  if(data && (data.curves||[]).length){
+    sheets.push({name:'טבלאות חתך אורך',
+                 svg: wrapSheet(profileTables(data, meta), 
+                      Object.assign({}, meta, {title:'טבלאות חתך אורך',
+                        scale:'—', dwg:'V-T1'}), frameSVG)});
+  }
+  return sheets;
+}
+/* טבלת קשתות וטבלת אורכים, על גיליון משלהן */
+function profileTables(data, meta){
+  const A = sheetArea();
+  const rowH = 14, headH = 18;
+  let body = T(A.x + A.w/2, A.y - 2, 'טבלאות חתך האורך', 5, {weight:700, lay:'SH-TEXT'});
+  const grid = (x, y, cols, rows, title)=>{
+    const w = cols.reduce((a,c)=>a + c.w, 0);
+    let g = T(x + w/2, y - 5, title, 7, {weight:700, lay:'SH-TEXT'});
+    g += R(x, y, w, headH + rows.length*rowH, {lay:'VA-TABLE', sw:0.45});
+    let cx = x;
+    cols.forEach(c=>{
+      g += LN(cx, y, cx, y + headH + rows.length*rowH, {lay:'VA-TABLE', sw:0.2});
+      g += T(cx + c.w/2, y + headH - 6, c.t, 6, {weight:700, lay:'VA-TEXT'});
+      cx += c.w;
+    });
+    g += LN(x, y + headH, x + w, y + headH, {lay:'VA-TABLE', sw:0.45});
+    rows.forEach((r, i)=>{
+      const ry = y + headH + i*rowH;
+      g += LN(x, ry, x + w, ry, {lay:'VA-TABLE', sw:0.15});
+      let px = x;
+      r.forEach((v, j)=>{
+        g += T(px + cols[j].w/2, ry + rowH - 4.4, v, 5.5, {lay:'VA-TEXT'});
+        px += cols[j].w;
+      });
+    });
+    return {svg:g, h: headH + rows.length*rowH + 14};
+  };
+  const cCols = [{t:'PVI',w:54},{t:'גובה',w:40},{t:'סוג',w:32},{t:'A%',w:32},{t:'L',w:36},
+                 {t:'K',w:32},{t:'VPC',w:54},{t:'VPT',w:54},{t:'שיא / שפל',w:74}];
+  const cRows = data.curves.map(c=>{
+    const q = vCurveGeom(c);
+    return [stationLabel(c.st), c.el.toFixed(2), c.crest?'קמור':'קעור', c.A.toFixed(2),
+            c.L.toFixed(1), q.K.toFixed(1), stationLabel(q.vpc), stationLabel(q.vpt),
+            q.hp ? (stationLabel(q.hp.sta) + ' / ' + q.hp.el.toFixed(2)) : '—'];
+  });
+  const t1 = grid(A.x + 6, A.y + 18, cCols, cRows, 'טבלת עקומים אנכיים');
+  body += t1.svg;
+  const t1w = cCols.reduce((a,c)=>a+c.w,0);
+  const sCols = [{t:'מתחנה',w:54},{t:'עד תחנה',w:54},{t:'אורך',w:44},{t:'הפרש גובה',w:52},{t:'שיפוע %',w:46}];
+  const sRows = (data.segs||[]).map(sg=>[stationLabel(sg.s1), stationLabel(sg.s2),
+                 (sg.s2-sg.s1).toFixed(2), (sg.e2-sg.e1).toFixed(2),
+                 (sg.grade>=0?'+':'') + sg.grade.toFixed(2)]);
+  /* השנייה לצד הראשונה כל עוד יש רוחב, אחרת מתחתיה */
+  const sw = sCols.reduce((a,c)=>a+c.w,0);
+  if(t1w + 30 + sw <= A.w) body += grid(A.x + 6 + t1w + 30, A.y + 18, sCols, sRows, 'טבלת משיקים ואורכים').svg;
+  else body += grid(A.x + 6, A.y + 18 + t1.h + 16, sCols, sRows, 'טבלת משיקים ואורכים').svg;
+  return body;
+}
+
+/* ======================================================================
+   גיליון חתכים זמניים – גושים מוכנים מהכלי "חתך זמני"
+   ====================================================================== */
+function tempSheets(blocks, D, meta, frameSVG){
+  if(!blocks || !blocks.length) return [];
+  const A = sheetArea();
+  const totalH = blocks.reduce((a,b)=>a + b.h + 14, 0);
+  let y = A.y + Math.max(0, (A.h - totalH)/2), body = '';
+  body += T(A.x + A.w/2, A.y - 2, `הסדרי תנועה זמניים – קנה מידה 1:${D}`, 5, {weight:700, lay:'SH-TEXT'});
+  blocks.forEach(b=>{
+    const x = A.x + Math.max(0, (A.w - b.w)/2);
+    body += T(x + b.w/2, y - 2, b.title || '', 4, {weight:700, lay:'SH-TEXT'});
+    body += `<g transform="translate(${N3(x)} ${N3(y)})">${b.g}</g>`;
+    y += b.h + 14;
+  });
+  body += scaleBar(PAD.l+10, A0.h-PAD.b-12, D, 5);
+  const m = Object.assign({}, meta, {title:'חתכים זמניים', scale:'1:'+D, dwg:'T-01'});
+  return [{name:'חתכים זמניים', svg: wrapSheet(body, m, frameSVG)}];
+}
+</script>
+<script>/* ======================================================================
+   דף הניהול: מצב הפרויקט, הגשר אל ארבעת הכלים, וארבעת השלבים.
+   ====================================================================== */
+const $ = id => document.getElementById(id);
+const DWG_SERVICE = 'https://mahalco-dwg.onrender.com/dxf2dwg';
+
+let toastT = null;
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('on'), 2600);
+}
+function logTo(id, msg){
+  const el = $(id); el.hidden = false;
+  el.textContent += (el.textContent ? '\n' : '') + msg;
+  el.scrollTop = el.scrollHeight;
+}
+function todayStr(){ return new Date().toLocaleDateString('he-IL'); }
+
+/* ---------- מצב הפרויקט ---------- */
+const P = {
+  v: 1, name: '',
+  survey: {pts: [], layers: {}, img: null},     /* img: {src, A..F, geo} */
+  align:  null,                                  /* {state, axes, junctions} */
+  logo:   null,                                  /* {svg, vb, name} – לוגו המשרד */
+  vert:   null,                                  /* {ground, pvi, data, ...} */
+  frame:  null,                                  /* {svg, name} */
+  meta:   {office:'MAHALCO – הנדסה אזרחית ותחבורה', proj:'', drawn:'', date: todayStr()},
+  out:    {planD:500, step:20, xD:50, vD:1000, ve:10, temp:'no'}
+};
+const KEY = 'mahalco-project';
+function persist(){
+  try{
+    const slim = JSON.parse(JSON.stringify(P));
+    if(slim.survey.pts.length > 40000) slim.survey.pts = slim.survey.pts.slice(0, 40000);
+    localStorage.setItem(KEY, JSON.stringify(slim));
+  }catch(e){}
+}
+function restore(){
+  try{
+    const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if(s && s.v) Object.assign(P, s);
+  }catch(e){}
+}
+
+/* ---------- הגשר אל הכלים ---------- */
+const FRAMES = {alignment: 'fAlign', vertical: 'fVert'};
+const ready = {};
+window.ready = ready;  /* expose for testing */
+let rid = 0; const waiting = {};
+window.addEventListener('message', ev=>{
+  const m = ev.data;
+  if(!m || m.ns !== 'mahalco') return;
+  if(m.t === 'ready'){ ready[m.tool] = true; return; }
+  if(m.t === 'reply' && waiting[m.rid]){ waiting[m.rid](m); delete waiting[m.rid]; }
+});
+function frameWin(tool){
+  const id = FRAMES[tool];
+  if(id) return $(id).contentWindow;
+  return hidden(tool).contentWindow;
+}
+/* חתך טיפוסי וחתך זמני נטענים ברקע – הם משמשים כתבנית בלבד */
+const HIDDEN = {typical: 'typical-section-8.html', temporary: 'temporary-section-5.html'};
+function hidden(tool){
+  let f = document.getElementById('hid-' + tool);
+  if(!f){
+    f = document.createElement('iframe');
+    f.id = 'hid-' + tool; f.src = HIDDEN[tool];
+    f.style.cssText = 'position:fixed;inset-inline-start:-4000px;top:0;width:1400px;height:900px;border:0';
+    document.body.appendChild(f);
+  }
+  return f;
+}
+function call(tool, t, extra, ms){
+  return new Promise((res, rej)=>{
+    const id = ++rid;
+    waiting[id] = m => m.ok ? res(m.data) : rej(new Error(m.err || 'שגיאה בכלי ' + tool));
+    try{ frameWin(tool).postMessage(Object.assign({ns:'mahalco', t, rid:id}, extra||{}), '*'); }
+    catch(e){ delete waiting[id]; rej(e); return; }
+    setTimeout(()=>{ if(waiting[id]){ delete waiting[id]; rej(new Error('הכלי ' + tool + ' לא הגיב')); } }, ms || 20000);
+  });
+}
+async function waitReady(tool, ms){
+  if(!FRAMES[tool]) hidden(tool);            /* חתך טיפוסי/זמני – מסגרת רקע */
+  const t0 = Date.now();
+  while(!ready[tool]){
+    if(Date.now() - t0 > (ms || 25000)) throw new Error('הכלי ' + tool + ' לא נטען');
+    /* ההודעה הראשונה עלולה להקדים את ההאזנה שלנו – מבקשים שוב */
+    try{ frameWin(tool).postMessage({ns:'mahalco', t:'ping'}, '*'); }catch(e){}
+    await new Promise(r=>setTimeout(r, 150));
+  }
+}
+
+/* ---------- ניווט בין השלבים ---------- */
+let curStep = 1;
+document.querySelectorAll('.rail button').forEach(b=>{
+  b.onclick = ()=>{
+    const to = +b.dataset.step, from = curStep;
+    document.querySelectorAll('.rail button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.step').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    $('s' + to).classList.add('on');
+    curStep = to;
+    if(from !== to) leaveStep(from);
+    enterStep(to);
+  };
+});
+function markDone(step, done){
+  const b = document.querySelector('.rail button[data-step="' + step + '"]');
+  if(b) b.classList.toggle('done', !!done);
+}
+function refreshTags(){
+  const n = P.survey.pts.length;
+  $('surveyTag').textContent = n ? n.toLocaleString('he-IL') + ' נקודות מדידה' : 'אין מדידה';
+  $('surveyTag').className = 'tag' + (n ? ' ok' : '');
+  markDone(1, n > 0 || !!P.survey.img);
+  const ax = P.align && P.align.axes ? P.align.axes.length : 0;
+  $('axTag').textContent = ax ? ax + ' צירים · ' + Math.round(P.align.axes.reduce((a,b)=>a+(b.length||0),0)) + ' מ׳' : 'אין צירים';
+  $('axTag').className = 'tag' + (ax ? ' ok' : '');
+  markDone(2, ax > 0);
+  const vd = P.vert && P.vert.data;
+  $('vaTag').textContent = vd ? (P.vert.data.pvi.length + ' נקודות שבירה אנכיות') : 'אין ציר אנכי';
+  $('vaTag').className = 'tag' + (vd ? ' ok' : '');
+  markDone(3, !!vd);
+  $('frameTag').textContent = P.frame ? ('מסגרת: ' + P.frame.name) : 'מסגרת מובנית';
+  $('frameTag').className = 'tag' + (P.frame ? ' ok' : '');
+  $('logoTag').textContent = P.logo ? ('לוגו: ' + P.logo.name) : 'בלי לוגו';
+  $('logoTag').className = 'tag' + (P.logo ? ' ok' : '');
+}
+
+/* ======================================================================
+   שלב 1 – מדידה
+   ====================================================================== */
+$('bSurvey').onclick = ()=>$('fSurvey').click();
+$('fSurvey').onchange = async e=>{
+  const f = e.target.files[0]; e.target.value = '';
+  if(!f) return;
+  $('sLog').textContent = ''; $('sLog').hidden = true;
+  const ext = (f.name.split('.').pop() || '').toLowerCase();
+  try{
+    if(/^image\//.test(f.type)){
+      const src = await fileData(f);
+      P.survey.img = {src, A:1, B:0, C:0, D:0, E:-1, F:0, geo:false, name:f.name};
+      photoLoad(src);
+      logTo('sLog', 'נטען תצלום: ' + f.name + ' — כיילו אותו בשתי נקודות וסמנו גבהים.');
+      toast('התצלום נטען – עברו לכיול');
+    } else if(ext === 'dwg'){
+      logTo('sLog', 'ממיר DWG ל-DXF בשירות ההמרה…');
+      const txt = await dwgToDxf(await f.arrayBuffer(), svcUrl());
+      takeSurvey(surveyFromDXF(txt), f.name);
+    } else if(ext === 'dxf'){
+      takeSurvey(surveyFromDXF(await f.text()), f.name);
+    } else {
+      takeSurvey(surveyFromText(await f.text(), $('colOrder').value), f.name);
+    }
+  }catch(err){
+    logTo('sLog', 'שגיאה: ' + (err.message || err));
+    toast('קריאת הקובץ נכשלה');
+  }
+};
+function fileData(f){
+  return new Promise((res, rej)=>{ const r = new FileReader();
+    r.onload = ()=>res(r.result); r.onerror = ()=>rej(new Error('קריאת הקובץ נכשלה')); r.readAsDataURL(f); });
+}
+function svcUrl(){ return ($('oSvc').value || '').trim() || DWG_SERVICE; }
+
+function takeSurvey(res, name){
+  if(!res.pts.length){ logTo('sLog', 'לא נמצאו נקודות עם גובה בקובץ ' + name); toast('לא נמצאו נקודות'); return; }
+  P.survey.pts = res.pts; P.survey.layers = res.layers;
+  logTo('sLog', name + ': נקראו ' + res.pts.length + ' נקודות');
+  const zs = res.pts.map(p=>p.z);
+  logTo('sLog', 'טווח גבהים ' + Math.min.apply(null, zs).toFixed(2) + ' – ' + Math.max.apply(null, zs).toFixed(2) + ' מ׳');
+  renderLayers();
+  drawSurvey();
+  refreshTags(); persist();
+  toast(res.pts.length + ' נקודות מדידה נטענו');
+}
+function renderLayers(){
+  const row = $('layRow'); row.innerHTML = '';
+  const L = P.survey.layers || {};
+  Object.keys(L).sort((a,b)=>L[b]-L[a]).slice(0, 14).forEach(k=>{
+    const s = document.createElement('span'); s.className = 'tag';
+    s.textContent = k + ' · ' + L[k]; row.appendChild(s);
+  });
+}
+function surveyBox(pts){
+  const b = {x0:1e18, y0:1e18, x1:-1e18, y1:-1e18, z0:1e18, z1:-1e18};
+  pts.forEach(p=>{ if(p.x<b.x0)b.x0=p.x; if(p.y<b.y0)b.y0=p.y; if(p.x>b.x1)b.x1=p.x; if(p.y>b.y1)b.y1=p.y;
+                   if(p.z<b.z0)b.z0=p.z; if(p.z>b.z1)b.z1=p.z; });
+  return b;
+}
+function drawSurvey(){
+  const cv = $('surveyCv'), c = cv.getContext('2d');
+  c.clearRect(0, 0, cv.width, cv.height);
+  const pts = P.survey.pts;
+  if(!pts.length){
+    c.fillStyle = '#8b96ad'; c.font = '14px Heebo,Arial'; c.textAlign = 'center';
+    c.fillText('כאן תוצג המדידה אחרי הטעינה', cv.width/2, cv.height/2);
+    return;
+  }
+  const b = surveyBox(pts), pad = 22;
+  const k = Math.min((cv.width-2*pad)/Math.max(1, b.x1-b.x0), (cv.height-2*pad)/Math.max(1, b.y1-b.y0));
+  const X = x => pad + (x-b.x0)*k, Y = y => cv.height - pad - (y-b.y0)*k;
+  const span = Math.max(0.001, b.z1-b.z0);
+  pts.forEach(p=>{
+    const t = (p.z - b.z0)/span;                       /* כחול נמוך → חום גבוה */
+    c.fillStyle = `rgb(${Math.round(60+150*t)},${Math.round(130-40*t)},${Math.round(200-150*t)})`;
+    c.fillRect(X(p.x)-1.2, Y(p.y)-1.2, 2.4, 2.4);
+  });
+  /* צירים מהשלב הבא, אם כבר קיימים */
+  if(P.align && P.align.axes){
+    c.strokeStyle = '#ff9f43'; c.lineWidth = 2;
+    P.align.axes.forEach(a=>{
+      if(!a.pis || a.pis.length < 2) return;
+      c.beginPath(); a.pis.forEach((p,i)=> i ? c.lineTo(X(p.x), Y(p.y)) : c.moveTo(X(p.x), Y(p.y)));
+      c.stroke();
+    });
+  }
+  c.fillStyle = '#585f66'; c.font = '12px Heebo,Arial'; c.textAlign = 'start';
+  c.fillText(`${pts.length} נק׳ · גובה ${b.z0.toFixed(2)}–${b.z1.toFixed(2)} מ׳ · שטח ${Math.round(b.x1-b.x0)}×${Math.round(b.y1-b.y0)} מ׳`, 10, 16);
+}
+
+/* ---------- תצלום: כיול וסימון גבהים ---------- */
+const PH = {img:null, mode:'cal', cal:[], lev:[], k:1, ox:0, oy:0};
+function photoLoad(src){
+  $('photoCard').hidden = false;
+  const im = new Image();
+  im.onload = ()=>{ PH.img = im; PH.cal = []; PH.lev = []; photoDraw(); };
+  im.src = src;
+}
+function photoDraw(){
+  const cv = $('photoCv'), c = cv.getContext('2d');
+  c.clearRect(0, 0, cv.width, cv.height);
+  if(!PH.img) return;
+  const k = Math.min(cv.width/PH.img.width, cv.height/PH.img.height);
+  PH.k = k; PH.ox = (cv.width - PH.img.width*k)/2; PH.oy = (cv.height - PH.img.height*k)/2;
+  c.drawImage(PH.img, PH.ox, PH.oy, PH.img.width*k, PH.img.height*k);
+  const dot = (p, col, txt)=>{
+    const x = PH.ox + p.px*k, y = PH.oy + p.py*k;
+    c.beginPath(); c.arc(x, y, 5, 0, 7); c.fillStyle = col; c.fill();
+    c.strokeStyle = '#fff'; c.lineWidth = 1.5; c.stroke();
+    c.fillStyle = '#14171a'; c.font = 'bold 12px Heebo,Arial'; c.textAlign = 'center';
+    c.strokeStyle = '#fff'; c.lineWidth = 3; c.strokeText(txt, x, y-9); c.fillText(txt, x, y-9);
+  };
+  PH.cal.forEach((p,i)=>dot(p, '#2f6fed', 'כיול ' + (i+1)));
+  PH.lev.forEach(p=>dot(p, '#c0392b', p.z.toFixed(2)));
+  $('calTag').textContent = PH.cal.length >= 2 ? ('מכויל · ' + PH.lev.length + ' גבהים') : ('כיול: ' + PH.cal.length + '/2');
+  $('calTag').className = 'tag' + (PH.cal.length >= 2 ? ' ok' : ' warn');
+}
+$('mCal').onclick = ()=>{ PH.mode = 'cal'; $('mCal').classList.add('pri'); $('mLev').classList.remove('pri'); };
+$('mLev').onclick = ()=>{ PH.mode = 'lev'; $('mLev').classList.add('pri'); $('mCal').classList.remove('pri'); };
+$('mClr').onclick = ()=>{ PH.cal = []; PH.lev = []; photoDraw(); };
+$('photoCv').addEventListener('click', e=>{
+  if(!PH.img) return;
+  const r = e.target.getBoundingClientRect();
+  const px = ((e.clientX - r.left) * e.target.width / r.width - PH.ox) / PH.k;
+  const py = ((e.clientY - r.top) * e.target.height / r.height - PH.oy) / PH.k;
+  if(px < 0 || py < 0 || px > PH.img.width || py > PH.img.height) return;
+  if(PH.mode === 'cal'){
+    const v = prompt('קואורדינטות הנקודה (E,N) — למשל 200123.5,745678.2');
+    if(!v) return;
+    const n = v.split(/[,\s]+/).map(Number);
+    if(n.length < 2 || n.some(isNaN)) { toast('קלט לא תקין'); return; }
+    PH.cal.push({px, py, x:n[0], y:n[1]});
+    if(PH.cal.length >= 2) photoCalibrate();
+  } else {
+    const v = prompt('גובה הנקודה (מ׳)');
+    const z = Number(v);
+    if(v === null || isNaN(z)) return;
+    PH.lev.push({px, py, z});
+    photoCommit();
+  }
+  photoDraw();
+});
+/* שתי נקודות → הזזה, סיבוב ושינוי קנה מידה אחידים */
+function photoCalibrate(){
+  const [a, b] = PH.cal.slice(-2);
+  const dpx = b.px - a.px, dpy = b.py - a.py;
+  const dwx = b.x - a.x,  dwy = b.y - a.y;
+  const lp = Math.hypot(dpx, dpy), lw = Math.hypot(dwx, dwy);
+  if(lp < 1 || lw < 1e-6){ toast('בחרו שתי נקודות רחוקות זו מזו'); return; }
+  const s = lw/lp, ang = Math.atan2(dwy, dwx) - Math.atan2(-dpy, dpx);
+  const co = Math.cos(ang)*s, si = Math.sin(ang)*s;
+  /* world = M·pixel + t   (ציר Y של התמונה יורד) */
+  const A = co, B = si, D = si, E = -co;
+  const C = a.x - (A*a.px + B*a.py), F = a.y - (D*a.px + E*a.py);
+  P.survey.img = Object.assign(P.survey.img || {}, {A, B, C, D, E, F, geo:true});
+  photoCommit();
+  toast('התצלום כויל');
+}
+function photoCommit(){
+  const g = P.survey.img;
+  if(!g || !g.geo) return;
+  P.survey.pts = PH.lev.map(p=>({x: g.A*p.px + g.B*p.py + g.C, y: g.D*p.px + g.E*p.py + g.F, z: p.z}));
+  P.survey.layers = {'מהתצלום': P.survey.pts.length};
+  renderLayers(); drawSurvey(); refreshTags(); persist();
+}
+
+/* ---------- רקע לשלב 2: המדידה כתמונה מכוילת ---------- */
+function surveyRaster(){
+  if(P.survey.img && P.survey.img.geo) return P.survey.img;      /* תצלום מכויל */
+  const pts = P.survey.pts;
+  if(!pts.length) return null;
+  const b = surveyBox(pts);
+  const W = 2000, k = W / Math.max(1, b.x1 - b.x0);
+  const H = Math.max(200, Math.min(2000, Math.round((b.y1 - b.y0) * k)));
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const c = cv.getContext('2d');
+  c.fillStyle = '#ffffff'; c.fillRect(0, 0, W, H);
+  const span = Math.max(0.001, b.z1 - b.z0);
+  pts.forEach(p=>{
+    const t = (p.z - b.z0)/span;
+    c.fillStyle = `rgb(${Math.round(60+150*t)},${Math.round(130-40*t)},${Math.round(200-150*t)})`;
+    c.fillRect((p.x-b.x0)*k - 1.5, H - (p.y-b.y0)*k - 1.5, 3, 3);
+  });
+  return {src: cv.toDataURL('image/png'), A: 1/k, B: 0, C: b.x0, D: 0, E: -1/k, F: b.y0 + H/k, geo: true, op: 0.8};
+}
+$('bToAxes').onclick = ()=>document.querySelector('.rail button[data-step="2"]').click();
+
+/* ======================================================================
+   מעבר בין הכלים – נעשה מאליו: בכניסה לשלב הנתונים נדחפים לכלי,
+   וביציאה ממנו התוצאה נשאבת חזרה לפרויקט. בלי כפתורים ידניים.
+   ====================================================================== */
+async function pushSurveyBg(){
+  const bg = surveyRaster();
+  if(!bg) return;
+  await waitReady('alignment');
+  await call('alignment', 'push', {data:{bg}});
+}
+async function pullAxes(quiet){
+  await waitReady('alignment');
+  const r = await call('alignment', 'pull');
+  if(!r || !(r.axes || []).length) return false;
+  P.align = r; refreshTags(); drawSurvey(); persist();
+  if(!quiet) toast((r.axes || []).length + ' צירים נשמרו בפרויקט');
+  return true;
+}
+async function pushToVertical(){
+  if(!P.align || !(P.align.axes || []).length) return;
+  await waitReady('vertical');
+  await call('vertical', 'push', {data:{axes: P.align.axes.map(a=>({name:a.name, pis:a.pis})),
+                                        survey: P.survey.pts}});
+}
+async function pullVertical(quiet){
+  await waitReady('vertical');
+  const r = await call('vertical', 'pull');
+  if(!r || !(r.ground || []).length) return false;
+  P.vert = r; refreshTags(); persist();
+  if(!quiet) toast(r.data ? 'הציר האנכי נשמר' : 'קו הקרקע נשמר');
+  return true;
+}
+/* נכשל? זה לא עוצר את הניווט – הכלי פשוט עוד לא מוכן */
+const quietly = fn => { try{ return fn().catch(()=>{}); }catch(e){} };
+async function leaveStep(n){
+  if(n === 2) await quietly(()=>pullAxes(true));
+  if(n === 3) await quietly(()=>pullVertical(true));
+}
+function enterStep(n){
+  if(n === 2) quietly(pushSurveyBg);
+  if(n === 3) quietly(async ()=>{ await pullAxes(true).catch(()=>{}); await pushToVertical(); });
+}
+
+/* ======================================================================
+   שלב 4 – מסגרת, מטא-דאטה ושמירה
+   ====================================================================== */
+$('bFrame').onclick = ()=>$('fFrame').click();
+$('fFrame').onchange = async e=>{
+  const f = e.target.files[0]; e.target.value = '';
+  if(!f) return;
+  try{
+    const ext = (f.name.split('.').pop() || '').toLowerCase();
+    const txt = ext === 'dwg' ? await dwgToDxf(await f.arrayBuffer(), svcUrl()) : await f.text();
+    const fr = frameFromDXF(txt, {w:1189, h:841});
+    P.frame = {svg: fr.svg, name: f.name, entities: fr.entities};
+    refreshTags(); persist();
+    toast('המסגרת נקלטה · ' + fr.entities + ' ישויות');
+  }catch(err){ toast('קריאת המסגרת נכשלה: ' + (err.message || err)); }
+};
+$('bFrameClr').onclick = ()=>{ P.frame = null; refreshTags(); persist(); toast('חוזרים למסגרת המובנית'); };
+
+$('bLogo').onclick = ()=>$('fLogo').click();
+$('fLogo').onchange = async e=>{
+  const f = e.target.files[0]; e.target.value = '';
+  if(!f) return;
+  try{
+    const lg = logoFromSVG(await f.text());
+    P.logo = {svg: lg.svg, vb: lg.vb, name: f.name, entities: lg.entities};
+    refreshTags(); persist();
+    toast('הלוגו נקלט · ' + lg.entities + ' ישויות');
+  }catch(err){ toast('קריאת הלוגו נכשלה: ' + (err.message || err)); }
+};
+$('bLogoClr').onclick = ()=>{ P.logo = null; refreshTags(); persist(); toast('הלוגו הוסר'); };
+
+['oPlanD','oStep','oXD','oVD','oVE','oTemp'].forEach(id=>{
+  $(id).onchange = ()=>{ P.out = {planD:+$('oPlanD').value, step:+$('oStep').value, xD:+$('oXD').value,
+                                  vD:+$('oVD').value, ve:+$('oVE').value, temp:$('oTemp').value}; persist(); };
+});
+['mOffice','mProj','mDrawn','mDate'].forEach(id=>{
+  $(id).onchange = ()=>{ P.meta = {office:$('mOffice').value, proj:$('mProj').value,
+                                   drawn:$('mDrawn').value, date:$('mDate').value}; persist(); };
+});
+$('pname').onchange = ()=>{ P.name = $('pname').value; if(!P.meta.proj){ P.meta.proj = P.name; $('mProj').value = P.name; } persist(); };
+$('oSvc').onchange = ()=>{ try{ localStorage.setItem('mahalco-dwg-service', $('oSvc').value.trim()); }catch(e){} };
+
+/* ---------- שמירה ופתיחה ---------- */
+$('bSave').onclick = ()=>{
+  const blob = new Blob([JSON.stringify(P)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (P.name || 'mahalco-project').replace(/\s+/g, '-') + '.mahalco.json';
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  persist(); toast('הפרויקט נשמר');
+};
+$('bOpen').onclick = ()=>$('fOpen').click();
+$('fOpen').onchange = async e=>{
+  const f = e.target.files[0]; e.target.value = '';
+  if(!f) return;
+  try{
+    const j = JSON.parse(await f.text());
+    if(!j.v) throw new Error('קובץ פרויקט לא תקין');
+    Object.assign(P, j);
+    fillUI(); drawSurvey(); renderLayers(); refreshTags(); persist();
+    if(P.align && P.align.state){ waitReady('alignment').then(()=>call('alignment','push',{data:{state:P.align.state}})).catch(()=>{}); }
+    toast('הפרויקט נפתח');
+  }catch(err){ toast('פתיחה נכשלה: ' + (err.message || err)); }
+};
+function fillUI(){
+  $('pname').value = P.name || '';
+  $('mOffice').value = P.meta.office || ''; $('mProj').value = P.meta.proj || '';
+  $('mDrawn').value = P.meta.drawn || '';   $('mDate').value = P.meta.date || todayStr();
+  $('oPlanD').value = P.out.planD; $('oStep').value = P.out.step; $('oXD').value = P.out.xD;
+  $('oVD').value = P.out.vD; $('oVE').value = P.out.ve; $('oTemp').value = P.out.temp;
+  try{ $('oSvc').value = localStorage.getItem('mahalco-dwg-service') || DWG_SERVICE; }catch(e){ $('oSvc').value = DWG_SERVICE; }
+}
+
+restore(); fillUI(); renderLayers(); drawSurvey(); refreshTags();
+$('mCal').classList.add('pri');
+window.call = call; window.waitReady = waitReady;  /* expose for testing */
+
+/* ======================================================================
+   בניית הפלט: אוסף מכל הכלים, מרכיב מודל + לשוניות נייר, וממיר ל-DWG.
+   ====================================================================== */
+function axisFrameAt(axis, sta){            /* נקודה על הציר לפי סטציה */
+  const els = axis.elements || [];
+  if(!els.length) return null;
+  let e = els[els.length-1];
+  for(const x of els){ if(sta <= x.sta0 + x.length + 1e-9){ e = x; break; } }
+  const t = Math.max(0, Math.min(e.length, sta - e.sta0));
+  if(e.type === 'line'){
+    const dx = e.to.x - e.from.x, dy = e.to.y - e.from.y, L = Math.hypot(dx, dy) || 1;
+    return {x: e.from.x + dx*t/L, y: e.from.y + dy*t/L};
+  }
+  if(e.type === 'arc' && e.center){
+    const a0 = Math.atan2(e.from.y - e.center.y, e.from.x - e.center.x);
+    const sg = Math.sign(e.D || 1), a = a0 + sg*t/e.R;
+    return {x: e.center.x + e.R*Math.cos(a), y: e.center.y + e.R*Math.sin(a)};
+  }
+  return {x: e.from ? e.from.x : 0, y: e.from ? e.from.y : 0};
+}
+
+async function buildOutput(){
+  const btn = $('bBuild');
+  btn.disabled = true;
+  $('bLog').textContent = ''; $('bLog').hidden = false;
+  const say = m => logTo('bLog', m);
+  try{
+    const meta = Object.assign({}, P.meta, {projTitle: P.name || P.meta.proj, date: P.meta.date || todayStr(),
+                                            logo: P.logo});
+    const frameSVG = P.frame ? P.frame.svg : null;
+    const o = P.out;
+    const sheets = [], model = [];
+
+    /* ---- 1. התכנית ---- */
+    say('אוסף את התכנית מבונה הצירים…');
+    await waitReady('alignment');
+    if(!P.align) P.align = await call('alignment', 'pull');
+    const plan = await call('alignment', 'plan', {D: o.planD}, 60000);
+    const ops = plan.ops || [];
+    if(ops.length){
+      model.push({ops});                                  /* מודל במטרים 1:1 */
+      const ps = planSheets(ops, o.planD, meta, frameSVG);
+      ps.forEach(s=>sheets.push(s));
+      say('תכנית: ' + ops.length + ' ישויות · ' + ps.length + ' גיליונות');
+    } else say('אזהרה: אין תכנית לייצוא — לא שורטטו צירים.');
+
+    /* ---- 2. חתכי רוחב כל X מטר ---- */
+    const axes = (P.align && P.align.axes || []).filter(a=>a.elements && a.length > 0);
+    if(axes.length){
+      say('בונה את תבנית חתך הרוחב…');
+      await waitReady('typical');
+      const blocks = await call('typical', 'render', {D: o.xD}, 40000);
+      const block = blocks[0];
+      const vdata = P.vert && P.vert.data;
+      const ground = (P.vert && P.vert.ground) || [];
+      let total = 0;
+      for(const ax of axes){
+        const rows = [];
+        for(let s = 0; s <= ax.length + 1e-6; s += o.step){
+          const sta = Math.min(s, ax.length);
+          const pt = axisFrameAt(ax, sta);
+          let g = groundElev(sta, ground);
+          if(g == null && pt && P.survey.pts.length) g = idw(pt, P.survey.pts, 15);
+          rows.push({sta, design: vdata ? designElev(sta, vdata) : null, ground: g});
+        }
+        const xs = crossSheets(block, rows, o.xD, meta, frameSVG, 'חתכי רוחב · ' + (ax.name || 'ציר'));
+        xs.forEach(s=>sheets.push(s));
+        total += rows.length;
+        say('ציר ' + (ax.name || '') + ': ' + rows.length + ' חתכים כל ' + o.step + ' מ׳ · ' + xs.length + ' גיליונות');
+      }
+      if(!total) say('אזהרה: לא נוצרו חתכי רוחב.');
+    }
+
+    /* ---- 3. חתך אורך ---- */
+    if(P.vert && (P.vert.ground || []).length){
+      const vs = profileSheets(P.vert, o.vD, o.ve, meta, frameSVG);
+      vs.forEach(s=>sheets.push(s));
+      say('חתך אורך: ' + vs.length + ' גיליונות');
+    } else say('אין חתך אורך — לא נשמר ציר אנכי בשלב 3.');
+
+    /* ---- 4. חתכים זמניים ---- */
+    if(o.temp === 'yes'){
+      say('בונה חתכים זמניים…');
+      try{
+        await waitReady('temporary');
+        const t = await call('temporary', 'render', {D: o.xD}, 40000);
+        const ts = tempSheets(t.blocks, o.xD, meta, frameSVG);
+        ts.forEach(s=>sheets.push(s));
+        say('חתכים זמניים: ' + t.blocks.length + ' חתכים');
+      }catch(e){ say('אזהרה: החתכים הזמניים לא נוצרו — ' + e.message); }
+    }
+
+    if(!sheets.length && !model.length) throw new Error('אין תוכן לייצוא');
+
+    /* ---- 5. כתיבת הקובץ ---- */
+    say('כותב ' + sheets.length + ' לשוניות נייר…');
+    const res = CAD.fromSheets({model, sheets}, {fills: $('oFill').checked, rtl: $('oRtl').checked});
+    const buf = CAD.bytes(res.dxf);        /* Windows-1255, כפי ש-$DWGCODEPAGE מצהיר */
+    say('DXF: ' + (buf.length/1024).toFixed(0) + ' KB · ' + res.entities + ' ישויות · ' + res.layers.length + ' שכבות');
+
+    const base = 'MAHALCO_' + (P.name || 'project').replace(/\s+/g, '-') + '_' + new Date().toISOString().slice(0,10);
+    const dl = (blob, name)=>{
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+    };
+    const svc = svcUrl();
+    if(svc){
+      say('ממיר ל-DWG בשירות ההמרה… (אם השירות היה רדום ההמרה הראשונה עשויה לקחת עד דקה)');
+      try{
+        const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 180000);
+        let r;
+        try{ r = await fetch(svc, {method:'POST', headers:{'Content-Type':'application/dxf'}, body: buf, signal: ctl.signal}); }
+        finally{ clearTimeout(to); }
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        const blob = await r.blob();
+        if(blob.size < 512) throw new Error('תשובה ריקה מהשירות');
+        dl(blob, base + '.dwg');
+        say('נוצר ' + base + '.dwg · ' + (blob.size/1024).toFixed(0) + ' KB');
+        toast('קובץ ה-DWG ירד');
+        return;
+      }catch(err){
+        say('ההמרה נכשלה (' + (err.message || err) + ') – יורד DXF במקום.');
+      }
+    }
+    dl(new Blob([buf], {type:'application/dxf'}), base + '.dxf');
+    say('נוצר ' + base + '.dxf');
+    toast('קובץ ה-DXF ירד');
+  }catch(err){
+    logTo('bLog', 'שגיאה: ' + (err.message || err));
+    toast('הבנייה נכשלה');
+  }finally{
+    btn.disabled = false;
+  }
+}
+/* גובה קרקע מענן הנקודות, בשיטת מרחק הפוך בריבוע */
+function idw(pt, pts, radius){
+  let ws = 0, zs = 0;
+  for(const p of pts){
+    const d = Math.hypot(p.x - pt.x, p.y - pt.y);
+    if(d <= radius){ const w = 1/Math.pow(Math.max(d, 0.5), 2); ws += w; zs += w*p.z; }
+  }
+  return ws ? zs/ws : null;
+}
+$('bBuild').onclick = buildOutput;
+</script>
+</body>
+</html>

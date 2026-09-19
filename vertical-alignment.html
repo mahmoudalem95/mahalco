@@ -31,7 +31,7 @@ th{color:var(--mut);font-weight:normal}
 .badge.bad{background:#3a1414;color:var(--bad)}
 canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:8px}
 #planCv{height:220px;cursor:crosshair}
-#cv{height:440px;cursor:default}
+#cv{height:700px;cursor:default}
 #warn div{font-size:.8rem;color:var(--bad);margin:3px 0}
 .legend{display:flex;gap:16px;font-size:.78rem;margin-top:6px;flex-wrap:wrap}
 .legend span{display:inline-flex;align-items:center;gap:5px}
@@ -46,36 +46,45 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 <div>
 
 <div class="panel">
-<h2>1 · ציר אופקי</h2>
-<label>קובץ פרויקט (JSON שיוצא מ"בונה ציר")</label>
-<input type="file" id="axisFile" accept=".json,application/json">
-<select id="axisPick" hidden></select>
-<div class="small" id="axisInfo">לא נטען ציר מקובץ — אפשר גם לצייר ציר ידני להלן על ענן נקודות המדידה</div>
+<h2>1 · מאיפה הנתונים</h2>
+<div class="row">
+<button id="srcProj" class="pri" onclick="setSource('proj')">ייבוא מהפרויקט</button>
+<button id="srcFiles" class="sec" onclick="setSource('files')">קבצי DWG / DXF</button>
+</div>
+<div id="boxFiles" hidden style="margin-top:10px">
+<label>קובץ צירים (DWG או DXF)</label>
+<input type="file" id="fAxes" accept=".dwg,.dxf">
+<label>קובץ מדידה (DWG, DXF או CSV)</label>
+<input type="file" id="fSurv" accept=".dwg,.dxf,.csv,.txt,.pts,.xyz">
+<div class="row" id="axisRow" hidden><div><label>הציר לחתך</label>
+<select id="axisPick" onchange="pickAxis(this.value)"></select></div></div>
+<label>שירות המרת DWG (נדרש רק לקובצי DWG)</label>
+<input type="url" id="vSvc" style="direction:ltr;text-align:left">
+<div class="row"><button id="btnLoad" class="pri" onclick="importFromFiles()">קליטה ובניית החתך</button></div>
+</div>
+<div id="srcInfo" class="small" style="margin-top:8px"></div>
+<div id="axisInfo" class="small"></div>
 </div>
 
-<div class="panel">
-<h2>2 · נתוני מדידה / DTM</h2>
-<label>קובץ CSV/TXT (או הדבקה) — X,Y,Z בכל שורה</label>
-<input type="file" id="surveyFile" accept=".csv,.txt">
-<textarea id="surveyTxt" placeholder="X,Y,Z בכל שורה (או Point,Y,X,Z,Desc)"></textarea>
+<details class="panel">
+<summary style="cursor:pointer;color:var(--acc);font-size:.9rem">מתקדם — ציור ציר ידני, עריכת ענן הנקודות וקו הקרקע</summary>
+<div style="margin-top:10px">
+<label>ענן נקודות טקסטואלי — X,Y,Z בכל שורה</label>
+<textarea id="surveyTxt" placeholder="X,Y,Z בכל שורה"></textarea>
 <div class="row">
 <div><label>סדר עמודות</label><select id="colOrder"><option value="xyz">X,Y,Z</option><option value="yxz">Y,X,Z</option></select></div>
-<div><label>מרווח דגימה (מ')</label><input id="sampleStep" type="number" value="20"></div>
-<div><label>מסדרון חיפוש (מ')</label><input id="corridorW" type="number" value="15"></div>
+<div><label>מרווח דגימה (מ׳)</label><input id="sampleStep" type="number" value="20"></div>
+<div><label>מסדרון חיפוש (מ׳)</label><input id="corridorW" type="number" value="15"></div>
 </div>
 <div class="row">
-<button onclick="loadSurveyCloud()">הצגת ענן הנקודות</button>
-<button class="sec" id="btnDrawAxis" onclick="toggleDrawAxis()">✎ ציור ציר ידני (הקלקות)</button>
+<button class="sec" onclick="loadSurveyCloud()">הצגת ענן הנקודות</button>
+<button class="sec" id="btnDrawAxis" onclick="toggleDrawAxis()">✎ ציור ציר ידני</button>
 <button class="sec" onclick="resetManualAxis()">איפוס ציר ידני</button>
+<button class="sec" onclick="buildGroundFromSurvey()">בניית קו קרקע מהמדידה</button>
 </div>
 <canvas id="planCv" width="1000" height="220"></canvas>
-<div class="row"><button onclick="buildGroundFromSurvey()">בניית חתך קרקע קיים מהמדידה</button></div>
 <div id="surveyInfo" class="small" style="margin-top:6px"></div>
-</div>
-
-<div class="panel">
-<h2>3 · חתך אורך קיים</h2>
-<label>סטציה,גובה בכל שורה — מתמלא אוטומטית משלב 2, ניתן גם לערוך ידנית</label>
+<label style="margin-top:10px">חתך אורך קיים — סטציה,גובה בכל שורה</label>
 <textarea id="ground">0,100
 50,101.4
 100,103.8
@@ -88,16 +97,17 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 450,99.9
 500,100.3</textarea>
 </div>
+</details>
 
 <div class="panel">
-<h2>4 · תכן קו אדום</h2>
+<h2>2 · תכן קו אדום</h2>
 <label>מהירות תכן (קמ"ש)</label>
 <select id="vd"><option>60</option><option>70</option><option selected>80</option><option>90</option><option>100</option><option>110</option><option>120</option></select>
 <label>קריטריון ראות</label>
 <select id="crit"><option value="stop">עצירה</option><option value="dec">החלטה (בקטע)</option></select>
 <label>סוג רכב לחישוב h1 (עקום קמור)</label>
 <select id="veh"><option value="1.05">מכונית נוסעים</option><option value="2.4">משאית</option><option value="1.8">אוטובוס</option></select>
-<label>נקודות שבירה בקו האדום (PVI) — סטציה,גובה</label>
+<label>נקודות שבירה בקו האדום (PVI) — סטציה,גובה[,אורך עקום]</label>
 <textarea id="pvi">0,100
 100,105.5
 250,108.4
@@ -118,7 +128,16 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 <button id="mMove" class="sec on" onclick="setMode('move')">✥ הזזה (גרירה)</button>
 <button id="mDel" class="sec" onclick="setMode('del')">🗑 מחיקה (הקלקה)</button>
 </div>
-<canvas id="cv" width="1100" height="480"></canvas>
+<div class="panel" id="selBox" hidden style="margin-top:8px">
+<div class="small" id="selInfo" style="margin-bottom:4px"></div>
+<div class="row">
+<div><label>סטציה</label><input id="selSta" type="number" step="0.01"></div>
+<div><label>גובה</label><input id="selEl" type="number" step="0.01"></div>
+<div><label>אורך עקום (ריק = מחושב)</label><input id="selL" type="number" step="1" placeholder="אוטומטי"></div>
+<div style="display:flex;align-items:flex-end"><button onclick="applySel()">עדכון הנקודה</button></div>
+</div>
+</div>
+<canvas id="cv" width="1240" height="760"></canvas>
 <div class="legend">
 <span><i class="sw" style="background:var(--ground)"></i>קו קרקע קיים</span>
 <span><i class="sw" style="background:var(--design)"></i>קו אדום מתוכנן</span>
@@ -204,34 +223,8 @@ function frameAt(els,sta){
 }
 /* ===== axis project import ===== */
 let AXES_LIST=[], AXIS=null;
-$('axisFile').onchange=e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader();
-  r.onload=()=>{
-    try{
-      const j=JSON.parse(r.result);
-      AXES_LIST=(j.axes||(j.pis?[{name:'ציר',pis:j.pis}]:[])).filter(a=>a.pis&&a.pis.length>=2);
-      if(!AXES_LIST.length){alert('לא נמצא ציר תקין בקובץ (נדרש שדה axes[].pis)');return;}
-      const sel=$('axisPick');
-      sel.innerHTML=AXES_LIST.map((a,i)=>`<option value="${i}">${a.name||('ציר '+(i+1))}</option>`).join('');
-      sel.hidden=AXES_LIST.length<2; sel.onchange();
-    }catch(err){alert('קובץ JSON לא תקין: '+err.message);}
-  };
-  r.readAsText(f,'utf-8');
-};
-$('axisPick').onchange=()=>{
-  const a=AXES_LIST[Number($('axisPick').value)||0]; if(!a) return;
-  const g=solveAxis(a.pis);
-  AXIS={els:g.els,total:g.total,name:a.name||'ציר'};
-  $('axisInfo').innerHTML=`נטען: <b>${AXIS.name}</b> · אורך ${AXIS.total.toFixed(0)} מ׳`;
-  drawPlan();
-};
 /* ===== survey/DTM import + manual axis drawing on point cloud ===== */
 let SURVEY_PTS=[], MANUAL_PIS=[], DRAW_MODE=false, PLAN_X=null;
-$('surveyFile').onchange=e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=()=>{ $('surveyTxt').value=r.result; loadSurveyCloud(); }; r.readAsText(f,'utf-8');
-};
 function parseXYZ(text,order){
   return text.trim().split('\n').map(l=>{
     const nums=(l.match(/-?\d+\.?\d*/g)||[]).map(Number);
@@ -324,7 +317,7 @@ const COMF={60:950,70:1250,80:1650,90:2100,100:2600,110:3100,120:3700};
 let LAST_GROUND=[], LAST_DATA=null;
 function run(){
   const ground=parsePairs($('ground').value);
-  const pvi=parsePairs($('pvi').value);
+  const pvi=parsePVI($('pvi').value);
   const Vd=Number($('vd').value), crit=$('crit').value, h1=Number($('veh').value);
   const Sd = crit=='stop'?SSD[Vd]:DEC[Vd];
   const warns=[];
@@ -341,8 +334,10 @@ function run(){
     const Lmin=Math.max(Lsafety,Lcomf,60);
     const [st,el]=pvi[i];
     const distPrev=st-pvi[i-1][0], distNext=pvi[i+1][0]-st;
-    let L=Lmin;
-    if(L/2>distPrev||L/2>distNext){ warns.push(`עקום בסטציה ${st}: אורך נדרש ${L.toFixed(0)}מ' חורג ממחצית המרחק לנק' השכנה.`); L=Math.min(L,2*Math.min(distPrev,distNext)); }
+    const ov=pvi[i][2];
+    let L=(ov&&ov>0)?ov:Lmin;
+    if(ov&&ov>0&&ov<Lmin-0.5) warns.push(`עקום בסטציה ${st}: האורך שנקבע ידנית ${ov.toFixed(0)}מ' קצר מהנדרש ${Lmin.toFixed(0)}מ'.`);
+    if(L/2>distPrev||L/2>distNext){ warns.push(`עקום בסטציה ${st}: אורך ${L.toFixed(0)}מ' חורג ממחצית המרחק לנק' השכנה.`); L=Math.min(L,2*Math.min(distPrev,distNext)); }
     curves.push({st,el,gIn,gOut,A:Math.abs(gOut-gIn),L,crest,Lsafety,Lcomf});
   }
   LAST_DATA={segs,curves,pvi};
@@ -365,56 +360,496 @@ function elevOnDesign(x,data){
   }
   return null;
 }
-/* ===== fixed-VE interactive canvas ===== */
-let XFORM=null, MODE='move', DRAG=null;
+/* ======================================================================
+   קליטת נתונים: מהפרויקט (דרך דף הניהול) או משני קבצי DWG/DXF —
+   קובץ צירים וקובץ מדידה. כל השאר נשאר בחלק "מתקדם".
+   ====================================================================== */
+const SVC_DEFAULT='https://mahalco-dwg.onrender.com/dxf2dwg';
+function svcUrl(){
+  const v=($('vSvc').value||'').trim();
+  try{ localStorage.setItem('mahalco-dwg-service',v); }catch(e){}
+  return v;
+}
+function note(msg,bad){
+  const el=$('srcInfo'); el.innerHTML=msg;
+  el.style.color=bad?'var(--bad)':'var(--mut)';
+}
+
+/* ---- קריאת DXF ---- */
+function dxfPairs(text){
+  const L=text.split(/\r\n|\r|\n/), out=[];
+  for(let i=0;i+1<L.length;i+=2){
+    const c=parseInt(L[i].trim(),10);
+    if(!isNaN(c)) out.push([c,L[i+1]]);
+  }
+  return out;
+}
+function dxfEntities(text){
+  const P=dxfPairs(text), ents=[];
+  let inSec=false,cur=null;
+  for(let i=0;i<P.length;i++){
+    const [c,v]=P[i];
+    if(c===0&&v==='SECTION'){ inSec=(P[i+1]&&P[i+1][0]===2)?P[i+1][1].trim()==='ENTITIES':false; continue; }
+    if(c===0&&v==='ENDSEC'){ if(cur)ents.push(cur); cur=null; inSec=false; continue; }
+    if(!inSec) continue;
+    if(c===0){ if(cur)ents.push(cur); cur={type:v.trim(),g:{}}; continue; }
+    if(!cur) continue;
+    (cur.g[c]=cur.g[c]||[]).push(v);
+  }
+  if(cur) ents.push(cur);
+  return ents;
+}
+const gN=(e,c,i)=>{ const a=e.g[c]; return a&&a[i||0]!==undefined?parseFloat(a[i||0]):undefined; };
+const gS=(e,c,i)=>{ const a=e.g[c]; return a&&a[i||0]!==undefined?String(a[i||0]).trim():''; };
+
+/* ---- נקודות מדידה מתוך DXF ---- */
+function surveyFromDXF(text){
+  const ents=dxfEntities(text), pts=[], layers={};
+  const add=(x,y,z,lay)=>{ if(!isFinite(x)||!isFinite(y)||!isFinite(z)) return;
+    pts.push({x,y,z}); layers[lay||'0']=(layers[lay||'0']||0)+1; };
+  ents.forEach(e=>{
+    const lay=gS(e,8)||'0';
+    switch(e.type){
+      case 'POINT': case 'VERTEX': add(gN(e,10),gN(e,20),gN(e,30)||0,lay); break;
+      case 'LWPOLYLINE': { const el=gN(e,38)||0, xs=e.g[10]||[], ys=e.g[20]||[];
+        if(el) for(let i=0;i<xs.length;i++) add(parseFloat(xs[i]),parseFloat(ys[i]),el,lay); break; }
+      case '3DFACE': for(const c of [[10,20,30],[11,21,31],[12,22,32],[13,23,33]])
+        add(gN(e,c[0]),gN(e,c[1]),gN(e,c[2]),lay); break;
+      case 'INSERT': if(gN(e,30)) add(gN(e,10),gN(e,20),gN(e,30),lay); break;
+      case 'TEXT': case 'MTEXT': case 'ATTRIB': {
+        const raw=gS(e,1).replace(/\\[A-Za-z][^;]*;/g,'').replace(/[{}]/g,'').trim();
+        const v=parseFloat(raw.replace(',','.')), x=gN(e,10), y=gN(e,20), z0=gN(e,30)||0;
+        if(z0){ add(x,y,z0,lay); break; }
+        if(isFinite(v)&&Math.abs(v)<4000&&/^[-+]?\d+(\.\d+)?$/.test(raw)) add(x,y,v,lay);
+        break; }
+    }
+  });
+  return {pts,layers};
+}
+
+/* ---- צירים מתוך DXF: כל פוליליין/קו הוא ציר אפשרי ---- */
+function axesFromDXF(text){
+  const ents=dxfEntities(text), found=[];
+  const len=p=>{ let s=0; for(let i=1;i<p.length;i++) s+=Math.hypot(p[i].x-p[i-1].x,p[i].y-p[i-1].y); return s; };
+  let poly=null;
+  ents.forEach(e=>{
+    const lay=gS(e,8)||'0';
+    if(e.type==='LWPOLYLINE'){
+      const xs=e.g[10]||[], ys=e.g[20]||[], pts=[];
+      for(let i=0;i<xs.length;i++) pts.push({x:parseFloat(xs[i]),y:parseFloat(ys[i])});
+      if(pts.length>=2) found.push({lay,pts});
+    } else if(e.type==='POLYLINE'){ poly={lay,pts:[]};
+    } else if(e.type==='VERTEX'&&poly){ poly.pts.push({x:gN(e,10),y:gN(e,20)});
+    } else if(e.type==='SEQEND'&&poly){ if(poly.pts.length>=2) found.push(poly); poly=null;
+    } else if(e.type==='LINE'){
+      found.push({lay,pts:[{x:gN(e,10),y:gN(e,20)},{x:gN(e,11),y:gN(e,21)}]});
+    }
+  });
+  /* קווים בודדים על אותה שכבה מחוברים לשרשרת אחת */
+  const byLay={};
+  found.forEach(f=>{ (byLay[f.lay]=byLay[f.lay]||[]).push(f); });
+  const axes=[];
+  Object.keys(byLay).forEach(lay=>{
+    const group=byLay[lay];
+    const multi=group.filter(f=>f.pts.length>2);
+    if(multi.length) multi.forEach(f=>axes.push({name:lay,pts:f.pts,length:len(f.pts)}));
+    else if(group.length===1) axes.push({name:lay,pts:group[0].pts,length:len(group[0].pts)});
+    else {
+      const ch=chain(group.map(f=>f.pts));
+      ch.forEach(p=>{ if(p.length>=2) axes.push({name:lay,pts:p,length:len(p)}); });
+    }
+  });
+  return axes.filter(a=>a.length>1).sort((a,b)=>b.length-a.length);
+}
+/* חיבור קטעים לשרשרת לפי קצוות קרובים */
+function chain(segs){
+  const eps=0.05, out=[], used=segs.map(()=>false);
+  const near=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y)<=eps;
+  for(let i=0;i<segs.length;i++){
+    if(used[i]) continue;
+    used[i]=true;
+    const cur=segs[i].slice();
+    let grew=true;
+    while(grew){
+      grew=false;
+      for(let j=0;j<segs.length;j++){
+        if(used[j]) continue;
+        const s=segs[j], a=cur[0], b=cur[cur.length-1];
+        if(near(b,s[0])){ cur.push.apply(cur,s.slice(1)); used[j]=true; grew=true; }
+        else if(near(b,s[s.length-1])){ cur.push.apply(cur,s.slice(0,-1).reverse()); used[j]=true; grew=true; }
+        else if(near(a,s[s.length-1])){ cur.unshift.apply(cur,s.slice(0,-1)); used[j]=true; grew=true; }
+        else if(near(a,s[0])){ cur.unshift.apply(cur,s.slice(1).reverse()); used[j]=true; grew=true; }
+      }
+    }
+    out.push(cur);
+  }
+  return out;
+}
+async function dwgToDxf(buf){
+  const svc=svcUrl();
+  if(!svc) throw new Error('חסרה כתובת שירות ההמרה — אפשר גם להעלות DXF במקום DWG');
+  const url=svc.replace(/\/dxf2dwg\/?$/,'').replace(/\/$/,'')+'/dwg2dxf';
+  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:buf});
+  if(!r.ok) throw new Error('שירות ההמרה החזיר שגיאה '+r.status);
+  return await r.text();
+}
+async function readCad(file){
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  if(ext==='dwg') return await dwgToDxf(await file.arrayBuffer());
+  return await file.text();
+}
+
+/* ---- שני מקורות הקליטה ---- */
+function setSource(which){
+  $('boxFiles').hidden = which!=='files';
+  $('srcProj').classList.toggle('on',which==='proj');
+  $('srcFiles').classList.toggle('on',which==='files');
+  if(which==='proj') importFromProject();
+}
+/* הנתונים שדף הניהול דחף לכאן כבר יושבים בכלי */
+function importFromProject(){
+  const hasAxis=!!(AXES_LIST&&AXES_LIST.length), hasSurvey=SURVEY_PTS.length>0;
+  if(!hasAxis&&!hasSurvey){
+    note(window.top===window.self
+      ? 'הכלי פתוח לבדו. פתחו אותו מתוך עמוד הפרויקט, או בחרו קבצי DWG/DXF.'
+      : 'עוד לא הועברו נתונים מהפרויקט — חזרו לשלב 1 ו-2 בעמוד הפרויקט.',true);
+    return;
+  }
+  note('מהפרויקט: '+(hasAxis?AXES_LIST.length+' צירים':'בלי צירים')+
+       ' · '+(hasSurvey?SURVEY_PTS.length+' נקודות מדידה':'בלי מדידה'));
+  if(hasAxis&&hasSurvey) autoProfile();
+}
+/* קליטה משני קבצים ואז בנייה מיידית של החתך */
+async function importFromFiles(){
+  const fa=$('fAxes').files[0], fs=$('fSurv').files[0];
+  if(!fa&&!fs){ note('בחרו קובץ צירים ו/או קובץ מדידה.',true); return; }
+  $('btnLoad').disabled=true;
+  try{
+    if(fa){
+      note('קורא את קובץ הצירים…');
+      const found=axesFromDXF(await readCad(fa));
+      if(!found.length) throw new Error('לא נמצאו פוליליינים בקובץ הצירים');
+      AXES_LIST=found.map(a=>({name:a.name+' ('+a.length.toFixed(0)+' מ׳)',pts:a.pts,pis:a.pts}));
+      const sel=$('axisPick');
+      sel.innerHTML=AXES_LIST.map((a,i)=>'<option value="'+i+'">'+a.name+'</option>').join('');
+      sel.hidden=AXES_LIST.length<2;
+      $('axisRow').hidden=false;
+      pickAxis(0);
+    }
+    if(fs){
+      note('קורא את קובץ המדידה…');
+      const ext=(fs.name.split('.').pop()||'').toLowerCase();
+      let res;
+      if(ext==='csv'||ext==='txt'||ext==='pts'||ext==='xyz'){
+        $('surveyTxt').value=await fs.text();
+        loadSurveyCloud(); res={pts:SURVEY_PTS};
+      } else {
+        res=surveyFromDXF(await readCad(fs));
+        SURVEY_PTS=res.pts;
+        $('surveyTxt').value=res.pts.slice(0,20000).map(p=>[p.x,p.y,p.z].join(',')).join('\n');
+      }
+      if(!res.pts.length) throw new Error('לא נמצאו נקודות עם גובה בקובץ המדידה');
+      drawPlan();
+    }
+    note('נקלט: '+(AXES_LIST.length?AXES_LIST.length+' צירים':'בלי צירים')+
+         ' · '+(SURVEY_PTS.length?SURVEY_PTS.length+' נקודות מדידה':'בלי מדידה'));
+    autoProfile();
+  }catch(err){ note('הקליטה נכשלה: '+(err.message||err),true); }
+  finally{ $('btnLoad').disabled=false; }
+}
+function pickAxis(i){
+  const a=AXES_LIST[i]; if(!a) return;
+  const g=(a.pis&&a.pis.length&&a.pis[0].R!==undefined)?solveAxis(a.pis):axisFromPolyline(a.pts||a.pis);
+  AXIS={els:g.els,total:g.total,name:a.name||'ציר'};
+  $('axisInfo').innerHTML='ציר: <b>'+AXIS.name+'</b> · אורך '+AXIS.total.toFixed(0)+' מ׳';
+  drawPlan();
+}
+/* בניית קו הקרקע וקו אדום ראשוני, ואז ישר לחתך */
+function autoProfile(){
+  if(!AXIS&&AXES_LIST.length) pickAxis(Number($('axisPick').value)||0);
+  if(!AXIS){ note('אין ציר — בחרו קובץ צירים או העבירו ציר מהפרויקט.',true); return; }
+  if(!SURVEY_PTS.length){ note('אין מדידה — בלי ענן נקודות אי אפשר לבנות את קו הקרקע.',true); return; }
+  buildGroundFromSurvey();
+  const g=parsePairs($('ground').value);
+  if(g.length>=2){
+    /* קו אדום ראשוני: ישר מהתחלה לסוף, נקודת אמצע על הקרקע */
+    const mid=g[Math.floor(g.length/2)];
+    writePVI([[g[0][0],+g[0][1].toFixed(2)],[mid[0],+mid[1].toFixed(2)],
+              [g[g.length-1][0],+g[g.length-1][1].toFixed(2)]]);
+  }
+  run();
+  note('החתך מוכן — '+g.length+' תחנות קרקע. גררו את הנקודות או ערכו אותן למטה.');
+  const cv=$('cv'); if(cv&&cv.scrollIntoView) cv.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ===== מבט חתך אורך בסגנון אוטוקאד ===== */
+let XFORM=null, MODE='move', DRAG=null, SEL=-1;
+const LAY={padL:78,padR:78,top:96,staH:52};
+/* הדף כולו RTL, ולכן מחרוזת שמערבבת ספרות ולטינית מתהפכת על הקנבס.
+   LRM בראש המחרוזת מקבע אותה משמאל לימין.                          */
+const LRM='‎', L=s=>LRM+s;
+const BANDS=[{k:'design',t:'קו אדום',h:48},{k:'ground',t:'קרקע קיימת',h:48},
+             {k:'cut',t:'חפירה / מילוי',h:48},{k:'grade',t:'שיפועים ועקומים',h:30}];
+const BAND_TOTAL=BANDS.reduce((a,b)=>a+b.h,0);
+const bandY=i=>BANDS.slice(0,i).reduce((a,b)=>a+b.h,0);
 function setMode(m){ MODE=m; ['mAdd','mMove','mDel'].forEach(id=>$(id).classList.remove('on')); $({add:'mAdd',move:'mMove',del:'mDel'}[m]).classList.add('on'); }
-function worldToPx(x,y){ const {minX,scaleX,minY,scaleY,pad,H}=XFORM; return {x:pad+(x-minX)*scaleX, y:H-pad-(y-minY)*scaleY}; }
-function pxToWorld(px,py){ const {minX,scaleX,minY,scaleY,pad,H}=XFORM; return {x:minX+(px-pad)/scaleX, y:minY+(H-pad-py)/scaleY}; }
+function staFmt(s,dec){
+  const sg=s<0?'-':''; s=Math.abs(s);
+  const km=Math.floor(s/1000), m=s-km*1000;
+  return sg+km+'+'+m.toFixed(dec==null?2:dec).padStart(dec===0?3:6,'0');
+}
+function niceStep(range,target){
+  const raw=range/Math.max(1,target), p=Math.pow(10,Math.floor(Math.log10(raw)||0));
+  return [1,2,2.5,5,10].map(v=>v*p).find(v=>v>=raw)||p*10;
+}
+/* נתוני עקום אנכי: VPC/VPT, ערך K, ונקודת שיא/שפל */
+function curveGeom(c){
+  const vpc=c.st-c.L/2, vpt=c.st+c.L/2, g1=c.gIn/100, g2=c.gOut/100;
+  const K=c.A>1e-9?c.L/c.A:0, y0=c.el-g1*c.L/2;
+  let hp=null;
+  if(Math.abs(g2-g1)>1e-9){
+    const xh=-g1*c.L/(g2-g1);
+    if(xh>0&&xh<c.L) hp={sta:vpc+xh, el:y0+g1*xh+(g2-g1)/(2*c.L)*xh*xh};
+  }
+  return {vpc,vpt,K,y0,hp};
+}
+function worldToPx(x,y){ const {minX,scaleX,minY,scaleY,padL,plotB}=XFORM; return {x:padL+(x-minX)*scaleX, y:plotB-(y-minY)*scaleY}; }
+function pxToWorld(px,py){ const {minX,scaleX,minY,scaleY,padL,plotB}=XFORM; return {x:minX+(px-padL)/scaleX, y:minY+(plotB-py)/scaleY}; }
+
 function render(ground,data,warns){
-  const cv=$('cv'),ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
-  const W=cv.width,H=cv.height,pad=50;
-  const allX=ground.map(p=>p[0]).concat(data.pvi?data.pvi.map(p=>p[0]):[]);
-  const allY=ground.map(p=>p[1]).concat(data.pvi?data.pvi.map(p=>p[1]):[]);
-  if(!allX.length){$('tbl').innerHTML='';return;}
-  const minX=Math.min(...allX),maxX=Math.max(...allX);
-  const minY=Math.min(...allY)-1,maxY=Math.max(...allY)+1;
+  const cv=$('cv'),ctx=cv.getContext('2d'); const W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  const pvi=data.pvi||[];
+  const allX=ground.map(p=>p[0]).concat(pvi.map(p=>p[0]));
+  const allY=ground.map(p=>p[1]).concat(pvi.map(p=>p[1]));
+  if(!allX.length){ $('tbl').innerHTML=''; return; }
+  const minX=Math.min(...allX), maxX=Math.max(...allX);
+  let minY=Math.min(...allY), maxY=Math.max(...allY);
+  const padY=Math.max(1,(maxY-minY)*0.12); minY-=padY; maxY+=padY;
+  const bandTop=H-LAY.staH-BAND_TOTAL, plotB=bandTop-6; let plotT=LAY.top;
   const ve=Math.max(1,Number($('veRatio').value)||10);
-  let scaleX=(W-2*pad)/Math.max(1e-6,maxX-minX), scaleY=scaleX*ve;
-  if(scaleY*(maxY-minY) > (H-2*pad)){ scaleY=(H-2*pad)/Math.max(1e-6,maxY-minY); scaleX=scaleY/ve; }
-  XFORM={minX,maxX,minY,maxY,scaleX,scaleY,pad,H};
-  const sx=x=>pad+(x-minX)*scaleX, sy=y=>H-pad-(y-minY)*scaleY;
-  ctx.strokeStyle='#1c2540';ctx.fillStyle='#8b96ad';ctx.font='11px Arial';ctx.lineWidth=1;
-  for(let i=0;i<=10;i++){ const gx=minX+i*(maxX-minX)/10; ctx.beginPath();ctx.moveTo(sx(gx),H-pad);ctx.lineTo(sx(gx),pad);ctx.stroke(); ctx.fillText(gx.toFixed(0),sx(gx)-10,H-pad+16); }
-  for(let i=0;i<=6;i++){ const gy=minY+i*(maxY-minY)/6; ctx.beginPath();ctx.moveTo(pad,sy(gy));ctx.lineTo(W-pad,sy(gy));ctx.stroke(); ctx.fillText(gy.toFixed(1),4,sy(gy)+3); }
-  ctx.fillText('VE 1:'+ve,W-pad-40,pad-8);
-  ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--ground');ctx.lineWidth=2;
-  ctx.beginPath();ground.forEach((p,i)=>{i?ctx.lineTo(sx(p[0]),sy(p[1])):ctx.moveTo(sx(p[0]),sy(p[1]));});ctx.stroke();
+  let scaleX=(W-LAY.padL-LAY.padR)/Math.max(1e-6,maxX-minX), scaleY=scaleX*ve;
+  if(scaleY*(maxY-minY)>(plotB-plotT)){ scaleY=(plotB-plotT)/Math.max(1e-6,maxY-minY); scaleX=scaleY/ve; }
+  /* המסגרת נצמדת לגובה שההגזמה האנכית מכתיבה, בלי שטח מת מעל */
+  plotT=Math.max(LAY.top, plotB-(maxY-minY)*scaleY);
+  XFORM={minX,maxX,minY,maxY,scaleX,scaleY,padL:LAY.padL,plotB,plotT};
+  const sx=x=>LAY.padL+(x-minX)*scaleX, sy=y=>plotB-(y-minY)*scaleY;
+  const css=k=>getComputedStyle(document.documentElement).getPropertyValue(k);
+  const plotR=sx(maxX);
+
+  /* ---- רשת ---- */
+  const dy=niceStep(maxY-minY,6), dx=niceStep(maxX-minX,10);
+  ctx.font='10px Arial'; ctx.textBaseline='middle';
+  ctx.strokeStyle='#1c2540'; ctx.lineWidth=1;
+  for(let g=Math.ceil(minY/dy)*dy; g<=maxY; g+=dy){
+    ctx.beginPath(); ctx.moveTo(LAY.padL,sy(g)); ctx.lineTo(plotR,sy(g)); ctx.stroke();
+    ctx.fillStyle='#8b96ad'; ctx.textAlign='right'; ctx.fillText(L(g.toFixed(1)),LAY.padL-6,sy(g));
+    ctx.textAlign='left'; ctx.fillText(L(g.toFixed(1)),plotR+6,sy(g));
+  }
+  const gridX=[];
+  for(let g=Math.ceil(minX/dx)*dx; g<=maxX+1e-6; g+=dx){
+    gridX.push(g);
+    ctx.beginPath(); ctx.moveTo(sx(g),plotT); ctx.lineTo(sx(g),bandTop); ctx.stroke();
+  }
+  /* מסגרת אזור השרטוט */
+  ctx.strokeStyle='#39456b'; ctx.lineWidth=1.2;
+  ctx.strokeRect(LAY.padL,plotT,plotR-LAY.padL,plotB-plotT);
+  ctx.fillStyle='#8b96ad'; ctx.textAlign='left';
+  ctx.fillText(L('VE 1:'+ve),LAY.padL+6,plotT-10);
+  ctx.textAlign='right'; ctx.fillText('גובה (מ׳)',plotR-6,plotT-10);
+
+  /* ---- קו קרקע ---- */
+  ctx.strokeStyle=css('--ground')||'#8b96ad'; ctx.lineWidth=1.6; ctx.setLineDash([6,4]);
+  ctx.beginPath(); ground.forEach((p,i)=>{i?ctx.lineTo(sx(p[0]),sy(p[1])):ctx.moveTo(sx(p[0]),sy(p[1]));}); ctx.stroke();
+  ctx.setLineDash([]);
+
   let rows='';
-  if(data.pvi&&data.curves){
-    ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--design');ctx.lineWidth=2.5;ctx.beginPath();
-    const N=300;
+  if(pvi.length && data.curves){
+    const geo=data.curves.map(curveGeom);
+    /* ---- קו אדום ---- */
+    ctx.strokeStyle=css('--design')||'#ff9f43'; ctx.lineWidth=2.6; ctx.beginPath();
+    const N=400, s0=pvi[0][0], s1=pvi[pvi.length-1][0];
     for(let i=0;i<=N;i++){
-      const x=minX+(maxX-minX)*i/N;
-      const xc=Math.max(data.pvi[0][0],Math.min(data.pvi[data.pvi.length-1][0],x));
-      const e=elevOnDesign(xc,data); if(e==null) continue;
+      const x=s0+(s1-s0)*i/N, e=elevOnDesign(x,data); if(e==null) continue;
       i?ctx.lineTo(sx(x),sy(e)):ctx.moveTo(sx(x),sy(e));
     }
     ctx.stroke();
-    ctx.fillStyle='#ff9f43';
-    data.pvi.forEach(p=>{ctx.beginPath();ctx.arc(sx(p[0]),sy(p[1]),4,0,7);ctx.fill();});
-    rows+='<div class="panel"><div class="small"><b>עקומים אנכיים</b></div><table><tr><th>סטציה</th><th>סוג</th><th>A%</th><th>L ראות</th><th>L נוחות</th><th>L נבחר</th></tr>';
-    data.curves.forEach(c=>{ rows+=`<tr><td>${c.st}</td><td>${c.crest?'קמור':'קעור'}</td><td>${c.A.toFixed(2)}</td><td>${c.Lsafety.toFixed(0)}</td><td>${c.Lcomf.toFixed(0)}</td><td><b>${c.L.toFixed(0)}</b></td></tr>`; });
-    rows+='</table>';
-    rows+='<div class="small" style="margin-top:8px"><b>חפירה/מילוי בסטציות קרקע</b></div><table><tr><th>סטציה</th><th>קרקע</th><th>קו אדום</th><th>חפ/מל</th></tr>';
-    ground.forEach(p=>{ const dx=Math.max(data.pvi[0][0],Math.min(data.pvi[data.pvi.length-1][0],p[0])); const de=elevOnDesign(dx,data); if(de==null)return;
-      const diff=p[1]-de; const lab=diff>0?`<span class="badge ok">חפירה ${diff.toFixed(2)}</span>`:`<span class="badge bad">מילוי ${Math.abs(diff).toFixed(2)}</span>`;
-      rows+=`<tr><td>${p[0]}</td><td>${p[1].toFixed(2)}</td><td>${de.toFixed(2)}</td><td>${lab}</td></tr>`; });
-    rows+='</table></div>';
+
+    /* ---- שיפוע על כל משיק ---- */
+    ctx.font='11px Arial'; ctx.textAlign='center';
+    data.segs.forEach((sg,i)=>{
+      const a=Math.max(sg.s1,i>0?geo[i-1].vpt:sg.s1), b=Math.min(sg.s2,i<geo.length?geo[i].vpc:sg.s2);
+      if(b-a<8) return;
+      const mx=(a+b)/2, my=elevOnDesign(mx,data); if(my==null) return;
+      const up=sg.grade>=0;
+      ctx.save(); ctx.translate(sx(mx),sy(my)-14);
+      ctx.fillStyle='#ffd08a';
+      ctx.fillText(L((up?'+':'')+sg.grade.toFixed(2)+'%  L='+(sg.s2-sg.s1).toFixed(1)),0,0);
+      ctx.restore();
+    });
+
+    /* ---- עקומים: VPC/VPT, שיא/שפל וכיתוב ---- */
+    data.curves.forEach((c,i)=>{
+      const g=geo[i];
+      [[g.vpc,'VPC'],[g.vpt,'VPT']].forEach(([st,lab])=>{
+        const e=elevOnDesign(st,data); if(e==null) return;
+        const X=sx(st), Y=sy(e);
+        ctx.strokeStyle='#6f7da8'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+        ctx.beginPath(); ctx.moveTo(X,plotT); ctx.lineTo(X,plotB); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle='#6f7da8'; ctx.beginPath(); ctx.arc(X,Y,3,0,7); ctx.fill();
+        ctx.fillStyle='#8b96ad'; ctx.font='9px Arial'; ctx.textAlign='center';
+        ctx.fillText(lab,X,plotB+12);
+      });
+      if(g.hp){
+        const X=sx(g.hp.sta), Y=sy(g.hp.el);
+        ctx.fillStyle=c.crest?'#3ecf8e':'#4fb3ff';
+        ctx.beginPath(); ctx.moveTo(X,Y-5); ctx.lineTo(X+5,Y); ctx.lineTo(X,Y+5); ctx.lineTo(X-5,Y); ctx.closePath(); ctx.fill();
+      }
+      /* בלוק כיתוב בראש הגיליון */
+      const X=sx(c.st), e=elevOnDesign(c.st,data);
+      ctx.strokeStyle='#39456b'; ctx.lineWidth=1; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(X,plotT); ctx.lineTo(X,sy(e==null?c.el:e)); ctx.stroke(); ctx.setLineDash([]);
+      /* סימן במקום מילה: כך השורה נשארת לטינית טהורה ולא מתהפכת */
+      const lines=[L('PVI '+staFmt(c.st)+'   EL '+c.el.toFixed(2)),
+                   L((c.crest?'▲':'▼')+' A='+c.A.toFixed(2)+'%  L='+c.L.toFixed(1)+'  K='+g.K.toFixed(1)),
+                   g.hp?L((c.crest?'▲':'▼')+' '+staFmt(g.hp.sta)+' / '+g.hp.el.toFixed(2)):''];
+      ctx.font='9.5px Arial'; ctx.textAlign='center';
+      const bw=Math.max(...lines.map(t=>ctx.measureText(t).width))+12, bh=lines.filter(Boolean).length*12+8;
+      let bx=Math.min(Math.max(X-bw/2,LAY.padL+2),plotR-bw-2), by=8+(i%2)*38;
+      ctx.fillStyle='#161d2e'; ctx.strokeStyle='#39456b';
+      ctx.fillRect(bx,by,bw,bh); ctx.strokeRect(bx,by,bw,bh);
+      ctx.fillStyle='#e8ecf5';
+      lines.filter(Boolean).forEach((t,j)=>ctx.fillText(t,bx+bw/2,by+12+j*12));
+      ctx.strokeStyle='#39456b'; ctx.beginPath(); ctx.moveTo(bx+bw/2,by+bh); ctx.lineTo(X,plotT); ctx.stroke();
+    });
+
+    /* ---- נקודות PVI הניתנות לגרירה ---- */
+    pvi.forEach((p,i)=>{
+      const X=sx(p[0]),Y=sy(p[1]);
+      ctx.fillStyle=i===SEL?'#3ecf8e':'#ff9f43';
+      ctx.fillRect(X-4,Y-4,8,8);
+      ctx.strokeStyle='#03101f'; ctx.lineWidth=1; ctx.strokeRect(X-4,Y-4,8,8);
+    });
+
+    drawBands(ctx,ground,data,geo,sx,bandTop,plotR,gridX,minX,maxX);
+    rows=tables(data,geo,ground);
+  } else {
+    drawBands(ctx,ground,{pvi:[],segs:[],curves:[]},[],sx,bandTop,plotR,gridX,minX,maxX);
   }
-  $('tbl').innerHTML=rows; $('warn').innerHTML=warns.map(w=>`<div>⚠ ${w}</div>`).join('');
+  $('tbl').innerHTML=rows;
+  $('warn').innerHTML=(warns||[]).map(w=>`<div>⚠ ${w}</div>`).join('');
 }
+
+/* ---- פסי הנתונים מתחת לשרטוט ---- */
+function drawBands(ctx,ground,data,geo,sx,bandTop,plotR,gridX,minX,maxX){
+  const H=$('cv').height;
+  ctx.font='9.5px Arial'; ctx.textBaseline='middle';
+  BANDS.forEach((b,i)=>{
+    const y=bandTop+bandY(i);
+    ctx.fillStyle=i%2?'#131a29':'#0f1520';
+    ctx.fillRect(LAY.padL,y,plotR-LAY.padL,b.h);
+    ctx.strokeStyle='#26314a'; ctx.lineWidth=1;
+    ctx.strokeRect(LAY.padL,y,plotR-LAY.padL,b.h);
+    ctx.fillStyle='#8b96ad'; ctx.textAlign='right';
+    ctx.fillText(b.t,LAY.padL-6,y+b.h/2);
+  });
+  /* שורת הסטציות */
+  const ys=bandTop+BAND_TOTAL;
+  ctx.fillStyle='#0f1520'; ctx.fillRect(LAY.padL,ys,plotR-LAY.padL,LAY.staH);
+  ctx.strokeStyle='#26314a'; ctx.strokeRect(LAY.padL,ys,plotR-LAY.padL,LAY.staH);
+  ctx.fillStyle='#8b96ad'; ctx.textAlign='right'; ctx.fillText('סטציה',LAY.padL-6,ys+LAY.staH/2);
+  gridX.forEach(g=>{
+    const X=sx(g);
+    ctx.strokeStyle='#26314a'; ctx.beginPath(); ctx.moveTo(X,bandTop); ctx.lineTo(X,ys+LAY.staH); ctx.stroke();
+    ctx.save(); ctx.translate(X,ys+LAY.staH/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle='#c9d2e4'; ctx.textAlign='center'; ctx.font='9.5px Arial';
+    ctx.fillText(L(staFmt(g,0)),0,3); ctx.restore();
+  });
+  /* ערכים בפסים, בתחנות הרשת */
+  ctx.font='9px Arial'; ctx.textAlign='center';
+  gridX.forEach(g=>{
+    const X=sx(g);
+    const gr=interpPairs(ground,g);
+    const de=data.pvi&&data.pvi.length?elevOnDesign(Math.max(data.pvi[0][0],Math.min(data.pvi[data.pvi.length-1][0],g)),data):null;
+    const val=[de==null?'':de.toFixed(2), gr==null?'':gr.toFixed(2),
+               (gr==null||de==null)?'':((gr-de)>=0?'+':'')+(gr-de).toFixed(2), ''];
+    val.forEach((v,i)=>{
+      if(!v) return;
+      const y=bandTop+bandY(i)+BANDS[i].h/2;
+      ctx.fillStyle=i===2?((gr-de)>=0?'#3ecf8e':'#ff6161'):'#c9d2e4';
+      ctx.save(); ctx.translate(X,y); ctx.rotate(-Math.PI/2); ctx.fillText(L(v),0,3); ctx.restore();
+    });
+  });
+  /* פס השיפועים והעקומים */
+  const gh=BANDS[3].h, gy=bandTop+bandY(3), mid=gy+gh/2;
+  (data.segs||[]).forEach((sg,i)=>{
+    const s1=Math.max(sg.s1, i>0&&geo[i-1]?geo[i-1].vpt:sg.s1);
+    const s2=Math.min(sg.s2, geo&&geo[i]?geo[i].vpc:sg.s2);
+    const a=sx(Math.max(s1,minX)), b=sx(Math.min(s2,maxX));
+    if(b-a<4) return;
+    ctx.strokeStyle='#ffd08a'; ctx.lineWidth=1.6;
+    ctx.beginPath(); ctx.moveTo(a+2,mid+(sg.grade>0?4:-4)); ctx.lineTo(b-2,mid-(sg.grade>0?4:-4)); ctx.stroke();
+    if(b-a>62){ ctx.fillStyle='#ffd08a'; ctx.textAlign='center'; ctx.font='9px Arial';
+      ctx.fillText(L((sg.grade>=0?'+':'')+sg.grade.toFixed(2)+'%'),(a+b)/2,mid-8); }
+  });
+  (geo||[]).forEach((g,i)=>{
+    const a=sx(g.vpc), b=sx(g.vpt); if(b-a<3) return;
+    const c=data.curves[i];
+    ctx.fillStyle=c.crest?'#1d3b2c':'#153049'; ctx.fillRect(a,gy+3,b-a,gh-6);
+    ctx.strokeStyle=c.crest?'#3ecf8e':'#4fb3ff'; ctx.lineWidth=1.2; ctx.strokeRect(a,gy+3,b-a,gh-6);
+    if(b-a>46){ ctx.fillStyle='#e8ecf5'; ctx.textAlign='center'; ctx.font='9px Arial';
+      ctx.fillText(L('L='+c.L.toFixed(0)),(a+b)/2,mid+4); }
+  });
+}
+function interpPairs(arr,x){
+  if(!arr.length) return null;
+  if(x<=arr[0][0]) return arr[0][1];
+  if(x>=arr[arr.length-1][0]) return arr[arr.length-1][1];
+  for(let i=0;i<arr.length-1;i++){
+    const [a,ea]=arr[i],[b,eb]=arr[i+1];
+    if(x>=a&&x<=b) return b===a?ea:ea+(eb-ea)*(x-a)/(b-a);
+  }
+  return null;
+}
+/* ---- טבלאות קשתות ואורכים ---- */
+function tables(data,geo,ground){
+  let s='<div class="panel"><div class="small"><b>טבלת עקומים אנכיים</b></div>'
+      + '<table><tr><th>PVI</th><th>גובה</th><th>סוג</th><th>A%</th><th>L</th><th>K</th>'
+      + '<th>VPC</th><th>VPT</th><th>שיא/שפל</th></tr>';
+  data.curves.forEach((c,i)=>{
+    const g=geo[i];
+    s+=`<tr><td>${staFmt(c.st,0)}</td><td>${c.el.toFixed(2)}</td><td>${c.crest?'קמור':'קעור'}</td>`
+     + `<td>${c.A.toFixed(2)}</td><td><b>${c.L.toFixed(1)}</b></td><td>${g.K.toFixed(1)}</td>`
+     + `<td>${staFmt(g.vpc,0)}</td><td>${staFmt(g.vpt,0)}</td>`
+     + `<td>${g.hp?staFmt(g.hp.sta,0)+' / '+g.hp.el.toFixed(2):'—'}</td></tr>`;
+  });
+  if(!data.curves.length) s+='<tr><td colspan="9">אין עקומים — נדרשות לפחות שלוש נקודות PVI</td></tr>';
+  s+='</table>';
+  s+='<div class="small" style="margin-top:10px"><b>טבלת משיקים ואורכים</b></div>'
+   + '<table><tr><th>מ-</th><th>עד</th><th>אורך</th><th>הפרש גובה</th><th>שיפוע %</th></tr>';
+  data.segs.forEach(sg=>{
+    s+=`<tr><td>${staFmt(sg.s1,0)}</td><td>${staFmt(sg.s2,0)}</td><td>${(sg.s2-sg.s1).toFixed(1)}</td>`
+     + `<td>${(sg.e2-sg.e1).toFixed(2)}</td><td><b>${(sg.grade>=0?'+':'')+sg.grade.toFixed(2)}</b></td></tr>`;
+  });
+  s+='</table>';
+  const tot=data.segs.length?data.segs[data.segs.length-1].s2-data.segs[0].s1:0;
+  s+=`<div class="small" style="margin-top:6px">אורך כולל ${tot.toFixed(1)} מ׳ · ${data.curves.length} עקומים · ${data.segs.length} משיקים</div>`;
+  s+='</div>';
+  s+='<div class="panel"><div class="small"><b>חפירה / מילוי בתחנות המדידה</b></div>'
+   + '<table><tr><th>סטציה</th><th>קרקע</th><th>קו אדום</th><th>חפ/מל</th></tr>';
+  ground.forEach(p=>{
+    const dx=Math.max(data.pvi[0][0],Math.min(data.pvi[data.pvi.length-1][0],p[0]));
+    const de=elevOnDesign(dx,data); if(de==null) return;
+    const d=p[1]-de;
+    s+=`<tr><td>${staFmt(p[0],0)}</td><td>${p[1].toFixed(2)}</td><td>${de.toFixed(2)}</td>`
+     + `<td><span class="badge ${d>0?'ok':'bad'}">${d>0?'חפירה':'מילוי'} ${Math.abs(d).toFixed(2)}</span></td></tr>`;
+  });
+  s+='</table></div>';
+  return s;
+}
+
 function nearestPvi(px,py){
-  const pvi=parsePairs($('pvi').value); let best=-1,bd=1e9;
+  const pvi=parsePVI($('pvi').value); let best=-1,bd=1e9;
   pvi.forEach((p,i)=>{ const w=worldToPx(p[0],p[1]); const d=Math.hypot(w.x-px,w.y-py); if(d<bd){bd=d;best=i;} });
   return {i:best,d:bd,pvi};
 }
@@ -423,21 +858,22 @@ $('cv').addEventListener('mousedown',e=>{
   const r=e.target.getBoundingClientRect();
   const px=(e.clientX-r.left)*e.target.width/r.width, py=(e.clientY-r.top)*e.target.height/r.height;
   if(MODE==='add'){
-    const w=pxToWorld(px,py); const pvi=parsePairs($('pvi').value);
+    const w=pxToWorld(px,py); const pvi=parsePVI($('pvi').value);
     pvi.push([Math.round(w.x),+w.y.toFixed(2)]); pvi.sort((a,b)=>a[0]-b[0]);
-    $('pvi').value=pvi.map(p=>p.join(',')).join('\n'); run(); return;
+    writePVI(pvi); run(); return;
   }
   const {i,d,pvi}=nearestPvi(px,py);
-  if(MODE==='del'){ if(i>=0&&d<14){ pvi.splice(i,1); $('pvi').value=pvi.map(p=>p.join(',')).join('\n'); run(); } return; }
-  if(i>=0&&d<14) DRAG={i};
+  if(MODE==='del'){ if(i>=0&&d<14){ pvi.splice(i,1); SEL=-1; $('selBox').hidden=true; writePVI(pvi); run(); } return; }
+  if(i>=0&&d<14){ DRAG={i}; selectPvi(i); } else { SEL=-1; $('selBox').hidden=true; run(); }
 });
 $('cv').addEventListener('mousemove',e=>{
   if(!DRAG||!XFORM) return;
   const r=e.target.getBoundingClientRect();
   const px=(e.clientX-r.left)*e.target.width/r.width, py=(e.clientY-r.top)*e.target.height/r.height;
-  const w=pxToWorld(px,py); const pvi=parsePairs($('pvi').value);
-  pvi[DRAG.i]=[Math.round(w.x),+w.y.toFixed(2)];
-  $('pvi').value=pvi.map(p=>p.join(',')).join('\n'); run();
+  const w=pxToWorld(px,py); const pvi=parsePVI($('pvi').value);
+  const keepL=pvi[DRAG.i]&&pvi[DRAG.i][2];
+  pvi[DRAG.i]=keepL?[Math.round(w.x),+w.y.toFixed(2),keepL]:[Math.round(w.x),+w.y.toFixed(2)];
+  writePVI(pvi); if(SEL===DRAG.i){ $('selSta').value=pvi[DRAG.i][0]; $('selEl').value=pvi[DRAG.i][1]; } run();
 });
 window.addEventListener('mouseup',()=>{DRAG=null;});
 /* ===== export ===== */
@@ -452,26 +888,179 @@ function exportCSV(){
   });
   downloadBlob(out,'text/csv','vertical-profile.csv');
 }
-function exportDXF(){
-  if(!LAST_GROUND.length){alert('אין נתונים לייצוא');return;}
-  let e='0\nSECTION\n2\nENTITIES\n';
-  const line=(lay,x1,y1,x2,y2)=>`0\nLINE\n8\n${lay}\n10\n${x1}\n20\n${y1}\n30\n0\n11\n${x2}\n21\n${y2}\n31\n0\n`;
-  const text=(lay,x,y,h,s)=>`0\nTEXT\n8\n${lay}\n10\n${x}\n20\n${y}\n30\n0\n40\n${h}\n1\n${s}\n`;
-  for(let i=0;i<LAST_GROUND.length-1;i++){ const a=LAST_GROUND[i],b=LAST_GROUND[i+1]; e+=line('GROUND',a[0],a[1],b[0],b[1]); }
-  LAST_GROUND.forEach(p=>{ e+=text('GROUND',p[0],p[1]-1.2,0.6,p[0].toFixed(0)); });
-  if(LAST_DATA){
-    const {pvi}=LAST_DATA; const N=200, s0=pvi[0][0], s1=pvi[pvi.length-1][0];
-    let prev=null;
-    for(let i=0;i<=N;i++){ const x=s0+(s1-s0)*i/N; const y=elevOnDesign(x,LAST_DATA); if(y==null) continue;
-      if(prev) e+=line('DESIGN',prev[0],prev[1],x,y); prev=[x,y]; }
-    LAST_DATA.pvi.forEach(p=>{ e+=text('DESIGN',p[0],p[1]+0.6,0.6,'PVI '+p[0]+'/'+p[1].toFixed(2)); });
-  }
-  e+='0\nENDSEC\n0\nEOF\n';
-  const hdr='999\nMAHALCO vertical profile - true units (station=X, elevation=Y). Apply VE in CAD viewport, not baked into geometry.\n';
-  downloadBlob(hdr+e,'application/dxf','vertical-profile.dxf');
+/* ===== שליטה מספרית בנקודה הנבחרת ===== */
+function selectPvi(i){
+  SEL=i;
+  const pvi=parsePVI($('pvi').value), p=pvi[i];
+  const box=$('selBox');
+  if(!p){ box.hidden=true; run(); return; }
+  box.hidden=false;
+  $('selSta').value=p[0]; $('selEl').value=p[1];
+  $('selL').value=p[2]!=null?p[2]:'';
+  $('selInfo').textContent='נקודה '+(i+1)+' מתוך '+pvi.length;
+  run();
 }
+function applySel(){
+  if(SEL<0) return;
+  const pvi=parsePVI($('pvi').value); if(!pvi[SEL]) return;
+  const sta=Number($('selSta').value), el=Number($('selEl').value), Lv=$('selL').value.trim();
+  if(isFinite(sta)) pvi[SEL][0]=sta;
+  if(isFinite(el))  pvi[SEL][1]=el;
+  if(Lv==='') pvi[SEL].length=2; else pvi[SEL][2]=Number(Lv);
+  pvi.sort((a,b)=>a[0]-b[0]);
+  SEL=pvi.findIndex(p=>p[0]===sta);
+  writePVI(pvi); run();
+}
+function writePVI(pvi){
+  $('pvi').value=pvi.map(p=>p.length>2&&isFinite(p[2])?p.join(','):p[0]+','+p[1]).join('\n');
+}
+/* סטציה,גובה[,אורך עקום] — העמודה השלישית גוברת על האורך המחושב */
+function parsePVI(txt){
+  return txt.trim().split('\n').map(l=>{
+    const v=l.split(',').map(Number);
+    if(v.length<2||!isFinite(v[0])||!isFinite(v[1])) return null;
+    return v.length>2&&isFinite(v[2])&&v[2]>0?[v[0],v[1],v[2]]:[v[0],v[1]];
+  }).filter(Boolean).sort((a,b)=>a[0]-b[0]);
+}
+
+/* ===== קידוד ל-Windows-1255, כפי ש-$DWGCODEPAGE מצהיר ===== */
+const CP1255=(function(){
+  const m=new Map();
+  const punct={0x80:0x20AC,0x82:0x201A,0x84:0x201E,0x85:0x2026,0x86:0x2020,0x87:0x2021,
+    0x89:0x2030,0x8B:0x2039,0x91:0x2018,0x92:0x2019,0x93:0x201C,0x94:0x201D,0x95:0x2022,
+    0x96:0x2013,0x97:0x2014,0x99:0x2122,0x9B:0x203A};
+  for(const b in punct) m.set(punct[b],+b);
+  for(let b=0xA0;b<=0xBF;b++) m.set(b,b);
+  m.set(0x00D7,0xAA); m.set(0x00F7,0xBA);
+  for(let i=0;i<=0x2A;i++) m.set(0x05D0+i,0xE0+i);      /* א..ת */
+  m.set(0x05F3,0xD7); m.set(0x05F4,0xD8);
+  return m;
+})();
+function dxfBytes(s){
+  s=String(s); const out=new Uint8Array(s.length*2); let k=0;
+  for(let i=0;i<s.length;i++){
+    const c=s.codePointAt(i); if(c>0xFFFF) i++;
+    if(c<0x80){ out[k++]=c; continue; }
+    const b=CP1255.get(c);
+    out[k++]= b!=null ? b : 0x3F;
+  }
+  return out.subarray(0,k);
+}
+
+/* ===== ייצוא DXF של גיליון חתך האורך ===== */
+function exportDXF(){
+  if(!LAST_GROUND.length){ alert('אין נתונים לייצוא'); return; }
+  const ve=Math.max(1,Number($('veRatio').value)||10);
+  const G=LAST_GROUND, D=LAST_DATA;
+  const minX=Math.min(...G.map(p=>p[0])), maxX=Math.max(...G.map(p=>p[0]));
+  let minE=Math.min(...G.map(p=>p[1])), maxE=Math.max(...G.map(p=>p[1]));
+  if(D&&D.pvi.length){ minE=Math.min(minE,...D.pvi.map(p=>p[1])); maxE=Math.max(maxE,...D.pvi.map(p=>p[1])); }
+  const pad=Math.max(0.5,(maxE-minE)*0.1); minE-=pad; maxE+=pad;
+  const Y=e=>e*ve, y0=Y(minE), y1=Y(maxE);
+  const h=Math.max(0.6,(y1-y0)/55);                    /* גובה טקסט */
+  const rowH=h*2.6, bandN=4;
+  const bTop=y0-h*1.6;                                 /* ראש פסי הנתונים */
+
+  let out='', n=0;
+  const P=(c,v)=>{ out+=c+'\n'+v+'\n'; };
+  const line=(lay,x1,ya,x2,yb)=>{ n++; P(0,'LINE');P(8,lay);P(10,x1);P(20,ya);P(30,0);P(11,x2);P(21,yb);P(31,0); };
+  const txt=(lay,x,y,hh,s,ha,rot)=>{ n++; P(0,'TEXT');P(8,lay);P(10,x);P(20,y);P(30,0);P(40,hh);
+    P(1,String(s));P(50,rot||0);P(72,ha||0);P(11,x);P(21,y);P(31,0); };
+  /* POLYLINE/VERTEX/SEQEND – הצורה התקפה ב-R12; LWPOLYLINE קיים רק מ-R14 */
+  const pl=(lay,pts)=>{ if(pts.length<2) return; n++;
+    P(0,'POLYLINE');P(8,lay);P(66,1);P(70,0);P(10,0);P(20,0);P(30,0);
+    pts.forEach(p=>{ P(0,'VERTEX');P(8,lay);P(10,p[0]);P(20,p[1]);P(30,0); });
+    P(0,'SEQEND');P(8,lay); };
+
+  const dE=niceStep(maxE-minE,6), dS=niceStep(maxX-minX,10);
+  const staList=[];
+  for(let s=Math.ceil(minX/dS)*dS;s<=maxX+1e-6;s+=dS) staList.push(s);
+
+  /* --- רשת ומסגרת --- */
+  for(let e=Math.ceil(minE/dE)*dE;e<=maxE;e+=dE){
+    line('PR-GRID',minX,Y(e),maxX,Y(e));
+    txt('PR-TEXT',minX-h*0.6,Y(e)-h/2,h,e.toFixed(2),2);
+    txt('PR-TEXT',maxX+h*0.6,Y(e)-h/2,h,e.toFixed(2),0);
+  }
+  staList.forEach(s=>line('PR-GRID',s,y0,s,y1));
+  pl('PR-FRAME',[[minX,y0],[maxX,y0],[maxX,y1],[minX,y1],[minX,y0]]);
+
+  /* --- קו קרקע וקו אדום --- */
+  pl('PR-GROUND',G.map(p=>[p[0],Y(p[1])]));
+  if(D&&D.pvi.length){
+    const pts=[],N=400,s0=D.pvi[0][0],s1=D.pvi[D.pvi.length-1][0];
+    for(let i=0;i<=N;i++){ const x=s0+(s1-s0)*i/N, e=elevOnDesign(x,D); if(e!=null) pts.push([x,Y(e)]); }
+    pl('PR-DESIGN',pts);
+    /* עקומים: VPC/VPT וכיתוב */
+    D.curves.forEach(c=>{
+      const g=curveGeom(c);
+      [[g.vpc,'VPC'],[g.vpt,'VPT']].forEach(([st,lab])=>{
+        line('PR-CURVE',st,y0,st,y1);
+        txt('PR-CURVE',st,y1+h*0.4,h*0.85,lab+' '+staFmt(st,2),1);
+      });
+      const ey=Y(c.el);
+      txt('PR-CURVE',c.st,y1+h*2.0,h,'PVI '+staFmt(c.st,2)+' EL '+c.el.toFixed(2),1);
+      txt('PR-CURVE',c.st,y1+h*3.4,h,(c.crest?'CREST':'SAG')+' A='+c.A.toFixed(2)+'% L='+c.L.toFixed(1)+' K='+g.K.toFixed(1),1);
+      if(g.hp){
+        txt('PR-CURVE',g.hp.sta,Y(g.hp.el)+h*0.5,h*0.85,(c.crest?'HIGH ':'LOW ')+staFmt(g.hp.sta,2)+' / '+g.hp.el.toFixed(2),1);
+        line('PR-CURVE',g.hp.sta,Y(g.hp.el)-h,g.hp.sta,Y(g.hp.el)+h);
+      }
+    });
+    D.segs.forEach(sg=>{
+      const mx=(sg.s1+sg.s2)/2, me=elevOnDesign(mx,D);
+      if(me!=null) txt('PR-DESIGN',mx,Y(me)+h*0.8,h,(sg.grade>=0?'+':'')+sg.grade.toFixed(2)+'% L='+(sg.s2-sg.s1).toFixed(1),1);
+    });
+  }
+
+  /* --- פסי הנתונים --- */
+  const labels=['קו אדום','קרקע קיימת','חפירה / מילוי','סטציה'];
+  for(let r=0;r<=bandN;r++) line('PR-BAND',minX,bTop-r*rowH,maxX,bTop-r*rowH);
+  line('PR-BAND',minX,bTop,minX,bTop-bandN*rowH);
+  line('PR-BAND',maxX,bTop,maxX,bTop-bandN*rowH);
+  labels.forEach((t,r)=>txt('PR-BAND',minX-h*0.6,bTop-(r+0.65)*rowH,h,t,2));
+  staList.forEach(s=>{
+    line('PR-BAND',s,bTop,s,bTop-bandN*rowH);
+    const gr=interpPairs(G,s);
+    const de=D&&D.pvi.length?elevOnDesign(Math.max(D.pvi[0][0],Math.min(D.pvi[D.pvi.length-1][0],s)),D):null;
+    const v=[de==null?'':de.toFixed(2), gr==null?'':gr.toFixed(2),
+             (gr==null||de==null)?'':((gr-de)>=0?'+':'')+(gr-de).toFixed(2), staFmt(s,2)];
+    v.forEach((s2,r)=>{ if(s2) txt('PR-BAND',s+h*0.35,bTop-(r+1)*rowH+h*0.4,h*0.9,s2,0,90); });
+  });
+
+  /* --- טבלאות קשתות ואורכים --- */
+  let ty=bTop-(bandN+2)*rowH;
+  const col=(maxX-minX)/9;
+  const trow=(cells,hh,lay)=>{ cells.forEach((c,i)=>{ if(c!=='') txt(lay||'PR-TABLE',minX+i*col,ty,hh||h,c,0); }); ty-=rowH*0.8; };
+  if(D&&D.curves.length){
+    txt('PR-TABLE',minX,ty,h*1.3,'VERTICAL CURVES  /  טבלת עקומים אנכיים',0); ty-=rowH;
+    trow(['PVI','ELEV','TYPE','A%','L','K','VPC','VPT','HIGH/LOW'],h*1.05);
+    D.curves.forEach(c=>{ const g=curveGeom(c);
+      trow([staFmt(c.st,2),c.el.toFixed(2),c.crest?'CREST':'SAG',c.A.toFixed(2),c.L.toFixed(1),
+            g.K.toFixed(1),staFmt(g.vpc,2),staFmt(g.vpt,2),
+            g.hp?staFmt(g.hp.sta,2)+'/'+g.hp.el.toFixed(2):'-']); });
+    ty-=rowH*0.6;
+    txt('PR-TABLE',minX,ty,h*1.3,'TANGENTS  /  טבלת משיקים ואורכים',0); ty-=rowH;
+    trow(['FROM','TO','LENGTH','dELEV','GRADE%'],h*1.05);
+    D.segs.forEach(sg=>trow([staFmt(sg.s1,2),staFmt(sg.s2,2),(sg.s2-sg.s1).toFixed(2),
+                             (sg.e2-sg.e1).toFixed(2),(sg.grade>=0?'+':'')+sg.grade.toFixed(2)]));
+  }
+
+  const LAYERS=['PR-GRID','PR-FRAME','PR-GROUND','PR-DESIGN','PR-CURVE','PR-TEXT','PR-BAND','PR-TABLE'];
+  const COL={'PR-GRID':8,'PR-FRAME':7,'PR-GROUND':9,'PR-DESIGN':30,'PR-CURVE':4,'PR-TEXT':7,'PR-BAND':7,'PR-TABLE':7};
+  let hdr='999\nMAHALCO vertical profile sheet · VE 1:'+ve+' (elevation multiplied by VE)\n';
+  hdr+='0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n9\n$DWGCODEPAGE\n3\nANSI_1255\n9\n$INSUNITS\n70\n6\n0\nENDSEC\n';
+  hdr+='0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n'+LAYERS.length+'\n';
+  LAYERS.forEach(l=>{ hdr+='0\nLAYER\n2\n'+l+'\n70\n0\n62\n'+(COL[l]||7)+'\n6\nCONTINUOUS\n'; });
+  hdr+='0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';
+  const dxf=hdr+out+'0\nENDSEC\n0\nEOF\n';
+  downloadBlob(dxfBytes(dxf),'application/dxf','mahalco-profile-VE'+ve+'.dxf');
+  return {entities:n, layers:LAYERS.length, bytes:dxf.length};
+}
+
 setMode('move');
+try{ $('vSvc').value=localStorage.getItem('mahalco-dwg-service')||SVC_DEFAULT; }catch(e){ $('vSvc').value=SVC_DEFAULT; }
 run();
+setSource(window.top===window.self?'files':'proj');
 </script>
 
 <script>
@@ -480,7 +1069,7 @@ run();
 window.__BRIDGE__ = {
   id: 'vertical',
   pull: function(){
-    return {ground: LAST_GROUND, pvi: parsePairs($('pvi').value), data: LAST_DATA,
+    return {ground: LAST_GROUND, pvi: parsePVI($('pvi').value), data: LAST_DATA,
             vd: Number($('vd').value), crit: $('crit').value, veh: Number($('veh').value),
             ve: Number($('veRatio').value)||10,
             axis: AXIS ? {name:AXIS.name, total:AXIS.total} : null};

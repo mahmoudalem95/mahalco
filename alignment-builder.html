@@ -2662,7 +2662,8 @@ const CAD = (function(){
   const FROZEN = {};
   const STYLE = 'MAHALCO';
   const H_BR='1', H_LAYER='2', H_STYLE='3', H_LTYPE='5', H_VIEW='6', H_UCS='7',
-        H_VPORT='8', H_APPID='9', H_DIMS='E', H_MS='A', H_PS='B', H_DICT='C', H_GROUP='D';
+        H_VPORT='8', H_APPID='9', H_DIMS='E', H_MS='A', H_PS='B', H_DICT='C', H_GROUP='D',
+        H_LAYDICT='F';
 
   /* ---------- צבעים ---------- */
   const ACI = ('000000ff0000ffff0000ff0000ffff0000ffff00ffffffff414141808080ff0000ffaaaa'
@@ -2705,48 +2706,64 @@ const CAD = (function(){
   function Doc(unit, usedLayers){
     let hx = 0x100;
     const nh = ()=> (hx++).toString(16).toUpperCase();
-    const ents = [];
+    const ents = [], eown = [];
+    const push = (x)=>{ ents.push(x); eown.push(owner); };
+    /* פריסות נייר: כל גיליון מקבל מרחב נייר משלו ולשונית בשם שלו */
+    const layouts = [];
+    let owner = H_MS, paper = false;
     /* סוגי קו: כל stroke-dasharray שבשרטוט הופך לסוג קו משלו, ביחידות המודל,
        כך שהמקטעים והרווחים יוצאים באורך שנראה על המסך. */
     const lts = {};
-    function dashLT(arr){
-      const key = arr.join(',');
+    function dashLT(arr, u){
+      const uu = (u===undefined ? unit : u);
+      const key = arr.join(',') + '@' + uu;
       if(lts[key]) return lts[key].name;
       const name = 'TS-DASH' + (Object.keys(lts).length + 1);
       const pat = []; let tot = 0;
-      arr.forEach((v,i)=>{ const d = v*unit; tot += d; pat.push(i%2 ? -d : d); });
+      arr.forEach((v,i)=>{ const d = v*uu; tot += d; pat.push(i%2 ? -d : d); });
       lts[key] = {name, pat, tot};
       return name;
     }
     const ext = {x0:1e18, y0:1e18, x1:-1e18, y1:-1e18};
     const g = (c,v)=>c+'\n'+v+'\n';
     const n = v => (Math.abs(v)<1e-9?0:v).toFixed(6);
-    const see = (x,y)=>{ if(x<ext.x0)ext.x0=x; if(y<ext.y0)ext.y0=y; if(x>ext.x1)ext.x1=x; if(y>ext.y1)ext.y1=y; };
+    const see = (x,y)=>{ if(paper) return; if(x<ext.x0)ext.x0=x; if(y<ext.y0)ext.y0=y; if(x>ext.x1)ext.x1=x; if(y>ext.y1)ext.y1=y; };
     function head(type, layer, col, lt){
       usedLayers[layer] = 1;
-      let s = g(0,type)+g(5,nh())+g(330,H_MS)+g(100,'AcDbEntity')+g(8,layer);
+      let s = g(0,type)+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')+(paper?g(67,1):'')+g(8,layer);
       if(lt) s += g(6, lt);
       if(col){ s += g(62, nearestACI(col)) + g(420, col.n); }
       return s;
     }
     return {
       dashLT,
+      /* מוסיף לשונית גיליון ומחזיר את הידית של מרחב הנייר שלה */
+      addLayout(name, w, h){
+        const i = layouts.length;
+        const brHandle = i===0 ? H_PS : nh();
+        const loHandle = nh();
+        const brName = i===0 ? '*Paper_Space' : ('*Paper_Space' + (i-1));
+        layouts.push({name, w, h, brHandle, loHandle, brName});
+        return brHandle;
+      },
+      space(h, isPaper){ owner = h; paper = !!isPaper; },
+      layoutCount(){ return layouts.length; },
       line(lay,col,x1,y1,x2,y2,lt){ see(x1,y1); see(x2,y2);
-        ents.push(head('LINE',lay,col,lt)+g(100,'AcDbLine')+g(10,n(x1))+g(20,n(y1))+g(30,0)+g(11,n(x2))+g(21,n(y2))+g(31,0)); },
+        push(head('LINE',lay,col,lt)+g(100,'AcDbLine')+g(10,n(x1))+g(20,n(y1))+g(30,0)+g(11,n(x2))+g(21,n(y2))+g(31,0)); },
       poly(lay,col,pts,closed,lt){ if(!pts || pts.length<2) return; pts.forEach(p=>see(p[0],p[1]));
         let s = head('LWPOLYLINE',lay,col,lt)+g(100,'AcDbPolyline')+g(90,pts.length)+g(70,closed?1:0);
         pts.forEach(p=>{ s+=g(10,n(p[0]))+g(20,n(p[1])); if(p[2]) s+=g(42,n(p[2])); });
-        ents.push(s); },
+        push(s); },
       circle(lay,col,cx,cy,r){ if(!(r>0)) return; see(cx-r,cy-r); see(cx+r,cy+r);
-        ents.push(head('CIRCLE',lay,col)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))); },
+        push(head('CIRCLE',lay,col)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))); },
       solid(lay,col,a,b,c,d){ d=d||c; [a,b,c,d].forEach(p=>see(p[0],p[1]));
-        ents.push(head('SOLID',lay,col)+g(100,'AcDbTrace')
+        push(head('SOLID',lay,col)+g(100,'AcDbTrace')
           +g(10,n(a[0]))+g(20,n(a[1]))+g(30,0)+g(11,n(b[0]))+g(21,n(b[1]))+g(31,0)
           +g(12,n(c[0]))+g(22,n(c[1]))+g(32,0)+g(13,n(d[0]))+g(23,n(d[1]))+g(33,0)); },
       text(lay,col,x,y,ht,s,o){ o=o||{};
         const len=String(s).replace(/\\U\+[0-9A-F]{4}/g,'x').length, wd=ht*0.7*len, ha=o.ha||0;
         see(ha===2?x-wd:ha===1?x-wd/2:x, y); see(ha===2?x:ha===1?x+wd/2:x+wd, y+ht);
-        ents.push(head('TEXT',lay,col)+g(100,'AcDbText')+g(10,n(x))+g(20,n(y))+g(30,0)+g(40,n(ht))+g(1,s)
+        push(head('TEXT',lay,col)+g(100,'AcDbText')+g(10,n(x))+g(20,n(y))+g(30,0)+g(40,n(ht))+g(1,s)
           +g(50,n(o.rot||0))+g(41,1)+g(51,0)+g(7,STYLE)+g(71,0)+g(72,ha)
           +g(11,n(x))+g(21,n(y))+g(31,0)+g(100,'AcDbText')+g(73,o.va||0)); },
       count(){ return ents.length; },
@@ -2808,20 +2825,57 @@ const CAD = (function(){
            + g(70,0)+g(40,n(unit*3))+g(41,n(2.5))+g(42,n(0.625))+g(43,n(3.75))+g(44,n(1.25))+g(140,n(2.5))+g(141,n(2.5))
            + g(147,n(0.625))+g(171,3)+g(172,1)+g(271,3)+g(272,3)
            + g(0,'ENDTAB');
-        s += tbl('BLOCK_RECORD',H_BR,2,
-              rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Model_Space', g(70,0)+g(280,1)+g(281,0), H_MS)
-            + rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Paper_Space', g(70,0)+g(280,1)+g(281,0), H_PS));
+        let brs = rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Model_Space', g(70,0)+g(280,1)+g(281,0), H_MS);
+        if(!layouts.length) brs += rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Paper_Space', g(70,0)+g(280,1)+g(281,0), H_PS);
+        layouts.forEach(L=>{ brs += rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,L.brName, g(70,0)+g(280,1)+g(281,0), L.brHandle); });
+        s += tbl('BLOCK_RECORD',H_BR, 1 + (layouts.length || 1), brs);
         s += g(0,'ENDSEC');
 
-        const blk = (name, owner)=> g(0,'BLOCK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')+g(8,'0')+g(100,'AcDbBlockBegin')
+        /* תוכן לפי מרחב: המודל והגיליון הראשון נכתבים ב-ENTITIES,
+           שאר הגיליונות נכתבים בתוך הגדרת הבלוק שלהם – כך כל תוכנה קוראת אותם נכון. */
+        const bodyOf = h => ents.filter((_,i)=>eown[i]===h).join('');
+        const blk = (name, owner, body)=> g(0,'BLOCK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')
+                   +(owner===H_MS?'':g(67,1))+g(8,'0')+g(100,'AcDbBlockBegin')
                    +g(2,name)+g(70,0)+g(10,0)+g(20,0)+g(30,0)+g(3,name)+g(1,'')
-                   +g(0,'ENDBLK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')+g(8,'0')+g(100,'AcDbBlockEnd');
-        s += g(0,'SECTION')+g(2,'BLOCKS')+blk('*Model_Space',H_MS)+blk('*Paper_Space',H_PS)+g(0,'ENDSEC');
-        s += g(0,'SECTION')+g(2,'ENTITIES')+ents.join('')+g(0,'ENDSEC');
+                   +(body||'')
+                   +g(0,'ENDBLK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')
+                   +(owner===H_MS?'':g(67,1))+g(8,'0')+g(100,'AcDbBlockEnd');
+        let blocks = blk('*Model_Space',H_MS,'');
+        if(!layouts.length) blocks += blk('*Paper_Space',H_PS,'');
+        layouts.forEach((L,i)=>{ blocks += blk(L.brName, L.brHandle, i===0 ? '' : bodyOf(L.brHandle)); });
+        s += g(0,'SECTION')+g(2,'BLOCKS')+blocks+g(0,'ENDSEC');
+        const first = layouts.length ? layouts[0].brHandle : null;
+        const flat = ents.filter((_,i)=>eown[i]===H_MS || (first && eown[i]===first)).join('');
+        s += g(0,'SECTION')+g(2,'ENTITIES')+(layouts.length ? flat : ents.join(''))+g(0,'ENDSEC');
+        const modelLayout = layouts.length ? nh() : null;
         s += g(0,'SECTION')+g(2,'OBJECTS')
-          + g(0,'DICTIONARY')+g(5,H_DICT)+g(330,0)+g(100,'AcDbDictionary')+g(281,1)+g(3,'ACAD_GROUP')+g(350,H_GROUP)
-          + g(0,'DICTIONARY')+g(5,H_GROUP)+g(330,H_DICT)+g(100,'AcDbDictionary')+g(281,1)
-          + g(0,'ENDSEC');
+          + g(0,'DICTIONARY')+g(5,H_DICT)+g(330,0)+g(100,'AcDbDictionary')+g(281,1)
+            + g(3,'ACAD_GROUP')+g(350,H_GROUP)
+            + (layouts.length ? g(3,'ACAD_LAYOUT')+g(350,H_LAYDICT) : '')
+          + g(0,'DICTIONARY')+g(5,H_GROUP)+g(330,H_DICT)+g(100,'AcDbDictionary')+g(281,1);
+        if(layouts.length){
+          /* מילון הפריסות */
+          let dict = g(0,'DICTIONARY')+g(5,H_LAYDICT)+g(330,H_DICT)+g(100,'AcDbDictionary')+g(281,1)
+                   + g(3,'Model')+g(350,modelLayout);
+          layouts.forEach(L=>{ dict += g(3,L.name)+g(350,L.loHandle); });
+          s += dict;
+          const plot = (name,w,h)=> g(100,'AcDbPlotSettings')+g(1,'')+g(4,name)+g(6,'')
+            + g(40,0)+g(41,0)+g(42,0)+g(43,0)+g(44,n(w))+g(45,n(h))
+            + g(46,0)+g(47,0)+g(48,0)+g(49,0)+g(140,0)+g(141,0)+g(142,1)+g(143,1)
+            + g(70,1024)+g(72,1)+g(73,0)+g(74,5)+g(7,'')+g(75,16)+g(76,0)+g(77,2)+g(78,300)
+            + g(147,1)+g(148,0)+g(149,0);
+          const lay = (handle, owner2, name, tab, w, h, br)=> g(0,'LAYOUT')+g(5,handle)+g(330,owner2)
+            + plot(name==='Model'?'':'ISO_A0_(1189.00_x_841.00_MM)', w, h)
+            + g(100,'AcDbLayout')+g(1,name)+g(70,1)+g(71,tab)
+            + g(10,0)+g(20,0)+g(11,n(w))+g(21,n(h))
+            + g(12,0)+g(22,0)+g(32,0)
+            + g(14,0)+g(24,0)+g(34,0)+g(15,n(w))+g(25,n(h))+g(35,0)
+            + g(146,0)+g(13,0)+g(23,0)+g(33,0)
+            + g(16,1)+g(26,0)+g(36,0)+g(17,0)+g(27,1)+g(37,0)+g(76,0)+g(330,br);
+          s += lay(modelLayout, H_LAYDICT, 'Model', 0, 1189, 841, H_MS);
+          layouts.forEach((L,i)=>{ s += lay(L.loHandle, H_LAYDICT, L.name, i+1, L.w, L.h, L.brHandle); });
+        }
+        s += g(0,'ENDSEC');
         return s + g(0,'EOF');
       }
     };
@@ -2910,13 +2964,11 @@ const CAD = (function(){
   }
 
   /* ---------- התרגום עצמו ---------- */
-  function fromSVG(svg, D, o){
+  /* המנוע: קורא SVG וכותב ישויות לתוך מסמך קיים.
+     U = מטרים ליחידת SVG (במודל), או 1 כשכותבים ישירות על הנייר. */
+  function walk(d, svg, U, A0h, o){
     o = o || {};
-    const U = D/1000;
-    const A0h = o.sheetH || 841;                  /* גובה גיליון A0 במ״מ */
     const fills = o.fills !== false;
-    const used = {};
-    const d = Doc(U, used);
     const st = [{tx:0, ty:0, sc:1, fill:null, stroke:null, lay:null}];
     const P = (x,y)=>[x*U, (A0h - y)*U];
 
@@ -2991,7 +3043,7 @@ const CAD = (function(){
       const v = a['stroke-dasharray'];
       if(!v || v==='none') return null;
       const arr = v.split(/[\s,]+/).map(Number).filter(x=>!isNaN(x)).map(x=>x*top().sc);
-      return arr.length>=2 ? d.dashLT(arr) : null;
+      return arr.length>=2 ? d.dashLT(arr, U) : null;
     }
 
     const tagRe = /<(\/?)([a-zA-Z]+)((?:"[^"]*"|[^>])*?)(\/?)>/g;
@@ -3078,7 +3130,31 @@ const CAD = (function(){
         d.text(layer, fc, p[0], p[1], size, enc(txt, o.rtl), {ha, rot});
       }
     }
+  }
+
+  function fromSVG(svg, D, o){
+    o = o || {};
+    const U = D/1000, used = {}, d = Doc(U, used);
+    walk(d, svg, U, o.sheetH || 841, o);
     return {dxf: d.out(), entities: d.count(), layers: Object.keys(used)};
+  }
+
+  /* סט גיליונות: תוכן במודל-ספייס (מטרים) + לשונית לכל גיליון A0 (מ״מ על הנייר) */
+  function fromSheets(spec, o){
+    o = o || {};
+    const used = {}, d = Doc(1, used);
+    (spec.model || []).forEach(m=>{
+      d.space(H_MS, false);
+      walk(d, m.svg, (m.D || 1000)/1000, m.sheetH || 841, o);
+    });
+    (spec.sheets || []).forEach(sh=>{
+      const w = sh.w || 1189, h = sh.h || 841;
+      d.space(d.addLayout(sh.name, w, h), true);
+      walk(d, sh.svg, 1, h, o);
+    });
+    d.space(H_MS, false);
+    return {dxf: d.out(), entities: d.count(), layers: Object.keys(used),
+            sheets: (spec.sheets || []).length};
   }
 
   /* עברית: כל תו שאינו ASCII נכתב כ-\U+XXXX */
@@ -3112,7 +3188,7 @@ const CAD = (function(){
     return {dxf: d.out(), entities: d.count(), layers: Object.keys(used)};
   }
 
-  return {fromSVG, fromOps, LAYERS};
+  return {fromSVG, fromSheets, fromOps, LAYERS};
 })();
 
 /* ======================================================================
@@ -3350,6 +3426,87 @@ document.addEventListener('DOMContentLoaded', wireDxfButtons);
 if(document.readyState !== 'loading') wireDxfButtons();
 window.exportAllDXF = exportAllDXF;
 window.exportDXF    = exportAllDXF;
+</script>
+
+<script>
+
+/* ---- גשר: בונה הצירים ---- */
+window.__BRIDGE__ = {
+  id: 'alignment',
+  pull: function(){
+    return {state: projectState(),
+            axes: S.axes.map(function(a,k){ return withAxis(k, function(){
+              var r = solve();
+              return {name:a.name, pis:a.pis, length:r.total, valid:!r.errs.length,
+                      elements:r.els, sec:a.sec ? JSON.parse(JSON.stringify(a.sec, function(key,v){ return String(key).charAt(0)==='_'?undefined:v; })) : null};
+            }); }),
+            junctions: S.junctions.map(function(J){
+              return {type:J.type, point:J.p, major:S.axes[J.major].name, minor:S.axes[J.minor].name,
+                      station_major:J.sMaj, station_minor:J.sMin};
+            })};
+  },
+  push: function(m){
+    var d = (m && m.data) || {};
+    if(d.state) openProject(d.state);
+    if(d.bg && d.bg.src){
+      var im = new Image();
+      im.onload = function(){
+        S.bg = {img:im, op:(d.bg.op==null?0.85:d.bg.op), show:true,
+                A:d.bg.A, B:d.bg.B, C:d.bg.C, D:d.bg.D, E:d.bg.E, F:d.bg.F, geo:!!d.bg.geo};
+        try{ renderMapBox(); }catch(e){}
+        try{ fit(); }catch(e){}
+        draw();
+      };
+      im.src = d.bg.src;
+    }
+    return true;
+  },
+  /* התכנית כפעולות CAD בקואורדינטות עולם (מטרים) */
+  plan: function(m){
+    if(!S.axes.some(function(a){ return a.pis && a.pis.length; })) return {ops:[]};
+    var R = recordDrawing();
+    var ops = opsToCAD(R.ops, R.inv, (m && m.D) || 500);
+    draw();
+    return {ops: ops};
+  }
+};
+</script>
+<script>
+/* ======================================================================
+   גשר פרויקט – מחבר את הכלי אל דף הניהול (project-hub) כשהוא רץ בתוך מסגרת.
+   ----------------------------------------------------------------------
+   הכלי נשאר עצמאי לחלוטין: אם אין דף אב, הקוד הזה לא עושה דבר.
+   פרוטוקול: postMessage עם {ns:'mahalco'}.
+     אב → כלי :  {t:'<פקודה>', rid, ...}    לפי הפקודות שהכלי מצהיר עליהן
+     כלי → אב :  {t:'ready'|'reply'|'changed'}
+   ====================================================================== */
+(function(){
+  if(window.top === window.self) return;              /* עצמאי – אין גשר */
+  const NS = 'mahalco';
+  const H = window.__BRIDGE__ || {};
+  window.__BRIDGE__ = H;
+  const send = (t, extra)=>{
+    try{ parent.postMessage(Object.assign({ns:NS, t:t, tool:H.id}, extra||{}), '*'); }catch(e){}
+  };
+  window.addEventListener('message', function(ev){
+    const m = ev.data;
+    if(!m || m.ns !== NS || !m.t) return;
+    const fn = H[m.t];
+    if(typeof fn !== 'function') return;
+    Promise.resolve().then(()=>fn(m)).then(
+      r => send('reply', {rid:m.rid, ok:true, data:r}),
+      e => send('reply', {rid:m.rid, ok:false, err:String((e&&e.message)||e)}));
+  });
+  /* הכלי קורא לזה אחרי כל שינוי שראוי שהאב יידע עליו */
+  H.notify = function(){ send('changed'); };
+  const announce = ()=>send('ready', {caps:Object.keys(H).filter(k=>typeof H[k]==='function')});
+  /* האב עלול עדיין לא להאזין כשהכלי מוכן – לכן גם עונים ל-ping וגם חוזרים כמה פעמים */
+  H.ping = function(){ announce(); return true; };
+  announce();
+  let n = 0;
+  const again = setInterval(function(){ announce(); if(++n >= 20) clearInterval(again); }, 250);
+  window.addEventListener('load', announce);
+})();
 </script>
 </body>
 </html>

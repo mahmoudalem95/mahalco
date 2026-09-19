@@ -143,6 +143,15 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 </div>
 </div>
 
+<div class="panel" id="planPanel" hidden>
+<h2>מבט תוכנית — הציר על גבי ה-DWG</h2>
+<canvas id="planView" width="1000" height="220"></canvas>
+<div class="legend">
+<span><i class="sw" style="background:#4fb3ff"></i>נקודות מדידה (DWG)</span>
+<span><i class="sw" style="background:var(--design)"></i>הציר האופקי שנבחר</span>
+</div>
+</div>
+
 <div class="panel" style="align-self:flex-start">
 <div class="row" id="rowVE" hidden>
 <div><label>הגזמה אנכית (VE) — יחס V:H</label><input id="veRatio" type="number" value="10" onchange="run()"></div>
@@ -258,6 +267,7 @@ function goStep(n){
   $('panelSource').hidden = n!==1;
   $('panelAdvanced').hidden = n!==1;
   $('step2Box').hidden = n!==2;
+  $('planPanel').hidden = n<2;
   $('panelDesign').hidden = n!==3;
   $('rowVE').hidden = n<3;
   $('rowMode').hidden = n!==3;
@@ -269,6 +279,7 @@ function goStep(n){
     b.classList.toggle('done', s<n);
   });
   run();
+  drawPlan();
   const anchor = n===1 ? $('panelSource') : $('cv');
   if(anchor && anchor.scrollIntoView) anchor.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -304,20 +315,18 @@ function loadSurveyCloud(){
 }
 function toggleDrawAxis(){ DRAW_MODE=!DRAW_MODE; $('btnDrawAxis').classList.toggle('on',DRAW_MODE); }
 function resetManualAxis(){ MANUAL_PIS=[]; drawPlan(); }
-function drawPlan(){
-  const cv=$('planCv'), ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
+/* מצייר את מפת התוכנית (נקודות מדידה + ציר) על קנבס נתון, ומחזיר את פרמטרי קנה המידה */
+function renderPlanTo(cv){
+  const ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
   const pts=SURVEY_PTS.length?SURVEY_PTS:(AXIS?[]:[]);
   const allX=pts.map(p=>p.x).concat(MANUAL_PIS.map(p=>p.x));
   const allY=pts.map(p=>p.y).concat(MANUAL_PIS.map(p=>p.y));
-  if(AXIS){ // sample axis for extent too
-    for(let s=0;s<=AXIS.total;s+=Math.max(1,AXIS.total/50)){ const P=frameAt(AXIS.els,s); allX.push(P.x); allY.push(P.y); }
-  }
-  if(!allX.length){ ctx.fillStyle='#8b96ad'; ctx.font='13px Arial'; ctx.fillText('טענו מדידה או קובץ ציר כדי לראות תצוגת מפה',20,110); return; }
+  if(AXIS){ for(let s=0;s<=AXIS.total;s+=Math.max(1,AXIS.total/50)){ const P=frameAt(AXIS.els,s); allX.push(P.x); allY.push(P.y); } }
+  if(!allX.length){ ctx.fillStyle='#8b96ad'; ctx.font='13px Arial'; ctx.fillText('טענו מדידה או קובץ ציר כדי לראות תצוגת מפה',20,110); return null; }
   const minX=Math.min(...allX),maxX=Math.max(...allX),minY=Math.min(...allY),maxY=Math.max(...allY);
   const pad=20, W=cv.width,H=cv.height;
   const sc=Math.min((W-2*pad)/Math.max(1,maxX-minX),(H-2*pad)/Math.max(1,maxY-minY));
   const sx=x=>pad+(x-minX)*sc, sy=y=>H-pad-(y-minY)*sc;
-  PLAN_X={minX,minY,sc,pad,H,sx,sy};
   ctx.fillStyle='#4fb3ff88';
   pts.forEach(p=>{ ctx.beginPath(); ctx.arc(sx(p.x),sy(p.y),1.6,0,7); ctx.fill(); });
   if(AXIS){
@@ -330,6 +339,12 @@ function drawPlan(){
     MANUAL_PIS.forEach((p,i)=>{ i?ctx.lineTo(sx(p.x),sy(p.y)):ctx.moveTo(sx(p.x),sy(p.y)); }); ctx.stroke();
     ctx.fillStyle='#3ecf8e'; MANUAL_PIS.forEach(p=>{ ctx.beginPath(); ctx.arc(sx(p.x),sy(p.y),3,0,7); ctx.fill(); });
   }
+  return {minX,minY,sc,pad,H,sx,sy};
+}
+function drawPlan(){
+  PLAN_X=renderPlanTo($('planCv'));
+  const cv2=$('planView');
+  if(cv2) renderPlanTo(cv2);
 }
 $('planCv').addEventListener('click',e=>{
   if(!DRAW_MODE||!PLAN_X) return;

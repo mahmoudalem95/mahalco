@@ -143,16 +143,19 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 </div>
 </div>
 
-<div class="panel" id="planPanel" hidden>
-<h2>מבט תוכנית — הציר על גבי ה-DWG</h2>
-<canvas id="planView" width="1000" height="220"></canvas>
-<div class="legend">
+<div class="panel" style="align-self:flex-start">
+<div id="planSection" hidden style="margin-bottom:4px">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<h2 style="margin:0">תוכנית — הציר על גבי ה-DWG</h2>
+<span class="small">קנה־מידה אופקי משותף עם החתך שמתחתיו</span>
+</div>
+<canvas id="planView" width="1240" height="200" style="border-radius:8px 8px 0 0;border-bottom:none"></canvas>
+<div class="legend" style="margin:4px 0 2px">
 <span><i class="sw" style="background:#4fb3ff"></i>נקודות מדידה (DWG)</span>
 <span><i class="sw" style="background:var(--design)"></i>הציר האופקי שנבחר</span>
 </div>
+<div style="height:1px;background:var(--line);margin:6px 0 10px"></div>
 </div>
-
-<div class="panel" style="align-self:flex-start">
 <div class="row" id="rowVE" hidden>
 <div><label>הגזמה אנכית (VE) — יחס V:H</label><input id="veRatio" type="number" value="10" onchange="run()"></div>
 </div>
@@ -170,7 +173,7 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 <div style="display:flex;align-items:flex-end"><button onclick="applySel()">עדכון הנקודה</button></div>
 </div>
 </div>
-<canvas id="cv" width="1240" height="760"></canvas>
+<canvas id="cv" width="1240" height="760" style="border-radius:0 0 8px 8px;border-top:none"></canvas>
 <div class="legend">
 <span><i class="sw" style="background:var(--ground)"></i>קו קרקע קיים</span>
 <span><i class="sw" style="background:var(--design)"></i>קו אדום מתוכנן</span>
@@ -267,7 +270,7 @@ function goStep(n){
   $('panelSource').hidden = n!==1;
   $('panelAdvanced').hidden = n!==1;
   $('step2Box').hidden = n!==2;
-  $('planPanel').hidden = n<2;
+  $('planSection').hidden = n<2;
   $('panelDesign').hidden = n!==3;
   $('rowVE').hidden = n<3;
   $('rowMode').hidden = n!==3;
@@ -316,15 +319,15 @@ function loadSurveyCloud(){
 function toggleDrawAxis(){ DRAW_MODE=!DRAW_MODE; $('btnDrawAxis').classList.toggle('on',DRAW_MODE); }
 function resetManualAxis(){ MANUAL_PIS=[]; drawPlan(); }
 /* מצייר את מפת התוכנית (נקודות מדידה + ציר) על קנבס נתון, ומחזיר את פרמטרי קנה המידה */
-function renderPlanTo(cv){
-  const ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
+function renderPlanInto(ctx,W,H,doClear){
+  if(doClear) ctx.clearRect(0,0,W,H);
   const pts=SURVEY_PTS.length?SURVEY_PTS:(AXIS?[]:[]);
   const allX=pts.map(p=>p.x).concat(MANUAL_PIS.map(p=>p.x));
   const allY=pts.map(p=>p.y).concat(MANUAL_PIS.map(p=>p.y));
   if(AXIS){ for(let s=0;s<=AXIS.total;s+=Math.max(1,AXIS.total/50)){ const P=frameAt(AXIS.els,s); allX.push(P.x); allY.push(P.y); } }
-  if(!allX.length){ ctx.fillStyle='#8b96ad'; ctx.font='13px Arial'; ctx.fillText('טענו מדידה או קובץ ציר כדי לראות תצוגת מפה',20,110); return null; }
+  if(!allX.length){ ctx.fillStyle='#8b96ad'; ctx.font='13px Arial'; ctx.fillText('טענו מדידה או קובץ ציר כדי לראות תצוגת מפה',20,H/2); return null; }
   const minX=Math.min(...allX),maxX=Math.max(...allX),minY=Math.min(...allY),maxY=Math.max(...allY);
-  const pad=20, W=cv.width,H=cv.height;
+  const pad=20;
   const sc=Math.min((W-2*pad)/Math.max(1,maxX-minX),(H-2*pad)/Math.max(1,maxY-minY));
   const sx=x=>pad+(x-minX)*sc, sy=y=>H-pad-(y-minY)*sc;
   ctx.fillStyle='#4fb3ff88';
@@ -339,12 +342,19 @@ function renderPlanTo(cv){
     MANUAL_PIS.forEach((p,i)=>{ i?ctx.lineTo(sx(p.x),sy(p.y)):ctx.moveTo(sx(p.x),sy(p.y)); }); ctx.stroke();
     ctx.fillStyle='#3ecf8e'; MANUAL_PIS.forEach(p=>{ ctx.beginPath(); ctx.arc(sx(p.x),sy(p.y),3,0,7); ctx.fill(); });
   }
+  /* חץ צפון — כמו בגיליונות תוכנית/חתך מקוריים */
+  const nx=W-26, ny=26;
+  ctx.strokeStyle='#8b96ad'; ctx.fillStyle='#8b96ad'; ctx.lineWidth=1.3;
+  ctx.beginPath(); ctx.moveTo(nx,ny+14); ctx.lineTo(nx,ny-14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(nx,ny-16); ctx.lineTo(nx-5,ny-6); ctx.lineTo(nx+5,ny-6); ctx.closePath(); ctx.fill();
+  ctx.font='10px Arial'; ctx.textAlign='center'; ctx.fillText('N',nx,ny+24);
   return {minX,minY,sc,pad,H,sx,sy};
 }
+/* הקנבס הראשי (#cv) מצייר את התוכנית והחתך יחד כגיליון אחד — הפונקציה הזו רק מרעננת
+   את קנבס הציור האינטראקטיבי של הציר הידני (מתקדם, מוסתר כברירת מחדל) */
 function drawPlan(){
-  PLAN_X=renderPlanTo($('planCv'));
-  const cv2=$('planView');
-  if(cv2) renderPlanTo(cv2);
+  const cv=$('planCv');
+  if(cv){ const ctx=cv.getContext('2d'); PLAN_X=renderPlanInto(ctx,cv.width,cv.height,true); }
 }
 $('planCv').addEventListener('click',e=>{
   if(!DRAW_MODE||!PLAN_X) return;

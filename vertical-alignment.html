@@ -473,5 +473,80 @@ function exportDXF(){
 setMode('move');
 run();
 </script>
+
+<script>
+
+/* ---- גשר: תכנון הציר האנכי ---- */
+window.__BRIDGE__ = {
+  id: 'vertical',
+  pull: function(){
+    return {ground: LAST_GROUND, pvi: parsePairs($('pvi').value), data: LAST_DATA,
+            vd: Number($('vd').value), crit: $('crit').value, veh: Number($('veh').value),
+            ve: Number($('veRatio').value)||10,
+            axis: AXIS ? {name:AXIS.name, total:AXIS.total} : null};
+  },
+  push: function(m){
+    var d = (m && m.data) || {};
+    if(d.axes && d.axes.length){
+      AXES_LIST = d.axes.filter(function(a){ return a.pis && a.pis.length>=2; });
+      var sel = $('axisPick');
+      sel.innerHTML = AXES_LIST.map(function(a,i){ return '<option value="'+i+'">'+(a.name||('ציר '+(i+1)))+'</option>'; }).join('');
+      sel.hidden = AXES_LIST.length < 2;
+      if(AXES_LIST.length) sel.onchange();
+    }
+    if(d.survey && d.survey.length){
+      $('surveyTxt').value = d.survey.map(function(p){ return [p.x,p.y,p.z].join(','); }).join('\n');
+      $('colOrder').value = 'xyz';
+      loadSurveyCloud();
+    }
+    if(d.ground) $('ground').value = d.ground.map(function(r){ return r.join(','); }).join('\n');
+    if(d.pvi) $('pvi').value = d.pvi.map(function(r){ return r.join(','); }).join('\n');
+    if(d.ground || d.pvi) run();
+    return true;
+  },
+  /* גובה מתוכנן בסטציה – לשימוש דף הניהול בחתכי הרוחב */
+  elev: function(m){
+    if(!LAST_DATA) return null;
+    return elevOnDesign(Number(m.sta), LAST_DATA);
+  }
+};
+</script>
+<script>
+/* ======================================================================
+   גשר פרויקט – מחבר את הכלי אל דף הניהול (project-hub) כשהוא רץ בתוך מסגרת.
+   ----------------------------------------------------------------------
+   הכלי נשאר עצמאי לחלוטין: אם אין דף אב, הקוד הזה לא עושה דבר.
+   פרוטוקול: postMessage עם {ns:'mahalco'}.
+     אב → כלי :  {t:'<פקודה>', rid, ...}    לפי הפקודות שהכלי מצהיר עליהן
+     כלי → אב :  {t:'ready'|'reply'|'changed'}
+   ====================================================================== */
+(function(){
+  if(window.top === window.self) return;              /* עצמאי – אין גשר */
+  const NS = 'mahalco';
+  const H = window.__BRIDGE__ || {};
+  window.__BRIDGE__ = H;
+  const send = (t, extra)=>{
+    try{ parent.postMessage(Object.assign({ns:NS, t:t, tool:H.id}, extra||{}), '*'); }catch(e){}
+  };
+  window.addEventListener('message', function(ev){
+    const m = ev.data;
+    if(!m || m.ns !== NS || !m.t) return;
+    const fn = H[m.t];
+    if(typeof fn !== 'function') return;
+    Promise.resolve().then(()=>fn(m)).then(
+      r => send('reply', {rid:m.rid, ok:true, data:r}),
+      e => send('reply', {rid:m.rid, ok:false, err:String((e&&e.message)||e)}));
+  });
+  /* הכלי קורא לזה אחרי כל שינוי שראוי שהאב יידע עליו */
+  H.notify = function(){ send('changed'); };
+  const announce = ()=>send('ready', {caps:Object.keys(H).filter(k=>typeof H[k]==='function')});
+  /* האב עלול עדיין לא להאזין כשהכלי מוכן – לכן גם עונים ל-ping וגם חוזרים כמה פעמים */
+  H.ping = function(){ announce(); return true; };
+  announce();
+  let n = 0;
+  const again = setInterval(function(){ announce(); if(++n >= 20) clearInterval(again); }, 250);
+  window.addEventListener('load', announce);
+})();
+</script>
 </body>
 </html>

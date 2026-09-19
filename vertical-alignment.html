@@ -37,15 +37,25 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 .legend span{display:inline-flex;align-items:center;gap:5px}
 .sw{width:14px;height:3px;display:inline-block;border-radius:2px}
 [hidden]{display:none!important}
+.stepnav{display:flex;gap:8px;margin-bottom:14px}
+.stepnav button{flex:1;background:#232c42;color:var(--mut);border:1px solid var(--line);border-radius:8px;padding:9px 6px;font-size:.8rem;font-weight:bold}
+.stepnav button.on{background:var(--acc);color:#03101f;border-color:var(--acc)}
+.stepnav button.done{color:var(--ok);border-color:var(--ok)}
 </style>
 </head>
 <body>
 <h1>תכן ושרטוט תוואי אנכי</h1>
-<div class="sub">ייבוא ציר (JSON מ"בונה ציר" או ציור ידני על ענן מדידה) → חתך אורך קיים אוטומטי → תכן קו אדום אינטראקטיבי לפי נת"י פרק 6 → ייצוא</div>
+<div class="sub">ייבוא ציר ומדידה (DWG בעיקר, DXF/CSV למקרה הצורך) → חתך קרקע קיימת אוטומטי → תכן קו אדום אינטראקטיבי לפי נת"י פרק 6 → ייצוא DWG</div>
+<div class="stepnav">
+<button data-step="1" onclick="goStep(1)">1 · קליטת נתונים</button>
+<button data-step="2" onclick="goStep(2)">2 · קרקע קיימת</button>
+<button data-step="3" onclick="goStep(3)">3 · תכן קו אדום</button>
+<button data-step="4" onclick="goStep(4)">4 · ייצוא</button>
+</div>
 <div class="grid">
 <div>
 
-<div class="panel">
+<div class="panel" id="panelSource">
 <h2>1 · מאיפה הנתונים</h2>
 <div class="row">
 <button id="srcProj" class="pri" onclick="setSource('proj')">ייבוא מהפרויקט</button>
@@ -66,8 +76,8 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 <div id="axisInfo" class="small"></div>
 </div>
 
-<details class="panel">
-<summary style="cursor:pointer;color:var(--acc);font-size:.9rem">מתקדם — ציור ציר ידני, עריכת ענן הנקודות וקו הקרקע</summary>
+<details class="panel" id="panelAdvanced">
+<summary style="cursor:pointer;color:var(--acc);font-size:.9rem">מתקדם — קבצי DXF/CSV, ציור ציר ידני, עריכת ענן הנקודות וקו הקרקע</summary>
 <div style="margin-top:10px">
 <label>ענן נקודות טקסטואלי — X,Y,Z בכל שורה</label>
 <textarea id="surveyTxt" placeholder="X,Y,Z בכל שורה"></textarea>
@@ -99,8 +109,8 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 </div>
 </details>
 
-<div class="panel">
-<h2>2 · תכן קו אדום</h2>
+<div class="panel" id="panelDesign" hidden>
+<h2>3 · תכן קו אדום — נקודות PVI, רדיוס (K) ואורך עקום</h2>
 <label>מהירות תכן (קמ"ש)</label>
 <select id="vd"><option>60</option><option>70</option><option selected>80</option><option>90</option><option>100</option><option>110</option><option>120</option></select>
 <label>קריטריון ראות</label>
@@ -113,17 +123,31 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 250,108.4
 400,101
 500,100.6</textarea>
-<div class="row"><button onclick="run()">חשב ושרטט</button><button class="sec" onclick="loadGroundAsPVI()">קו אדום = קו קרקע (עזר)</button></div>
+<div class="row">
+<button onclick="run()">חשב ושרטט</button>
+<button class="sec" onclick="loadGroundAsPVI()">קו אדום = קו קרקע (עזר)</button>
+<button class="sec" onclick="goStep(2)">⟵ חזרה לקרקע קיימת</button>
+<button onclick="goStep(4)">המשך לייצוא →</button>
+</div>
 <div id="warn"></div>
 </div>
 <div id="tbl"></div>
 </div>
 
+<div class="panel" id="step2Box" hidden>
+<h2>2 · קרקע קיימת — חתך אורך לפי הציר והמדידה</h2>
+<div class="small">זהו חתך האורך של הקרקע הקיימת שהתקבל מהציר ומהמדידה שהוזנו בשלב 1. ודאו שהוא נראה סביר (אפשר לחזור ולשנות קלט בשלב 1), ואז המשיכו לתכנון קו אדום — הוספת נקודות PVI, רדיוס/אורך עקום ובדיקת ראות.</div>
+<div class="row" style="margin-top:8px">
+<button class="sec" onclick="goStep(1)">⟵ חזרה לנתונים</button>
+<button onclick="startDesign()">המשך לתכנון קו אדום →</button>
+</div>
+</div>
+
 <div class="panel" style="align-self:flex-start">
-<div class="row">
+<div class="row" id="rowVE" hidden>
 <div><label>הגזמה אנכית (VE) — יחס V:H</label><input id="veRatio" type="number" value="10" onchange="run()"></div>
 </div>
-<div class="row">
+<div class="row" id="rowMode" hidden>
 <button id="mAdd" class="sec" onclick="setMode('add')">➕ הוספת PVI (הקלקה)</button>
 <button id="mMove" class="sec on" onclick="setMode('move')">✥ הזזה (גרירה)</button>
 <button id="mDel" class="sec" onclick="setMode('del')">🗑 מחיקה (הקלקה)</button>
@@ -143,7 +167,13 @@ canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:
 <span><i class="sw" style="background:var(--design)"></i>קו אדום מתוכנן</span>
 <span class="small">הגרף מוצג תמיד ביחס הגזמה אנכית קבוע (ברירת מחדל 1:10) — לא מתאים אוטומטית לפרופורציה חופשית.</span>
 </div>
-<div class="row"><button onclick="exportDXF()">⤓ ייצוא DXF (חתך אורך)</button><button class="sec" onclick="exportCSV()">⤓ ייצוא CSV (טבלת חפ/מל)</button></div>
+<div class="row" id="exportRow" hidden>
+<button onclick="exportDWG()">⤓ ייצוא DWG (חתך אורך)</button>
+<button class="sec" onclick="exportDXF()">⤓ ייצוא DXF</button>
+<button class="sec" onclick="exportCSV()">⤓ ייצוא CSV (טבלת חפ/מל)</button>
+<button class="sec" onclick="goStep(3)">⟵ חזרה לתכנון</button>
+</div>
+<div id="expInfo" class="small" style="margin-top:6px"></div>
 </div>
 </div>
 
@@ -220,6 +250,39 @@ function frameAt(els,sta){
   const a0=Math.atan2(e.from.y-e.center.y,e.from.x-e.center.x);
   const sg=Math.sign(e.D||1), a=a0+sg*t/e.R;
   return {x:e.center.x+e.R*Math.cos(a), y:e.center.y+e.R*Math.sin(a)};
+}
+/* ===== מדריך שלבים — קליטה → קרקע קיימת → תכן → ייצוא ===== */
+let STEP=1, SHOW_DESIGN=false;
+function goStep(n){
+  STEP=n; SHOW_DESIGN=(n>=3);
+  $('panelSource').hidden = n!==1;
+  $('panelAdvanced').hidden = n!==1;
+  $('step2Box').hidden = n!==2;
+  $('panelDesign').hidden = n!==3;
+  $('rowVE').hidden = n<3;
+  $('rowMode').hidden = n!==3;
+  $('exportRow').hidden = n!==4;
+  if(n!==3){ SEL=-1; if($('selBox')) $('selBox').hidden=true; }
+  document.querySelectorAll('.stepnav button').forEach(b=>{
+    const s=Number(b.dataset.step);
+    b.classList.toggle('on', s===n);
+    b.classList.toggle('done', s<n);
+  });
+  run();
+  const anchor = n===1 ? $('panelSource') : $('cv');
+  if(anchor && anchor.scrollIntoView) anchor.scrollIntoView({behavior:'smooth',block:'start'});
+}
+/* מוגדר בשלב 2 — הפיכת חתך הקרקע לקו אדום התחלתי (משיק ישר) לפני מעבר לתכן */
+function startDesign(){
+  const g=parsePairs($('ground').value);
+  if(g.length<2){ alert('אין עדיין חתך קרקע — חזרו לשלב 1 וקלטו ציר ומדידה.'); return; }
+  const pvi=parsePVI($('pvi').value);
+  if(pvi.length<2 || pvi[0][0]!==g[0][0] || pvi[pvi.length-1][0]!==g[g.length-1][0]){
+    const mid=g[Math.floor(g.length/2)];
+    writePVI([[g[0][0],+g[0][1].toFixed(2)],[mid[0],+mid[1].toFixed(2)],
+              [g[g.length-1][0],+g[g.length-1][1].toFixed(2)]]);
+  }
+  goStep(3);
 }
 /* ===== axis project import ===== */
 let AXES_LIST=[], AXIS=null;
@@ -298,8 +361,8 @@ function buildGroundFromSurvey(){
   if(!rows.length){alert('אין נקודת מדידה בטווח מסדרון החיפוש מהציר — הגדילו את רוחב המסדרון');return;}
   $('ground').value=rows.map(r=>r.join(',')).join('\n');
   $('surveyInfo').innerHTML=`${pts.length} נקודות מדידה · נבנו ${rows.length}/${total} תחנות`+
-    (missing?`<br><span style="color:var(--bad)">⚠ ${missing} תחנות ללא מדידה בסמוך — הרחיבו מסדרון או השלימו ידנית בשלב 3</span>`:'');
-  run();
+    (missing?`<br><span style="color:var(--bad)">⚠ ${missing} תחנות ללא מדידה בסמוך — הרחיבו מסדרון או השלימו ידנית</span>`:'');
+  goStep(2);
 }
 /* ===== ground/PVI parsing ===== */
 function parsePairs(txt){return txt.trim().split('\n').map(l=>l.split(',').map(Number)).filter(p=>p.length==2&&!isNaN(p[0])&&!isNaN(p[1])).sort((a,b)=>a[0]-b[0]);}
@@ -577,9 +640,8 @@ function autoProfile(){
     writePVI([[g[0][0],+g[0][1].toFixed(2)],[mid[0],+mid[1].toFixed(2)],
               [g[g.length-1][0],+g[g.length-1][1].toFixed(2)]]);
   }
-  run();
-  note('החתך מוכן — '+g.length+' תחנות קרקע. גררו את הנקודות או ערכו אותן למטה.');
-  const cv=$('cv'); if(cv&&cv.scrollIntoView) cv.scrollIntoView({behavior:'smooth',block:'center'});
+  note('החתך מוכן — '+g.length+' תחנות קרקע.');
+  goStep(2);
 }
 
 /* ===== מבט חתך אורך בסגנון אוטוקאד ===== */
@@ -664,7 +726,7 @@ function render(ground,data,warns){
   ctx.setLineDash([]);
 
   let rows='';
-  if(pvi.length && data.curves){
+  if(pvi.length && data.curves && SHOW_DESIGN){
     const geo=data.curves.map(curveGeom);
     /* ---- קו אדום ---- */
     ctx.strokeStyle=css('--design')||'#ff9f43'; ctx.lineWidth=2.6; ctx.beginPath();
@@ -854,7 +916,7 @@ function nearestPvi(px,py){
   return {i:best,d:bd,pvi};
 }
 $('cv').addEventListener('mousedown',e=>{
-  if(!XFORM) return;
+  if(!XFORM||STEP!==3) return;
   const r=e.target.getBoundingClientRect();
   const px=(e.clientX-r.left)*e.target.width/r.width, py=(e.clientY-r.top)*e.target.height/r.height;
   if(MODE==='add'){
@@ -867,7 +929,7 @@ $('cv').addEventListener('mousedown',e=>{
   if(i>=0&&d<14){ DRAG={i}; selectPvi(i); } else { SEL=-1; $('selBox').hidden=true; run(); }
 });
 $('cv').addEventListener('mousemove',e=>{
-  if(!DRAG||!XFORM) return;
+  if(!DRAG||!XFORM||STEP!==3) return;
   const r=e.target.getBoundingClientRect();
   const px=(e.clientX-r.left)*e.target.width/r.width, py=(e.clientY-r.top)*e.target.height/r.height;
   const w=pxToWorld(px,py); const pvi=parsePVI($('pvi').value);
@@ -947,9 +1009,8 @@ function dxfBytes(s){
   return out.subarray(0,k);
 }
 
-/* ===== ייצוא DXF של גיליון חתך האורך ===== */
-function exportDXF(){
-  if(!LAST_GROUND.length){ alert('אין נתונים לייצוא'); return; }
+/* ===== בניית גיליון חתך האורך כטקסט DXF (ללא הורדה) ===== */
+function buildProfileDXF(){
   const ve=Math.max(1,Number($('veRatio').value)||10);
   const G=LAST_GROUND, D=LAST_DATA;
   const minX=Math.min(...G.map(p=>p[0])), maxX=Math.max(...G.map(p=>p[0]));
@@ -1053,13 +1114,41 @@ function exportDXF(){
   LAYERS.forEach(l=>{ hdr+='0\nLAYER\n2\n'+l+'\n70\n0\n62\n'+(COL[l]||7)+'\n6\nCONTINUOUS\n'; });
   hdr+='0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';
   const dxf=hdr+out+'0\nENDSEC\n0\nEOF\n';
-  downloadBlob(dxfBytes(dxf),'application/dxf','mahalco-profile-VE'+ve+'.dxf');
-  return {entities:n, layers:LAYERS.length, bytes:dxf.length};
+  return {dxfText:dxf, ve, entities:n, layers:LAYERS.length};
+}
+/* ייצוא DXF (גם עוגן לגיבוי כשאין שירות המרה זמין) */
+function exportDXF(){
+  if(!LAST_GROUND.length){ alert('אין נתונים לייצוא'); return; }
+  const built=buildProfileDXF();
+  downloadBlob(dxfBytes(built.dxfText),'application/dxf','mahalco-profile-VE'+built.ve+'.dxf');
+}
+/* ייצוא DWG אמיתי — בונים DXF ואז ממירים דרך שירות ההמרה (אותו שירות המשמש לקליטת DWG בשלב 1) */
+async function exportDWG(){
+  if(!LAST_GROUND.length){ alert('אין נתונים לייצוא'); return; }
+  const built=buildProfileDXF();
+  const svc=svcUrl();
+  const info=$('expInfo');
+  if(!svc){
+    if(info) info.innerHTML='לא הוגדרה כתובת שירות ההמרה ל-DWG (שדה "שירות המרת DWG" בשלב 1 → מתקדם) — מוריד DXF במקום.';
+    downloadBlob(dxfBytes(built.dxfText),'application/dxf','mahalco-profile-VE'+built.ve+'.dxf');
+    return;
+  }
+  if(info) info.textContent='ממיר ל-DWG…';
+  try{
+    const r=await fetch(svc,{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:dxfBytes(built.dxfText)});
+    if(!r.ok) throw new Error('שירות ההמרה החזיר שגיאה '+r.status);
+    const buf=await r.arrayBuffer();
+    downloadBlob(buf,'application/acad','mahalco-profile-VE'+built.ve+'.dwg');
+    if(info) info.textContent='קובץ ה-DWG ירד בהצלחה.';
+  }catch(err){
+    if(info) info.innerHTML='ההמרה ל-DWG נכשלה ('+((err&&err.message)||err)+') — מוריד DXF במקום.';
+    downloadBlob(dxfBytes(built.dxfText),'application/dxf','mahalco-profile-VE'+built.ve+'.dxf');
+  }
 }
 
 setMode('move');
 try{ $('vSvc').value=localStorage.getItem('mahalco-dwg-service')||SVC_DEFAULT; }catch(e){ $('vSvc').value=SVC_DEFAULT; }
-run();
+goStep(1);
 setSource(window.top===window.self?'files':'proj');
 </script>
 

@@ -342,6 +342,8 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
         <input type="file" id="fOpen" accept=".json,application/json" hidden>
         <button class="cell btn" id="bDxfSheet">ייצוא DWG ל-CAD (AutoCAD)</button>
         <div class="cell"><span class="lbl">שירות המרה ל-DWG</span><input id="dwgSvc" type="url" placeholder="https://…/dxf2dwg" style="width:150px;text-align:left;direction:ltr;font:inherit;height:34px;border:0;border-radius:9px;background:var(--fill);color:var(--ink);padding:0 10px"></div>
+        <div class="cell"><span class="lbl">מילוי צבעוני בייצוא</span><input id="dwgFill" type="checkbox" checked style="width:20px;height:20px;accent-color:var(--accent)"></div>
+        <div class="cell"><span class="lbl">גודל כיתוב לפי קנה מידה</span><select id="dwgScale" style="width:150px;font:inherit;height:34px;border:0;border-radius:9px;background:var(--fill);color:var(--ink);padding:0 10px"><option value="200">1:200</option><option value="500" selected>1:500</option><option value="1000">1:1000</option><option value="2000">1:2000</option></select></div>
         <button class="cell btn danger" id="bClear">ניקוי הציר הזה</button>
         <button class="cell btn danger" id="bDelAxis">מחיקת הציר הזה</button>
       </div>
@@ -525,7 +527,8 @@ function presetOptions(){
 }
 
 const $ = id => document.getElementById(id);
-const cv = $('cv'), ctx = cv.getContext('2d');
+const cv = $('cv');
+let ctx = cv.getContext('2d');   /* ניתן להחלפה במקליט בזמן ייצוא ל-CAD */
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
 function w2s(p){ const v=S.view; return { x:(p.x-v.cx)*v.scale+cv.width/2/dpr(), y:-(p.y-v.cy)*v.scale+cv.height/2/dpr() }; }
@@ -1289,6 +1292,7 @@ function setMark(kind,a,sub){
   if(kind==='801'){ const [p,g]=MK.d801[sub||'seg'][cls]; dash=[p*sc,g*sc]; }
   if(kind==='808'){ const [p,g,ww]=MK.d808[cls]; dash=[p*sc,g*sc]; lw=ww; }
   if(kind==='803'){ lw=w; }
+  ctx._mark = kind;                      /* רמז לשכבת הייצוא; אין לו השפעה על הציור */
   ctx.lineWidth=Math.max(kind==='808'?1.6:1, lw*sc);
   ctx.setLineDash(dash.map(v=>Math.max(v,1)));
   ctx.lineCap='butt';
@@ -2593,66 +2597,161 @@ resize();
    קילומטראז', שפות חתך, פינות צומת ומסלולי פנייה שמאלה.
    קלוטואידות מקורבות כפוליליין עם 24 מקטעים.
    ====================================================================== */
+/* ======================================================================
+   ייצוא CAD – תרגום ישיר של השרטוט שעל המסך ל-DXF R2000.
+   ----------------------------------------------------------------------
+   המנוע אינו מצייר מחדש: הוא קורא את אותו SVG שהכלי מציג ומתרגם כל
+   צורה לישות DXF, בקואורדינטות מודל במטרים (1:1). לכן הקובץ שיוצא זהה
+   לשרטוט שעל המסך – אותם מיקומים, אותן צורות, אותם צבעים.
+   · קווים ומיתארים  – בשכבות TS-* לפי התפקיד (data-lay שבשרטוט)
+   · מילוי צבעוני    – ישויות SOLID בשכבת TS-FILL (הקפאה = שרטוט קווי)
+   · מיתאר עזר       – TS-EDGE, מוקפאת כברירת מחדל (מיתאר לצורות מלאות)
+   ====================================================================== */
 const CAD = (function(){
-  function enc(s, rtl){
-    s = String(s==null?'':s);
-    if(rtl) s = s.replace(/[\u0590-\u05FF][\u0590-\u05FF\s"'\u05F3\u05F4.\-()+%]*/g, m=>[...m].reverse().join(''));
-    return s.replace(/[^\x20-\x7E]/g, ch=>'\\U+'+ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0'));
-  }
-  const LAYERS = [
-    ['AX-CENTER',   7, 'CENTER2',    25],
-    ['AX-LANE',     7, 'CONTINUOUS', 25],
-    ['AX-SHOULDER', 8, 'CONTINUOUS', 18],
-    ['AX-PARKING',  9, 'CONTINUOUS', 18],
-    ['AX-SIDEWALK', 30,'CONTINUOUS', 18],
-    ['AX-DITCH',    5, 'CONTINUOUS', 18],
-    ['AX-WALL',     6, 'CONTINUOUS', 25],
-    ['AX-OPEN',     3, 'CONTINUOUS',  9],
-    ['AX-MEDIAN',   3, 'CONTINUOUS', 25],
-    ['AX-BARRIER',  1, 'CONTINUOUS', 25],
-    ['AX-EDGE-L',   5, 'CONTINUOUS', 18],
-    ['AX-EDGE-R',   5, 'CONTINUOUS', 18],
-    ['AX-PI',       1, 'CONTINUOUS', 35],
-    ['AX-STATION',  4, 'CONTINUOUS', 13],
-    ['AX-TEXT',     7, 'CONTINUOUS', 18],
-    ['JCT-CURVE',   2, 'CONTINUOUS', 25],
-    ['JCT-ARROW',   3, 'CONTINUOUS', 18],
-    ['JCT-ISLAND',  3, 'CONTINUOUS', 18],
-    ['JCT-TEXT',    7, 'CONTINUOUS', 18],
-    ['AX-AREA',     9, 'CONTINUOUS',  9]
-  ];
+
+  /* ---------- שכבות ---------- */
+  const LAYERS = {
+    'TS-SURFACE'   : [7,  'CONTINUOUS', 35],
+    'TS-KERB'      : [8,  'CONTINUOUS', 25],
+    'TS-PAVE-ASP'  : [251,'CONTINUOUS', 13],
+    'TS-PAVE-BASE' : [41, 'CONTINUOUS', 13],
+    'TS-PAVE-SUB'  : [43, 'CONTINUOUS', 13],
+    'TS-EARTH'     : [33, 'CONTINUOUS', 18],
+    'TS-CELL'      : [30, 'CONTINUOUS', 13],
+    'TS-MARK'      : [7,  'CONTINUOUS', 18],
+    'TS-MARK-C'    : [2,  'CONTINUOUS', 18],
+    'TS-SYMB'      : [9,  'CONTINUOUS', 13],
+    'TS-TREE'      : [3,  'CONTINUOUS', 13],
+    'TS-BLDG'      : [8,  'CONTINUOUS', 13],
+    'TS-ARROW'     : [7,  'CONTINUOUS', 18],
+    'TS-SLOPE'     : [5,  'CONTINUOUS', 13],
+    'TS-DIM'       : [4,  'CONTINUOUS', 13],
+    'TS-TEXT'      : [7,  'CONTINUOUS', 18],
+    'TS-ROW'       : [1,  'DASHDOT',    25],
+    'TS-FRAME'     : [7,  'CONTINUOUS', 50],
+    'TS-TITLE'     : [7,  'CONTINUOUS', 35],
+    /* עבודות זמניות */
+    'TS-WORK'      : [30, 'CONTINUOUS', 35],
+    'TS-WORK-HAT'  : [30, 'CONTINUOUS', 13],
+    'TS-DEVICE'    : [1,  'CONTINUOUS', 25],
+    'TS-MARK-TMP'  : [30, 'CONTINUOUS', 25],
+    'TS-PED'       : [2,  'CONTINUOUS', 18],
+    'TS-MISC'      : [7,  'CONTINUOUS', 18],
+    /* בונה הציר – תכנית */
+    'AX-CENTER'    : [1,  'CENTER2',    25],
+    'AX-EDGE'      : [7,  'CONTINUOUS', 18],
+    'AX-MARK-801'  : [7,  'CONTINUOUS', 18],
+    'AX-MARK-807'  : [42, 'CONTINUOUS', 25],
+    'AX-MARK-808'  : [7,  'CONTINUOUS', 25],
+    'AX-MARK-803'  : [7,  'CONTINUOUS', 25],
+    'AX-MEDIAN'    : [8,  'CONTINUOUS', 18],
+    'AX-SURF'      : [9,  'CONTINUOUS', 13],
+    'AX-EARTH'     : [33, 'CONTINUOUS', 13],
+    'AX-WALK'      : [30, 'CONTINUOUS', 13],
+    'AX-ZONE'      : [2,  'CONTINUOUS', 18],
+    'AX-STATION'   : [4,  'CONTINUOUS', 13],
+    'AX-TEXT'      : [7,  'CONTINUOUS', 18],
+    'AX-PI'        : [1,  'CONTINUOUS', 35],
+    'JCT-CURVE'    : [2,  'CONTINUOUS', 25],
+    'JCT-ISLAND'   : [3,  'CONTINUOUS', 18],
+    'JCT-ARROW'    : [3,  'CONTINUOUS', 18],
+    'AX-ARROW'     : [7,  'CONTINUOUS', 18],
+    'JCT-TEXT'     : [7,  'CONTINUOUS', 18]
+  };
+  /* שכבות המילוי נגזרות אוטומטית: <שכבה>-F. הקפאת ‎*-F‎ = שרטוט קווי נקי. */
+  const FROZEN = {};
   const STYLE = 'MAHALCO';
-  const H_BR='1', H_LAYER='2', H_STYLE='3', H_LTYPE='5', H_VIEW='6', H_UCS='7', H_VPORT='8', H_APPID='9',
-        H_DIMS='E', H_MS='A', H_PS='B', H_DICT='C', H_GROUP='D';
-  function Doc(){
+  const H_BR='1', H_LAYER='2', H_STYLE='3', H_LTYPE='5', H_VIEW='6', H_UCS='7',
+        H_VPORT='8', H_APPID='9', H_DIMS='E', H_MS='A', H_PS='B', H_DICT='C', H_GROUP='D';
+
+  /* ---------- צבעים ---------- */
+  const ACI = ('000000ff0000ffff0000ff0000ffff0000ffff00ffffffff414141808080ff0000ffaaaa'
+    +'bf0000bf80807f00007f55555f00005f3f3f2f00002f2a2aff3f00ffbfaabf2f00bf8f807f1f007f5f553f0f003f'
+    +'2f2a7f7f00ffffaabf7f00bf8f807f00007f5f553f00003f2f2abf7f00ffbfaabf5f00bf8f807f3f007f5f553f1f'
+    +'003f2f2abfbf00ffffaabfbf00bf8f807f7f007f5f553f3f003f2f2a7fbf00ffdfaabf5f00bf9f807f3f007f6a55'
+    +'3f1f003f352a00bf00ffffdfbfbf00bf9f80807f007f6a553f3f003f352a00bf3fffffdfbfbf2fbf9f807f1f7f6a'
+    +'553f0f3f352a00bf7fffffdfbfbf5fbf9f807f3f7f6a553f1f3f352a00bfbfffffffbfbfbfbf9f807f7f7f6a553f'
+    +'3f3f352a007fbfffdfffbf5fbfbf3f7f9f7f2a3f6a35007fffffdfffbfbfbfbf7f7f9f7f553f6a35003fffbfdfff'
+    +'2fbfbf1f7f9f0f3f6a2a3f6a35007fffbfdfff5fbfbf3f7f9f1f3f6a2a3f6a3500bfffbfdfffbfbfbf7f7f9f3f3f'
+    +'6a2a3f6a35003fbfff9fdfff2f5fbf1f3f7f0f1f3f2a2a3f3f00ffbfbfdfff00bfbf00bf7f7f9f007f3f3f6a2a2a'
+    +'3f3f00ffbfbfdfff002fbf1f1f7f0f0f3f0a0a2a3f3f003fbfbfdfff005fbf3f3f7f1f1f3f2a2a3f3f003fffbfbf'
+    +'dfff2f00bf1f007f0f003f0a002a3f3f00bfffbfbfdfff5f00bf3f007f1f003f2a002a3f3f00ffffbfbfdfffbf00'
+    +'bf7f007f3f003f2a002a3f3f00ffbfbfbfdfffbf002fbf001f7f000f3f000a2a3f3f00ff3fbfbfdfffbf005fbf00'
+    +'3f7f001f3f000a2a3f3f00ff7fbfbfdfffbf009fbf007f7f003f3f002a2a3f3f00ffbfbfbfdfffbf00bfbf007f7f'
+    +'003f3f002a2a3f3f00bfffbfbfdfff5f00bfbf003f7f001f3f002a2a3f3f003fffbfbfdfff2f00bfbf001f7f000f'
+    +'3f002a2a3f3f333333' ).match(/.{6}/g) || [];
+
+  const hex = c => {
+    if(!c || c==='none') return null;
+    c = c.trim().toLowerCase();
+    if(c[0] !== '#') return null;
+    if(c.length === 4) c = '#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
+    const v = parseInt(c.slice(1,7), 16);
+    return isNaN(v) ? null : {r:(v>>16)&255, g:(v>>8)&255, b:v&255, n:v};
+  };
+  function nearestACI(col){
+    const lum = (0.2126*col.r + 0.7152*col.g + 0.0722*col.b)/255;
+    if(lum < 0.2 || lum > 0.93) return 7;            /* שחור/לבן – 7 מתאים לרקע */
+    let best=7, bd=Infinity;
+    for(let i=1;i<ACI.length;i++){
+      const v = parseInt(ACI[i],16), r=(v>>16)&255, g=(v>>8)&255, b=v&255;
+      const d = (r-col.r)**2 + (g-col.g)**2 + (b-col.b)**2;
+      if(d<bd){ bd=d; best=i; }
+    }
+    return best;
+  }
+
+  /* ---------- מנוע DXF ---------- */
+  function Doc(unit, usedLayers){
     let hx = 0x100;
     const nh = ()=> (hx++).toString(16).toUpperCase();
     const ents = [];
+    /* סוגי קו: כל stroke-dasharray שבשרטוט הופך לסוג קו משלו, ביחידות המודל,
+       כך שהמקטעים והרווחים יוצאים באורך שנראה על המסך. */
+    const lts = {};
+    function dashLT(arr){
+      const key = arr.join(',');
+      if(lts[key]) return lts[key].name;
+      const name = 'TS-DASH' + (Object.keys(lts).length + 1);
+      const pat = []; let tot = 0;
+      arr.forEach((v,i)=>{ const d = v*unit; tot += d; pat.push(i%2 ? -d : d); });
+      lts[key] = {name, pat, tot};
+      return name;
+    }
     const ext = {x0:1e18, y0:1e18, x1:-1e18, y1:-1e18};
     const g = (c,v)=>c+'\n'+v+'\n';
     const n = v => (Math.abs(v)<1e-9?0:v).toFixed(6);
     const see = (x,y)=>{ if(x<ext.x0)ext.x0=x; if(y<ext.y0)ext.y0=y; if(x>ext.x1)ext.x1=x; if(y>ext.y1)ext.y1=y; };
-    const head = (type, lay)=> g(0,type)+g(5,nh())+g(330,H_MS)+g(100,'AcDbEntity')+g(8,lay);
-    const api = {
-      point(lay,x,y){ see(x,y); ents.push(head('POINT',lay)+g(100,'AcDbPoint')+g(10,n(x))+g(20,n(y))+g(30,0)); },
-      line(lay,x1,y1,x2,y2){ see(x1,y1); see(x2,y2);
-        ents.push(head('LINE',lay)+g(100,'AcDbLine')+g(10,n(x1))+g(20,n(y1))+g(30,0)+g(11,n(x2))+g(21,n(y2))+g(31,0)); },
-      poly(lay,pts,closed){ if(!pts||pts.length<2)return; pts.forEach(p=>see(p[0],p[1]));
-        let s=head('LWPOLYLINE',lay)+g(100,'AcDbPolyline')+g(90,pts.length)+g(70,closed?1:0);
-        pts.forEach(p=>{ s+=g(10,n(p[0]))+g(20,n(p[1])); });
+    function head(type, layer, col, lt){
+      usedLayers[layer] = 1;
+      let s = g(0,type)+g(5,nh())+g(330,H_MS)+g(100,'AcDbEntity')+g(8,layer);
+      if(lt) s += g(6, lt);
+      if(col){ s += g(62, nearestACI(col)) + g(420, col.n); }
+      return s;
+    }
+    return {
+      dashLT,
+      line(lay,col,x1,y1,x2,y2,lt){ see(x1,y1); see(x2,y2);
+        ents.push(head('LINE',lay,col,lt)+g(100,'AcDbLine')+g(10,n(x1))+g(20,n(y1))+g(30,0)+g(11,n(x2))+g(21,n(y2))+g(31,0)); },
+      poly(lay,col,pts,closed,lt){ if(!pts || pts.length<2) return; pts.forEach(p=>see(p[0],p[1]));
+        let s = head('LWPOLYLINE',lay,col,lt)+g(100,'AcDbPolyline')+g(90,pts.length)+g(70,closed?1:0);
+        pts.forEach(p=>{ s+=g(10,n(p[0]))+g(20,n(p[1])); if(p[2]) s+=g(42,n(p[2])); });
         ents.push(s); },
-      arc(lay,cx,cy,r,a0deg,a1deg){ see(cx-r,cy-r); see(cx+r,cy+r);
-        ents.push(head('ARC',lay)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))
-          +g(100,'AcDbArc')+g(50,n(a0deg))+g(51,n(a1deg))); },
-      circle(lay,cx,cy,r){ if(!(r>0))return; see(cx-r,cy-r); see(cx+r,cy+r);
-        ents.push(head('CIRCLE',lay)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))); },
-      text(lay,x,y,ht,s,o){ o=o||{}; const len=String(s).replace(/\\U\+[0-9A-F]{4}/g,'x').length, wd=ht*0.7*len, ha=o.ha||0;
+      circle(lay,col,cx,cy,r){ if(!(r>0)) return; see(cx-r,cy-r); see(cx+r,cy+r);
+        ents.push(head('CIRCLE',lay,col)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))); },
+      solid(lay,col,a,b,c,d){ d=d||c; [a,b,c,d].forEach(p=>see(p[0],p[1]));
+        ents.push(head('SOLID',lay,col)+g(100,'AcDbTrace')
+          +g(10,n(a[0]))+g(20,n(a[1]))+g(30,0)+g(11,n(b[0]))+g(21,n(b[1]))+g(31,0)
+          +g(12,n(c[0]))+g(22,n(c[1]))+g(32,0)+g(13,n(d[0]))+g(23,n(d[1]))+g(33,0)); },
+      text(lay,col,x,y,ht,s,o){ o=o||{};
+        const len=String(s).replace(/\\U\+[0-9A-F]{4}/g,'x').length, wd=ht*0.7*len, ha=o.ha||0;
         see(ha===2?x-wd:ha===1?x-wd/2:x, y); see(ha===2?x:ha===1?x+wd/2:x+wd, y+ht);
-        ents.push(head('TEXT',lay)+g(100,'AcDbText')+g(10,n(x))+g(20,n(y))+g(30,0)+g(40,n(ht))+g(1,s)
-          +g(50,n(o.rot||0))+g(41,1)+g(51,0)+g(7,STYLE)+g(71,0)+g(72,o.ha||0)
+        ents.push(head('TEXT',lay,col)+g(100,'AcDbText')+g(10,n(x))+g(20,n(y))+g(30,0)+g(40,n(ht))+g(1,s)
+          +g(50,n(o.rot||0))+g(41,1)+g(51,0)+g(7,STYLE)+g(71,0)+g(72,ha)
           +g(11,n(x))+g(21,n(y))+g(31,0)+g(100,'AcDbText')+g(73,o.va||0)); },
+      count(){ return ents.length; },
       out(){
-        const sp = Math.max(5,(ext.x1-ext.x0)*0.02);
+        const sp = Math.max(0.5,(ext.x1-ext.x0)*0.02);
         const x0 = ext.x0<1e17?ext.x0-sp:0, y0 = ext.y0<1e17?ext.y0-sp:0;
         const x1 = ext.x1>-1e17?ext.x1+sp:100, y1 = ext.y1>-1e17?ext.y1+sp:100;
         const tbl = (name, handle, count, body)=> g(0,'TABLE')+g(2,name)+g(5,handle)+g(330,0)+g(100,'AcDbSymbolTable')+g(70,count)+body+g(0,'ENDTAB');
@@ -2661,33 +2760,43 @@ const CAD = (function(){
         s += g(0,'SECTION')+g(2,'HEADER')
           + g(9,'$ACADVER')+g(1,'AC1015')
           + g(9,'$HANDSEED')+g(5,(hx+0x1000).toString(16).toUpperCase())
-          + g(9,'$INSUNITS')+g(70,6) + g(9,'$MEASUREMENT')+g(70,1) + g(9,'$LUNITS')+g(70,2) + g(9,'$LUPREC')+g(70,3) + g(9,'$AUNITS')+g(70,0)
-          + g(9,'$DIMSCALE')+g(40,1) + g(9,'$LTSCALE')+g(40,1) + g(9,'$CELTSCALE')+g(40,1)
-          + g(9,'$TEXTSTYLE')+g(7,STYLE) + g(9,'$CLAYER')+g(8,'AX-CENTER')
+          + g(9,'$INSUNITS')+g(70,6) + g(9,'$MEASUREMENT')+g(70,1)
+          + g(9,'$LUNITS')+g(70,2) + g(9,'$LUPREC')+g(70,3) + g(9,'$AUNITS')+g(70,0)
+          + g(9,'$DIMSCALE')+g(40,n(unit*3)) + g(9,'$LTSCALE')+g(40,1) + g(9,'$CELTSCALE')+g(40,1)
+          + g(9,'$TEXTSTYLE')+g(7,STYLE) + g(9,'$CLAYER')+g(8,'TS-SURFACE')
           + g(9,'$EXTMIN')+g(10,n(x0))+g(20,n(y0))+g(30,0)
           + g(9,'$EXTMAX')+g(10,n(x1))+g(20,n(y1))+g(30,0)
           + g(9,'$LIMMIN')+g(10,n(x0))+g(20,n(y0))
           + g(9,'$LIMMAX')+g(10,n(x1))+g(20,n(y1))
           + g(0,'ENDSEC');
+
         s += g(0,'SECTION')+g(2,'TABLES');
         s += tbl('VPORT',H_VPORT,1, rec('VPORT','AcDbViewportTableRecord',H_VPORT,'*ACTIVE',
               g(70,0)+g(10,0)+g(20,0)+g(11,1)+g(21,1)
               +g(12,n((x0+x1)/2))+g(22,n((y0+y1)/2))+g(13,0)+g(23,0)+g(14,1)+g(24,1)+g(15,0)+g(25,0)
               +g(16,0)+g(26,0)+g(36,1)+g(17,0)+g(27,0)+g(37,0)
-              +g(40,n(Math.max(10,y1-y0)))+g(41,n(1.6))+g(42,50)+g(43,0)+g(44,0)+g(50,0)+g(51,0)
+              +g(40,n(Math.max(1,y1-y0)))+g(41,n(1.6))+g(42,50)+g(43,0)+g(44,0)+g(50,0)+g(51,0)
               +g(71,0)+g(72,1000)+g(73,1)+g(74,3)+g(75,0)+g(76,0)+g(77,0)+g(78,0)+g(65,1)+g(60,3)+g(61,5)+g(281,0)+g(79,0)+g(146,0)));
         let lt = rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'ByBlock', g(70,0)+g(3,'')+g(72,65)+g(73,0)+g(40,0))
                + rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'ByLayer', g(70,0)+g(3,'')+g(72,65)+g(73,0)+g(40,0))
                + rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'CONTINUOUS', g(70,0)+g(3,'Solid line')+g(72,65)+g(73,0)+g(40,0));
-        const pat=(name,desc,total,dashes)=>{ let b=g(70,0)+g(3,desc)+g(72,65)+g(73,dashes.length)+g(40,n(total));
-          dashes.forEach(d=>{ b+=g(49,n(d))+g(74,0); }); return rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,name,b); };
-        lt += pat('DASHED','Dashed __ __ __ __', 0.75, [0.5,-0.25]);
-        lt += pat('DASHDOT','Dash dot __ . __ . __', 1.0, [0.5,-0.25,0,-0.25]);
-        lt += pat('CENTER2','Center ____ _ ____ _ ____', 6.0, [3.0,-0.5,0.5,-0.5]);
-        s += tbl('LTYPE',H_LTYPE,6,lt);
+        const pat = (name,desc,total,dashes)=>{ let b=g(70,0)+g(3,desc)+g(72,65)+g(73,dashes.length)+g(40,n(total));
+          dashes.forEach(dd=>{ b+=g(49,n(dd))+g(74,0); }); return rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,name,b); };
+        lt += pat('DASHED','Dashed __ __ __ __', 3*unit, [2*unit,-1*unit]);
+        lt += pat('DASHDOT','Dash dot __ . __ . __', 6*unit, [3*unit,-1.2*unit,0.6*unit,-1.2*unit]);
+        let ltN = 5;
+        Object.keys(lts).forEach(k=>{ const L=lts[k]; ltN++;
+          lt += pat(L.name, 'MAHALCO '+k, L.tot, L.pat); });
+        s += tbl('LTYPE',H_LTYPE,ltN,lt);
+
+        const names = Object.keys(usedLayers).filter(x=>x && x!=='none').sort();
         let la = rec('LAYER','AcDbLayerTableRecord',H_LAYER,'0', g(70,0)+g(62,7)+g(6,'CONTINUOUS')+g(370,-3)+g(390,'F'));
-        LAYERS.forEach(L=>{ la += rec('LAYER','AcDbLayerTableRecord',H_LAYER,L[0], g(70,0)+g(62,L[1])+g(6,L[2])+g(370,L[3])+g(390,'F')); });
-        s += tbl('LAYER',H_LAYER,LAYERS.length+1,la);
+        names.forEach(nm=>{ const base = nm.replace(/-F$/,''), isF = nm!==base;
+          const L = LAYERS[base] || [7,'CONTINUOUS',18];
+          la += rec('LAYER','AcDbLayerTableRecord',H_LAYER,nm,
+                g(70,FROZEN[nm]?1:0)+g(62,L[0])+g(6,isF?'CONTINUOUS':L[1])+g(370,isF?0:L[2])+g(390,'F')); });
+        s += tbl('LAYER',H_LAYER,names.length+1,la);
+
         let st = rec('STYLE','AcDbTextStyleTableRecord',H_STYLE,'Standard', g(70,0)+g(40,0)+g(41,1)+g(50,0)+g(71,0)+g(42,2.5)+g(3,'txt')+g(4,''))
                + rec('STYLE','AcDbTextStyleTableRecord',H_STYLE,STYLE, g(70,0)+g(40,0)+g(41,1)+g(50,0)+g(71,0)+g(42,2.5)+g(3,'arial.ttf')+g(4,''));
         s += tbl('STYLE',H_STYLE,2,st);
@@ -2696,13 +2805,14 @@ const CAD = (function(){
         s += tbl('APPID',H_APPID,1, rec('APPID','AcDbRegAppTableRecord',H_APPID,'ACAD', g(70,0)));
         s += g(0,'TABLE')+g(2,'DIMSTYLE')+g(5,H_DIMS)+g(330,0)+g(100,'AcDbSymbolTable')+g(100,'AcDbDimStyleTable')+g(70,1)
            + g(0,'DIMSTYLE')+g(105,nh())+g(330,H_DIMS)+g(100,'AcDbSymbolTableRecord')+g(100,'AcDbDimStyleTableRecord')+g(2,'Standard')
-           + g(70,0)+g(40,1)+g(41,n(2.5))+g(42,n(0.625))+g(43,n(3.75))+g(44,n(1.25))+g(140,n(2.5))+g(141,n(2.5))
+           + g(70,0)+g(40,n(unit*3))+g(41,n(2.5))+g(42,n(0.625))+g(43,n(3.75))+g(44,n(1.25))+g(140,n(2.5))+g(141,n(2.5))
            + g(147,n(0.625))+g(171,3)+g(172,1)+g(271,3)+g(272,3)
            + g(0,'ENDTAB');
         s += tbl('BLOCK_RECORD',H_BR,2,
               rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Model_Space', g(70,0)+g(280,1)+g(281,0), H_MS)
             + rec('BLOCK_RECORD','AcDbBlockTableRecord',H_BR,'*Paper_Space', g(70,0)+g(280,1)+g(281,0), H_PS));
         s += g(0,'ENDSEC');
+
         const blk = (name, owner)=> g(0,'BLOCK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')+g(8,'0')+g(100,'AcDbBlockBegin')
                    +g(2,name)+g(70,0)+g(10,0)+g(20,0)+g(30,0)+g(3,name)+g(1,'')
                    +g(0,'ENDBLK')+g(5,nh())+g(330,owner)+g(100,'AcDbEntity')+g(8,'0')+g(100,'AcDbBlockEnd');
@@ -2715,263 +2825,467 @@ const CAD = (function(){
         return s + g(0,'EOF');
       }
     };
-    return api;
   }
-  function build(data, opts){
-    opts = opts || {};
-    const o = {
-      stations: opts.stations !== false,
-      pi:       opts.pi       !== false,
-      edges:    opts.edges    !== false,
-      turnPaths: opts.turnPaths !== false,
-      labels:   opts.labels   !== false,
-      stationStep: opts.stationStep || 100,
-      labelH:   opts.labelH   || 3.0,
-      stationH: opts.stationH || 1.8,
-      rtl:      !!opts.rtl
-    };
-    const d = Doc();
-    const warn = [];
-    function drawSpiral(els, e){
-      const N = Math.max(12, Math.ceil(e.Ls*2));
-      const pts = [];
-      for(let k=0;k<=N;k++){ const st=e.sta0+e.length*k/N; pts.push([frameAt(els,st).p.x, frameAt(els,st).p.y]); }
-      d.poly('AX-CENTER', pts, false);
-    }
-    function drawArc(e){
-      const {a0, sw} = arcSweep(e);
-      let d0 = a0*180/Math.PI, d1 = (a0+sw)*180/Math.PI;
-      if(sw>0 && d1<d0) d1+=360;
-      if(sw<0 && d1>d0) d1-=360;
-      d.arc('AX-CENTER', e.center.x, e.center.y, e.R, Math.min(d0,d1), Math.max(d0,d1));
-    }
-    (data.axes||[]).forEach((ax, k)=>{
-      const els = ax.els || [];
-      const total = ax.total || 0;
-      els.forEach(e=>{
-        if(e.type==='line')   d.line('AX-CENTER', e.from.x, e.from.y, e.to.x, e.to.y);
-        if(e.type==='arc')    drawArc(e);
-        if(e.type==='spiral') drawSpiral(els, e);
-      });
-      /* רצועות החתך: כל קו היסט בשכבה של סוג הרצועה.
-         קטע ישר -> LINE, קטע קשת ברוחב קבוע -> ARC אמיתי, אחרת פוליליין. */
-      if(o.edges && ax.offsets){
-        ax.offsets.forEach(g=>{
-          if(g.t==='line')      d.line(g.lay, g.x1, g.y1, g.x2, g.y2);
-          else if(g.t==='arc')  d.arc(g.lay, g.cx, g.cy, g.r, g.a0, g.a1);
-          else if(g.pts && g.pts.length>1) d.poly(g.lay, g.pts, false);
-        });
-      }
-      if(o.pi && ax.pis){
-        ax.pis.forEach((p,i)=>{
-          d.circle('AX-PI', p.x, p.y, 1.5);
-          d.circle('AX-PI', p.x, p.y, 0.4);
-          let label = `PI${i}`;
-          if(p.R>0) label += `  R${p.R}`;
-          if(p.Ls>0) label += `  Ls${p.Ls}`;
-          if(o.labels) d.text('AX-TEXT', p.x + 2.5, p.y + 2.5, o.labelH, enc(label, o.rtl), {ha:0});
-        });
-      }
-      if(o.stations && total>0){
-        const step = o.stationStep;
-        for(let st=0; st<=total+1e-6; st+=step){
-          const F = frameAt(els, st);
-          const tx = {x:F.n.y, y:-F.n.x};
-          const half = 2.0;
-          d.line('AX-STATION', F.p.x - half*tx.x, F.p.y - half*tx.y, F.p.x + half*tx.x, F.p.y + half*tx.y);
-          const km = Math.floor(st/1000);
-          const mm = st - km*1000;
-          const label = `${km}+${mm.toFixed(0).padStart(3,'0')}`;
-          if(o.labels){
-            const off = 3.0;
-            const rot = Math.atan2(tx.y, tx.x)*180/Math.PI;
-            let ang = rot;
-            if(ang>90) ang -= 180; if(ang<-90) ang += 180;
-            d.text('AX-TEXT', F.p.x - off*F.n.x, F.p.y - off*F.n.y, o.stationH, enc(label,o.rtl), {ha:1, rot:ang});
-          }
+
+  /* ---------- גזירת משולשים (ear clipping) לשטחים מלאים ---------- */
+  function area2(p){ let a=0; for(let i=0,j=p.length-1;i<p.length;j=i++) a += (p[j][0]*p[i][1] - p[i][0]*p[j][1]); return a/2; }
+  function inTri(a,b,c,p){
+    const d1=(p[0]-b[0])*(a[1]-b[1])-(a[0]-b[0])*(p[1]-b[1]);
+    const d2=(p[0]-c[0])*(b[1]-c[1])-(b[0]-c[0])*(p[1]-c[1]);
+    const d3=(p[0]-a[0])*(c[1]-a[1])-(c[0]-a[0])*(p[1]-a[1]);
+    const neg=(d1<0)||(d2<0)||(d3<0), pos=(d1>0)||(d2>0)||(d3>0);
+    return !(neg&&pos);
+  }
+  function earClip(poly){
+    const p = poly.slice();
+    if(p.length>1 && Math.abs(p[0][0]-p[p.length-1][0])<1e-12 && Math.abs(p[0][1]-p[p.length-1][1])<1e-12) p.pop();
+    if(p.length<3) return [];
+    if(area2(p) < 0) p.reverse();                         /* CCW */
+    const idx = p.map((_,i)=>i), out=[];
+    let guard = 0;
+    while(idx.length > 3 && guard++ < 4000){
+      let clipped = false;
+      for(let i=0;i<idx.length;i++){
+        const a=p[idx[(i+idx.length-1)%idx.length]], b=p[idx[i]], c=p[idx[(i+1)%idx.length]];
+        const cross = (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]);
+        if(cross <= 1e-14) continue;                      /* לא קמור */
+        let ok = true;
+        for(let j=0;j<idx.length;j++){
+          if(j===i || j===(i+idx.length-1)%idx.length || j===(i+1)%idx.length) continue;
+          if(inTri(a,b,c,p[idx[j]])){ ok=false; break; }
         }
+        if(!ok) continue;
+        out.push([a,b,c]); idx.splice(i,1); clipped = true; break;
       }
-      if(o.labels && els.length){
-        const F = frameAt(els, 0);
-        const nx = F.p.x + 5*F.n.x, ny = F.p.y + 5*F.n.y;
-        d.text('AX-TEXT', nx, ny, o.labelH*1.2, enc(ax.name || `Axis ${k+1}`, o.rtl), {ha:0});
+      if(!clipped) break;
+    }
+    if(idx.length === 3) out.push([p[idx[0]],p[idx[1]],p[idx[2]]]);
+    return out;
+  }
+
+  /* ---------- קריאת ה-SVG ---------- */
+  const ATTR = /([\w-]+)="([^"]*)"/g;
+  function attrs(s){ const o={}; let m; ATTR.lastIndex=0; while((m=ATTR.exec(s))) o[m[1]]=m[2]; return o; }
+  const num = v => { const x = parseFloat(v); return isNaN(x)?0:x; };
+  function translateOf(t){
+    if(!t) return [0,0];
+    const m = /translate\(\s*(-?[\d.eE+-]+)(?:[ ,]+(-?[\d.eE+-]+))?\s*\)/.exec(t);
+    return m ? [parseFloat(m[1]), m[2]!==undefined?parseFloat(m[2]):0] : [0,0];
+  }
+  function scaleOf(t){
+    if(!t) return 1;
+    const m = /scale\(\s*(-?[\d.eE+-]+)/.exec(t);
+    return m ? parseFloat(m[1]) : 1;
+  }
+  function rotateOf(t){
+    if(!t) return 0;
+    const m = /rotate\(\s*(-?[\d.eE+-]+)/.exec(t);
+    return m ? parseFloat(m[1]) : 0;
+  }
+  const NUMRE = /-?\d*\.?\d+(?:[eE][-+]?\d+)?/g;
+  function pathSubs(d){
+    const subs=[]; let cur=null, x=0, y=0, sx=0, sy=0, closed=false;
+    const cmds = d.match(/[MmLlHhVvZz][^MmLlHhVvZz]*/g) || [];
+    const push = ()=>{ if(cur && cur.length>1) subs.push({pts:cur, closed}); };
+    cmds.forEach(seg=>{
+      const c = seg[0], nums = (seg.slice(1).match(NUMRE)||[]).map(Number);
+      if(c==='M'||c==='m'){
+        push(); closed=false; cur=[];
+        for(let i=0;i+1<nums.length+1 && i<nums.length;i+=2){
+          if(c==='M'){ x=nums[i]; y=nums[i+1]; } else { x+=nums[i]; y+=nums[i+1]; }
+          cur.push([x,y]); if(i===0){ sx=x; sy=y; }
+        }
+      } else if(c==='L'||c==='l'){
+        for(let i=0;i<nums.length;i+=2){ if(c==='L'){ x=nums[i]; y=nums[i+1]; } else { x+=nums[i]; y+=nums[i+1]; } cur.push([x,y]); }
+      } else if(c==='H'||c==='h'){
+        nums.forEach(v=>{ x = (c==='H')?v:x+v; cur.push([x,y]); });
+      } else if(c==='V'||c==='v'){
+        nums.forEach(v=>{ y = (c==='V')?v:y+v; cur.push([x,y]); });
+      } else if(c==='Z'||c==='z'){
+        closed = true; x=sx; y=sy;
       }
     });
-    if(o.turnPaths && data.junctions){
-      data.junctions.forEach((J,n)=>{
-        (J.corners||[]).forEach(c=>{
-          if(c.straight || c.failed || !c.pts) return;
-          d.poly('JCT-CURVE', c.pts.map(p=>[p.x,p.y]), false);
-          if(o.labels && c.R && c.Cc){
-            const m = c.pts[Math.floor(c.pts.length/2)];
-            const dx = m.x - c.Cc.x, dy = m.y - c.Cc.y;
-            const L = Math.hypot(dx,dy)||1;
-            const lx = m.x + dx/L*3, ly = m.y + dy/L*3;
-            d.text('JCT-TEXT', lx, ly, o.labelH, enc(`R${c.R}`, o.rtl), {ha:1});
-          }
-        });
-        (J.corners||[]).forEach(c=>{
-          if(c.island && c.island.poly && c.island.poly.length>2)
-            d.poly('JCT-ISLAND', c.island.poly.map(p=>[p.x,p.y]), true);
-        });
-        (J.leftPaths||[]).forEach(pp=>{
-          if(!pp.pts || pp.R===null) return;
-          d.poly('JCT-ARROW', pp.pts.map(p=>[p.x,p.y]), false);
-        });
-      });
-    }
-    return {dxf: d.out(), warn};
+    push();
+    return subs;
   }
-  return {build};
+
+  /* ---------- התרגום עצמו ---------- */
+  function fromSVG(svg, D, o){
+    o = o || {};
+    const U = D/1000;
+    const A0h = o.sheetH || 841;                  /* גובה גיליון A0 במ״מ */
+    const fills = o.fills !== false;
+    const used = {};
+    const d = Doc(U, used);
+    const st = [{tx:0, ty:0, sc:1, fill:null, stroke:null, lay:null}];
+    const P = (x,y)=>[x*U, (A0h - y)*U];
+
+    function top(){ return st[st.length-1]; }
+    function place(x,y){ const s=top(); return P(s.tx + s.sc*x, s.ty + s.sc*y); }
+    function lenOf(v){ return v * top().sc; }
+
+    const paper = col => col.r>245 && col.g>245 && col.b>245;   /* לבן = צבע הנייר */
+    function addFill(lay, col, poly){         /* poly במרחב המודל */
+      if(!fills || !col || paper(col)) return;
+      const p = poly.map(q=>[q[0],q[1]]);
+      if(p.length===4 && convexQuad(p)) d.solid(lay+'-F', col, p[0], p[1], p[3], p[2]);
+      else earClip(p).forEach(t=>d.solid(lay+'-F', col, t[0], t[1], t[2]));
+    }
+    function convexQuad(p){
+      let sgn = 0;
+      for(let i=0;i<4;i++){
+        const a=p[i], b=p[(i+1)%4], c=p[(i+2)%4];
+        const cr = (b[0]-a[0])*(c[1]-b[1]) - (b[1]-a[1])*(c[0]-b[0]);
+        if(Math.abs(cr) < 1e-14) return false;
+        const s = cr>0?1:-1;
+        if(sgn===0) sgn=s; else if(s!==sgn) return false;
+      }
+      return true;
+    }
+    function shape(lay, pts, closed, fillCol, strokeCol, lt){
+      /* pts כבר במרחב המודל. המיתאר תמיד נרשם – בצבע הקו, ואם אין קו בצבע המילוי,
+         כך שהתצוגה זהה למסך וכשמקפיאים את שכבות ‎-F‎ נשאר שרטוט קווי. */
+      if(fillCol) addFill(lay, fillCol, pts);
+      const oc = strokeCol || fillCol;
+      if(oc) d.poly(lay, oc, pts, closed, lt);
+    }
+    /* קווקוו: פסים באלכסון בתוך מלבן – בדיוק כמו התבנית שעל המסך.
+       הפס נחתך אל תוך המלבן (Sutherland–Hodgman) ונצבע כשטח מלא. */
+    function clipHalf(poly, dy, dx, c, keepGE){
+      const out = [];
+      const val = p => p[0]*dy - p[1]*dx - c;
+      for(let i=0;i<poly.length;i++){
+        const A = poly[i], B = poly[(i+1)%poly.length];
+        const va = val(A)*(keepGE?1:-1), vb = val(B)*(keepGE?1:-1);
+        if(va >= 0) out.push(A);
+        if((va >= 0) !== (vb >= 0)){
+          const t = va/(va-vb);
+          out.push([A[0]+(B[0]-A[0])*t, A[1]+(B[1]-A[1])*t]);
+        }
+      }
+      return out;
+    }
+    function hatchRect(lay, x, y, w, h, ang, gap, col, bandW){
+      if(!col) return;
+      const rad = ang*Math.PI/180, dx = Math.cos(rad), dy = Math.sin(rad);
+      const rect = [[x,y],[x+w,y],[x+w,y+h],[x,y+h]];
+      const cs = rect.map(p=>p[0]*dy - p[1]*dx);
+      const lo = Math.min.apply(null,cs), hi = Math.max.apply(null,cs);
+      const bw = bandW>0 ? bandW : 0;
+      for(let c = Math.floor(lo/gap)*gap; c <= hi+gap; c += gap){
+        if(bw > 0){
+          let poly = clipHalf(rect, dy, dx, c, true);
+          if(poly.length) poly = clipHalf(poly, dy, dx, c+bw, false);
+          if(poly.length >= 3) addFill(lay, col, poly.map(p=>place(p[0],p[1])));
+        } else {
+          const pts = [];
+          if(Math.abs(dx) > 1e-9) for(const xx of [x, x+w]){ const yy = (xx*dy - c)/dx; if(yy>=y-1e-9 && yy<=y+h+1e-9) pts.push([xx,yy]); }
+          if(Math.abs(dy) > 1e-9) for(const yy of [y, y+h]){ const xx = (c + yy*dx)/dy; if(xx>=x-1e-9 && xx<=x+w+1e-9) pts.push([xx,yy]); }
+          if(pts.length < 2) continue;
+          const A = place(pts[0][0], pts[0][1]), B = place(pts[1][0], pts[1][1]);
+          if(Math.abs(A[0]-B[0])>1e-12 || Math.abs(A[1]-B[1])>1e-12) d.line(lay, col, A[0],A[1],B[0],B[1]);
+        }
+      }
+    }
+    function dashOf(a){
+      const v = a['stroke-dasharray'];
+      if(!v || v==='none') return null;
+      const arr = v.split(/[\s,]+/).map(Number).filter(x=>!isNaN(x)).map(x=>x*top().sc);
+      return arr.length>=2 ? d.dashLT(arr) : null;
+    }
+
+    const tagRe = /<(\/?)([a-zA-Z]+)((?:"[^"]*"|[^>])*?)(\/?)>/g;
+    let m, skipDepth = 0;
+    while((m = tagRe.exec(svg))){
+      const close = m[1]==='/', name = m[2].toLowerCase(), a = attrs(m[3]), self = m[4]==='/';
+      if(skipDepth){                                   /* בתוך defs/pattern */
+        if(name==='defs'||name==='pattern'){ if(close) skipDepth--; else if(!self) skipDepth++; }
+        continue;
+      }
+      if(name==='defs' || name==='pattern'){ if(!close && !self) skipDepth++; continue; }
+      if(name==='svg') continue;
+      if(name==='g'){
+        if(close){ if(st.length>1) st.pop(); }
+        else {
+          const par = top(), t = translateOf(a.transform), sc = scaleOf(a.transform);
+          st.push({tx: par.tx + par.sc*t[0], ty: par.ty + par.sc*t[1], sc: par.sc*sc,
+                   fill: a.fill!==undefined ? a.fill : par.fill,
+                   stroke: a.stroke!==undefined ? a.stroke : par.stroke,
+                   lay: a['data-lay'] || par.lay});
+          if(self) st.pop();
+        }
+        continue;
+      }
+      if(close) continue;
+
+      const s = top();
+      const layer = a['data-lay'] || s.lay || 'TS-MISC';
+      if(layer === 'none') { if(name==='text') tagRe.lastIndex = svg.indexOf('</text>', tagRe.lastIndex)+7; continue; }
+      const fc = hex(a.fill !== undefined ? a.fill : s.fill);
+      const sc = hex(a.stroke !== undefined ? a.stroke : s.stroke);
+      const lt = dashOf(a);
+
+      if(name==='rect'){
+        const x=num(a.x), y=num(a.y), w=num(a.width), h=num(a.height), rx=num(a.rx||a.ry);
+        const hatch = a['data-hatch'], fillCol = hex(a['data-fill-col']);
+        let pts;
+        if(rx > 0.0001){
+          const r = Math.min(rx, w/2, h/2), B = 0.414213562;   /* tan(45°/4·2) לרבע מעגל */
+          const q = [];
+          const add = (px,py,b)=>{ const P2=place(px,py); q.push(b?[P2[0],P2[1],b]:[P2[0],P2[1]]); };
+          add(x+r, y, 0);          add(x+w-r, y, B);
+          add(x+w, y+r, 0);        add(x+w, y+h-r, B);
+          add(x+w-r, y+h, 0);      add(x+r, y+h, B);
+          add(x, y+h-r, 0);        add(x, y+r, B);
+          pts = q;
+        } else {
+          pts = [place(x,y), place(x+w,y), place(x+w,y+h), place(x,y+h)];
+        }
+        shape(layer, pts, true, fc || fillCol, sc, lt);
+        if(hatch) hatchRect(layer, x, y, w, h, +hatch, num(a['data-hatch-gap'])||10, hex(a['data-hatch-col']) || fc, num(a['data-hatch-w']));
+      }
+      else if(name==='circle'){
+        const cx=num(a.cx), cy=num(a.cy), r=num(a.r);
+        const c = place(cx,cy), rm = lenOf(r)*U;
+        if(fc && fills && !paper(fc)){
+          const N=16, ring=[];
+          for(let i=0;i<N;i++){ const t=2*Math.PI*i/N; ring.push([c[0]+rm*Math.cos(t), c[1]+rm*Math.sin(t)]); }
+          for(let i=0;i<N;i+=2) d.solid(layer+'-F', fc, ring[i], ring[(i+1)%N], c, ring[(i+2)%N]);
+        }
+        const oc = sc || fc;
+        if(oc) d.circle(layer, oc, c[0], c[1], rm);
+      }
+      else if(name==='line'){
+        const p1=place(num(a.x1),num(a.y1)), p2=place(num(a.x2),num(a.y2));
+        if(Math.abs(p1[0]-p2[0])>1e-12 || Math.abs(p1[1]-p2[1])>1e-12)
+          d.line(layer, sc || fc, p1[0],p1[1],p2[0],p2[1], lt);
+      }
+      else if(name==='path'){
+        pathSubs(a.d||'').forEach(sub=>{
+          const pts = sub.pts.map(p=>place(p[0],p[1]));
+          shape(layer, pts, sub.closed || !!fc, fc, sc, lt);
+        });
+      }
+      else if(name==='text'){
+        const end = svg.indexOf('</text>', tagRe.lastIndex);
+        const raw = end<0 ? '' : svg.slice(tagRe.lastIndex, end);
+        if(end>=0) tagRe.lastIndex = end + 7;
+        const txt = raw.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
+        const p = place(num(a.x), num(a.y));
+        const size = lenOf(num(a['font-size'])) * 0.72 * U;
+        const ha = a['text-anchor']==='middle' ? 1 : a['text-anchor']==='end' ? 2 : 0;
+        const rot = -rotateOf(a.transform);
+        d.text(layer, fc, p[0], p[1], size, enc(txt, o.rtl), {ha, rot});
+      }
+    }
+    return {dxf: d.out(), entities: d.count(), layers: Object.keys(used)};
+  }
+
+  /* עברית: כל תו שאינו ASCII נכתב כ-\U+XXXX */
+  function enc(s, rtl){
+    s = String(s==null?'':s);
+    if(rtl) s = s.replace(/[֐-׿][֐-׿\s"'׳״.\-()+%]*/g, m=>[...m].reverse().join(''));
+    return s.replace(/[^\x20-\x7E]/g, ch=>'\\U+'+ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0'));
+  }
+
+  /* ---------- כתיבה מרשימת פעולות (קואורדינטות מודל במטרים) ---------- */
+  function fromOps(ops, o){
+    o = o || {};
+    const used = {};
+    const d = Doc(o.unit || 1, used);
+    const fills = o.fills !== false;
+    ops.forEach(op=>{
+      const col = op.col ? (typeof op.col === 'string' ? hex(op.col) : op.col) : null;
+      if(op.k === 'poly'){
+        if(op.pts && op.pts.length>1) d.poly(op.lay, col, op.pts, !!op.closed, op.lt ? d.dashLT(op.lt) : null);
+      } else if(op.k === 'solid'){
+        if(!fills || !col || (col.r>245&&col.g>245&&col.b>245)) return;
+        const p = op.poly.slice();
+        if(p.length===4) d.solid(op.lay+'-F', col, p[0], p[1], p[3], p[2]);
+        else earClip(p).forEach(t=>d.solid(op.lay+'-F', col, t[0], t[1], t[2]));
+      } else if(op.k === 'circle'){
+        d.circle(op.lay, col, op.cx, op.cy, op.r);
+      } else if(op.k === 'text'){
+        d.text(op.lay, col, op.x, op.y, op.h, enc(op.s, o.rtl), {ha:op.ha||0, va:op.va||0, rot:op.rot||0});
+      }
+    });
+    return {dxf: d.out(), entities: d.count(), layers: Object.keys(used)};
+  }
+
+  return {fromSVG, fromOps, LAYERS};
 })();
 
 /* ======================================================================
-   ייצוא ל-CAD – מייצא את כל הצירים שצוירו.
+   ייצוא ל-CAD – מקליט את אותו ציור שהכלי מצייר על הבד.
+   ----------------------------------------------------------------------
+   במקום לצייר מחדש, הייצוא מחליף את הקשר הגרפי במקליט, מריץ את פונקציות
+   השרטוט של הכלי עצמו (drawAxis / drawJunctions) וממיר כל קו, שטח וכיתוב
+   לישות DXF בקואורדינטות עולם במטרים. לכן הקובץ זהה למה שרואים במסך
+   במצב "תכנית": אותם צירים, רצועות, סימוני צבע, צמתים וקילומטראז׳.
+   ====================================================================== */
+const EXPORT_SCALE = 2.5;          /* פיקסלים למטר בהקלטה: 50 מ׳ בין תחנות, צפיפות קשתות טובה */
+
+function RecCtx(){
+  const out = [];
+  let subs = [], cur = [], closed = false;
+  let T = [1,0,0,1,0,0], stack = [];
+  const api = {
+    fillStyle:'#000', strokeStyle:'#000', lineWidth:1, font:'', textAlign:'start',
+    textBaseline:'alphabetic', globalAlpha:1, lineCap:'butt', _mark:null, _dash:[],
+    ops: out,
+    beginPath(){ subs=[]; cur=[]; closed=false; },
+    moveTo(x,y){ if(cur.length>1) subs.push({pts:cur, closed:false}); cur=[[x,y]]; },
+    lineTo(x,y){ cur.push([x,y]); },
+    closePath(){ closed = true; },
+    arc(cx,cy,r,a0,a1){ const n=32, p=[];
+      for(let i=0;i<=n;i++){ const t=a0+(a1-a0)*i/n; p.push([cx+r*Math.cos(t), cy+r*Math.sin(t)]); }
+      if(cur.length>1) subs.push({pts:cur, closed:false});
+      cur = p; closed = Math.abs(a1-a0) > 6.2; },
+    setLineDash(d){ api._dash = d || []; },
+    save(){ stack.push({T:T.slice(), fs:api.fillStyle, ss:api.strokeStyle, lw:api.lineWidth,
+                        f:api.font, ta:api.textAlign, tb:api.textBaseline, d:api._dash.slice(), m:api._mark}); },
+    restore(){ const s = stack.pop(); if(!s) return;
+      T=s.T; api.fillStyle=s.fs; api.strokeStyle=s.ss; api.lineWidth=s.lw;
+      api.font=s.f; api.textAlign=s.ta; api.textBaseline=s.tb; api._dash=s.d; api._mark=s.m; },
+    translate(x,y){ T = mul(T, [1,0,0,1,x,y]); },
+    rotate(a){ const c=Math.cos(a), s=Math.sin(a); T = mul(T, [c,s,-s,c,0,0]); },
+    scale(x,y){ T = mul(T, [x,0,0,y,0,0]); },
+    setTransform(){ T = [1,0,0,1,0,0]; },
+    fillRect(){}, drawImage(){}, clearRect(){},
+    fillText(t,x,y){ const p = apply(T,[x,y]);
+      out.push({op:'text', s:String(t), x:p[0], y:p[1], font:api.font, align:api.textAlign,
+                base:api.textBaseline, col:api.fillStyle, rot:Math.atan2(T[1],T[0])}); },
+    strokeText(){},
+    stroke(){ flush('stroke'); },
+    fill(){ flush('fill'); }
+  };
+  function mul(a,b){ return [a[0]*b[0]+a[2]*b[1], a[1]*b[0]+a[3]*b[1],
+                             a[0]*b[2]+a[2]*b[3], a[1]*b[2]+a[3]*b[3],
+                             a[0]*b[4]+a[2]*b[5]+a[4], a[1]*b[4]+a[3]*b[5]+a[5]]; }
+  function apply(m,p){ return [m[0]*p[0]+m[2]*p[1]+m[4], m[1]*p[0]+m[3]*p[1]+m[5]]; }
+  function flush(kind){
+    const all = subs.concat(cur.length>1 ? [{pts:cur, closed}] : []);
+    if(!all.length) return;
+    all.forEach(sp=>{
+      out.push({op:kind, pts:sp.pts.map(p=>p.slice()), closed: sp.closed || closed,
+                col: kind==='fill' ? api.fillStyle : api.strokeStyle,
+                lw: api.lineWidth, dash: api._dash.slice(), mark: api._mark});
+    });
+    if(kind === 'stroke') api._mark = null;   /* סוג הצבע תקף לקו אחד בלבד */
+  }
+  return api;
+}
+
+/* ---- מיפוי סגנון לשכבה: אותם צבעים שהכלי משתמש בהם במצב "תכנית" ---- */
+function layerOf(o){
+  const c = String(o.col||'').toLowerCase();
+  if(o.op === 'text') return c === '#c0392b' ? 'AX-TEXT' : 'AX-TEXT';
+  if(o.op === 'fill'){
+    if(c === '#111111' || c === '#111') return 'AX-ARROW';   /* חצי כיוון וסימוני חץ */
+    if(c === '#d8d8d8') return 'AX-MEDIAN';
+    if(c === '#f3efe6') return 'AX-EARTH';
+    if(c === '#f7f7f7') return 'AX-WALK';
+    if(c === '#ffffff' || c === '#fff') return 'AX-SURF';
+    return 'AX-SURF';
+  }
+  if(c === '#c0392b') return 'AX-CENTER';
+  if(o.mark) return 'AX-MARK-' + o.mark;
+  if(c === '#d9a400') return 'AX-MARK-807';
+  if(o.dash && o.dash.length) return 'AX-ZONE';
+  return 'AX-EDGE';
+}
+
+/* ---- ההקלטה עצמה: אותן קריאות שיוצרות את התמונה על המסך ---- */
+function recordDrawing(){
+  const keep = {view:{...S.view}, sel:S.sel, hover:S.hover, editRow:S.editRow, cur:S.cur, tool:S.tool};
+  const rec = RecCtx(), real = ctx;
+  S.view = {...S.view, scale: EXPORT_SCALE, mode: 'plan'};
+  S.sel = -1; S.hover = null; S.editRow = null; S.tool = 'pan';
+  const v = {cx:S.view.cx, cy:S.view.cy, scale:S.view.scale,
+             w: cv.width/dpr()/2, h: cv.height/dpr()/2};
+  const inv = (x,y)=>[ (x - v.w)/v.scale + v.cx, -(y - v.h)/v.scale + v.cy ];
+  ctx = rec;
+  try{
+    computeNetwork();
+    S.axes.forEach((a,k)=>{ if(k===keep.cur) return; withAxis(k, ()=>drawAxis(false)); });
+    withAxis(keep.cur, ()=>drawAxis(true));
+    drawJunctions();
+  } finally {
+    ctx = real;
+    S.view = keep.view; S.sel = keep.sel; S.hover = keep.hover;
+    S.editRow = keep.editRow; S.cur = keep.cur; S.tool = keep.tool;
+  }
+  return {ops: rec.ops, inv};
+}
+
+/* ---- המרה לישויות CAD ---- */
+function opsToCAD(ops, inv, D){
+  const out = [];
+  const W = p => inv(p[0], p[1]);
+  const seen = new Set();
+  ops.forEach(o=>{
+    if(o.op === 'text'){
+      const m = /(\d+(?:\.\d+)?)px/.exec(o.font||'');
+      const px = m ? parseFloat(m[1]) : 11;
+      const p = W([o.x, o.y]);
+      out.push({k:'text', lay: layerOf(o), col: o.col, x:p[0], y:p[1],
+                h: px * D / 4000,
+                s: o.s, ha: o.align==='center' ? 1 : o.align==='right' ? 2 : 0,
+                va: o.base==='middle' ? 2 : 0,
+                rot: -o.rot * 180 / Math.PI});
+      return;
+    }
+    if(!o.pts || o.pts.length < 2) return;
+    const pts = o.pts.map(W);
+    const lay = layerOf(o);
+    if(o.op === 'fill'){
+      out.push({k:'solid', lay, col:o.col, poly:pts});
+      return;
+    }
+    /* קו: אם יש דגם מקווקו – מעבירים אותו כסוג קו, באורכים של העולם */
+    const lt = (o.dash && o.dash.length>=2) ? o.dash.map(v=>v/EXPORT_SCALE) : null;
+    const key = lay + '|' + pts.length + '|' + pts[0][0].toFixed(3) + ',' + pts[0][1].toFixed(3)
+              + '|' + pts[pts.length-1][0].toFixed(3) + ',' + pts[pts.length-1][1].toFixed(3);
+    if(seen.has(key)) return;                    /* צירים לא פעילים מצוירים פעמיים */
+    seen.add(key);
+    out.push({k:'poly', lay, col:o.col, pts, closed:!!o.closed, lt});
+  });
+  return out;
+}
+
+/* ======================================================================
+   ייצוא ל-CAD – מיידי, ללא דיאלוגים. מייצא את כל מה שמצויר על המסך.
    ----------------------------------------------------------------------
    DWG הוא פורמט בינארי סגור של Autodesk ואין ספרייה שכותבת אותו בדפדפן,
    ולכן הכלי בונה DXF R2000 (קואורדינטות עולם במטרים) ושולח אותו לשירות
-   המרה קטן שמחזיר DWG אמיתי (dxf2dwg של LibreDWG). ללא שירות – יורד DXF,
-   ש-AutoCAD פותח ושומר בשם (Save As) ל-DWG.
+   המרה קטן שמחזיר DWG אמיתי. ללא שירות – יורד DXF.
    ====================================================================== */
-const DWG_SERVICE = 'https://mahalco-dwg.onrender.com/dxf2dwg';      /* לדוגמה: 'https://mahalco-cad.onrender.com/dxf2dwg' */
+const DWG_SERVICE = 'https://mahalco-dwg.onrender.com/dxf2dwg';
+function planScale(){             /* קנה המידה שאליו מותאם גודל הכיתוב בקובץ */
+  const el = document.getElementById('dwgScale');
+  return el ? (parseInt(el.value,10)||500) : 500;
+}
 function dwgService(){
   try{ return (localStorage.getItem('mahalco-dwg-service') || DWG_SERVICE || '').trim(); }
   catch(e){ return DWG_SERVICE || ''; }
 }
 
-/* ---- תחנות לייצוא: צפיפות קבועה לפי סטיית מיתר, ללא תלות בזום ---- */
-function exportStations(els, extra){
-  const total = els.reduce((mx,e)=>Math.max(mx, e.sta0+e.length), 0);
-  const set = [0, total];
-  els.forEach(e=>{
-    set.push(e.sta0, e.sta0+e.length);
-    if(e.type==='arc' || e.type==='spiral'){
-      const R = Math.abs(e.R||200);
-      const step = Math.max(0.5, Math.min(5, 2*Math.sqrt(2*R*0.01)));   /* סטייה ≤ 1 ס״מ */
-      const n = Math.max(8, Math.ceil(e.length/step));
-      for(let q=1;q<n;q++) set.push(e.sta0 + e.length*q/n);
-    }
-  });
-  (extra||[]).forEach(v=>{ if(v>0 && v<total) set.push(v); });
-  set.sort((a,b)=>a-b);
-  return set.filter((v,q)=>q===0 || v-set[q-1]>1e-6);
-}
-
-const CAD_LAYER = {
-  lane:'AX-LANE', shoulder:'AX-SHOULDER', parking:'AX-PARKING', sidewalk:'AX-SIDEWALK',
-  ditch:'AX-DITCH', wall:'AX-WALL', open:'AX-OPEN',
-  median:'AX-MEDIAN', medRow:'AX-MEDIAN', barrier:'AX-BARRIER'
-};
-
-/* ---- קווי ההיסט של ציר אחד. חייב לרוץ בתוך withAxis ---- */
-function axisOffsets(els){
-  const out = [];
-  if(!els.length || typeof strips !== 'function') return out;
-  let sts = [];
-  try{ sts = strips() || []; }catch(e){ return out; }
-  if(!sts.length) return out;
-
-  const zones = (S.axes[S.cur] && S.axes[S.cur]._zones) || [];
-  const breaks = [];
-  try{ (rowBreaks()||[]).forEach(v=>breaks.push(v)); }catch(e){}
-  zones.forEach(z=>{ breaks.push(z.s0, z.sj, z.s1); });
-  const stas = exportStations(els, breaks);
-
-  const dAt = (f, st)=> (typeof f==='function' ? f(st) : f);
-
-  function emit(lay, f){
-    els.forEach(e=>{
-      const s0 = e.sta0, s1 = e.sta0 + e.length;
-      /* האם ההיסט קבוע לאורך הקטע? */
-      let d0 = dAt(f, s0), constant = true;
-      for(let q=1;q<=6;q++){
-        const v = dAt(f, s0 + e.length*q/6);
-        if(Math.abs(v - d0) > 1e-6){ constant = false; break; }
-      }
-      if(constant && Math.abs(d0) < 1e-9 && e.type!=='spiral') return;   /* הציר עצמו */
-      if(constant && e.type==='line'){
-        const A = frameAt(els, s0), B = frameAt(els, s1 - 1e-9);
-        out.push({t:'line', lay,
-          x1:A.p.x + d0*A.n.x, y1:A.p.y + d0*A.n.y,
-          x2:B.p.x + d0*B.n.x, y2:B.p.y + d0*B.n.y});
-        return;
-      }
-      if(constant && e.type==='arc'){
-        const sw = arcSweep(e).sw, sg = sw>0 ? 1 : -1;
-        const r = e.R - sg*d0;
-        if(r > 0.05){
-          const a0 = Math.atan2(e.from.y-e.center.y, e.from.x-e.center.x)*180/Math.PI;
-          let a1 = a0 + sw*180/Math.PI;
-          out.push({t:'arc', lay, cx:e.center.x, cy:e.center.y, r:r,
-                    a0: Math.min(a0,a1), a1: Math.max(a0,a1)});
-          return;
-        }
-      }
-      const pts = stas.filter(v=>v>=s0-1e-6 && v<=s1+1e-6).map(v=>{
-        const F = frameAt(els, v), dv = dAt(f, v);
-        return [F.p.x + dv*F.n.x, F.p.y + dv*F.n.y];
-      });
-      if(pts.length>1) out.push({t:'poly', lay, pts});
-    });
-  }
-
-  sts.forEach(s=>{
-    const lay = CAD_LAYER[s.type] || 'AX-EDGE-L';
-    if(s.type==='median'){ emit('AX-MEDIAN', s.d0); emit('AX-MEDIAN', s.d1); }
-    else emit(lay, s.d1);
-  });
-  return out;
-}
-
-function buildExportData(){
-  const S_ = (typeof S !== 'undefined') ? S : window.S;
-  if(!S_ || !S_.axes || !S_.axes.length) return null;
-  const axes = [];
-  S_.axes.forEach(function(a, k){
-    withAxis(k, function(){
-      let R = {els:[], total:0};
-      try{ if(typeof solve === 'function') R = solve(); }catch(e){ console.warn('axis', k, e); }
-      let offs = [];
-      try{ offs = axisOffsets(R.els||[]); }catch(e){ console.warn('offsets', k, e); }
-      axes.push({
-        name: a.name || ('ציר ' + (k+1)),
-        els: R.els || [], total: R.total || 0,
-        sec: a.sec || null, pis: a.pis || [], offsets: offs
-      });
-    });
-  });
-  const jcts = [];
-  try{
-    if(S_.net && S_.junctions && S_.junctions.length){
-      S_.junctions.forEach(function(J){
-        const corners = (J.corners||[]).map(function(c){
-          return {straight:c.straight, failed:c.failed, pts:c.pts, R:c.R, Cc:c.Cc, island:c.island};
-        });
-        let lp = [];
-        try{ lp = (typeof leftPaths === 'function') ? (leftPaths(J)||[]) : []; }catch(e){}
-        jcts.push({p:J.p, corners:corners, leftPaths:lp});
-      });
-    }
-  }catch(e){ console.warn('junctions', e); }
-  return {axes:axes, junctions:jcts};
-}
-
 async function exportAllDXF(){
   try{
-    const data = buildExportData();
-    if(!data){ toast('אין ציר לייצוא – ציירו ציר תחילה'); return; }
-    const totalEls = data.axes.reduce((s,a)=>s+(a.els?a.els.length:0), 0);
-    if(totalEls===0 && data.axes.every(a=>!a.pis || !a.pis.length)){
-      toast('אין גאומטריה לייצוא – ציירו ציר תחילה'); return;
+    if(!S || !S.axes || !S.axes.length || !S.axes.some(a=>a.pis && a.pis.length)){
+      toast('אין ציר לייצוא – ציירו ציר תחילה'); return;
     }
-    const res = CAD.build(data, {
-      stations:true, pi:true, edges:true, turnPaths:true, labels:true,
-      rtl:false, stationStep:100, labelH:3.0, stationH:1.8
-    });
+    const fillInp = document.getElementById('dwgFill');
+    const fills = fillInp ? fillInp.checked : true;
+    const R = recordDrawing();
+    const D = planScale();
+    const ops = opsToCAD(R.ops, R.inv, D);
+    if(!ops.length){ toast('אין גאומטריה לייצוא'); return; }
+    const res = CAD.fromOps(ops, {fills:fills, rtl:false, unit:1});
+    draw();                                   /* החזרת התצוגה למצב שלפני ההקלטה */
 
     const stamp = new Date().toISOString().slice(0,10);
     const base  = 'MAHALCO_alignment_' + stamp;
-    const nOff  = data.axes.reduce((s,a)=>s+(a.offsets?a.offsets.length:0), 0);
     const dl = (blob, name)=>{
       const url = URL.createObjectURL(blob), a = document.createElement('a');
       a.href = url; a.download = name; a.style.display='none';
@@ -2979,29 +3293,38 @@ async function exportAllDXF(){
       setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 2000);
     };
     const svc = dwgService();
-
     if(svc){
-      toast('ממיר ל-DWG בשירות ההמרה…');
+      toast('ממיר ל-DWG… (התעוררות השירות עד דקה)');
       try{
-        const r = await fetch(svc, {method:'POST', headers:{'Content-Type':'application/dxf'}, body:res.dxf});
+        const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 150000);
+        let r; try{ r = await fetch(svc, {method:'POST', headers:{'Content-Type':'application/dxf'}, body:res.dxf, signal:ctl.signal}); }
+        finally{ clearTimeout(to); }
         if(!r.ok) throw new Error('HTTP ' + r.status);
         const blob = await r.blob();
         if(blob.size < 512) throw new Error('תשובה ריקה מהשירות');
         dl(blob, base + '.dwg');
-        toast('נוצר ' + base + '.dwg · ' + (blob.size/1024).toFixed(0) + ' KB · '
-              + data.axes.length + ' צירים · ' + nOff + ' קווי היסט');
+        toast('נוצר ' + base + '.dwg · ' + (blob.size/1024).toFixed(0) + ' KB · ' + res.entities + ' ישויות');
         return;
       }catch(err){
+        if(fills){
+          try{
+            const plain = CAD.fromOps(ops, {fills:false, rtl:false, unit:1});
+            const r2 = await fetch(svc, {method:'POST', headers:{'Content-Type':'application/dxf'}, body:plain.dxf});
+            if(r2.ok){ const b2 = await r2.blob();
+              if(b2.size >= 512){ dl(b2, base + '.dwg');
+                toast('נוצר ' + base + '.dwg (ללא מילוי) · ' + (b2.size/1024).toFixed(0) + ' KB'); return; } }
+          }catch(e2){}
+        }
         dl(new Blob([res.dxf],{type:'application/dxf'}), base + '.dxf');
         toast('ההמרה ל-DWG נכשלה (' + (err.message||err) + ') – הורד DXF');
         return;
       }
     }
     dl(new Blob([res.dxf],{type:'application/dxf'}), base + '.dxf');
-    toast('נוצר ' + base + '.dxf · ' + (res.dxf.length/1024).toFixed(0) + ' KB · '
-          + data.axes.length + ' צירים · ' + nOff + ' קווי היסט · לקבלת DWG הגדירו שירות המרה');
+    toast('נוצר ' + base + '.dxf · ' + (res.dxf.length/1024).toFixed(0) + ' KB · ' + res.entities + ' ישויות · כיתוב לקנה 1:' + D);
   }catch(err){
     console.error(err);
+    try{ draw(); }catch(e){}
     toast('שגיאה בייצוא: ' + (err.message || err));
   }
 }

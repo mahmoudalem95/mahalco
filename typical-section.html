@@ -568,11 +568,13 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
         <div class="seg full" data-bind="dxfWhat"></div></div>
       <div class="li"><label for="dxfRtl">היפוך רצפי עברית<small style="display:block;font-size:12px;color:var(--label-2)">אם הכיתוב מופיע הפוך ב-AutoCAD</small></label>
         <input type="checkbox" class="sw" id="dxfRtl"></div>
+      <div class="li"><label for="dxfFill">מילוי צבעוני<small style="display:block;font-size:12px;color:var(--label-2)">שכבות ‎-F‎; הקפאתן נותנת שרטוט קווי</small></label>
+        <input type="checkbox" class="sw" id="dxfFill" checked></div>
       <div class="li"><label for="dwgSvc">שירות המרה ל-DWG<small style="display:block;font-size:12px;color:var(--label-2)">כתובת השירות שממיר DXF ל-DWG. ריק = הורדת DXF</small></label></div>
       <div class="li"><input id="dwgSvc" type="url" placeholder="https://…/dxf2dwg" style="direction:ltr;text-align:left"></div>
     </div>
     <button class="btn-primary" id="dxfBtn" type="button">הורדת קובץ DWG</button>
-    <p id="dxfInfo">המודל נכתב בקנה 1:1 במטרים ובשכבות CAD; הגיליון, הכיתוב והמידות מוגדלים לפי קנה המידה, כך שפלוט 1:D על A0 מדויק.</p>
+    <p id="dxfInfo">קובץ ה-CAD מתורגם מאותו שרטוט שמוצג כאן – אותן צורות, אותם מיקומים ואותם צבעים. המודל במטרים 1:1, מסודר בשכבות ‎TS-*‎, ופלוט 1:D על A0 מדויק.</p>
   </div>
 </aside>
 </div>
@@ -1077,24 +1079,30 @@ function cellCheck(c){
   return null;
 }
 
+/* ======================================================================
+   שכבת השרטוט של הכלי – מקור אמת אחד.
+   אותו קוד מייצר את מה שרואים על המסך ואת מה שנשלח ל-CAD; התכונה
+   data-lay נושאת את שם השכבה ואינה משפיעה על התצוגה.
+   ====================================================================== */
 const TXT = 'font-family:Arial,Helvetica,sans-serif';
+function lay(o){ return o && o.lay ? ` data-lay="${o.lay}"` : ''; }
 function tx(x,y,s,size,o={}){
   const a=o.anchor||'middle', w=o.weight||400, c=o.color||'#14171a', r=o.rot?` transform="rotate(${o.rot} ${x} ${y})"`:'';
-  return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-size="${size}" text-anchor="${a}" font-weight="${w}" fill="${c}" style="${TXT}"${r}>${esc(s)}</text>`;
+  return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-size="${size}" text-anchor="${a}" font-weight="${w}" fill="${c}"${lay(o)} style="${TXT}"${r}>${esc(s)}</text>`;
 }
 function arrowV(x,yTop,len,dir,col,wd){
   const h=len, head=Math.min(h*0.4, wd*1.6), sw=wd*0.45;
-  if(dir==='up') return `<path d="M${x} ${yTop} l${wd} ${head} h${-wd+sw} v${h-head} h${-sw*2} v${-(h-head)} h${-wd+sw} z" fill="${col}"/>`;
-  return `<path d="M${x} ${yTop+h} l${wd} ${-head} h${-wd+sw} v${-(h-head)} h${-sw*2} v${h-head} h${-wd+sw} z" fill="${col}"/>`;
+  if(dir==='up') return `<path d="M${x} ${yTop} l${wd} ${head} h${-wd+sw} v${h-head} h${-sw*2} v${-(h-head)} h${-wd+sw} z" fill="${col}" data-lay="TS-ARROW"/>`;
+  return `<path d="M${x} ${yTop+h} l${wd} ${-head} h${-wd+sw} v${-(h-head)} h${-sw*2} v${h-head} h${-wd+sw} z" fill="${col}" data-lay="TS-ARROW"/>`;
 }
-function iCar(cx,yG,k,col){ const w=1.8*k,h=1.45*k; return `<g><rect x="${cx-w*.36}" y="${yG-h}" width="${w*.72}" height="${h*.42}" rx="${h*.1}" fill="${col}"/><rect x="${cx-w*.3}" y="${yG-h+h*.07}" width="${w*.6}" height="${h*.22}" fill="#dfe6ea"/><rect x="${cx-w/2}" y="${yG-h*.62}" width="${w}" height="${h*.44}" rx="${h*.09}" fill="${col}"/><rect x="${cx-w*.46}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/><rect x="${cx+w*.30}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/></g>`; }
-function iBus(cx,yG,k,col){ const w=2.55*k,h=3.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.93}" rx="${w*.08}" fill="${col}"/><rect x="${cx-w*.42}" y="${yG-h*.88}" width="${w*.84}" height="${h*.36}" fill="#e3eaee"/><rect x="${cx-w*.36}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx+w*.18}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx-w*.46}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/><rect x="${cx+w*.3}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/></g>`; }
-function iLrt(cx,yG,k,col){ const w=2.65*k,h=3.6*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.92}" rx="${w*.14}" fill="${col}"/><rect x="${cx-w*.4}" y="${yG-h*.86}" width="${w*.8}" height="${h*.4}" rx="${w*.05}" fill="#dfe8ef"/><path d="M${cx-w*.25} ${yG-h} l${w*.25} ${-h*.35} l${w*.25} ${h*.35}" fill="none" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><line x1="${cx-w*.5}" y1="${yG-h*1.35}" x2="${cx+w*.5}" y2="${yG-h*1.35}" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><rect x="${cx-w*.42}" y="${yG-k*.18}" width="${w*.84}" height="${k*.18}" fill="#555"/></g>`; }
-function iPerson(cx,yG,k,col){ const h=1.7*k,w=.46*k,hd=.2*k; return `<g fill="${col}" opacity=".85"><circle cx="${cx}" cy="${yG-h+hd}" r="${hd}"/><path d="M${cx-w/2} ${yG-h+hd*2.1} h${w} v${h*.42} l${-w*.28} 0 v${h*.44} h${-w*.16} v${-h*.44} h${-w*.12} v${h*.44} h${-w*.16} v${-h*.44} l${-w*.28} 0 z"/></g>`; }
-function iBike(cx,yG,k,col){ const w=.7*k,h=1.75*k,sw=Math.max(.15,k*.035); return `<g><circle cx="${cx}" cy="${yG-h*.16}" r="${h*.16}" fill="none" stroke="#3b3f44" stroke-width="${sw}"/><line x1="${cx-w/2}" y1="${yG-h*.52}" x2="${cx+w/2}" y2="${yG-h*.52}" stroke="#3b3f44" stroke-width="${sw}"/><circle cx="${cx}" cy="${yG-h*.9}" r="${h*.1}" fill="${col}"/><path d="M${cx-w*.34} ${yG-h*.76} h${w*.68} v${h*.34} h${-w*.68} z" fill="${col}"/></g>`; }
-function iTree(cx,yG,k,col){ const h=6*k,r=h*.28,tw=Math.max(.3,h*.04); return `<g><rect x="${cx-tw/2}" y="${yG-h*.58}" width="${tw}" height="${h*.58}" fill="#6b5a44"/><circle cx="${cx}" cy="${yG-h*.72}" r="${r}" fill="${col}" opacity=".9"/><circle cx="${cx-r*.6}" cy="${yG-h*.56}" r="${r*.7}" fill="${col}" opacity=".82"/><circle cx="${cx+r*.6}" cy="${yG-h*.57}" r="${r*.66}" fill="${col}" opacity=".82"/></g>`; }
-function iRail(cx,yG,k){ const h=.8*k,w=.2*k; return `<g><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h}" fill="#555"/><rect x="${cx-w*1.6}" y="${yG-h*.95}" width="${w*3.2}" height="${h*.35}" fill="#8a9097"/></g>`; }
-function iBuilding(x,yG,k,dir){ const w=5*k,h=9*k, x0=dir>0?x:x-w; let win=''; for(let r=0;r<4;r++)for(let c=0;c<3;c++) win+=`<rect x="${x0+w*.12+c*w*.29}" y="${yG-h+h*.1+r*h*.21}" width="${w*.18}" height="${h*.1}" fill="#f0f3f6"/>`; return `<g><rect x="${x0}" y="${yG-h}" width="${w}" height="${h}" fill="#9aa1a7" opacity=".55"/>${win}</g>`; }
+function iCar(cx,yG,k,col){ const w=1.8*k,h=1.45*k; return `<g data-lay="TS-SYMB"><rect x="${cx-w*.36}" y="${yG-h}" width="${w*.72}" height="${h*.42}" rx="${h*.1}" fill="${col}"/><rect x="${cx-w*.3}" y="${yG-h+h*.07}" width="${w*.6}" height="${h*.22}" fill="#dfe6ea"/><rect x="${cx-w/2}" y="${yG-h*.62}" width="${w}" height="${h*.44}" rx="${h*.09}" fill="${col}"/><rect x="${cx-w*.46}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/><rect x="${cx+w*.30}" y="${yG-h*.22}" width="${w*.16}" height="${h*.22}" fill="#2c2f33"/></g>`; }
+function iBus(cx,yG,k,col){ const w=2.55*k,h=3.2*k; return `<g data-lay="TS-SYMB"><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.93}" rx="${w*.08}" fill="${col}"/><rect x="${cx-w*.42}" y="${yG-h*.88}" width="${w*.84}" height="${h*.36}" fill="#e3eaee"/><rect x="${cx-w*.36}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx+w*.18}" y="${yG-h*.3}" width="${w*.18}" height="${h*.06}" fill="#f4e7a1"/><rect x="${cx-w*.46}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/><rect x="${cx+w*.3}" y="${yG-h*.1}" width="${w*.16}" height="${h*.1}" fill="#2c2f33"/></g>`; }
+function iLrt(cx,yG,k,col){ const w=2.65*k,h=3.6*k; return `<g data-lay="TS-SYMB"><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h*.92}" rx="${w*.14}" fill="${col}"/><rect x="${cx-w*.4}" y="${yG-h*.86}" width="${w*.8}" height="${h*.4}" rx="${w*.05}" fill="#dfe8ef"/><path d="M${cx-w*.25} ${yG-h} l${w*.25} ${-h*.35} l${w*.25} ${h*.35}" fill="none" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><line x1="${cx-w*.5}" y1="${yG-h*1.35}" x2="${cx+w*.5}" y2="${yG-h*1.35}" stroke="#333" stroke-width="${Math.max(.15,k*.03)}"/><rect x="${cx-w*.42}" y="${yG-k*.18}" width="${w*.84}" height="${k*.18}" fill="#555"/></g>`; }
+function iPerson(cx,yG,k,col){ const h=1.7*k,w=.46*k,hd=.2*k; return `<g data-lay="TS-SYMB" fill="${col}" opacity=".85"><circle cx="${cx}" cy="${yG-h+hd}" r="${hd}"/><path d="M${cx-w/2} ${yG-h+hd*2.1} h${w} v${h*.42} l${-w*.28} 0 v${h*.44} h${-w*.16} v${-h*.44} h${-w*.12} v${h*.44} h${-w*.16} v${-h*.44} l${-w*.28} 0 z"/></g>`; }
+function iBike(cx,yG,k,col){ const w=.7*k,h=1.75*k,sw=Math.max(.15,k*.035); return `<g data-lay="TS-SYMB"><circle cx="${cx}" cy="${yG-h*.16}" r="${h*.16}" fill="none" stroke="#3b3f44" stroke-width="${sw}"/><line x1="${cx-w/2}" y1="${yG-h*.52}" x2="${cx+w/2}" y2="${yG-h*.52}" stroke="#3b3f44" stroke-width="${sw}"/><circle cx="${cx}" cy="${yG-h*.9}" r="${h*.1}" fill="${col}"/><path d="M${cx-w*.34} ${yG-h*.76} h${w*.68} v${h*.34} h${-w*.68} z" fill="${col}"/></g>`; }
+function iTree(cx,yG,k,col){ const h=6*k,r=h*.28,tw=Math.max(.3,h*.04); return `<g data-lay="TS-TREE"><rect x="${cx-tw/2}" y="${yG-h*.58}" width="${tw}" height="${h*.58}" fill="#6b5a44"/><circle cx="${cx}" cy="${yG-h*.72}" r="${r}" fill="${col}" opacity=".9"/><circle cx="${cx-r*.6}" cy="${yG-h*.56}" r="${r*.7}" fill="${col}" opacity=".82"/><circle cx="${cx+r*.6}" cy="${yG-h*.57}" r="${r*.66}" fill="${col}" opacity=".82"/></g>`; }
+function iRail(cx,yG,k){ const h=.8*k,w=.2*k; return `<g data-lay="TS-SYMB"><rect x="${cx-w/2}" y="${yG-h}" width="${w}" height="${h}" fill="#555"/><rect x="${cx-w*1.6}" y="${yG-h*.95}" width="${w*3.2}" height="${h*.35}" fill="#8a9097"/></g>`; }
+function iBuilding(x,yG,k,dir){ const w=5*k,h=9*k, x0=dir>0?x:x-w; let win=''; for(let r=0;r<4;r++)for(let c=0;c<3;c++) win+=`<rect x="${x0+w*.12+c*w*.29}" y="${yG-h+h*.1+r*h*.21}" width="${w*.18}" height="${h*.1}" fill="#f0f3f6"/>`; return `<g data-lay="TS-BLDG"><rect x="${x0}" y="${yG-h}" width="${w}" height="${h}" fill="#9aa1a7" opacity=".55"/>${win}</g>`; }
 
 function edgeExtent(e){
   if(!e || e.type==='none') return {w:1.0, dep:0};
@@ -1121,26 +1129,26 @@ function sectionSVG(sec, D, opt){
 
   let x = 0; const P = cells.map(c=>{ const o={...c, x0:x, x1:x+c.w, z:(levelOf(c)==='curb'?curbH:0)}; x+=c.w; return o; });
 
-  out += tx(X(tot/2), 7, sec.title || 'חתך טיפוסי', 6, {weight:700});
-  out += tx(X(tot/2), 12.5, `קנה מידה 1:${D}`, 3.2, {color:'#585f66'});
+  out += tx(X(tot/2), 7, sec.title || 'חתך טיפוסי', 6, {weight:700, lay:'TS-TEXT'});
+  out += tx(X(tot/2), 12.5, `קנה מידה 1:${D}`, 3.2, {color:'#585f66', lay:'TS-TEXT'});
 
   const baseZ = -(Math.max(pave,0.35)+0.15);
   P.forEach(p=>{
     const t=T[p.t];
     if(levelOf(p)==='road' && sec.pave){
       const ys = Z(0), a=sec.dSurf*k, b=sec.dBase*k, c=sec.dSub*k;
-      out += `<rect x="${X(p.x0)}" y="${ys}" width="${p.w*k}" height="${a}" fill="#3c4146"/>`;
-      out += `<rect x="${X(p.x0)}" y="${ys+a}" width="${p.w*k}" height="${b}" fill="#c9b98f"/>`;
-      out += `<rect x="${X(p.x0)}" y="${ys+a+b}" width="${p.w*k}" height="${c}" fill="#e0d6b8"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys}" width="${p.w*k}" height="${a}" fill="#3c4146" data-lay="TS-PAVE-ASP"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys+a}" width="${p.w*k}" height="${b}" fill="#c9b98f" data-lay="TS-PAVE-BASE"/>`;
+      out += `<rect x="${X(p.x0)}" y="${ys+a+b}" width="${p.w*k}" height="${c}" fill="#e0d6b8" data-lay="TS-PAVE-SUB"/>`;
     } else {
-      out += `<rect x="${X(p.x0)}" y="${Z(p.z)}" width="${p.w*k}" height="${(p.z-baseZ)*k}" fill="${levelOf(p)==='curb'?'#e6e1d4':'#d9d3c4'}"/>`;
+      out += `<rect x="${X(p.x0)}" y="${Z(p.z)}" width="${p.w*k}" height="${(p.z-baseZ)*k}" fill="${levelOf(p)==='curb'?'#e6e1d4':'#d9d3c4'}" data-lay="TS-EARTH"/>`;
     }
-    out += `<rect x="${X(p.x0)}" y="${Z(p.z)-0.08*k}" width="${p.w*k}" height="${0.08*k}" fill="${t.col}"/>`;
+    out += `<rect x="${X(p.x0)}" y="${Z(p.z)-0.08*k}" width="${p.w*k}" height="${0.08*k}" fill="${t.col}" data-lay="TS-CELL"/>`;
   });
   let d = `M${X(0)} ${Z(P.length?P[0].z:0)}`;
   P.forEach((p,i)=>{ d += ` L${X(p.x0)} ${Z(p.z)} L${X(p.x1)} ${Z(p.z)}`; if(i<P.length-1 && P[i+1].z!==p.z) d += ` L${X(p.x1)} ${Z(P[i+1].z)}`; });
-  out += `<path d="${d}" fill="none" stroke="#14171a" stroke-width="0.35"/>`;
-  P.forEach((p,i)=>{ const n=P[i+1]; if(n && n.z!==p.z){ const xx=X(p.x1), zz=Math.max(p.z,n.z), cw=0.15*k, sgn = p.z>n.z?-1:0; out += `<rect x="${xx + sgn*cw}" y="${Z(zz)}" width="${cw}" height="${(zz+0.25)*k}" fill="#b9b4a8" stroke="#14171a" stroke-width="0.15"/>`; } });
+  out += `<path d="${d}" fill="none" stroke="#14171a" stroke-width="0.35" data-lay="TS-SURFACE"/>`;
+  P.forEach((p,i)=>{ const n=P[i+1]; if(n && n.z!==p.z){ const xx=X(p.x1), zz=Math.max(p.z,n.z), cw=0.15*k, sgn = p.z>n.z?-1:0; out += `<rect x="${xx + sgn*cw}" y="${Z(zz)}" width="${cw}" height="${(zz+0.25)*k}" fill="#b9b4a8" stroke="#14171a" stroke-width="0.15" data-lay="TS-KERB"/>`; } });
 
   const z0L = P.length?P[0].z:0, z0R = P.length?P[P.length-1].z:0;
   out += edgeDraw(sec.eL, X(0), Z(z0L), k, -1);
@@ -1148,8 +1156,8 @@ function sectionSVG(sec, D, opt){
 
   P.forEach((p,i)=>{ const n=P[i+1]; if(!n) return;
     const road = t=>['lane','bus','brt'].includes(t);
-    if(road(p.t)&&road(n.t)){ const same = p.dir===n.dir; out += `<line x1="${X(p.x1)}" y1="${Z(0)-0.02*k}" x2="${X(p.x1)}" y2="${Z(0)-0.02*k}" stroke="#fff"/>`;
-      out += `<rect x="${X(p.x1)-0.06*k}" y="${Z(0)-0.05*k}" width="${0.12*k}" height="${0.05*k}" fill="${same?'#ffffff':'#f2c94c'}" stroke="#14171a" stroke-width="0.05"/>`; }
+    if(road(p.t)&&road(n.t)){ const same = p.dir===n.dir; out += `<line x1="${X(p.x1)}" y1="${Z(0)-0.02*k}" x2="${X(p.x1)}" y2="${Z(0)-0.02*k}" stroke="#fff" data-lay="none"/>`;
+      out += `<rect x="${X(p.x1)-0.06*k}" y="${Z(0)-0.05*k}" width="${0.12*k}" height="${0.05*k}" fill="${same?'#ffffff':'#f2c94c'}" stroke="#14171a" stroke-width="0.05" data-lay="${same?'TS-MARK':'TS-MARK-C'}"/>`; }
   });
 
   P.forEach(p=>{
@@ -1179,26 +1187,26 @@ function sectionSVG(sec, D, opt){
       const x0=P[g.a].x0, x1=P[g.b].x1, mid=(x0+x1)/2;
       [[x0,mid],[mid,x1]].forEach(([a,b],j)=>{ if(b-a<1.2) return; const cx=X((a+b)/2), y=yG+depth+2.2;
         const dir = j===0?-1:1;
-        out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a"/>`;
-        out += tx(cx, y-1.0, sec.cfRoad.toFixed(1)+'%', 2.5, {color:'#2b5c8a'}); });
+        out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25" data-lay="TS-SLOPE"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a" data-lay="TS-SLOPE"/>`;
+        out += tx(cx, y-1.0, sec.cfRoad.toFixed(1)+'%', 2.5, {color:'#2b5c8a', lay:'TS-SLOPE'}); });
     });
     P.forEach((p,i)=>{ if(levelOf(p)!=='curb' || p.w<2.0 || T[p.t].tree && p.t!=='plaza') return;
       let dL=1e9,dR=1e9; for(let j=i-1;j>=0;j--) if(levelOf(P[j])==='road'){dL=i-j;break;} for(let j=i+1;j<P.length;j++) if(levelOf(P[j])==='road'){dR=j-i;break;}
       const dir = dR<dL?1:-1, cx=X((p.x0+p.x1)/2), y=yG+depth+2.2;
-      out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a"/>`;
-      out += tx(cx, y-1.0, sec.cfSide.toFixed(1)+'%', 2.5, {color:'#2b5c8a'}); });
+      out += `<line x1="${cx-dir*3}" y1="${y}" x2="${cx+dir*3}" y2="${y}" stroke="#2b5c8a" stroke-width="0.25" data-lay="TS-SLOPE"/><path d="M${cx+dir*3} ${y} l${-dir*1.2} -0.6 v1.2 z" fill="#2b5c8a" data-lay="TS-SLOPE"/>`;
+      out += tx(cx, y-1.0, sec.cfSide.toFixed(1)+'%', 2.5, {color:'#2b5c8a', lay:'TS-SLOPE'}); });
   }
 
   let yD = yG + depth + (opt.cf?11:7);
-  const tick = (x,y)=>`<line x1="${x-0.9}" y1="${y+0.9}" x2="${x+0.9}" y2="${y-0.9}" stroke="#14171a" stroke-width="0.3"/>`;
+  const tick = (x,y)=>`<line x1="${x-0.9}" y1="${y+0.9}" x2="${x+0.9}" y2="${y-0.9}" stroke="#14171a" stroke-width="0.3" data-lay="TS-DIM"/>`;
   function chain(segs, y, size, labels){
-    let s = `<line x1="${X(segs[0].a)}" y1="${y}" x2="${X(segs[segs.length-1].b)}" y2="${y}" stroke="#14171a" stroke-width="0.2"/>`;
+    let s = `<line x1="${X(segs[0].a)}" y1="${y}" x2="${X(segs[segs.length-1].b)}" y2="${y}" stroke="#14171a" stroke-width="0.2" data-lay="TS-DIM"/>`;
     segs.forEach(g=>{ const a=X(g.a), b=X(g.b), wmm=b-a, val=f2(g.b-g.a);
-      s += tick(a,y)+tick(b,y)+`<line x1="${a}" y1="${y-2.2}" x2="${a}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12"/><line x1="${b}" y1="${y-2.2}" x2="${b}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12"/>`;
+      s += tick(a,y)+tick(b,y)+`<line x1="${a}" y1="${y-2.2}" x2="${a}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12" data-lay="TS-DIM"/><line x1="${b}" y1="${y-2.2}" x2="${b}" y2="${y+1.2}" stroke="#14171a" stroke-width="0.12" data-lay="TS-DIM"/>`;
       const need = val.length*size*0.55;
-      if(wmm >= need+0.6) s += tx((a+b)/2, y-0.9, val, size);
-      else s += tx((a+b)/2+size*0.35, y-1.2, val, size*0.85, {anchor:'start', rot:-90});
-      if(labels && g.l){ const need2 = g.l.length*2.1*0.55; if(wmm>=need2+0.8) s += tx((a+b)/2, y+3.6, g.l, 2.1, {color:'#585f66'}); else s += tx((a+b)/2+0.8, y+2.2, g.l, 1.9, {anchor:'end', rot:-90, color:'#585f66'}); }
+      if(wmm >= need+0.6) s += tx((a+b)/2, y-0.9, val, size, {lay:'TS-DIM'});
+      else s += tx((a+b)/2+size*0.35, y-1.2, val, size*0.85, {anchor:'start', rot:-90, lay:'TS-DIM'});
+      if(labels && g.l){ const need2 = g.l.length*2.1*0.55; if(wmm>=need2+0.8) s += tx((a+b)/2, y+3.6, g.l, 2.1, {color:'#585f66', lay:'TS-TEXT'}); else s += tx((a+b)/2+0.8, y+2.2, g.l, 1.9, {anchor:'end', rot:-90, color:'#585f66', lay:'TS-TEXT'}); }
     });
     return s;
   }
@@ -1209,22 +1217,22 @@ function sectionSVG(sec, D, opt){
   if(G.length>1) out += chain(G, row2Y, 2.9, true);
   const row3Y = row2Y + (G.length>1?11:0);
   out += chain([{a:0,b:tot,l:'רוחב כולל'}], row3Y, 3.3, true);
-  [0,tot].forEach(m=>{ out += `<line x1="${X(m)}" y1="${Z(4.5)}" x2="${X(m)}" y2="${row3Y+2}" stroke="#b03a2e" stroke-width="0.25" stroke-dasharray="3 1.2 0.6 1.2"/>`; });
-  out += tx(X(0)-1, Z(4.8), 'גבול ז.ד.', 2.3, {anchor:'end', color:'#b03a2e'}) + tx(X(tot)+1, Z(4.8), 'גבול ז.ד.', 2.3, {anchor:'start', color:'#b03a2e'});
+  [0,tot].forEach(m=>{ out += `<line x1="${X(m)}" y1="${Z(4.5)}" x2="${X(m)}" y2="${row3Y+2}" stroke="#b03a2e" stroke-width="0.25" stroke-dasharray="3 1.2 0.6 1.2" data-lay="TS-ROW"/>`; });
+  out += tx(X(0)-1, Z(4.8), 'גבול ז.ד.', 2.3, {anchor:'end', color:'#b03a2e', lay:'TS-ROW'}) + tx(X(tot)+1, Z(4.8), 'גבול ז.ד.', 2.3, {anchor:'start', color:'#b03a2e', lay:'TS-ROW'});
 
   const W = (eL.w + tot + eR.w)*k;
   return {g: out, w: W, h: row3Y + 6, tot};
 }
 function edgeDraw(e, x, y, k, dir){
   if(!e || e.type==='none') return '';
-  if(e.type==='building') return iBuilding(x + dir*0.4*k, y, k, dir) + `<line x1="${x+dir*0.4*k}" y1="${y-9.5*k}" x2="${x+dir*0.4*k}" y2="${y+0.5*k}" stroke="#585f66" stroke-width="0.25" stroke-dasharray="2 1"/>`;
+  if(e.type==='building') return iBuilding(x + dir*0.4*k, y, k, dir) + `<line x1="${x+dir*0.4*k}" y1="${y-9.5*k}" x2="${x+dir*0.4*k}" y2="${y+0.5*k}" stroke="#585f66" stroke-width="0.25" stroke-dasharray="2 1" data-lay="TS-BLDG"/>`;
   if(e.type==='fill'){ const run=e.h*e.n*k, dy=e.h*k;
-    return `<path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy} L${x+dir*(run+2*k)} ${y+dy+1*k} L${x} ${y+dy+1*k} Z" fill="#e4dcc6" stroke="none"/><path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+
-      tx(x+dir*run*0.5, y+dy*0.5-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a'}); }
+    return `<path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy} L${x+dir*(run+2*k)} ${y+dy+1*k} L${x} ${y+dy+1*k} Z" fill="#e4dcc6" stroke="none" data-lay="TS-EARTH"/><path d="M${x} ${y} L${x+dir*run} ${y+dy} L${x+dir*(run+2*k)} ${y+dy}" fill="none" stroke="#14171a" stroke-width="0.35" data-lay="TS-SURFACE"/>`+
+      tx(x+dir*run*0.5, y+dy*0.5-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a', lay:'TS-SLOPE'}); }
   if(e.type==='cut'){ const dd=(e.dd||0.6)*k, f=dd*3, b=(e.db||0.6)*k, up=(e.h+(e.dd||0.6))*k, br=up*e.n;
     const p1=[x+dir*f, y+dd], p2=[x+dir*(f+b), y+dd], p3=[x+dir*(f+b+br), y+dd-up], p4=[x+dir*(f+b+br+2*k), y+dd-up];
-    return `<path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4} L${p4[0]} ${y+dd+1*k} L${x} ${y+dd+1*k} Z" fill="#e4dcc6"/><path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+
-      tx((p2[0]+p3[0])/2, (p2[1]+p3[1])/2-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a'})+tx((p1[0]+p2[0])/2, y+dd+3, 'תעלה', 2.2, {color:'#585f66'}); }
+    return `<path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4} L${p4[0]} ${y+dd+1*k} L${x} ${y+dd+1*k} Z" fill="#e4dcc6" data-lay="TS-EARTH"/><path d="M${x} ${y} L${p1} L${p2} L${p3} L${p4}" fill="none" stroke="#14171a" stroke-width="0.35" data-lay="TS-SURFACE"/>`+
+      tx((p2[0]+p3[0])/2, (p2[1]+p3[1])/2-1.5, `1:${e.n}`, 2.6, {color:'#2b5c8a', lay:'TS-SLOPE'})+tx((p1[0]+p2[0])/2, y+dd+3, 'תעלה', 2.2, {color:'#585f66', lay:'TS-TEXT'}); }
   return '';
 }
 
@@ -1235,32 +1243,37 @@ function curSec(){
     pave:$('tPave').checked, rowTarget:num('rowTarget')};
 }
 function opts(){ return {icons:$('tIcons').checked, trees:$('tTrees').checked, cf:$('tCf').checked, names:$('tNames').checked}; }
-function sheetSVG(){
-  const D = +$('scale').value, secs = SHEET.length? SHEET : [curSec()];
+/* גיליון A0 – פרמטרי. אותה פונקציה משרתת את התצוגה ואת הייצוא ל-CAD. */
+function sheetSVGOf(secs, D, opt, meta){
+  meta = meta || {};
   const frameL=20, frame=10, tbW=180, tbH=62;
   const drawW = A0.w - frameL - frame - 10, availH = A0.h - 2*frame - tbH - 20;
-  const blocks = secs.map(s=>sectionSVG(s, D, opts()));
+  const blocks = secs.map(s=>sectionSVG(s, D, opt));
   const totalH = blocks.reduce((a,b)=>a+b.h,0) + 12*(blocks.length-1);
   let y = frame + 12 + Math.max(0,(availH-totalH)/2), body='', warn=[];
   blocks.forEach((b,i)=>{ const x = frameL + 5 + Math.max(0,(drawW-b.w)/2); if(b.w>drawW) warn.push(`חתך ${i+1} רחב מהגיליון (${Math.round(b.w)} מ״מ)`);
     body += `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">${b.g}</g>`; y += b.h + 12; });
   if(totalH > availH) warn.push('גובה החתכים חורג מהשטח הפנוי בגיליון');
   const k=1000/D, sbX=frameL+10, sbY=A0.h-frame-12; let sb='';
-  for(let i=0;i<5;i++) sb += `<rect x="${sbX+i*2*k}" y="${sbY}" width="${2*k}" height="2" fill="${i%2?'#fff':'#14171a'}" stroke="#14171a" stroke-width="0.2"/>`;
-  sb += tx(sbX, sbY-1.5, '0', 2.5)+tx(sbX+5*k, sbY-1.5, '5', 2.5)+tx(sbX+10*k, sbY-1.5, '10 מ׳', 2.5)+tx(sbX+5*k, sbY+6, `סרגל קנה מידה 1:${D} – 10 מ׳ = ${(10*k).toFixed(0)} מ״מ`, 2.5, {color:'#585f66'});
-  const tbX = A0.w-frame-tbW, tbY=A0.h-frame-tbH, today=new Date().toLocaleDateString('he-IL');
-  const cellT = (x,y,w,h,lab,val,big)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#14171a" stroke-width="0.35"/>`+tx(x+w-2,y+4,lab,2.3,{anchor:'end',color:'#585f66'})+tx(x+w-2,y+h-3,val,big?5:3.4,{anchor:'end',weight:big?700:400});
-  let tb = `<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="#fff" stroke="#14171a" stroke-width="0.6"/>`;
+  for(let i=0;i<5;i++) sb += `<rect x="${sbX+i*2*k}" y="${sbY}" width="${2*k}" height="2" fill="${i%2?'#fff':'#14171a'}" stroke="#14171a" stroke-width="0.2" data-lay="TS-FRAME"/>`;
+  sb += tx(sbX, sbY-1.5, '0', 2.5, {lay:'TS-FRAME'})+tx(sbX+5*k, sbY-1.5, '5', 2.5, {lay:'TS-FRAME'})+tx(sbX+10*k, sbY-1.5, '10 מ׳', 2.5, {lay:'TS-FRAME'})+tx(sbX+5*k, sbY+6, `סרגל קנה מידה 1:${D} – 10 מ׳ = ${(10*k).toFixed(0)} מ״מ`, 2.5, {color:'#585f66', lay:'TS-FRAME'});
+  const tbX = A0.w-frame-tbW, tbY=A0.h-frame-tbH, today=meta.date || new Date().toLocaleDateString('he-IL');
+  const cellT = (x,y,w,h,lab,val,big)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#14171a" stroke-width="0.35" data-lay="TS-TITLE"/>`+tx(x+w-2,y+4,lab,2.3,{anchor:'end',color:'#585f66',lay:'TS-TITLE'})+tx(x+w-2,y+h-3,val,big?5:3.4,{anchor:'end',weight:big?700:400,lay:'TS-TITLE'});
+  let tb = `<rect x="${tbX}" y="${tbY}" width="${tbW}" height="${tbH}" fill="#fff" stroke="#14171a" stroke-width="0.6" data-lay="TS-TITLE"/>`;
   tb += cellT(tbX,tbY,tbW,16,'משרד','MAHALCO – הנדסה אזרחית ותחבורה',true);
-  tb += cellT(tbX,tbY+16,tbW,14,'פרויקט',$('proj').value||'—');
+  tb += cellT(tbX,tbY+16,tbW,14,'פרויקט',meta.proj||'—');
   tb += cellT(tbX,tbY+30,tbW,14,'תוכן הגיליון', secs.map(s=>s.title).join(' | '));
-  tb += cellT(tbX+120,tbY+44,60,18,'קנה מידה',`1:${D}`,true)+cellT(tbX+80,tbY+44,40,18,'גיליון',$('dwg').value||'—')+cellT(tbX+40,tbY+44,40,18,'תאריך',today)+cellT(tbX,tbY+44,40,18,'שרטט',$('drawn').value||'—');
-  const notes = tx(frameL+10, A0.h-frame-26, 'הערות: המידות במטרים. גבהים ושיפועים מוצגים בקנה מידה אחיד (ללא הגזמה אנכית). מבנה המסעה אינדיקטיבי – לפי תכנון מבנה. חתך עקרוני – לא לביצוע.', 2.8, {anchor:'start'});
+  tb += cellT(tbX+120,tbY+44,60,18,'קנה מידה',`1:${D}`,true)+cellT(tbX+80,tbY+44,40,18,'גיליון',meta.dwg||'—')+cellT(tbX+40,tbY+44,40,18,'תאריך',today)+cellT(tbX,tbY+44,40,18,'שרטט',meta.drawn||'—');
+  const notes = tx(frameL+10, A0.h-frame-26, 'הערות: המידות במטרים. גבהים ושיפועים מוצגים בקנה מידה אחיד (ללא הגזמה אנכית). מבנה המסעה אינדיקטיבי – לפי תכנון מבנה. חתך עקרוני – לא לביצוע.', 2.8, {anchor:'start', lay:'TS-TITLE'});
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${A0.w}mm" height="${A0.h}mm" viewBox="0 0 ${A0.w} ${A0.h}" id="sheetSVG" style="direction:ltr">
-<rect width="${A0.w}" height="${A0.h}" fill="#ffffff"/>
-<rect x="${frameL}" y="${frame}" width="${A0.w-frameL-frame}" height="${A0.h-2*frame}" fill="none" stroke="#14171a" stroke-width="0.7"/>
+<rect width="${A0.w}" height="${A0.h}" fill="#ffffff" data-lay="none"/>
+<rect x="${frameL}" y="${frame}" width="${A0.w-frameL-frame}" height="${A0.h-2*frame}" fill="none" stroke="#14171a" stroke-width="0.7" data-lay="TS-FRAME"/>
 ${body}${sb}${notes}${tb}</svg>`;
   return {svg, warn};
+}
+function sheetSVG(){
+  const D = +$('scale').value, secs = SHEET.length? SHEET : [curSec()];
+  return sheetSVGOf(secs, D, opts(), {proj:$('proj').value, dwg:$('dwg').value, drawn:$('drawn').value});
 }
 
 function update(rerenderCells=true){
@@ -1395,65 +1408,173 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>UI.segA
    ייצוא CAD – DXF R2000 (AC1015), מודל-ספייס במטרים בקנה 1:1.
    הגיליון, הכיתוב והמידות מוגדלים לפי קנה המידה, כך שהדפסה 1:D על A0 מדויקת.
    ====================================================================== */
+/* ======================================================================
+   ייצוא CAD – תרגום ישיר של השרטוט שעל המסך ל-DXF R2000.
+   ----------------------------------------------------------------------
+   המנוע אינו מצייר מחדש: הוא קורא את אותו SVG שהכלי מציג ומתרגם כל
+   צורה לישות DXF, בקואורדינטות מודל במטרים (1:1). לכן הקובץ שיוצא זהה
+   לשרטוט שעל המסך – אותם מיקומים, אותן צורות, אותם צבעים.
+   · קווים ומיתארים  – בשכבות TS-* לפי התפקיד (data-lay שבשרטוט)
+   · מילוי צבעוני    – ישויות SOLID בשכבת TS-FILL (הקפאה = שרטוט קווי)
+   · מיתאר עזר       – TS-EDGE, מוקפאת כברירת מחדל (מיתאר לצורות מלאות)
+   ====================================================================== */
 const CAD = (function(){
 
-  function enc(s, rtl){
-    s = String(s==null?'':s);
-    if(rtl) s = s.replace(/[\u0590-\u05FF][\u0590-\u05FF\s"'\u05F3\u05F4.\-()+%]*/g, m=>[...m].reverse().join(''));
-    return s.replace(/[^\x20-\x7E]/g, ch=>'\\U+'+ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0'));
+  /* ---------- שכבות ---------- */
+  const LAYERS = {
+    'TS-SURFACE'   : [7,  'CONTINUOUS', 35],
+    'TS-KERB'      : [8,  'CONTINUOUS', 25],
+    'TS-PAVE-ASP'  : [251,'CONTINUOUS', 13],
+    'TS-PAVE-BASE' : [41, 'CONTINUOUS', 13],
+    'TS-PAVE-SUB'  : [43, 'CONTINUOUS', 13],
+    'TS-EARTH'     : [33, 'CONTINUOUS', 18],
+    'TS-CELL'      : [30, 'CONTINUOUS', 13],
+    'TS-MARK'      : [7,  'CONTINUOUS', 18],
+    'TS-MARK-C'    : [2,  'CONTINUOUS', 18],
+    'TS-SYMB'      : [9,  'CONTINUOUS', 13],
+    'TS-TREE'      : [3,  'CONTINUOUS', 13],
+    'TS-BLDG'      : [8,  'CONTINUOUS', 13],
+    'TS-ARROW'     : [7,  'CONTINUOUS', 18],
+    'TS-SLOPE'     : [5,  'CONTINUOUS', 13],
+    'TS-DIM'       : [4,  'CONTINUOUS', 13],
+    'TS-TEXT'      : [7,  'CONTINUOUS', 18],
+    'TS-ROW'       : [1,  'DASHDOT',    25],
+    'TS-FRAME'     : [7,  'CONTINUOUS', 50],
+    'TS-TITLE'     : [7,  'CONTINUOUS', 35],
+    /* עבודות זמניות */
+    'TS-WORK'      : [30, 'CONTINUOUS', 35],
+    'TS-WORK-HAT'  : [30, 'CONTINUOUS', 13],
+    'TS-DEVICE'    : [1,  'CONTINUOUS', 25],
+    'TS-MARK-TMP'  : [30, 'CONTINUOUS', 25],
+    'TS-PED'       : [2,  'CONTINUOUS', 18],
+    'TS-MISC'      : [7,  'CONTINUOUS', 18],
+    /* בונה הציר – תכנית */
+    'AX-CENTER'    : [1,  'CENTER2',    25],
+    'AX-EDGE'      : [7,  'CONTINUOUS', 18],
+    'AX-MARK-801'  : [7,  'CONTINUOUS', 18],
+    'AX-MARK-807'  : [42, 'CONTINUOUS', 25],
+    'AX-MARK-808'  : [7,  'CONTINUOUS', 25],
+    'AX-MARK-803'  : [7,  'CONTINUOUS', 25],
+    'AX-MEDIAN'    : [8,  'CONTINUOUS', 18],
+    'AX-SURF'      : [9,  'CONTINUOUS', 13],
+    'AX-EARTH'     : [33, 'CONTINUOUS', 13],
+    'AX-WALK'      : [30, 'CONTINUOUS', 13],
+    'AX-ZONE'      : [2,  'CONTINUOUS', 18],
+    'AX-STATION'   : [4,  'CONTINUOUS', 13],
+    'AX-TEXT'      : [7,  'CONTINUOUS', 18],
+    'AX-PI'        : [1,  'CONTINUOUS', 35],
+    'JCT-CURVE'    : [2,  'CONTINUOUS', 25],
+    'JCT-ISLAND'   : [3,  'CONTINUOUS', 18],
+    'JCT-ARROW'    : [3,  'CONTINUOUS', 18],
+    'AX-ARROW'     : [7,  'CONTINUOUS', 18],
+    'JCT-TEXT'     : [7,  'CONTINUOUS', 18]
+  };
+  /* שכבות המילוי נגזרות אוטומטית: <שכבה>-F. הקפאת ‎*-F‎ = שרטוט קווי נקי. */
+  const FROZEN = {};
+  const STYLE = 'MAHALCO';
+  const H_BR='1', H_LAYER='2', H_STYLE='3', H_LTYPE='5', H_VIEW='6', H_UCS='7',
+        H_VPORT='8', H_APPID='9', H_DIMS='E', H_MS='A', H_PS='B', H_DICT='C', H_GROUP='D';
+
+  /* ---------- צבעים ---------- */
+  const ACI = ('000000ff0000ffff0000ff0000ffff0000ffff00ffffffff414141808080ff0000ffaaaa'
+    +'bf0000bf80807f00007f55555f00005f3f3f2f00002f2a2aff3f00ffbfaabf2f00bf8f807f1f007f5f553f0f003f'
+    +'2f2a7f7f00ffffaabf7f00bf8f807f00007f5f553f00003f2f2abf7f00ffbfaabf5f00bf8f807f3f007f5f553f1f'
+    +'003f2f2abfbf00ffffaabfbf00bf8f807f7f007f5f553f3f003f2f2a7fbf00ffdfaabf5f00bf9f807f3f007f6a55'
+    +'3f1f003f352a00bf00ffffdfbfbf00bf9f80807f007f6a553f3f003f352a00bf3fffffdfbfbf2fbf9f807f1f7f6a'
+    +'553f0f3f352a00bf7fffffdfbfbf5fbf9f807f3f7f6a553f1f3f352a00bfbfffffffbfbfbfbf9f807f7f7f6a553f'
+    +'3f3f352a007fbfffdfffbf5fbfbf3f7f9f7f2a3f6a35007fffffdfffbfbfbfbf7f7f9f7f553f6a35003fffbfdfff'
+    +'2fbfbf1f7f9f0f3f6a2a3f6a35007fffbfdfff5fbfbf3f7f9f1f3f6a2a3f6a3500bfffbfdfffbfbfbf7f7f9f3f3f'
+    +'6a2a3f6a35003fbfff9fdfff2f5fbf1f3f7f0f1f3f2a2a3f3f00ffbfbfdfff00bfbf00bf7f7f9f007f3f3f6a2a2a'
+    +'3f3f00ffbfbfdfff002fbf1f1f7f0f0f3f0a0a2a3f3f003fbfbfdfff005fbf3f3f7f1f1f3f2a2a3f3f003fffbfbf'
+    +'dfff2f00bf1f007f0f003f0a002a3f3f00bfffbfbfdfff5f00bf3f007f1f003f2a002a3f3f00ffffbfbfdfffbf00'
+    +'bf7f007f3f003f2a002a3f3f00ffbfbfbfdfffbf002fbf001f7f000f3f000a2a3f3f00ff3fbfbfdfffbf005fbf00'
+    +'3f7f001f3f000a2a3f3f00ff7fbfbfdfffbf009fbf007f7f003f3f002a2a3f3f00ffbfbfbfdfffbf00bfbf007f7f'
+    +'003f3f002a2a3f3f00bfffbfbfdfff5f00bfbf003f7f001f3f002a2a3f3f003fffbfbfdfff2f00bfbf001f7f000f'
+    +'3f002a2a3f3f333333' ).match(/.{6}/g) || [];
+
+  const hex = c => {
+    if(!c || c==='none') return null;
+    c = c.trim().toLowerCase();
+    if(c[0] !== '#') return null;
+    if(c.length === 4) c = '#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
+    const v = parseInt(c.slice(1,7), 16);
+    return isNaN(v) ? null : {r:(v>>16)&255, g:(v>>8)&255, b:v&255, n:v};
+  };
+  function nearestACI(col){
+    const lum = (0.2126*col.r + 0.7152*col.g + 0.0722*col.b)/255;
+    if(lum < 0.2 || lum > 0.93) return 7;            /* שחור/לבן – 7 מתאים לרקע */
+    let best=7, bd=Infinity;
+    for(let i=1;i<ACI.length;i++){
+      const v = parseInt(ACI[i],16), r=(v>>16)&255, g=(v>>8)&255, b=v&255;
+      const d = (r-col.r)**2 + (g-col.g)**2 + (b-col.b)**2;
+      if(d<bd){ bd=d; best=i; }
+    }
+    return best;
   }
 
-  const LAYERS = [
-    ['TS-SURFACE',  7, 'CONTINUOUS', 35],['TS-KERB',     3, 'CONTINUOUS', 25],
-    ['TS-PAVE-ASP', 251,'CONTINUOUS',13],['TS-PAVE-BASE',41,'CONTINUOUS', 13],
-    ['TS-PAVE-SUB', 43,'CONTINUOUS', 13],['TS-EARTH',    33,'CONTINUOUS', 25],
-    ['TS-MARK',     2, 'CONTINUOUS', 18],['TS-SYMB',     9, 'CONTINUOUS', 13],
-    ['TS-SLOPE',    5, 'CONTINUOUS', 13],['TS-DIM',      4, 'CONTINUOUS', 13],
-    ['TS-TEXT',     7, 'CONTINUOUS', 18],['TS-ROW',      1, 'DASHDOT',    25],
-    ['TS-FRAME',    7, 'CONTINUOUS', 50],['TS-TITLE',    7, 'CONTINUOUS', 35]
-  ];
-  const STYLE = 'MAHALCO';
-  const H_BR='1', H_LAYER='2', H_STYLE='3', H_LTYPE='5', H_VIEW='6', H_UCS='7', H_VPORT='8', H_APPID='9',
-        H_DIMS='E', H_MS='A', H_PS='B', H_DICT='C', H_GROUP='D';
-
-  function Doc(ltscale){
+  /* ---------- מנוע DXF ---------- */
+  function Doc(unit, usedLayers){
     let hx = 0x100;
     const nh = ()=> (hx++).toString(16).toUpperCase();
     const ents = [];
+    /* סוגי קו: כל stroke-dasharray שבשרטוט הופך לסוג קו משלו, ביחידות המודל,
+       כך שהמקטעים והרווחים יוצאים באורך שנראה על המסך. */
+    const lts = {};
+    function dashLT(arr){
+      const key = arr.join(',');
+      if(lts[key]) return lts[key].name;
+      const name = 'TS-DASH' + (Object.keys(lts).length + 1);
+      const pat = []; let tot = 0;
+      arr.forEach((v,i)=>{ const d = v*unit; tot += d; pat.push(i%2 ? -d : d); });
+      lts[key] = {name, pat, tot};
+      return name;
+    }
     const ext = {x0:1e18, y0:1e18, x1:-1e18, y1:-1e18};
     const g = (c,v)=>c+'\n'+v+'\n';
     const n = v => (Math.abs(v)<1e-9?0:v).toFixed(6);
-    function see(x,y){ if(x<ext.x0)ext.x0=x; if(y<ext.y0)ext.y0=y; if(x>ext.x1)ext.x1=x; if(y>ext.y1)ext.y1=y; }
-    const head = (type, lay)=> g(0,type)+g(5,nh())+g(330,H_MS)+g(100,'AcDbEntity')+g(8,lay);
-
-    const api = {
-      line(lay,x1,y1,x2,y2){ see(x1,y1); see(x2,y2);
-        ents.push(head('LINE',lay)+g(100,'AcDbLine')+g(10,n(x1))+g(20,n(y1))+g(30,0)+g(11,n(x2))+g(21,n(y2))+g(31,0)); },
-      poly(lay,pts,closed){ if(!pts || pts.length<2) return; pts.forEach(p=>see(p[0],p[1]));
-        let s = head('LWPOLYLINE',lay)+g(100,'AcDbPolyline')+g(90,pts.length)+g(70,closed?1:0);
-        pts.forEach(p=>{ s+=g(10,n(p[0]))+g(20,n(p[1])); });
+    const see = (x,y)=>{ if(x<ext.x0)ext.x0=x; if(y<ext.y0)ext.y0=y; if(x>ext.x1)ext.x1=x; if(y>ext.y1)ext.y1=y; };
+    function head(type, layer, col, lt){
+      usedLayers[layer] = 1;
+      let s = g(0,type)+g(5,nh())+g(330,H_MS)+g(100,'AcDbEntity')+g(8,layer);
+      if(lt) s += g(6, lt);
+      if(col){ s += g(62, nearestACI(col)) + g(420, col.n); }
+      return s;
+    }
+    return {
+      dashLT,
+      line(lay,col,x1,y1,x2,y2,lt){ see(x1,y1); see(x2,y2);
+        ents.push(head('LINE',lay,col,lt)+g(100,'AcDbLine')+g(10,n(x1))+g(20,n(y1))+g(30,0)+g(11,n(x2))+g(21,n(y2))+g(31,0)); },
+      poly(lay,col,pts,closed,lt){ if(!pts || pts.length<2) return; pts.forEach(p=>see(p[0],p[1]));
+        let s = head('LWPOLYLINE',lay,col,lt)+g(100,'AcDbPolyline')+g(90,pts.length)+g(70,closed?1:0);
+        pts.forEach(p=>{ s+=g(10,n(p[0]))+g(20,n(p[1])); if(p[2]) s+=g(42,n(p[2])); });
         ents.push(s); },
-      circle(lay,cx,cy,r){ if(!(r>0)) return; see(cx-r,cy-r); see(cx+r,cy+r);
-        ents.push(head('CIRCLE',lay)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))); },
-      text(lay,x,y,ht,s,o){ o=o||{}; const len=String(s).replace(/\\U\+[0-9A-F]{4}/g,'x').length, wd=ht*0.7*len, ha=o.ha||0;
+      circle(lay,col,cx,cy,r){ if(!(r>0)) return; see(cx-r,cy-r); see(cx+r,cy+r);
+        ents.push(head('CIRCLE',lay,col)+g(100,'AcDbCircle')+g(10,n(cx))+g(20,n(cy))+g(30,0)+g(40,n(r))); },
+      solid(lay,col,a,b,c,d){ d=d||c; [a,b,c,d].forEach(p=>see(p[0],p[1]));
+        ents.push(head('SOLID',lay,col)+g(100,'AcDbTrace')
+          +g(10,n(a[0]))+g(20,n(a[1]))+g(30,0)+g(11,n(b[0]))+g(21,n(b[1]))+g(31,0)
+          +g(12,n(c[0]))+g(22,n(c[1]))+g(32,0)+g(13,n(d[0]))+g(23,n(d[1]))+g(33,0)); },
+      text(lay,col,x,y,ht,s,o){ o=o||{};
+        const len=String(s).replace(/\\U\+[0-9A-F]{4}/g,'x').length, wd=ht*0.7*len, ha=o.ha||0;
         see(ha===2?x-wd:ha===1?x-wd/2:x, y); see(ha===2?x:ha===1?x+wd/2:x+wd, y+ht);
-        ents.push(head('TEXT',lay)+g(100,'AcDbText')+g(10,n(x))+g(20,n(y))+g(30,0)+g(40,n(ht))+g(1,s)
-          +g(50,n(o.rot||0))+g(41,1)+g(51,0)+g(7,STYLE)+g(71,0)+g(72,o.ha||0)
+        ents.push(head('TEXT',lay,col)+g(100,'AcDbText')+g(10,n(x))+g(20,n(y))+g(30,0)+g(40,n(ht))+g(1,s)
+          +g(50,n(o.rot||0))+g(41,1)+g(51,0)+g(7,STYLE)+g(71,0)+g(72,ha)
           +g(11,n(x))+g(21,n(y))+g(31,0)+g(100,'AcDbText')+g(73,o.va||0)); },
+      count(){ return ents.length; },
       out(){
-        const sp = Math.max(1,(ext.x1-ext.x0)*0.02);
+        const sp = Math.max(0.5,(ext.x1-ext.x0)*0.02);
         const x0 = ext.x0<1e17?ext.x0-sp:0, y0 = ext.y0<1e17?ext.y0-sp:0;
         const x1 = ext.x1>-1e17?ext.x1+sp:100, y1 = ext.y1>-1e17?ext.y1+sp:100;
         const tbl = (name, handle, count, body)=> g(0,'TABLE')+g(2,name)+g(5,handle)+g(330,0)+g(100,'AcDbSymbolTable')+g(70,count)+body+g(0,'ENDTAB');
         const rec = (type, sub, owner, name, extra, handle)=> g(0,type)+g(5,handle||nh())+g(330,owner)+g(100,'AcDbSymbolTableRecord')+g(100,sub)+g(2,name)+extra;
         let s = '';
-
         s += g(0,'SECTION')+g(2,'HEADER')
           + g(9,'$ACADVER')+g(1,'AC1015')
           + g(9,'$HANDSEED')+g(5,(hx+0x1000).toString(16).toUpperCase())
-          + g(9,'$INSUNITS')+g(70,6)+g(9,'$MEASUREMENT')+g(70,1)+g(9,'$LUNITS')+g(70,2)+g(9,'$LUPREC')+g(70,3)+g(9,'$AUNITS')+g(70,0)
-          + g(9,'$DIMSCALE')+g(40,n(ltscale))+g(9,'$LTSCALE')+g(40,n(ltscale))+g(9,'$CELTSCALE')+g(40,1)
-          + g(9,'$TEXTSTYLE')+g(7,STYLE)+g(9,'$CLAYER')+g(8,'TS-SURFACE')
+          + g(9,'$INSUNITS')+g(70,6) + g(9,'$MEASUREMENT')+g(70,1)
+          + g(9,'$LUNITS')+g(70,2) + g(9,'$LUPREC')+g(70,3) + g(9,'$AUNITS')+g(70,0)
+          + g(9,'$DIMSCALE')+g(40,n(unit*3)) + g(9,'$LTSCALE')+g(40,1) + g(9,'$CELTSCALE')+g(40,1)
+          + g(9,'$TEXTSTYLE')+g(7,STYLE) + g(9,'$CLAYER')+g(8,'TS-SURFACE')
           + g(9,'$EXTMIN')+g(10,n(x0))+g(20,n(y0))+g(30,0)
           + g(9,'$EXTMAX')+g(10,n(x1))+g(20,n(y1))+g(30,0)
           + g(9,'$LIMMIN')+g(10,n(x0))+g(20,n(y0))
@@ -1465,19 +1586,28 @@ const CAD = (function(){
               g(70,0)+g(10,0)+g(20,0)+g(11,1)+g(21,1)
               +g(12,n((x0+x1)/2))+g(22,n((y0+y1)/2))+g(13,0)+g(23,0)+g(14,1)+g(24,1)+g(15,0)+g(25,0)
               +g(16,0)+g(26,0)+g(36,1)+g(17,0)+g(27,0)+g(37,0)
-              +g(40,n(Math.max(10,y1-y0)))+g(41,n(1.6))+g(42,50)+g(43,0)+g(44,0)+g(50,0)+g(51,0)
+              +g(40,n(Math.max(1,y1-y0)))+g(41,n(1.6))+g(42,50)+g(43,0)+g(44,0)+g(50,0)+g(51,0)
               +g(71,0)+g(72,1000)+g(73,1)+g(74,3)+g(75,0)+g(76,0)+g(77,0)+g(78,0)+g(65,1)+g(60,3)+g(61,5)+g(281,0)+g(79,0)+g(146,0)));
         let lt = rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'ByBlock', g(70,0)+g(3,'')+g(72,65)+g(73,0)+g(40,0))
                + rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'ByLayer', g(70,0)+g(3,'')+g(72,65)+g(73,0)+g(40,0))
                + rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,'CONTINUOUS', g(70,0)+g(3,'Solid line')+g(72,65)+g(73,0)+g(40,0));
         const pat = (name,desc,total,dashes)=>{ let b=g(70,0)+g(3,desc)+g(72,65)+g(73,dashes.length)+g(40,n(total));
           dashes.forEach(dd=>{ b+=g(49,n(dd))+g(74,0); }); return rec('LTYPE','AcDbLinetypeTableRecord',H_LTYPE,name,b); };
-        lt += pat('DASHED','Dashed __ __ __ __', 0.75, [0.5,-0.25]);
-        lt += pat('DASHDOT','Dash dot __ . __ . __', 1.0, [0.5,-0.25,0,-0.25]);
-        s += tbl('LTYPE',H_LTYPE,5,lt);
+        lt += pat('DASHED','Dashed __ __ __ __', 3*unit, [2*unit,-1*unit]);
+        lt += pat('DASHDOT','Dash dot __ . __ . __', 6*unit, [3*unit,-1.2*unit,0.6*unit,-1.2*unit]);
+        let ltN = 5;
+        Object.keys(lts).forEach(k=>{ const L=lts[k]; ltN++;
+          lt += pat(L.name, 'MAHALCO '+k, L.tot, L.pat); });
+        s += tbl('LTYPE',H_LTYPE,ltN,lt);
+
+        const names = Object.keys(usedLayers).filter(x=>x && x!=='none').sort();
         let la = rec('LAYER','AcDbLayerTableRecord',H_LAYER,'0', g(70,0)+g(62,7)+g(6,'CONTINUOUS')+g(370,-3)+g(390,'F'));
-        LAYERS.forEach(L=>{ la += rec('LAYER','AcDbLayerTableRecord',H_LAYER,L[0], g(70,0)+g(62,L[1])+g(6,L[2])+g(370,L[3])+g(390,'F')); });
-        s += tbl('LAYER',H_LAYER,LAYERS.length+1,la);
+        names.forEach(nm=>{ const base = nm.replace(/-F$/,''), isF = nm!==base;
+          const L = LAYERS[base] || [7,'CONTINUOUS',18];
+          la += rec('LAYER','AcDbLayerTableRecord',H_LAYER,nm,
+                g(70,FROZEN[nm]?1:0)+g(62,L[0])+g(6,isF?'CONTINUOUS':L[1])+g(370,isF?0:L[2])+g(390,'F')); });
+        s += tbl('LAYER',H_LAYER,names.length+1,la);
+
         let st = rec('STYLE','AcDbTextStyleTableRecord',H_STYLE,'Standard', g(70,0)+g(40,0)+g(41,1)+g(50,0)+g(71,0)+g(42,2.5)+g(3,'txt')+g(4,''))
                + rec('STYLE','AcDbTextStyleTableRecord',H_STYLE,STYLE, g(70,0)+g(40,0)+g(41,1)+g(50,0)+g(71,0)+g(42,2.5)+g(3,'arial.ttf')+g(4,''));
         s += tbl('STYLE',H_STYLE,2,st);
@@ -1486,7 +1616,7 @@ const CAD = (function(){
         s += tbl('APPID',H_APPID,1, rec('APPID','AcDbRegAppTableRecord',H_APPID,'ACAD', g(70,0)));
         s += g(0,'TABLE')+g(2,'DIMSTYLE')+g(5,H_DIMS)+g(330,0)+g(100,'AcDbSymbolTable')+g(100,'AcDbDimStyleTable')+g(70,1)
            + g(0,'DIMSTYLE')+g(105,nh())+g(330,H_DIMS)+g(100,'AcDbSymbolTableRecord')+g(100,'AcDbDimStyleTableRecord')+g(2,'Standard')
-           + g(70,0)+g(40,n(ltscale))+g(41,n(2.5))+g(42,n(0.625))+g(43,n(3.75))+g(44,n(1.25))+g(140,n(2.5))+g(141,n(2.5))
+           + g(70,0)+g(40,n(unit*3))+g(41,n(2.5))+g(42,n(0.625))+g(43,n(3.75))+g(44,n(1.25))+g(140,n(2.5))+g(141,n(2.5))
            + g(147,n(0.625))+g(171,3)+g(172,1)+g(271,3)+g(272,3)
            + g(0,'ENDTAB');
         s += tbl('BLOCK_RECORD',H_BR,2,
@@ -1506,246 +1636,307 @@ const CAD = (function(){
         return s + g(0,'EOF');
       }
     };
-    return api;
   }
 
-  function sectionSize(sec, D, opt){
-    const k=1000/D;
-    const cells=sec.cells.filter(c=>c.w>0), tot=cells.reduce((a,c)=>a+c.w,0);
-    const eL=edgeExtent(sec.eL), eR=edgeExtent(sec.eR);
-    const pave = sec.pave ? (sec.dSurf+sec.dBase+sec.dSub) : 0;
-    const depth = Math.max(pave+0.2, eL.dep, eR.dep)*k;
-    const yG = 14 + 9.5*k;
-    const yD = yG + depth + (opt.cf?11:7);
-    const cat = p => ['median','barrier'].includes(p.t)?'a' : (p.t==='lrt'?'b' : (levelOf(p)==='road'?'c':(p.t==='plaza'?'d':'e')));
-    let G=0, last=null; cells.forEach(p=>{ const c=cat(p); if(c!==last){ G++; last=c; } });
-    const row2Y = yD + (opt.names?14:9);
-    const row3Y = row2Y + (G>1?11:0);
-    return {w:(eL.w+tot+eR.w)*k, h: row3Y + 6, tot};
+  /* ---------- גזירת משולשים (ear clipping) לשטחים מלאים ---------- */
+  function area2(p){ let a=0; for(let i=0,j=p.length-1;i<p.length;j=i++) a += (p[j][0]*p[i][1] - p[i][0]*p[j][1]); return a/2; }
+  function inTri(a,b,c,p){
+    const d1=(p[0]-b[0])*(a[1]-b[1])-(a[0]-b[0])*(p[1]-b[1]);
+    const d2=(p[0]-c[0])*(b[1]-c[1])-(b[0]-c[0])*(p[1]-c[1]);
+    const d3=(p[0]-a[0])*(c[1]-a[1])-(c[0]-a[0])*(p[1]-a[1]);
+    const neg=(d1<0)||(d2<0)||(d3<0), pos=(d1>0)||(d2>0)||(d3>0);
+    return !(neg&&pos);
   }
-
-  const SCALES = [25,50,100,150,200,250,500,1000];
-  function fitScale(secs, opt){
-    const drawW = A0.w - 20 - 10 - 10;
-    const availH = A0.h - 2*10 - 62 - 20;
-    for(const D of SCALES){
-      const sizes = secs.map(s=>sectionSize(s, D, opt));
-      const needW = Math.max.apply(null, sizes.map(b=>b.w));
-      const needH = sizes.reduce((a,b)=>a+b.h,0) + 12*(sizes.length-1);
-      if(needW<=drawW && needH<=availH) return D;
-    }
-    return 1000;
-  }
-
-  function sectionCAD(d, sec, D, opt, ox, oy, rtl){
-    const U = D/1000, k = 1000/D;
-    const P2 = (x,y)=>[x*U, (A0.h-y)*U];
-    const L = (lay,x1,y1,x2,y2)=>{ const a=P2(x1,y1), b=P2(x2,y2); d.line(lay,a[0],a[1],b[0],b[1]); };
-    const PL = (lay,pts,cl)=> d.poly(lay, pts.map(p=>P2(p[0],p[1])), cl);
-    const RC = (lay,x,y,w,h)=> PL(lay,[[x,y],[x+w,y],[x+w,y+h],[x,y+h]],true);
-    const CI = (lay,cx,cy,r)=>{ const c=P2(cx,cy); d.circle(lay,c[0],c[1],r*U); };
-    const TX = (lay,x,y,size,s,o)=>{ o=o||{}; const p=P2(x,y); d.text(lay,p[0],p[1],size*0.72*U, enc(s,rtl), {ha:o.ha||0, rot:o.rot||0}); };
-
-    const cells = sec.cells.filter(c=>c.w>0);
-    const tot = cells.reduce((a,c)=>a+c.w,0);
-    const eL = edgeExtent(sec.eL), eR = edgeExtent(sec.eR);
-    const curbH = sec.curbH, topM = 9.5, titleH = 14;
-    const xL = eL.w*k, yG = titleH + topM*k;
-    const pave = sec.pave ? (sec.dSurf+sec.dBase+sec.dSub) : 0;
-    const depth = Math.max(pave+0.2, eL.dep, eR.dep) * k;
-    const X = m => ox + xL + m*k, Z = z => oy + yG - z*k;
-    let x = 0; const P = cells.map(c=>{ const o={...c, x0:x, x1:x+c.w, z:(levelOf(c)==='curb'?curbH:0)}; x+=c.w; return o; });
-
-    TX('TS-TEXT', X(tot/2), oy+7, 6, sec.title||'חתך טיפוסי', {ha:1});
-    TX('TS-TEXT', X(tot/2), oy+12.5, 3.2, 'קנה מידה 1:'+D, {ha:1});
-
-    const baseZ = -(Math.max(pave,0.35)+0.15);
-    P.forEach(p=>{
-      if(levelOf(p)==='road' && sec.pave){
-        const ys=Z(0), a=sec.dSurf*k, b=sec.dBase*k, c=sec.dSub*k;
-        RC('TS-PAVE-ASP',  X(p.x0), ys,     p.w*k, a);
-        RC('TS-PAVE-BASE', X(p.x0), ys+a,   p.w*k, b);
-        RC('TS-PAVE-SUB',  X(p.x0), ys+a+b, p.w*k, c);
-      } else RC('TS-EARTH', X(p.x0), Z(p.z), p.w*k, (p.z-baseZ)*k);
-    });
-
-    const sp=[];
-    if(P.length){ sp.push([X(P[0].x0), Z(P[0].z)]);
-      P.forEach((p,i)=>{ sp.push([X(p.x0),Z(p.z)],[X(p.x1),Z(p.z)]); if(i<P.length-1 && P[i+1].z!==p.z) sp.push([X(p.x1),Z(P[i+1].z)]); }); }
-    PL('TS-SURFACE', sp, false);
-
-    P.forEach((p,i)=>{ const nx=P[i+1]; if(nx && nx.z!==p.z){ const xx=X(p.x1), zz=Math.max(p.z,nx.z), cw=0.15*k, sgn=p.z>nx.z?-1:0;
-      RC('TS-KERB', xx+sgn*cw, Z(zz), cw, (zz+0.25)*k); } });
-
-    function edgeCAD(e, x0, y0, dir){
-      if(!e || e.type==='none') return;
-      if(e.type==='building'){ const bx=x0+dir*0.4*k, w=5*k, h=9*k;
-        RC('TS-SYMB', dir>0?bx:bx-w, y0-h, w, h);
-        L('TS-ROW', bx, y0-9.5*k, bx, y0+0.5*k); return; }
-      if(e.type==='fill'){ const run=e.h*e.n*k, dy=e.h*k;
-        PL('TS-EARTH',[[x0,y0],[x0+dir*run,y0+dy],[x0+dir*(run+2*k),y0+dy]],false);
-        TX('TS-SLOPE', x0+dir*run*0.5, y0+dy*0.5-1.5, 2.6, '1:'+e.n, {ha:1}); return; }
-      if(e.type==='cut'){ const dd=(e.dd||0.6)*k, f=dd*3, b=(e.db||0.6)*k, up=(e.h+(e.dd||0.6))*k, br=up*e.n;
-        const p1=[x0+dir*f, y0+dd], p2=[x0+dir*(f+b), y0+dd], p3=[x0+dir*(f+b+br), y0+dd-up], p4=[x0+dir*(f+b+br+2*k), y0+dd-up];
-        PL('TS-EARTH',[[x0,y0],p1,p2,p3,p4],false);
-        TX('TS-SLOPE',(p2[0]+p3[0])/2,(p2[1]+p3[1])/2-1.5, 2.6, '1:'+e.n, {ha:1});
-        TX('TS-TEXT',(p1[0]+p2[0])/2, y0+dd+3, 2.2, 'תעלה', {ha:1}); }
-    }
-    edgeCAD(sec.eL, X(0), Z(P.length?P[0].z:0), -1);
-    edgeCAD(sec.eR, X(tot), Z(P.length?P[P.length-1].z:0), 1);
-
-    /* ---- פיקטוגרמות CAD: הקואורדינטות במטרים, ביחס למרכז התא ולפני השטח ---- */
-    const SP = (cx,yS,pts,open)=> PL('TS-SYMB', pts.map(q=>[cx+q[0]*k, yS-q[1]*k]), !open);
-    const SC = (cx,yS,x,y,r)=> CI('TS-SYMB', cx+x*k, yS-y*k, r*k);
-    const SL = (cx,yS,x1,y1,x2,y2)=> L('TS-SYMB', cx+x1*k, yS-y1*k, cx+x2*k, yS-y2*k);
-    function symCar(cx,yS){                       /* רכב פרטי – 1.80 × 1.40 מ׳ */
-      SP(cx,yS,[[-0.90,0.22],[-0.90,0.78],[-0.55,0.78],[-0.38,1.40],[0.38,1.40],[0.55,0.78],[0.90,0.78],[0.90,0.22]]);
-      SP(cx,yS,[[-0.32,0.84],[0.32,0.84],[0.28,1.33],[-0.28,1.33]]);
-      SC(cx,yS,-0.55,0.30,0.30); SC(cx,yS,0.55,0.30,0.30);
-    }
-    function symBus(cx,yS){                       /* אוטובוס – 2.55 × 3.20 מ׳ */
-      SP(cx,yS,[[-1.27,0.38],[1.27,0.38],[1.27,3.20],[-1.27,3.20]]);
-      SP(cx,yS,[[-1.05,2.00],[1.05,2.00],[1.05,2.95],[-1.05,2.95]]);
-      SC(cx,yS,-0.80,0.48,0.48); SC(cx,yS,0.80,0.48,0.48);
-    }
-    function symLrt(cx,yS){                       /* רק״ל – קרון, מסילה ורשת חשמול */
-      SP(cx,yS,[[-1.32,0.30],[1.32,0.30],[1.32,3.55],[-1.32,3.55]]);
-      SP(cx,yS,[[-1.10,2.25],[1.10,2.25],[1.10,3.30],[-1.10,3.30]]);
-      SL(cx,yS,-0.50,3.55,0,4.85); SL(cx,yS,0.50,3.55,0,4.85);
-      SL(cx,yS,-1.60,4.95,1.60,4.95);
-      SP(cx,yS,[[-1.10,0],[1.10,0],[1.10,0.16],[-1.10,0.16]]);
-    }
-    function symPerson(cx,yS){                    /* הולך רגל – 1.70 מ׳ */
-      SC(cx,yS,0,1.57,0.13);
-      SP(cx,yS,[[-0.20,0.78],[-0.20,1.42],[0.20,1.42],[0.20,0.78]]);
-      SL(cx,yS,-0.10,0.78,-0.14,0); SL(cx,yS,0.10,0.78,0.14,0);
-    }
-    function symBike(cx,yS){                      /* אופניים + רוכב */
-      SC(cx,yS,0,0.34,0.34); SL(cx,yS,0,0.34,0,1.00); SL(cx,yS,-0.26,1.00,0.26,1.00);
-      SC(cx,yS,0,1.62,0.13); SP(cx,yS,[[-0.18,0.98],[-0.18,1.48],[0.18,1.48],[0.18,0.98]]);
-    }
-    function symTree(cx,yS){                      /* עץ – גובה כ-5.8 מ׳, נוף כ-4.5 מ׳ */
-      SL(cx,yS,-0.09,0,-0.09,2.30); SL(cx,yS,0.09,0,0.09,2.30);
-      SC(cx,yS,0,4.05,1.65); SC(cx,yS,-1.15,3.00,1.00); SC(cx,yS,1.15,3.00,0.95);
-    }
-    function symRail(cx,yS){                      /* מעקה בטיחות */
-      SL(cx,yS,0,0,0,0.80); SP(cx,yS,[[-0.32,0.54],[0.32,0.54],[0.32,0.72],[-0.32,0.72]]);
-    }
-
-    P.forEach((p,i)=>{ const nx=P[i+1]; if(!nx) return;
-      const road=t=>['lane','bus','brt'].includes(t);
-      if(road(p.t)&&road(nx.t)) RC('TS-MARK', X(p.x1)-0.06*k, Z(0)-0.05*k, 0.12*k, 0.05*k); });
-
-    P.forEach(p=>{
-      const t=T[p.t], cx=X((p.x0+p.x1)/2), yS=Z(p.z);
-      if(opt.icons){
-        if(t.car==='car'||t.car==='park') symCar(cx,yS);
-        if(t.car==='bus') symBus(cx,yS);
-        if(t.car==='lrt') symLrt(cx,yS);
-        if(t.bike){ if(p.dir==='both' && p.w>=2){ symBike(X(p.x0+p.w*0.3),yS); symBike(X(p.x0+p.w*0.7),yS); } else symBike(cx,yS); }
-        if(p.t==='walk' || (t.ppl && p.w>=3)){ const nn=Math.max(1,Math.min(4,Math.floor(p.w/1.2)));
-          for(let j=0;j<nn;j++) symPerson(X(p.x0+(j+0.5)*p.w/nn), yS); }
+  function earClip(poly){
+    const p = poly.slice();
+    if(p.length>1 && Math.abs(p[0][0]-p[p.length-1][0])<1e-12 && Math.abs(p[0][1]-p[p.length-1][1])<1e-12) p.pop();
+    if(p.length<3) return [];
+    if(area2(p) < 0) p.reverse();                         /* CCW */
+    const idx = p.map((_,i)=>i), out=[];
+    let guard = 0;
+    while(idx.length > 3 && guard++ < 4000){
+      let clipped = false;
+      for(let i=0;i<idx.length;i++){
+        const a=p[idx[(i+idx.length-1)%idx.length]], b=p[idx[i]], c=p[idx[(i+1)%idx.length]];
+        const cross = (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]);
+        if(cross <= 1e-14) continue;                      /* לא קמור */
+        let ok = true;
+        for(let j=0;j<idx.length;j++){
+          if(j===i || j===(i+idx.length-1)%idx.length || j===(i+1)%idx.length) continue;
+          if(inTri(a,b,c,p[idx[j]])){ ok=false; break; }
+        }
+        if(!ok) continue;
+        out.push([a,b,c]); idx.splice(i,1); clipped = true; break;
       }
-      if(opt.trees && t.tree && p.w>=1.0){ const nn=p.t==='plaza'?Math.max(1,Math.floor(p.w/6)):1;
-        for(let j=0;j<nn;j++) symTree(X(p.x0+(j+0.5)*p.w/nn), yS); }
-      if(t.rail) symRail(p.t==='barrier'?cx:X(p.x0+Math.min(0.5,p.w/2)), yS);
-      if(t.dir && p.dir && p.dir!=='none' && (t.car||t.bike)){
-        const top = yS - (t.car==='lrt'?5.8:t.car==='bus'?4.4:t.bike?2.8:2.6)*k, len=1.4*k, wd=0.35*k;
-        const arrow=(c,dir)=>{ const ya=top-len, yb=top, hd=Math.min(len*0.4, wd*1.6);
-          if(dir==='up') PL('TS-MARK',[[c,ya],[c+wd,ya+hd],[c+wd*0.55,ya+hd],[c+wd*0.55,yb],[c-wd*0.55,yb],[c-wd*0.55,ya+hd],[c-wd,ya+hd]],true);
-          else PL('TS-MARK',[[c,yb],[c+wd,yb-hd],[c+wd*0.55,yb-hd],[c+wd*0.55,ya],[c-wd*0.55,ya],[c-wd*0.55,yb-hd],[c-wd,yb-hd]],true); };
-        if(p.dir==='both'){ arrow(cx-wd*1.4,'up'); arrow(cx+wd*1.4,'down'); } else arrow(cx,p.dir);
+      if(!clipped) break;
+    }
+    if(idx.length === 3) out.push([p[idx[0]],p[idx[1]],p[idx[2]]]);
+    return out;
+  }
+
+  /* ---------- קריאת ה-SVG ---------- */
+  const ATTR = /([\w-]+)="([^"]*)"/g;
+  function attrs(s){ const o={}; let m; ATTR.lastIndex=0; while((m=ATTR.exec(s))) o[m[1]]=m[2]; return o; }
+  const num = v => { const x = parseFloat(v); return isNaN(x)?0:x; };
+  function translateOf(t){
+    if(!t) return [0,0];
+    const m = /translate\(\s*(-?[\d.eE+-]+)(?:[ ,]+(-?[\d.eE+-]+))?\s*\)/.exec(t);
+    return m ? [parseFloat(m[1]), m[2]!==undefined?parseFloat(m[2]):0] : [0,0];
+  }
+  function scaleOf(t){
+    if(!t) return 1;
+    const m = /scale\(\s*(-?[\d.eE+-]+)/.exec(t);
+    return m ? parseFloat(m[1]) : 1;
+  }
+  function rotateOf(t){
+    if(!t) return 0;
+    const m = /rotate\(\s*(-?[\d.eE+-]+)/.exec(t);
+    return m ? parseFloat(m[1]) : 0;
+  }
+  const NUMRE = /-?\d*\.?\d+(?:[eE][-+]?\d+)?/g;
+  function pathSubs(d){
+    const subs=[]; let cur=null, x=0, y=0, sx=0, sy=0, closed=false;
+    const cmds = d.match(/[MmLlHhVvZz][^MmLlHhVvZz]*/g) || [];
+    const push = ()=>{ if(cur && cur.length>1) subs.push({pts:cur, closed}); };
+    cmds.forEach(seg=>{
+      const c = seg[0], nums = (seg.slice(1).match(NUMRE)||[]).map(Number);
+      if(c==='M'||c==='m'){
+        push(); closed=false; cur=[];
+        for(let i=0;i+1<nums.length+1 && i<nums.length;i+=2){
+          if(c==='M'){ x=nums[i]; y=nums[i+1]; } else { x+=nums[i]; y+=nums[i+1]; }
+          cur.push([x,y]); if(i===0){ sx=x; sy=y; }
+        }
+      } else if(c==='L'||c==='l'){
+        for(let i=0;i<nums.length;i+=2){ if(c==='L'){ x=nums[i]; y=nums[i+1]; } else { x+=nums[i]; y+=nums[i+1]; } cur.push([x,y]); }
+      } else if(c==='H'||c==='h'){
+        nums.forEach(v=>{ x = (c==='H')?v:x+v; cur.push([x,y]); });
+      } else if(c==='V'||c==='v'){
+        nums.forEach(v=>{ y = (c==='V')?v:y+v; cur.push([x,y]); });
+      } else if(c==='Z'||c==='z'){
+        closed = true; x=sx; y=sy;
       }
     });
-
-    if(opt.cf){
-      const isRoad = p=>levelOf(p)==='road' && !['barrier','active'].includes(p.t);
-      let groups=[], cur=null;
-      P.forEach((p,i)=>{ if(isRoad(p)){ if(!cur){cur={a:i,b:i}; groups.push(cur);} else cur.b=i; } else cur=null; });
-      const yCF = oy + yG + depth + 2.2;
-      const mark=(cx,dir,val)=>{ L('TS-SLOPE', cx-dir*3, yCF, cx+dir*3, yCF);
-        PL('TS-SLOPE',[[cx+dir*3,yCF],[cx+dir*3-dir*1.2,yCF-0.6],[cx+dir*3-dir*1.2,yCF+0.6]],true);
-        TX('TS-SLOPE', cx, yCF-1.0, 2.5, val, {ha:1}); };
-      groups.forEach(gr=>{ const a0=P[gr.a].x0, b0=P[gr.b].x1, mid=(a0+b0)/2;
-        [[a0,mid],[mid,b0]].forEach(([a,b],j)=>{ if(b-a<1.2) return; mark(X((a+b)/2), j===0?-1:1, sec.cfRoad.toFixed(1)+'%'); }); });
-      P.forEach((p,i)=>{ if(levelOf(p)!=='curb' || p.w<2.0 || (T[p.t].tree && p.t!=='plaza')) return;
-        let dL=1e9,dR=1e9; for(let j=i-1;j>=0;j--) if(levelOf(P[j])==='road'){dL=i-j;break;} for(let j=i+1;j<P.length;j++) if(levelOf(P[j])==='road'){dR=j-i;break;}
-        mark(X((p.x0+p.x1)/2), dR<dL?1:-1, sec.cfSide.toFixed(1)+'%'); });
-    }
-
-    const yD = oy + yG + depth + (opt.cf?11:7);
-    function chain(segs, y, size, labels, extTop){
-      L('TS-DIM', X(segs[0].a), y, X(segs[segs.length-1].b), y);
-      const top = (extTop==null? y-2.6 : extTop+1.0);
-      segs.forEach((gs,gi)=>{ const a=X(gs.a), b=X(gs.b), wmm=b-a, val=f2(gs.b-gs.a);
-        L('TS-DIM', a-0.9, y+0.9, a+0.9, y-0.9); L('TS-DIM', b-0.9, y+0.9, b+0.9, y-0.9);
-        if(gi===0) L('TS-DIM', a, top, a, y+1.2);
-        L('TS-DIM', b, top, b, y+1.2);
-        const need = val.length*size*0.55;
-        if(wmm >= need+0.6) TX('TS-DIM',(a+b)/2, y-0.9, size, val, {ha:1});
-        else TX('TS-DIM',(a+b)/2+size*0.35, y-1.2, size*0.85, val, {ha:0, rot:90});
-        if(labels && gs.l){ const need2 = gs.l.length*2.1*0.55;
-          if(wmm>=need2+0.8) TX('TS-TEXT',(a+b)/2, y+3.6, 2.1, gs.l, {ha:1});
-          else TX('TS-TEXT',(a+b)/2+0.8, y+2.2, 1.9, gs.l, {ha:2, rot:90}); }
-      });
-    }
-    chain(P.map(p=>({a:p.x0,b:p.x1,l:opt.names?(T[p.t]?T[p.t].s:''):''})), yD, 2.7, opt.names);
-    const cat = p => ['median','barrier'].includes(p.t)?'מפרדה' : (p.t==='lrt'?'רק״ל' : (levelOf(p)==='road'?(sec.ctx==='inter'?'מיסעה + שוליים':'כביש'):(p.t==='plaza'?'שדירה':'מדרכה')));
-    let G=[]; P.forEach(p=>{ const c=cat(p); const last=G[G.length-1]; if(last && last.l===c) last.b=p.x1; else G.push({a:p.x0,b:p.x1,l:c}); });
-    const row2Y = yD + (opt.names?14:9);
-    if(G.length>1) chain(G, row2Y, 2.9, true, yD);
-    const row3Y = row2Y + (G.length>1?11:0);
-    chain([{a:0,b:tot,l:'רוחב כולל'}], row3Y, 3.3, true, G.length>1?row2Y:yD);
-
-    [0,tot].forEach(m=>{ L('TS-ROW', X(m), Z(4.5), X(m), row3Y+2); });
-    TX('TS-ROW', X(0)-1, Z(4.8), 2.3, 'גבול ז.ד.', {ha:2});
-    TX('TS-ROW', X(tot)+1, Z(4.8), 2.3, 'גבול ז.ד.', {ha:0});
+    push();
+    return subs;
   }
 
-  function build(secs, D, opt, meta){
-    const U = D/1000, k = 1000/D, rtl = !!(meta&&meta.rtl);
-    const d = Doc(U*3);
-    const P2 = (x,y)=>[x*U, (A0.h-y)*U];
-    const RC = (lay,x,y,w,h)=> d.poly(lay,[P2(x,y),P2(x+w,y),P2(x+w,y+h),P2(x,y+h)],true);
-    const TX = (lay,x,y,size,s,o)=>{ o=o||{}; const p=P2(x,y); d.text(lay,p[0],p[1],size*0.72*U, enc(s,rtl), {ha:o.ha||0, rot:o.rot||0}); };
+  /* ---------- התרגום עצמו ---------- */
+  function fromSVG(svg, D, o){
+    o = o || {};
+    const U = D/1000;
+    const A0h = o.sheetH || 841;                  /* גובה גיליון A0 במ״מ */
+    const fills = o.fills !== false;
+    const used = {};
+    const d = Doc(U, used);
+    const st = [{tx:0, ty:0, sc:1, fill:null, stroke:null, lay:null}];
+    const P = (x,y)=>[x*U, (A0h - y)*U];
 
-    const frameL=20, frame=10, tbW=180, tbH=62;
-    const drawW = A0.w - frameL - frame - 10, availH = A0.h - 2*frame - tbH - 20;
-    const sizes = secs.map(s=>sectionSize(s, D, opt));
-    const totalH = sizes.reduce((a,b)=>a+b.h,0) + 12*(sizes.length-1);
-    let y = frame + 12 + Math.max(0,(availH-totalH)/2), warn=[];
-    secs.forEach((s,i)=>{ const b=sizes[i], x = frameL + 5 + Math.max(0,(drawW-b.w)/2);
-      if(b.w>drawW) warn.push('חתך '+(i+1)+' רחב מהגיליון ('+Math.round(b.w)+' מ״מ)');
-      sectionCAD(d, s, D, opt, x, y, rtl); y += b.h + 12; });
-    if(totalH > availH) warn.push('גובה החתכים חורג מהשטח הפנוי בגיליון');
+    function top(){ return st[st.length-1]; }
+    function place(x,y){ const s=top(); return P(s.tx + s.sc*x, s.ty + s.sc*y); }
+    function lenOf(v){ return v * top().sc; }
 
-    RC('TS-FRAME', frameL, frame, A0.w-frameL-frame, A0.h-2*frame);
-    const sbX=frameL+10, sbY=A0.h-frame-12;
-    for(let i=0;i<5;i++) RC('TS-FRAME', sbX+i*2*k, sbY, 2*k, 2);
-    TX('TS-TITLE', sbX, sbY-1.5, 2.5, '0', {ha:1});
-    TX('TS-TITLE', sbX+5*k, sbY-1.5, 2.5, '5', {ha:1});
-    TX('TS-TITLE', sbX+10*k, sbY-1.5, 2.5, '10 מ׳', {ha:1});
-    TX('TS-TITLE', sbX+5*k, sbY+6, 2.5, 'סרגל קנה מידה 1:'+D+' – 10 מ׳ = '+(10*k).toFixed(0)+' מ״מ', {ha:1});
+    const paper = col => col.r>245 && col.g>245 && col.b>245;   /* לבן = צבע הנייר */
+    function addFill(lay, col, poly){         /* poly במרחב המודל */
+      if(!fills || !col || paper(col)) return;
+      const p = poly.map(q=>[q[0],q[1]]);
+      if(p.length===4 && convexQuad(p)) d.solid(lay+'-F', col, p[0], p[1], p[3], p[2]);
+      else earClip(p).forEach(t=>d.solid(lay+'-F', col, t[0], t[1], t[2]));
+    }
+    function convexQuad(p){
+      let sgn = 0;
+      for(let i=0;i<4;i++){
+        const a=p[i], b=p[(i+1)%4], c=p[(i+2)%4];
+        const cr = (b[0]-a[0])*(c[1]-b[1]) - (b[1]-a[1])*(c[0]-b[0]);
+        if(Math.abs(cr) < 1e-14) return false;
+        const s = cr>0?1:-1;
+        if(sgn===0) sgn=s; else if(s!==sgn) return false;
+      }
+      return true;
+    }
+    function shape(lay, pts, closed, fillCol, strokeCol, lt){
+      /* pts כבר במרחב המודל. המיתאר תמיד נרשם – בצבע הקו, ואם אין קו בצבע המילוי,
+         כך שהתצוגה זהה למסך וכשמקפיאים את שכבות ‎-F‎ נשאר שרטוט קווי. */
+      if(fillCol) addFill(lay, fillCol, pts);
+      const oc = strokeCol || fillCol;
+      if(oc) d.poly(lay, oc, pts, closed, lt);
+    }
+    /* קווקוו: פסים באלכסון בתוך מלבן – בדיוק כמו התבנית שעל המסך.
+       הפס נחתך אל תוך המלבן (Sutherland–Hodgman) ונצבע כשטח מלא. */
+    function clipHalf(poly, dy, dx, c, keepGE){
+      const out = [];
+      const val = p => p[0]*dy - p[1]*dx - c;
+      for(let i=0;i<poly.length;i++){
+        const A = poly[i], B = poly[(i+1)%poly.length];
+        const va = val(A)*(keepGE?1:-1), vb = val(B)*(keepGE?1:-1);
+        if(va >= 0) out.push(A);
+        if((va >= 0) !== (vb >= 0)){
+          const t = va/(va-vb);
+          out.push([A[0]+(B[0]-A[0])*t, A[1]+(B[1]-A[1])*t]);
+        }
+      }
+      return out;
+    }
+    function hatchRect(lay, x, y, w, h, ang, gap, col, bandW){
+      if(!col) return;
+      const rad = ang*Math.PI/180, dx = Math.cos(rad), dy = Math.sin(rad);
+      const rect = [[x,y],[x+w,y],[x+w,y+h],[x,y+h]];
+      const cs = rect.map(p=>p[0]*dy - p[1]*dx);
+      const lo = Math.min.apply(null,cs), hi = Math.max.apply(null,cs);
+      const bw = bandW>0 ? bandW : 0;
+      for(let c = Math.floor(lo/gap)*gap; c <= hi+gap; c += gap){
+        if(bw > 0){
+          let poly = clipHalf(rect, dy, dx, c, true);
+          if(poly.length) poly = clipHalf(poly, dy, dx, c+bw, false);
+          if(poly.length >= 3) addFill(lay, col, poly.map(p=>place(p[0],p[1])));
+        } else {
+          const pts = [];
+          if(Math.abs(dx) > 1e-9) for(const xx of [x, x+w]){ const yy = (xx*dy - c)/dx; if(yy>=y-1e-9 && yy<=y+h+1e-9) pts.push([xx,yy]); }
+          if(Math.abs(dy) > 1e-9) for(const yy of [y, y+h]){ const xx = (c + yy*dx)/dy; if(xx>=x-1e-9 && xx<=x+w+1e-9) pts.push([xx,yy]); }
+          if(pts.length < 2) continue;
+          const A = place(pts[0][0], pts[0][1]), B = place(pts[1][0], pts[1][1]);
+          if(Math.abs(A[0]-B[0])>1e-12 || Math.abs(A[1]-B[1])>1e-12) d.line(lay, col, A[0],A[1],B[0],B[1]);
+        }
+      }
+    }
+    function dashOf(a){
+      const v = a['stroke-dasharray'];
+      if(!v || v==='none') return null;
+      const arr = v.split(/[\s,]+/).map(Number).filter(x=>!isNaN(x)).map(x=>x*top().sc);
+      return arr.length>=2 ? d.dashLT(arr) : null;
+    }
 
-    const tbX=A0.w-frame-tbW, tbY=A0.h-frame-tbH;
-    const cellT=(x,y,w,h,lab,val,big)=>{ RC('TS-TITLE',x,y,w,h);
-      TX('TS-TITLE', x+w-2, y+4, 2.3, lab, {ha:2}); TX('TS-TITLE', x+w-2, y+h-3, big?5:3.4, val, {ha:2}); };
-    RC('TS-FRAME', tbX, tbY, tbW, tbH);
-    cellT(tbX,tbY,tbW,16,'משרד','MAHALCO – הנדסה אזרחית ותחבורה',true);
-    cellT(tbX,tbY+16,tbW,14,'פרויקט', meta.proj||'—');
-    cellT(tbX,tbY+30,tbW,14,'תוכן הגיליון', secs.map(s=>s.title).join(' | '));
-    cellT(tbX+120,tbY+44,60,18,'קנה מידה','1:'+D,true);
-    cellT(tbX+80,tbY+44,40,18,'גיליון', meta.dwg||'—');
-    cellT(tbX+40,tbY+44,40,18,'תאריך', meta.date||'');
-    cellT(tbX,tbY+44,40,18,'שרטט', meta.drawn||'—');
-    TX('TS-TITLE', frameL+10, A0.h-frame-26, 2.8,
-      'הערות: המידות במטרים. המודל משורטט 1:1 ומיועד לפלוט בקנה 1:'+D+'. מבנה המסעה אינדיקטיבי. חתך עקרוני – לא לביצוע.', {ha:0});
+    const tagRe = /<(\/?)([a-zA-Z]+)((?:"[^"]*"|[^>])*?)(\/?)>/g;
+    let m, skipDepth = 0;
+    while((m = tagRe.exec(svg))){
+      const close = m[1]==='/', name = m[2].toLowerCase(), a = attrs(m[3]), self = m[4]==='/';
+      if(skipDepth){                                   /* בתוך defs/pattern */
+        if(name==='defs'||name==='pattern'){ if(close) skipDepth--; else if(!self) skipDepth++; }
+        continue;
+      }
+      if(name==='defs' || name==='pattern'){ if(!close && !self) skipDepth++; continue; }
+      if(name==='svg') continue;
+      if(name==='g'){
+        if(close){ if(st.length>1) st.pop(); }
+        else {
+          const par = top(), t = translateOf(a.transform), sc = scaleOf(a.transform);
+          st.push({tx: par.tx + par.sc*t[0], ty: par.ty + par.sc*t[1], sc: par.sc*sc,
+                   fill: a.fill!==undefined ? a.fill : par.fill,
+                   stroke: a.stroke!==undefined ? a.stroke : par.stroke,
+                   lay: a['data-lay'] || par.lay});
+          if(self) st.pop();
+        }
+        continue;
+      }
+      if(close) continue;
 
-    return {dxf: d.out(), warn, scale:D};
+      const s = top();
+      const layer = a['data-lay'] || s.lay || 'TS-MISC';
+      if(layer === 'none') { if(name==='text') tagRe.lastIndex = svg.indexOf('</text>', tagRe.lastIndex)+7; continue; }
+      const fc = hex(a.fill !== undefined ? a.fill : s.fill);
+      const sc = hex(a.stroke !== undefined ? a.stroke : s.stroke);
+      const lt = dashOf(a);
+
+      if(name==='rect'){
+        const x=num(a.x), y=num(a.y), w=num(a.width), h=num(a.height), rx=num(a.rx||a.ry);
+        const hatch = a['data-hatch'], fillCol = hex(a['data-fill-col']);
+        let pts;
+        if(rx > 0.0001){
+          const r = Math.min(rx, w/2, h/2), B = 0.414213562;   /* tan(45°/4·2) לרבע מעגל */
+          const q = [];
+          const add = (px,py,b)=>{ const P2=place(px,py); q.push(b?[P2[0],P2[1],b]:[P2[0],P2[1]]); };
+          add(x+r, y, 0);          add(x+w-r, y, B);
+          add(x+w, y+r, 0);        add(x+w, y+h-r, B);
+          add(x+w-r, y+h, 0);      add(x+r, y+h, B);
+          add(x, y+h-r, 0);        add(x, y+r, B);
+          pts = q;
+        } else {
+          pts = [place(x,y), place(x+w,y), place(x+w,y+h), place(x,y+h)];
+        }
+        shape(layer, pts, true, fc || fillCol, sc, lt);
+        if(hatch) hatchRect(layer, x, y, w, h, +hatch, num(a['data-hatch-gap'])||10, hex(a['data-hatch-col']) || fc, num(a['data-hatch-w']));
+      }
+      else if(name==='circle'){
+        const cx=num(a.cx), cy=num(a.cy), r=num(a.r);
+        const c = place(cx,cy), rm = lenOf(r)*U;
+        if(fc && fills && !paper(fc)){
+          const N=16, ring=[];
+          for(let i=0;i<N;i++){ const t=2*Math.PI*i/N; ring.push([c[0]+rm*Math.cos(t), c[1]+rm*Math.sin(t)]); }
+          for(let i=0;i<N;i+=2) d.solid(layer+'-F', fc, ring[i], ring[(i+1)%N], c, ring[(i+2)%N]);
+        }
+        const oc = sc || fc;
+        if(oc) d.circle(layer, oc, c[0], c[1], rm);
+      }
+      else if(name==='line'){
+        const p1=place(num(a.x1),num(a.y1)), p2=place(num(a.x2),num(a.y2));
+        if(Math.abs(p1[0]-p2[0])>1e-12 || Math.abs(p1[1]-p2[1])>1e-12)
+          d.line(layer, sc || fc, p1[0],p1[1],p2[0],p2[1], lt);
+      }
+      else if(name==='path'){
+        pathSubs(a.d||'').forEach(sub=>{
+          const pts = sub.pts.map(p=>place(p[0],p[1]));
+          shape(layer, pts, sub.closed || !!fc, fc, sc, lt);
+        });
+      }
+      else if(name==='text'){
+        const end = svg.indexOf('</text>', tagRe.lastIndex);
+        const raw = end<0 ? '' : svg.slice(tagRe.lastIndex, end);
+        if(end>=0) tagRe.lastIndex = end + 7;
+        const txt = raw.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
+        const p = place(num(a.x), num(a.y));
+        const size = lenOf(num(a['font-size'])) * 0.72 * U;
+        const ha = a['text-anchor']==='middle' ? 1 : a['text-anchor']==='end' ? 2 : 0;
+        const rot = -rotateOf(a.transform);
+        d.text(layer, fc, p[0], p[1], size, enc(txt, o.rtl), {ha, rot});
+      }
+    }
+    return {dxf: d.out(), entities: d.count(), layers: Object.keys(used)};
   }
 
-  return {build, fitScale, sectionSize};
+  /* עברית: כל תו שאינו ASCII נכתב כ-\U+XXXX */
+  function enc(s, rtl){
+    s = String(s==null?'':s);
+    if(rtl) s = s.replace(/[֐-׿][֐-׿\s"'׳״.\-()+%]*/g, m=>[...m].reverse().join(''));
+    return s.replace(/[^\x20-\x7E]/g, ch=>'\\U+'+ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0'));
+  }
+
+  /* ---------- כתיבה מרשימת פעולות (קואורדינטות מודל במטרים) ---------- */
+  function fromOps(ops, o){
+    o = o || {};
+    const used = {};
+    const d = Doc(o.unit || 1, used);
+    const fills = o.fills !== false;
+    ops.forEach(op=>{
+      const col = op.col ? (typeof op.col === 'string' ? hex(op.col) : op.col) : null;
+      if(op.k === 'poly'){
+        if(op.pts && op.pts.length>1) d.poly(op.lay, col, op.pts, !!op.closed, op.lt ? d.dashLT(op.lt) : null);
+      } else if(op.k === 'solid'){
+        if(!fills || !col || (col.r>245&&col.g>245&&col.b>245)) return;
+        const p = op.poly.slice();
+        if(p.length===4) d.solid(op.lay+'-F', col, p[0], p[1], p[3], p[2]);
+        else earClip(p).forEach(t=>d.solid(op.lay+'-F', col, t[0], t[1], t[2]));
+      } else if(op.k === 'circle'){
+        d.circle(op.lay, col, op.cx, op.cy, op.r);
+      } else if(op.k === 'text'){
+        d.text(op.lay, col, op.x, op.y, op.h, enc(op.s, o.rtl), {ha:op.ha||0, va:op.va||0, rot:op.rot||0});
+      }
+    });
+    return {dxf: d.out(), entities: d.count(), layers: Object.keys(used)};
+  }
+
+  return {fromSVG, fromOps, LAYERS};
 })();
+/* בחירת קנה מידה אוטומטית – לפי מידות הבלוק שמפיק אותו מנוע שרטוט */
+function fitScale(secs, opt){
+  const frameL=20, frame=10, tbH=62;
+  const drawW = A0.w - frameL - frame - 10, availH = A0.h - 2*frame - tbH - 20;
+  for(const D of [25,50,100,150,200,250,500,1000]){
+    const bl = secs.map(s=>sectionSVG(s, D, opt));
+    const needW = Math.max.apply(null, bl.map(b=>b.w));
+    const needH = bl.reduce((a,b)=>a+b.h,0) + 12*(bl.length-1);
+    if(needW<=drawW && needH<=availH) return D;
+  }
+  return 1000;
+}
 
 /* ======================================================================
    ממשק הייצוא – DWG
@@ -1762,7 +1953,7 @@ const DWG_SERVICE = 'https://mahalco-dwg.onrender.com/dxf2dwg';          /* לד
 (function(){
   const $ = id => document.getElementById(id);
   const scaleSel = $('dxfScale'), whatSel = $('dxfWhat'), rtlChk = $('dxfRtl'),
-        svcInp = $('dwgSvc'), btn = $('dxfBtn'), info = $('dxfInfo');
+        fillChk = $('dxfFill'), svcInp = $('dwgSvc'), btn = $('dxfBtn'), info = $('dxfInfo');
   if(!btn) return;
 
   const KEY = 'mahalco-typical-section';
@@ -1772,6 +1963,7 @@ const DWG_SERVICE = 'https://mahalco-dwg.onrender.com/dxf2dwg';          /* לד
       if(s.dxfScale) scaleSel.value = s.dxfScale;
       if(s.dxfWhat)  whatSel.value  = s.dxfWhat;
       if(s.dxfRtl!=null) rtlChk.checked = !!s.dxfRtl;
+      if(s.dxfFill!=null && fillChk) fillChk.checked = !!s.dxfFill;
       if(s.dwgSvc && svcInp) svcInp.value = s.dwgSvc;
     }
     if(svcInp && !svcInp.value) svcInp.value = localStorage.getItem('mahalco-dwg-service') || DWG_SERVICE || '';
@@ -1780,12 +1972,14 @@ const DWG_SERVICE = 'https://mahalco-dwg.onrender.com/dxf2dwg';          /* לד
     try{
       const prev = JSON.parse(localStorage.getItem(KEY)||'{}') || {};
       prev.dxfScale = scaleSel.value; prev.dxfWhat = whatSel.value; prev.dxfRtl = rtlChk.checked;
+      prev.dxfFill = fillChk ? fillChk.checked : true;
       prev.dwgSvc = svcInp ? svcInp.value.trim() : '';
       localStorage.setItem(KEY, JSON.stringify(prev));
       if(svcInp) localStorage.setItem('mahalco-dwg-service', svcInp.value.trim());
     }catch(e){}
   };
   scaleSel.onchange = persist; whatSel.onchange = persist; rtlChk.onchange = persist;
+  if(fillChk) fillChk.onchange = persist;
   if(svcInp) svcInp.onchange = persist;
 
   const service = ()=> ((svcInp && svcInp.value.trim()) || DWG_SERVICE || '').trim();
@@ -1829,25 +2023,44 @@ const DWG_SERVICE = 'https://mahalco-dwg.onrender.com/dxf2dwg';          /* לד
         proj:  $('proj').value  || 'חתך טיפוסי – נתיבי ישראל, כרך 1 פרק 3',
         drawn: $('drawn').value || '—',
         dwg:   $('dwg').value   || 'TS-01',
-        date:  todayStr(), rtl: rtl
+        date:  todayStr()
       };
-      const D = (Dsel==='auto') ? CAD.fitScale(secs, opt) : (parseInt(Dsel,10)||200);
-      const res = CAD.build(secs, D, opt, meta);
+      const D = (Dsel==='auto') ? fitScale(secs, opt) : (parseInt(Dsel,10)||200);
+      /* אותו גיליון בדיוק שמוצג על המסך – ומתוכו נבנה קובץ ה-CAD */
+      const sheet = sheetSVGOf(secs, D, opt, meta);
+      const fills = !fillChk || fillChk.checked;
+      const res = CAD.fromSVG(sheet.svg, D, {rtl:rtl, fills:fills});
       const base = 'MAHALCO_' + ($('dwg').value || 'TS') + '_1-' + D + (rtl?'-rtl':'');
-      const warn = (res.warn && res.warn.length) ? ' · ' + res.warn.join('; ') : '';
+      const warn = (sheet.warn && sheet.warn.length) ? ' · ' + sheet.warn.join('; ') : '';
       const svc = service();
 
       if(svc){
-        say('ממיר ל-DWG בשירות ההמרה…');
+        say('ממיר ל-DWG בשירות ההמרה… (אם השירות היה רדום ההמרה הראשונה עשויה לקחת עד דקה)');
         try{
-          const r = await fetch(svc, { method:'POST', headers:{'Content-Type':'application/dxf'}, body:res.dxf });
+          const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 150000);
+        let r; try{ r = await fetch(svc, {method:'POST', headers:{'Content-Type':'application/dxf'}, body:res.dxf, signal:ctl.signal}); } finally { clearTimeout(to); }
           if(!r.ok) throw new Error('HTTP ' + r.status);
           const blob = await r.blob();
           if(blob.size < 512) throw new Error('תשובה ריקה מהשירות');
           download(blob, base + '.dwg');
-          say('נוצר ' + base + '.dwg · ' + (blob.size/1024).toFixed(0) + ' KB · קנה מידה 1:' + D + warn, warn?'var(--amber)':'');
+          say('נוצר ' + base + '.dwg · ' + (blob.size/1024).toFixed(0) + ' KB · קנה מידה 1:' + D + ' · ' + res.entities + ' ישויות' + warn, warn?'var(--amber)':'');
           return;
         }catch(err){
+          /* ניסיון שני בלי המילוי הצבעוני – קובץ קל ופשוט יותר להמרה */
+          if(fills){
+            try{
+              const plain = CAD.fromSVG(sheet.svg, D, {rtl:rtl, fills:false});
+              const r2 = await fetch(svc, {method:'POST', headers:{'Content-Type':'application/dxf'}, body:plain.dxf});
+              if(r2.ok){
+                const b2 = await r2.blob();
+                if(b2.size >= 512){
+                  download(b2, base + '.dwg');
+                  say('נוצר ' + base + '.dwg (ללא מילוי צבעוני) · ' + (b2.size/1024).toFixed(0) + ' KB · קנה מידה 1:' + D + warn, 'var(--amber)');
+                  return;
+                }
+              }
+            }catch(e2){}
+          }
           download(new Blob([res.dxf],{type:'application/dxf'}), base + '.dxf');
           say('ההמרה ל-DWG נכשלה (' + (err.message||err) + ') – הורד DXF במקום. AutoCAD פותח אותו ושומר בשם ל-DWG.', 'var(--amber)');
           return;

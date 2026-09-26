@@ -1,4 +1,4 @@
-/* Decorative traffic stays physically left in both LTR and RTL layouts. */
+/* Decorative traffic sits opposite the content, low in the hero. */
 .hero.motion-hero{position:relative;isolation:isolate;background:#eef0eb!important;transition:background-color 1.25s cubic-bezier(.22,1,.36,1)!important}
 [data-theme="dark"] .hero.motion-hero{background:#11161c!important}
 .motion-hero .wrap{position:relative;z-index:1;display:block}
@@ -20,3 +20,9 @@ html.mh-anim body :is(.masthead,.strip,footer,.hq,.duo,.btn,.stat){transition:ba
 @media(max-width:899px){.motion-hero .wrap>div:first-child{width:100%}.hero.motion-hero{padding-bottom:260px}.junction-world{mask-image:linear-gradient(0deg,#000,transparent 300px);-webkit-mask-image:linear-gradient(0deg,#000,transparent 300px)}.junction-world svg{width:520px;left:-70px;bottom:-210px;opacity:.64}.junction-controls{left:20px;bottom:16px}}
 @media(prefers-reduced-motion:reduce){.hero.motion-hero,.junction-world *,html.mh-anim body *{transition:none!important}}
 @media print{.junction-world,.junction-controls{display:none}.hero.motion-hero{padding-bottom:30px}.motion-hero .wrap>div:first-child{width:100%}}
+/* English mirrors the composition while traffic keeps right-hand lanes. */
+html[dir="ltr"] .motion-hero .wrap>div:first-child{margin-left:0;margin-right:auto}
+html[dir="ltr"] .junction-world{mask-image:linear-gradient(270deg,#000 0%,#000 28%,transparent 47%);-webkit-mask-image:linear-gradient(270deg,#000 0%,#000 28%,transparent 47%)}
+html[dir="ltr"] .junction-world svg{left:auto;right:calc(23vw - max(380px,32.5vw))}
+html[dir="ltr"] .junction-controls{left:auto;right:24px}
+@media(max-width:899px){html[dir="ltr"] .junction-world{mask-image:linear-gradient(0deg,#000,transparent 300px);-webkit-mask-image:linear-gradient(0deg,#000,transparent 300px)}html[dir="ltr"] .junction-world svg{right:-70px}html[dir="ltr"] .junction-controls{right:20px}}

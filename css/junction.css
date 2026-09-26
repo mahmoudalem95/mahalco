@@ -11,7 +11,7 @@
 .junction-world :is(.ground,.road,.sidewalk,.median,.mark,.zebra,.building,.roof,.tree,.trunk,.window,.lamp,.beam,.pool,.lit-window,.tail){transition:fill 1.4s ease,stroke 1.4s ease,opacity 1.6s ease,filter 1.4s ease!important}
 [data-theme="dark"] .junction-world .ground{fill:#131d22}[data-theme="dark"] .junction-world .road{fill:#28343e}[data-theme="dark"] .junction-world .sidewalk{fill:#354147}[data-theme="dark"] .junction-world .median{fill:#273c36}[data-theme="dark"] .junction-world .mark{stroke:#879596}[data-theme="dark"] .junction-world .zebra{fill:#a8b1ac}[data-theme="dark"] .junction-world .building{fill:#17252e;stroke:#283943}[data-theme="dark"] .junction-world .roof{fill:#1d2e38}[data-theme="dark"] .junction-world .tree{fill:#2e5043}[data-theme="dark"] .junction-world .trunk{fill:#1d342e}[data-theme="dark"] .junction-world .window{fill:#2c3d43}[data-theme="dark"] .junction-world .beam{opacity:.42}[data-theme="dark"] .junction-world .pool{opacity:.6}[data-theme="dark"] .junction-world .lit-window{opacity:.8}[data-theme="dark"] .junction-world .tail{fill:#ff655c;filter:drop-shadow(0 0 3px #ff453a)}
 .junction-controls{position:absolute;left:24px;bottom:18px;z-index:2;display:flex;align-items:center;gap:4px;direction:ltr;padding:5px;border:1px solid #c7cec8;border-radius:999px;background:rgba(250,252,248,.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 20px #2333290b}
-.junction-controls button{display:grid;place-items:center;border:0;border-radius:999px;min-width:36px;min-height:36px;padding:5px 9px;background:transparent;color:#3c484a;font:600 12px system-ui;cursor:pointer;touch-action:manipulation}
+.junction-controls button{display:grid;place-items:center;border:0;border-radius:999px;min-width:36px;min-height:36px;padding:5px 9px;background:transparent;color:#3c484a;font:inherit;font-size:12px;font-weight:600;cursor:pointer;touch-action:manipulation}
 .junction-controls button[aria-pressed="true"]{background:#fff;box-shadow:0 2px 7px #23332916}.junction-controls button:focus-visible{outline:2px solid #b78919;outline-offset:3px}
 [data-theme="dark"] .junction-controls{background:rgba(34,45,55,.8);border-color:#44515b}[data-theme="dark"] .junction-controls button{color:#d9e1e3}[data-theme="dark"] .junction-controls button[aria-pressed="true"]{background:#53606b}
 /* Keep color interpolation alive for the whole theme transition. */
@@ -41,3 +41,11 @@ html[dir="ltr"] .junction-controls{left:auto;right:24px}
 .junction-world .bike-wheel{stroke:#263a3b;stroke-width:2;stroke-linecap:round}.junction-world .bike-frame{fill:none;stroke:#e6ead9;stroke-width:1}.junction-world .rider-leg,.junction-world .rider-arm{stroke:#354e5c;stroke-width:1.6;stroke-linecap:round}.junction-world .rider-body{fill:var(--jersey)}.junction-world .helmet{fill:#f6f0de;stroke:#b9c3bd;stroke-width:.4}
 .junction-world .person-shadow{fill:#22362b;opacity:.18}.junction-world .person-leg{stroke:#42576a;stroke-width:1.5;stroke-linecap:round}.junction-world .person-arms{fill:none;stroke:var(--coat);stroke-width:1.4;stroke-linecap:round}.junction-world .person-body{fill:var(--coat)}.junction-world .person-head{fill:#dfba97}
 [data-theme="dark"] .junction-world .cycle-track{stroke:#386b60}[data-theme="dark"] .junction-world .stop-platform{fill:#334741}[data-theme="dark"] .junction-world .shelter{fill:#526c64;stroke:#6c9082}[data-theme="dark"] .junction-world .bike-wheel{stroke:#a6bcb6}
+.junction-world .turn-arrow{fill:none;stroke:#b55550;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:.65}
+.junction-world .turn-arrow[data-state="green"]{stroke:#62e6a1;opacity:1;filter:drop-shadow(0 0 2px #62e6a1)}
+.junction-world .turn-arrow[data-state="amber"]{stroke:#ffd66a;opacity:1;filter:drop-shadow(0 0 2px #ffd66a)}
+.junction-world .beam{filter:url(#junction-soft-light)}
+[data-theme="dark"] .junction-world .beam{opacity:.34}
+[data-theme="dark"] .junction-world .headlight{filter:drop-shadow(0 0 2px #ffedbe)}
+[data-theme="dark"] .junction-world .pool{opacity:.48}
+[data-theme="dark"] .junction-world .lit-window{filter:drop-shadow(0 0 1.5px #ffc876)}

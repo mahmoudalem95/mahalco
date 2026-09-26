@@ -16,14 +16,28 @@
 [data-theme="dark"] .junction-controls{background:rgba(34,45,55,.8);border-color:#44515b}[data-theme="dark"] .junction-controls button{color:#d9e1e3}[data-theme="dark"] .junction-controls button[aria-pressed="true"]{background:#53606b}
 /* Keep color interpolation alive for the whole theme transition. */
 html.mh-anim body :is(.masthead,.strip,footer,.hq,.duo,.btn,.stat){transition:background-color 1.2s ease,border-color 1.2s ease,color 1.2s ease!important}
-@media(min-width:1600px){.junction-world svg{bottom:-20vw}}
 @media(max-width:899px){.motion-hero .wrap>div:first-child{width:100%}.hero.motion-hero{padding-bottom:260px}.junction-world{mask-image:linear-gradient(0deg,#000,transparent 300px);-webkit-mask-image:linear-gradient(0deg,#000,transparent 300px)}.junction-world svg{width:520px;left:-70px;bottom:-210px;opacity:.64}.junction-controls{left:20px;bottom:16px}}
 @media(prefers-reduced-motion:reduce){.hero.motion-hero,.junction-world *,html.mh-anim body *{transition:none!important}}
 @media print{.junction-world,.junction-controls{display:none}.hero.motion-hero{padding-bottom:30px}.motion-hero .wrap>div:first-child{width:100%}}
 /* English mirrors the composition while traffic keeps right-hand lanes. */
 html[dir="ltr"] .motion-hero .wrap>div:first-child{margin-left:0;margin-right:auto}
-html[dir="ltr"] .junction-world{mask-image:linear-gradient(270deg,#000 0%,#000 28%,transparent 47%);-webkit-mask-image:linear-gradient(270deg,#000 0%,#000 28%,transparent 47%)}
 html[dir="ltr"] .junction-world svg{left:auto;right:calc(23vw - max(380px,32.5vw))}
 html[dir="ltr"] .junction-controls{left:auto;right:24px}
 @media(max-width:899px){html[dir="ltr"] .junction-world{mask-image:linear-gradient(0deg,#000,transparent 300px);-webkit-mask-image:linear-gradient(0deg,#000,transparent 300px)}html[dir="ltr"] .junction-world svg{right:-70px}html[dir="ltr"] .junction-controls{right:20px}}
 :root[data-theme="dark"] .motion-hero + .strip{background:#171f25;color:#e6e8e3;border-color:#2d333b}
+
+/* Match the crossing to the tool grid and dissolve the approaches at its edge. */
+@media(min-width:900px){
+  .junction-world{--fade-direction:90deg;--fade-end:var(--junction-fade-end,44vw);mask-image:linear-gradient(var(--fade-direction),#000 0%,#000 calc(var(--fade-end) - 240px),rgba(0,0,0,.85) calc(var(--fade-end) - 180px),rgba(0,0,0,.5) calc(var(--fade-end) - 115px),rgba(0,0,0,.15) calc(var(--fade-end) - 50px),transparent var(--fade-end));-webkit-mask-image:linear-gradient(var(--fade-direction),#000 0%,#000 calc(var(--fade-end) - 240px),rgba(0,0,0,.85) calc(var(--fade-end) - 180px),rgba(0,0,0,.5) calc(var(--fade-end) - 115px),rgba(0,0,0,.15) calc(var(--fade-end) - 50px),transparent var(--fade-end))}
+  html[dir="ltr"] .junction-world{--fade-direction:270deg}
+  .junction-world svg,html[dir="ltr"] .junction-world svg{top:var(--junction-y,50%);bottom:auto;transform:translateY(-50%)}
+}
+/* A lived-in street: protected cycling, transit and people at human scale. */
+.junction-world .cycle-track{fill:none;stroke:#7ba999;stroke-width:8;opacity:.75;transition:stroke 1.4s ease!important}
+.junction-world .cycle-dashes{fill:none;stroke:#e7f4e9;stroke-width:.6;stroke-dasharray:4 7;opacity:.6}
+.junction-world .cycle-symbol{fill:none;stroke:#f0f7e9;stroke-width:.8;opacity:.85}
+.junction-world .bus-body{fill:#367d6c}.junction-world .bus-roof{fill:#e7eadc}.junction-world .bus-windows{fill:none;stroke:#2d535c;stroke-width:2;stroke-dasharray:5 2}.junction-world .bus-ac{fill:#b4c8c0;stroke:#90aaa0;stroke-width:.6}
+.junction-world .stop-platform{fill:#ccd5cb}.junction-world .shelter{fill:#aecac1;fill-opacity:.65;stroke:#708d83;stroke-width:1}.junction-world .bench{stroke:#836e53;stroke-width:3;stroke-linecap:round}.junction-world .stop-sign{fill:#397c68}
+.junction-world .bike-wheel{stroke:#263a3b;stroke-width:2;stroke-linecap:round}.junction-world .bike-frame{fill:none;stroke:#e6ead9;stroke-width:1}.junction-world .rider-leg,.junction-world .rider-arm{stroke:#354e5c;stroke-width:1.6;stroke-linecap:round}.junction-world .rider-body{fill:var(--jersey)}.junction-world .helmet{fill:#f6f0de;stroke:#b9c3bd;stroke-width:.4}
+.junction-world .person-shadow{fill:#22362b;opacity:.18}.junction-world .person-leg{stroke:#42576a;stroke-width:1.5;stroke-linecap:round}.junction-world .person-arms{fill:none;stroke:var(--coat);stroke-width:1.4;stroke-linecap:round}.junction-world .person-body{fill:var(--coat)}.junction-world .person-head{fill:#dfba97}
+[data-theme="dark"] .junction-world .cycle-track{stroke:#386b60}[data-theme="dark"] .junction-world .stop-platform{fill:#334741}[data-theme="dark"] .junction-world .shelter{fill:#526c64;stroke:#6c9082}[data-theme="dark"] .junction-world .bike-wheel{stroke:#a6bcb6}

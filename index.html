@@ -805,7 +805,7 @@ a.hq small{font-size:12px}
   }
   function soft(){
     if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},420);
+    d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},1500);
   }
   window.MHTheme={
     set:function(p){wr(K,p);soft();apply();},
@@ -1077,6 +1077,8 @@ a.leaf.leaf-temp::before{display:none}
 :root[data-theme="dark"] .leaf .tool-flag.gold-flag{background:var(--marking);color:#141A1F!important}
 
 </style>
+    <link rel="stylesheet" href="css/junction.css">
+    <script defer src="js/junction.js"></script>
 </head>
 <body>
 

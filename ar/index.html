@@ -873,7 +873,7 @@ a.leaf.leaf-temp::before{display:none}
   }
   function soft(){
     if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},420);
+    d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},1500);
   }
   window.MHTheme={
     set:function(p){wr(K,p);soft();apply();},
@@ -1130,6 +1130,8 @@ html[data-glass="on"] .branch[open]{background:var(--mh-glass-fill)!important}
 .get-note{margin:-8px 0 16px;font-size:13px;color:var(--alert-ink)}
 :root[data-theme="dark"] .get-opt{background:#1C2126}
 </style>
+    <link rel="stylesheet" href="../css/junction.css">
+    <script defer src="../js/junction.js"></script>
 </head>
 <body>
 

@@ -604,7 +604,7 @@
       }
       function soft(){
         if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},420);
+        d.classList.add('mh-anim'); clearTimeout(soft.t); soft.t=setTimeout(function(){d.classList.remove('mh-anim');},1500);
       }
       window.MHTheme={
         set:function(p){wr(K,p);soft();apply();},
@@ -824,6 +824,8 @@
     [data-theme="dark"] .masthead .mh-look:hover{background:rgba(255,255,255,.14)}
     :root[data-theme="dark"] .get-opt{background:#1C2126}
     </style>
+    <link rel="stylesheet" href="../css/junction.css">
+    <script defer src="../js/junction.js"></script>
 </head>
 <body>
 

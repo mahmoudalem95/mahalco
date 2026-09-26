@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+        <script src="../js/inline/ecac327e5b.js"></script>
+        
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.sheetjs.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#12121e">
+<meta name="description" content="מחשבון נפח נתיב קריטי (Critical Lane Volume) לצומת מרומזר — שלוש שיטות פאזה, תמיכה בצומת T, נתיב משותף ישר+ימינה וימין חופשית.">
+<title>נפח נתיב קריטי — מחשבון פאזות לצומת מרומזר</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="../js/xlsx-fallback.js?v=2"></script>
+<style>
+:root{
+  --bg:#12121e; --surface:#1a1a2e; --sunk:#22223a;
+  --ink:#EDEBF2; --ink2:#9A96AB; --ink3:#6B6780;
+  --rule:rgba(255,255,255,.09); --rule2:rgba(255,255,255,.05);
+  --pick:#E8A33D; --pick-bg:rgba(232,163,61,.16);
+  --warn:#F35B5B; --warn-bg:rgba(243,91,91,.15);
+  --ok:#4ADE80; --ok-bg:rgba(74,222,128,.14);
+  --mid:#E8A33D; --mid-bg:rgba(232,163,61,.14);
+  --dir-n:#4ADE80; --dir-s:#22D3EE; --dir-e:#E8A33D; --dir-w:#A78BFA;
+  --r:8px;
+  --shadow:0 1px 2px rgba(0,0,0,.24), 0 4px 10px rgba(0,0,0,.16);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Assistant',system-ui,'Segoe UI',sans-serif;font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1120px;margin:0 auto;padding:36px 20px 88px}
+h1{font-size:29px;font-weight:700;margin:0 0 8px;letter-spacing:-.015em}
+h2{font-size:20px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em;display:flex;align-items:center;gap:9px}
+h2::before{content:'';flex:none;width:4px;height:15px;background:var(--pick);border-radius:2px}
+h3{font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:-.005em}
+p{margin:0 0 12px}
+.lede{color:var(--ink2);max-width:66ch;margin:0 0 32px;font-size:15.5px}
+section{margin-bottom:48px}
+.sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px;
+  border-bottom:1px solid var(--rule2);padding-bottom:10px}
+.sec-head .meta{color:var(--ink3);font-size:13px}
+.mono{font-family:var(--mono)}
+.skip{position:absolute;right:-9999px;top:auto}
+.skip:focus{right:12px;top:12px;background:var(--pick);color:#12121e;padding:8px 14px;
+  border-radius:4px;z-index:9;font-weight:600}
+
+/* ---- geographic input cross ---- */
+.cross{direction:ltr;display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr;
+  grid-template-areas:". n ." "w c e" ". s ."}
+.cell-n{grid-area:n}.cell-s{grid-area:s}.cell-e{grid-area:e}.cell-w{grid-area:w}.cell-c{grid-area:c}
+.arm{direction:rtl;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);
+  padding:14px 16px;box-shadow:var(--shadow);transition:opacity .2s,border-color .2s}
+.arm.off{background:var(--sunk);border-style:dashed}
+.arm.off .fields,.arm.off .toggles{opacity:.35;pointer-events:none}
+.arm-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.arm-name{font-weight:600;font-size:15px}
+.arm-name i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-left:6px;vertical-align:baseline}
+.fields{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 8px;align-items:center;font-size:13px}
+.fields .lbl{color:var(--ink2)}
+.fields .hd{color:var(--ink3);font-size:11.5px}
+input[type="number"]{width:100%;font-family:var(--mono);font-size:13px;padding:5px 7px;
+  border:1px solid var(--rule2);border-radius:4px;background:var(--sunk);color:var(--ink)}
+input[type="number"]:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+input[type="number"]:disabled{opacity:.45;background:var(--bg);cursor:not-allowed}
+input.dashed{border:1px dashed var(--pick)}
+.toggles{margin-top:10px;display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--ink2)}
+label.chk{display:flex;align-items:center;gap:6px;cursor:pointer}
+input[type="checkbox"]{accent-color:var(--pick);width:15px;height:15px;cursor:pointer;margin:0;flex:none}
+input[type="checkbox"]:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.cell-c{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px;min-height:220px}
+.cell-c .cap{direction:rtl;font-size:12px;color:var(--ink3);margin-top:6px;text-align:center}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+button{font-family:inherit;font-size:14px;padding:7px 14px;border-radius:4px;cursor:pointer;
+  border:1px solid var(--rule2);background:var(--surface);color:var(--ink);
+  transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink3);background:var(--sunk)}
+button:focus-visible{outline:2px solid var(--pick);outline-offset:1px}
+button.solid{background:var(--pick);color:#12121e;border-color:var(--pick);font-weight:600}
+button.solid:hover{background:#c9862f}
+.thr{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink2);
+  margin-inline-start:auto;background:var(--surface);border:1px solid var(--rule);
+  border-radius:var(--r);padding:6px 12px;box-shadow:var(--shadow)}
+.thr input{width:88px}
+
+/* ---- count-file import ---- */
+.drop{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);
+  transition:border-color .15s,background .15s}
+.drop.over{border-color:var(--pick);background:var(--pick-bg)}
+.drop .meta{color:var(--ink3);font-size:13px}
+.imp-status{margin-top:10px;font-size:13px;color:var(--ink2);min-height:20px}
+.imp-status.err{color:var(--warn)}
+.imp-status.ok{color:var(--ok)}
+.kv{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:13px;color:var(--ink2);margin:14px 0 10px}
+.kv b{color:var(--ink);font-weight:600}
+select{font-family:inherit;font-size:13.5px;padding:6px 8px;border-radius:4px;
+  background:var(--sunk);color:var(--ink);border:1px solid var(--rule2);max-width:100%}
+select:focus-visible{outline:2px solid var(--pick);outline-offset:1px}
+.imp-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+.imp-ctl label{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.chartwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:4px 0 18px}
+svg.hist{display:block}
+svg.hist g{cursor:pointer}
+svg.hist g:hover rect{opacity:.85}
+.imp-grid{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.imp-scheme{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px;
+  text-align:center;box-shadow:var(--shadow)}
+.imp-scheme .cap{font-size:12px;color:var(--ink3);margin-top:6px}
+.paste{margin-top:12px}
+.paste ol{margin:8px 0 10px;padding-right:20px;font-size:13.5px;color:var(--ink2)}
+.paste li{margin-bottom:5px}
+textarea#pasteBox{width:100%;min-height:130px;font-family:var(--mono);font-size:12px;direction:ltr;
+  text-align:left;padding:10px;border-radius:var(--r);background:var(--sunk);color:var(--ink);
+  border:1px solid var(--rule2);resize:vertical}
+textarea#pasteBox:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+@media (max-width:820px){.imp-grid{grid-template-columns:1fr}}
+
+/* ---- copy guide illustration ---- */
+.copyguide{display:flex;flex-direction:column;gap:16px;margin:14px 0 18px;background:var(--sunk);
+  border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px}
+.cg-step{display:flex;gap:12px;align-items:flex-start}
+.cg-num{flex:none;width:22px;height:22px;border-radius:50%;background:var(--pick);color:#12121e;
+  font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.cg-body{flex:1;min-width:0}
+.cg-label{font-size:13.5px;color:var(--ink);margin:0 0 8px;font-weight:600}
+.tabs-mock{display:flex;gap:3px;flex-wrap:wrap;background:var(--bg);padding:6px 6px 0;border-radius:4px 4px 0 0}
+.tabs-mock .tm{font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:3px 3px 0 0;
+  background:var(--surface);color:var(--ink3);white-space:nowrap;position:relative}
+.tabs-mock .tm.hl{background:var(--pick);color:#12121e;font-weight:700;
+  box-shadow:0 0 0 2px var(--warn),0 0 0 4px var(--sunk)}
+.tabs-mock .tm.hl2{background:var(--surface);color:var(--ink);font-weight:600;
+  box-shadow:0 0 0 2px var(--warn),0 0 0 4px var(--sunk);border:1px dashed var(--warn)}
+.cg-caption{font-size:12.5px;color:var(--ink2);margin:8px 0 0}
+.cg-caption b{color:var(--ink)}
+.table-mock-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.table-mock{border-collapse:collapse;font-size:11px;min-width:560px;direction:rtl}
+table.table-mock td{border:1px solid var(--rule);padding:5px 7px;white-space:nowrap;color:var(--ink2);text-align:center}
+table.table-mock tr.tm-title td{background:var(--bg);font-weight:600;color:var(--ink);font-size:11.5px}
+table.table-mock tr.tm-hl td{background:var(--pick-bg);color:var(--ink);box-shadow:inset 0 0 0 1px var(--pick);font-weight:500}
+table.table-mock tr.tm-data td{background:var(--surface);font-family:var(--mono)}
+table.table-mock tr.tm-data.dim td{opacity:.4}
+.tm-flag{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--pick);font-weight:600}
+.tm-flag svg{flex:none}
+
+/* ---- LOS & forecast ---- */
+.los{display:inline-block;min-width:22px;text-align:center;font-weight:700;font-size:12.5px;
+  border-radius:3px;padding:1px 7px;font-family:var(--mono)}
+.los-A{background:#34D399;color:#04150E}.los-B{background:#A3E635;color:#101A02}
+.los-C{background:#FACC15;color:#1A1403}.los-D{background:#FB923C;color:#1A0D02}
+.los-E{background:#F35B5B;color:#210505}.los-F{background:#E11D48;color:#fff}
+.fc-inputs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 14px;margin-bottom:16px}
+.fc-inputs .f{display:flex;flex-direction:column;gap:5px;font-family:inherit}
+.fc-inputs label{font-size:12.5px;color:var(--ink2)}
+.fc-inputs input[type="text"],.fc-inputs input[type="number"]{width:100%;font-family:var(--mono);font-size:13px;
+  padding:6px 8px;border:1px solid var(--rule2);border-radius:4px;background:var(--sunk);color:var(--ink)}
+.fc-inputs input:focus-visible{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+.fc-inputs .chk{flex-direction:row;align-items:center;gap:7px;font-size:12.5px;color:var(--ink2);align-self:end;padding-bottom:6px}
+@media (max-width:820px){.fc-inputs{grid-template-columns:1fr 1fr}}
+.fc-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.fc-cards .c{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:13px 15px;
+  box-shadow:var(--shadow)}
+.fc-cards .k{font-size:12px;color:var(--ink2);margin-bottom:3px}
+.fc-cards .v{font-family:var(--mono);font-size:21px;font-weight:500;line-height:1.15}
+.fc-cards .v small{font-size:12px;color:var(--ink3);font-family:'Assistant',sans-serif}
+@media (max-width:820px){.fc-cards{grid-template-columns:1fr 1fr}}
+table.fc td.cell{text-align:center;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+table.fc td.cell .sub2{display:block;color:var(--ink3);font-size:11px;margin-top:3px}
+table.fc th.yr{text-align:center}
+
+/* ---- tables ---- */
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:24px;border-radius:var(--r);
+  box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);
+  border-radius:var(--r);overflow:hidden;min-width:560px}
+caption{caption-side:top;text-align:right;color:var(--ink3);font-size:12.5px;padding:2px 2px 10px;line-height:1.55}
+th{text-align:right;font-weight:600;color:var(--ink2);font-size:12.5px;padding:10px 12px;
+  border-bottom:1px solid var(--rule2);white-space:nowrap;letter-spacing:.01em}
+td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+.f{font-family:var(--mono);font-size:12.5px}
+.sub{font-family:var(--mono);font-size:11.5px;color:var(--ink3);display:block;margin-top:3px}
+.val{font-family:var(--mono);font-size:15px;font-weight:500;text-align:left;direction:ltr;white-space:nowrap}
+tr.total td{background:var(--pick);color:#12121e;font-weight:600;border-bottom:none}
+tr.total .val{color:#12121e}
+tr.grp td{background:var(--sunk);font-size:13.5px}
+tr.grp .alt{color:var(--ink3);font-size:12.5px;font-family:var(--mono)}
+.pill{display:inline-block;background:var(--pick-bg);color:var(--pick);border-radius:3px;
+  padding:1px 7px;font-size:12px;font-weight:600}
+.note{font-size:13px;color:var(--ink2);line-height:1.65;margin:12px 0 0;max-width:74ch}
+svg.ph{display:block;background:transparent;border-radius:4px}
+svg.ph .vlab{font-family:var(--mono);font-size:5px;font-weight:600;text-anchor:middle;
+  dominant-baseline:central;pointer-events:none;paint-order:stroke;
+  stroke:rgba(18,18,30,.9);stroke-width:.45px}
+svg.ph .vlab.hl{font-size:5.5px;font-weight:700}
+.phase-row{cursor:pointer;transition:background .15s;border-right:4px solid transparent}
+.phase-row.dir-N{border-right-color:var(--dir-n)}
+.phase-row.dir-S{border-right-color:var(--dir-s)}
+.phase-row.dir-E{border-right-color:var(--dir-e)}
+.phase-row.dir-W{border-right-color:var(--dir-w)}
+.phase-row:hover td,.phase-row:focus-within td,
+.phase-row.hl td,.phase-row.is-selected td{background:var(--pick-bg)}
+.phase-row:focus{outline:none}
+.phase-row:focus-visible td:first-child{box-shadow:inset 0 0 0 2px var(--pick)}
+.direction-key{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 16px;color:var(--ink2);font-size:12px}
+.direction-key span{display:inline-flex;align-items:center;gap:5px}
+.direction-key i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.schematic-cell{width:104px;min-width:104px;text-align:center}
+.schematic-cell svg.ph{width:92px;height:92px;margin:0 auto}
+
+/* ---- comparison ---- */
+.cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.cmp .card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--shadow)}
+.cmp .card.best{border-color:var(--pick);border-width:2px;background:var(--pick-bg)}
+.cmp .k{font-size:13px;color:var(--ink2);margin-bottom:5px}
+.cmp .n{font-family:var(--mono);font-size:28px;font-weight:500;line-height:1.15}
+.cmp .n small{font-size:14px;color:var(--ink2);font-family:'Assistant',sans-serif}
+.cmp .d{font-size:12.5px;color:var(--ink3);margin-top:5px}
+.cmp .tag{display:inline-block;margin-top:9px;font-size:11.5px;font-weight:600;
+  padding:2px 8px;border-radius:3px;background:var(--pick);color:#12121e}
+.capline{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:var(--r);padding:13px 16px;margin-bottom:28px;
+  font-size:13.5px;box-shadow:var(--shadow)}
+.capline .badge{font-weight:700;padding:2px 10px;border-radius:3px;font-size:12.5px}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.mid{background:var(--mid-bg);color:var(--mid)}
+.badge.bad{background:var(--warn-bg);color:var(--warn)}
+.meter{flex:1 1 180px;height:8px;background:var(--sunk);border-radius:99px;overflow:hidden;min-width:120px}
+.meter i{display:block;height:100%;border-radius:99px}
+.warnbox{background:var(--warn-bg);border-right:3px solid var(--warn);border-radius:0 var(--r) var(--r) 0;
+  padding:13px 16px;font-size:13.5px;line-height:1.6;color:var(--ink);margin-bottom:18px}
+.warnbox ul{margin:8px 0 0;padding-right:18px}
+.warnbox li{margin-bottom:5px}
+.warnbox.soft{background:var(--pick-bg);border-right-color:var(--pick)}
+pre{background:var(--sunk);color:var(--ink);border-radius:var(--r);padding:14px 16px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.55;direction:ltr;text-align:left;margin:0;
+  border:1px solid var(--rule)}
+details{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px 16px}
+summary{cursor:pointer;font-weight:500}
+summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.movement-hint{font-size:11px;color:var(--ink3);text-align:center;margin-top:4px}
+#liveSchematic svg{display:block;margin:0 auto}
+.foot{color:var(--ink3);font-size:12.5px;border-top:1px solid var(--rule2);padding-top:14px}
+
+@media (max-width:820px){
+  .cross{grid-template-columns:1fr;grid-template-areas:"c" "n" "s" "e" "w"}
+  .cmp{grid-template-columns:1fr}
+  .wrap{padding:24px 14px 60px}
+  .cell-c{min-height:180px}
+  .thr{margin-inline-start:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--sunk:#f4f4f6;--ink:#111;--ink2:#444;--ink3:#666;
+    --rule:#ccc;--rule2:#e2e2e2;--pick-bg:#f6ecd9}
+  body{background:#fff;color:#111}
+  .bar,.movement-hint,.skip,details,#jsonOut{display:none!important}
+  .drop,.imp-ctl,.imp-status,.chartwrap,.paste{display:none!important}
+  .imp-scheme{border-color:#ccc}
+  .wrap{max-width:none;padding:0}
+  table{min-width:0}
+  section{break-inside:avoid}
+  tr.total td{background:#f0d9b0;color:#111}
+}
+
+/* ==================== MOBILE LAYER — מהאלco (phone / tablet) ==================== */
+#mTop,#mRes,#mArms{display:none}
+@media (max-width:900px){
+  .wrap{max-width:none;padding:0 14px calc(104px + env(safe-area-inset-bottom))}
+  h1{font-size:24px;margin-top:12px}
+  .lede{font-size:14.5px;line-height:1.6;margin-bottom:18px}
+  section{margin-bottom:34px;scroll-margin-top:66px}
+  .sec-head{margin-bottom:14px}
+  .sec-head h2{font-size:18px}
+  .sec-head .meta{font-size:12px}
+
+  /* --- סרגל ניווט עליון דביק --- */
+  #mTop{display:flex;position:sticky;top:0;z-index:55;gap:6px;overflow-x:auto;
+    background:rgba(18,18,30,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--rule);padding:8px 14px;margin:0 -14px 4px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  #mTop::-webkit-scrollbar{display:none}
+  #mTop button{flex:0 0 auto;font-size:13px;padding:8px 13px;border-radius:99px;
+    min-height:42px;white-space:nowrap;background:var(--sunk)}
+  #mTop button.on{background:var(--pick);color:#12121e;border-color:var(--pick);font-weight:600}
+
+  /* --- זרוע אחת בכל פעם + סכמה מעליה --- */
+  .cross{display:flex;flex-direction:column;gap:10px}
+  #mArms{order:0;position:sticky;top:58px;z-index:45;display:flex;gap:6px;
+    background:var(--bg);padding:8px 0 9px;border-bottom:1px solid var(--rule2)}
+  #mArms button{flex:1;min-height:50px;font-size:13px;font-weight:600;border-radius:8px;padding:5px 2px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.15}
+  #mArms button small{font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink3)}
+  #mArms button.on{background:var(--pick);color:#12121e;border-color:var(--pick)}
+  #mArms button.on small{color:#4a3505}
+  #mArms button.armoff{opacity:.42}
+  .cell-c{order:1;min-height:0;padding:8px}
+  .cell-c svg{max-height:158px;height:auto;width:auto}
+  .cell-c .cap{font-size:11.5px;line-height:1.5}
+  .movement-hint{display:none}
+  .arm{order:2;display:none;padding:12px 13px}
+  .arm.m-on{display:block}
+  .arm-name{font-size:14.5px}
+  .fields{font-size:13.5px;gap:7px}
+  .fields .hd{font-size:11.5px}
+  .fields input[type=number]{font-size:16px;padding:10px 6px;min-height:46px;text-align:center}
+  .toggles{margin-top:13px;gap:2px;font-size:13.5px}
+  label.chk{min-height:44px}
+  input[type=checkbox]{width:20px;height:20px}
+
+  /* --- כפתורים וטפסים --- */
+  .bar{gap:8px;margin-top:14px}
+  .bar button{flex:1 1 calc(50% - 8px);min-height:48px;font-size:14.5px}
+  .thr{width:100%;margin-inline-start:0;justify-content:space-between;padding:8px 12px}
+  .thr input{width:92px;min-height:44px;font-size:16px}
+  select,input[type=text],.fc-inputs input{font-size:16px;min-height:44px}
+  .fc-inputs{gap:10px}
+  .fc-inputs label{font-size:12.5px}
+  .drop{padding:14px;gap:9px}
+  .drop button{width:100%;min-height:48px}
+  .drop .meta{font-size:12.5px}
+  details{padding:10px 13px}
+  summary{min-height:44px;display:flex;align-items:center}
+  pre{font-size:11.5px}
+  .capline{padding:12px 13px;font-size:13px}
+  .cmp .card{padding:14px}
+  .warnbox{font-size:13px}
+
+  /* --- טבלאות: רמז גלילה --- */
+  .m-swipe{font-size:11.5px;color:var(--ink3);margin:0 0 6px;display:flex;align-items:center;gap:5px}
+  .tblwrap,.chartwrap{scroll-snap-type:x proximity}
+  table{font-size:13.5px}
+  th,td{padding:8px 10px}
+  .schematic-cell{width:78px;min-width:78px}
+  .schematic-cell svg.ph{width:70px;height:70px}
+
+  /* --- שורת תוצאה קבועה בתחתית --- */
+  #mRes{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:center;gap:11px;
+    padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+    background:rgba(26,26,46,.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    border-top:1px solid var(--rule2);box-shadow:0 -6px 18px rgba(0,0,0,.35)}
+  #mRes .k{font-size:11px;color:var(--ink2);display:block;line-height:1.3}
+  #mRes .v{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1.1}
+  #mRes .v span{font-size:11px;color:var(--ink3);font-family:'Assistant',sans-serif}
+  #mRes .badge{font-weight:700;padding:4px 9px;border-radius:4px;font-size:11.5px;white-space:nowrap}
+  #mRes .go{margin-inline-start:auto;min-height:44px;font-size:13px;padding:8px 12px;white-space:nowrap}
+}
+@media print{#mTop,#mRes,#mArms,.m-swipe{display:none!important}.arm{display:block!important}}
+</style>
+
+<!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
+<script src="../js/inline/f3de506a60.js" data-light="#F4F4F7" data-dark="#12121e"></script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+/* ---- backdrop for glass ---- */
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+/* ---- look button ---- */
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+/* ---- popover ---- */
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+/* ---- התאמות לעמוד הזה ---- */
+:root[data-theme="light"]{--bg:#F4F4F7;--surface:#FFFFFF;--sunk:#F1F1F5;--ink:#17161F;--ink2:#55536A;--ink3:#86849A;
+  --rule:rgba(20,20,40,.13);--rule2:rgba(20,20,40,.08);--pick-bg:rgba(232,163,61,.16);--warn:#C8372D;--warn-bg:rgba(200,55,45,.10);
+  --ok:#1E8A4C;--ok-bg:rgba(30,138,76,.12);--mid:#B87308;--dir-n:#1E9E57;--dir-s:#0E9AB5;--dir-e:#C77F12;--dir-w:#7C5BD6;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 18px rgba(20,20,40,.07)}
+@media (max-width:900px){
+  :root[data-theme="light"] #mTop{background:rgba(244,244,247,.94)}
+  :root[data-theme="light"] #mRes{background:rgba(255,255,255,.96);box-shadow:0 -6px 18px rgba(0,0,0,.08)}
+  :root[data-theme="light"] #mArms button.on small{color:#4a3505}
+  .mh-look.mh-float{--mh-fab-b:92px}
+}
+html[data-glass="on"] .arm,
+html[data-glass="on"] .cell-c,
+html[data-glass="on"] details,
+html[data-glass="on"] .drop{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] input[type="number"],
+html[data-glass="on"] button:not(.solid):not(.on){background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] #mTop,
+html[data-glass="on"] #mRes{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] :is(.arm,.cell-c,details){border-radius:16px}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#results">דלג לתוצאות</a>
+<div class="wrap">
+
+  <h1>נפח נתיב קריטי</h1>
+  <p class="lede">מחשבון פאזות לצומת מרומזר. הזן נפחים ומספרי נתיבים לכל זרוע וקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלות, ופאזה מתמשכת (שילוב שתי השיטות). עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בנתיב משותף ישר+ימינה ובימין חופשית לכל זרוע בנפרד. <strong>החישוב והסכמה מתעדכנים בזמן אמת — אין צורך ללחוץ "חשב".</strong></p>
+
+  <section>
+    <div class="sec-head"><h2>ייבוא נפחים מקובץ ספירה</h2>
+      <span class="meta">לוח 2.4 / 2.2 — התפלגות התנועה לפי זרועות</span></div>
+    <p class="lede" style="margin-bottom:14px">טען קובץ ‎XLSX‎ של ספירת נפחים בצומת. הדף מאתר את לוח 2.4 (ואם קיימים, גם 2.2 / 2.3 / 2.1),
+      בונה את פרופיל התנועה השעתי, מציג את נפחי שעת השיא על סכמת הצומת ומזין אותם לחישוב הנפח הקריטי.
+      אם מבנה הקובץ שונה ממה שהקורא מזהה — אפשר להדביק את התאים ידנית בתחתית המקטע.</p>
+    <div class="drop" id="dropZone">
+      <input type="file" id="xlsFile" accept=".xlsx,.xlsm,.xls" hidden>
+      <button class="solid" id="btnPick">בחר קובץ ספירה</button>
+      <span class="meta">או גרור לכאן קובץ ‎.xlsx‎ — הקובץ נקרא בדפדפן בלבד ואינו נשלח לשום שרת</span>
+    </div>
+    <div class="imp-status" id="impStatus" role="status"></div>
+    <div id="impPanel" hidden></div>
+
+    <details class="paste">
+      <summary>הקובץ לא נקרא? הדבק את התאים ידנית</summary>
+      <p class="note" style="margin-top:10px">מבנה הדוחות משתנה בין מבצעי ספירה. אם הקריאה האוטומטית נכשלה, העתק את הלוח מהאקסל והדבק כאן:</p>
+
+      <div class="copyguide">
+        <div class="cg-step">
+          <div class="cg-num">1</div>
+          <div class="cg-body">
+            <p class="cg-label">בתחתית קובץ האקסל, אתרו את לשונית הגיליון עם לוח 2.4 (או 2.2)</p>
+            <div class="tabs-mock" dir="ltr">
+              <span class="tm">3.1</span>
+              <span class="tm hl">2.3-2.4</span>
+              <span class="tm hl2">2.1-2.2</span>
+              <span class="tm">1.3</span>
+              <span class="tm">1.2</span>
+              <span class="tm">1.1</span>
+              <span class="tm">Chart 4</span>
+              <span class="tm">Chart 3</span>
+            </div>
+            <p class="cg-caption">לוח 2.4 (יר״מ, מומלץ) נמצא בגיליון <b>2.3-2.4</b>. אם הוא לא קיים בקובץ שלכם, חפשו את לוח 2.2 בגיליון <b>2.1-2.2</b> במקום.</p>
+          </div>
+        </div>
+
+        <div class="cg-step">
+          <div class="cg-num">2</div>
+          <div class="cg-body">
+            <p class="cg-label">בתוך הגיליון, סמנו רק את הבלוק הזה — שלוש שורות הכותרת ושורות השעות שמתחתן</p>
+            <div class="table-mock-wrap">
+              <table class="table-mock" aria-hidden="true">
+                <tbody>
+                  <tr class="tm-title"><td colspan="6">התפלגות התנועה לפי זרועות היציאה — לוח מס' 2.4</td></tr>
+                  <tr class="tm-hl"><td>מס' הדרך/רחוב</td><td colspan="2">דרך 444 — לצפון</td><td colspan="2">דרך 444 — לדרום</td><td>סה״כ בצומת</td></tr>
+                  <tr class="tm-hl"><td>כיוון מ -</td><td>צפון</td><td>צפון</td><td>דרום</td><td>דרום</td><td></td></tr>
+                  <tr class="tm-hl"><td>שעה</td><td>מזרח &gt;</td><td>ישר ^</td><td>ישר ^</td><td>מערב &lt;</td><td></td></tr>
+                  <tr class="tm-data"><td>06:00-07:00</td><td>61</td><td>485</td><td>514</td><td>141</td><td>1,518</td></tr>
+                  <tr class="tm-data dim"><td>07:00-08:00</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+                  <tr class="tm-data dim"><td>⋮ (שאר שעות היום)</td><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="tm-flag">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              העתיקו (‎Ctrl+C‎) משורת "מס' הדרך/רחוב" ועד לשורת השעה האחרונה בלוח — כולל את כל עמודות הכיוונים.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <ol>
+        <li>פתח באקסל את הגיליון שבו לוח 2.4 (או 2.2).</li>
+        <li>סמן את הבלוק המלא: <b>שורת שמות הדרכים</b> (מס׳ הדרך/רחוב … לצפון/מצפון), <b>שורת הכיוונים</b> (צפון / דרום / מזרח / מערב),
+          <b>שורת התנועות</b> (ימינה / ישר / שמאלה, או ‎&lt; ^ &gt;‎), וכל שורות השעות שמתחתן.</li>
+        <li>‎Ctrl+C‎ באקסל, ואז ‎Ctrl+V‎ בתיבה שלמטה, ולחץ "קרא נתונים מודבקים".</li>
+      </ol>
+      <p class="note">שלוש שורות הכותרת הכרחיות: בלעדיהן אי אפשר לדעת לאיזו זרוע ולאיזו תנועה שייכת כל עמודה.
+        שורת השעות צריכה להתחיל בתא בפורמט ‎07:00-08:00‎. עמודות הסיכום ("סה״כ") נסרקות ונבלעות מעצמן.</p>
+      <pre style="direction:ltr;text-align:left">מס' הדרך/רחוב   דרך 444            לצפון   דרך 444            לדרום ...
+כיוון מ -        צפון  צפון  צפון   סה"כ    דרום  דרום  דרום   סה"כ  ...
+שעה              ימינה ישר   שמאלה          ימינה ישר   שמאלה        ...
+07:00-08:00      0     952   304    1256    107   1032  0      1139  ...</pre>
+      <textarea id="pasteBox" placeholder="הדבק כאן את התאים שהועתקו מאקסל…" aria-label="הדבקת תאים מהאקסל"></textarea>
+      <div class="bar">
+        <button class="solid" id="btnPaste">קרא נתונים מודבקים</button>
+        <button id="btnPasteClear">נקה</button>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>נתוני הצומת</h2><span class="meta">הזרועות מסודרות לפי מיקומן בשטח</span></div>
+    <div class="cross" id="cross">
+      <div class="arm cell-n" data-arm="N"></div>
+      <div class="arm cell-w" data-arm="W"></div>
+      <div class="cell-c">
+        <div id="liveSchematic"></div>
+        <div class="cap" id="liveCap"></div>
+        <div class="movement-hint">עבור עם העכבר (או Tab + Enter) על שורות הפאזות להדגשת התנועות</div>
+      </div>
+      <div class="arm cell-e" data-arm="E"></div>
+      <div class="arm cell-s" data-arm="S"></div>
+    </div>
+    <div class="bar">
+      <button class="solid" id="btnExample">טען דוגמה</button>
+      <button id="btnClear">אפס הכל</button>
+      <button id="btnPrint">הדפס / PDF</button>
+      <label class="thr">סף תכנון:
+        <input type="number" id="threshold" min="100" step="50" value="1500" inputmode="numeric"
+               aria-label="סף תכנון לנפח קריטי, רכב לשעה לנתיב">
+        <span>רכ/ש/נתיב</span>
+      </label>
+    </div>
+  </section>
+
+  <div id="results" tabindex="-1"></div>
+
+  <section>
+    <div class="sec-head"><h2>רמת שירות ותחזית לשנים עתידיות</h2>
+      <span class="meta">צומת מרומזר — מחזור Webster, עיכוב לפי HCM</span></div>
+    <p class="lede" style="margin-bottom:16px">הנפחים הקריטיים שחושבו למעלה מתורגמים כאן לזמני מופע, יחס ביקוש/קיבולת, עיכוב ורמת שירות.
+      אותו חישוב חוזר על נפחים שגדלו בשיעור שנתי קבוע, וכך מתקבלת מטריצת רמות שירות לשנות התחזית.
+      החישוב מתעדכן בזמן אמת יחד עם שאר הדף.</p>
+    <div class="fc-inputs">
+      <div class="f"><label for="fcMethod">שיטת פאזות לחישוב</label>
+        <select id="fcMethod">
+          <option value="best">הנמוכה ביותר (אוטומטי)</option>
+          <option value="1">שיטה 1 — זרועות מפוצלות</option>
+          <option value="2">שיטה 2 — הפרדת שמאלות</option>
+          <option value="3">שיטה 3 — פאזה מתמשכת</option>
+        </select></div>
+      <div class="f"><label for="fcSat">זרימת רוויה בסיסית (רכ/ש/נתיב ירוק)</label>
+        <input type="number" id="fcSat" value="1900" min="1200" max="2200" step="50" inputmode="numeric"></div>
+      <div class="f"><label for="fcLost">זמן אבוד למופע (שנ')</label>
+        <input type="number" id="fcLost" value="4" min="0" max="10" step="0.5" inputmode="decimal"></div>
+      <div class="f"><label for="fcCycle">אורך מחזור (שנ') — ריק = Webster</label>
+        <input type="number" id="fcCycle" placeholder="אופטימלי" min="30" max="200" step="5" inputmode="numeric"></div>
+      <div class="f"><label for="fcGmin">ירוק מינימלי למופע (שנ')</label>
+        <input type="number" id="fcGmin" value="7" min="0" max="30" step="1" inputmode="numeric"></div>
+      <div class="f"><label for="fcHV">רכב כבד (%)</label>
+        <input type="number" id="fcHV" value="0" min="0" max="50" step="0.5" inputmode="decimal"></div>
+      <div class="f chk"><label class="chk" style="display:flex;align-items:center;gap:7px;cursor:pointer">
+        <input type="checkbox" id="fcPCU"> הנפחים כבר ביר״מ — לא להחיל מקדם רכב כבד</label></div>
+      <div class="f"><label for="fcBase">שנת בסיס</label>
+        <input type="number" id="fcBase" value="2026" min="1990" max="2100" step="1" inputmode="numeric"></div>
+      <div class="f"><label for="fcRates">שיעורי צמיחה (%/שנה)</label>
+        <input type="text" id="fcRates" value="3" inputmode="decimal"></div>
+      <div class="f"><label for="fcYears">שנות תחזית</label>
+        <input type="text" id="fcYears" value="2031, 2036, 2041" inputmode="numeric"></div>
+    </div>
+    <div id="fcOut"></div>
+  </section>
+
+
+  <section>
+    <div class="sec-head"><h2>גבולות השיטה</h2></div>
+    <div class="warnbox">
+      <strong>מה החישוב הזה לא מכסה.</strong> הנפח הקריטי הוא צד אחד של המשוואה בלבד, ויש מקרים שהמודל לא מייצג:
+      <ul>
+        <li>שמאלה מותרת (permitted) — כאן כל השמאלות מוגנות. שמאלה שעוברת בפערים דורשת גורם המרה לשווה־ערך ישר.</li>
+        <li>הולכי רגל — זמן חצייה מינימלי יכול לכבול פאזה שנפח הרכב בה נמוך.</li>
+        <li>זמן אבוד — לכל פאזה 3–5 שניות אבודות. שיטה עם יותר פאזות משלמת עליהן, וזה מקזז חלק מהיתרון בטור הנפח.</li>
+        <li>ניצולת נתיבים לא אחידה בתוך קבוצת נתיבים, ורכב כבד / שיפועים (אין כאן המרה ל‑pcu).</li>
+        <li>סף התכנון הוא פרמטר שהמשתמש קובע. ברירת המחדל (1500) היא ערך אצבע נפוץ בספרות CLV ואינה תחליף להנחיות המזמין.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>מספר מופעים מומלץ לפי סוג צומת</h2></div>
+    <details>
+      <summary>טבלת ייחוס — מס' השלבים הראשיים (מופעים) במחזור</summary>
+      <div class="warnbox soft">
+        <p><strong>1. צומת בעל 3 גישות (צומת T)</strong></p>
+        <ul>
+          <li>ללא פניות שמאלה מוגנות (זרימה חופשית/מותרת): 2 מופעים — מופע 1: הגישה הישרה (כביש ראשי); מופע 2: הגישה המשתלבת (ה"רגל" של ה-T).</li>
+          <li>עם פנייה שמאלה מוגנת: 3 מופעים. מופע נפרד מוקצה לפנייה שמאלה מהכביש הראשי כדי למנוע קונפליקט עם התנועה הנגדית.</li>
+        </ul>
+        <p><strong>2. צומת בעל 4 גישות (צומת פלוס X)</strong></p>
+        <ul>
+          <li>צומת רגיל (ללא נפחי שמאלה חריגים): 2 עד 3 מופעים — מופע 1: ציר צפון-דרום (ישר + ימינה); מופע 2: ציר מזרח-מערב (ישר + ימינה); מופע 3 (אופציונלי): מופע משולב להולכי רגל.</li>
+          <li>עם פניות שמאלה מוגנות (נפח תנועה גבוה לשמאלה): 3 עד 4 מופעים — מופעים ייעודיים מוקצים לשמאלה (למשל: מופע לשמאלה צפון+דרום, ואז מופע לישר צפון+דרום).</li>
+        </ul>
+        <p><strong>3. שילוב פניות שמאלה (מוגנות או מותנות)</strong></p>
+        <ul>
+          <li>פנייה שמאלה מותנת (מותרת בקונפליקט): 0 מופעים נוספים — מתבצעת יחד עם התנועה הישרה, והנהג נדרש לתת זכות קדימה.</li>
+          <li>פנייה שמאלה מוגנת (איתות חץ ירוק בלבד): מוסיפה מופע נוסף אחד לכל ציר (צפון/דרום או מזרח/מערב).</li>
+        </ul>
+        <p><strong>4. שילוב תחבורה ציבורית (נת"צ / רכבת קלה)</strong></p>
+        <ul>
+          <li>נת"צ ימני או שמאלי רגיל (אוטובוסים): לרוב לא מוסיף מופע — נוסע יחד עם מופע הרכב הכללי, לעיתים עם הקדמה של מספר שניות ("קפיצה בירוק").</li>
+          <li>רכבת קלה (רק"ל) או נת"צ מרכזי עם פניות שמאלה חוצות: מוסיף 1 עד 2 מופעים ייעודיים לחציה בטוחה, לרוב מנוהל ע"י מערכת העדפה דינמית.</li>
+        </ul>
+        <p class="meta">שיטה 3 (פאזה מתמשכת) מתאימה את עצמה אוטומטית לצומת T: הציר בעל זרוע אחת תמיד משמש כ"ציר המפוצל" (פאזה בודדת), והטיפול ההיברידי חל על הציר בעל שתי הזרועות — כך מתקבלות 4 פאזות במקום 5, בהתאמה לטווח המומלץ בטבלה שלמעלה.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>קריאה מקוד</h2><span class="meta">הפונקציה חשופה גלובלית</span></div>
+    <details>
+      <summary>חוזה הקלט והפלט</summary>
+      <pre id="apidoc"></pre>
+    </details>
+    <div class="bar">
+      <button id="btnJson" aria-expanded="false" aria-controls="jsonOut">הצג JSON של החישוב הנוכחי</button>
+      <button id="btnCopy">העתק JSON</button>
+      <span id="copyMsg" class="meta" role="status" style="color:var(--pick)"></span>
+    </div>
+    <pre id="jsonOut" hidden style="margin-top:12px"></pre>
+  </section>
+
+  <p class="foot">הנתונים נשמרים מקומית בדפדפן בלבד ואינם נשלחים לשרת.</p>
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/critical-lane-volume.js?v=2"></script>
+
+<!-- ============ MOBILE LAYER — מהאלco ============ -->
+<script src="../js/inline/6bddafdd9f.js"></script>
+</body>
+</html>

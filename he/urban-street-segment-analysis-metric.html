@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta name="description" content="Urban street segment analysis metrics for evaluating traffic operations, speed, delay, level of service, and multimodal performance.">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mahalco-calc.onrender.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>MAHALCO – ניתוח מקטע רחוב עירוני (מטרי)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+  :root {
+    --bg: #12121e; --card: #1a1a2e; --card-2: #22223a; --field: #0f0f1a;
+    --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.05);
+    --accent: #E8A33D; --accent-dim: rgba(232,163,61,.16); --green: #4ADE80;
+    --ink: #EDEBF2; --ink-2: #9A96AB; --ink-3: #6B6780;
+    --danger: #F35B5B; --warn: #F5C451; --info: #7AB8F5;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: Arial, sans-serif;
+    padding: 20px; direction: rtl; line-height: 1.5; font-size: 1rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: clamp(1.6rem, 1.375rem + 1.5vw, 2.5rem); font-weight: 700; margin: 0 0 .5rem; color: var(--ink); line-height: 1.2; }
+  h1 .bi { color: #ffc107; margin-left: .5rem; }
+  .subhead { color: var(--ink-3); margin: 0 0 1.5rem; line-height: 1.6; }
+  .badge { display: inline-block; background: var(--card-2); color: var(--ink-2); font-size: .8rem;
+    font-weight: 600; padding: .25em .6em; border-radius: 6px; vertical-align: middle; margin-right: 6px; }
+
+  /* cards – same as parking page */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+  .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0;
+    font-weight: 600; padding: .5rem 1rem; border-bottom: 1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left: .5rem; }
+  .card-body { padding: 1rem; }
+  .section-note { font-size: .78rem; color: var(--ink-3); margin: 0 0 12px; line-height: 1.6; }
+
+  /* form */
+  .form-group { margin-bottom: 12px; }
+  .row-2, .row-3, .row-4 { display: grid; gap: 12px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 720px) { .row-2, .row-3, .row-4 { grid-template-columns: 1fr; gap: 8px; } }
+  label { display: block; margin-bottom: .35rem; color: var(--ink-2); font-size: .9rem; }
+  label .unit { color: var(--ink-3); font-size: .8rem; }
+  input, select { width: 100%; padding: .375rem .75rem; font-size: 1rem; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--field); color: var(--ink); font-family: inherit; }
+  select option { background: var(--field); color: var(--ink); }
+  input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); }
+  input:disabled, select:disabled { background: #15151f; color: var(--ink-3); cursor: not-allowed; }
+  input[type=number] { -moz-appearance: textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* tables */
+  .table-scroll { overflow-x: auto; margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; color: var(--ink); }
+  th, td { padding: .45rem .55rem; text-align: right; border-bottom: 1px solid var(--line-2); background: transparent; }
+  th { color: var(--ink-3); font-weight: 600; border-bottom: 1px solid var(--line); white-space: nowrap; font-size: .78rem; }
+  tbody tr:hover td { background: rgba(255,255,255,.03); }
+
+  /* buttons */
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 8px; }
+  button { padding: .5rem 1.4rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer;
+    font-family: inherit; border: 1px solid transparent; }
+  button:active { transform: scale(.98); }
+  #submitBtn { background: var(--accent); border-color: var(--accent); color: #1a1a2e; flex: 1 1 auto; }
+  #submitBtn:hover:not(:disabled) { background: #c9862f; border-color: #c9862f; }
+  #submitBtn:disabled { background: #7a6440; border-color: #7a6440; cursor: not-allowed; }
+  .reset-btn { background: transparent; color: var(--ink-2); border-color: var(--line); }
+  .reset-btn:hover { background: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+
+  /* status */
+  .status-msg { margin: 12px 0; padding: 10px 14px; border-radius: 6px; font-size: .9rem; display: none;
+    background: var(--field); border-right: 3px solid var(--ink-3); color: var(--ink-2); line-height: 1.5; }
+  .status-msg.info { display: block; border-color: var(--info); }
+  .status-msg.error { display: block; border-color: var(--danger); color: #f7a3a3; background: rgba(243,91,91,.08); }
+  .status-msg.warn { display: block; border-color: var(--warn); color: #f2dca2; background: rgba(245,196,81,.07); }
+  .status-msg.success { display: block; border-color: var(--green); color: #a6efc0; background: rgba(74,222,128,.07); }
+
+  /* results card */
+  .results-box { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin: 20px 0; padding: 0 0 1rem; }
+  .results-box.visible { display: block; }
+  .results-box > * { margin-left: 1rem; margin-right: 1rem; }
+  .results-box > h2 { margin: 0 0 1rem; background: var(--accent); color: #1a1a2e; padding: .5rem 1rem;
+    border-radius: 12px 12px 0 0; font-size: 1rem; font-weight: 600; }
+  .results-box > h2 span { color: #1a1a2e !important; font-weight: 400; font-size: .9rem !important; }
+  .results-box h4 { margin: 22px 1rem 6px; font-size: .95rem; font-weight: 700; color: var(--ink);
+    padding-top: 14px; border-top: 1px solid var(--line); }
+  .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-bottom: 6px; }
+  .result-item { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem;
+    display: flex; flex-direction: column; gap: 4px; }
+  .result-item .label { font-size: .85rem; color: var(--ink-2); }
+  .result-item .value { font-size: 1.5rem; font-weight: 700; color: var(--ink); line-height: 1.2;
+    font-variant-numeric: tabular-nums; unicode-bidi: plaintext; text-align: right; }
+  .result-item .value.highlight { color: var(--accent); }
+
+  .los { display: inline-block; min-width: 24px; text-align: center; font-weight: 700; padding: 2px 7px;
+    border-radius: 6px; color: #fff; font-size: .85rem; line-height: 1.3; }
+  .result-item .value .los { font-size: 1.1rem; padding: 2px 10px; }
+  .los-A { background: #1f7a2a; } .los-B { background: #4f9e2f; } .los-C { background: #b58a00; }
+  .los-D { background: #d97a00; } .los-E { background: #cc5500; } .los-F { background: #c02b2b; }
+
+  .warrant-panel { margin-top: 8px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--field); padding: 8px 12px; }
+  .warrant-line { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--line-2);
+    font-size: .85rem; color: var(--ink-2); line-height: 1.6; }
+  .warrant-line:last-child { border-bottom: none; }
+  .flag { flex: 0 0 auto; font-weight: 700; font-size: .72rem; padding: 2px 8px; border-radius: 20px; }
+  .flag.met, .flag.warn { background: rgba(243,91,91,.15); color: #f7a3a3; }
+  .flag.not, .flag.ok { background: rgba(74,222,128,.15); color: #a6efc0; }
+
+  .footnote { margin-top: 16px; font-size: .8rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 12px; line-height: 1.6; }
+  .footnote a { color: var(--accent); text-decoration: none; }
+  .footnote a:hover { text-decoration: underline; }
+  footer { text-align: center; color: var(--ink-3); font-size: .85rem; margin-top: 1.5rem; padding-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1><i class="bi bi-signpost-2-fill"></i>ניתוח מקטע רחוב עירוני <span class="badge">מטרי</span></h1>
+        <p class="subhead">סינון לפי HCM פרקים 18 ו־30 – זמן ריצה, מהירות נסיעה, שיעור עצירות, רמת שירות לרכב מנועי ורב־אמצעית, ועיכוב גיאומטרי במעגל תנועה.<br>החישוב מתבצע כולו בדפדפן. יחידות: מטרים, קמ"ש, שניות.</p>
+
+        <form id="segmentForm" novalidate>
+
+            <div class="card"><div class="card-header"><i class="bi bi-rulers"></i>גיאומטריית המקטע</div><div class="card-body">
+            <div class="row-3">
+                <div class="form-group"><label>מזהה מקטע</label><input id="segmentId" value="URB-001"></div>
+                <div class="form-group"><label>תקופת ניתוח</label><input id="periodLabel" value="שעת שיא ערב 16:30–17:30"></div>
+                <div class="form-group"><label>מקדם שעת שיא (PHF)</label><input type="number" id="phf" value="0.92" min="0.25" max="1" step="0.01"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>משך הניתוח <span class="unit">(שעות)</span></label><input type="number" id="analysisDur" value="0.25" min="0.05" max="1" step="0.05"></div>
+                <div class="form-group"><label>אורך המקטע <span class="unit">(מטר)</span></label><input type="number" id="segLength" value="200" min="50" max="2000" step="10"></div>
+                <div class="form-group"><label>נתיבים ישרים</label><input type="number" id="throughLanes" value="2" min="1" max="6" step="1"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>רוחב נתיב <span class="unit">(מטר)</span></label><input type="number" id="laneWidth" value="3.65" min="2.5" max="4.5" step="0.05"></div>
+                <div class="form-group"><label>רוחב שול <span class="unit">(מטר)</span></label><input type="number" id="shoulderWidth" value="1.5" min="0" max="5" step="0.1"></div>
+                <div class="form-group"><label>סוג אי מפריד</label><select id="medianType"><option value="none">ללא</option><option value="raised">מוגבה</option><option value="painted">צבוע</option><option value="divided">דרך מופרדת</option></select></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>נקודות גישה <span class="unit">(לק"מ)</span></label><input type="number" id="accessPerKm" value="15" min="0" max="120" step="1"></div>
+                <div class="form-group"><label>חניה ברחוב</label><select id="parking"><option value="none">ללא</option><option value="allowed">מותרת</option><option value="restricted">מוגבלת</option></select></div>
+                <div class="form-group"><label>תמרוני חניה <span class="unit">(לשעה)</span></label><input type="number" id="parkMan" value="10" min="0" max="200" step="5"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>תחנות אוטובוס <span class="unit">(לק"מ)</span></label><input type="number" id="busStops" value="2" min="0" max="10" step="0.5"></div>
+                <div class="form-group"><label>זמן עצירת אוטובוס <span class="unit">(שניות)</span></label><input type="number" id="busDwell" value="20" min="0" max="120" step="5"></div>
+                <div class="form-group"><label>שיפוע אורכי <span class="unit">(%)</span></label><input type="number" id="grade" value="1" min="-10" max="10" step="0.5"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>מהירות מותרת <span class="unit">(קמ"ש)</span></label><input type="number" id="speedLimit" value="50" min="20" max="120" step="5"></div>
+                <div class="form-group"><label>סוג המקטע</label><select id="segType"><option value="urban">עירוני</option><option value="suburban">פרברי</option><option value="rural">כפרי</option></select></div>
+            </div>
+            </div></div>
+
+            
+
+            <div class="card"><div class="card-header"><i class="bi bi-car-front"></i>ביקוש תנועה וצמתים</div><div class="card-body">
+            <div class="row-3">
+                <div class="form-group"><label>נפח ישר <span class="unit">(רכב/שעה)</span></label><input type="number" id="throughVol" value="1500" min="0" step="50"></div>
+                <div class="form-group"><label>שיעור משאיות <span class="unit">(%)</span></label><input type="number" id="truckPct" value="5" min="0" max="100" step="0.5"></div>
+                <div class="form-group"><label>שיעור רכבי נופש (RV) <span class="unit">(%)</span></label><input type="number" id="rvPct" value="1" min="0" max="100" step="0.5"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>נפח אופניים <span class="unit">(אופניים/שעה)</span></label><input type="number" id="bikeVol" value="20" min="0" step="5"></div>
+                <div class="form-group"><label>נפח הולכי רגל <span class="unit">(הולכי רגל/שעה)</span></label><input type="number" id="pedVol" value="80" min="0" step="10"></div>
+                <div class="form-group"><label>נפח תחבורה ציבורית <span class="unit">(כלי רכב/שעה)</span></label><input type="number" id="transitVol" value="6" min="0" step="1"></div>
+            </div>
+            <div class="row-2">
+                <div class="form-group"><label>מזהה צומת במעלה</label><input id="upstreamId" value="INT_1"></div>
+                <div class="form-group"><label>עיכוב בצומת במעלה <span class="unit">(שניות)</span></label><input type="number" id="upstreamDelay" value="30" min="0" step="5"></div>
+            </div>
+            <div class="row-2">
+                <div class="form-group"><label>סוג צומת במעלה</label><select id="upstreamType"><option value="signal">מרומזר</option><option value="unsignal">לא מרומזר</option><option value="roundabout">מעגל תנועה</option></select></div>
+                <div class="form-group"><label>מזהה צומת במורד</label><input id="downstreamId" value="INT_2"></div>
+            </div>
+            <div class="row-2">
+                <div class="form-group"><label>עיכוב בצומת במורד <span class="unit">(שניות)</span></label><input type="number" id="downstreamDelay" value="25" min="0" step="5"></div>
+                <div class="form-group"><label>סוג צומת במורד</label><select id="downstreamType"><option value="signal">מרומזר</option><option value="unsignal">לא מרומזר</option><option value="roundabout">מעגל תנועה</option></select></div>
+            </div>
+            </div></div>
+
+            
+
+            <div class="card"><div class="card-header"><i class="bi bi-people"></i>נתונים רב־אמצעיים וכיול</div><div class="card-body">
+            <div class="row-3">
+                <div class="form-group"><label>מהירות הליכה <span class="unit">(קמ"ש)</span></label><input type="number" id="walkSpeed" value="4.8" min="1" max="10" step="0.1"></div>
+                <div class="form-group"><label>שיעור קשישים <span class="unit">(%)</span></label><input type="number" id="elderlyPct" value="15" min="0" max="100" step="1"></div>
+                <div class="form-group"><label>אורך מעבר חציה <span class="unit">(מטר)</span></label><input type="number" id="crosswalkLen" value="15" min="3" max="60" step="1"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>רוחב מדרכה <span class="unit">(מטר)</span></label><input type="number" id="sidewalkWidth" value="1.8" min="0" max="6" step="0.1"></div>
+                <div class="form-group"><label>רוחב רצועת הפרדה <span class="unit">(מטר)</span></label><input type="number" id="bufferWidth" value="0.6" min="0" max="5" step="0.1"></div>
+                <div class="form-group"><label>רוחב מדרכה אפקטיבי <span class="unit">(מטר)</span></label><input type="number" id="effSidewalk" value="1.5" min="0" max="6" step="0.1"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>רוחב נתיב אופניים <span class="unit">(מטר)</span></label><input type="number" id="bikeLaneWidth" value="1.2" min="0" max="4" step="0.1"></div>
+                <div class="form-group"><label>מצב המיסעה</label><select id="pavement"><option value="good">טוב</option><option value="fair">בינוני</option><option value="poor">גרוע</option></select></div>
+                <div class="form-group"><label>תדירות תחבורה ציבורית <span class="unit">(דקות בין נסיעות)</span></label><input type="number" id="transitHeadway" value="10" min="1" max="60" step="1"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>מתקני תחנה</label><select id="stopAmenities"><option value="shelter">סככה</option><option value="bench">ספסל</option><option value="shelter_bench">סככה וספסל</option><option value="none">ללא</option></select></div>
+                <div class="form-group"><label>עמידה בזמנים <span class="unit">(%)</span></label><input type="number" id="onTime" value="85" min="0" max="100" step="1"></div>
+                <div class="form-group"><label>מהירות זרימה חופשית בסיסית <span class="unit">(קמ"ש)</span></label><input type="number" id="baseFFS" value="55" min="30" max="120" step="5"></div>
+            </div>
+            <div class="row-3">
+                <div class="form-group"><label>איכות תיאום (גל ירוק)</label><select id="progQuality"><option value="poor">גרועה</option><option value="fair">בינונית</option><option value="good">טובה</option></select></div>
+                <div class="form-group"><label>מקדם אוכלוסיית נהגים</label><input type="number" id="driverPop" value="1.0" min="0.5" max="1.5" step="0.05"></div>
+            </div>
+            </div></div>
+
+            
+
+            <div class="card"><div class="card-header"><i class="bi bi-arrow-repeat"></i>גבול מעגל תנועה</div><div class="card-body">
+            <div class="row-3">
+                <div class="form-group"><label>מעגל תנועה בקצה המקטע</label><select id="rbSegment"><option value="none">ללא</option><option value="upstream">במעלה</option><option value="downstream">במורד</option></select></div>
+                <div class="form-group"><label>קוטר חיצוני <span class="unit">(מטר)</span></label><input type="number" id="rbInscribed" value="30" min="10" max="100" step="1"></div>
+                <div class="form-group"><label>רוחב מסלול מעגלי <span class="unit">(מטר)</span></label><input type="number" id="rbCircWidth" value="5.5" min="3" max="15" step="0.5"></div>
+            </div>
+
+            
+            </div></div>
+
+            <div class="actions">
+                <button type="submit" id="submitBtn"><i class="bi bi-calculator"></i> נתח מקטע</button>
+                <button type="button" class="reset-btn" id="resetBtn"><i class="bi bi-arrow-counterclockwise"></i> איפוס</button>
+            </div>
+        </form>
+
+        <div id="statusMsg" class="status-msg"></div>
+
+        <div id="results" class="results-box">
+            <h2><i class="bi bi-table"></i> תוצאות ניתוח המקטע <span>(יחידות מטריות)</span></h2>
+
+            <div class="result-grid">
+                <div class="result-item"><span class="label">זמן נסיעה</span><span class="value" id="outRunTime">-- שנ'</span></div>
+                <div class="result-item"><span class="label">מהירות נסיעה</span><span class="value highlight" id="outTravelSpeed">-- קמ"ש</span></div>
+                <div class="result-item"><span class="label">עצירות</span><span class="value" id="outStops">-- עצירות/ק"מ</span></div>
+                <div class="result-item"><span class="label">רמת שירות – רכב מנועי</span><span class="value highlight" id="outMlos">--</span></div>
+                <div class="result-item"><span class="label">רמת שירות – הולכי רגל</span><span class="value highlight" id="outPlos">--</span></div>
+                <div class="result-item"><span class="label">רמת שירות – אופניים</span><span class="value highlight" id="outBlos">--</span></div>
+                <div class="result-item"><span class="label">רמת שירות – תחבורה ציבורית</span><span class="value highlight" id="outTlos">--</span></div>
+                <div class="result-item"><span class="label">עיכוב מעגל תנועה</span><span class="value" id="outRbDelay">-- שנ'</span></div>
+            </div>
+
+            <h4>מדדי ביצוע מפורטים</h4>
+            <div class="table-scroll">
+                <table>
+                    <thead><tr><th>מדד</th><th>ערך</th><th>פירוש</th></tr></thead>
+                    <tbody id="perfBody"></tbody>
+                </table>
+            </div>
+
+            <h4>ציונים רב־אמצעיים</h4>
+            <div class="table-scroll">
+                <table>
+                    <thead><tr><th>אמצעי</th><th>ציון</th><th>רמת שירות</th><th>גורם מרכזי</th></tr></thead>
+                    <tbody id="multimodalBody"></tbody>
+                </table>
+            </div>
+
+            <h4>אבחון ובדיקות</h4>
+            <div class="warrant-panel" id="diagnosticPanel"></div>
+
+            <div class="footnote">
+                <i class="bi bi-lightning-charge"></i> כלי סינון המבוסס על עקרונות HCM פרקים 18 ו־30. ניתוח מלא ומאומת מחייב HCS, ‏Synchro או VISSIM. <a href="#" id="clearMsgLink">ניקוי הודעה</a>
+            </div>
+        </div>
+        <footer>MAHALCO – ניתוח מקטע רחוב עירוני (מטרי)</footer>
+    </div>
+
+    <script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/urban-street-segment.js?v=2"></script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta name="description" content="أداة حساب مسافات الرؤية للتوقف والتجاوز والتقاطعات ومسافة الرؤية للقرار في التصميم الهندسي للطرق.">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#141a2b">
+<meta name="color-scheme" content="dark">
+<title>MAHALCO — مثلثات الرؤية على مخطط التقاطع / الدوّار</title>
+<style>
+  :root{--bg:#121624;--panel:#1b2236;--panel2:#222b42;--line:#2e3a55;--line2:#42517a;
+        --txt:#e8ecf5;--dim:#9aa6bf;--amber:#f5b82e;--amber2:#ffd166;--bad:#ff7d6a;--ok:#2dd4a0;--rail:410px}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 Cairo,ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif}
+  header{position:sticky;top:0;z-index:30;background:#141a2b;border-bottom:1px solid var(--line);display:flex;gap:9px;align-items:center;padding:9px 16px;flex-wrap:wrap}
+  .mark{display:flex;flex-direction:column;line-height:1.15;margin-left:auto}
+  .mark b{font-size:15px;letter-spacing:.14em}
+  .mark span{font-size:11.5px;color:var(--dim)}
+  button{background:#28314a;color:var(--txt);border:1px solid var(--line2);border-radius:6px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+  button:hover{background:#313c5a}
+  button.key{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+  button.on{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+  button.mini{padding:2px 7px;font-size:12px}
+  input,select{background:#131a2c;color:var(--txt);border:1px solid var(--line2);border-radius:5px;padding:5px 7px;font:inherit;font-size:13px}
+  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-items:start}
+  aside{position:sticky;top:51px;max-height:calc(100vh - 51px);overflow:auto;background:var(--panel);border-left:1px solid var(--line);padding:12px 14px 40px}
+  aside h2{font-size:11px;letter-spacing:.12em;color:var(--dim);margin:16px 0 7px;font-weight:700}
+  aside h2:first-child{margin-top:2px}
+  .row{display:grid;grid-template-columns:1fr 128px;gap:8px;align-items:center;padding:3px 0}
+  .row label{font-size:13px;color:#cdd6e6}
+  .row input,.row select{width:100%}
+  .wide{grid-template-columns:1fr}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .arm{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 8px;margin-bottom:6px}
+  .arm.sel{border-color:var(--amber)}
+  .arm .hd{display:flex;gap:6px;align-items:center;font-size:12.5px;margin-bottom:5px}
+  .arm .hd b{flex:1}
+  .arm .g{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .arm .g label{font-size:11px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+  .arm select,.arm input{width:100%;padding:3px 5px;font-size:12px}
+  main{padding:16px}
+  .bar2{display:flex;gap:8px;align-items:center;margin-bottom:9px;flex-wrap:wrap}
+  #err{display:none;background:#3a1d1d;border:1px solid var(--bad);color:#ffd9d2;border-radius:6px;padding:8px 11px;margin-bottom:8px;font-size:12.5px}
+  .stage{background:#0e1422;border:1px solid var(--line);border-radius:6px;padding:8px;overflow:auto;position:relative}
+  #plan{display:block;width:100%;height:auto;direction:ltr;cursor:crosshair;background:#0b101c;touch-action:none;user-select:none;-webkit-user-select:none}
+  #plan *{-webkit-user-drag:none}
+  .drop{display:grid;place-items:center;min-height:420px;border:2px dashed var(--line2);border-radius:8px;color:var(--dim);text-align:center;padding:24px}
+  .drop[hidden]{display:none!important}
+  .out{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px}
+  .box h3{margin:0 0 9px;font-size:12px;letter-spacing:.08em;color:var(--dim)}
+  table.t{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.t th{color:var(--dim);font-weight:600;text-align:right;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+  table.t td{padding:5px 6px;border-bottom:1px solid #243149;color:#cfd8e9}
+  table.t td b{color:var(--amber2)}
+  .chk{border-right:3px solid var(--ok);background:var(--panel2);padding:7px 10px;border-radius:4px 0 0 4px;margin-bottom:6px;font-size:12.5px}
+  .chk.warn{border-color:var(--amber)} .chk.bad{border-color:var(--bad)}
+  .chk b{display:block;font-size:11px;color:#b9c3d6}
+  .hint{font-size:12px;color:var(--dim);margin:5px 0}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#cfd8e9;margin-top:8px}
+  .legend span{display:flex;gap:5px;align-items:center}
+  .sw{width:14px;height:10px;border-radius:2px;display:inline-block}
+  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--amber);color:#161b2b;font-weight:700;padding:8px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .18s;pointer-events:none;z-index:60}
+  @media(max-width:1100px){.shell{grid-template-columns:1fr}aside{position:static;max-height:none;border-left:0;border-bottom:1px solid var(--line)}.out{grid-template-columns:1fr}}
+
+  #coach{position:fixed;left:14px;bottom:14px;width:330px;max-width:calc(100vw - 28px);z-index:60;
+    background:var(--panel);border:1px solid var(--line2);border-radius:10px;
+    box-shadow:0 14px 40px #0009;display:none;direction:rtl}
+  #coach.show{display:block}
+  #coach .ch{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line)}
+  #coach .ch b{flex:1;font-size:13px}
+  #coach .ch .no{font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+  #coach .prog{height:3px;background:#243149}
+  #coach .prog i{display:block;height:100%;background:var(--amber);transition:width .2s}
+  #coach .cb{padding:11px 12px;max-height:46vh;overflow:auto}
+  #coach h4{margin:0 0 6px;font-size:14px;color:var(--amber2)}
+  #coach p{margin:0 0 8px;font-size:12.7px;color:#cdd6e6;line-height:1.6}
+  #coach ul{margin:0 0 8px;padding-right:17px;font-size:12.5px;color:#cdd6e6;line-height:1.65}
+  #coach .st{display:flex;align-items:center;gap:7px;font-size:12.5px;padding:6px 8px;border-radius:5px;
+    background:var(--panel2);border:1px solid var(--line);margin-bottom:8px}
+  #coach .st.done{border-color:var(--ok);color:#bdf0df}
+  #coach .st .ic{font-weight:700}
+  #coach .st.done .ic{color:var(--ok)}
+  #coach .cf{display:flex;gap:6px;padding:9px 11px;border-top:1px solid var(--line);flex-wrap:wrap}
+  #coach .cf .sp{flex:1}
+  #coach .steps{display:flex;gap:3px;padding:0 11px 9px;flex-wrap:wrap}
+  #coach .steps b{width:17px;height:17px;border-radius:4px;background:#243149;color:var(--dim);
+    font-size:10.5px;display:grid;place-items:center;cursor:pointer;font-weight:600}
+  #coach .steps b.on{background:var(--amber);color:#161b2b}
+  #coach .steps b.ok{background:#1f5e4c;color:#9defcd}
+  .coach-hl{outline:2px solid var(--amber)!important;outline-offset:2px;border-radius:6px;
+    animation:coachPulse 1.3s ease-in-out 2}
+  @keyframes coachPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,184,46,.0)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.18)}}
+  @media(max-width:760px){#coach{left:8px;right:8px;width:auto}}
+
+  #mbar,#mhandle,#mscrim{display:none}
+  @media(max-width:980px){
+    header{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:6px;padding:8px 10px;
+      padding-inline-end:max(10px,env(safe-area-inset-right))}
+    header::-webkit-scrollbar{display:none}
+    header button{flex:0 0 auto;min-height:40px;font-size:12.5px}
+    .mark{flex:0 0 auto;margin-left:8px}
+    .mark b{font-size:13.5px}
+    .mark span{display:none}
+
+    .shell{display:block}
+    main{padding:10px 10px calc(88px + env(safe-area-inset-bottom))}
+    .bar2{gap:6px;margin-bottom:7px}
+    .bar2 button{min-height:42px;min-width:46px}
+    .stage{padding:5px;border-radius:8px}
+    .drop{min-height:230px;padding:18px;font-size:13px}
+    .out{grid-template-columns:1fr;gap:10px;margin-top:10px}
+    .box{padding:11px}
+    table.t{font-size:12px}
+    .legend{font-size:11.5px;gap:8px}
+
+    aside{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:70;
+      height:min(58vh,540px);max-height:none;width:auto;
+      border:0;border-top:1px solid var(--line2);border-radius:16px 16px 0 0;
+      box-shadow:0 -14px 44px rgba(0,0,0,.6);
+      transform:translateY(103%);transition:transform .26s ease;
+      overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+      padding:0 14px calc(28px + env(safe-area-inset-bottom))}
+    body.mpanel aside{transform:translateY(0)}
+    body.mpanel.mfull aside{height:min(86vh,900px)}
+    aside h2{margin:14px 0 6px;font-size:11.5px}
+    .row{grid-template-columns:1fr 140px;padding:5px 0}
+    .row label{font-size:13.5px}
+    input,select{font-size:16px;min-height:44px;padding:8px 10px}
+    .row input[type=range]{min-height:36px}
+    aside button{min-height:44px;font-size:13.5px}
+    aside button.mini{min-height:36px;font-size:12.5px}
+    .tools{gap:7px}
+    .tools button{flex:1 1 auto}
+    .arm .g{grid-template-columns:1fr 1fr;gap:7px}
+    .arm select,.arm input{font-size:15px;min-height:40px;padding:5px 7px}
+    .hint{font-size:12.5px}
+
+    #mhandle{display:flex;position:sticky;top:0;z-index:3;align-items:center;gap:9px;
+      background:var(--panel);padding:10px 0 9px;border-bottom:1px solid var(--line);margin-bottom:4px}
+    #mhandle .grip{position:absolute;top:4px;left:50%;transform:translateX(-50%);
+      width:42px;height:4px;border-radius:99px;background:var(--line2)}
+    #mhandle b{flex:1;font-size:14px}
+    #mhandle button{min-height:36px;padding:4px 10px;font-size:12.5px}
+
+    #mscrim{display:block;position:fixed;inset:0;z-index:65;background:rgba(8,11,20,.45);
+      opacity:0;pointer-events:none;transition:opacity .2s}
+    body.mpanel.mfull #mscrim{opacity:1;pointer-events:auto}
+
+    #mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:75;gap:6px;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+      background:rgba(20,26,43,.98);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+      border-top:1px solid var(--line2);overflow-x:auto;scrollbar-width:none}
+    #mbar::-webkit-scrollbar{display:none}
+    #mbar button{flex:0 0 auto;min-height:46px;font-size:13px;padding:8px 13px;white-space:nowrap}
+    #mbar button.on{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+    #mbar button.pri{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+    body.mpanel #mbar{bottom:min(58vh,540px);border-radius:0;transition:bottom .26s ease}
+    body.mpanel.mfull #mbar{bottom:min(86vh,900px)}
+
+    #coach{bottom:calc(78px + env(safe-area-inset-bottom));left:8px;right:8px;width:auto;z-index:60}
+    body.mpanel #coach{display:none}
+    #toast{bottom:calc(84px + env(safe-area-inset-bottom))}
+  }
+  @media print{#mbar,#mhandle,#mscrim{display:none!important}}
+</style>
+
+<script src="../js/inline/1074b2b555.js" data-light="#FFFFFF" data-dark="#141a2b" data-slot="header"></script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Cairo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+:root[data-theme="light"]{--bg:#EEF1F6;--panel:#FFFFFF;--panel2:#F3F5F9;--line:#D6DDE8;--line2:#BFC9D8;--txt:#172033;--dim:#5C6880;
+  --amber:#E0A21C;--amber2:#A86F00;--bad:#C8372D;--ok:#128A68}
+:root[data-theme="light"] header{background:rgba(255,255,255,.94)}
+:root[data-theme="light"] button{background:#F1F4F8} :root[data-theme="light"] button:hover{background:#E5EAF1}
+:root[data-theme="light"] :is(button.key,button.on){background:var(--amber)}
+:root[data-theme="light"] :is(input,select){background:#fff}
+:root[data-theme="light"] .row label{color:#34405A}
+:root[data-theme="light"] #err{background:#FDECEA;color:#8E2A1E}
+:root[data-theme="light"] .stage{background:#E6EAF0}
+:root[data-theme="light"] #plan{background:#F5F7FA}
+:root[data-theme="light"] table.t td{border-bottom-color:#E3E8EF;color:#26324A}
+:root[data-theme="light"] :is(.chk b){color:#56627A}
+:root[data-theme="light"] .legend{color:#26324A}
+:root[data-theme="light"] #coach{box-shadow:0 14px 40px rgba(0,0,0,.18)}
+:root[data-theme="light"] :is(#coach p,#coach ul){color:#34405A}
+:root[data-theme="light"] #coach .prog,:root[data-theme="light"] #coach .steps b{background:#E3E8EF}
+:root[data-theme="light"] #coach .steps b.on{background:var(--amber)}
+:root[data-theme="light"] #coach .steps b.ok{background:#D4F2E7;color:#0E6B52}
+:root[data-theme="light"] #coach .st.done{color:#0E6B52}
+@media (max-width:980px){
+  :root[data-theme="light"] #mbar{background:rgba(255,255,255,.96)}
+  :root[data-theme="light"] aside{box-shadow:0 -14px 44px rgba(0,0,0,.16)}
+}
+:root[data-theme="light"] :is(#mbar button.on,#mbar button.pri){background:var(--amber)}
+header .mh-look{margin-inline-start:auto}
+html[data-glass="on"] aside,
+html[data-glass="on"] .box,
+html[data-glass="on"] #coach{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] input,
+html[data-glass="on"] select,
+html[data-glass="on"] .stage{background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] header,
+html[data-glass="on"] #mbar{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark"><b>MAHALCO</b><span>مثلثات الرؤية – محور منحني وكل الأذرع</span></div>
+  <button id="btnUndo">تراجع عن آخر نقطة</button>
+  <button id="btnReset">صفِّر الهندسة</button>
+  <button id="btnPng" class="key">تنزيل PNG</button>
+  <button id="btnSvg">تنزيل SVG</button>
+  <button id="btnJson">حفظ JSON</button>
+  <button id="btnGuide">? الدليل</button>
+</header>
+
+<div class="shell">
+<aside>
+  <h2>1 · خلفية المخطط</h2>
+  <div class="row wide"><input id="file" type="file" accept="image/*"></div>
+  <p class="hint" id="imgInfo">حمّل صورة أو لقطة شاشة للمخطط.</p>
+
+  <h2>2 · مقياس الرسم</h2>
+  <div class="row wide"><select id="calMode">
+    <option value="line">معايرة بقطعة معروفة الطول (موصى به)</option>
+    <option value="scale">حسب مقياس الرسم ودقة المسح</option></select></div>
+  <div id="calLine">
+    <div class="row"><label for="calLen">طول القطعة المُعلَّمة (م)</label><input id="calLen" type="number" step="0.1" value="50"></div>
+    <button id="btnCal">علّم قطعة المعايرة</button>
+    <p class="hint">كلما كانت القطعة أطول، قلّ خطأ المعايرة.</p>
+  </div>
+  <div id="calScale" hidden>
+    <div class="row"><label for="scDen">مقياس الرسم 1:</label><input id="scDen" type="number" step="50" value="1000"></div>
+    <div class="row"><label for="dpi">دقة الصورة DPI</label><input id="dpi" type="number" step="1" value="150"></div>
+  </div>
+  <p class="hint" id="scaleInfo">مقياس الرسم: —</p>
+
+  <h2>3 · نوع الفحص</h2>
+  <div class="row wide"><select id="kind">
+    <option value="urban">تقاطع حضري – دليل تصميم الشوارع الحضرية (USDM أبوظبي)</option>
+    <option value="inter">تقاطع بين-مدني – RTA GDM / أبوظبي TR-514 / دليل GCC</option>
+    <option value="round">دوّار – دليل تصميم الدوّارات</option></select></div>
+  <div id="pJunction">
+    <div class="row"><label for="vMain">السرعة على الطريق الرئيسي</label><select id="vMain"></select></div>
+    <div class="row"><label for="dual">الطريق الرئيسي</label><select id="dual">
+      <option value="0">أحادي المسلك (مسرب لكل اتجاه)</option><option value="1">ثنائي المسلك (مسربان لكل اتجاه)</option></select></div>
+    <div class="row"><label for="curb">من المحور الرئيسي إلى حجر الرصيف (م)</label><input id="curb" type="number" step="0.5" value="7"></div>
+    <div class="row"><label><input type="checkbox" id="showLeft" checked> رؤية الانعطاف يساراً من الرئيسي</label><span></span></div>
+  </div>
+  <div id="pRound" hidden>
+    <div class="row"><label for="rLanes">نمط الدوّار</label><select id="rLanes">
+      <option value="1">أحادي المسرب</option><option value="2">ثنائي المسرب</option></select></div>
+    <div class="row"><label for="rDc">القطر الخارجي Dc (م)</label><input id="rDc" type="number" step="1" value="40"></div>
+    <p class="hint" id="rInfo">—</p>
+  </div>
+
+  <h2>4 · التعليم على المخطط</h2>
+  <div id="jTools">
+    <div class="tools">
+      <button id="tAxis">✎ محور الطريق الرئيسي</button>
+      <button id="tArm">+ أضف ذراعاً</button>
+      <button id="tDone">إنهاء التعليم</button>
+    </div>
+    <p class="hint" id="drawHint"></p>
+    <div id="arms"></div>
+  </div>
+  <div id="rTools" hidden>
+    <div class="tools">
+      <button id="tC">مركز الدوّار</button><button id="tE">الحافة الخارجية</button>
+      <button id="tRA">+ ذراع وصول</button><button id="tDone2">إنهاء</button>
+    </div>
+    <div id="rArms"></div>
+  </div>
+
+  <h2>الطباعة – ورقة A0</h2>
+  <div class="row"><label for="prScale">مقياس الرسم</label><select id="prScale">
+    <option value="500">1:500</option><option value="1000" selected>1:1000</option><option value="2000">1:2000</option></select></div>
+  <div class="row"><label for="prProj">المشروع</label><input id="prProj" value=""></div>
+  <div class="row"><label for="prDwg">رقم الورقة</label><input id="prDwg" value="SD-01"></div>
+  <div class="row"><label for="prBy">الراسم</label><input id="prBy" value=""></div>
+  <div class="tools"><button id="btnSheet" class="key">افتح ورقة A0</button><button id="btnSheetDl">نزّل HTML</button></div>
+  <p class="hint" id="prInfo">للطباعة: ورق A0، «الحجم الفعلي / 100%»، بدون هوامش.</p>
+
+  <h2>العرض</h2>
+  <div class="row"><label for="man">الحركة المعروضة</label><select id="man">
+    <option value="left">انعطاف يساراً من الثانوي</option>
+    <option value="cross">العبور</option>
+    <option value="right">انعطاف يميناً</option>
+    <option value="all">الكل معاً</option></select></div>
+  <div class="row"><label for="armSel">الذراع المعروض</label><select id="armSel"><option value="-1">كل الأذرع</option></select></div>
+  <div class="row"><label for="opac">شفافية المثلثات</label><input id="opac" type="range" min="10" max="80" value="34"></div>
+  <div class="row"><label><input type="checkbox" id="tLbl" checked> تسميات الأبعاد</label><span></span></div>
+  <div class="row"><label><input type="checkbox" id="tChord" checked> خط الرؤية (وتر المثلث)</label><span></span></div>
+  <div class="row"><label><input type="checkbox" id="tGrid"> شبكة 10 م</label><span></span></div>
+</aside>
+
+<main>
+  <div class="bar2"><button id="zIn">+</button><button id="zOut">−</button><button id="zFit">ملاءمة الشاشة</button>
+    <span class="hint" id="cursorInfo"></span></div>
+  <div id="err"></div>
+  <div class="stage" id="stage">
+    <div class="drop" id="drop">اسحب صورة المخطط إلى هنا، أو اختر ملفاً من اللوحة اليسرى</div>
+    <svg id="plan" hidden xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="out">
+    <div class="box"><h3>قيم التصميم حسب الذراع</h3><div id="res"></div></div>
+    <div class="box"><h3>الفحوصات والملاحظات</h3><div id="checks"></div></div>
+  </div>
+</main>
+</div>
+<div id="coach" role="dialog" aria-label="دليل موجَّه للأداة">
+  <div class="ch"><b>دليل موجَّه</b><span class="no" id="cNo">1 / 9</span>
+    <button class="mini" id="cClose" title="إغلاق">✕</button></div>
+  <div class="prog"><i id="cBar" style="width:11%"></i></div>
+  <div class="cb" id="cBody"></div>
+  <div class="steps" id="cDots"></div>
+  <div class="cf">
+    <button class="mini" id="cPrev">→ السابق</button>
+    <button class="mini key" id="cDo">نفّذ</button>
+    <span class="sp"></span>
+    <button class="mini" id="cSkip">لا تُظهره عند البدء</button>
+    <button class="mini" id="cNext">التالي ←</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/sd-tool-ar.js?v=2"></script>
+
+<script src="../js/inline/375eccb30a.js"></script>
+</body>
+</html>

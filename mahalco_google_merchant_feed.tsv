@@ -1,0 +1,4 @@
+id	title	description	link	image_link	availability	price	brand	condition	product_type
+mahalco-api-developer	Mahalco Developer API	Mahalco API access for engineering transportation calculations and analysis. Intended for prototype work and individual intersection calculations. Includes up to 120 requests per hour.	https://mahalco.com		in_stock	19.00 USD	Mahalco	new	Engineering Software > Transportation Engineering > API
+mahalco-office	Mahalco Office Plan	Mahalco Office plan for corridor testing and scenarios across a transportation network. Includes up to 600 requests per hour.	https://mahalco.com		in_stock	79.00 USD	Mahalco	new	Engineering Software > Transportation Engineering > API
+mahalco-trial	Mahalco Developer Trial	Two-week Mahalco developer trial for prototyping and individual intersection calculations. No payment card required.	https://mahalco.com		in_stock	0.00 USD	Mahalco	new	Engineering Software > Transportation Engineering > Trial

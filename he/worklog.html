@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2151829492004511"
+     crossorigin="anonymous"></script>
+  <script src="../js/inline/69faee446c.js"></script>
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>מהאלco — יומן עבודה לביצוע כבישים</title>
+<meta name="description" content="יומן עבודה יומי לאתרי כבישים: כוח אדם, ציוד, כמויות לפי סעיף, בדיקות מעבדה, עיכובים וליקויים. לוח מנהל, דוח יומי להדפסה. הנתונים נשמרים במכשיר בלבד.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<style>
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF; --fill:#EFEFF4; --fill-2:#E3E3E9; --label:#1C1C1E; --label-2:#6C6C70; --label-3:#9A9AA0;
+  --sep:rgba(60,60,67,.16); --tint:#C77A0A; --tint-ink:#fff; --tint-soft:rgba(232,163,61,.16);
+  --red:#D93A2B; --red-soft:rgba(217,58,43,.10); --green:#2E9D55; --green-soft:rgba(46,157,85,.12); --blue:#1F5FA8;
+  --bar:rgba(242,242,247,.84); --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.05);
+  --r-l:14px; --r-m:10px; --ease:cubic-bezier(.2,.8,.2,1);
+}
+/* dark: לפי בחירת האתר */ :root[data-theme="dark"]{ --bg:#000; --card:#1C1C1E; --fill:#2C2C2E; --fill-2:#3A3A3C; --label:#F2F2F7; --label-2:#AEAEB2; --label-3:#7C7C80;
+    --sep:rgba(84,84,88,.55); --tint:#E8A33D; --tint-ink:#1a1400; --tint-soft:rgba(232,163,61,.18);
+    --red:#FF6B5E; --red-soft:rgba(255,107,94,.14); --green:#4CD27B; --green-soft:rgba(76,210,123,.14); --blue:#5AA0F2;
+    --bar:rgba(18,18,20,.82); --shadow:none }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:var(--bg);color:var(--label);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Heebo",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--tint);outline-offset:2px;border-radius:6px}
+.hide{display:none!important}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:40;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--sep);padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+.nav-in{display:flex;align-items:center;gap:10px;min-height:56px;max-width:1180px;margin:0 auto}
+.back{color:var(--tint);text-decoration:none;font-size:15px;font-weight:600;display:flex;align-items:center;gap:2px;min-height:40px}
+.back::before{content:"›";font-size:26px;line-height:1;margin-top:-2px}
+.nav h1{font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.nav h1 small{display:block;font-size:12px;font-weight:500;color:var(--label-2)}
+.sp{flex:1}
+.nbtn{min-width:44px;height:38px;padding:0 13px;border:0;border-radius:19px;background:var(--fill);color:var(--tint);font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.nbtn.primary{background:var(--tint);color:var(--tint-ink)}
+.nbtn svg{width:18px;height:18px}
+
+/* segmented */
+.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;position:relative;isolation:isolate;max-width:100%}
+.seg button{position:relative;z-index:1;border:0;background:none;min-height:32px;padding:0 13px;border-radius:7px;font-size:14px;font-weight:500;white-space:nowrap}
+.seg button[aria-pressed="true"]{font-weight:600}
+.seg .knob{position:absolute;z-index:0;top:2px;bottom:2px;border-radius:7px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:left .3s var(--ease),width .3s var(--ease)}
+/* dark: לפי בחירת האתר */ :root[data-theme="dark"] .seg .knob{background:#636366}
+.seg.full{display:flex} .seg.full button{flex:1;padding:0 6px}
+.seg.scroll{overflow-x:auto;scrollbar-width:none} .seg.scroll::-webkit-scrollbar{display:none}
+#topTabs{margin:0 auto}
+
+/* bottom tab bar (portrait tablet / phone) */
+.tabbar{display:none}
+@media (max-width:900px){
+  #topTabs{display:none}
+  .tabbar{display:flex;position:fixed;z-index:45;left:0;right:0;bottom:0;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+    border-top:.5px solid var(--sep);padding:4px max(8px,env(safe-area-inset-right)) calc(4px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+  .tabbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:50px;font-size:11px;font-weight:600;color:var(--label-3);position:relative}
+  .tabbar button svg{width:25px;height:25px}
+  .tabbar button[aria-pressed="true"]{color:var(--tint)}
+  .tabbar .badge{position:absolute;top:2px;left:calc(50% + 6px)}
+  main{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+}
+.badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.badge:empty{display:none}
+
+/* ---------- layout ---------- */
+main{max-width:1180px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left))}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.side{position:sticky;top:74px;display:flex;flex-direction:column;gap:12px}
+@media (max-width:1023px){ .cols{grid-template-columns:1fr} .side{position:static;order:-1} }
+.gh{margin:20px 16px 6px;font-size:13px;color:var(--label-2);display:flex;align-items:center;gap:8px}
+.gh:first-child{margin-top:2px}
+.gh .cnt{margin-inline-start:auto;color:var(--label-3)}
+.gf{margin:6px 16px 0;font-size:12.5px;color:var(--label-2);line-height:1.45}
+.group{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);overflow:hidden}
+.li{display:flex;align-items:center;gap:12px;min-height:50px;padding:6px 16px;position:relative}
+.li+.li::before,.li+.rowi::before,.rowi+.li::before,.rowi+.rowi::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.li>label,.li>.lb{flex:1;min-width:0}
+.li input[type=text],.li input[type=date],.li input:not([type]){flex:1.3;min-width:0;border:0;background:none;text-align:end;color:var(--label-2);padding:8px 0;font-size:16px}
+.li input[type=date]{direction:ltr;text-align:left;flex:0 1 auto}
+.li input:focus{outline:none;color:var(--label)}
+.selw{position:relative;min-width:0}
+select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;color:var(--label-2);padding:8px 16px 8px 0;font-size:16px;max-width:100%;text-overflow:ellipsis}
+.selw::after{content:"⌄";position:absolute;left:0;top:50%;transform:translateY(-62%);color:var(--label-3);font-size:13px;pointer-events:none}
+textarea{width:100%;border:0;background:none;resize:vertical;min-height:84px;padding:12px 16px;font-size:16px;line-height:1.5;display:block}
+textarea:focus{outline:none}
+.ta-lb{display:block;padding:12px 16px 0;font-size:13px;color:var(--label-2)}
+.ta+.ta{border-top:.5px solid var(--sep)}
+
+/* stepper */
+.stp{display:inline-flex;align-items:center;background:var(--fill);border-radius:9px;height:34px;direction:ltr;flex:none}
+.stp button{width:36px;height:34px;border:0;background:none;font-size:20px;line-height:1;border-radius:9px}
+.stp button:active{background:var(--fill-2)}
+.stp input{width:56px;height:34px;border:0;border-left:.5px solid var(--sep);border-right:.5px solid var(--sep);background:none;text-align:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.stp input::-webkit-outer-spin-button,.stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.unit{font-size:13px;color:var(--label-2)}
+
+/* switch */
+.sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--fill-2);position:relative;flex:none;cursor:pointer;transition:background .25s}
+.sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15);transition:transform .25s var(--ease)}
+.sw:checked{background:var(--green)} .sw:checked::after{transform:translateX(-20px)}
+
+/* day header */
+.dayhead{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.dh-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.datebox{display:flex;align-items:center;gap:6px}
+.datebox button{width:38px;height:38px;border:0;border-radius:19px;background:var(--fill);color:var(--tint);font-size:22px;line-height:1}
+.datebox input{border:0;background:none;font-size:20px;font-weight:700;direction:ltr;text-align:center;min-width:0;width:auto}
+.datebox .dow{font-size:13px;color:var(--label-2);min-width:48px}
+.today{border:0;background:var(--tint-soft);color:var(--tint);font-weight:600;font-size:13px;border-radius:14px;min-height:28px;padding:0 10px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:12px;white-space:nowrap}
+.chip.open{background:var(--tint-soft);color:var(--tint)}
+.chip.signed{background:var(--green-soft);color:var(--green)}
+.chip.warn{background:var(--red-soft);color:var(--red)}
+.chip.draft{background:var(--fill);color:var(--label-2)}
+.projchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.projchips::-webkit-scrollbar{display:none}
+.pchip{flex:none;border:0;background:var(--fill);border-radius:18px;min-height:36px;padding:0 14px;font-size:14.5px;font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pchip[aria-pressed="true"]{background:var(--label);color:var(--card)}
+.pchip.add{color:var(--tint);background:var(--tint-soft)}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+.qbtn{border:0;min-height:38px;padding:0 13px;border-radius:12px;background:var(--fill);color:var(--tint);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.qbtn svg{width:17px;height:17px}
+
+/* summary tiles */
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:1023px){ .tiles{grid-template-columns:repeat(4,minmax(0,1fr))} }
+@media (max-width:560px){ .tiles{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.tile{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:10px 12px;border:0;text-align:start;display:block;width:100%}
+.tile span{display:block;font-size:12px;color:var(--label-2)}
+.tile b{display:block;font-size:24px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tile b small{font-size:12px;font-weight:500;color:var(--label-2)}
+.tile.pulse{animation:pulse .5s var(--ease)}
+@keyframes pulse{40%{background:var(--tint-soft)}}
+
+/* rows */
+.rowi{position:relative;padding:10px 16px;display:flex;flex-direction:column;gap:8px}
+.rowi .r1,.rowi .r2{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rowi .r1 .selw{flex:1}
+.rowi .r1 select.plain{color:var(--label);font-weight:600;width:100%}
+.rowi input.tx{flex:1;min-width:120px;border:0;background:var(--fill);border-radius:9px;height:34px;padding:0 10px;font-size:15px}
+.rowi .del{width:34px;height:34px;border:0;border-radius:17px;background:var(--red-soft);color:var(--red);font-size:15px;flex:none}
+.rowi.fresh{animation:fresh .9s var(--ease)}
+@keyframes fresh{0%{background:var(--tint-soft)}100%{background:transparent}}
+.addrow{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;border-top:.5px solid var(--sep)}
+.addrow button{border:0;min-height:34px;padding:0 12px;border-radius:17px;background:var(--fill);font-size:13.5px;font-weight:500}
+.addrow button.main{background:var(--tint-soft);color:var(--tint);font-weight:700}
+.empty{padding:18px 16px;text-align:center;color:var(--label-2);font-size:14.5px}
+.resseg button{min-height:30px;padding:0 10px;font-size:13px}
+
+/* list */
+.search{display:flex;align-items:center;gap:8px;background:var(--fill-2);border-radius:10px;padding:0 10px;height:40px}
+.search input{flex:1;border:0;background:none;font-size:16px;min-width:0}
+.search input:focus{outline:none}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.lrow{display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:64px;position:relative;width:100%;border:0;background:none;text-align:start}
+.lrow+.lrow::before{content:"";position:absolute;top:0;inset-inline-start:74px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.lrow:active{background:var(--fill)}
+.cal{flex:none;width:46px;height:46px;border-radius:10px;background:var(--fill);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.cal b{font-size:19px;font-weight:700}
+.cal small{font-size:10.5px;color:var(--label-2);margin-top:2px}
+.lmain{flex:1;min-width:0}
+.lmain b{display:block;font-size:15.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lmain span{display:block;font-size:13px;color:var(--label-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chev{color:var(--label-3);font-size:22px}
+.month{margin:18px 16px 6px;font-size:13px;color:var(--label-2);font-weight:600}
+
+/* manager */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.bars{padding:6px 16px 12px}
+.brow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto;gap:10px;align-items:center;padding:7px 0;font-size:14px}
+.brow+.brow{border-top:.5px solid var(--sep)}
+.brow .track{height:10px;border-radius:5px;background:var(--fill);overflow:hidden}
+.brow .fillb{height:100%;border-radius:5px;background:var(--tint);transform-origin:right;animation:grow .6s var(--ease)}
+.brow.red .fillb{background:var(--red)}
+@keyframes grow{from{transform:scaleX(0)}}
+.brow .v{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;font-size:14.5px}
+.alert+.alert{border-top:.5px solid var(--sep)}
+.alert i{flex:none;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-style:normal;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.alert.ok i{background:var(--green)}
+.alert button{margin-inline-start:auto;border:0;background:none;color:var(--tint);font-weight:600;font-size:14px;white-space:nowrap}
+
+/* projects */
+.pcard{display:flex;align-items:center;gap:12px;padding:12px 16px;width:100%;border:0;background:none;text-align:start;position:relative;min-height:66px}
+.pcard+.pcard::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.pic{flex:none;width:42px;height:42px;border-radius:10px;background:var(--tint);color:var(--tint-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.pic.team{background:var(--blue);color:#fff;border-radius:50%}
+.pic.asst{background:var(--fill-2);color:var(--label);border-radius:50%}
+.trow{display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:60px;position:relative;width:100%;border:0;background:none;text-align:start}
+.trow+.trow::before{content:"";position:absolute;top:0;inset-inline-start:70px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.trow[aria-pressed="true"]{background:var(--tint-soft)}
+.trow .del{width:32px;height:32px;border:0;border-radius:16px;background:var(--red-soft);color:var(--red);flex:none}
+.mini-stats{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pic.off{background:var(--fill-2);color:var(--label-2)}
+
+/* privacy + backup */
+.note-card{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:var(--r-l);background:var(--green-soft);font-size:13.5px;line-height:1.45}
+.note-card.warn{background:var(--red-soft)}
+.note-card svg{flex:none;width:24px;height:24px;color:var(--green)}
+.note-card.warn svg{color:var(--red)}
+.note-card button{margin-inline-start:auto;border:0;background:var(--card);color:var(--tint);font-weight:600;border-radius:14px;min-height:32px;padding:0 12px;white-space:nowrap}
+.bigbtn{display:flex;width:100%;min-height:50px;align-items:center;justify-content:center;border:0;border-radius:var(--r-l);font-size:16px;font-weight:600;background:var(--card);color:var(--tint);box-shadow:var(--shadow)}
+.bigbtn.primary{background:var(--tint);color:var(--tint-ink)}
+.bigbtn.danger{color:var(--red)}
+.stack{display:flex;flex-direction:column;gap:10px}
+
+/* save bar */
+.savebar{display:flex;gap:10px;align-items:center;margin-top:18px}
+.savebar .bigbtn{flex:1}
+.savestate{font-size:13px;color:var(--label-2);display:flex;align-items:center;gap:6px}
+.savestate i{width:8px;height:8px;border-radius:50%;background:var(--label-3)}
+.savestate.dirty i{background:var(--tint)} .savestate.ok i{background:var(--green)}
+@media (max-width:900px){
+  .savebar{position:fixed;z-index:44;left:0;right:0;bottom:calc(59px + env(safe-area-inset-bottom));margin:0;padding:8px max(16px,env(safe-area-inset-right)) 8px max(16px,env(safe-area-inset-left));background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-top:.5px solid var(--sep)}
+  .savebar .bigbtn{min-height:46px;box-shadow:none}
+}
+
+/* sheet, dialog, toast */
+.scrim{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:91;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));width:min(440px,calc(100% - 24px));transform:translate(-50%,130%);transition:transform .35s var(--ease)}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .grp{background:color-mix(in srgb,var(--card) 94%,transparent);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.sheet .ttl{padding:14px 16px;text-align:center;font-size:13.5px;color:var(--label-2);line-height:1.4}
+.sheet .ttl b{display:block;color:var(--label);font-size:15px;margin-bottom:2px}
+.sheet .grp>button{display:flex;width:100%;min-height:56px;align-items:center;justify-content:center;border:0;border-top:.5px solid var(--sep);background:none;font-size:18px;color:var(--tint)}
+.sheet .grp>button.danger{color:var(--red)}
+.sheet .cancel{display:block;width:100%;min-height:56px;border:0;border-radius:14px;background:var(--card);font-size:18px;font-weight:600;color:var(--tint)}
+.modal{position:fixed;z-index:92;left:50%;top:50%;width:min(520px,calc(100% - 24px));max-height:calc(100% - 40px);overflow:auto;background:var(--bg);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);
+  transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;transition:transform .3s var(--ease),opacity .2s}
+.modal.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.modal-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:.5px solid var(--sep);position:sticky;top:0;background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);z-index:1}
+.modal-h b{flex:1;text-align:center;font-size:16px}
+.modal-h button{border:0;background:none;color:var(--tint);font-size:16px;min-height:36px;min-width:60px}
+.modal-h button.done{font-weight:700}
+.modal-b{padding:6px 16px 20px}
+.toast{position:fixed;z-index:95;left:50%;top:calc(66px + env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;background:rgba(28,28,30,.93);color:#fff;border-radius:22px;padding:10px 18px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;transition:transform .35s var(--ease),opacity .25s;max-width:calc(100% - 32px)}
+.toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.toast button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:14px;min-height:30px;padding:0 12px;font-weight:600}
+
+/* welcome */
+.welcome{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:28px 22px;text-align:center;max-width:560px;margin:10px auto}
+.welcome .ico{width:64px;height:64px;border-radius:16px;background:var(--tint);color:var(--tint-ink);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.welcome .ico svg{width:34px;height:34px}
+.welcome h2{font-size:22px;margin-bottom:8px}
+.welcome p{color:var(--label-2);font-size:15px;line-height:1.55;margin-bottom:18px}
+.steps{text-align:start;display:flex;flex-direction:column;gap:10px;margin:0 0 20px}
+.steps div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.steps div b{flex:none;width:24px;height:24px;border-radius:12px;background:var(--tint-soft);color:var(--tint);display:flex;align-items:center;justify-content:center;font-size:13px}
+
+/* print report */
+#report{display:none}
+@media print{
+  body{background:#fff;color:#000}
+  .nav,.tabbar,main,.toast,.sheet,.scrim,.modal{display:none!important}
+  #report{display:block;font:11pt/1.45 Arial,sans-serif;color:#000;padding:0}
+  #report h1{font-size:17pt;margin-bottom:2pt}
+  #report .meta{font-size:10pt;color:#333;margin-bottom:10pt}
+  #report h2{font-size:12pt;margin:12pt 0 4pt;border-bottom:1pt solid #000;padding-bottom:2pt}
+  #report table{width:100%;border-collapse:collapse;font-size:10pt}
+  #report th,#report td{border:.5pt solid #888;padding:3pt 5pt;text-align:right}
+  #report th{background:#eee}
+  #report .sig{display:flex;gap:30pt;margin-top:26pt}
+  #report .sig div{flex:1;border-top:.8pt solid #000;padding-top:3pt;font-size:10pt}
+  @page{size:A4;margin:14mm}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:560px){ .nav h1 small{display:none} .nbtn .t{display:none} .back span{display:none} }
+</style>
+
+<!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
+<script src="../js/inline/f3de506a60.js" data-light="#F2F2F7" data-dark="#000000" data-slot=".nav-in"></script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+/* ---- backdrop for glass ---- */
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+/* ---- look button ---- */
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+/* ---- popover ---- */
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+/* ---- התאמות לעמוד הזה ---- */
+html[data-glass="on"] .canvas,
+html[data-glass="on"] .box,
+html[data-glass="on"] .group,
+html[data-glass="on"] .pcard,
+html[data-glass="on"] .tile,
+html[data-glass="on"] .rowbtns button,
+html[data-glass="on"] .welcome,
+html[data-glass="on"] .dayhead,
+html[data-glass="on"] .note-card{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] .stat,
+html[data-glass="on"] .stp,
+html[data-glass="on"] .sheetlist div,
+html[data-glass="on"] .seg:not(.full),
+html[data-glass="on"] .pchip:not([aria-pressed="true"]){background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .nav,
+html[data-glass="on"] .tabbar,
+html[data-glass="on"] .savebar,
+html[data-glass="on"] .tabs{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .cell:not(.sel):not(.drag){background:transparent!important}
+html[data-glass="on"] .sheetwrap{background:color-mix(in srgb,var(--paper) 92%,transparent)}
+html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
+
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-in">
+    <a class="back" href="../index.html"><span>מהאלco</span></a>
+    <h1>יומן עבודה<small>ביצוע כבישים · נשמר במכשיר</small></h1>
+    <span class="sp"></span>
+    <div class="seg" id="topTabs"></div>
+    <span class="sp"></span>
+    <button class="nbtn" id="btnPrint" type="button" title="הדפסת דוח יומי"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg><span class="t">דוח יומי</span></button>
+  </div>
+</header>
+
+<main>
+<!-- ============ ברוכים הבאים ============ -->
+<section id="tab-welcome" class="hide">
+  <div class="welcome">
+    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div>
+    <h2>יומן עבודה לאתר</h2>
+    <p>רישום יומי של צוותים, ציוד, כמויות, בדיקות ועיכובים – עם לוח מנהל ודוח להדפסה. הכול נשמר רק במכשיר הזה.</p>
+    <div class="steps">
+      <div><b>1</b><span>מגדירים פרויקט: שם, מזמין, קבלן ומקטע – ואת המנהל ועוזרי המנהל שעובדים בו.</span></div>
+      <div><b>2</b><span>ממלאים יומן יומי. מחר אפשר להעתיק את הצוותים והציוד מהיום בנגיעה אחת.</span></div>
+      <div><b>3</b><span>שומרים, חותמים, ומדפיסים דוח. הכמויות מצטברות לבד בלוח המנהל.</span></div>
+    </div>
+    <button class="bigbtn primary" type="button" data-newproj>יצירת הפרויקט הראשון</button>
+    <p class="gf" style="margin-top:12px">יש גיבוי קיים? <a href="#" id="welcomeRestore" style="color:var(--tint);font-weight:600">שחזור מקובץ</a></p>
+  </div>
+</section>
+
+<!-- ============ יומן יומי ============ -->
+<section id="tab-day">
+  <div class="cols">
+    <div>
+      <div class="dayhead">
+        <div class="projchips" id="projChips" role="group" aria-label="פרויקט"></div>
+        <div class="dh-row">
+          <div class="datebox">
+            <button type="button" id="dPrev" aria-label="יום קודם">›</button>
+            <input type="date" id="d_date" aria-label="תאריך">
+            <button type="button" id="dNext" aria-label="יום הבא">‹</button>
+            <span class="dow" id="dDow"></span>
+          </div>
+          <button class="today" type="button" id="dToday">היום</button>
+          <span class="sp"></span>
+          <span class="chip draft" id="dState">חדש</span>
+        </div>
+        <div class="quick" id="quickBar">
+          <button class="qbtn" type="button" id="btnCopyPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>העתקה מהיומן הקודם</button>
+          <button class="qbtn" type="button" id="btnNew"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>יומן חדש</button>
+        </div>
+      </div>
+
+      <p class="gh">תנאי העבודה</p>
+      <div class="group">
+        <div class="li"><span class="lb">משמרת</span><select id="d_shift" class="hide"><option>יום</option><option>לילה</option><option>סופ״ש</option></select><div class="seg" data-bind="d_shift"></div></div>
+        <div class="li"><span class="lb">מזג אוויר</span><div class="selw"><select id="d_weather" class="plain"><option>בהיר</option><option>מעונן</option><option>גשם קל</option><option>גשם</option><option>שרב</option><option>רוחות</option></select></div></div>
+        <div class="li"><label for="d_temp">טמפרטורה</label><div class="stp" data-step="1"><input type="number" id="d_temp" step="1" inputmode="numeric" placeholder="—"></div><span class="unit">°C</span></div>
+        <div class="li"><label for="d_hours">שעות עבודה</label><div class="stp" data-step="0.5" data-min="0"><input type="number" id="d_hours" step="0.5" inputmode="decimal" placeholder="—"></div><span class="unit">ש׳</span></div>
+        <div class="li"><label for="d_from">מפיקט / ק״מ</label><input type="text" id="d_from" placeholder="0+000" dir="ltr"></div>
+        <div class="li"><label for="d_to">עד פיקט / ק״מ</label><input type="text" id="d_to" placeholder="0+250" dir="ltr"></div>
+      </div>
+
+      <p class="gh">צוותים בשטח<span class="cnt" id="cnt_crew"></span></p>
+      <div class="group"><div id="crewRows"></div><div class="addrow" data-quick="crew"></div></div>
+
+      <p class="gh">ציוד מכני<span class="cnt" id="cnt_equip"></span></p>
+      <div class="group"><div id="equipRows"></div><div class="addrow" data-quick="equip"></div></div>
+
+      <p class="gh">עבודות שבוצעו וכמויות<span class="cnt" id="cnt_act"></span></p>
+      <div class="group"><div id="actRows"></div><div class="addrow" data-quick="act"></div></div>
+      <p class="gf">הכמויות מצטברות לפי סעיף בלוח המנהל ומשמשות בסיס לחשבון חלקי.</p>
+
+      <p class="gh">בדיקות מעבדה<span class="cnt" id="cnt_test"></span></p>
+      <div class="group"><div id="testRows"></div><div class="addrow" data-quick="test"></div></div>
+
+      <p class="gh">עיכובים<span class="cnt" id="cnt_delay"></span></p>
+      <div class="group"><div id="delayRows"></div><div class="addrow" data-quick="delay"></div></div>
+
+      <p class="gh">הערות, ליקויים וביקורים</p>
+      <div class="group">
+        <div class="ta"><label class="ta-lb" for="d_issues">אי-התאמות והוראות שניתנו</label><textarea id="d_issues"></textarea></div>
+        <div class="ta"><label class="ta-lb" for="d_visits">ביקורים באתר</label><textarea id="d_visits" placeholder="מפקח, מתכנן, רשות מקומית, מעבדה…"></textarea></div>
+        <div class="ta"><label class="ta-lb" for="d_safety">בטיחות והסדרי תנועה זמניים</label><textarea id="d_safety"></textarea></div>
+        <div class="ta"><label class="ta-lb" for="d_notes">הערות כלליות</label><textarea id="d_notes"></textarea></div>
+      </div>
+
+      <p class="gh">סגירת היומן</p>
+      <div class="group">
+        <div class="li"><label for="d_by">נרשם על ידי</label><input type="text" id="d_by" placeholder="שם"></div>
+        <div class="li" id="byRow"><div class="projchips" id="byChips" role="group" aria-label="בחירה מהצוות" style="flex:1"></div></div>
+        <div class="li"><label for="d_signedSw">היומן נחתם</label><select id="d_signed" class="hide"><option value="0">פתוח</option><option value="1">נחתם</option></select><input type="checkbox" class="sw" id="d_signedSw"></div>
+      </div>
+
+      <div class="savebar">
+        <span class="savestate" id="saveState"><i></i><span>אין שינויים</span></span>
+        <button class="bigbtn primary" type="button" id="btnSave">שמירת היומן</button>
+        <button class="bigbtn danger" type="button" id="btnDel" style="flex:0 0 auto;padding:0 16px" aria-label="מחיקת הרשומה">מחיקה</button>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="tiles" id="dayTiles"></div>
+      <div class="note-card" id="backupNote"></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ רשומות ============ -->
+<section id="tab-list" class="hide">
+  <div class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--label-3)"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+    <input type="search" id="f_q" placeholder="חיפוש בהערות, בסעיפים ובמיקום"></div>
+  <div class="filters">
+    <div class="selw"><select id="f_pid" class="plain" aria-label="פרויקט"><option value="">כל הפרויקטים</option></select></div>
+    <select id="f_st" class="hide"><option value="">הכול</option><option value="0">פתוח</option><option value="1">נחתם</option></select>
+    <div class="seg" data-bind="f_st"></div>
+    <span class="sp"></span>
+    <label class="unit" for="f_from">מ-</label><input type="date" id="f_from" style="border:0;background:var(--fill);border-radius:9px;height:34px;padding:0 8px;direction:ltr">
+    <label class="unit" for="f_to">עד</label><input type="date" id="f_to" style="border:0;background:var(--fill);border-radius:9px;height:34px;padding:0 8px;direction:ltr">
+  </div>
+  <div id="listBody"></div>
+  <p class="gh">ייצוא הרשומות שבסינון</p>
+  <div class="stack" style="flex-direction:row">
+    <button class="bigbtn" type="button" id="btnCsvEntries">רשומות ל-CSV</button>
+    <button class="bigbtn" type="button" id="btnCsvQty">כמויות ל-CSV</button>
+  </div>
+</section>
+
+<!-- ============ לוח מנהל ============ -->
+<section id="tab-mgr" class="hide">
+  <div class="filters" style="margin-top:0">
+    <div class="selw"><select id="m_pid" class="plain" aria-label="פרויקט"><option value="">כל הפרויקטים</option></select></div>
+    <div class="selw"><select id="m_by" class="plain" aria-label="איש צוות"><option value="">כל הצוות</option></select></div>
+    <span class="sp"></span>
+    <select id="m_days" class="hide"><option value="7">7 ימים</option><option value="30" selected>30 ימים</option><option value="90">רבעון</option><option value="0">הכול</option></select>
+    <div class="seg" data-bind="m_days"></div>
+  </div>
+  <p class="gh">דורש טיפול</p>
+  <div class="group" id="mgrAlerts"></div>
+  <p class="gh">מנהל ועוזרי מנהל<span class="cnt">הקישו על שם לסינון הלוח</span></p>
+  <div class="group" id="mgrTeam"></div>
+  <p class="gh">תמונת מצב</p>
+  <div class="kpis" id="mgrKpi"></div>
+  <p class="gh">כמויות מצטברות לפי סעיף</p>
+  <div class="group"><div class="bars" id="tblQty"></div></div>
+  <p class="gh">עיכובים לפי סיבה</p>
+  <div class="group"><div class="bars" id="tblDelay"></div></div>
+</section>
+
+<!-- ============ פרויקטים ============ -->
+<section id="tab-proj" class="hide">
+  <p class="gh">פרויקטים</p>
+  <div class="group" id="projList"></div>
+  <div style="margin-top:12px"><button class="bigbtn primary" type="button" data-newproj>פרויקט חדש</button></div>
+
+  <p class="gh">צוות הניהול<span class="cnt" id="teamCnt"></span></p>
+  <div class="group">
+    <div id="teamList"></div>
+    <div class="li" style="flex-wrap:wrap;border-top:.5px solid var(--sep)">
+      <input type="text" id="t_name" placeholder="שם איש הצוות" style="flex:1 1 160px;text-align:start;background:var(--fill);border-radius:9px;height:36px;padding:0 10px;color:var(--label)">
+      <select id="t_role" class="hide"><option>עוזר מנהל</option><option>מנהל</option></select>
+      <div class="seg" data-bind="t_role"></div>
+      <button type="button" class="qbtn" id="btnTeamAdd">+ הוספה</button>
+    </div>
+  </div>
+  <p class="gf">מנהל רואה את לוח המנהל לכל הצוות. עוזר מנהל ממלא יומנים במכשיר שלו ושולח אותם למנהל מלשונית «גיבוי» – והמנהל ממזג אותם אצלו.</p>
+</section>
+
+<!-- ============ גיבוי ============ -->
+<section id="tab-data" class="hide">
+  <div class="note-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+    <span>היומן נשמר רק בדפדפן הזה ולא נשלח לשום שרת. ניקוי נתוני הדפדפן או החלפת מכשיר ימחקו אותו – לכן מגבים פעם בשבוע.</span></div>
+  <p class="gh">מה שמור במכשיר</p>
+  <div class="kpis" id="dataStats"></div>
+  <p class="gh">גיבוי ושחזור</p>
+  <div class="stack">
+    <button class="bigbtn primary" type="button" id="btnExport">ייצוא גיבוי מלא (JSON)</button>
+    <button class="bigbtn" type="button" id="btnImp">שחזור מגיבוי</button>
+  </div>
+  <p class="gh">עבודה עם עוזרי מנהל</p>
+  <div class="stack">
+    <button class="bigbtn primary" type="button" id="btnSend">שליחת היומנים שלי למנהל</button>
+    <button class="bigbtn" type="button" id="btnMerge">מיזוג יומנים שהתקבלו מעוזר מנהל</button>
+    <input type="file" id="fileMerge" accept=".json,application/json" multiple hidden>
+  </div>
+  <p class="gf">עוזר מנהל: «שליחה» יוצרת קובץ עם היומנים שלו (בטאבלט – שיתוף ישיר לוואטסאפ או למייל). מנהל: «מיזוג» מוסיף את היומנים מהקובץ בלי למחוק דבר; יומן שקיים אצל שניכם נשמר בגרסה המעודכנת יותר.</p>
+  <p class="gh">אזור מסוכן</p>
+  <div class="stack">
+    <input type="file" id="fileImp" accept=".json,application/json" hidden>
+    <button class="bigbtn danger" type="button" id="btnWipe">מחיקת כל הנתונים</button>
+  </div>
+  <p class="gf" id="lastBackup"></p>
+</section>
+</main>
+
+<nav class="tabbar" id="tabbar" aria-label="לשוניות"></nav>
+
+<!-- פרויקט: חלון עריכה -->
+<div class="scrim" id="scrim"></div>
+<div class="modal" id="projModal" role="dialog" aria-modal="true" aria-labelledby="projTitle">
+  <div class="modal-h"><button type="button" id="btnPCancel">ביטול</button><b id="projTitle">פרויקט חדש</b><button type="button" class="done" id="btnPSave">שמירה</button></div>
+  <div class="modal-b">
+    <p class="gh">פרטי הפרויקט</p>
+    <div class="group">
+      <div class="li"><label for="p_name">שם</label><input type="text" id="p_name" placeholder="חובה"></div>
+      <div class="li"><label for="p_client">מזמין</label><input type="text" id="p_client" placeholder="נתיבי ישראל / עירייה"></div>
+      <div class="li"><label for="p_contr">קבלן מבצע</label><input type="text" id="p_contr"></div>
+      <div class="li"><label for="p_eng">מהנדס ביצוע</label><input type="text" id="p_eng"></div>
+      <div class="li"><label for="p_sec">מקטע</label><input type="text" id="p_sec" placeholder="כביש 444, ק״מ 3+200–5+700"></div>
+      <div class="li"><label for="p_start">תחילת עבודה</label><input type="date" id="p_start"></div>
+    </div>
+    <p class="gh">ניהול הפרויקט</p>
+    <div class="group">
+      <div class="li"><span class="lb">מנהל הפרויקט</span><div class="selw"><select id="p_mgr" class="plain"></select></div></div>
+      <div class="li" style="flex-direction:column;align-items:stretch;gap:8px;padding-top:10px;padding-bottom:12px"><span class="lb">עוזרי מנהל בפרויקט</span><div class="projchips" id="p_asst" style="flex-wrap:wrap"></div></div>
+    </div>
+    <p class="gf">מוסיפים אנשי צוות בלשונית «פרויקטים», תחת «צוות הניהול».</p>
+    <p class="gh">סטטוס</p>
+    <select id="p_status" class="hide"><option>פעיל</option><option>מושהה</option><option>הסתיים</option></select>
+    <div class="seg full" data-bind="p_status"></div>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grp" id="sheetGrp"></div><button class="cancel" type="button" id="sheetCancel">ביטול</button></div>
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><button type="button" id="toastAct" hidden></button></div>
+<div id="report"></div>
+
+<script src="../js/inline/da71fafa56.js"></script>
+</body>
+</html>

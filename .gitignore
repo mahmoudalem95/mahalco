@@ -1,0 +1,15 @@
+app/
+Dockerfile
+render.yaml
+requirements.txt
+.dockerignore
+# keep server code, CAD test files and secrets out of this public site repo
+*.py
+*.dxf
+*.webarchive
+.env
+.env.*
+*.jks
+*.keystore
+*.p12
+*.pem

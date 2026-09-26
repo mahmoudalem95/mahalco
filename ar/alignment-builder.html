@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#f2f2f7">
+<title>منشئ المحور · MAHALCO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2f2f7; --glass:rgba(255,255,255,.74); --glass2:rgba(255,255,255,.9);
+  --ink:#1c1c1e; --dim:#6e6e73; --line:rgba(60,60,67,.16); --fill:rgba(118,118,128,.12);
+  --gold1:#F2C04A; --gold2:#C98E12; --goldInk:#1B2126; --accent:#b07a08;
+  --map:#e4e7eb; --grid:rgba(28,28,30,.07);
+  --axis:#C98E12; --arc:#0a84ff; --pi:#1c1c1e; --sel:#ff3b30; --bad:#ff3b30; --ok:#34c759;
+  --shadow:0 10px 30px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#000; --glass:rgba(28,28,30,.72); --glass2:rgba(44,44,46,.92);
+    --ink:#f2f2f7; --dim:#98989f; --line:rgba(84,84,88,.55); --fill:rgba(118,118,128,.24);
+    --accent:#F2C04A; --map:#111417; --grid:rgba(242,242,247,.06);
+    --axis:#F2C04A; --arc:#64d2ff; --pi:#f2f2f7; --sel:#ff453a; --bad:#ff453a; --ok:#30d158;
+    --shadow:0 10px 30px rgba(0,0,0,.5); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#000; --glass:rgba(28,28,30,.72); --glass2:rgba(44,44,46,.92);
+  --ink:#f2f2f7; --dim:#98989f; --line:rgba(84,84,88,.55); --fill:rgba(118,118,128,.24);
+  --accent:#F2C04A; --map:#111417; --grid:rgba(242,242,247,.06);
+  --axis:#F2C04A; --arc:#64d2ff; --pi:#f2f2f7; --sel:#ff453a; --bad:#ff453a; --ok:#30d158;
+  --shadow:0 10px 30px rgba(0,0,0,.5); color-scheme:dark;
+}
+[hidden]{display:none!important}
+button.cell{width:100%}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:'Cairo',-apple-system,BlinkMacSystemFont,"Cairo","SF Pro Text","Segoe UI",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  border:1px solid var(--line);box-shadow:var(--shadow)}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:disabled{opacity:.38;cursor:default}
+:focus-visible{outline:3px solid var(--arc);outline-offset:2px;border-radius:10px}
+
+/* ---------- خريطة ---------- */
+.stage{position:fixed;inset:0;background:var(--map)}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+
+/* ---------- الشريط العلوي ---------- */
+.bar{position:fixed;top:calc(10px + env(safe-area-inset-top));inset-inline:10px;height:56px;border-radius:18px;
+  display:flex;align-items:center;gap:10px;padding:0 10px 0 8px;z-index:5}
+.back{display:flex;align-items:center;gap:4px;color:var(--accent);font-weight:600;font-size:16px;text-decoration:none;padding:8px 6px;border-radius:10px}
+.title{display:flex;flex-direction:column;line-height:1.1;min-width:0}
+.title b{font-size:17px;font-weight:800;letter-spacing:-.2px}
+.title small{font-size:12px;color:var(--dim)}
+.grow{flex:1}
+.pill{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:var(--fill);font-size:13px;font-weight:600;white-space:nowrap}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.pill.bad i{background:var(--bad)}
+.icon.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px;background:var(--fill)}
+
+/* ---------- نطاق المراحل ---------- */
+.wiz{background:var(--glass2);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.wiz .steps{display:flex;gap:4px}
+.wiz .steps i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.wiz .steps i.done{background:var(--ok)} .wiz .steps i.cur{background:linear-gradient(90deg,var(--gold1),var(--gold2))}
+.wiz b{font-size:15px} .wiz p{margin:0;font-size:13px;color:var(--dim);line-height:1.4}
+.wiz .row{display:flex;gap:6px}
+.wiz .row button{flex:1;height:36px;border-radius:10px;font-weight:700;background:var(--fill)}
+.wiz .row button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.axes{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.axes::-webkit-scrollbar{display:none}
+.axes button{flex:none;height:34px;padding:0 14px;border-radius:999px;background:var(--fill);font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+.axes button i{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.axes button i.ok{background:var(--ok)} .axes button i.lock{background:var(--gold2)}
+.axes button.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.axes button.on i{background:var(--goldInk)}
+.axes .add{color:var(--accent);background:none;border:1.5px dashed var(--line)}
+.msgs li.pick{cursor:pointer}
+.msgs li.pick.sel{background:var(--fill)}
+.arm{margin-bottom:12px}
+.arm .cell .lbl small{display:block;color:var(--dim);font-size:12px}
+.arm .two{display:flex;gap:6px;align-items:center}
+.arm .two input{width:62px}
+.tmpnote{font-size:12px;color:var(--bad);padding:6px 12px 8px}
+.segmini{display:flex;background:var(--fill);border-radius:9px;padding:2px}
+.segmini button{height:30px;padding:0 12px;border-radius:7px;font-size:14px;font-weight:600}
+.segmini button.on{background:var(--glass2);box-shadow:0 1px 4px rgba(0,0,0,.14)}
+.cell.primary.off{background:var(--fill);color:var(--bad)}
+.segctl{display:grid;grid-template-columns:repeat(3,1fr);background:var(--fill);border-radius:12px;padding:3px;gap:2px}
+.segctl button{height:40px;border-radius:9px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
+.segctl button span{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--line);font-size:12px}
+.segctl button.on{background:var(--glass2);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.segctl button.on span{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+
+/* ---------- مشرف ---------- */
+.insp{position:fixed;top:calc(76px + env(safe-area-inset-top));bottom:10px;inset-inline-start:10px;width:360px;border-radius:22px;
+  z-index:4;display:flex;flex-direction:column;overflow:hidden}
+.grab{display:none}
+.scroll{overflow:auto;padding:14px 14px 20px;display:flex;flex-direction:column;gap:18px;overscroll-behavior:contain}
+.scroll>*{flex:none}
+.hint{margin:0;color:var(--dim);font-size:14px;line-height:1.45;padding:0 4px}
+.grp h3{margin:0 0 6px;padding:0 6px;font-size:13px;font-weight:600;color:var(--dim)}
+.list{background:var(--glass2);border-radius:14px;overflow:hidden}
+.cell{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 12px;border-bottom:1px solid var(--line);font-size:16px}
+.cell:last-child{border-bottom:0}
+.cell .lbl{flex:1}
+.cell.btn{color:var(--accent);font-weight:600;justify-content:center}
+.cell.btn.danger{color:var(--bad)}
+.cell.primary{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk);font-weight:800;justify-content:center;border:0}
+input[type=number]{font:inherit;font-size:16px;width:84px;height:34px;padding:0 8px;border:0;border-radius:9px;background:var(--fill);color:var(--ink);
+  direction:ltr;text-align:center;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-radius:9px;background:var(--fill);color:var(--ink);max-width:100%}
+.stp{display:flex;align-items:center;background:var(--fill);border-radius:9px;overflow:hidden}
+.stp button{width:32px;height:34px;font-size:20px;font-weight:600;color:var(--accent)}
+.stp input{width:48px;background:none;border-radius:0;padding:0}
+.msgs{list-style:none;margin:0;padding:0}
+.msgs li{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-bottom:1px solid var(--line);font-size:14px;line-height:1.4}
+.msgs li:last-child{border-bottom:0}
+.msgs li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;margin-top:6px;background:var(--bad)}
+.msgs li.ok::before{background:var(--ok)}
+.msgs li.warn::before{background:#f0a020}
+
+/* صفوف المقطع */
+.srow{display:grid;grid-template-columns:6px minmax(92px,1fr) auto auto auto;gap:8px;align-items:center;min-height:52px;padding:6px 10px 6px 8px;border-bottom:1px solid var(--line)}
+.sw{width:6px;height:34px;border-radius:3px}
+.srow select{width:100%}
+.stp{flex:none}
+.chip{height:30px;min-width:58px;white-space:nowrap;direction:ltr;padding:0 10px;border-radius:999px;background:var(--fill);font-size:13px;font-weight:600}
+.chip.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.del{width:30px;height:30px;border-radius:50%;color:var(--bad);font-size:15px}
+.rline{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr auto 1fr 30px;gap:8px;align-items:center}
+.rline.fillrow{grid-template-columns:auto 1fr}
+.newtag{font-size:11px;color:var(--dim);text-align:center}
+.rng{display:grid;grid-template-columns:1fr;gap:8px;align-items:center;padding:10px 12px 12px;background:var(--fill);border-bottom:1px solid var(--line);font-size:14px}
+.rng input{width:100%}
+.rng .full{grid-column:1/-1}
+.rng .row2{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rng .row2 button{height:36px;border-radius:9px;background:var(--glass2);font-weight:600;color:var(--accent)}
+.rng .row2 button.live{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.side-h{display:flex;align-items:center;justify-content:space-between;padding:0 6px 6px}
+.side-h h3{padding:0;margin:0}
+.side-h button{color:var(--accent);font-weight:600;font-size:15px;padding:4px}
+
+/* ---------- أدوات خريطة عائمة ---------- */
+.fab{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));inset-inline-end:14px;display:flex;gap:4px;padding:5px;border-radius:18px;z-index:4}
+.fab button{height:44px;min-width:44px;padding:0 12px;border-radius:13px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.fab button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.fab button[hidden]{display:none}
+.toast{position:fixed;top:calc(80px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:7;
+  padding:10px 18px;border-radius:999px;font-size:15px;font-weight:700;white-space:nowrap}
+.toast[hidden]{display:none}
+.status{position:fixed;top:calc(76px + env(safe-area-inset-top));left:14px;border-radius:999px;padding:6px 12px;font-size:12.5px;direction:ltr;
+  font-variant-numeric:tabular-nums;z-index:3}
+
+/* نافذة نصف القطر */
+.pop{position:absolute;border-radius:16px;padding:8px;display:flex;gap:6px;align-items:center;z-index:6}
+.pop[hidden]{display:none}
+.cpop{flex-direction:column;align-items:stretch;gap:8px;min-width:210px;padding:10px 12px}
+.cph{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px}
+.cph button{background:none;height:28px;padding:0 6px}
+.cpop .segmini button{flex:1;height:36px;font-size:15px}
+.cpr{display:flex;align-items:center;gap:8px;font-size:14px}
+.cpop small{color:var(--dim);font-size:12px;line-height:1.4}
+/* شريط النقاط العلوي */
+.ptool{position:absolute;top:calc(74px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;align-items:center;border-radius:14px;padding:6px 8px;z-index:6;max-width:calc(100% - 20px);
+  flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.ptool[hidden]{display:none}
+.ptool::-webkit-scrollbar{display:none}
+.ptool b{font-size:12.5px;white-space:nowrap;padding:0 4px;color:var(--dim)}
+.ptool input{width:72px;height:34px}
+.ptool button{height:34px;min-width:34px;padding:0 9px;border-radius:9px;font-weight:700;font-size:14px;background:var(--fill)}
+.ptool button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.ptool .sepv{width:1px;height:22px;background:var(--line);flex:none}
+@media (max-width:820px){ .ptool{top:calc(70px + env(safe-area-inset-top));gap:4px;padding:5px 6px} .ptool input{width:60px} }
+.pop input{width:86px}
+.pop #popLs{width:64px}
+.pop button{height:34px;padding:0 12px;border-radius:9px;font-weight:700;font-size:14px;background:var(--fill)}
+.pop button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+
+/* ---------- جهاز لوحي / هاتف ---------- */
+@media (max-width:820px){
+  .insp{top:auto;bottom:0;inset-inline:0;width:auto;height:46vh;border-radius:22px 22px 0 0;transition:height .25s ease;padding-bottom:env(safe-area-inset-bottom)}
+  .insp.min{height:170px}
+  .grab{display:block;width:100%;height:22px;flex:none;position:relative}
+  .grab::after{content:"";position:absolute;top:8px;left:50%;width:40px;height:5px;margin-left:-20px;border-radius:3px;background:var(--line)}
+  .scroll{padding-top:2px}
+  .fab{bottom:calc(46vh + 10px)}
+  .insp.min ~ .fab{bottom:180px}
+  .title small{display:none}
+}
+@media (max-width:480px){ .back span{display:none} .pill{padding:0 9px} }
+@media (prefers-reduced-motion:reduce){ .insp{transition:none} }
+</style>
+</head>
+<body>
+<main class="stage" id="stage">
+  <canvas id="cv" aria-label="سطح رسم المحور"></canvas>
+  <div class="pop glass cpop" id="cpop" hidden>
+    <div class="cph"><b id="cpTitle">انعطاف يميناً</b><button id="cpX" aria-label="إغلاق">✕</button></div>
+    <div class="segmini" id="cpMode"><button data-m="0">عادية</button><button data-m="1">حرة</button></div>
+    <label class="cpr">R <input id="cpR" type="number" min="2" step="0.5" inputmode="decimal"> م</label>
+    <small id="cpInfo"></small>
+  </div>
+  <div class="ptool glass" id="ptool" hidden>
+    <button id="ptPrev" title="النقطة السابقة">‹</button>
+    <b id="ptLbl">نقطة</b>
+    <button id="ptNext" title="النقطة التالية">›</button>
+    <span class="sepv"></span>
+    <input id="ptR" type="number" min="0" step="1" placeholder="R م" inputmode="decimal" aria-label="نصف قطر">
+    <button id="ptOk" class="go" title="تطبيق نصف القطر">قوس</button>
+    <input id="ptLs" type="number" min="0" step="1" placeholder="Ls" inputmode="decimal" aria-label="طول الكلوثويد">
+    <button id="ptLsA" title="Ls الأدنى وفق الفصل 5">Ls↺</button>
+    <button id="ptNo" title="إزالة القوس">بدون</button>
+    <span class="sepv"></span>
+    <button id="ptZo" title="تصغير">−</button>
+    <button id="ptZi" title="تكبير">+</button>
+    <button id="ptFit" title="توسيط على المحور">⤢</button>
+  </div>
+  <div class="pop glass" id="pop" hidden>
+    <input id="popR" type="number" min="0" step="1" placeholder="R م" inputmode="decimal" aria-label="نصف قطر">
+    <input id="popLs" type="number" min="0" step="1" placeholder="Ls" inputmode="decimal" aria-label="طول الكلوثويد" title="طول منحنى الانتقال (كلوثويد)">
+    <button id="popLsA" title="Ls الأدنى وفق الفصل 5">Ls↺</button>
+    <button id="popOk" class="go">قوس</button>
+    <button id="popNo">بدون</button>
+  </div>
+</main>
+
+<header class="bar glass">
+  <a class="back" href="https://mahmoudalem95.github.io/mahalco/ar/index.html" aria-label="العودة للموقع">‹ <span>MAHALCO</span></a>
+  <div class="title"><b>منشئ المحور</b><small>محور · أقواس · مقطع على طول الطريق</small></div>
+  <div class="grow"></div>
+  <div class="pill" id="pill"><i></i><span id="pillTxt">لا يوجد محور</span></div>
+  <button class="icon" id="bMap" aria-label="خريطة خلفية" title="استيراد خريطة خلفية (GovMap)">🗺</button>
+  <input type="file" id="fMap" accept="image/*,.pgw,.jgw,.tfw,.wld,.png,.jpg,.jpeg" multiple hidden>
+  <button class="icon" id="bPlan" aria-label="عرض المخطط" title="عرض مخطط هندسي">📐</button>
+  <button class="icon" id="bTheme" aria-label="وضع العرض" title="وضع العرض"></button>
+</header>
+
+<div class="status glass" id="status">E –  N –</div>
+
+<aside class="insp glass" id="insp">
+  <button class="grab" id="grab" aria-label="تكبير أو تصغير اللوحة"></button>
+  <div class="scroll">
+    <div class="wiz" id="wiz"></div>
+    <div class="axes" id="axes" role="tablist" aria-label="محاور"></div>
+    <div class="segctl" role="tablist" aria-label="مراحل العمل">
+      <button id="st1" role="tab"><span>1</span>محاور</button>
+      <button id="st2" role="tab"><span>2</span>مقاطع</button>
+      <button id="st3" role="tab"><span>3</span>تقاطعات</button>
+    </div>
+    <div class="segmini" id="drawMode" hidden style="margin-top:8px">
+      <button id="tDraw" style="flex:1">✎ رسم المحور</button><button id="tEdit" style="flex:1">◠ أقواس وأنصاف أقطار</button>
+    </div>
+    <p class="hint" id="hint"></p>
+
+    <section class="grp" id="piBox" hidden>
+      <h3 id="piTitle">نقطة انكسار</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">نصف القطر R</span>
+          <input id="inR" type="number" min="0" step="1" placeholder="بدون" inputmode="decimal"><span style="color:var(--dim)">م</span></div>
+        <button class="cell btn" id="bNoArc">إزالة القوس</button>
+        <button class="cell btn danger" id="bDelPI">حذف نقطة</button>
+      </div>
+    </section>
+
+    <section class="grp" id="secList" hidden>
+      <h3>المقطع النموذجي – لكل محور</h3>
+      <div class="list" id="secListRows"></div>
+      <p class="hint" style="margin-top:6px">اختر محوراً من القائمة، عرّف له مقطعاً في الأسفل، ثم اعتمده. مرحلة التقاطعات تُفتح بعد اعتماد كل المحاور.</p>
+    </section>
+
+    <section class="grp" id="secUI" hidden>
+      <h3>المقطع الأساسي · <span id="secAxName"></span></h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">نمط</span>
+          <select id="preset">
+          </select></div>
+        <button class="cell btn" id="bImpSec">استيراد JSON من أداة المقطع</button>
+        <input type="file" id="fImpSec" accept=".json,application/json" hidden>
+        <div class="cell"><span class="lbl">جزيرة وسطى</span>
+          <div class="stp"><button data-d="-0.5" data-t="inMed" aria-label="إنقاص">−</button><input id="inMed" type="number" min="0" step="0.1" inputmode="decimal"><button data-d="0.5" data-t="inMed" aria-label="زيادة">+</button></div>
+          <span style="color:var(--dim)">م</span></div>
+      </div>
+
+      <div style="height:18px"></div>
+      <div class="side-h"><h3>يسار المحور · من الجزيرة الوسطية للخارج</h3><button id="addL">＋ شريط</button></div>
+      <div class="list" id="rowsL"></div>
+
+      <div style="height:18px"></div>
+      <div class="side-h"><h3>يمين المحور · من الجزيرة الوسطية للخارج</h3><button id="addR">＋ شريط</button></div>
+      <div class="list" id="rowsR"></div>
+
+      <div style="height:16px"></div>
+      <div class="list"><button class="cell primary" id="bSecOk">اعتماد المقطع لهذا المحور</button></div>
+    </section>
+
+    <section class="grp" id="grpAxis">
+      <h3>معطيات التصميم</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">بيئة</span>
+          <div class="segmini" id="envSeg"><button data-env="urban">حضري</button><button data-env="inter">بين-مدني</button></div></div>
+        <div class="cell" id="rowV"><span class="lbl">سرعة التصميم, <b id="vAxName"></b></span>
+          <div class="stp"><button id="vMinus" aria-label="خفض السرعة">−</button><input id="inV" type="number" min="30" step="10" inputmode="numeric"><button id="vPlus" aria-label="رفع السرعة">+</button></div>
+          <span style="color:var(--dim)">كم/س</span></div>
+        <div class="cell" id="rowRmin"><span class="lbl">R الحد الأدنى بدون ميل عرضي</span>
+          <input id="inRmin" type="number" min="1" step="10" placeholder="حسب الزاوية" inputmode="decimal"><span style="color:var(--dim)">م</span></div>
+        <div class="cell" id="rowRc" hidden><span class="lbl">نصف قطر الوصل (حد أدنى 90)</span>
+          <input id="inRc" type="number" min="90" step="5" inputmode="decimal"><span style="color:var(--dim)">م</span></div>
+      </div>
+    </section>
+
+    <section class="grp" id="grpNet" hidden>
+      <h3>التقاطعات في الشبكة</h3>
+      <div class="list" id="netBox"><ul class="msgs" id="netList"></ul></div>
+    </section>
+
+    <section class="grp" id="jctBox" hidden>
+      <h3 id="jctTitle">تقاطع</h3>
+      <div class="list" id="jctCtl" style="margin-bottom:12px"></div>
+      <div id="jctArms"></div>
+      <div class="side-h" style="margin-top:6px"><h3>أنصاف أقطار الانعطاف يميناً من المسرب</h3></div>
+      <div class="list" id="jctTurnCfg"></div>
+      <div class="list" id="jctCorners" style="margin-top:8px"></div>
+      <p class="hint" id="jctSrc" style="margin-top:6px"></p>
+    </section>
+
+    <section class="grp">
+      <h3>الفحوصات</h3>
+      <div class="list"><ul class="msgs" id="msgs"></ul>
+        <button class="cell btn" id="bFixNet" hidden>مطابقة مسارب الخروج لقاعدة أ-ب</button></div>
+    </section>
+
+    <section class="grp" id="mapBox" hidden>
+      <h3>خريطة خلفية</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">وضع</span><span id="mapGeo" style="color:var(--dim)"></span></div>
+        <div class="cell"><span class="lbl">الشفافية</span><input id="mapOp" type="range" min="10" max="100" style="flex:1"></div>
+        <button class="cell btn" id="bCalib">معايرة بنقطتين</button>
+        <button class="cell btn" id="bMapHide">إخفاء / إظهار</button>
+        <button class="cell btn danger" id="bMapDel">إزالة الخريطة</button>
+      </div>
+      <p class="hint" style="margin-top:6px">من GovMap: احفظ صورة الخريطة أو الصورة الجوية، وإن أمكن أيضاً ملف الإحداثيات (pgw/jgw). الربط المباشر مع GovMap في المرحلة القادمة.</p>
+    </section>
+
+    <section class="grp">
+      <h3>المحور والملف</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">اسم المحور</span><input id="inName" type="text" style="width:150px;text-align:right;direction:rtl;font:inherit;height:34px;border:0;border-radius:9px;background:var(--fill);color:var(--ink);padding:0 10px"></div>
+        <button class="cell btn" id="bExport">حفظ المشروع / تصدير JSON</button>
+        <button class="cell btn" id="bOpen">فتح مشروع</button>
+        <input type="file" id="fOpen" accept=".json,application/json" hidden>
+        <button class="cell btn danger" id="bClear">مسح هذا المحور</button>
+        <button class="cell btn danger" id="bDelAxis">حذف هذا المحور</button>
+      </div>
+    </section>
+  </div>
+</aside>
+
+<div class="toast glass" id="toast" role="status" aria-live="polite" hidden></div>
+<nav class="fab glass" aria-label="أدوات الخريطة">
+  <button id="bUndo" aria-label="تراجع">↶ تراجع</button>
+  <button id="bFit" aria-label="ملاءمة للشاشة">⤢</button>
+  <button id="bFinish" class="go">إنهاء المحور</button>
+  <button id="bNewAxis" class="go">＋ محور جديد</button>
+</nav>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/alignment-builder-ar.js?v=2"></script>
+</body>
+</html>

@@ -1,0 +1,961 @@
+
+
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2151829492004511"
+     crossorigin="anonymous"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#1e1e1e">
+<title>בונה ציר · MAHALCO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   MicroStation-inspired UI · dark by default
+   ========================================================= */
+:root{
+  --bg:#1e1e1e; --bg2:#252526; --bg3:#2d2d30; --bg4:#3a3a3d;
+  --panel:#252526;
+  --glass:rgba(37,37,38,.94); --glass2:rgba(45,45,48,.98);
+  --ink:#d4d4d4; --dim:#8a8a8a;
+  --line:#3a3a3d; --line2:#4a4a4d;
+  --fill:rgba(255,255,255,.07); --fill2:rgba(255,255,255,.13);
+  --gold1:#f5a623; --gold2:#d68910; --goldInk:#1a1a1a;
+  --accent:#0e7fd8; --accent2:#1a8fe8;
+  --map:#141414; --grid:rgba(255,255,255,.05);
+  --axis:#4ec9ff; --arc:#4ec9ff; --pi:#ffffff;
+  --sel:#f5a623; --bad:#e74c3c; --ok:#4caf50; --warn:#ffa726;
+  --shadow:0 2px 8px rgba(0,0,0,.6);
+  --shadow-lg:0 10px 30px rgba(0,0,0,.7);
+  --ribbon-h:76px; --status-h:34px; --props-w:340px; --tools-w:46px;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#e8e8e8; --bg2:#efefef; --bg3:#f7f7f7; --bg4:#ffffff;
+  --panel:#efefef;
+  --glass:rgba(245,245,245,.95); --glass2:rgba(255,255,255,.98);
+  --ink:#1a1a1a; --dim:#5c5c5c;
+  --line:#c8c8c8; --line2:#b0b0b0;
+  --fill:rgba(0,0,0,.05); --fill2:rgba(0,0,0,.10);
+  --accent:#0066cc; --accent2:#0078d4;
+  --map:#f5f5f5; --grid:rgba(0,0,0,.06);
+  --axis:#0066cc; --arc:#0a84ff; --pi:#1a1a1a;
+  --sel:#ff9500; --bad:#d70015; --ok:#248a3d; --warn:#c87000;
+  --shadow:0 2px 8px rgba(0,0,0,.15);
+  --shadow-lg:0 10px 30px rgba(0,0,0,.2);
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Assistant","Segoe UI",Arial,sans-serif;
+  font-size:13px;line-height:1.35;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--line)}
+
+/* ---------- canvas stage ---------- */
+.stage{
+  position:fixed;top:var(--ribbon-h);bottom:var(--status-h);
+  inset-inline-start:var(--props-w);inset-inline-end:var(--tools-w);
+  background:var(--map);
+}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+#profStage{display:flex;flex-direction:column}
+#profStage>#vcv{flex:1;min-height:0;height:auto}
+
+/* ---------- ribbon ---------- */
+.ribbon{
+  position:fixed;top:0;inset-inline:0;z-index:20;height:var(--ribbon-h);
+  background:var(--bg2);border-bottom:1px solid var(--line);
+  display:flex;flex-direction:column;
+}
+.menu-bar{
+  display:flex;align-items:center;gap:4px;height:32px;padding:0 10px;
+  background:var(--bg);border-bottom:1px solid var(--line);
+}
+.brand{
+  font-weight:800;font-size:12px;letter-spacing:.06em;
+  color:var(--accent);text-decoration:none;padding:5px 10px;border-radius:4px;
+}
+.brand:hover{background:var(--fill)}
+.menu-title{
+  font-size:11.5px;color:var(--dim);padding-inline-start:10px;
+  border-inline-start:1px solid var(--line);
+}
+.grow{flex:1}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 10px;
+  border-radius:11px;background:var(--fill);font-size:11.5px;font-weight:600;
+  white-space:nowrap;color:var(--ink);
+}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.pill.bad i{background:var(--bad)}
+
+.ribbon-bar{flex:1;display:flex;align-items:stretch;gap:6px;padding:3px 8px}
+.ribbon-groups{display:flex;gap:2px;align-items:stretch}
+.rg{
+  display:flex;flex-direction:column;align-items:stretch;
+  padding:2px 6px;border-radius:4px;min-width:0;
+}
+.rg:hover{background:var(--fill)}
+.rg-tools{flex:1;display:flex;gap:2px;align-items:center;justify-content:center}
+.rg-label{font-size:10px;color:var(--dim);text-align:center;padding-top:1px}
+.tool-btn{
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  min-width:44px;padding:3px 6px;border-radius:4px;font-size:18px;line-height:1;
+}
+.tool-btn small{font-size:10px;font-weight:600;color:var(--ink)}
+.tool-btn:hover{background:var(--fill)}
+.tool-btn:active{background:var(--fill2)}
+.tool-btn.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.tool-btn.on small{color:var(--goldInk)}
+.icon{
+  width:34px;height:34px;border-radius:5px;display:grid;place-items:center;
+  background:var(--fill);font-size:16px;align-self:center;
+}
+.icon:hover{background:var(--fill2)}
+.icon.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+
+/* ---------- left tool palette ---------- */
+.tool-palette{
+  position:fixed;top:var(--ribbon-h);bottom:var(--status-h);
+  inset-inline-end:0;width:var(--tools-w);z-index:15;
+  background:var(--bg2);border-inline-start:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;
+  gap:3px;padding:8px 4px;overflow-y:auto;
+}
+.tp-btn{
+  width:36px;height:36px;border-radius:5px;display:grid;place-items:center;
+  font-size:17px;color:var(--ink);
+}
+.tp-btn:hover{background:var(--fill)}
+.tp-btn.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.tp-sep{width:26px;height:1px;background:var(--line);margin:5px 0}
+
+/* ---------- status bar ---------- */
+.statusbar{
+  position:fixed;bottom:0;inset-inline:0;z-index:20;height:var(--status-h);
+  background:var(--bg2);border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;padding:0 10px;font-size:12px;
+}
+.statusbar .st{
+  font-variant-numeric:tabular-nums;color:var(--dim);direction:ltr;
+  padding-inline-end:12px;border-inline-end:1px solid var(--line);height:100%;
+  display:flex;align-items:center;
+}
+.statusbar .actions{display:flex;gap:4px}
+.statusbar .actions button{
+  height:24px;padding:0 10px;border-radius:4px;font-size:12px;font-weight:600;
+  background:var(--fill);color:var(--ink);
+}
+.statusbar .actions button:hover{background:var(--fill2)}
+.statusbar .actions button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.statusbar .actions button[hidden]{display:none}
+
+/* ---------- properties panel (right / inline-start) ---------- */
+.insp{
+  position:fixed;top:var(--ribbon-h);bottom:var(--status-h);
+  inset-inline-start:0;width:var(--props-w);z-index:15;
+  background:var(--bg2);border-inline-end:1px solid var(--line);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.grab{display:none}
+.scroll{
+  overflow:auto;padding:10px;display:flex;flex-direction:column;gap:10px;
+  overscroll-behavior:contain;scrollbar-width:thin;
+}
+.scroll::-webkit-scrollbar{width:8px}
+.scroll::-webkit-scrollbar-thumb{background:var(--fill2);border-radius:4px}
+.scroll::-webkit-scrollbar-track{background:transparent}
+.scroll>*{flex:none}
+.hint{margin:0;color:var(--dim);font-size:11.5px;line-height:1.5;padding:0 2px}
+
+/* groups */
+.grp{display:flex;flex-direction:column;gap:0}
+.grp h3{
+  margin:0;padding:6px 9px;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--dim);
+  background:var(--bg);border:1px solid var(--line);border-bottom:0;
+  border-radius:4px 4px 0 0;
+}
+.list{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:0 0 4px 4px;overflow:hidden;
+}
+.grp:not(:has(h3)) .list{border-radius:4px}
+
+/* cells */
+.cell{
+  display:flex;align-items:center;gap:8px;min-height:32px;
+  padding:5px 9px;border-bottom:1px solid var(--line);
+  font-size:12.5px;background:transparent;
+}
+.cell:last-child{border-bottom:0}
+.cell .lbl{flex:1;color:var(--ink)}
+.cell .lbl small{display:block;color:var(--dim);font-size:10.5px;margin-top:1px}
+.cell.btn{color:var(--accent);font-weight:600;justify-content:center}
+.cell.btn:hover{background:var(--fill)}
+.cell.btn.danger{color:var(--bad)}
+.cell.primary{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk);
+  font-weight:700;justify-content:center;border:0}
+.cell.primary.off{background:var(--fill);color:var(--bad)}
+button.cell{width:100%;text-align:start}
+
+/* inputs */
+input[type=number],input[type=text],input[type=url],select,textarea{
+  font:inherit;font-size:12.5px;height:24px;padding:0 6px;
+  border:1px solid var(--line);border-radius:3px;
+  background:var(--bg3);color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+input[type=number]{width:66px;direction:ltr;text-align:center;-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+select{padding-inline-end:22px;max-width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
+textarea{height:auto;padding:6px;direction:ltr;font-size:12px}
+input[type=range]{accent-color:var(--accent)}
+input[type=checkbox]{accent-color:var(--accent)}
+
+.stp{
+  display:inline-flex;align-items:center;background:var(--bg3);
+  border:1px solid var(--line);border-radius:3px;overflow:hidden;height:24px;
+}
+.stp button{width:22px;height:100%;font-size:14px;font-weight:700;color:var(--accent)}
+.stp button:hover{background:var(--fill)}
+.stp input{width:42px;background:none;border:0;border-radius:0;padding:0;border-inline:1px solid var(--line)}
+
+/* section rows */
+.srow{
+  display:grid;grid-template-columns:4px minmax(80px,1fr) auto auto auto;
+  gap:5px;align-items:center;padding:4px 7px;
+  border-bottom:1px solid var(--line);min-height:34px;
+}
+.sw{width:4px;height:22px;border-radius:2px}
+.chip{
+  height:22px;padding:0 8px;border-radius:3px;background:var(--fill);
+  font-size:11.5px;font-weight:600;color:var(--ink);white-space:nowrap;direction:ltr;
+}
+.chip:hover{background:var(--fill2)}
+.chip.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.del{width:22px;height:22px;border-radius:3px;color:var(--bad);font-size:12px}
+.del:hover{background:var(--fill)}
+
+/* wizard */
+.wiz{
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:9px 10px;display:flex;flex-direction:column;gap:6px;
+}
+.wiz .steps{display:flex;gap:3px}
+.wiz .steps i{flex:1;height:3px;border-radius:2px;background:var(--fill2)}
+.wiz .steps i.done{background:var(--ok)}
+.wiz .steps i.cur{background:linear-gradient(90deg,var(--gold1),var(--gold2))}
+.wiz b{font-size:12.5px}
+.wiz p{margin:0;font-size:11.5px;color:var(--dim);line-height:1.45}
+.wiz .row{display:flex;gap:4px}
+.wiz .row button{
+  flex:1;height:26px;border-radius:3px;font-weight:600;font-size:12px;
+  background:var(--fill);color:var(--ink);
+}
+.wiz .row button:hover{background:var(--fill2)}
+.wiz .row button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+
+/* axes tabs */
+.axes{
+  display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:4px;
+}
+.axes::-webkit-scrollbar{display:none}
+.axes button{
+  flex:none;height:26px;padding:0 10px;border-radius:3px;background:var(--fill);
+  font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;color:var(--ink);
+}
+.axes button i{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.axes button i.ok{background:var(--ok)}
+.axes button i.lock{background:var(--gold2)}
+.axes button.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.axes button.on i{background:var(--goldInk)}
+.axes .add{color:var(--accent);background:none;border:1px dashed var(--line2)}
+
+/* seg controls */
+.segctl{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:3px;gap:3px;
+}
+.segctl button{
+  height:32px;border-radius:3px;font-size:12px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:5px;color:var(--ink);
+}
+.segctl button span{
+  display:inline-grid;place-items:center;width:16px;height:16px;
+  border-radius:50%;background:var(--fill2);font-size:10px;
+}
+.segctl button:hover{background:var(--fill)}
+.segctl button.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.segctl button.on span{background:var(--goldInk);color:var(--gold1)}
+
+.segmini{display:flex;background:var(--fill);border-radius:3px;padding:2px;gap:2px}
+.segmini button{height:22px;padding:0 9px;border-radius:2px;font-size:11.5px;font-weight:600;color:var(--ink);flex:1}
+.segmini button.on{background:var(--bg3);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+
+/* messages */
+.msgs{list-style:none;margin:0;padding:0}
+.msgs li{
+  display:flex;gap:7px;align-items:flex-start;
+  padding:7px 9px;border-bottom:1px solid var(--line);
+  font-size:11.5px;line-height:1.45;color:var(--ink);
+}
+.msgs li:last-child{border-bottom:0}
+.msgs li::before{
+  content:"";flex:none;width:7px;height:7px;border-radius:50%;
+  margin-top:4px;background:var(--bad);
+}
+.msgs li.ok::before{background:var(--ok)}
+.msgs li.warn::before{background:var(--warn)}
+.msgs li.pick{cursor:pointer}
+.msgs li.pick.sel{background:var(--fill)}
+
+/* junction arms */
+.arm{margin-bottom:8px}
+.arm .two{display:flex;gap:4px;align-items:center}
+.arm .two input{width:54px}
+.tmpnote{font-size:11px;padding:5px 9px;color:var(--dim);border-top:1px solid var(--line)}
+
+/* range editor */
+.rline{
+  grid-column:1/-1;display:grid;
+  grid-template-columns:auto 1fr auto 1fr 24px;
+  gap:5px;align-items:center;font-size:11.5px;
+}
+.rline.fillrow{grid-template-columns:auto 1fr}
+.newtag{font-size:10px;color:var(--dim);text-align:center}
+.rng{
+  display:grid;gap:6px;padding:8px 9px;
+  background:var(--bg);border-bottom:1px solid var(--line);
+  font-size:11.5px;color:var(--ink);
+}
+.rng input{width:100%}
+.rng .full{grid-column:1/-1}
+.rng .row2{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.rng .row2 button{
+  height:26px;border-radius:3px;font-weight:600;font-size:11.5px;
+  background:var(--fill);color:var(--accent);
+}
+.rng .row2 button.live{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+
+.side-h{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 5px}
+.side-h h3{margin:0;padding:0;background:none;border:0}
+.side-h button{color:var(--accent);font-weight:600;font-size:11.5px;padding:3px 6px;border-radius:3px}
+.side-h button:hover{background:var(--fill)}
+
+/* popups on canvas */
+.pop{
+  position:absolute;border-radius:6px;padding:6px;display:flex;gap:5px;align-items:center;
+  z-index:6;background:var(--glass);border:1px solid var(--line);box-shadow:var(--shadow-lg);
+}
+.pop[hidden]{display:none}
+.pop input{width:74px}
+.pop #popLs{width:56px}
+.pop button{height:24px;padding:0 10px;border-radius:3px;font-weight:600;font-size:11.5px;background:var(--fill);color:var(--ink)}
+.pop button:hover{background:var(--fill2)}
+.pop button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.cpop{flex-direction:column;align-items:stretch;gap:6px;min-width:190px;padding:9px 10px}
+.cph{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12.5px}
+.cph button{background:none;height:22px;padding:0 5px;color:var(--ink)}
+.cpop .segmini button{flex:1;height:28px;font-size:12px}
+.cpr{display:flex;align-items:center;gap:6px;font-size:12px}
+.cpop small{color:var(--dim);font-size:10.5px;line-height:1.4}
+
+.ptool{
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  display:flex;gap:4px;align-items:center;
+  border-radius:5px;padding:4px 6px;z-index:6;
+  max-width:calc(100% - 12px);
+  background:var(--glass);border:1px solid var(--line);box-shadow:var(--shadow-lg);
+  flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+}
+.ptool[hidden]{display:none}
+.ptool::-webkit-scrollbar{display:none}
+.ptool b{font-size:11.5px;white-space:nowrap;padding:0 4px;color:var(--dim)}
+.ptool input{width:62px;height:24px;font-size:12px}
+.ptool button{
+  height:24px;min-width:26px;padding:0 7px;border-radius:3px;
+  font-weight:600;font-size:12px;background:var(--fill);color:var(--ink);
+}
+.ptool button:hover{background:var(--fill2)}
+.ptool button.go{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk)}
+.ptool .sepv{width:1px;height:18px;background:var(--line);flex:none}
+
+/* toast */
+.toast{
+  position:fixed;top:calc(var(--ribbon-h) + 12px);left:50%;transform:translateX(-50%);
+  z-index:60;padding:8px 16px;border-radius:4px;
+  font-size:12.5px;font-weight:600;white-space:nowrap;
+  background:var(--bg3);border:1px solid var(--line);
+  box-shadow:var(--shadow-lg);color:var(--ink);
+}
+.toast[hidden]{display:none}
+
+/* profile PVI table */
+.pvi-tbl-wrap{
+  position:absolute;left:0;right:0;bottom:0;z-index:3;
+  max-height:360px;overflow:auto;
+  background:var(--bg2);border-top:1px solid var(--line);
+  padding:8px 10px;direction:ltr;
+  box-shadow:0 -4px 16px rgba(0,0,0,.4);
+}
+.pvi-tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px;font-family:inherit;color:var(--ink)}
+.pvi-tbl-wrap th,.pvi-tbl-wrap td{
+  padding:5px 9px;text-align:center;border:1px solid var(--line);white-space:nowrap;
+}
+.pvi-tbl-wrap th{
+  background:var(--bg3);font-weight:700;color:var(--dim);
+  position:sticky;top:0;z-index:1;font-size:11px;
+}
+.pvi-tbl-wrap input{
+  width:100%;min-width:72px;padding:4px 6px;border:1px solid var(--line);
+  border-radius:3px;background:var(--bg3);color:var(--ink);
+  font:inherit;font-size:12px;text-align:center;box-sizing:border-box;
+}
+.pvi-tbl-wrap .ro{color:var(--dim)}
+.pvi-tbl-wrap .del-pvi{cursor:pointer;color:var(--bad);background:none;border:none;font-size:13px;padding:1px 5px;border-radius:3px}
+.pvi-tbl-wrap .del-pvi:hover{background:var(--fill)}
+.pvi-tbl-wrap .add-pvi{
+  margin-top:5px;padding:4px 12px;border:1px dashed var(--line2);
+  border-radius:3px;background:none;color:var(--accent);
+  cursor:pointer;font-size:11.5px;font-weight:600;
+}
+.pvi-tbl-wrap .add-pvi:hover{background:var(--fill)}
+.pvi-tbl-wrap .empty{padding:10px;text-align:center;color:var(--dim)}
+
+/* ---------- responsive ---------- */
+@media (max-width:820px){
+  :root{--ribbon-h:66px;--props-w:0px}
+  .ribbon-bar{padding:2px 4px}
+  .rg{padding:1px 4px}
+  .tool-btn{min-width:38px;font-size:16px}
+  .tool-btn small{font-size:9px}
+  .insp{
+    top:auto;bottom:var(--status-h);inset-inline:0;width:auto;
+    height:46vh;border-radius:12px 12px 0 0;
+    border-inline:0;border-top:1px solid var(--line);
+    transition:height .25s ease;
+  }
+  .insp.min{height:150px}
+  .grab{display:block;width:100%;height:20px;flex:none;position:relative;background:none}
+  .grab::after{
+    content:"";position:absolute;top:7px;left:50%;
+    width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--line2);
+  }
+  .tool-palette{display:none}
+  .stage{inset-inline-end:0}
+  .statusbar .actions button{padding:0 7px;font-size:11px}
+  .ptool{padding:3px 5px}
+  .ptool input{width:52px}
+}
+@media (max-width:480px){
+  .menu-title{display:none}
+  .tool-btn small{display:none}
+  .tool-btn{min-width:32px;padding:3px 4px}
+}
+@media (prefers-reduced-motion:reduce){ .insp{transition:none} }
+</style>
+<style id='profile-nav-css'>#profStage{overflow:auto;overscroll-behavior:contain}#vcv{touch-action:auto;cursor:default}</style>
+<style id="psheet-css">
+/* ============ PROFILE BAND SHEET — printed plan/profile style table ============ */
+.psheet-wrap{
+  margin-top:10px;border:1px solid var(--line);border-radius:6px;
+  background:var(--bg2);overflow:visible;
+}
+.psheet-title{
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+  padding:8px 9px 2px;font-size:12.5px;font-weight:800;color:var(--ink);direction:rtl;
+}
+.psheet-title small{color:var(--dim);font-size:9px;letter-spacing:.6px;font-weight:700;direction:ltr}
+.psheet-toolbar{
+  position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:5px;
+  padding:6px 7px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:var(--bg3);direction:rtl;
+}
+.psheet-toolbar .pt-lbl{color:var(--dim);font-size:10.5px;font-weight:600;white-space:nowrap}
+.pchips{display:inline-flex;gap:2px;background:var(--fill);border-radius:4px;padding:2px}
+.pchip{
+  height:19px;min-width:26px;padding:0 6px;border-radius:3px;
+  font-size:10.5px;font-weight:700;color:var(--dim);background:none;
+}
+.pchip:hover{color:var(--ink);background:var(--fill2)}
+.pchip.on{background:var(--accent);color:#fff}
+.pnum{
+  width:52px;height:21px;padding:0 5px;border:1px solid var(--line);border-radius:3px;
+  background:var(--bg2);color:var(--ink);font:inherit;font-size:11px;text-align:center;
+}
+.pcheck{
+  display:inline-flex;align-items:center;gap:4px;color:var(--ink);
+  font-size:11px;font-weight:600;cursor:pointer;user-select:none;white-space:nowrap;
+}
+.pcheck input{accent-color:var(--accent);cursor:pointer;margin:0}
+.ptbtn{
+  height:21px;padding:0 8px;border:1px solid var(--line2);border-radius:3px;
+  background:var(--fill);color:var(--ink);font-size:10.5px;font-weight:700;white-space:nowrap;
+}
+.ptbtn:hover{background:var(--fill2);border-color:var(--accent)}
+.prowwrap{position:relative;display:inline-flex}
+.prowpop{
+  position:absolute;top:calc(100% + 5px);right:0;z-index:40;
+  display:flex;flex-direction:column;gap:1px;min-width:178px;padding:7px 9px;
+  background:var(--glass2);border:1px solid var(--line2);border-radius:6px;
+  box-shadow:var(--shadow-lg);direction:rtl;
+}
+.prowpop[hidden]{display:none}
+.prowpop label{
+  display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink);
+  cursor:pointer;padding:3px;border-radius:3px;white-space:nowrap;
+}
+.prowpop label:hover{background:var(--fill)}
+.prowpop label input{accent-color:var(--accent);margin:0}
+.prowpop label small{color:var(--dim);font-size:8.5px;margin-inline-start:auto;letter-spacing:.4px;direction:ltr}
+.psheet-meta{
+  margin-inline-start:auto;color:var(--dim);font-size:10px;font-weight:600;
+  white-space:nowrap;direction:rtl;
+}
+.psheet-scroll{
+  overflow:auto;max-height:min(52vh,430px);direction:ltr;overscroll-behavior:contain;
+}
+.psheet-scroll::-webkit-scrollbar{height:9px;width:9px}
+.psheet-scroll::-webkit-scrollbar-thumb{background:var(--line2);border-radius:5px}
+.psheet-scroll::-webkit-scrollbar-track{background:var(--bg2)}
+table.psheet{
+  border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;
+  font-size:10.5px;font-variant-numeric:tabular-nums;
+}
+table.psheet th,table.psheet td{
+  min-width:var(--colw,52px);padding:3px 4px;text-align:center;white-space:nowrap;
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--ink);
+}
+table.psheet thead th{
+  position:sticky;top:0;z-index:3;background:var(--bg3);
+  font-weight:700;font-size:10px;color:var(--ink);
+}
+table.psheet .psheet-lbl{
+  position:sticky;left:0;z-index:4;width:92px;min-width:92px;max-width:92px;
+  background:var(--bg3);color:var(--dim);font-size:10px;font-weight:700;
+  direction:rtl;border-right:1px solid var(--line2);
+}
+table.psheet thead .psheet-lbl{z-index:6}
+.psheet-lbl small{
+  display:block;font-size:8px;font-weight:600;letter-spacing:.5px;
+  opacity:.72;direction:ltr;
+}
+table.psheet tbody tr:nth-child(even) td{background:rgba(127,127,127,.05)}
+table.psheet tbody tr:nth-child(even) .psheet-lbl{background:var(--bg3)}
+/* header cell that carries a PVI */
+table.psheet th.psheet-pvi{
+  color:var(--sel);background:rgba(245,166,35,.14);
+  box-shadow:inset 0 -3px 0 var(--sel);cursor:help;
+}
+/* value rows */
+.band-design td:not(.psheet-lbl){color:var(--bad);font-weight:600}
+.band-exist td:not(.psheet-lbl){color:var(--ink)}
+.band-cf .cf-cut{color:var(--ok);font-weight:700}
+.band-cf .cf-fill{color:var(--bad);font-weight:700}
+.psheet-empty{color:var(--dim);opacity:.5}
+/* slopes band */
+.pband-tangent{background:rgba(255,208,138,.07)!important;padding:2px 4px!important}
+.pband-grade{display:block;font-weight:800;color:#ffd08a;font-size:10.5px;line-height:1.25}
+.pband-len{display:block;color:var(--dim);font-size:9px;line-height:1.25}
+.pband-curve{padding:2px 4px!important}
+.pband-curve.crest{background:rgba(62,207,142,.10)!important;box-shadow:inset 0 0 0 1px rgba(62,207,142,.55)}
+.pband-curve.crest .pband-curve-top{color:#3ecf8e}
+.pband-curve.sag{background:rgba(79,179,255,.10)!important;box-shadow:inset 0 0 0 1px rgba(79,179,255,.55)}
+.pband-curve.sag .pband-curve-top{color:#4fb3ff}
+.pband-curve-top{display:block;font-weight:800;font-size:10px;line-height:1.3}
+.pband-curve-bot{display:block;color:var(--dim);font-size:9px;line-height:1.3}
+/* junction band */
+.psheet-jct{color:var(--sel);font-weight:800;background:rgba(245,166,35,.10)!important;cursor:help}
+/* axis / distance / section bands */
+.psheet-haxis{color:var(--dim);font-weight:700;letter-spacing:.3px}
+.band-dist td:not(.psheet-lbl){color:var(--dim)}
+.band-section td:not(.psheet-lbl){color:var(--dim)}
+/* light theme tweaks */
+:root[data-theme="light"] .pband-grade{color:#8a5a00}
+:root[data-theme="light"] .pband-tangent{background:rgba(255,176,32,.14)!important}
+:root[data-theme="light"] .pband-curve.crest .pband-curve-top{color:#1d7a45}
+:root[data-theme="light"] .pband-curve.sag .pband-curve-top{color:#0a5aa8}
+:root[data-theme="light"] table.psheet th.psheet-pvi{background:rgba(255,149,0,.16)}
+/* junction-heights cell (printed style: elevation over station) */
+.psheet-jct .pjct-el{display:block;font-weight:800;color:var(--sel);font-size:10.5px;line-height:1.25}
+.psheet-jct .pjct-sta{display:block;color:var(--dim);font-size:8.5px;line-height:1.25}
+/* keep the profile bands visible: stage becomes a column flex so the
+   PVI editor sits BELOW the canvas instead of covering the bands */
+#profStage{display:flex;flex-direction:column}
+#profStage>#vcv{flex:1 1 auto;min-height:0;width:100%}
+#profStage>.pvi-tbl-wrap{
+  position:relative;left:auto;right:auto;bottom:auto;
+  flex:0 0 auto;max-height:32vh;
+}
+.statusbar .actions button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.statusbar .osnaps{display:inline-flex;gap:2px;margin-inline-start:8px}
+.statusbar .osnaps button{min-width:24px;height:24px;padding:0 4px;border:1px solid var(--line2);border-radius:3px;background:var(--fill);color:var(--ink);font-size:11px;line-height:1}
+.statusbar .osnaps button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+</style></head>
+<body>
+
+<!-- ================= RIBBON ================= -->
+<header class="ribbon">
+  <div class="menu-bar">
+    <a class="brand" href="https://mahmoudalem95.github.io/mahalco/">◄ MHL</a>
+    <div class="grow"></div>
+    <div class="pill" id="pill"><i></i><span id="pillTxt">אין ציר</span></div>
+  </div>
+  <div class="ribbon-bar">
+    <div class="ribbon-groups">
+      <div class="rg">
+        <div class="rg-tools">
+          <button class="tool-btn" id="bMap" title="ייבוא מפת רקע (GovMap)"><span>🗺</span><small>מפת רקע</small></button>
+          <button class="tool-btn" id="bPlan" title="תצוגת תכנית הנדסית"><span>📐</span><small>תצוגה</small></button>
+        </div>
+        <div class="rg-label">תצוגה</div>
+      </div>
+      <div class="rg">
+        <div class="rg-tools">
+          <button class="tool-btn" id="bProf" title="חתך לאורך (פרופיל אנכי)"><span>📈</span><small> חתך אורך </small></button>
+          <button class="tool-btn" id="bDxf" title="ייצוא DWG ל-CAD (AutoCAD)"><span>⤓</span><small>DWG</small></button>
+        </div>
+        <div class="rg-label">פלט</div>
+      </div>
+    </div>
+    <div class="grow"></div>
+    <button class="icon" id="bTheme" aria-label="מצב תצוגה" title="מצב תצוגה"></button>
+  </div>
+</header>
+<input type="file" id="fMap" accept="image/*,.pgw,.jgw,.tfw,.wld,.png,.jpg,.jpeg,.dwg,.dxf" multiple hidden>
+
+<!-- ================= LEFT TOOL PALETTE ================= -->
+<aside class="tool-palette" aria-label="סרגל כלים מהיר">
+  <button class="tp-btn" id="tpDraw" title="שרטוט הציר (✎)">✎</button>
+  <button class="tp-btn" id="tpEdit" title="קשתות ורדיוסים (◠)">◠</button>
+  <div class="tp-sep"></div>
+  <button class="tp-btn" id="tpZoomIn" title="התקרבות">＋</button>
+  <button class="tp-btn" id="tpZoomOut" title="התרחקות">−</button>
+  <button class="tp-btn" id="tpFit" title="התאמה למסך">⤢</button>
+</aside>
+
+<!-- ================= MAIN CANVAS STAGE ================= -->
+<main class="stage" id="stage">
+  <canvas id="cv" aria-label="משטח שרטוט הציר"></canvas>
+  <div class="pop glass cpop" id="cpop" hidden>
+    <div class="cph"><b id="cpTitle">פנייה ימינה</b><button id="cpX" aria-label="סגירה">✕</button></div>
+    <div class="segmini" id="cpMode"><button data-m="0">רגילה</button><button data-m="1">חופשית</button></div>
+    <label class="cpr">R <input id="cpR" type="number" min="2" step="0.5" inputmode="decimal"> מ׳</label>
+    <small id="cpInfo"></small>
+  </div>
+  <div class="ptool glass" id="ptool" hidden>
+    <button id="ptPrev" title="נקודה קודמת">‹</button>
+    <b id="ptLbl">נקודה</b>
+    <button id="ptNext" title="נקודה הבאה">›</button>
+    <span class="sepv"></span>
+    <input id="ptR" type="number" min="0" step="1" placeholder="R מ׳" inputmode="decimal" aria-label="רדיוס">
+    <button id="ptOk" class="go" title="החלת הרדיוס">קשת</button>
+    <input id="ptLs" type="number" min="0" step="1" placeholder="Ls" inputmode="decimal" aria-label="אורך קלוטואידה">
+    <button id="ptLsA" title="Ls מזערי לפי פרק 5">Ls↺</button>
+    <button id="ptNo" title="הסרת הקשת">ללא</button>
+    <span class="sepv"></span>
+    <button id="ptZo" title="התרחקות">−</button>
+    <button id="ptZi" title="התקרבות">+</button>
+    <button id="ptFit" title="התמרכזות על הציר">⤢</button>
+  </div>
+  <div class="pop glass" id="pop" hidden>
+    <input id="popR" type="number" min="0" step="1" placeholder="R מ׳" inputmode="decimal" aria-label="רדיוס">
+    <input id="popLs" type="number" min="0" step="1" placeholder="Ls" inputmode="decimal" aria-label="אורך קלוטואידה" title="אורך עקום מעבר (קלוטואידה)">
+    <button id="popLsA" title="Ls מזערי לפי פרק 5">Ls↺</button>
+    <button id="popOk" class="go">קשת</button>
+    <button id="popNo">ללא</button>
+  </div>
+</main>
+
+<!-- ================= PROPERTIES PANEL ================= -->
+<aside class="insp glass" id="insp">
+  <button class="grab" id="grab" aria-label="הגדלה או הקטנה של הלוח"></button>
+  <div class="scroll">
+    <div class="wiz" id="wiz"></div>
+    <div class="axes" id="axes" role="tablist" aria-label="צירים"></div>
+    <div class="segctl" role="tablist" aria-label="שלבי עבודה">
+      <button id="st1" role="tab"><span>1</span>צירים</button>
+      <button id="st2" role="tab"><span>2</span>חתכים</button>
+      <button id="st3" role="tab"><span>3</span>צמתים</button>
+    </div>
+    <div class="segmini" id="drawMode" hidden style="margin-top:8px">
+      <button id="tDraw" style="flex:1">✎ שרטוט הציר</button><button id="tEdit" style="flex:1">◠ קשתות ורדיוסים</button>
+    </div>
+    <p class="hint" id="hint"></p>
+
+    <section class="grp" id="survSec">
+      <h3>מדידה · קרקע קיימת</h3>
+      <div class="list">
+        <button type="button" class="cell btn" id="sSurvChoose">📄 בחירת קובץ מדידה</button>
+        <input type="file" id="sFSurv" accept=".dwg,.dxf,.csv,.txt,.xyz,.pts,.asc,.prn,.dat" multiple hidden>
+        <div id="sSurvDrop" class="cell" role="button" tabindex="0" style="justify-content:center;border:1px dashed var(--line2);border-radius:4px;margin-top:6px;color:var(--dim);cursor:pointer">גררו לכאן קובץ/י מדיעה או לחצו לבחירה — נטען פעם אחת לכל הכלי</div>
+        <div id="sSurvFiles" class="hint" style="padding:6px 4px 0"></div>
+        <p class="hint" id="sSurvInfo">המדידה נשמרת בפרויקט ומשמשת אוטומטית את החתכים, החתכים הטוריים והגיליונות — בלי טעינה חוזרת.</p>
+      </div>
+    </section>
+
+    <section class="grp" id="piBox" hidden>
+      <h3 id="piTitle">נקודת שבירה</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">רדיוס R</span>
+          <input id="inR" type="number" min="0" step="1" placeholder="ללא" inputmode="decimal"><span style="color:var(--dim)">מ׳</span></div>
+        <button class="cell btn" id="bNoArc">הסר קשת</button>
+        <button class="cell btn danger" id="bDelPI">מחק נקודה</button>
+      </div>
+    </section>
+
+    <section class="grp" id="secList" hidden>
+      <h3>חתך טיפוסי – לכל ציר</h3>
+      <div class="list" id="secListRows"></div>
+      <p class="hint" style="margin-top:6px">בוחרים ציר ברשימה, מגדירים לו חתך למטה, ומאשרים. המעבר לשלב הצמתים נפתח כשכל הצירים אושרו.</p>
+    </section>
+
+    <section class="grp" id="secUI" hidden>
+      <h3>חתך בסיס · <span id="secAxName"></span></h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">תבנית</span>
+          <select id="preset">
+          </select></div>
+        <button class="cell btn" id="bImpSec">ייבוא JSON מכלי החתך</button>
+        <input type="file" id="fImpSec" accept=".json,application/json" hidden>
+        <div class="cell"><span class="lbl">מפרדה</span>
+          <div class="stp"><button data-d="-0.5" data-t="inMed" aria-label="הקטן">−</button><input id="inMed" type="number" min="0" step="0.1" inputmode="decimal"><button data-d="0.5" data-t="inMed" aria-label="הגדל">+</button></div>
+          <span style="color:var(--dim)">מ׳</span></div>
+      </div>
+
+      <div style="height:18px"></div>
+      <div class="side-h"><h3>שמאל הציר · מהמפרדה החוצה</h3><button id="addL">＋ רצועה</button></div>
+      <div class="list" id="rowsL"></div>
+
+      <div style="height:18px"></div>
+      <div class="side-h"><h3>ימין הציר · מהמפרדה החוצה</h3><button id="addR">＋ רצועה</button></div>
+      <div class="list" id="rowsR"></div>
+
+      <div style="height:16px"></div>
+      <div class="list"><button class="cell primary" id="bSecOk">אישור החתך לציר זה</button></div>
+    </section>
+
+    <section class="grp" id="grpAxis">
+      <h3>נתוני תכן</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">סביבה</span>
+          <div class="segmini" id="envSeg"><button data-env="urban">עירוני</button><button data-env="inter">בין־עירוני</button></div></div>
+        <div class="cell" id="rowV"><span class="lbl">מהירות תכן, <b id="vAxName"></b></span>
+          <div class="stp"><button id="vMinus" aria-label="הורד מהירות">−</button><input id="inV" type="number" min="30" step="10" inputmode="numeric"><button id="vPlus" aria-label="העלה מהירות">+</button></div>
+          <span style="color:var(--dim)">קמ״ש</span></div>
+        <div class="cell" id="rowRmin"><span class="lbl">R מינימלי ללא הגבהה</span>
+          <input id="inRmin" type="number" min="1" step="10" placeholder="לפי זווית" inputmode="decimal"><span style="color:var(--dim)">מ׳</span></div>
+        <div class="cell" id="rowRc" hidden><span class="lbl">רדיוס חיבור (מינ׳ 90)</span>
+          <input id="inRc" type="number" min="90" step="5" inputmode="decimal"><span style="color:var(--dim)">מ׳</span></div>
+      </div>
+    </section>
+
+    <section class="grp" id="grpNet" hidden>
+      <h3>צמתים ברשת</h3>
+      <div class="list" id="netBox"><ul class="msgs" id="netList"></ul></div>
+    </section>
+
+    <section class="grp" id="jctBox" hidden>
+      <h3 id="jctTitle">צומת</h3>
+      <div class="list" id="jctCtl" style="margin-bottom:12px"></div>
+      <div id="jctArms"></div>
+      <div class="side-h" style="margin-top:6px"><h3>רדיוסי פנייה ימינה מהנתיב</h3></div>
+      <div class="list" id="jctTurnCfg"></div>
+      <div class="list" id="jctCorners" style="margin-top:8px"></div>
+      <p class="hint" id="jctSrc" style="margin-top:6px"></p>
+    </section>
+
+    <section class="grp">
+      <h3>בדיקות</h3>
+      <div class="list"><ul class="msgs" id="msgs"></ul>
+        <button class="cell btn" id="bFixNet" hidden>התאמת נתיבי יציאה לכלל א-ב</button></div>
+    </section>
+
+    <section class="grp" id="mapBox" hidden>
+      <h3>מפת רקע</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">מצב</span><span id="mapGeo" style="color:var(--dim)"></span></div>
+        <div class="cell"><span class="lbl">שקיפות</span><input id="mapOp" type="range" min="10" max="100" style="flex:1"></div>
+        <button class="cell btn" id="bCalib">כיול בשתי נקודות</button>
+        <button class="cell btn" id="bMapHide">הסתרה / הצגה</button>
+        <button class="cell btn danger" id="bMapDel">הסרת המפה</button>
+      </div>
+      <p class="hint" style="margin-top:6px">מ-GovMap: שמירת תמונת מפה/תצ״א, ואם אפשר גם קובץ עולם (pgw/jgw). חיבור ישיר ל-GovMap – בשלב הבא.</p>
+    </section>
+
+    <section class="grp">
+      <h3>ציר וקובץ</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">שם הציר</span><input id="inName" type="text" style="width:150px;text-align:right;direction:rtl;font:inherit;height:24px;border:1px solid var(--line);border-radius:3px;background:var(--bg3);color:var(--ink);padding:0 8px"></div>
+        <button class="cell btn" id="bExport">שמירת פרויקט / ייצוא JSON</button>
+        <button class="cell btn" id="bOpen">פתיחת פרויקט</button>
+        <input type="file" id="fOpen" accept=".json,application/json" hidden>
+        <button class="cell btn" id="bDxfSheet">ייצוא DWG ל-CAD (AutoCAD)</button>
+        <div class="cell"><span class="lbl">שירות המרה ל-DWG</span><input id="dwgSvc" type="url" placeholder="https://…/dxf2dwg" style="width:150px;text-align:left;direction:ltr;font:inherit;height:24px;border:1px solid var(--line);border-radius:3px;background:var(--bg3);color:var(--ink);padding:0 8px"></div>
+        <div class="cell"><span class="lbl">מילוי צבעוני בייצוא</span><input id="dwgFill" type="checkbox" checked style="width:18px;height:18px;accent-color:var(--accent)"></div>
+        <div class="cell"><span class="lbl">גודל כיתוב לפי קנה מידה</span><select id="dwgScale" style="width:150px;font:inherit;height:24px;border:1px solid var(--line);border-radius:3px;background:var(--bg3);color:var(--ink);padding:0 8px"><option value="200">1:200</option><option value="500" selected>1:500</option><option value="1000">1:1000</option><option value="2000">1:2000</option></select></div>
+        <button class="cell btn danger" id="bClear">ניקוי הציר הזה</button>
+        <button class="cell btn danger" id="bDelAxis">מחיקת הציר הזה</button>
+      </div>
+    </section>
+  </div>
+</aside>
+
+<!-- ================= PROFILE STAGE ================= -->
+<main class="stage" id="profStage" hidden>
+  <canvas id="vcv" aria-label="גיליון תוכנית וחתך לאורך"></canvas>
+  <div class="ptool glass" id="vPtool" hidden>
+    <button id="vpPrev" title="נקודה קודמת">‹</button>
+    <b id="vpLbl">PVI</b>
+    <button id="vpNext" title="נקודה הבאה">›</button>
+    <span class="sepv"></span>
+    <input id="vpSta" type="number" step="1" placeholder="סטציה" inputmode="decimal" style="width:78px">
+    <input id="vpEl" type="number" step="0.01" placeholder="רום" inputmode="decimal" style="width:68px">
+    <input id="vpL" type="number" step="1" placeholder="L (אוטו׳)" inputmode="decimal" style="width:76px">
+    <button id="vpOk" class="go">עדכון</button>
+    <button id="vpDel" title="מחיקת הנקודה">🗑</button>
+  </div>
+  <div class="pvi-tbl-wrap" id="vPviTblWrap"></div>
+</main>
+
+<aside class="insp glass" id="profInsp" hidden>
+  <button class="grab" id="grabV" aria-label="הגדלה או הקטנה של הלוח"></button>
+  <div class="scroll">
+    <div class="wiz" style="margin-bottom:2px">
+      <b>חתך לאורך — קרקע קיימת ותכן קו אדום</b>
+      <p>הציר מגיע ישירות מ"בונה ציר". קלטו מדידה כדי לקבל קו קרקע קיים, ואז ערכו נקודות PVI לתכן קו אדום. הגיליון למעלה מציג תכנית וחתך יחד, כמו גיליון תכנית/חתך מודפס.</p>
+    </div>
+
+    <section class="grp" id="vGroundBox">
+      <h3>ציר לחתך</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">בחירת ציר</span><select id="vAxisPick"></select></div>
+      </div>
+
+      <h3 style="margin-top:14px">מדידה / קרקע קיימת</h3>
+      <div class="list">
+        <button type="button" class="cell btn" id="vSurveyChoose">📄 בחירת קובץ מדידה</button>
+        <input type="file" id="vFSurv" accept=".dwg,.dxf,.csv,.txt,.xyz,.pts,.asc,.prn,.dat" multiple hidden>
+        <div id="vSurveyDrop" class="cell" role="button" tabindex="0" style="justify-content:center;border:1px dashed var(--line2);border-radius:4px;margin-top:6px;color:var(--dim);cursor:pointer">גררו לכאן קובץ/י מדידה או לחצו לבחירה</div>
+        <div id="vSurveyFiles" class="hint" style="padding:6px 4px 0"></div>
+        <div class="cell"><span class="lbl">רוחב מסדרון מהציר</span><input id="vCorridorW" type="number" value="60" step="5" style="width:58px"><span style="color:var(--dim)">מ׳</span></div>
+        <button class="cell btn" id="vBuildGround">בניית קו קרקע מהמדידה</button>
+      </div>
+      <p class="hint" id="vSurveyInfo"></p>
+      <details style="margin-top:6px">
+        <summary style="cursor:pointer;color:var(--accent);font-size:12px;padding:0 4px">מתקדם — הדבקת נתונים כטקסט</summary>
+        <div class="list" style="margin-top:8px">
+          <div class="cell" style="align-items:flex-start;flex-direction:column;gap:6px">
+            <span class="lbl">נקודות מדידה (X,Y,Z לשורה)</span>
+            <textarea id="vSurveyTxt" rows="3" style="width:100%;font:inherit;font-size:12px;background:var(--bg3);border-radius:3px;border:1px solid var(--line);padding:6px;direction:ltr;color:var(--ink)"></textarea>
+          </div>
+          <div class="cell" style="align-items:flex-start;flex-direction:column;gap:6px">
+            <span class="lbl">קו קרקע (סטציה,רום לשורה)</span>
+            <textarea id="vGround" rows="3" style="width:100%;font:inherit;font-size:12px;background:var(--bg3);border-radius:3px;border:1px solid var(--line);padding:6px;direction:ltr;color:var(--ink)"></textarea>
+          </div>
+        </div>
+      </details>
+
+      <h3 style="margin-top:14px">תכן קו אדום — PVI</h3>
+      <div class="list">
+        <div class="cell"><span class="lbl">מהירות תכן</span>
+          <select id="vVd"><option>60</option><option>70</option><option selected>80</option><option>90</option><option>100</option><option>110</option><option>120</option></select>
+          <span style="color:var(--dim)">קמ״ש</span></div>
+        <div class="cell"><span class="lbl">קריטריון ראות</span>
+          <select id="vCrit"><option value="stop">עצירה (SSD)</option><option value="dec">החלטה</option></select></div>
+        <div class="cell"><span class="lbl">גובה עין נהג</span><input id="vVeh" type="number" value="1.05" step="0.05" style="width:58px"><span style="color:var(--dim)">מ׳</span></div>
+        <div class="cell"><span class="lbl">הגזמה אנכית VE</span><input id="vVe" type="number" value="10" style="width:58px"></div>
+      </div>
+      <div class="segmini" id="vMode" style="margin:8px 0">
+        <button id="vmMove" class="on">✥ הזזה</button>
+        <button id="vmAdd">➕ הוספה</button>
+        <button id="vmDel">🗑 מחיקה</button>
+      </div>
+      <div class="list">
+        <button class="cell btn" id="vRun">חשב ושרטט</button>
+        <button class="cell btn" id="vGroundAsPvi">קו אדום = קו קרקע (עזר)</button>
+      </div>
+      <ul class="msgs" id="vWarn"></ul>
+      <div id="vTbl"></div>
+      <textarea id="vPvi" hidden></textarea>
+    </section>
+
+    <section class="grp" id="vExportBox">
+      <h3>ייצוא הגיליון</h3>
+      <div class="list">
+        <button class="cell btn" id="vExpDwg">⤓ ייצוא DWG (תוכנית + חתך)</button>
+        <button class="cell btn" id="vExpDxf">⤓ ייצוא DXF</button>
+        <button class="cell btn" id="vExpCsv">⤓ ייצוא CSV (טבלת חפ/מל)</button>
+      </div>
+      <p class="hint" id="vExpInfo"></p>
+    </section>
+  </div>
+</aside>
+
+<div class="toast glass" id="toast" role="status" aria-live="polite" hidden></div>
+
+<!-- ================= STATUS BAR ================= -->
+<footer class="statusbar" aria-label="שורת מצב">
+  <span class="st" id="status">E –  N –</span>
+  <div class="grow"></div>
+  <div class="actions">
+    <button id="bMeasure" title="כלי מדידה: לחיצה=קודקוד · Enter/דאבל-קליק=סיום קו · Esc=ביטול הקו הנוכחי">📏 מדידה</button>
+    <button id="bCoord" title="כלי קואורדינטות: לחיצה מציבה סימון עם E/N וסטציה בציר סמוך · Esc=מחיקת האחרון">🎯 קואור׳</button>
+    <button id="bAnno" title="הצגה/הסתרה של האנוטציות (בלוקים, מידות, תמרורים) במסך האינטראקטיבי">🧾 אנוטצ׳</button>
+    <button id="bClearM" title="ניקוי כל המדידות והקואורדינטות מהמסך">🗑 ניקוי</button>
+    <span class="osnaps" role="group" aria-label="OSNAP">
+      <button id="osEnd" class="on" title="OSNAP קצה (נקודת עיגון)">▣</button>
+      <button id="osMid" class="on" title="OSNAP אמצע הקטע">▲</button>
+      <button id="osTan" class="on" title="OSNAP משיק לעקום">◔</button>
+      <button id="osPer" class="on" title="OSNAP אנך לקטע">⊥</button>
+      <button id="osInt" class="on" title="OSNAP חיתוך צירים">✕</button>
+      <button id="osNea" class="on" title="OSNAP הקרוב ביותר לציר">〜</button>
+    </span>
+    <button id="bUndo" aria-label="ביטול">↶ ביטול</button>
+    <button id="bFit" aria-label="התאמה למסך">⤢ התאם</button>
+    <button id="bFinish" class="go">סיום ציר</button>
+    <button id="bNewAxis" class="go">＋ ציר חדש</button>
+  </div>
+</footer>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/alignment-builder-he.js?v=2"></script>
+
+<!-- ==================================================================
+     ייצוא DXF ל-CAD (AutoCAD) – מייצא את כל הצירים ללא בחירה
+     ================================================================== -->
+<script src="../js/inline/c1605fdb5a.js"></script>
+
+<script src="../js/inline/2c16c890fb.js" type="module"></script>
+
+<script src="../js/inline/c455903402.js"></script>
+
+<script src="../js/inline/3c42aa4034.js"></script>
+
+<script src="../js/inline/91948705e8.js"></script>
+
+<!-- ================= LEFT TOOL PALETTE WIRING ================= -->
+<script src="../js/inline/76a8e2a96a.js"></script>
+
+
+<script src="../js/inline/32d3b84681.js" id='profile-nav-js'></script>
+<!-- MH_UPGRADE -->
+<script src="../js/inline/9071e1ce46.js"></script>
+<script src="../js/inline/96051e7c2d.js"></script>
+<script src="../js/inline/ad12f68bd6.js"></script>
+<script src="../js/inline/24c8d17b63.js"></script>
+</body>
+</html>

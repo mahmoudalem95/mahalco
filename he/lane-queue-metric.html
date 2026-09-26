@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="description" content="Lane queue metrics for traffic analysis, including queue length, delay, storage, and intersection performance evaluation.">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mahalco-calc.onrender.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>MAHALCO – ניתוח נתיבים ותורים (מטרי)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --bg: #12121e;
+      --card: #1a1a2e;
+      --card-2: #22223a;
+      --field: #0f0f1a;
+      --line: rgba(255, 255, 255, .09);
+      --line-2: rgba(255, 255, 255, .05);
+      --accent: #E8A33D;
+      --accent-dim: rgba(232, 163, 61, .16);
+      --green: #4ADE80;
+      --ink: #EDEBF2;
+      --ink-2: #9A96AB;
+      --ink-3: #6B6780;
+      --danger: #F35B5B;
+      --warn: #F5C451;
+      --info: #7AB8F5;
+    }
+    body { background: var(--bg); color: var(--ink); padding: 20px; font-family: Arial, sans-serif; }
+    .container { max-width: 1400px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+    .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,.1); }
+    h1.display-6 { color: var(--ink); }
+    .text-muted { color: var(--ink-3) !important; }
+
+    .form-control, .form-select { background-color: var(--field); border: 1px solid var(--line); color: var(--ink); }
+    .form-control:focus, .form-select:focus { background-color: var(--field); border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); color: var(--ink); }
+    .form-control:disabled, .form-select:disabled { background-color: #15151f; color: var(--ink-3); cursor: not-allowed; }
+    .form-label { color: var(--ink-2); }
+    .form-label .unit { color: var(--ink-3); font-size: .8rem; }
+    .form-text { color: var(--ink-3); font-size: .75rem; }
+    .form-check-input { background-color: var(--field); border-color: var(--ink-3); }
+    .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+    .form-check-label { color: var(--ink); }
+    input[type="number"] { -moz-appearance: textfield; }
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .field-note { display: none; }
+    .field-note.visible { display: block; }
+
+    .btn-primary { background-color: var(--accent); border-color: var(--accent); color: #1a1a2e; font-weight: 600; }
+    .btn-primary:hover, .btn-primary:focus { background-color: #c9862f; border-color: #c9862f; color: #1a1a2e; }
+    .btn-primary:disabled { background-color: #7a6440; border-color: #7a6440; color: #1a1a2e; }
+    .btn-outline-secondary { color: var(--ink-2); border-color: var(--line); }
+    .btn-outline-secondary:hover { background-color: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+
+    .status-msg { margin-top: 16px; padding: 10px 14px; border-radius: 6px; font-size: .9rem; display: none; background: var(--field); border-right: 3px solid var(--ink-3); color: var(--ink-2); }
+    .status-msg.info { display: block; border-color: var(--info); }
+    .status-msg.error { display: block; border-color: var(--danger); color: #f7a3a3; background: rgba(243,91,91,.08); }
+    .status-msg.warn { display: block; border-color: var(--warn); color: #f2dca2; background: rgba(245,196,81,.07); }
+    .status-msg.success { display: block; border-color: var(--green); color: #a6efc0; background: rgba(74,222,128,.07); }
+
+    .result-box { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; height: 100%; }
+    .result-label { font-size: .85rem; color: var(--ink-2); }
+    .result-number { font-size: 1.8rem; font-weight: 700; color: var(--ink); line-height: 1.15; font-variant-numeric: tabular-nums; }
+    .result-number.highlight { color: var(--accent); }
+
+    .results-box { display: none; }
+    .results-box.visible { display: block; }
+
+    .table { --bs-table-bg: transparent; --bs-table-color: var(--ink); --bs-table-border-color: var(--line); font-size: .88rem; }
+    .table thead th { color: var(--ink-3); border-color: var(--line); font-weight: 600; }
+    .table td, .table th { border-color: var(--line-2); }
+    .table td:last-child { color: var(--ink-2); font-size: .8rem; }
+
+    .footnote { margin-top: 14px; font-size: .8rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 12px; }
+    .footnote a { color: var(--accent); text-decoration: none; }
+    .footnote a:hover { text-decoration: underline; }
+    .badge-metric { background: var(--card-2); color: var(--ink-2); font-size: .8rem; font-weight: 600; vertical-align: middle; }
+    .sticky-results { position: sticky; top: 16px; }
+    @media (max-width: 991px) { .sticky-results { position: static; } }
+    footer { color: var(--ink-3); }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 class="display-6 fw-bold mb-2"><i class="bi bi-stoplights-fill text-warning ms-2"></i>ניתוח נתיבים ותורים <span class="badge badge-metric">מטרי</span></h1>
+  <p class="text-muted mb-4">הערכת אורכי תור, קיבולת קבוצת נתיבים, יחס נפח לקיבולת (V/C) ורמת שירות, ביחידות מטריות (מטרים, קמ"ש).<br>
+    החישוב מתבצע כולו בדפדפן – שיטת סינון המבוססת על HCM/AASHTO, ללא פנייה לשרת.</p>
+
+  <form id="queueForm" novalidate>
+    <div class="row">
+      <div class="col-lg-7">
+
+        <div class="card">
+          <div class="card-header"><i class="bi bi-signpost-split ms-2"></i>שיטה וסוג מתקן</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label d-block">שיטת החישוב</label>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method" id="mAASHTO" value="AASHTO" checked>
+                  <label class="form-check-label" for="mAASHTO">AASHTO</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="method" id="mHCM" value="HCM">
+                  <label class="form-check-label" for="mHCM">HCM</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="facilityType">סוג המתקן</label>
+                <select class="form-select" id="facilityType">
+                  <option value="signalized">צומת מרומזר</option>
+                  <option value="two_lane_highway">כביש דו־נתיבי</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><i class="bi bi-car-front ms-2"></i>תנועה ורמזור</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="volume">נפח תנועה <span class="unit">(רכב/שעה)</span></label>
+                <input class="form-control" type="number" id="volume" value="600" min="1" step="1" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="lanes">מספר נתיבים</label>
+                <input class="form-control" type="number" id="lanes" value="2" min="1" step="1" required>
+              </div>
+            </div>
+            <div class="row g-3 mt-0" id="signalFieldsRow">
+              <div class="col-md-6">
+                <label class="form-label" for="cycleLength">זמן מחזור <span class="unit">(שניות)</span></label>
+                <input class="form-control" type="number" id="cycleLength" value="90" min="1" step="1" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="greenTime">זמן ירוק <span class="unit">(שניות)</span></label>
+                <input class="form-control" type="number" id="greenTime" value="45" min="1" step="1" required>
+              </div>
+            </div>
+            <p class="form-text field-note mt-2 mb-0" id="signalFieldsNote">זמן מחזור וזמן ירוק רלוונטיים לצומת מרומזר בלבד – אינם נלקחים בחשבון בכביש דו־נתיבי.</p>
+            <div class="row g-3 mt-0">
+              <div class="col-md-6">
+                <label class="form-label" for="truckPct">שיעור משאיות <span class="unit">(%)</span></label>
+                <input class="form-control" type="number" id="truckPct" step="0.1" value="5" min="0" max="100" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="surgeFactor">מקדם עומס (Surge Factor)</label>
+                <input class="form-control" type="number" id="surgeFactor" step="0.01" value="1.5" min="0.5" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><i class="bi bi-rulers ms-2"></i>גיאומטריה</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label" for="laneWidth">רוחב נתיב <span class="unit">(מטר)</span></label>
+                <input class="form-control" type="number" id="laneWidth" step="0.01" value="3.65" min="2.0" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="shoulderWidth">רוחב שול <span class="unit">(מטר)</span></label>
+                <input class="form-control" type="number" id="shoulderWidth" step="0.01" value="1.80" min="0" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="grade">שיפוע אורכי <span class="unit">(%)</span></label>
+                <input class="form-control" type="number" id="grade" step="0.1" value="2" min="-20" max="20" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mb-2">
+          <button type="submit" class="btn btn-primary btn-lg flex-grow-1" id="submitBtn">נתח תור</button>
+          <button type="button" class="btn btn-outline-secondary btn-lg" id="resetBtn"><i class="bi bi-arrow-counterclockwise"></i> איפוס</button>
+        </div>
+        <div id="statusMsg" class="status-msg"></div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="sticky-results">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-table ms-2"></i>תוצאות <span class="fw-normal">(יחידות מטריות)</span></div>
+            <div class="card-body">
+              <div id="resultsPlaceholder" class="text-center text-muted py-5">
+                <i class="bi bi-clipboard-data fs-1"></i>
+                <p class="mt-3">מלאו את הנתונים ולחצו על <strong>נתח תור</strong>.</p>
+              </div>
+              <div id="results" class="results-box">
+                <div class="row g-3">
+                  <div class="col-6"><div class="result-box"><div class="result-label">אורך תור</div><div class="result-number" id="outQueueVeh">-- רכבים</div></div></div>
+                  <div class="col-6"><div class="result-box"><div class="result-label">אורך אגירה נדרש</div><div class="result-number highlight" id="outQueueMeters">-- מ'</div></div></div>
+                  <div class="col-6"><div class="result-box"><div class="result-label">יחס V/C</div><div class="result-number" id="outVcRatio">--</div></div></div>
+                  <div class="col-6"><div class="result-box"><div class="result-label">רמת שירות (LOS)</div><div class="result-number highlight" id="outLos">--</div></div></div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                  <table class="table table-sm text-end">
+                    <thead><tr><th>מדד</th><th>ערך</th><th>פירוש</th></tr></thead>
+                    <tbody>
+                      <tr><td>קיבולת</td><td id="tableCapacity">--</td><td>אומדן קיבולת קבוצת הנתיבים</td></tr>
+                      <tr><td>תור אחוזון 95</td><td id="table95Queue">--</td><td>אורך תור לתכנון</td></tr>
+                      <tr><td>אורך אגירה (AASHTO)</td><td id="tableStorageMeters">--</td><td>אורך אגירה במטרים</td></tr>
+                      <tr><td>שיטה</td><td id="tableMethod">--</td><td>שיטת החישוב שהופעלה</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="footnote">
+                  <i class="bi bi-lightning-charge ms-1"></i>שיטת סינון מקורבת (מבוססת HCM/AASHTO) – יש לאמת תכנון סופי בניתוח תפעולי מלא לפי HCM. <a href="#" id="clearMsgLink">ניקוי הודעה</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <footer class="text-center small mt-4 pb-3">MAHALCO – ניתוח נתיבים ותורים (מטרי)</footer>
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/lane-queue-metric.js?v=2"></script>
+</body>
+</html>

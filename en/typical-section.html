@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2151829492004511"
+     crossorigin="anonymous"></script>
+  <meta name="description" content="Typical urban cross-section design: total corridor, kerb-to-kerb width, lane, footway and median dimensions, with clear-width and crossfall screening against AASHTO Green Book criteria.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>MAHALCO — Typical urban cross section</title>
+<style>
+  :root{
+    --desk:#23262a;        /* drafting table */
+    --desk-2:#2c3036;
+    --paper:#fbfaf6;
+    --ink:#14171a;
+    --ink-2:#585f66;
+    --hair:#c8c6bd;
+    --slate:#4c5560;       /* carriageway */
+    --moss:#5a7a4e;        /* landscape */
+    --blueprint:#2b5c8a;   /* annotation */
+    --alarm:#b03a2e;
+    --amber:#8a6d1f;
+    --rail:280px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--desk);color:#e7e6e1;
+    font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  a{color:#a9c6e6}
+
+  header.bar{
+    position:sticky;top:0;z-index:30;background:#191c1f;border-bottom:1px solid #383c42;
+    display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap;
+  }
+  .mark{display:flex;flex-direction:column;line-height:1.15;margin-right:auto}
+  .mark b{font-size:15px;letter-spacing:.14em;font-weight:700}
+  .mark span{font-size:11px;color:#8d949b;letter-spacing:.02em}
+  .bar button{
+    background:#33383e;color:#e9e8e3;border:1px solid #4a5057;border-radius:6px;
+    padding:7px 12px;font:inherit;font-size:13px;cursor:pointer
+  }
+  .bar button:hover{background:#3d434a}
+  .bar button.key{background:#e9e8e3;color:#191c1f;border-color:#e9e8e3;font-weight:600}
+  .bar button:focus-visible,input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid #6fa3d8;outline-offset:2px}
+
+  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:0;align-items:start}
+
+  /* ---- parameter rail ---- */
+  aside{
+    position:sticky;top:53px;max-height:calc(100vh - 53px);overflow:auto;
+    background:var(--desk-2);border-right:1px solid #3a3f45;padding:14px 14px 40px
+  }
+  aside h2{
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8d949b;
+    margin:18px 0 8px;font-weight:700
+  }
+  aside h2:first-child{margin-top:2px}
+  .row{display:grid;grid-template-columns:1fr 84px;align-items:center;gap:8px;padding:3px 0}
+  .row label{font-size:13px;color:#cdd1d5}
+  .row input,.row select{
+    width:100%;background:#1c1f23;color:#f0efeb;border:1px solid #464c53;border-radius:5px;
+    padding:5px 6px;font:inherit;font-size:13px;text-align:right
+  }
+  .row select{text-align:left}
+  .wide{grid-template-columns:1fr}
+  .wide select{text-align:left}
+  .toggles{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .toggles label{
+    display:flex;align-items:center;gap:5px;font-size:12px;color:#cdd1d5;
+    background:#1c1f23;border:1px solid #464c53;border-radius:5px;padding:5px 8px;cursor:pointer
+  }
+  .toggles input{accent-color:#6fa3d8}
+
+  /* ---- sheet ---- */
+  main{padding:20px}
+  .sheetwrap{background:#1b1e21;border:1px solid #3a3f45;border-radius:4px;padding:16px;overflow:auto}
+  #drawing{min-width:980px}
+  #drawing svg{display:block;width:100%;height:auto;background:var(--paper)}
+
+  .readouts{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+  .box{background:var(--desk-2);border:1px solid #3a3f45;border-radius:4px;padding:14px}
+  .box h3{margin:0 0 10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8d949b}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat{border:1px solid #40454b;border-radius:4px;padding:8px 9px;background:#22262a}
+  .stat span{display:block;font-size:11px;color:#8d949b}
+  .stat b{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .stat b small{font-size:11px;font-weight:400;color:#9aa1a8}
+  .chk{border-left:3px solid var(--moss);background:#22262a;padding:8px 10px;border-radius:0 4px 4px 0;margin-bottom:7px;font-size:12.5px}
+  .chk.warn{border-color:var(--amber)}
+  .chk.bad{border-color:var(--alarm)}
+  .chk b{letter-spacing:.04em;font-size:11px;display:block;color:#b9bfc5}
+  .notes{margin-top:16px}
+  .notes ol{margin:0;padding-left:18px;font-size:12.5px;color:#b8bdc2;line-height:1.65}
+  .notes li{margin-bottom:5px}
+
+  #tip{
+    position:fixed;pointer-events:none;z-index:60;background:#111417;color:#f2f1ec;
+    border:1px solid #4a5057;border-radius:5px;padding:6px 9px;font-size:12px;opacity:0;
+    transition:opacity .1s;white-space:nowrap
+  }
+
+  @media(max-width:1080px){
+    .shell{grid-template-columns:1fr}
+    aside{position:static;max-height:none;border-right:0;border-bottom:1px solid #3a3f45}
+    .row{grid-template-columns:1fr 100px}
+    .readouts{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    body{background:#fff;color:#000}
+    header.bar,aside,.readouts,.notes,#tip{display:none}
+    .shell{display:block}main{padding:0}
+    .sheetwrap{background:#fff;border:0;padding:0;overflow:visible}
+    #drawing{min-width:0}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="mark"><b>MAHALCO</b><span>Typical urban cross section — preliminary design</span></div>
+  <button id="btnFit" class="key">Redraw</button>
+  <button id="btnSvg">Download SVG</button>
+  <button id="btnPng">Download PNG</button>
+  <button id="btnJson">Download JSON</button>
+  <button id="btnPrint">Print</button>
+</header>
+
+<div class="shell">
+  <aside>
+    <h2>Corridor</h2>
+    <div class="row wide"><select id="class">
+      <option value="local">Local street</option>
+      <option value="collector" selected>Collector</option>
+      <option value="arterial">Urban arterial</option>
+    </select></div>
+    <div class="row wide"><select id="context">
+      <option>Urban</option><option>Suburban</option><option>Mixed use / main street</option>
+    </select></div>
+
+    <h2>Carriageway</h2>
+    <div class="row"><label for="lanes">Lanes each way</label><input id="lanes" type="number" min="1" max="6" step="1" value="1"></div>
+    <div class="row"><label for="lane">Lane width</label><input id="lane" type="number" step=".05" value="3.30"></div>
+    <div class="row"><label for="parking">Parking lane</label><input id="parking" type="number" step=".05" value="2.40"></div>
+    <div class="row"><label for="bike">Cycle lane</label><input id="bike" type="number" step=".05" value="1.80"></div>
+    <div class="row"><label for="median">Median</label><input id="median" type="number" step=".05" value="2.40"></div>
+    <div class="row"><label for="cross">Carriageway crossfall %</label><input id="cross" type="number" step=".1" min="0" max="8" value="2.0"></div>
+
+    <h2>Pedestrian realm</h2>
+    <div class="row"><label for="par">Clear walking width</label><input id="par" type="number" step=".05" value="1.80"></div>
+    <div class="row"><label for="furn">Furnishing / planting</label><input id="furn" type="number" step=".05" value="0.60"></div>
+    <div class="row"><label for="front">Frontage</label><input id="front" type="number" step=".05" value="0.30"></div>
+    <div class="row"><label for="swcross">Footway crossfall %</label><input id="swcross" type="number" step=".1" min="0" max="5" value="2.0"></div>
+
+    <h2>Kerbs</h2>
+    <div class="row"><label for="curb">Kerb width</label><input id="curb" type="number" step=".01" value="0.15"></div>
+    <div class="row"><label for="reveal">Kerb reveal</label><input id="reveal" type="number" step=".01" value="0.15"></div>
+    <div class="row"><label for="medrev">Median upstand</label><input id="medrev" type="number" step=".01" value="0.15"></div>
+
+    <h2>Construction depths <span title="Indicative only">(indicative)</span></h2>
+    <div class="row"><label for="dSurf">Surfacing</label><input id="dSurf" type="number" step=".01" value="0.06"></div>
+    <div class="row"><label for="dBase">Base</label><input id="dBase" type="number" step=".01" value="0.20"></div>
+    <div class="row"><label for="dSub">Sub-base</label><input id="dSub" type="number" step=".01" value="0.30"></div>
+
+    <h2>Sheet</h2>
+    <div class="row wide"><select id="mode">
+      <option value="illustrated" selected>Illustrated section</option>
+      <option value="technical">Technical line drawing</option>
+    </select></div>
+    <div class="row wide"><select id="relief">
+      <option value="140">Vertical relief — subtle</option>
+      <option value="210" selected>Vertical relief — normal</option>
+      <option value="290">Vertical relief — strong</option>
+    </select></div>
+    <div class="toggles">
+      <label><input type="checkbox" id="tPeople" checked> People &amp; vehicles</label>
+      <label><input type="checkbox" id="tStruct" checked> Construction</label>
+      <label><input type="checkbox" id="tDims" checked> Dimensions</label>
+      <label><input type="checkbox" id="tContext" checked> Building line</label>
+    </div>
+  </aside>
+
+  <main>
+    <div class="sheetwrap"><div id="drawing"></div></div>
+
+    <div class="readouts">
+      <div class="box">
+        <h3>Calculated dimensions</h3>
+        <div id="stats" class="grid3"></div>
+      </div>
+      <div class="box">
+        <h3>Screening checks</h3>
+        <div id="checks"></div>
+      </div>
+    </div>
+
+    <div class="box notes">
+      <h3>Engineering notes</h3>
+      <ol>
+        <li>Generated dimensions are project-development parameters, not a universal agency standard.</li>
+        <li>Accessibility screening uses a 1.22 m continuous clear pedestrian-route check. Passing-space arrangements must be confirmed for the governing standard and project conditions.</li>
+        <li>The geometric framework is intended to be checked against the current adopted AASHTO Green Book edition, agency criteria, and project context. AASHTO does not impose one universal urban typical section.</li>
+        <li>Construction depths, kerb reveal, median upstand and footway crossfall drive the drawn geometry only. They are illustrative defaults and carry no pavement-design intent.</li>
+        <li>Vertical relief is exaggerated so kerbs and crossfalls read at plotting size. People, vehicles and trees are drawn at true horizontal scale and are not exaggerated.</li>
+        <li>Confirm drainage, kerb and channel, pavement structure, utilities, ROW, cycle treatment, parking, transit, landscaping and local standards before issuing drawings.</li>
+      </ol>
+    </div>
+  </main>
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/urban-section.js?v=2"></script>
+</body>
+</html>

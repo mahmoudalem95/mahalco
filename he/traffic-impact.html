@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="description" content="Traffic impact analysis guide covering trip generation, distribution, assignment, mitigation, and development impact studies.">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mahalco-calc.onrender.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>MAHALCO – בדיקת השפעה על התנועה (מטרי)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --bg: #12121e;
+      --card: #1a1a2e;
+      --card-2: #22223a;
+      --field: #0f0f1a;
+      --line: rgba(255, 255, 255, .09);
+      --line-2: rgba(255, 255, 255, .05);
+      --accent: #E8A33D;
+      --accent-dim: rgba(232, 163, 61, .16);
+      --green: #4ADE80;
+      --ink: #EDEBF2;
+      --ink-2: #9A96AB;
+      --ink-3: #6B6780;
+      --danger: #F35B5B;
+      --warn: #F5C451;
+      --info: #7AB8F5;
+    }
+    body { background: var(--bg); color: var(--ink); padding: 20px; font-family: Arial, sans-serif; }
+    .container { max-width: 1400px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+    .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,.1); }
+    .result-number { font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+    .result-label { font-size: .85rem; color: var(--ink-2); }
+    .result-sub { font-size: .75rem; color: var(--ink-3); }
+    .land-use-item { background: var(--card-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .land-use-item .btn-close { filter: invert(1); }
+    .land-use-item .ref { font-size: .75rem; color: var(--ink-3); }
+    .rule-hint { font-size: .78rem; color: var(--ink-2); background: var(--field); border: 1px solid var(--line-2); border-radius: 6px; padding: 6px 8px; margin-top: 8px; }
+    .rule-hint b { color: var(--accent); font-weight: 600; }
+    .form-control, .form-select { background-color: var(--field); border: 1px solid var(--line); color: var(--ink); }
+    .form-control:focus, .form-select:focus { background-color: var(--field); border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); color: var(--ink); }
+    .form-control:disabled { background-color: #15151f; color: var(--ink-3); }
+    .form-label { color: var(--ink-2); }
+    .form-text { color: var(--ink-3); font-size: .75rem; }
+    .form-control::placeholder { color: var(--ink-3); }
+    .form-check-input { background-color: var(--field); border-color: var(--ink-3); }
+    .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+    .form-range::-webkit-slider-thumb { background: var(--accent); }
+    .form-range::-moz-range-thumb { background: var(--accent); }
+    .table { --bs-table-bg: transparent; --bs-table-color: var(--ink); --bs-table-border-color: var(--line); font-size: .82rem; }
+    .table thead th { color: var(--ink-3); border-color: var(--line); font-weight: 600; white-space: nowrap; }
+    .table td, .table th { border-color: var(--line-2); vertical-align: top; }
+    .table-hover tbody tr:hover { --bs-table-hover-bg: rgba(255,255,255,.03); --bs-table-hover-color: var(--ink); }
+    .table tfoot td { font-weight: 700; color: var(--accent); border-top: 1px solid var(--line); }
+    .bg-success { background-color: var(--green) !important; color: #04150E !important; }
+    .bg-secondary { background-color: var(--card-2) !important; color: var(--ink-2) !important; }
+    .result-box { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: 1rem !important; height: 100%; }
+    .btn-primary { background-color: var(--accent); border-color: var(--accent); color: #1a1a2e; }
+    .btn-primary:hover { background-color: #c9862f; border-color: #c9862f; color: #1a1a2e; }
+    .btn-outline-secondary { color: var(--ink-2); border-color: var(--line); }
+    .btn-outline-secondary:hover { background-color: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+    .alert-danger { background-color: rgba(243,91,91,.15); color: var(--danger); border-color: rgba(243,91,91,.3); }
+    h1.display-6 { color: var(--ink); }
+    .text-muted { color: var(--ink-3) !important; }
+    footer { color: var(--ink-3); }
+    .zone-info { background: var(--accent-dim); border: 1px solid rgba(232,163,61,.35); border-radius: 8px; padding: 8px 10px; font-size: .85rem; }
+    .zone-info b { color: var(--accent); }
+    .notes { list-style: none; padding: 0; margin: 0; font-size: .8rem; }
+    .notes li { padding: 6px 8px; border-right: 3px solid var(--ink-3); margin-bottom: 6px; background: var(--field); border-radius: 4px; color: var(--ink-2); }
+    .notes li.danger { border-color: var(--danger); color: #f7a3a3; }
+    .notes li.warn { border-color: var(--warn); color: #f2dca2; }
+    .notes li.info { border-color: var(--info); }
+    .sticky-results { position: sticky; top: 16px; }
+    .small-muted { font-size: .75rem; color: var(--ink-3); }
+    @media (max-width: 991px) { .sticky-results { position: static; } }
+  
+    .result-section { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; font-size: .9rem; }
+    .result-section h6 { font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+    .result-section .fw-bold { color: var(--ink-2); font-weight: 600 !important; }
+    .result-section .row > div { padding-top: 3px; padding-bottom: 3px; }
+    .table-bordered > :not(caption) > * > * { border-color: var(--line-2); }
+    .table-result td { padding: 6px 8px; font-size: .85rem; }
+    .table-result th { font-size: .78rem; }
+    .scrollable-results { max-height: 760px; overflow-y: auto; }
+    .scrollable-results::-webkit-scrollbar { width: 6px; }
+    .scrollable-results::-webkit-scrollbar-thumb { background: var(--ink-3); border-radius: 10px; }
+    .footer-text { font-size: .8rem; color: var(--ink-3); }
+    .intersection-item { background: var(--card-2); border-color: var(--line) !important; border-radius: 8px !important; }
+    .intersection-item h6 { color: var(--ink); }
+    .btn-outline-danger { color: var(--danger); border-color: rgba(243,91,91,.4); }
+    .btn-outline-danger:hover { background: rgba(243,91,91,.15); color: var(--danger); border-color: var(--danger); }
+    .alert-warning { background-color: rgba(245,196,81,.12); color: var(--warn); border-color: rgba(245,196,81,.3); }
+    .mitigation-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: .75rem; font-weight: 600; margin: 2px; }
+    .mitigation-high { background: rgba(243,91,91,.15); color: #f7a3a3; }
+    .mitigation-medium { background: rgba(245,196,81,.15); color: #f2dca2; }
+    .mitigation-low { background: rgba(122,184,245,.15); color: var(--info); }
+    .unit { color: var(--ink-3); font-size: .8rem; font-weight: 400; }
+    .result-section ul { color: var(--ink-2); margin-bottom: 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="display-6 fw-bold mb-2"><i class="bi bi-signpost-2-fill text-warning ms-2"></i>בדיקת השפעה על התנועה (תסקיר תנועה)</h1>
+  <p class="text-muted mb-4">חישוב השפעת פרויקט חדש על רשת התנועה – יצירת נסיעות, גדילת רקע, ניתוח צמתים, תורים, בטיחות, חניה והמלצות להקלות. יחידות: מטרים ומ"ר (שיעורי ITE מומרים פנימית מ־1,000 רגל רבוע).</p>
+
+  <div class="row">
+
+    <!-- LEFT: INPUT FORM -->
+    <div class="col-lg-7">
+      <form id="tisForm">
+
+        <!-- פרטי פרויקט -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-info-circle"></i> פרטי פרויקט</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">שם הפרויקט</label>
+                <input type="text" class="form-control" id="projectName" value="קניון הרחוב הראשי">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">סוג שימוש קרקע</label>
+                <select class="form-select" id="landUseType">
+                  <option value="shopping_center" selected>מרכז קניות (820)</option>
+                  <option value="regional_mall">קניון אזורי (821)</option>
+                  <option value="apartments">דירות (210)</option>
+                  <option value="townhouses">בנייני דירות (220)</option>
+                  <option value="hotel">מלון (310)</option>
+                  <option value="restaurant">מסעדה (330)</option>
+                  <option value="office">משרדים (430)</option>
+                  <option value="industrial">פארק תעשייה (610)</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">שטח בנוי ברוטו <span class="unit">(מ"ר)</span></label>
+                <input type="number" class="form-control" id="grossArea" value="11148" min="1" step="10">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">שנת ניתוח</label>
+                <input type="number" class="form-control" id="analysisYear" value="2028" min="2020">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">שנה נוכחית</label>
+                <input type="number" class="form-control" id="existingYear" value="2026" min="2020">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- פרמטרי יצירת נסיעות -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-car-front"></i> יצירת נסיעות</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">נסיעות עוברות (Pass‑by) <span class="unit">(%)</span></label>
+                <input type="number" class="form-control" id="passByPct" value="30" min="0" max="100">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">נסיעות מוסטות <span class="unit">(%)</span></label>
+                <input type="number" class="form-control" id="divertedPct" value="20" min="0" max="100">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">שיעור משאיות <span class="unit">(%)</span></label>
+                <input type="number" class="form-control" id="truckPct" value="2" min="0" max="100">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- תנועה קיימת -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-bar-chart-line"></i> תנועה קיימת וגדילה</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">תנועה יומית ממוצעת (AADT) – רחוב ראשי <span class="unit">(רכב/יום)</span></label>
+                <input type="number" class="form-control" id="mainAadt" value="18000" min="0">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">תנועה יומית ממוצעת (AADT) – רחוב משני <span class="unit">(רכב/יום)</span></label>
+                <input type="number" class="form-control" id="sideAadt" value="8000" min="0">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">שיעור גדילה שנתי <span class="unit">(%)</span></label>
+                <input type="number" class="form-control" id="growthRate" value="2.5" min="0" step="0.1">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">נפח בשעת שיא – רחוב ראשי <span class="unit">(רכב/שעה)</span></label>
+                <input type="number" class="form-control" id="mainPeak" value="1500" min="0">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">נפח בשעת שיא – רחוב משני <span class="unit">(רכב/שעה)</span></label>
+                <input type="number" class="form-control" id="sidePeak" value="800" min="0">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- צמתים -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-3"></i> צמתים מנותחים</div>
+          <div class="card-body">
+            <div id="intersectionsContainer">
+              <!-- צומת 1 -->
+              <div class="border rounded p-3 mb-3 intersection-item" data-id="INT_1">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-bold m-0"><i class="bi bi-pin-map"></i> צומת 1: רחוב ראשי / רחוב האלון</h6>
+                  <button type="button" class="btn btn-outline-danger btn-sm remove-intersection"><i class="bi bi-trash"></i></button>
+                </div>
+                <div class="row g-2">
+                  <div class="col-4">
+                    <label class="form-label small">סוג צומת</label>
+                    <select class="form-select int-type">
+                      <option value="signalized">מרומזר</option>
+                      <option value="unsignalized">ללא רמזור</option>
+                    </select>
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">רמת שירות קיימת</label>
+                    <select class="form-select int-existing-los">
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D" selected>D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                    </select>
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">עיכוב קיים (שניות)</label>
+                    <input type="number" class="form-control int-existing-delay" value="35" min="0">
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">v/c קיים</label>
+                    <input type="number" class="form-control int-existing-vc" value="0.78" min="0" max="1.2" step="0.01">
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">אורך תור (מטר)</label>
+                    <input type="number" class="form-control int-queue" value="76" min="0">
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">נפח בצומת (רכב/שעה)</label>
+                    <input type="number" class="form-control int-volume" value="2000" min="0">
+                  </div>
+                </div>
+              </div>
+
+              <!-- צומת 2 -->
+              <div class="border rounded p-3 mb-3 intersection-item" data-id="INT_2">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-bold m-0"><i class="bi bi-pin-map"></i> צומת 2: רחוב ראשי / כניסה לפרויקט</h6>
+                  <button type="button" class="btn btn-outline-danger btn-sm remove-intersection"><i class="bi bi-trash"></i></button>
+                </div>
+                <div class="row g-2">
+                  <div class="col-4">
+                    <label class="form-label small">סוג צומת</label>
+                    <select class="form-select int-type">
+                      <option value="signalized">מרומזר</option>
+                      <option value="unsignalized">ללא רמזור</option>
+                    </select>
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">רמת שירות קיימת</label>
+                    <select class="form-select int-existing-los">
+                      <option value="A">A</option>
+                      <option value="B" selected>B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                    </select>
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">עיכוב קיים (שניות)</label>
+                    <input type="number" class="form-control int-existing-delay" value="15" min="0">
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">v/c קיים</label>
+                    <input type="number" class="form-control int-existing-vc" value="0.45" min="0" max="1.2" step="0.01">
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">אורך תור (מטר)</label>
+                    <input type="number" class="form-control int-queue" value="30" min="0">
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label small">נפח בצומת (רכב/שעה)</label>
+                    <input type="number" class="form-control int-volume" value="1200" min="0">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addIntersectionBtn"><i class="bi bi-plus-circle"></i> הוסף צומת</button>
+          </div>
+        </div>
+
+        <!-- פרמטרי בטיחות וחניה -->
+        <div class="card">
+          <div class="card-header"><i class="bi bi-shield-check"></i> בטיחות וחניה</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-4">
+                <label class="form-label">הולכי רגל <span class="unit">(לשעה)</span></label>
+                <input type="number" class="form-control" id="pedVolume" value="50" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">רוכבי אופניים <span class="unit">(לשעה)</span></label>
+                <input type="number" class="form-control" id="bikeVolume" value="20" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">תאונות ב‑3 שנים</label>
+                <input type="number" class="form-control" id="crashHistory" value="5" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">מקומות חניה מוצעים</label>
+                <input type="number" class="form-control" id="parkingProposed" value="450" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">מקומות חניה נדרשים</label>
+                <input type="number" class="form-control" id="parkingRequired" value="420" min="0">
+              </div>
+              <div class="col-4">
+                <label class="form-label">עלות הקלות בסיסית <span class="unit">($)</span></label>
+                <input type="number" class="form-control" id="mitigationCost" value="200000" min="0">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-lg w-100 mt-2" id="calcBtn">
+          <i class="bi bi-calculator ms-2"></i>חשב / עדכן תוצאות
+        </button>
+
+      </form>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header"><i class="bi bi-table"></i> תוצאות מחקר ההשפעה</div>
+        <div class="card-body scrollable-results" id="resultsArea">
+          <div class="text-center text-muted py-5">
+            <i class="bi bi-clipboard-data fs-1"></i>
+            <p class="mt-3">לחץ על <strong>"חשב / עדכן תוצאות"</strong><br>לתצוגת ניתוח מלא.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="text-center footer-text mt-4 pb-3">
+    MAHALCO – בדיקת השפעה על התנועה. מבוסס על ITE Trip Generation Manual, ‏HCM ו־AASHTO Green Book.
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/traffic-impact.js?v=2"></script>
+</body>
+</html>

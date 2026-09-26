@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="description" content="Horizontal road alignment design guide covering curves, superelevation, sight distance, and geometric design standards.">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mahalco-calc.onrender.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>MAHALCO – תכן התוואי האופקי (פרק 5)</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<style>
+  :root {
+    --bg:#12121e; --card:#1a1a2e; --card-2:#22223a; --field:#0f0f1a;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.05);
+    --accent:#E8A33D; --accent-dim:rgba(232,163,61,.16); --green:#4ADE80;
+    --ink:#EDEBF2; --ink-2:#9A96AB; --ink-3:#6B6780;
+    --danger:#F35B5B; --warn:#F5C451; --info:#7AB8F5;
+  }
+  * { box-sizing: border-box; }
+  body { background:var(--bg); color:var(--ink); padding:20px; font-family:Arial, sans-serif; line-height:1.5; }
+  .container { max-width:1400px; }
+  h1 { font-size:clamp(1.6rem, 1.375rem + 1.5vw, 2.4rem); font-weight:700; margin:0 0 .5rem; color:var(--ink); line-height:1.2; }
+  h1 .bi { color:#ffc107; margin-left:.5rem; }
+  .subhead { color:var(--ink-3); margin:0 0 1.5rem; line-height:1.6; font-size:.95rem; }
+  .badge { display:inline-block; background:var(--card-2); color:var(--ink-2); font-size:.8rem;
+    font-weight:600; padding:.25em .6em; border-radius:6px; vertical-align:middle; margin-right:6px; }
+
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.3); margin-bottom:20px; }
+  .card-header { background:var(--accent); color:#1a1a2e; border-radius:12px 12px 0 0;
+    font-weight:600; padding:.5rem 1rem; border-bottom:1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left:.5rem; }
+  .card-body { padding:1rem; }
+  .section-note { font-size:.78rem; color:var(--ink-3); margin:0 0 12px; line-height:1.6; }
+
+  .form-group { margin-bottom:12px; }
+  .row-2, .row-3, .row-4 { display:grid; gap:12px; }
+  .row-2 { grid-template-columns:1fr 1fr; }
+  .row-3 { grid-template-columns:1fr 1fr 1fr; }
+  .row-4 { grid-template-columns:repeat(4,1fr); }
+  @media (max-width:720px) { .row-2,.row-3,.row-4 { grid-template-columns:1fr; gap:8px; } }
+  label { display:block; margin-bottom:.35rem; color:var(--ink-2); font-size:.9rem; }
+  label .unit { color:var(--ink-3); font-size:.8rem; }
+  input, select { width:100%; padding:.375rem .75rem; font-size:1rem; border:1px solid var(--line);
+    border-radius:6px; background:var(--field); color:var(--ink); font-family:inherit; }
+  select option { background:var(--field); color:var(--ink); }
+  input:focus, select:focus { border-color:var(--accent); outline:none; box-shadow:0 0 0 .2rem rgba(232,163,61,.2); }
+  input[type=number] { -moz-appearance:textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .form-text { color:var(--ink-3); font-size:.75rem; }
+
+  /* tabs */
+  .tabs { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+  .tabs button { padding:.5rem 1rem; border-radius:8px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink-2); font-size:.88rem; font-weight:600; cursor:pointer;
+    font-family:inherit; transition:.15s; width:auto; }
+  .tabs button:hover { background:var(--card-2); color:var(--ink); }
+  .tabs button.active { background:var(--accent); color:#1a1a2e; border-color:var(--accent); }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+
+  /* result cards */
+  .results-sticky { position:sticky; top:16px; }
+  @media (max-width:991px) { .results-sticky { position:static; } }
+  .result-box { background:var(--card-2); border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; height:100%; }
+  .result-label { font-size:.82rem; color:var(--ink-2); }
+  .result-number { font-size:1.7rem; font-weight:700; color:var(--ink); line-height:1.15;
+    font-variant-numeric:tabular-nums; direction:ltr; text-align:right; }
+  .result-number.highlight { color:var(--accent); }
+  .result-sub { font-size:.72rem; color:var(--ink-3); }
+
+  ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+  ol.steps > li { counter-increment:st; position:relative; padding:12px 40px 12px 0; border-bottom:1px dashed var(--line); }
+  ol.steps > li:last-child { border-bottom:0; }
+  ol.steps > li::before { content:counter(st); position:absolute; right:0; top:12px;
+    background:var(--accent); color:#1a1a2e; width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800; }
+  .steps .ttl { font-weight:700; color:var(--ink); font-size:.93rem; margin-bottom:5px; }
+  .steps .formula { direction:ltr; text-align:left; background:var(--field); border:1px solid var(--line-2);
+    border-radius:6px; padding:6px 9px; font-family:Consolas,"Courier New",monospace;
+    font-size:.78rem; margin:5px 0; overflow-x:auto; white-space:nowrap; color:#d8d4e4; }
+  .steps .num { direction:ltr; display:inline-block; font-family:Consolas,monospace; font-weight:700; color:var(--accent); }
+
+  .table { --bs-table-bg:transparent; --bs-table-color:var(--ink); --bs-table-border-color:var(--line); font-size:.85rem; }
+  .table thead th { color:var(--ink-3); border-color:var(--line); font-weight:600; white-space:nowrap; font-size:.78rem; }
+  .table td, .table th { border-color:var(--line-2); vertical-align:middle; }
+  .table td.c { text-align:center; }
+  .table tfoot td { font-weight:700; color:var(--accent); border-top:1px solid var(--line); }
+
+  .warn-list { list-style:none; padding:0; margin:0; }
+  .warn-list li { padding:9px 12px; border-radius:8px; margin-bottom:7px; font-size:.85rem;
+    line-height:1.55; border-right:4px solid; background:var(--field); }
+  .warn-list li.ok { border-color:var(--green); color:#a6efc0; }
+  .warn-list li.warn { border-color:var(--warn); color:#f2dca2; }
+  .warn-list li.bad { border-color:var(--danger); color:#f7a3a3; }
+  .warn-list li.info { border-color:var(--info); color:#bcd9fb; }
+
+  .btn-accent { background:var(--accent); border-color:var(--accent); color:#1a1a2e; font-weight:700;
+    padding:.55rem 1.4rem; border-radius:8px; border:1px solid transparent; width:100%; font-family:inherit; cursor:pointer; }
+  .btn-accent:hover { background:#c9862f; border-color:#c9862f; color:#1a1a2e; }
+  .btn-ghost { background:transparent; color:var(--ink-2); border:1px solid var(--line);
+    padding:.55rem 1.4rem; border-radius:8px; font-weight:600; font-family:inherit; cursor:pointer; }
+  .btn-ghost:hover { background:rgba(255,255,255,.06); color:var(--ink); }
+
+  .scheme-box { background:var(--field); border:1px solid var(--line-2); border-radius:10px; padding:14px; overflow-x:auto; }
+  .scheme-box svg { display:block; margin:0 auto; width:100%; max-width:1000px; height:auto; }
+  .scheme-caption { font-size:.78rem; color:var(--ink-3); text-align:center; margin-top:8px; }
+
+  footer { text-align:center; color:var(--ink-3); font-size:.85rem; margin-top:1.5rem; padding-bottom:1rem; }
+  .col-help { font-size:.75rem; color:var(--ink-3); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1><i class="bi bi-rulers"></i>תכן התוואי האופקי <span class="badge">פרק 5</span></h1>
+  <p class="subhead">
+    מחשבון מקיף לתכן גיאומטרי של התוואי האופקי לפי הנחיות התכן של דרכים בין-עירוניות (כרך 1, פרק 5).
+    כולל רדיוס מזערי והגבה, מעבר שיפועים, הרחבה בעקום, עקום מעבר, מרחקי ראות ובדיקת עקומים עוקבים.
+    <br>החישוב מתבצע כולו בדפדפן. יחידות: מטר, קמ"ש, מעלות, אחוזים.
+  </p>
+
+  <div class="tabs">
+    <button class="active" data-tab="tab1"><i class="bi bi-circle"></i> רדיוס והגבה</button>
+    <button data-tab="tab2"><i class="bi bi-sliders"></i> מעבר שיפועים</button>
+    <button data-tab="tab3"><i class="bi bi-arrows-expand"></i> הרחבה בעקום</button>
+    <button data-tab="tab4"><i class="bi bi-bezier2"></i> עקום מעבר</button>
+    <button data-tab="tab5"><i class="bi bi-eye"></i> מרחק ראות</button>
+    <button data-tab="tab6"><i class="bi bi-arrow-repeat"></i> עקומים עוקבים</button>
+    <button data-tab="tab7"><i class="bi bi-table"></i> טבלאות עזר</button>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 1: Minimum radius & superelevation                          -->
+  <!-- =============================================================== -->
+  <div id="tab1" class="tab-pane active">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – רדיוס והגבה</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t1_vd">מהירות תכן V<sub>d</sub> <span class="unit">(קמ"ש)</span></label>
+                <select id="t1_vd">
+                  <option>60</option><option>70</option><option>80</option>
+                  <option selected>90</option><option>100</option><option>110</option><option>120</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t1_emax_mode">קביעת e<sub>max</sub></label>
+                <select id="t1_emax_mode">
+                  <option value="auto" selected>אוטומטי לפי טבלה 5.1</option>
+                  <option value="manual">הזנה ידנית</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t1_emax">הגבה מרבית e<sub>max</sub> <span class="unit">(שבר עשרוני)</span></label>
+                <input type="number" id="t1_emax" value="0.08" step="0.01" min="0" max="0.12" disabled>
+              </div>
+              <div class="form-group">
+                <label for="t1_f">גורם חיכוך צידי f</label>
+                <input type="number" id="t1_f" value="0.11" step="0.01" min="0" max="0.30" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t1_rc">רדיוס העקום המתוכנן R<sub>c</sub> <span class="unit">(מ')</span></label>
+              <input type="number" id="t1_rc" value="500" min="10" step="10">
+              <div class="col-help">לחישוב ההגבה הדרושה והשוואה לרדיוס המזערי</div>
+            </div>
+            <div class="form-group">
+              <label for="t1_slope">שיפוע אורכי מתוכנן <span class="unit">(%)</span></label>
+              <input type="number" id="t1_slope" value="2" step="0.1" min="-12" max="12">
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה – כוחות בעקום</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#E8A33D"/>
+                  </marker>
+                  <marker id="arB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#7AB8F5"/>
+                  </marker>
+                  <marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#F35B5B"/>
+                  </marker>
+                </defs>
+                <!-- roadway cross-section (tilted for superelevation) -->
+                <g transform="translate(60,120) rotate(-8)">
+                  <rect x="0" y="-14" width="260" height="14" fill="#2c2c46"/>
+                  <line x1="0" y1="0" x2="260" y2="0" stroke="#9A96AB" stroke-width="1.5"/>
+                  <line x1="0" y1="-14" x2="260" y2="-14" stroke="#9A96AB" stroke-width="1.5"/>
+                  <!-- center line -->
+                  <line x1="0" y1="-7" x2="260" y2="-7" stroke="#6B6780" stroke-width="1" stroke-dasharray="4,4"/>
+                  <!-- car -->
+                  <rect x="110" y="-22" width="40" height="12" rx="2" fill="#E8A33D" opacity="0.6"/>
+                  <rect x="120" y="-30" width="20" height="10" rx="2" fill="#E8A33D" opacity="0.9"/>
+                </g>
+                <!-- centrifugal force (outward) -->
+                <line x1="210" y1="100" x2="280" y2="70" stroke="#F35B5B" stroke-width="2.2" marker-end="url(#arR)"/>
+                <text x="286" y="68" fill="#F35B5B" font-size="11" font-weight="700">F<tspan font-size="8" dy="2">c</tspan></text>
+                <!-- weight component along slope -->
+                <line x1="190" y1="108" x2="150" y2="128" stroke="#7AB8F5" stroke-width="2.2" marker-end="url(#arB)"/>
+                <text x="118" y="138" fill="#7AB8F5" font-size="11" font-weight="700">W·sin α</text>
+                <!-- friction -->
+                <line x1="210" y1="112" x2="240" y2="100" stroke="#4ADE80" stroke-width="2" stroke-dasharray="3,2" marker-end="url(#arA)"/>
+                <text x="245" y="112" fill="#4ADE80" font-size="10">f·N</text>
+                <!-- radius arrow -->
+                <line x1="60" y1="165" x2="240" y2="165" stroke="#E8A33D" stroke-width="1.4" stroke-dasharray="3,3" marker-start="url(#arA)" marker-end="url(#arA)"/>
+                <text x="150" y="182" text-anchor="middle" fill="#E8A33D" font-size="12" font-weight="700" font-style="italic">R<tspan font-size="9" dy="2">c</tspan></text>
+              </svg>
+            </div>
+            <div class="scheme-caption">תרשים 1 — שיווי משקל בעקום אופקי: כוח צנטריפוגלי F<sub>c</sub>, רכיב כובד על ההגבה W·sinα, וכוח חיכוך צידי f·N</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – רדיוס מזערי והגבה</div>
+          <div class="card-body" id="t1_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 2: Superelevation transition                                -->
+  <!-- =============================================================== -->
+  <div id="tab2" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – מעבר שיפועים</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_vd">מהירות תכן V<sub>d</sub> <span class="unit">(קמ"ש)</span></label>
+                <select id="t2_vd">
+                  <option>60</option><option>70</option><option>80</option>
+                  <option selected>90</option><option>100</option><option>110</option><option>120</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t2_roadtype">סוג הדרך (לפי טבלה 5.6)</label>
+                <select id="t2_roadtype">
+                  <option value="two_lane" selected>דו-נתיבית (ערכי בסיס)</option>
+                  <option value="dw_narrow">דו-מסלולית, מפרדה צרה</option>
+                  <option value="dw_wide">דו-מסלולית, מפרדה רחבה</option>
+                  <option value="sw_narrow">שיש-נתיבית, מפרדה צרה</option>
+                  <option value="sw_wide">שיש-נתיבית, מפרדה רחבה</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t2_W">רוחב נתיב W <span class="unit">(מ')</span></label>
+                <input type="number" id="t2_W" value="3.60" step="0.05" min="2.5" max="4.5">
+              </div>
+              <div class="form-group">
+                <label for="t2_n">מספר נתיבים מסובבים n</label>
+                <input type="number" id="t2_n" value="1" step="1" min="1" max="4">
+                <div class="col-help">n=1 בדו-נתיבית; n=2.44 בדו-מסלולית (ראה תרשים 5.3)</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t2_ec">הגבה מרבית e<sub>c</sub> <span class="unit">(שבר עשרוני)</span></label>
+              <input type="number" id="t2_ec" value="0.08" step="0.01" min="0" max="0.12">
+            </div>
+            <div class="form-group">
+              <label for="t2_dn_mode">הפרש שיפוע Δn <span class="unit">(%)</span></label>
+              <select id="t2_dn_mode">
+                <option value="auto" selected>אוטומטי לפי טבלה 5.6</option>
+                <option value="manual">הזנה ידנית</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="t2_dn">Δn <span class="unit">(%)</span></label>
+              <input type="number" id="t2_dn" value="0.46" step="0.01" min="0.1" max="1.5" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – מעבר שיפועים</div>
+          <div class="card-body" id="t2_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 3: Curve widening                                           -->
+  <!-- =============================================================== -->
+  <div id="tab3" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – הרחבת מיטה</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_vd">מהירות תכן V<sub>d</sub> <span class="unit">(קמ"ש)</span></label>
+                <select id="t3_vd">
+                  <option>60</option><option>70</option><option selected>80</option>
+                  <option>90</option><option>100</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t3_rc">רדיוס העקום R<sub>c</sub> <span class="unit">(מ')</span></label>
+                <input type="number" id="t3_rc" value="150" step="5" min="10">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t3_wn">רוחב מיטה בקטע ישר W<sub>N</sub> <span class="unit">(מ')</span></label>
+                <input type="number" id="t3_wn" value="7.20" step="0.10" min="5" max="15">
+                <div class="col-help">6.00, 6.60, 7.20 → C = 0.60, 0.75, 0.90</div>
+              </div>
+              <div class="form-group">
+                <label for="t3_vehicle">רכב תכן</label>
+                <select id="t3_vehicle">
+                  <option value="bus" selected>אוטובוס בין-עירוני (12.2 מ')</option>
+                  <option value="truck">משאית כבדה (16.5 מ')</option>
+                  <option value="custom">הזנה ידנית</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-3">
+              <div class="form-group">
+                <label for="t3_u">רוחב רכב u <span class="unit">(מ')</span></label>
+                <input type="number" id="t3_u" value="2.55" step="0.05">
+              </div>
+              <div class="form-group">
+                <label for="t3_L">בסיס גלגלים L <span class="unit">(מ')</span></label>
+                <input type="number" id="t3_L" value="6.10" step="0.10">
+              </div>
+              <div class="form-group">
+                <label for="t3_A">שלוחה קדמית A <span class="unit">(מ')</span></label>
+                <input type="number" id="t3_A" value="2.75" step="0.05">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה – רכיבי ההרחבה</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- pavement edges -->
+                <path d="M 20,100 Q 190,40 360,100" stroke="#9A96AB" stroke-width="1.5" fill="none" stroke-dasharray="3,3"/>
+                <path d="M 20,140 Q 190,80 360,140" stroke="#9A96AB" stroke-width="1.5" fill="none"/>
+                <!-- vehicle path (swept) -->
+                <path d="M 20,108 Q 190,60 360,108" stroke="#E8A33D" stroke-width="1.8" fill="none"/>
+                <path d="M 20,116 Q 190,68 360,116" stroke="#E8A33D" stroke-width="1.8" fill="none"/>
+                <!-- labels -->
+                <text x="30" y="92" fill="#E8A33D" font-size="10">U — עיקבה חיצונית</text>
+                <text x="30" y="152" fill="#9A96AB" font-size="10">W<tspan font-size="8" dy="2">c</tspan> — רוחב מיטה בעקום</text>
+                <line x1="190" y1="56" x2="190" y2="86" stroke="#7AB8F5" stroke-width="1.4" marker-start="url(#arB)"/>
+                <text x="196" y="72" fill="#7AB8F5" font-size="10">C</text>
+                <line x1="190" y1="94" x2="190" y2="106" stroke="#F35B5B" stroke-width="1.4"/>
+                <text x="196" y="102" fill="#F35B5B" font-size="10">Z + FA</text>
+                <!-- vehicle -->
+                <rect x="150" y="100" width="80" height="18" rx="3" fill="#E8A33D" opacity="0.35"/>
+                <text x="190" y="114" text-anchor="middle" fill="#E8A33D" font-size="10" font-weight="700">רכב תכן</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">תרשים 2 — רכיבי ההרחבה: U (עיקבה), C (מרווח בטיחות), FA (בליטת חזית), Z (קשיי נהיגה)</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – הרחבה</div>
+          <div class="card-body" id="t3_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 4: Transition (spiral) curve                                -->
+  <!-- =============================================================== -->
+  <div id="tab4" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – עקום מעבר (קלוטואידה)</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t4_vd">מהירות תכן V<sub>d</sub> <span class="unit">(קמ"ש)</span></label>
+                <select id="t4_vd">
+                  <option>60</option><option>70</option><option>80</option>
+                  <option selected>90</option><option>100</option><option>110</option><option>120</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t4_rc">רדיוס הקשת המעגלית R<sub>c</sub> <span class="unit">(מ')</span></label>
+                <input type="number" id="t4_rc" value="300" step="10" min="10">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t4_C">קצב שינוי תאוצה צנטריפוגלית C <span class="unit">(מ'/שנ'³)</span></label>
+                <input type="number" id="t4_C" value="0.51" step="0.01" min="0.2" max="1.5">
+                <div class="col-help">טיפוסי: 0.30–0.80; ערך נמוך = נוחות גבוהה יותר</div>
+              </div>
+              <div class="form-group">
+                <label for="t4_L1">אורך מעבר הגבה L₁ <span class="unit">(מ')</span></label>
+                <input type="number" id="t4_L1" value="55" step="1" min="10">
+                <div class="col-help">אם L₁ > L_s המזערי, ייקבע כאורך עקום המעבר</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה – עקום מעבר עם הזזת קשת</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arSp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#E8A33D"/>
+                  </marker>
+                </defs>
+                <!-- tangent in -->
+                <line x1="20" y1="70" x2="130" y2="70" stroke="#9A96AB" stroke-width="1.8"/>
+                <!-- spiral in -->
+                <path d="M 130,70 Q 180,70 210,110" stroke="#E8A33D" stroke-width="2" fill="none"/>
+                <!-- circular arc -->
+                <path d="M 210,110 A 90,90 0 0 1 290,190" stroke="#E8A33D" stroke-width="2.2" fill="none"/>
+                <!-- spiral out -->
+                <path d="M 290,190 Q 320,230 370,230" stroke="#E8A33D" stroke-width="2" fill="none"/>
+                <!-- tangent out -->
+                <line x1="370" y1="230" x2="420" y2="230" stroke="#9A96AB" stroke-width="1.8"/>
+                <!-- PI marker -->
+                <line x1="130" y1="70" x2="440" y2="380" stroke="#6B6780" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>
+                <circle cx="280" cy="70" r="3" fill="#F35B5B"/>
+                <text x="284" y="64" fill="#F35B5B" font-size="12" font-weight="700">PI</text>
+                <!-- station labels -->
+                <circle cx="130" cy="70" r="3" fill="#E8A33D"/><text x="120" y="62" fill="#E8A33D" font-size="10" font-weight="700">TS</text>
+                <circle cx="210" cy="110" r="3" fill="#E8A33D"/><text x="206" y="102" fill="#E8A33D" font-size="10" font-weight="700">SC</text>
+                <circle cx="290" cy="190" r="3" fill="#E8A33D"/><text x="296" y="200" fill="#E8A33D" font-size="10" font-weight="700">CS</text>
+                <circle cx="370" cy="230" r="3" fill="#E8A33D"/><text x="376" y="240" fill="#E8A33D" font-size="10" font-weight="700">ST</text>
+                <!-- Rc arrow -->
+                <line x1="280" y1="70" x2="215" y2="185" stroke="#7AB8F5" stroke-width="1.2" stroke-dasharray="3,3"/>
+                <text x="240" y="135" fill="#7AB8F5" font-size="11" font-weight="700">R<tspan font-size="9" dy="2">c</tspan></text>
+                <!-- p offset -->
+                <line x1="280" y1="70" x2="325" y2="70" stroke="#4ADE80" stroke-width="1.2" marker-start="url(#arSp)"/>
+                <text x="330" y="74" fill="#4ADE80" font-size="11" font-weight="700">p</text>
+                <!-- Δ angle -->
+                <path d="M 200,70 A 70,70 0 0 1 250,105" fill="none" stroke="#F35B5B" stroke-width="1"/>
+                <text x="220" y="72" fill="#F35B5B" font-size="12" font-weight="700">Δ</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">תרשים 3 — עקום מעבר (קלוטואידה) בין ישר לקשת מעגלית עם הזזת הקשת p</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – עקום מעבר</div>
+          <div class="card-body" id="t4_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 5: Sight distance                                           -->
+  <!-- =============================================================== -->
+  <div id="tab5" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – מרחק ראות</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t5_rc">רדיוס בציר הנתיב הפנימי R<sub>c</sub> <span class="unit">(מ')</span></label>
+                <input type="number" id="t5_rc" value="300" step="10" min="10">
+              </div>
+              <div class="form-group">
+                <label for="t5_sd">מרחק ראות תכן S<sub>D</sub> <span class="unit">(מ')</span></label>
+                <input type="number" id="t5_sd" value="150" step="5" min="20">
+                <div class="col-help">עצירה: ~150 מ'; עקיפה: ~400 מ' במהירויות גבוהות</div>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t5_eye">גובה עיני נהג <span class="unit">(מ')</span></label>
+                <input type="number" id="t5_eye" value="1.05" step="0.05">
+              </div>
+              <div class="form-group">
+                <label for="t5_obj">גובה עצם <span class="unit">(מ')</span></label>
+                <input type="number" id="t5_obj" value="0.15" step="0.05">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="t5_type">סוג מרחק הראות</label>
+              <select id="t5_type">
+                <option value="stop" selected>עצירה (מכשול בגובה 0.15 מ')</option>
+                <option value="decision">החלטה</option>
+                <option value="passing">עקיפה – מלאה</option>
+                <option value="passing_short">עקיפה דחוקה</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה – הראות בקשת</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+                <!-- inner edge -->
+                <path d="M 40,200 A 200,200 0 0 1 360,200" stroke="#9A96AB" stroke-width="1.5" fill="none"/>
+                <!-- centerline (inner lane) -->
+                <path d="M 40,180 A 180,180 0 0 1 360,180" stroke="#E8A33D" stroke-width="1.8" fill="none"/>
+                <!-- outer edge -->
+                <path d="M 40,160 A 160,160 0 0 1 360,160" stroke="#9A96AB" stroke-width="1.5" fill="none"/>
+                <!-- chord / sight line -->
+                <line x1="100" y1="115" x2="300" y2="115" stroke="#4ADE80" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <!-- obstacle region -->
+                <path d="M 100,115 Q 200,60 300,115" fill="rgba(243,91,91,0.12)" stroke="#F35B5B" stroke-width="1.2" stroke-dasharray="3,2"/>
+                <!-- m arrow -->
+                <line x1="200" y1="115" x2="200" y2="75" stroke="#F35B5B" stroke-width="1.4"/>
+                <text x="206" y="95" fill="#F35B5B" font-size="12" font-weight="700" font-style="italic">m</text>
+                <!-- Rc arrow -->
+                <line x1="200" y1="200" x2="200" y2="180" stroke="#7AB8F5" stroke-width="1"/>
+                <text x="206" y="195" fill="#7AB8F5" font-size="11" font-weight="700">R<tspan font-size="9" dy="2">c</tspan></text>
+                <!-- SD chord label -->
+                <text x="200" y="108" text-anchor="middle" fill="#4ADE80" font-size="11" font-weight="700" font-style="italic">S<tspan font-size="9" dy="2">D</tspan></text>
+                <!-- envelope label -->
+                <text x="200" y="55" text-anchor="middle" fill="#F35B5B" font-size="10">מעטפת הראות – אסור מכשול</text>
+              </svg>
+            </div>
+            <div class="scheme-caption">תרשים 4 — מרחק צידי פנוי m באמצע מיתר הראות S<sub>D</sub> בקשת ברדיוס R<sub>c</sub></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – מרחק ראות</div>
+          <div class="card-body" id="t5_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 6: Consecutive curves check                                 -->
+  <!-- =============================================================== -->
+  <div id="tab6" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט – עקומים עוקבים</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="t6_kind">סוג הצירוף</label>
+              <select id="t6_kind">
+                <option value="compound" selected>עקומים מרכבים – אותו כיוון (Compound)</option>
+                <option value="brokenback">עקומים עוקבים – אותו כיוון (Broken back)</option>
+                <option value="reverse">עקומים מנוגדי כיוון (Reverse)</option>
+              </select>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t6_vd">מהירות תכן V<sub>d</sub> <span class="unit">(קמ"ש)</span></label>
+                <select id="t6_vd">
+                  <option>60</option><option>70</option><option>80</option>
+                  <option selected>90</option><option>100</option><option>110</option><option>120</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="t6_L">אורך הקטע הישר בין העקומים <span class="unit">(מ')</span></label>
+                <input type="number" id="t6_L" value="120" step="5" min="0">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t6_r1">רדיוס עקום ראשון R₁ <span class="unit">(מ')</span></label>
+                <input type="number" id="t6_r1" value="400" step="10" min="10">
+              </div>
+              <div class="form-group">
+                <label for="t6_r2">רדיוס עקום שני R₂ <span class="unit">(מ')</span></label>
+                <input type="number" id="t6_r2" value="300" step="10" min="10">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="t6_L1">אורך מעבר הגבה L₁ של עקום ראשון <span class="unit">(מ')</span></label>
+                <input type="number" id="t6_L1" value="45" step="5" min="0">
+              </div>
+              <div class="form-group">
+                <label for="t6_L2">אורך מעבר הגבה L₁ של עקום שני <span class="unit">(מ')</span></label>
+                <input type="number" id="t6_L2" value="55" step="5" min="0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות – בדיקה</div>
+          <div class="card-body" id="t6_results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 7: Reference tables                                         -->
+  <!-- =============================================================== -->
+  <div id="tab7" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-table"></i>טבלה 5.1 — ערכי תכן בסיסיים</div>
+          <div class="card-body p-0">
+            <table class="table mb-0">
+              <thead><tr><th>מהירות תכן (קמ"ש)</th><th class="c">60</th><th class="c">70</th><th class="c">80</th><th class="c">90</th><th class="c">100</th><th class="c">110</th><th class="c">120</th></tr></thead>
+              <tbody>
+                <tr><td>e<sub>max</sub> (הגבה מרבית)</td><td class="c">0.10</td><td class="c">0.10</td><td class="c">0.10</td><td class="c">0.08</td><td class="c">0.08</td><td class="c">0.08</td><td class="c">0.08</td></tr>
+                <tr><td>f (גורם חיכוך צידי)</td><td class="c">0.16</td><td class="c">0.13</td><td class="c">0.13</td><td class="c">0.11</td><td class="c">0.10</td><td class="c">0.09</td><td class="c">0.09</td></tr>
+                <tr><td><b>R<sub>min</sub> (מ')</b></td><td class="c"><b>110</b></td><td class="c"><b>170</b></td><td class="c"><b>220</b></td><td class="c"><b>340</b></td><td class="c"><b>440</b></td><td class="c"><b>565</b></td><td class="c"><b>670</b></td></tr>
+              </tbody>
+            </table>
+            <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">R<sub>min</sub> = V<sub>d</sub>² / [127·(e<sub>max</sub>+f)]</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-table"></i>טבלה 5.6 — Δn (%) לפי סוג דרך</div>
+          <div class="card-body p-0">
+            <table class="table mb-0">
+              <thead><tr><th>סוג דרך</th><th class="c">60</th><th class="c">70</th><th class="c">80</th><th class="c">90</th><th class="c">100</th><th class="c">110</th><th class="c">120</th></tr></thead>
+              <tbody>
+                <tr><td>דו-נתיבית (בסיס)</td><td class="c">0.64</td><td class="c">0.56</td><td class="c">0.50</td><td class="c">0.46</td><td class="c">0.43</td><td class="c">0.40</td><td class="c">0.38</td></tr>
+                <tr><td>דו-מסלולית, מפרדה צרה</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">0.653</td><td class="c">0.610</td><td class="c">0.568</td><td class="c">0.539</td></tr>
+                <tr><td>דו-מסלולית, מפרדה רחבה</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">0.665</td><td class="c">0.622</td><td class="c">0.578</td><td class="c">0.550</td></tr>
+                <tr><td>שיש-נתיבית, מפרדה צרה</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">0.713</td><td class="c">0.667</td><td class="c">0.620</td><td class="c">0.589</td></tr>
+                <tr><td>שיש-נתיבית, מפרדה רחבה</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">0.720</td><td class="c">0.673</td><td class="c">0.627</td><td class="c">0.595</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-table"></i>טבלה 5.13 — רדיוסים מרביים שאינם מחייבים עקום מעבר</div>
+          <div class="card-body p-0">
+            <table class="table mb-0">
+              <thead><tr><th>מהירות תכן (קמ"ש)</th><th class="c">60</th><th class="c">70</th><th class="c">80</th><th class="c">90</th><th class="c">100</th><th class="c">110</th><th class="c">120</th></tr></thead>
+              <tbody>
+                <tr><td><b>R<sub>c(max)</sub> (מ')</b></td><td class="c"><b>460</b></td><td class="c"><b>630</b></td><td class="c"><b>820</b></td><td class="c"><b>1050</b></td><td class="c"><b>1300</b></td><td class="c"><b>1550</b></td><td class="c"><b>1850</b></td></tr>
+              </tbody>
+            </table>
+            <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">R<sub>c(max)</sub> = V<sub>d</sub>²/a, עבור a = 0.65–0.85 מ'/שנ'²</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-table"></i>טבלה 5.5 — זוויות הטיה שלא מחייבות עקום</div>
+          <div class="card-body p-0">
+            <table class="table mb-0">
+              <thead><tr><th>סוג דרך</th><th class="c">60</th><th class="c">70</th><th class="c">80</th><th class="c">90</th><th class="c">100</th><th class="c">110</th><th class="c">120</th></tr></thead>
+              <tbody>
+                <tr><td>דו-נתיבית</td><td class="c">1°</td><td class="c">1°</td><td class="c">1°</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td></tr>
+                <tr><td>דו-מסלולית</td><td class="c">—</td><td class="c">—</td><td class="c">0.5°</td><td class="c">0.5°</td><td class="c">0.5°</td><td class="c">0.25°</td><td class="c">0.25°</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>טבלה 5.14 — גבהים מרביים למכשול בהבטחת ראות</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מרחק ראות</th><th class="c">גובה עיני נהג</th><th class="c">גובה עצם שיש לראות</th><th class="c">גובה מרבי למכשול להבטחת הראות</th></tr></thead>
+          <tbody>
+            <tr><td>עצירה – דרך חד-מסלולית</td><td class="c">1.05</td><td class="c">0.15</td><td class="c">0.60</td></tr>
+            <tr><td>עצירה – דרך דו-מסלולית</td><td class="c">1.05</td><td class="c">0.60</td><td class="c">0.80</td></tr>
+            <tr><td>החלטה בקטע</td><td class="c">1.05</td><td class="c">0.60</td><td class="c">0.80</td></tr>
+            <tr><td>עקיפה מלאה ועקיפה דחוקה</td><td class="c">1.05</td><td class="c">1.05</td><td class="c">1.05</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>MAHALCO – תכן התוואי האופקי (פרק 5) · מבוסס על הנחיות התכן של דרכים בין-עירוניות, כרך 1</footer>
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/horizontal.js?v=2"></script>
+</body>
+</html>

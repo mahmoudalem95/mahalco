@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mahalco-calc.onrender.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>מהאלco — שיקולים והנחיות לתכנון שבילי אופניים</title>
+<meta name="description" content="קביעת רמת הפרדה לתנועת אופניים, רוחבים ומרווחי בטיחות — עירוני, בין-עירוני, מחלפים ומעברים עיליים ותחתיים. לפי הנחיות משרד התחבורה ונת״י, עם הפניה לעמוד המקור.">
+<meta name="theme-color" content="#12121e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#12121e;--panel:#1a1a2e;--sunk:#22223a;--ink:#EDEBF2;--ink2:#9A96AB;--ink3:#6B6780;
+ --rule:rgba(255,255,255,.09);--rule2:rgba(255,255,255,.16);--pick:#E8A33D;--pick-bg:rgba(232,163,61,.14);
+ --ok:#4ADE80;--ok-bg:rgba(74,222,128,.12);--warn:#F5C451;--warn-bg:rgba(245,196,81,.12);
+ --bad:#F35B5B;--bad-bg:rgba(243,91,91,.13);--mono:'IBM Plex Mono',ui-monospace,monospace;--r:8px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Assistant',system-ui,sans-serif;font-size:14.5px;line-height:1.55}
+header{background:var(--panel);border-bottom:1px solid var(--rule);padding:14px max(14px,env(safe-area-inset-right))}
+header h1{font-size:17px;font-weight:800;letter-spacing:-.01em}
+header p{font-size:12.8px;color:var(--ink3);margin-top:4px;max-width:78ch}
+main{max-width:1080px;margin:0 auto;padding:16px max(14px,env(safe-area-inset-right)) 60px}
+.tabs{display:flex;gap:4px;background:var(--sunk);border-radius:9px;padding:3px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{flex:1;min-width:140px;background:none;border:0;color:var(--ink2);font:inherit;font-size:13.5px;
+ font-weight:700;padding:9px 12px;border-radius:7px;cursor:pointer;min-height:42px}
+.tabs button.on{background:var(--pick);color:#151424}
+.grid{display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r);padding:14px;margin-bottom:14px}
+.card h2{font-size:14px;font-weight:800;color:var(--pick);margin-bottom:10px}
+.f{margin-bottom:11px}
+.f2{display:grid;gap:11px;grid-template-columns:1fr 1fr}
+@media(max-width:520px){.f2{grid-template-columns:1fr}}
+label{display:block;font-size:12.5px;color:var(--ink2);margin-bottom:4px}
+label .u{color:var(--ink3);font-size:11.5px}
+input,select{width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:var(--sunk);
+ border:1px solid var(--rule2);border-radius:6px;padding:9px 10px;min-height:42px}
+input:focus,select:focus{outline:2px solid var(--pick);outline-offset:1px;border-color:var(--pick)}
+.verdict{display:flex;gap:14px;align-items:center;background:var(--sunk);border:1px solid var(--rule);
+ border-radius:var(--r);padding:13px 15px;margin-bottom:12px}
+.vi{font-size:34px;line-height:1;min-width:46px;text-align:center}
+.vt b{display:block;font-size:16.5px;font-weight:800}
+.vt span{display:block;font-size:12.7px;color:var(--ink2);margin-top:2px}
+.kv{display:grid;gap:9px;grid-template-columns:1fr 1fr;margin-bottom:12px}
+.kv div{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:9px 11px}
+.kv .k{font-size:11.8px;color:var(--ink2)}
+.kv .v{font-family:var(--mono);font-size:19px;font-weight:600;line-height:1.2}
+.kv .s{font-size:11.3px;color:var(--ink3)}
+ul.chk{list-style:none}
+ul.chk li{border-inline-start:4px solid;border-radius:6px;padding:8px 11px;margin-bottom:7px;font-size:13px;line-height:1.55}
+li.ok{border-color:var(--ok);background:var(--ok-bg)}
+li.warn{border-color:var(--warn);background:var(--warn-bg)}
+li.bad{border-color:var(--bad);background:var(--bad-bg)}
+li.info{border-color:#7AB8F5;background:rgba(122,184,245,.1)}
+li .src{display:block;font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:3px}
+svg.chart{width:100%;height:auto;display:block;background:var(--sunk);border-radius:6px}
+.note{font-size:12.3px;color:var(--ink3);line-height:1.6;margin-top:10px}
+.hide{display:none}
+@media print{.tabs,header p{display:none}body{background:#fff;color:#000}.card{border-color:#bbb;background:#fff}}
+</style>
+</head>
+<body>
+<header>
+  <h1>שיקולים והנחיות לתכנון שבילי אופניים</h1>
+  <p>קביעת רמת ההפרדה, רוחבים ומרווחי בטיחות — עירוני, בין-עירוני ומחלפים. מיישם את הנחיות משרד התחבורה ונת״י; ליד כל ערך מופיע העמוד שממנו נלקח.</p>
+</header>
+
+<main>
+<div class="tabs">
+  <button data-t="urb" class="on">רחוב עירוני</button>
+  <button data-t="int">דרך בין-עירונית</button>
+  <button data-t="ic">מחלף · גשר · מעבר תחתי</button>
+</div>
+
+<!-- ============ עירוני ============ -->
+<section id="t-urb" class="grid">
+  <div>
+    <div class="card">
+      <h2>נתוני הרחוב</h2>
+      <div class="f2">
+        <div class="f"><label for="u_sp">מהירות ייעוד <span class="u">(קמ״ש)</span></label>
+          <select id="u_sp"><option>20</option><option>30</option><option selected>40</option>
+          <option>50</option><option>60</option><option>70</option></select></div>
+        <div class="f"><label for="u_mode">בסיס הנפח</label>
+          <select id="u_mode"><option value="day" selected>כ״ר למסלול ביממה</option>
+          <option value="peak">כ״ר למסלול בשעת שיא</option></select></div>
+      </div>
+      <div class="f"><label for="u_vol">נפח תנועה <span class="u" id="u_volU">(כ״ר למסלול ביממה)</span></label>
+        <input type="number" id="u_vol" value="4000" step="100" min="0" inputmode="numeric"></div>
+      <div class="f2">
+        <div class="f"><label for="u_adj">נפח בנתיב הסמוך בשעת שיא <span class="u">(כ״ר)</span></label>
+          <input type="number" id="u_adj" value="600" step="50" min="0" inputmode="numeric"></div>
+        <div class="f"><label for="u_calm">אזור מיתון תנועה / רחוב משולב</label>
+          <select id="u_calm"><option value="0" selected>לא</option><option value="1">כן</option></select></div>
+      </div>
+      <div class="f2">
+        <div class="f"><label for="u_park">חניה מקבילה לצד הנתיב</label>
+          <select id="u_park"><option value="0" selected>אין</option><option value="1">יש</option></select></div>
+        <div class="f"><label for="u_parkw">רוחב נתיב החניה <span class="u">(מ׳)</span></label>
+          <input type="number" id="u_parkw" value="2.0" step="0.1" min="1.5"></div>
+      </div>
+      <div class="f"><label for="u_w">רוחב מתוכנן לרצועת האופניים <span class="u">(מ׳)</span></label>
+        <input type="number" id="u_w" value="1.8" step="0.05" min="0"></div>
+    </div>
+    <div class="card">
+      <h2>תרשים 4.1 — ההסדר המומלץ</h2>
+      <div id="chart"></div>
+      <p class="note">הצירים והאזורים לפי תרשים 4.1, עמ׳ 67. מיקום הנקודה הוא קריאה מהתרשים ולא ערך מספרי שמופיע בספר — בגבולות האזורים יש לאמת מול התרשים עצמו.</p>
+    </div>
+  </div>
+  <div><div class="card"><h2>תוצאה</h2><div id="urbOut"></div></div></div>
+</section>
+
+<!-- ============ בין-עירוני ============ -->
+<section id="t-int" class="grid hide">
+  <div><div class="card">
+    <h2>נתוני הדרך</h2>
+    <div class="f"><label for="i_side">מה נמצא בין השביל לכביש</label>
+      <select id="i_side">
+        <option value="barrier">מעקה בטיחות</option>
+        <option value="clear" selected>אזור מפלט (L)</option>
+        <option value="ditch">תעלה או סוללה (L*)</option>
+        <option value="walk">מדרכה (באזור הצומת)</option>
+      </select></div>
+    <div class="f2">
+      <div class="f"><label for="i_w">רוחב מתוכנן לשביל <span class="u">(מ׳)</span></label>
+        <input type="number" id="i_w" value="3.5" step="0.1" min="1"></div>
+      <div class="f"><label for="i_obst">גובה מכשול בצד השביל <span class="u">(מ׳)</span></label>
+        <input type="number" id="i_obst" value="0.8" step="0.1" min="0"></div>
+    </div>
+    <div class="f"><label for="i_gap">מרווח מתוכנן עד המכשול <span class="u">(מ׳)</span></label>
+      <input type="number" id="i_gap" value="0.2" step="0.05" min="0"></div>
+  </div></div>
+  <div><div class="card"><h2>תוצאה</h2><div id="intOut"></div></div></div>
+</section>
+
+<!-- ============ מחלף ומעברים ============ -->
+<section id="t-ic" class="grid hide">
+  <div><div class="card">
+    <h2>סוג המעבר</h2>
+    <div class="f"><label for="c_kind">המצב הנבדק</label>
+      <select id="c_kind">
+        <option value="under" selected>מעבר תחתי (מנהרה)</option>
+        <option value="over">מעבר עילי (גשר ייעודי)</option>
+        <option value="bridge">לאורך גשר כביש</option>
+        <option value="ramp">חצייה בצומת בקצה רמפה</option>
+      </select></div>
+    <div class="f2">
+      <div class="f"><label for="c_share">משותף להולכי רגל</label>
+        <select id="c_share"><option value="0">לא — אופניים בלבד</option><option value="1" selected>כן</option></select></div>
+      <div class="f"><label for="c_bikes">נפח אופניים בשעת שיא</label>
+        <input type="number" id="c_bikes" value="40" step="5" min="0" inputmode="numeric"></div>
+    </div>
+    <div class="f2">
+      <div class="f"><label for="c_w">רוחב מתוכנן <span class="u">(מ׳)</span></label>
+        <input type="number" id="c_w" value="4.4" step="0.1" min="1"></div>
+      <div class="f"><label for="c_h">גבריט מתוכנן <span class="u">(מ׳)</span></label>
+        <input type="number" id="c_h" value="3.0" step="0.1" min="1.5"></div>
+    </div>
+    <div class="f"><label for="c_ped">רוחב מעבר חצייה להולכי רגל <span class="u">(מ׳)</span></label>
+      <input type="number" id="c_ped" value="3.0" step="0.1" min="1"></div>
+  </div></div>
+  <div><div class="card"><h2>תוצאה</h2><div id="icOut"></div></div></div>
+</section>
+</main>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/bike-design.js?v=2"></script>
+</body>
+</html>

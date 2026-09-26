@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="description" content="Interchange level of service analysis for ramps, weaving areas, merge and diverge segments, and freeway operations.">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>MAHALCO – ניתוח השתזרויות במחלפים (פרק 8)</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<style>
+  :root {
+    --bg: #12121e; --card: #1a1a2e; --card-2: #22223a; --field: #0f0f1a;
+    --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.05);
+    --accent: #E8A33D; --accent-dim: rgba(232,163,61,.16); --green: #4ADE80;
+    --ink: #EDEBF2; --ink-2: #9A96AB; --ink-3: #6B6780;
+    --danger: #F35B5B; --warn: #F5C451; --info: #7AB8F5;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); padding: 20px; font-family: Arial, sans-serif; line-height: 1.5; }
+  .container { max-width: 1400px; }
+  h1 { font-size: clamp(1.6rem, 1.375rem + 1.5vw, 2.4rem); font-weight: 700; margin: 0 0 .5rem; color: var(--ink); line-height: 1.2; }
+  h1 .bi { color: #ffc107; margin-left: .5rem; }
+  .subhead { color: var(--ink-3); margin: 0 0 1.5rem; line-height: 1.6; font-size: .95rem; }
+  .badge { display: inline-block; background: var(--card-2); color: var(--ink-2); font-size: .8rem;
+    font-weight: 600; padding: .25em .6em; border-radius: 6px; vertical-align: middle; margin-right: 6px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+  .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0;
+    font-weight: 600; padding: .5rem 1rem; border-bottom: 1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left: .5rem; }
+  .card-body { padding: 1rem; }
+  .section-note { font-size: .78rem; color: var(--ink-3); margin: 0 0 12px; line-height: 1.6; }
+
+  .form-group { margin-bottom: 12px; }
+  .row-2, .row-3 { display: grid; gap: 12px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 720px) { .row-2, .row-3 { grid-template-columns: 1fr; gap: 8px; } }
+  label { display: block; margin-bottom: .35rem; color: var(--ink-2); font-size: .9rem; }
+  label .unit { color: var(--ink-3); font-size: .8rem; }
+  input, select { width: 100%; padding: .375rem .75rem; font-size: 1rem; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--field); color: var(--ink); font-family: inherit; }
+  select option { background: var(--field); color: var(--ink); }
+  input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); }
+  input[type=number] { -moz-appearance: textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .form-text { color: var(--ink-3); font-size: .75rem; }
+
+  .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .type-opt { position: relative; }
+  .type-opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .type-opt label { display: block; cursor: pointer; border: 1.5px solid var(--line); border-radius: 9px;
+    padding: 10px 8px; text-align: center; font-size: .85rem; font-weight: 600; color: var(--ink-2);
+    background: var(--field); transition: .15s; margin: 0; }
+  .type-opt label .big { display: block; font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-bottom: 2px; }
+  .type-opt input:checked + label { border-color: var(--accent); background: var(--accent-dim); color: var(--ink); }
+  .type-opt input:checked + label .big { color: #ffd27a; }
+
+  .results-sticky { position: sticky; top: 16px; }
+  @media (max-width: 991px) { .results-sticky { position: static; } }
+  .result-box { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; height: 100%; }
+  .result-label { font-size: .82rem; color: var(--ink-2); }
+  .result-number { font-size: 1.7rem; font-weight: 700; color: var(--ink); line-height: 1.15;
+    font-variant-numeric: tabular-nums; direction: ltr; text-align: right; }
+  .result-number.highlight { color: var(--accent); }
+  .result-sub { font-size: .72rem; color: var(--ink-3); }
+
+  .los-big { display: flex; align-items: center; gap: 16px; background: var(--card-2);
+    border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; }
+  .los-letter { font-size: 54px; font-weight: 800; color: var(--accent); line-height: 1; min-width: 70px; text-align: center; }
+  .los-meta { font-size: .88rem; color: var(--ink-2); }
+  .los-meta b { font-size: 1rem; color: var(--ink); }
+
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: st; }
+  ol.steps > li { counter-increment: st; position: relative; padding: 12px 40px 12px 0; border-bottom: 1px dashed var(--line); }
+  ol.steps > li:last-child { border-bottom: 0; }
+  ol.steps > li::before { content: counter(st); position: absolute; right: 0; top: 12px;
+    background: var(--accent); color: #1a1a2e; width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 800; }
+  .steps .ttl { font-weight: 700; color: var(--ink); font-size: .93rem; margin-bottom: 5px; }
+  .steps .formula { direction: ltr; text-align: left; background: var(--field); border: 1px solid var(--line-2);
+    border-radius: 6px; padding: 6px 9px; font-family: Consolas, "Courier New", monospace;
+    font-size: .78rem; margin: 5px 0; overflow-x: auto; white-space: nowrap; color: #d8d4e4; }
+  .steps .num { direction: ltr; display: inline-block; font-family: Consolas, monospace; font-weight: 700; color: var(--accent); }
+
+  .table { --bs-table-bg: transparent; --bs-table-color: var(--ink); --bs-table-border-color: var(--line); font-size: .85rem; }
+  .table thead th { color: var(--ink-2); border-color: var(--line); font-weight: 600; white-space: nowrap; font-size: .78rem; }
+  .table td, .table th { border-color: var(--line-2); vertical-align: middle; }
+  .table td.c { text-align: center; }
+  .table tfoot td { font-weight: 700; color: var(--accent); border-top: 1px solid var(--line); }
+
+  .warn-list { list-style: none; padding: 0; margin: 0; }
+  .warn-list li { padding: 9px 12px; border-radius: 8px; margin-bottom: 7px; font-size: .85rem;
+    line-height: 1.55; border-right: 4px solid; background: var(--field); }
+  .warn-list li.ok { border-color: var(--green); color: #a6efc0; }
+  .warn-list li.warn { border-color: var(--warn); color: #f2dca2; }
+  .warn-list li.bad { border-color: var(--danger); color: #f7a3a3; }
+  .warn-list li.info { border-color: var(--info); color: #bcd9fb; }
+
+  .btn-accent { background: var(--accent); border-color: var(--accent); color: #1a1a2e; font-weight: 700;
+    padding: .55rem 1.4rem; border-radius: 8px; border: 1px solid transparent; width: 100%; }
+  .btn-accent:hover { background: #c9862f; border-color: #c9862f; color: #1a1a2e; }
+  .btn-ghost { background: transparent; color: var(--ink-2); border: 1px solid var(--line);
+    padding: .55rem 1.4rem; border-radius: 8px; font-weight: 600; }
+  .btn-ghost:hover { background: rgba(255,255,255,.06); color: var(--ink); }
+
+  .scheme-box { background: var(--field); border: 1px solid var(--line-2); border-radius: 10px; padding: 14px; overflow-x: auto; }
+  .scheme-box svg { display: block; margin: 0 auto; width: 100%; min-width: 800px; max-width: 960px; height: auto; }
+  .scheme-caption { font-size: .78rem; color: var(--ink-3); text-align: center; margin-top: 8px; }
+  .source-scheme { background: #fff; min-height: 180px; }
+  .source-scheme img { display: block; width: 100%; height: auto; max-height: 560px; object-fit: contain; }
+  .scheme-tabs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+  .scheme-tab { border: 1px solid var(--line); border-radius: 7px; background: var(--field); color: var(--ink-2);
+    padding: 7px 10px; cursor: pointer; font: inherit; font-size: .78rem; }
+  .scheme-tab:hover, .scheme-tab.active { border-color: var(--accent); background: var(--accent-dim); color: var(--ink); }
+
+
+  footer { text-align: center; color: var(--ink-3); font-size: .85rem; margin-top: 1.5rem; padding-bottom: 1rem; }
+  .col-help { font-size: .75rem; color: var(--ink-3); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1><i class="bi bi-arrow-left-right"></i>ניתוח השתזרויות במחלפים ודרכים מאספות-מחלקות <span class="badge">פרק 8</span></h1>
+  <p class="subhead">
+    חישוב רמת-שירות באזורי השתזרות (Weaving) לפי שיטת HCM 2000 כפי שהותאמה בהנחיות התכן – כרך 1, פרק 8.
+    כולל חישוב מקדמי עוצמת ההשתזרות, מהירויות הזרמים, צפיפות ורמת-שירות, ובדיקת מגבלות גיאומטריות ותפעוליות.
+    <br>החישוב מתבצע כולו בדפדפן, ללא שרת. יחידות: מטר, קמ"ש, רכב/שעה, ית"ן/שעה.
+  </p>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+
+      <div class="card">
+        <div class="card-header"><i class="bi bi-diagram-3"></i>סוג ההשתזרות והגיאומטריה</div>
+        <div class="card-body">
+          <div class="type-grid">
+            <div class="type-opt"><input type="radio" name="wtype" id="tA" value="A">
+              <label for="tA"><span class="big">A</span>רמפה<br><span style="font-size:.72rem;color:var(--ink-3);">Ramp Weave</span></label></div>
+            <div class="type-opt"><input type="radio" name="wtype" id="tB" value="B" checked>
+              <label for="tB"><span class="big">B</span>עיקרית<br><span style="font-size:.72rem;color:var(--ink-3);">Major Weave</span></label></div>
+            <div class="type-opt"><input type="radio" name="wtype" id="tC" value="C">
+              <label for="tC"><span class="big">C</span>דו-צדדית<br><span style="font-size:.72rem;color:var(--ink-3);">Two-sided</span></label></div>
+          </div>
+
+          <div class="row-3">
+            <div class="form-group">
+              <label for="L">אורך קטע ההשתזרות L <span class="unit">(מ')</span></label>
+              <input type="number" id="L" value="300" min="50" max="800" step="10">
+              <div class="col-help">נמדד בין נקודות 0.60 מ' ו-3.60 מ' (תרשים 8.4)</div>
+            </div>
+            <div class="form-group">
+              <label for="N">מספר נתיבים N <span class="unit">(כולל נתיב-עזר)</span></label>
+              <input type="number" id="N" value="3" min="1" max="6" step="1">
+            </div>
+            <div class="form-group">
+              <label for="SFF">מהירות זרימה חופשית S<sub>FF</sub> <span class="unit">(קמ"ש)</span></label>
+              <input type="number" id="SFF" value="110" min="60" max="130" step="5">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="roadtype">סוג הדרך לקביעת רמת-השירות (טבלה 8.5)</label>
+            <select id="roadtype">
+              <option value="freeway" selected>דרך מהירה / ממוחלפת במלואה</option>
+              <option value="cd">דרך מאספת-מחלקת / דו-מסלולית ממוחלפת בחלקה</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="bi bi-bar-chart-line"></i>נפחי התנועה</div>
+        <div class="card-body">
+          <p class="section-note">לפי דיאגרמת ההשתזרות (תרשים 8.8א'): V<sub>w</sub> = התנועות המשתזרות, V<sub>o</sub> = התנועות הלא-משתזרות. יש להזין נפחים בשעת השיא (רכב/שעה).</p>
+          <div class="row-2">
+            <div class="form-group"><label for="Vw1">V<sub>w1</sub> — משתזרת גבוהה (רכב/ש')</label>
+              <input type="number" id="Vw1" value="400" min="0" step="10"></div>
+            <div class="form-group"><label for="Vw2">V<sub>w2</sub> — משתזרת נמוכה (רכב/ש')</label>
+              <input type="number" id="Vw2" value="300" min="0" step="10"></div>
+          </div>
+          <div class="row-2">
+            <div class="form-group"><label for="Vo1">V<sub>o1</sub> — לא-משתזרת גבוהה (רכב/ש')</label>
+              <input type="number" id="Vo1" value="1800" min="0" step="10"></div>
+            <div class="form-group"><label for="Vo2">V<sub>o2</sub> — לא-משתזרת נמוכה (רכב/ש')</label>
+              <input type="number" id="Vo2" value="1500" min="0" step="10"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="bi bi-sliders"></i>מאפייני תנועה</div>
+        <div class="card-body">
+          <div class="row-3">
+            <div class="form-group"><label for="PHF">PHF</label>
+              <input type="number" id="PHF" value="0.92" min="0.7" max="1" step="0.01"></div>
+            <div class="form-group"><label for="PT">% רכב כבד P<sub>T</sub></label>
+              <input type="number" id="PT" value="8" min="0" max="60" step="1"></div>
+            <div class="form-group"><label for="fp">f<sub>p</sub> (אוכלוסיית נהגים)</label>
+              <input type="number" id="fp" value="1.00" min="0.85" max="1" step="0.01"></div>
+          </div>
+          <div class="form-group"><label for="ET">מקדם ית"ן E<sub>T</sub> לפי טופוגרפיה (סעיף 8.5.4)</label>
+            <select id="ET">
+              <option value="1.5">מישורי — E<sub>T</sub> = 1.5</option>
+              <option value="2.5" selected>גבעי — E<sub>T</sub> = 2.5</option>
+              <option value="4.5">הררי — E<sub>T</sub> = 4.5</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mb-2">
+        <button type="button" class="btn-accent flex-grow-1" id="calcBtn"><i class="bi bi-calculator"></i> חשב רמת-שירות</button>
+        <button type="button" class="btn-ghost" id="resetBtn"><i class="bi bi-arrow-counterclockwise"></i> איפוס</button>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="results-sticky">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-table"></i>תוצאות – שלבי החישוב (סעיף 8.5)</div>
+          <div class="card-body" id="resultsArea">
+            <div class="text-center text-muted py-5">
+              <i class="bi bi-clipboard-data fs-1"></i>
+              <p class="mt-3">מלאו את הנתונים ולחצו על <strong>חשב רמת-שירות</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header"><i class="bi bi-diagram-2"></i>סכמות אינטראקטיביות — מתוך הספר</div>
+    <div class="card-body">
+      <p class="section-note">הסכמות מוצגות כחיתוכים ישירים מהתרשימים בספר. בחירה בסוג A, B או C בראש המחשבון מציגה אוטומטית את התרשים המתאים; אפשר גם לעבור בין כל התרשימים בלחיצה.</p>
+      <div class="scheme-tabs" role="tablist" aria-label="בחירת תרשים">
+
+          <button type="button" class="scheme-tab" data-scheme="intro">8.1 · עקרון</button>
+          <button type="button" class="scheme-tab" data-scheme="A">A · 8.3א׳</button>
+          <button type="button" class="scheme-tab" data-scheme="B">B · 8.3ב׳</button>
+          <button type="button" class="scheme-tab" data-scheme="C">C · 8.3ג׳</button>
+          <button type="button" class="scheme-tab" data-scheme="length">8.4 · אורך L</button>
+          <button type="button" class="scheme-tab" data-scheme="israel">8.6 · ישראל</button>
+
+      </div>
+      <div class="scheme-box source-scheme">
+        <img id="schemeImage" alt="תרשים מקור מתוך פרק 8">
+      </div>
+      <div id="schemeTitle" class="scheme-caption"></div>
+      <div id="schemeCaption" class="scheme-caption"></div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-table"></i>טבלה 8.2 — N<sub>w,max</sub> לפי סוג השתזרות</div>
+        <div class="card-body p-0">
+          <table class="table mb-0">
+            <thead><tr><th>תצורה (סוג ההשתזרות)</th><th class="c">N<sub>w,max</sub></th><th class="c">V<sub>w,max</sub> (ית"ן/ש')</th><th class="c">L<sub>max</sub> (מ')</th><th class="c">VR<sub>max</sub></th></tr></thead>
+            <tbody>
+              <tr><td>A — רמפה</td><td class="c">1.4</td><td class="c">2,800</td><td class="c">700</td><td class="c">לפי N (טבלה)</td></tr>
+              <tr><td>B — עיקרית</td><td class="c">3.5</td><td class="c">4,000</td><td class="c">800</td><td class="c">0.50</td></tr>
+              <tr><td>C — דו-צדדית</td><td class="c">3.0</td><td class="c">3,500</td><td class="c">800</td><td class="c">0.40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-table"></i>טבלה 8.5 — קריטריונים לרמות-שירות (ית"ן/ק"מ/נתיב)</div>
+        <div class="card-body p-0">
+          <table class="table mb-0">
+            <thead><tr><th>סוג הדרך</th><th class="c">A</th><th class="c">B</th><th class="c">C</th><th class="c">D</th><th class="c">E</th><th class="c">F</th></tr></thead>
+            <tbody>
+              <tr><td>דרך מהירה / ממוחלפת במלואה</td><td class="c">≤6</td><td class="c">≤12</td><td class="c">≤17</td><td class="c">≤22</td><td class="c">≤27</td><td class="c">&gt;27</td></tr>
+              <tr><td>דרך מאספת-מחלקת / דו-מסלולית ממוחלפת בחלקה</td><td class="c">≤8</td><td class="c">≤15</td><td class="c">≤20</td><td class="c">≤23</td><td class="c">≤25</td><td class="c">&gt;25</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><i class="bi bi-table"></i>טבלאות 8.3 — קבועי מודל עוצמת ההשתזרות W<sub>i</sub></div>
+    <div class="card-body p-0">
+      <table class="table mb-0">
+        <thead>
+          <tr><th rowspan="2">סוג</th><th rowspan="2">תנועה</th><th rowspan="2">תפעול</th><th class="c">a</th><th class="c">b</th><th class="c">c</th><th class="c">d</th></tr>
+        </thead>
+        <tbody>
+          <tr><td rowspan="4">A</td><td rowspan="2">משתזרת</td><td>מאולץ</td><td class="c">0.15</td><td class="c">2.2</td><td class="c">0.97</td><td class="c">0.80</td></tr>
+          <tr><td>לא מאולץ</td><td class="c">0.35</td><td class="c">2.2</td><td class="c">0.97</td><td class="c">0.80</td></tr>
+          <tr><td rowspan="2">לא-משתזרת</td><td>מאולץ</td><td class="c">0.0035</td><td class="c">4.0</td><td class="c">1.3</td><td class="c">0.75</td></tr>
+          <tr><td>לא מאולץ</td><td class="c">0.0020</td><td class="c">4.0</td><td class="c">1.3</td><td class="c">0.75</td></tr>
+          <tr><td rowspan="4">B</td><td rowspan="2">משתזרת</td><td>מאולץ</td><td class="c">0.08</td><td class="c">2.2</td><td class="c">0.70</td><td class="c">0.50</td></tr>
+          <tr><td>לא מאולץ</td><td class="c">0.15</td><td class="c">2.2</td><td class="c">0.70</td><td class="c">0.50</td></tr>
+          <tr><td rowspan="2">לא-משתזרת</td><td>מאולץ</td><td class="c">0.0020</td><td class="c">6.0</td><td class="c">1.0</td><td class="c">0.50</td></tr>
+          <tr><td>לא מאולץ</td><td class="c">0.0010</td><td class="c">6.0</td><td class="c">1.0</td><td class="c">0.50</td></tr>
+          <tr><td rowspan="4">C</td><td rowspan="2">משתזרת</td><td>מאולץ</td><td class="c">0.08</td><td class="c">2.3</td><td class="c">0.80</td><td class="c">0.60</td></tr>
+          <tr><td>לא מאולץ</td><td class="c">0.14</td><td class="c">2.3</td><td class="c">0.80</td><td class="c">0.60</td></tr>
+          <tr><td rowspan="2">לא-משתזרת</td><td>מאולץ</td><td class="c">0.0020</td><td class="c">6.0</td><td class="c">1.1</td><td class="c">0.60</td></tr>
+          <tr><td>לא מאולץ</td><td class="c">0.0010</td><td class="c">6.0</td><td class="c">1.1</td><td class="c">0.60</td></tr>
+        </tbody>
+      </table>
+      <div class="p-2" style="font-size:.78rem;color:var(--ink-3);">המודל: W<sub>i</sub> = a·(1+VR)<sup>b</sup> / (3.28·L)<sup>c</sup> · (v/N)<sup>d</sup></div>
+    </div>
+  </div>
+
+  <footer>MAHALCO – ניתוח השתזרויות (פרק 8) · מבוסס HCM 2000 פרק 24 כפי שהותאם בהנחיות התכן</footer>
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/interchange-weaving.js?v=2"></script>
+</body>
+</html>

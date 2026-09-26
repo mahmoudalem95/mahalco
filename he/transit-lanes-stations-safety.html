@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mahalco-calc.onrender.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>ניתוח נתיבי נת"צ, תחנות, בטיחות ושדרוג — AASHTO / APTA</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<style>
+  :root{--bg:#12121e;--card:#1a1a2e;--card-2:#22223a;--field:#0f0f1a;--line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.05);--accent:#E8A33D;--green:#4ADE80;--ink:#EDEBF2;--ink-2:#9A96AB;--ink-3:#6B6780;--danger:#F35B5B;--warn:#F5C451;--info:#7AB8F5;}
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);padding:20px;font-family:Arial,sans-serif;line-height:1.5;}
+  .container{max-width:1300px;}
+  h1{font-size:clamp(1.5rem,1.3rem+1.5vw,2.1rem);font-weight:700;margin:0 0 .5rem;color:var(--ink);}
+  h1 .bi{color:#ffc107;margin-left:.5rem;}
+  .subhead{color:var(--ink-3);margin:0 0 1.5rem;line-height:1.6;font-size:.92rem;}
+  .badge{display:inline-block;background:var(--card-2);color:var(--ink-2);font-size:.78rem;font-weight:600;padding:.25em .6em;border-radius:6px;vertical-align:middle;margin-right:6px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.3);margin-bottom:20px;}
+  .card-header{background:var(--accent);color:#1a1a2e;border-radius:12px 12px 0 0;font-weight:600;padding:.5rem 1rem;}
+  .card-header .bi{margin-left:.5rem;}
+  .card-body{padding:1rem;}
+  .section-note{font-size:.78rem;color:var(--ink-3);margin:0 0 12px;line-height:1.6;}
+  .form-group{margin-bottom:12px;}
+  .row-2{display:grid;gap:12px;grid-template-columns:1fr 1fr;}
+  .row-3{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr;}
+  @media(max-width:720px){.row-2,.row-3{grid-template-columns:1fr;gap:8px;}}
+  label{display:block;margin-bottom:.35rem;color:var(--ink-2);font-size:.9rem;}
+  label .unit{color:var(--ink-3);font-size:.8rem;}
+  input,select{width:100%;padding:.375rem .75rem;font-size:1rem;border:1px solid var(--line);border-radius:6px;background:var(--field);color:var(--ink);font-family:inherit;}
+  select option{background:var(--field);color:var(--ink);}
+  input:focus,select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 .2rem rgba(232,163,61,.2);}
+  .result-box{background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;height:100%;}
+  .result-label{font-size:.82rem;color:var(--ink-2);}
+  .result-number{font-size:1.6rem;font-weight:700;color:var(--ink);line-height:1.15;font-variant-numeric:tabular-nums;direction:ltr;text-align:right;}
+  .result-number.highlight{color:var(--accent);}
+  .result-sub{font-size:.72rem;color:var(--ink-3);}
+  .verdict-big{display:flex;align-items:center;gap:16px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:14px;}
+  .verdict-icon{font-size:44px;line-height:1;min-width:70px;text-align:center;}
+  .verdict-meta{font-size:.88rem;color:var(--ink-2);}
+  .verdict-meta b{font-size:1rem;color:var(--ink);}
+  .warn-list{list-style:none;padding:0;margin:0;}
+  .warn-list li{padding:9px 12px;border-radius:8px;margin-bottom:7px;font-size:.85rem;line-height:1.55;border-right:4px solid;background:var(--field);}
+  .warn-list li.ok{border-color:var(--green);color:#a6efc0;}
+  .warn-list li.warn{border-color:var(--warn);color:#f2dca2;}
+  .warn-list li.bad{border-color:var(--danger);color:#f7a3a3;}
+  .warn-list li.info{border-color:var(--info);color:#bcd9fb;}
+  .table{--bs-table-bg:transparent;--bs-table-color:var(--ink);--bs-table-border-color:var(--line);font-size:.85rem;}
+  .table thead th{color:var(--ink-3);border-color:var(--line);font-weight:600;font-size:.78rem;}
+  .table td,.table th{border-color:var(--line-2);}
+  .table td.c{text-align:center;}
+  footer{text-align:center;color:var(--ink-3);font-size:.85rem;margin-top:1.5rem;padding-bottom:1rem;}
+  .col-help{font-size:.75rem;color:var(--ink-3);margin-top:2px;}
+  .results-sticky{position:sticky;top:16px;}
+  @media(max-width:991px){.results-sticky{position:static;}}
+  .tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+  .tabs button{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;width:auto;}
+  .tabs button:hover{background:var(--card-2);color:var(--ink);}
+  .tabs button.active{background:var(--accent);color:#1a1a2e;border-color:var(--accent);}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
+  .scheme-box{background:var(--field);border:1px solid var(--line-2);border-radius:10px;padding:14px;overflow-x:auto;}
+  .scheme-box svg{display:block;margin:0 auto;width:100%;max-width:700px;height:auto;}
+  .scheme-caption{font-size:.78rem;color:var(--ink-3);text-align:center;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1><i class="bi bi-cone-striped"></i>נתיבי נת"צ, תחנות ובטיחות <span class="badge">AASHTO / APTA</span></h1>
+  <p class="subhead">
+    כלי מקיף לניתוח נתיבי תחבורה ציבורית: רוחב נתיבים, תכן תחנות, אמצעי בטיחות,
+    הערכת שדרוג תשתית וקביעת חתך רוחב. מבוסס על AASHTO (A Policy on Geometric Design)
+    ו-APTA (Transit Street Design Guide).
+  </p>
+
+  <div class="tabs">
+    <button class="active" data-tab="lane"><i class="bi bi-lanes"></i> נתיבי נת"צ</button>
+    <button data-tab="station"><i class="bi bi-signpost-split"></i> תחנות</button>
+    <button data-tab="safety"><i class="bi bi-shield-check"></i> אמצעי בטיחות</button>
+    <button data-tab="upgrade"><i class="bi bi-arrow-up-circle"></i> שדרוג תשתית</button>
+    <button data-tab="tables"><i class="bi bi-table"></i> טבלאות עזר</button>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 1: Transit lane analysis                                    -->
+  <!-- =============================================================== -->
+  <div id="lane" class="tab-pane active">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט — נתיב נת"צ</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="l_type">סוג הנת"צ</label>
+                <select id="l_type">
+                  <option value="exclusive" selected>בלעדי לתח"צ (Exclusive)</option>
+                  <option value="semi">חצי-בלעדי (Semi-exclusive)</option>
+                  <option value="mixed">משותף עם HOV (Mixed)</option>
+                  <option value="curb">צדדי (Curbside)</option>
+                  <option value="median">מרכזי (Median)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="l_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                <select id="l_vd">
+                  <option>40</option><option>50</option><option>60</option>
+                  <option selected>70</option><option>80</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="l_width">רוחב נת"צ מתוכנן <span class="unit">(מ')</span></label>
+                <input type="number" id="l_width" value="3.5" step="0.1" min="2.5" max="5">
+              </div>
+              <div class="form-group">
+                <label for="l_lanes">מספר נתיבי נת"צ לכיוון</label>
+                <select id="l_lanes">
+                  <option value="1" selected>1</option>
+                  <option value="2">2</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="l_barrier">הפרדה פיזית</label>
+                <select id="l_barrier">
+                  <option value="none">ללא (סימון בלבד)</option>
+                  <option value="markers" selected>עמודונים (Markers)</option>
+                  <option value="curb">אבן שפה (Curb)</option>
+                  <option value="barrier">מעקה בטיחות (Barrier)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="l_buses">נפח אוטובוסים <span class="unit">(אוטובוסים/שעה)</span></label>
+                <input type="number" id="l_buses" value="25" step="1" min="0">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="l_pax">נפח נוסעים <span class="unit">(נוסעים/שעה)</span></label>
+                <input type="number" id="l_pax" value="1200" step="50" min="0">
+              </div>
+              <div class="form-group">
+                <label for="l_speed_limit">מהירות מותרת בציר <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="l_speed_limit" value="60" step="5" min="30" max="110">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><i class="bi bi-diagram-2"></i>סקיצה — חתך נת"צ</div>
+          <div class="card-body">
+            <div class="scheme-box">
+              <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="60" width="480" height="40" fill="#2c2c46"/>
+                <line x1="0" y1="80" x2="480" y2="80" stroke="#6B6780" stroke-width="1" stroke-dasharray="6,4"/>
+                <rect x="40" y="60" width="160" height="40" fill="rgba(74,222,128,.15)" stroke="#4ADE80" stroke-width="1.5"/>
+                <text x="120" y="85" text-anchor="middle" fill="#4ADE80" font-size="11" font-weight="700">נת"צ</text>
+                <text x="250" y="85" text-anchor="middle" fill="#9A96AB" font-size="10">נתיב רגיל</text>
+                <text x="400" y="85" text-anchor="middle" fill="#9A96AB" font-size="10">נתיב רגיל</text>
+                <line x1="40" y1="55" x2="200" y2="55" stroke="#E8A33D" stroke-width="1"/>
+                <text x="120" y="50" text-anchor="middle" fill="#E8A33D" font-size="9">רוחב נת"צ</text>
+                <text x="240" y="130" text-anchor="middle" fill="#9A96AB" font-size="10">חתך רוחב טיפוסי — נת"צ צדדי</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="results-sticky">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — ניתוח נת"צ</div>
+            <div class="card-body" id="laneResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 2: Station design                                           -->
+  <!-- =============================================================== -->
+  <div id="station" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט — תכן תחנה</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="s_type">סוג התחנה</label>
+                <select id="s_type">
+                  <option value="curb" selected>תחנת רחוב (Curbside)</option>
+                  <option value="bay">מפרץ איסוף (Bay)</option>
+                  <option value="bulb">Bulb-out (הבלטה)</option>
+                  <option value="island">אי תחנה (Boarding Island)</option>
+                  <option value="brt">תחנת BRT מלאה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="s_buses">אוטובוסים בשעת שיא <span class="unit">(אוטובוסים/שעה)</span></label>
+                <input type="number" id="s_buses" value="25" step="1" min="1">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="s_boarding">נוסעים עולים בשעת שיא <span class="unit">(נוסעים/שעה)</span></label>
+                <input type="number" id="s_boarding" value="400" step="25" min="0">
+              </div>
+              <div class="form-group">
+                <label for="s_alighting">נוסעים יורדים בשעת שיא <span class="unit">(נוסעים/שעה)</span></label>
+                <input type="number" id="s_alighting" value="300" step="25" min="0">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="s_dwell">זמן שהייה בתחנה <span class="unit">(שניות)</span></label>
+                <input type="number" id="s_dwell" value="20" step="1" min="5">
+              </div>
+              <div class="form-group">
+                <label for="s_platform_h">גובה רציף <span class="unit">(מ')</span></label>
+                <select id="s_platform_h">
+                  <option value="0.15">0.15 (תקני)</option>
+                  <option value="0.18">0.18</option>
+                  <option value="0.30" selected>0.30 (גבוה — קליטה מהירה)</option>
+                  <option value="0.90">0.90 (BRT)</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="s_doors">מספר דלתות לאוטובוס</label>
+                <select id="s_doors">
+                  <option value="2">2 דלתות</option>
+                  <option value="3" selected>3 דלתות</option>
+                  <option value="4">4 דלתות (BRT)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="s_payment">שיטת תשלום</label>
+                <select id="s_payment">
+                  <option value="driver" selected>אצל הנהג</option>
+                  <option value="offboard">מחוץ לרכב (Off-board)</option>
+                  <option value="all_doors">עלייה מכל הדלתות</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="results-sticky">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — תכן תחנה</div>
+            <div class="card-body" id="stationResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 3: Safety measures                                          -->
+  <!-- =============================================================== -->
+  <div id="safety" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט — אמצעי בטיחות</div>
+          <div class="card-body">
+            <div class="row-2">
+              <div class="form-group">
+                <label for="sf_vd">מהירות מותרת <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="sf_vd" value="60" step="5" min="30" max="120">
+              </div>
+              <div class="form-group">
+                <label for="sf_lanes">מספר נתיבים לכיוון</label>
+                <select id="sf_lanes">
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="sf_shoulder">רוחב שול קיים <span class="unit">(מ')</span></label>
+                <input type="number" id="sf_shoulder" value="2.0" step="0.1" min="0" max="5">
+              </div>
+              <div class="form-group">
+                <label for="sf_median">רוחב מפרדה <span class="unit">(מ')</span></label>
+                <input type="number" id="sf_median" value="4.0" step="0.5" min="0" max="20">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="sf_lighting">תאורה</label>
+                <select id="sf_lighting">
+                  <option value="none">ללא</option>
+                  <option value="partial">חלקית</option>
+                  <option value="full" selected>מלאה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sf_ped">הולכי רגל באזור</label>
+                <select id="sf_ped">
+                  <option value="low" selected>נמוכה</option>
+                  <option value="medium">בינונית</option>
+                  <option value="high">גבוהה</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="sf_bikes">אופניים באזור</label>
+                <select id="sf_bikes">
+                  <option value="low" selected>נמוכה</option>
+                  <option value="medium">בינונית</option>
+                  <option value="high">גבוהה</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sf_accidents">תאונות ב-3 שנים אחרונות</label>
+                <input type="number" id="sf_accidents" value="2" step="1" min="0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="results-sticky">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — אמצעי בטיחות</div>
+            <div class="card-body" id="safetyResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 4: Upgrade analysis                                         -->
+  <!-- =============================================================== -->
+  <div id="upgrade" class="tab-pane">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-gear"></i>קלט — שדרוג תשתית</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="u_scope">היקף השדרוג</label>
+              <select id="u_scope">
+                <option value="point" selected>נקודתי (תחנה / צומת)</option>
+                <option value="segment">קטע (100–1,000 מ')</option>
+                <option value="corridor">ציר שלם (מעל 1 ק"מ)</option>
+              </select>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="u_length">אורך הקטע <span class="unit">(מ')</span></label>
+                <input type="number" id="u_length" value="500" step="50" min="10">
+              </div>
+              <div class="form-group">
+                <label for="u_vd">מהירות תכן <span class="unit">(קמ"ש)</span></label>
+                <input type="number" id="u_vd" value="60" step="5" min="30" max="120">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="u_cur_width">רוחב קיים <span class="unit">(מ')</span></label>
+                <input type="number" id="u_cur_width" value="7.0" step="0.1" min="3">
+              </div>
+              <div class="form-group">
+                <label for="u_target_width">רוחב יעד <span class="unit">(מ')</span></label>
+                <input type="number" id="u_target_width" value="10.5" step="0.1" min="3">
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="u_pavement">מצב סלילה קיים</label>
+                <select id="u_pavement">
+                  <option value="good" selected>טוב</option>
+                  <option value="fair">בינוני</option>
+                  <option value="poor">גרוע</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="u_drainage">ניקוז</label>
+                <select id="u_drainage">
+                  <option value="good" selected>תקין</option>
+                  <option value="partial">חלקי</option>
+                  <option value="poor">לא תקין</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label for="u_sidewalk">מדרכות</label>
+                <select id="u_sidewalk">
+                  <option value="both" selected>משני הצדדים</option>
+                  <option value="one">צד אחד</option>
+                  <option value="none">ללא</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="u_priority">עדיפות הפרויקט</label>
+                <select id="u_priority">
+                  <option value="high" selected>גבוהה</option>
+                  <option value="medium">בינונית</option>
+                  <option value="low">נמוכה</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="results-sticky">
+          <div class="card">
+            <div class="card-header"><i class="bi bi-clipboard-data"></i>תוצאות — שדרוג</div>
+            <div class="card-body" id="upgradeResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- TAB 5: Reference tables                                         -->
+  <!-- =============================================================== -->
+  <div id="tables" class="tab-pane">
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>AASHTO — רוחב נתיבים לתחבורה ציבורית</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג נתיב</th><th class="c">רוחב מזערי (מ')</th><th class="c">רוחב מומלץ (מ')</th><th>הערות</th></tr></thead>
+          <tbody>
+            <tr><td>נת"צ בלעדי</td><td class="c">3.0</td><td class="c">3.5</td><td>ללא תנועה מעורבת</td></tr>
+            <tr><td>נת"צ צדדי</td><td class="c">3.3</td><td class="c">3.6</td><td>דורש אכיפה</td></tr>
+            <tr><td>נת"צ מרכזי</td><td class="c">3.5</td><td class="c">3.6</td><td>עם שול תפעולי</td></tr>
+            <tr><td>נתיב משותף HOV</td><td class="c">3.6</td><td class="c">3.9</td><td>רוחב מוגבר</td></tr>
+            <tr><td>שול מורחב לתח"צ</td><td class="c">3.0</td><td class="c">3.5</td><td>לשימוש בשעת שיא</td></tr>
+            <tr><td>מפרץ תחנה</td><td class="c">2.7</td><td class="c">3.0</td><td>להורדה / העלאה</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>APTA — מאפייני תחנות</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>סוג תחנה</th><th class="c">קיבולת (אוטובוסים/שעה)</th><th class="c">גובה רציף (מ')</th><th class="c">רוחב רציף (מ')</th></tr></thead>
+          <tbody>
+            <tr><td>תחנת רחוב</td><td class="c">15–20</td><td class="c">0.15</td><td class="c">1.5–2.0</td></tr>
+            <tr><td>מפרץ איסוף</td><td class="c">20–25</td><td class="c">0.15</td><td class="c">2.0–2.5</td></tr>
+            <tr><td>Bulb-out</td><td class="c">25–30</td><td class="c">0.15–0.30</td><td class="c">2.5–3.0</td></tr>
+            <tr><td>אי תחנה</td><td class="c">30–45</td><td class="c">0.30</td><td class="c">3.0–4.0</td></tr>
+            <tr><td>תחנת BRT</td><td class="c">45–90</td><td class="c">0.90</td><td class="c">3.0–5.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>אמצעי בטיחות — מפתח החלטה</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מהירות</th><th class="c">מעקה</th><th class="c">אבן שפה</th><th class="c">עמודונים</th><th class="c">סימון בלבד</th></tr></thead>
+          <tbody>
+            <tr><td>≤50 קמ"ש</td><td class="c">—</td><td class="c">✓</td><td class="c">✓</td><td class="c">✓</td></tr>
+            <tr><td>51–70 קמ"ש</td><td class="c">מומלץ</td><td class="c">✓</td><td class="c">מומלץ</td><td class="c">—</td></tr>
+            <tr><td>71–90 קמ"ש</td><td class="c">✓</td><td class="c">—</td><td class="c">✓</td><td class="c">—</td></tr>
+            <tr><td>&gt;90 קמ"ש</td><td class="c">חובה</td><td class="c">—</td><td class="c">—</td><td class="c">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="bi bi-table"></i>שדרוג — קריטריונים להחלטה</div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead><tr><th>מצב קיים</th><th>פעולה מומלצת</th></tr></thead>
+          <tbody>
+            <tr><td>רוחב &lt; 3.0 מ'</td><td>שדרוג דחוף — הרחבה</td></tr>
+            <tr><td>רוחב 3.0–3.3 מ'</td><td>שדרוג מומלץ — התאמה לתקן</td></tr>
+            <tr><td>רוחב 3.3–3.6 מ'</td><td>תקין — ללא שדרוג</td></tr>
+            <tr><td>סלילה גרועה</td><td>שיקום שכבת אספלט</td></tr>
+            <tr><td>ניקוז לא תקין</td><td>שיפור מערכת ניקוז</td></tr>
+            <tr><td>ללא מדרכות</td><td>הוספת מדרכות + נגישות</td></tr>
+            <tr><td>תאונות מרובות</td><td>אמצעי בטיחות + תמרורים</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>MAHALCO · כלי 4 — נתיבי נת"צ, תחנות ובטיחות · AASHTO + APTA</footer>
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/transit-lanes-safety.js?v=2"></script>
+</body>
+</html>

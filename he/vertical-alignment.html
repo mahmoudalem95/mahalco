@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com https://mahalco-dwg.onrender.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>תכן תוואי אנכי | Mahalco</title>
+<style>
+:root{--bg:#0f1420;--panel:#161d2e;--line:#26314a;--txt:#e8ecf5;--mut:#8b96ad;--acc:#4fb3ff;--ok:#3ecf8e;--bad:#ff6161;--ground:#8b96ad;--design:#ff9f43;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Arial,Helvetica,sans-serif;padding:16px}
+h1{font-size:1.25rem;margin:0 0 4px}
+.sub{color:var(--mut);font-size:.85rem;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:900px){.grid{grid-template-columns:360px 1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px}
+h2{font-size:.9rem;margin:0 0 6px;color:var(--acc)}
+label{display:block;font-size:.8rem;color:var(--mut);margin:8px 0 4px}
+textarea,input,select{width:100%;background:#0c1120;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:.85rem}
+textarea{height:70px;font-family:monospace;resize:vertical}
+#ground{height:100px}
+button{cursor:pointer;background:var(--acc);color:#03101f;border:none;border-radius:6px;padding:7px 11px;font-weight:bold;font-size:.82rem}
+button.sec{background:#232c42;color:var(--txt)}
+button.on{outline:2px solid var(--acc)}
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:6px}
+th,td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:center}
+th{color:var(--mut);font-weight:normal}
+.row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.row>div{flex:1;min-width:90px}
+.small{font-size:.75rem;color:var(--mut)}
+.badge{display:inline-block;padding:1px 7px;border-radius:20px;font-size:.72rem}
+.badge.ok{background:#123326;color:var(--ok)}
+.badge.bad{background:#3a1414;color:var(--bad)}
+canvas{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:8px}
+#planCv{height:220px;cursor:crosshair}
+#cv{height:700px;cursor:default}
+#warn div{font-size:.8rem;color:var(--bad);margin:3px 0}
+.legend{display:flex;gap:16px;font-size:.78rem;margin-top:6px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.sw{width:14px;height:3px;display:inline-block;border-radius:2px}
+[hidden]{display:none!important}
+.stepnav{display:flex;gap:8px;margin-bottom:14px}
+.stepnav button{flex:1;background:#232c42;color:var(--mut);border:1px solid var(--line);border-radius:8px;padding:9px 6px;font-size:.8rem;font-weight:bold}
+.stepnav button.on{background:var(--acc);color:#03101f;border-color:var(--acc)}
+.stepnav button.done{color:var(--ok);border-color:var(--ok)}
+</style>
+</head>
+<body>
+<h1>תכן ושרטוט תוואי אנכי</h1>
+<div class="sub">ייבוא ציר ומדידה (DWG בעיקר, DXF/CSV למקרה הצורך) → חתך קרקע קיימת אוטומטי → תכן קו אדום אינטראקטיבי לפי נת"י פרק 6 → ייצוא DWG</div>
+<div class="stepnav">
+<button data-step="1" data-on-click="0">1 · קליטת נתונים</button>
+<button data-step="2" data-on-click="1">2 · קרקע קיימת</button>
+<button data-step="3" data-on-click="2">3 · תכן קו אדום</button>
+<button data-step="4" data-on-click="3">4 · ייצוא</button>
+</div>
+<div class="grid">
+<div>
+
+<div class="panel" id="panelSource">
+<h2>1 · מאיפה הנתונים</h2>
+<div class="row">
+<button id="srcProj" class="pri" data-on-click="4">ייבוא מהפרויקט</button>
+<button id="srcFiles" class="sec" data-on-click="5">קבצי DWG / DXF</button>
+</div>
+<div id="boxFiles" hidden style="margin-top:10px">
+<label>קובץ צירים (DWG או DXF)</label>
+<input type="file" id="fAxes" accept=".dwg,.dxf">
+<label>קובץ מדידה (DWG, DXF או CSV)</label>
+<input type="file" id="fSurv" accept=".dwg,.dxf,.csv,.txt,.pts,.xyz">
+<div class="row" id="axisRow" hidden><div><label>הציר לחתך</label>
+<select id="axisPick" data-on-change="6"></select></div></div>
+<label>שירות המרת DWG (נדרש רק לקובצי DWG)</label>
+<input type="url" id="vSvc" style="direction:ltr;text-align:left">
+<div class="row"><button id="btnLoad" class="pri" data-on-click="7">קליטה ובניית החתך</button></div>
+</div>
+<div id="srcInfo" class="small" style="margin-top:8px"></div>
+<div id="axisInfo" class="small"></div>
+</div>
+
+<details class="panel" id="panelAdvanced">
+<summary style="cursor:pointer;color:var(--acc);font-size:.9rem">מתקדם — קבצי DXF/CSV, ציור ציר ידני, עריכת ענן הנקודות וקו הקרקע</summary>
+<div style="margin-top:10px">
+<label>ענן נקודות טקסטואלי — X,Y,Z בכל שורה</label>
+<textarea id="surveyTxt" placeholder="X,Y,Z בכל שורה"></textarea>
+<div class="row">
+<div><label>סדר עמודות</label><select id="colOrder"><option value="xyz">X,Y,Z</option><option value="yxz">Y,X,Z</option></select></div>
+<div><label>מרווח דגימה (מ׳)</label><input id="sampleStep" type="number" value="20"></div>
+<div><label>מסדרון חיפוש (מ׳)</label><input id="corridorW" type="number" value="15"></div>
+</div>
+<div class="row">
+<button class="sec" data-on-click="8">הצגת ענן הנקודות</button>
+<button class="sec" id="btnDrawAxis" data-on-click="9">✎ ציור ציר ידני</button>
+<button class="sec" data-on-click="10">איפוס ציר ידני</button>
+<button class="sec" data-on-click="11">בניית קו קרקע מהמדידה</button>
+</div>
+<canvas id="planCv" width="1000" height="220"></canvas>
+<div id="surveyInfo" class="small" style="margin-top:6px"></div>
+<label style="margin-top:10px">חתך אורך קיים — סטציה,גובה בכל שורה</label>
+<textarea id="ground">0,100
+50,101.4
+100,103.8
+150,106.5
+200,107.9
+250,108.2
+300,106.4
+350,103.1
+400,100.7
+450,99.9
+500,100.3</textarea>
+</div>
+</details>
+
+<div class="panel" id="panelDesign" hidden>
+<h2>3 · תכן קו אדום — נקודות PVI, רדיוס (K) ואורך עקום</h2>
+<label>מהירות תכן (קמ"ש)</label>
+<select id="vd"><option>60</option><option>70</option><option selected>80</option><option>90</option><option>100</option><option>110</option><option>120</option></select>
+<label>קריטריון ראות</label>
+<select id="crit"><option value="stop">עצירה</option><option value="dec">החלטה (בקטע)</option></select>
+<label>סוג רכב לחישוב h1 (עקום קמור)</label>
+<select id="veh"><option value="1.05">מכונית נוסעים</option><option value="2.4">משאית</option><option value="1.8">אוטובוס</option></select>
+<label>נקודות שבירה בקו האדום (PVI) — סטציה,גובה[,אורך עקום]</label>
+<textarea id="pvi">0,100
+100,105.5
+250,108.4
+400,101
+500,100.6</textarea>
+<div class="row">
+<button data-on-click="12">חשב ושרטט</button>
+<button class="sec" data-on-click="13">קו אדום = קו קרקע (עזר)</button>
+<button class="sec" data-on-click="14">⟵ חזרה לקרקע קיימת</button>
+<button data-on-click="15">המשך לייצוא →</button>
+</div>
+<div id="warn"></div>
+</div>
+<div id="tbl"></div>
+</div>
+
+<div class="panel" id="step2Box" hidden>
+<h2>2 · קרקע קיימת — חתך אורך לפי הציר והמדידה</h2>
+<div class="small">זהו חתך האורך של הקרקע הקיימת שהתקבל מהציר ומהמדידה שהוזנו בשלב 1. ודאו שהוא נראה סביר (אפשר לחזור ולשנות קלט בשלב 1), ואז המשיכו לתכנון קו אדום — הוספת נקודות PVI, רדיוס/אורך עקום ובדיקת ראות.</div>
+<div class="row" style="margin-top:8px">
+<button class="sec" data-on-click="16">⟵ חזרה לנתונים</button>
+<button data-on-click="17">המשך לתכנון קו אדום →</button>
+</div>
+</div>
+
+<div class="panel" style="align-self:flex-start">
+<div id="planSection" hidden style="margin-bottom:4px">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<h2 style="margin:0">תוכנית — הציר על גבי ה-DWG</h2>
+<span class="small">קנה־מידה אופקי משותף עם החתך שמתחתיו</span>
+</div>
+<canvas id="planView" width="1240" height="200" style="border-radius:8px 8px 0 0;border-bottom:none"></canvas>
+<div class="legend" style="margin:4px 0 2px">
+<span><i class="sw" style="background:#4fb3ff"></i>נקודות מדידה (DWG)</span>
+<span><i class="sw" style="background:var(--design)"></i>הציר האופקי שנבחר</span>
+</div>
+<div style="height:1px;background:var(--line);margin:6px 0 10px"></div>
+</div>
+<div class="row" id="rowVE" hidden>
+<div><label>הגזמה אנכית (VE) — יחס V:H</label><input id="veRatio" type="number" value="10" data-on-change="18"></div>
+</div>
+<div class="row" id="rowMode" hidden>
+<button id="mAdd" class="sec" data-on-click="19">➕ הוספת PVI (הקלקה)</button>
+<button id="mMove" class="sec on" data-on-click="20">✥ הזזה (גרירה)</button>
+<button id="mDel" class="sec" data-on-click="21">🗑 מחיקה (הקלקה)</button>
+</div>
+<div class="panel" id="selBox" hidden style="margin-top:8px">
+<div class="small" id="selInfo" style="margin-bottom:4px"></div>
+<div class="row">
+<div><label>סטציה</label><input id="selSta" type="number" step="0.01"></div>
+<div><label>גובה</label><input id="selEl" type="number" step="0.01"></div>
+<div><label>אורך עקום (ריק = מחושב)</label><input id="selL" type="number" step="1" placeholder="אוטומטי"></div>
+<div style="display:flex;align-items:flex-end"><button data-on-click="22">עדכון הנקודה</button></div>
+</div>
+</div>
+<canvas id="cv" width="1240" height="760" style="border-radius:0 0 8px 8px;border-top:none"></canvas>
+<div class="legend">
+<span><i class="sw" style="background:var(--ground)"></i>קו קרקע קיים</span>
+<span><i class="sw" style="background:var(--design)"></i>קו אדום מתוכנן</span>
+<span class="small">הגרף מוצג תמיד ביחס הגזמה אנכית קבוע (ברירת מחדל 1:10) — לא מתאים אוטומטית לפרופורציה חופשית.</span>
+</div>
+<div class="row" id="exportRow" hidden>
+<button data-on-click="23">⤓ ייצוא DWG (חתך אורך)</button>
+<button class="sec" data-on-click="24">⤓ ייצוא DXF</button>
+<button class="sec" data-on-click="25">⤓ ייצוא CSV (טבלת חפ/מל)</button>
+<button class="sec" data-on-click="26">⟵ חזרה לתכנון</button>
+</div>
+<div id="expInfo" class="small" style="margin-top:6px"></div>
+</div>
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/vertical-alignment.js?v=2"></script>
+
+<script src="../js/inline/d555c50eea.js"></script>
+<script src="../js/inline/d334dc5123.js"></script>
+<script src="../js/inline/15eccea167.js"></script>
+</body>
+</html>

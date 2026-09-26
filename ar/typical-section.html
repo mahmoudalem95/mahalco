@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2151829492004511"
+     crossorigin="anonymous"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="description" content="مقطع نموذجي حضري وبين-مدني – بناء مقطع عرضي وفق دليل تصميم الشوارع الحضرية (USDM أبوظبي) ودليل RTA للتصميم الهندسي (دبي) وأبوظبي TR-514 ودليل GCC للطرق السريعة. فحوصات حيّة مقابل الإرشادات، دليل الإرشادات الكامل، وورقة A0 بمقياس رسم حقيقي.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>MAHALCO — المقطع النموذجي + دليل الإرشادات</title>
+<style>
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF; --fill:#EFEFF4; --fill-2:#E4E4EA; --label:#1C1C1E; --label-2:#6C6C70; --label-3:#9A9AA0;
+  --sep:rgba(60,60,67,.16); --tint:#1F5FA8; --tint-soft:rgba(31,95,168,.12); --hi:#E9A21F; --hi-soft:rgba(233,162,31,.18);
+  --red:#D93A2B; --red-soft:rgba(217,58,43,.10); --amber:#B97A08; --amber-soft:rgba(233,162,31,.14); --green:#2E9D55; --green-soft:rgba(46,157,85,.12);
+  --paper:#fbfaf6; --bar:rgba(242,242,247,.82); --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06);
+  --r-l:14px; --r-m:10px; --r-s:8px; --insp:420px; --ease:cubic-bezier(.2,.8,.2,1);
+}
+:root[data-theme="dark"]{ --bg:#000; --card:#1C1C1E; --fill:#2C2C2E; --fill-2:#3A3A3C; --label:#F2F2F7; --label-2:#AEAEB2; --label-3:#7C7C80;
+    --sep:rgba(84,84,88,.55); --tint:#5AA0F2; --tint-soft:rgba(90,160,242,.16); --bar:rgba(18,18,20,.8);
+    --red:#FF6B5E; --red-soft:rgba(255,107,94,.14); --amber:#F2B53A; --green:#4CD27B; --shadow:none }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--label);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Cairo",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--tint);outline-offset:2px;border-radius:6px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- navigation bar ---------- */
+.nav{position:sticky;top:0;z-index:40;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--sep);padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+.nav-in{display:flex;align-items:center;gap:10px;min-height:56px}
+.nav h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.nav h1 small{display:block;font-size:12.5px;font-weight:500;color:var(--label-2);letter-spacing:0}
+.nav .sp{flex:1}
+.nbtn{min-width:44px;height:40px;padding:0 12px;border:0;border-radius:20px;background:var(--fill);color:var(--tint);font-size:15px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.nbtn:disabled{color:var(--label-3);cursor:default}
+.nbtn.primary{background:var(--tint);color:#fff}
+.nbtn svg{width:19px;height:19px}
+.pill{white-space:nowrap;flex:none;height:32px;padding:0 12px;border:0;border-radius:16px;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:background .3s,color .3s}
+.pill.ok{background:var(--green-soft);color:var(--green)}
+.pill.bad{background:var(--red-soft);color:var(--red)}
+.pill.warn{background:var(--amber-soft);color:var(--amber)}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
+
+/* ---------- layout ---------- */
+.shell{display:grid;grid-template-columns:minmax(0,1fr) var(--insp);gap:18px;padding:16px max(16px,env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  max-width:1500px;margin:0 auto;align-items:start}
+.stage{grid-column:1;grid-row:1;position:sticky;top:74px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.insp{grid-column:2;grid-row:1;min-width:0}
+@media (max-width:1023px){
+  .shell{grid-template-columns:1fr;gap:12px}
+  .stage{grid-column:1;grid-row:1;top:62px;z-index:20}
+  .insp{grid-column:1;grid-row:2}
+}
+
+/* ---------- canvas card ---------- */
+.canvas{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);overflow:hidden}
+.canvas-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:.5px solid var(--sep)}
+.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;position:relative;isolation:isolate}
+.seg button{position:relative;z-index:1;border:0;background:none;min-height:32px;padding:0 13px;border-radius:7px;font-size:14px;font-weight:500;color:var(--label);white-space:nowrap}
+.seg .knob{position:absolute;z-index:0;top:2px;bottom:2px;border-radius:7px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);transition:left .32s var(--ease),width .32s var(--ease)}
+:root[data-theme="dark"] .seg .knob{background:#636366}
+.seg button[aria-pressed="true"]{font-weight:600}
+.seg.full{display:flex}
+.seg.full button{flex:1;padding:0 6px}
+.zoom{margin-inline-start:auto;display:flex;gap:4px}
+.zoom button{width:36px;height:32px;border:0;border-radius:8px;background:var(--fill);color:var(--tint);font-size:17px;font-weight:600}
+.zoom output{min-width:48px;text-align:center;font-size:13px;color:var(--label-2);align-self:center;font-variant-numeric:tabular-nums}
+.sheetwrap{background:var(--paper);overflow:auto;touch-action:pan-x pan-y;max-height:58vh;-webkit-overflow-scrolling:touch}
+@media (max-width:1023px){ .sheetwrap{max-height:34vh} }
+#drawing{padding:8px;min-width:100%;transition:width .25s var(--ease)}
+#drawing svg{direction:ltr;display:block;width:100%;height:auto;background:var(--paper)}
+#drawing .selrect{fill:var(--hi-soft);stroke:var(--hi);stroke-width:.6;transition:x .25s var(--ease),width .25s var(--ease)}
+
+/* ---------- ribbon (the live strip) ---------- */
+.ribbon-wrap{padding:10px 12px 12px;border-top:.5px solid var(--sep)}
+.ribbon-head{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;font-size:13px;color:var(--label-2)}
+.ribbon-head b{color:var(--label);font-size:15px;font-variant-numeric:tabular-nums}
+.ribbon-head .gap{margin-inline-start:auto;font-weight:600}
+.ribbon-head .gap.bad{color:var(--red)} .ribbon-head .gap.ok{color:var(--green)}
+.ribbon{direction:ltr;display:flex;height:46px;border-radius:9px;overflow:hidden;background:var(--fill);position:relative;user-select:none;-webkit-user-select:none;touch-action:none}
+.rb{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:rgba(0,0,0,.72);
+  transition:flex-grow .28s var(--ease),box-shadow .2s;overflow:hidden;white-space:nowrap;cursor:pointer;border-right:1px solid rgba(255,255,255,.7)}
+.rb:last-child{border-right:0}
+.rb span{pointer-events:none;padding:0 2px;text-overflow:clip;overflow:hidden}
+.rb.sel{box-shadow:inset 0 0 0 3px var(--hi)}
+.rb.bad::after,.rb.warn::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.rb.warn::after{background:var(--hi)}
+.ribbon.dragging .rb{transition:none}
+.grip{position:absolute;top:0;bottom:0;width:26px;margin-left:-13px;z-index:2;cursor:ew-resize;display:flex;align-items:center;justify-content:center}
+.grip::before{content:"";width:4px;height:22px;border-radius:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.22),0 1px 4px rgba(0,0,0,.25);transition:transform .15s,height .15s}
+.grip.on::before{height:34px;transform:scaleX(1.4);background:var(--hi)}
+.ribbon-hint{font-size:12px;color:var(--label-3);margin-top:6px}
+.tip{position:fixed;z-index:80;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;font-size:13px;font-weight:600;padding:6px 10px;border-radius:9px;transform:translate(-50%,-120%);direction:ltr;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ---------- readouts ---------- */
+.readouts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:1023px){ .readouts{grid-template-columns:1fr} }
+.box{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:14px 16px}
+.box h3{margin:0 0 10px;font-size:15px;font-weight:700}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--fill);border-radius:var(--r-m);padding:9px 11px}
+.stat span{display:block;font-size:12px;color:var(--label-2);line-height:1.25}
+.stat b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat b small{font-size:12px;font-weight:500;color:var(--label-2)}
+.stat.pulse{animation:pulse .5s var(--ease)}
+@keyframes pulse{40%{background:var(--tint-soft)}}
+.chk{position:relative;padding:9px 12px 9px 12px;padding-inline-start:34px;border-radius:var(--r-m);background:var(--green-soft);margin-bottom:6px;font-size:14px;line-height:1.4}
+.chk::before{content:"✓";position:absolute;inset-inline-start:10px;top:9px;width:17px;height:17px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.chk.warn{background:var(--amber-soft)} .chk.warn::before{content:"!";background:var(--hi)}
+.chk.bad{background:var(--red-soft)} .chk.bad::before{content:"!";background:var(--red)}
+.chk b{display:block;font-size:12.5px;color:var(--label-2)}
+.chk.new{animation:chkin .4s var(--ease)}
+@keyframes chkin{from{opacity:0;transform:translateY(-4px)}}
+.sheetlist{display:flex;flex-direction:column;gap:6px}
+.sheetlist div{display:flex;gap:8px;align-items:center;background:var(--fill);border-radius:var(--r-m);padding:6px 6px 6px 12px;padding-inline-start:12px;font-size:14px}
+.sheetlist div span{flex:1}
+.sheetlist button{border:0;min-height:36px;padding:0 12px;border-radius:9px;background:var(--card);color:var(--tint);font-weight:600;font-size:14px}
+.sheetlist button[data-a="rm"]{color:var(--red)}
+.hint{font-size:13px;color:var(--label-2);margin:6px 0 0;line-height:1.45}
+
+/* ---------- inspector ---------- */
+.tabs{position:sticky;top:74px;z-index:15;background:var(--bg);padding:0 0 10px}
+@media (max-width:1023px){ .tabs{position:static} }
+.pane{display:none}
+.pane.on{display:block;animation:panein .28s var(--ease)}
+@keyframes panein{from{opacity:0;transform:translateY(6px)}}
+.gh{margin:18px 16px 6px;font-size:13px;color:var(--label-2)}
+.gh:first-child{margin-top:4px}
+.gf{margin:6px 16px 0;font-size:12.5px;color:var(--label-2);line-height:1.45}
+.group{background:var(--card);border-radius:var(--r-l);overflow:hidden;box-shadow:var(--shadow)}
+.li{display:flex;align-items:center;gap:12px;min-height:50px;padding:6px 16px;position:relative}
+.li+.li::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.li>label,.li>.lb{flex:1;min-width:0;font-size:16px}
+.li input[type=text],.li input:not([type]){flex:1.2;min-width:0;border:0;background:none;text-align:left;direction:rtl;text-align:end;color:var(--label-2);font-size:16px;padding:8px 0}
+.li input:not([type]):focus{color:var(--label);outline:none}
+.li .sel-wrap{position:relative}
+select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;color:var(--label-2);font-size:16px;padding:8px 18px 8px 0;text-align:end;max-width:100%}
+.chev{pointer-events:none;position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--label-3);font-size:13px}
+
+/* stepper */
+.stp{display:inline-flex;align-items:center;background:var(--fill);border-radius:9px;height:34px;direction:ltr;flex:none}
+.stp button{width:38px;height:34px;border:0;background:none;color:var(--label);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;border-radius:9px}
+.stp button:active{background:var(--fill-2)}
+.stp input{width:62px;height:34px;border:0;border-left:.5px solid var(--sep);border-right:.5px solid var(--sep);background:none;text-align:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;padding:0;-moz-appearance:textfield}
+.stp input::-webkit-outer-spin-button,.stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stp input:disabled{color:var(--label-3)}
+.stp.off{opacity:.45;pointer-events:none}
+.unit{font-size:13px;color:var(--label-2);margin-inline-start:-6px}
+
+/* switch */
+.sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--fill-2);position:relative;flex:none;cursor:pointer;transition:background .25s;margin:0}
+.sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s var(--ease)}
+.sw:checked{background:var(--green)}
+.sw:checked::after{transform:translateX(-20px)}
+
+/* presets */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:10px}
+.pcard{border:0;text-align:start;background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:10px;display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s,box-shadow .2s}
+.pcard:active{transform:scale(.97)}
+.pcard[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--tint),var(--shadow)}
+.pcard .thumb{direction:ltr;display:flex;height:30px;border-radius:6px;overflow:hidden;background:var(--fill)}
+.pcard .thumb i{display:block;height:100%}
+.pcard b{font-size:14px;font-weight:600;line-height:1.3}
+.pcard small{font-size:12px;color:var(--label-2)}
+.pcard .ck{position:absolute;top:8px;inset-inline-start:8px;width:20px;height:20px;border-radius:50%;background:var(--tint);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center}
+.pcard[aria-pressed="true"] .ck{display:flex}
+#presetSrc{margin:10px 4px 0}
+#presetFilter{overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+#presetFilter::-webkit-scrollbar{display:none}
+#presetFilter button{flex:0 0 auto;padding:0 12px}
+.stat b{white-space:nowrap}
+
+/* cells */
+.cells{display:flex;flex-direction:column}
+.cell{position:relative;padding:10px 12px 10px 12px;padding-inline-start:16px;background:var(--card);transition:background .25s}
+.cell+.cell{border-top:.5px solid var(--sep)}
+.cell::after{content:"";position:absolute;top:8px;bottom:8px;inset-inline-start:0;width:4px;border-radius:0 3px 3px 0;background:transparent;transition:background .25s}
+[dir=rtl] .cell::after{border-radius:3px 0 0 3px}
+.cell.bad::after{background:var(--red)} .cell.warn::after{background:var(--hi)}
+.cell.sel{background:var(--hi-soft)}
+.cell.flash{animation:flash .9s var(--ease)}
+@keyframes flash{0%{background:var(--tint-soft)}100%{background:var(--card)}}
+.cell.drag{z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.22);border-radius:12px;transform:scale(1.02);background:var(--card)}
+.c-top{display:flex;align-items:center;gap:10px}
+.c-sw{width:26px;height:26px;border-radius:7px;flex:none;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.15)}
+.c-name{flex:1;min-width:0;position:relative}
+.c-name select{width:100%;font-weight:600;color:var(--label);padding:6px 18px 6px 0;text-align:start}
+.c-name .chev{left:0}
+.c-more,.c-handle{width:36px;height:36px;border:0;border-radius:18px;background:var(--fill);color:var(--label-2);font-size:18px;display:flex;align-items:center;justify-content:center;flex:none}
+.c-handle{background:none;cursor:grab;touch-action:none;font-size:20px;color:var(--label-3)}
+.c-bot{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;padding-inline-start:36px}
+.c-bot .seg button{min-height:30px;padding:0 11px;font-size:16px}
+.c-msg{margin:7px 0 0;padding-inline-start:36px;font-size:12.5px;line-height:1.4;color:var(--red);display:none}
+.cell.bad .c-msg,.cell.warn .c-msg{display:block}
+.cell.warn .c-msg{color:var(--amber)}
+.c-idx{font-size:12px;color:var(--label-3);font-variant-numeric:tabular-nums;min-width:18px;text-align:center}
+.empty{padding:26px 16px;text-align:center;color:var(--label-2);font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.tile{border:0;background:var(--card);border-radius:12px;box-shadow:var(--shadow);min-height:52px;padding:8px 10px;display:flex;align-items:center;gap:8px;text-align:start;font-size:13.5px;font-weight:500;line-height:1.2;transition:transform .12s}
+.tile:active{transform:scale(.95)}
+.tile i{width:16px;height:28px;border-radius:4px;flex:none}
+.rowbtns{display:flex;gap:8px;margin-top:10px}
+.rowbtns button{flex:1;min-height:44px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--shadow);color:var(--tint);font-weight:600;font-size:15px}
+.rowbtns button.danger{color:var(--red)}
+
+/* edges */
+.edgecard .li.sub{transition:opacity .2s}
+.edgecard .li.sub[hidden]{display:none}
+
+/* action sheet */
+.scrim{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:91;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));width:min(420px,calc(100% - 24px));transform:translate(-50%,120%);transition:transform .35s var(--ease)}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .grp{background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.sheet .ttl{padding:12px 16px;text-align:center;font-size:13px;color:var(--label-2);border-bottom:.5px solid var(--sep)}
+.sheet button,.sheet label.act{display:flex;width:100%;min-height:56px;align-items:center;justify-content:center;border:0;background:none;font-size:18px;color:var(--tint);cursor:pointer}
+.sheet .grp>*+*{border-top:.5px solid var(--sep)}
+.sheet button.danger{color:var(--red)}
+.sheet button.cancel{background:var(--card);border-radius:14px;font-weight:600}
+.sheet button:disabled{color:var(--label-3)}
+
+/* toast */
+.toast{position:fixed;z-index:95;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;border-radius:22px;padding:10px 8px 10px 18px;padding-inline-start:18px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;transition:transform .35s var(--ease),opacity .25s;max-width:calc(100% - 32px)}
+.toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.toast button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:14px;min-height:30px;padding:0 12px;font-weight:600;font-size:14px}
+.toast button[hidden]{display:none}
+
+@media (max-width:600px){
+  .stage{position:static}
+  .nav h1 small{display:none}
+  .nav h1{white-space:nowrap;font-size:17px}
+  .nav-in{gap:6px}
+  .nbtn{min-width:40px;padding:0 9px}
+  .nbtn .t{display:none}
+  .grid3{grid-template-columns:1fr 1fr}
+  .stp input{width:54px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{.nav,.insp,.canvas-bar,.ribbon-wrap,.guide-ov{display:none}}
+
+/* ---------- guide overlay ---------- */
+.guide-ov{position:fixed;inset:0;z-index:200;background:var(--bg);opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .28s var(--ease),transform .28s var(--ease)}
+.guide-ov.on{opacity:1;pointer-events:auto;transform:none}
+.guide-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;min-height:56px;padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));
+  background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--sep)}
+.guide-bar b{font-size:16px;font-weight:700}
+.guide-bar small{display:block;font-size:12px;font-weight:500;color:var(--label-2)}
+.guide-ov iframe{display:block;width:100%;height:calc(100% - 56px - env(safe-area-inset-top));border:0;background:var(--bg)}
+@media (max-width:600px){.guide-bar b{font-size:15px}.guide-bar small{display:none}}
+</style>
+
+<script src="../js/inline/5cf8d2af76.js" data-light="#F2F2F7" data-dark="#000000" data-slot=".nav-in"></script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Cairo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+html[data-glass="on"] .canvas,
+html[data-glass="on"] .box,
+html[data-glass="on"] .group,
+html[data-glass="on"] .pcard,
+html[data-glass="on"] .tile,
+html[data-glass="on"] .rowbtns button,
+html[data-glass="on"] .welcome,
+html[data-glass="on"] .dayhead,
+html[data-glass="on"] .note-card{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] .stat,
+html[data-glass="on"] .stp,
+html[data-glass="on"] .sheetlist div,
+html[data-glass="on"] .seg:not(.full),
+html[data-glass="on"] .pchip:not([aria-pressed="true"]){background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .nav,
+html[data-glass="on"] .tabbar,
+html[data-glass="on"] .savebar,
+html[data-glass="on"] .tabs{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .cell:not(.sel):not(.drag){background:transparent!important}
+html[data-glass="on"] .sheetwrap{background:color-mix(in srgb,var(--paper) 92%,transparent)}
+html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-in">
+    <div><h1>مقطع نموذجي<small>حضري وبين-مدني · ورقة A0 بمقياس رسم</small></h1></div>
+    <span class="sp"></span>
+    <button class="pill ok" id="statusPill" type="button" aria-live="polite"><i></i><span>سليم</span></button>
+    <button class="nbtn" id="btnGuide" type="button" title="دليل الإرشادات – الفصل 3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="t">الدليل</span></button>
+    <button class="nbtn" id="btnUndo" type="button" aria-label="تراجع" title="تراجع" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h-7a5 5 0 0 0 0 10h3"/><path d="M12 4l3 3-3 3"/></svg></button>
+    <button class="nbtn" id="btnRedo" type="button" aria-label="إعادة" title="إعادة" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h7a5 5 0 0 1 0 10h-3"/><path d="M12 4L9 7l3 3"/></svg></button>
+    <button class="nbtn" id="btnAddSheet" type="button" title="إضافة المقطع الحالي إلى الورقة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg><span class="t">إلى الورقة</span></button>
+    <button class="nbtn primary" id="btnShare" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="t">تصدير</span></button>
+  </div>
+</header>
+
+<div class="shell">
+<section class="stage" aria-label="الرسم">
+  <div class="canvas">
+    <div class="canvas-bar">
+      <div class="seg" id="viewSeg" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" aria-pressed="true" data-v="section">مقطع مكبَّر</button>
+        <button class="tab" role="tab" aria-selected="false" aria-pressed="false" data-v="sheet">ورقة A0</button>
+      </div>
+      <div class="zoom"><button type="button" id="zOut" aria-label="تصغير">−</button><output id="zVal">100%</output><button type="button" id="zIn" aria-label="تكبير">+</button></div>
+    </div>
+    <div class="sheetwrap" id="sheetwrap"><div id="drawing"></div></div>
+    <div class="ribbon-wrap">
+      <div class="ribbon-head"><span>العرض الكلي</span><b id="rbTot">0.00 م</b><span class="gap" id="rbGap"></span></div>
+      <div class="ribbon" id="ribbon" aria-label="شريط العروض – اسحب الفواصل لتغيير العرض"></div>
+      <div class="ribbon-hint">انقر على خلية للاختيار. اسحب فاصلاً بين خليتين لنقل العرض بينهما – يبقى العرض الكلي محفوظاً.</div>
+    </div>
+  </div>
+  <div class="readouts" id="readouts">
+    <div class="box"><h3>بيانات المقطع</h3><div class="grid3" id="stats"></div></div>
+    <div class="box" id="checksBox"><h3>الفحوصات مقابل الإرشادات</h3><div id="checks"></div></div>
+  </div>
+</section>
+
+<aside class="insp" aria-label="الإعدادات">
+  <div class="tabs"><div class="seg full" id="paneSeg">
+    <button type="button" data-p="p-start" aria-pressed="true">البداية</button>
+    <button type="button" data-p="p-cells" aria-pressed="false">الخلايا</button>
+    <button type="button" data-p="p-edges" aria-pressed="false">الأطراف</button>
+    <button type="button" data-p="p-pave" aria-pressed="false">البنية</button>
+    <button type="button" data-p="p-sheet" aria-pressed="false">الورقة</button>
+  </div></div>
+
+  <div class="pane on" id="p-start">
+    <p class="gh">بيانات المقطع</p>
+    <div class="group">
+      <div class="li"><label for="title">العنوان</label><input id="title" value="مقطع نموذجي"></div>
+      <div class="li"><span class="lb">السياق</span>
+        <select id="ctx" class="vh" tabindex="-1" aria-hidden="true"><option value="urban">حضري</option><option value="inter">بين-مدني</option></select>
+        <div class="seg" data-bind="ctx"></div></div>
+      <div class="li"><label for="cls">تصنيف الطريق (TR-514)</label>
+        <select id="cls">
+          <optgroup label="خارج الحضر">
+            <option value="rFwy">طريق سريع ريفي</option>
+            <option value="rArt">شرياني ريفي</option>
+            <option value="rCol">مجمّع ريفي</option>
+            <option value="rLoc">محلي ريفي</option>
+          </optgroup>
+          <optgroup label="حضري">
+            <option value="uFwy">طريق سريع حضري</option>
+            <option value="blvd" selected>شارع شرياني (Boulevard)</option>
+            <option value="aven">أفنيو (Avenue)</option>
+            <option value="strt">شارع (Street)</option>
+            <option value="alne">ممر وصول (Access Lane)</option>
+          </optgroup>
+        </select></div>
+      <div class="li"><label for="vDes">سرعة التصميم</label><div class="stp" data-step="10"><input id="vDes" type="number" step="10" min="20" max="140" value="60" inputmode="decimal"></div><span class="unit">كم/س</span></div>
+      <div class="li"><label for="rowTarget">حق الطريق المستهدف</label><div class="stp" data-step="0.5"><input id="rowTarget" type="number" step="0.1" min="0" value="0" inputmode="decimal"></div><span class="unit">م</span></div>
+    </div>
+    <p class="gf">0 = بدون هدف. عند وجود هدف، يُظهر الشريط أعلاه في كل لحظة المتبقي أو الفائض. مقاطع USDM تُقاس من حدّ القطعة إلى حدّ القطعة، لا من حافة إلى حافة.</p>
+    <p class="gf">التصنيف وسرعة التصميم هما الضابطان اللذان تُشتق منهما قيم المقطع في TR-514؛ القيم المدرجة في الأداة عامة ولم تُربط بعد بجدول التصنيف/السرعة – يجب مراجعتها في المصدر لكل حالة.</p>
+
+    <p class="gh">نمط البداية</p>
+    <select id="preset" class="vh" tabindex="-1" aria-hidden="true"></select>
+    <div class="seg full" id="presetFilter"></div>
+    <div class="pgrid" id="presetGrid"></div>
+    <p class="hint" id="presetSrc"></p>
+  </div>
+
+  <div class="pane" id="p-cells">
+    <p class="gh">الخلايا، من اليسار إلى اليمين في الرسم</p>
+    <div class="group"><div class="cells" id="cells"></div></div>
+    <div class="rowbtns"><button id="btnMirror" type="button">انعكاس – إكمال الجانب الثاني</button><button id="btnClear" type="button" class="danger">مسح</button></div>
+    <p class="gh">إضافة خلية <span id="addWhere" style="color:var(--label-3)"></span></p>
+    <select id="addType" class="vh" tabindex="-1" aria-hidden="true"></select>
+    <button id="btnAdd" class="vh" tabindex="-1" type="button">إضافة</button>
+    <div class="tiles" id="tiles"></div>
+  </div>
+
+  <div class="pane" id="p-edges">
+    <p class="gh">الطرف الأيسر</p><div class="group edgecard" id="edgeL"></div>
+    <p class="gh">الطرف الأيمن</p><div class="group edgecard" id="edgeR"></div>
+    <p class="gf">في الردم والحفر: ميل 1:n وارتفاع المنحدر. في الحفر يُضاف عمق القناة.</p>
+  </div>
+
+  <div class="pane" id="p-pave">
+    <p class="gh">بنية الرصف</p>
+    <div class="group">
+      <div class="li"><label for="dSurf">طبقات الأسفلت</label><div class="stp" data-step="0.01"><input id="dSurf" type="number" step="0.01" value="0.10" inputmode="decimal"></div><span class="unit">م</span></div>
+      <div class="li"><label for="dBase">القاعدة</label><div class="stp" data-step="0.05"><input id="dBase" type="number" step="0.01" value="0.25" inputmode="decimal"></div><span class="unit">م</span></div>
+      <div class="li"><label for="dSub">القاعدة السفلى / الطبقة التحتية</label><div class="stp" data-step="0.05"><input id="dSub" type="number" step="0.01" value="0.30" inputmode="decimal"></div><span class="unit">م</span></div>
+      <div class="li"><label for="tPave">إظهار بنية الرصف</label><input type="checkbox" class="sw" id="tPave" checked></div>
+    </div>
+    <p class="gh">الميول وحجر الرصيف</p>
+    <div class="group">
+      <div class="li"><label for="cfRoad">الميل العرضي للطريق</label><div class="stp" data-step="0.5"><input id="cfRoad" type="number" step="0.1" value="2.0" inputmode="decimal"></div><span class="unit">%</span></div>
+      <div class="li"><label for="cfSide">ميل الرصيف / الكتف</label><div class="stp" data-step="0.5"><input id="cfSide" type="number" step="0.1" value="2.0" inputmode="decimal"></div><span class="unit">%</span></div>
+      <div class="li"><label for="curbH">ارتفاع حجر الرصيف</label><div class="stp" data-step="0.01"><input id="curbH" type="number" step="0.01" value="0.15" inputmode="decimal"></div><span class="unit">م</span></div>
+    </div>
+  </div>
+
+  <div class="pane" id="p-sheet">
+    <p class="gh">مقياس الرسم</p>
+    <select id="scale" class="vh" tabindex="-1" aria-hidden="true"><option value="100">1:100</option><option value="200" selected>1:200</option><option value="250">1:250</option><option value="500">1:500</option></select>
+    <div class="seg full" data-bind="scale"></div>
+    <p class="gh">عنوان الورقة</p>
+    <div class="group">
+      <div class="li"><label for="proj">المشروع</label><input id="proj" value="" placeholder="اسم المشروع"></div>
+      <div class="li"><label for="drawn">رسمه</label><input id="drawn" value="" placeholder="الاسم"></div>
+      <div class="li"><label for="dwg">رقم الورقة</label><input id="dwg" value="TS-01"></div>
+    </div>
+    <p class="gh">ما يظهر في الرسم</p>
+    <div class="group">
+      <div class="li"><label for="tIcons">المركبات والأشخاص</label><input type="checkbox" class="sw" id="tIcons" checked></div>
+      <div class="li"><label for="tTrees">الأشجار</label><input type="checkbox" class="sw" id="tTrees" checked></div>
+      <div class="li"><label for="tCf">أسهم الميل</label><input type="checkbox" class="sw" id="tCf" checked></div>
+      <div class="li"><label for="tNames">أسماء الخلايا</label><input type="checkbox" class="sw" id="tNames" checked></div>
+    </div>
+    <p class="gh">المقاطع في الورقة (حتى ثلاثة في A0)</p>
+    <div class="box"><div class="sheetlist" id="sheetList"></div>
+      <p class="hint">تصدير HTML ينتج ورقة A0 أفقية (1189×841 مم). اطبع بنسبة 100% بدون ملاءمة للصفحة، وتحقق من مسطرة المقياس في الورقة.</p></div>
+  </div>
+</aside>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grp" id="sheetGrp"></div><button class="cancel" type="button" id="sheetCancel">إلغاء</button></div>
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><button type="button" id="toastAct" hidden>تراجع</button></div>
+
+<div class="guide-ov" id="guideOv" role="dialog" aria-modal="true" aria-label="دليل الإرشادات">
+  <div class="guide-bar">
+    <button class="nbtn" id="btnGuideClose" type="button" aria-label="إغلاق الدليل" title="إغلاق"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div><b>دليل الإرشادات</b><small>إرشادات التصميم الهندسي للطرق · الفصل 3</small></div>
+  </div>
+  <iframe id="guideFrame" title="المقطع العرضي للطريق – دليل الإرشادات"></iframe>
+</div>
+<textarea id="guideSrc" hidden aria-hidden="true">__GUIDE_HTML__</textarea>
+
+<div hidden>
+  <button id="btnHtml" type="button">تصدير ورقة A0 (HTML)</button>
+  <button id="btnSvg" type="button">تنزيل SVG</button>
+  <button id="btnPrint" type="button">طباعة</button>
+  <button id="btnJson" type="button">حفظ JSON</button>
+  <input type="file" id="fileJson" accept=".json,application/json">
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/typical-section-ar.js?v=2"></script>
+
+<script src="../js/inline/2d9a3f7b14.js"></script>
+</body>
+</html>

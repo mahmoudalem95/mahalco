@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="description" content="Roundabout analysis metrics for capacity, delay, queueing, safety, and level of service. Evaluate roundabout performance with Mahalco.">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://mahalco-calc.onrender.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<title>MAHALCO – ניתוח מעגל תנועה (שיטה מטרית)</title>
+<style>
+  :root {
+    --bg: #12121e; --card: #1a1a2e; --card-2: #22223a; --field: #0f0f1a;
+    --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.05);
+    --accent: #E8A33D; --accent-dim: rgba(232,163,61,.16); --green: #4ADE80;
+    --ink: #EDEBF2; --ink-2: #9A96AB; --ink-3: #6B6780;
+    --danger: #F35B5B; --warn: #F5C451; --info: #7AB8F5;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: Arial, sans-serif;
+    padding: 20px; direction: rtl; line-height: 1.5; font-size: 1rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: clamp(1.6rem, 1.375rem + 1.5vw, 2.5rem); font-weight: 700; margin: 0 0 .5rem; color: var(--ink); line-height: 1.2; }
+  h1 .bi { color: #ffc107; margin-left: .5rem; }
+  .subhead { color: var(--ink-3); margin: 0 0 1.5rem; line-height: 1.6; }
+  .badge { display: inline-block; background: var(--card-2); color: var(--ink-2); font-size: .8rem;
+    font-weight: 600; padding: .25em .6em; border-radius: 6px; vertical-align: middle; margin-right: 6px; }
+
+  /* cards – same as parking page */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+  .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0;
+    font-weight: 600; padding: .5rem 1rem; border-bottom: 1px solid rgba(0,0,0,.1); }
+  .card-header .bi { margin-left: .5rem; }
+  .card-body { padding: 1rem; }
+  .section-note { font-size: .78rem; color: var(--ink-3); margin: 0 0 12px; line-height: 1.6; }
+
+  /* form */
+  .form-group { margin-bottom: 12px; }
+  .row-2, .row-3, .row-4 { display: grid; gap: 12px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 720px) { .row-2, .row-3, .row-4 { grid-template-columns: 1fr; gap: 8px; } }
+  label { display: block; margin-bottom: .35rem; color: var(--ink-2); font-size: .9rem; }
+  label .unit { color: var(--ink-3); font-size: .8rem; }
+  input, select { width: 100%; padding: .375rem .75rem; font-size: 1rem; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--field); color: var(--ink); font-family: inherit; }
+  select option { background: var(--field); color: var(--ink); }
+  input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); }
+  input:disabled, select:disabled { background: #15151f; color: var(--ink-3); cursor: not-allowed; }
+  input[type=number] { -moz-appearance: textfield; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* tables */
+  .table-scroll { overflow-x: auto; margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; color: var(--ink); }
+  th, td { padding: .45rem .55rem; text-align: right; border-bottom: 1px solid var(--line-2); background: transparent; }
+  th { color: var(--ink-3); font-weight: 600; border-bottom: 1px solid var(--line); white-space: nowrap; font-size: .78rem; }
+  tbody tr:hover td { background: rgba(255,255,255,.03); }
+
+  /* buttons */
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 8px; }
+  button { padding: .5rem 1.4rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer;
+    font-family: inherit; border: 1px solid transparent; }
+  button:active { transform: scale(.98); }
+  #submitBtn { background: var(--accent); border-color: var(--accent); color: #1a1a2e; flex: 1 1 auto; }
+  #submitBtn:hover:not(:disabled) { background: #c9862f; border-color: #c9862f; }
+  #submitBtn:disabled { background: #7a6440; border-color: #7a6440; cursor: not-allowed; }
+  .reset-btn { background: transparent; color: var(--ink-2); border-color: var(--line); }
+  .reset-btn:hover { background: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+
+  /* status */
+  .status-msg { margin: 12px 0; padding: 10px 14px; border-radius: 6px; font-size: .9rem; display: none;
+    background: var(--field); border-right: 3px solid var(--ink-3); color: var(--ink-2); line-height: 1.5; }
+  .status-msg.info { display: block; border-color: var(--info); }
+  .status-msg.error { display: block; border-color: var(--danger); color: #f7a3a3; background: rgba(243,91,91,.08); }
+  .status-msg.warn { display: block; border-color: var(--warn); color: #f2dca2; background: rgba(245,196,81,.07); }
+  .status-msg.success { display: block; border-color: var(--green); color: #a6efc0; background: rgba(74,222,128,.07); }
+
+  /* results card */
+  .results-box { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3); margin: 20px 0; padding: 0 0 1rem; }
+  .results-box.visible { display: block; }
+  .results-box > * { margin-left: 1rem; margin-right: 1rem; }
+  .results-box > h2 { margin: 0 0 1rem; background: var(--accent); color: #1a1a2e; padding: .5rem 1rem;
+    border-radius: 12px 12px 0 0; font-size: 1rem; font-weight: 600; }
+  .results-box > h2 span { color: #1a1a2e !important; font-weight: 400; font-size: .9rem !important; }
+  .results-box h4 { margin: 22px 1rem 6px; font-size: .95rem; font-weight: 700; color: var(--ink);
+    padding-top: 14px; border-top: 1px solid var(--line); }
+  .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-bottom: 6px; }
+  .result-item { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem;
+    display: flex; flex-direction: column; gap: 4px; }
+  .result-item .label { font-size: .85rem; color: var(--ink-2); }
+  .result-item .value { font-size: 1.5rem; font-weight: 700; color: var(--ink); line-height: 1.2;
+    font-variant-numeric: tabular-nums; unicode-bidi: plaintext; text-align: right; }
+  .result-item .value.highlight { color: var(--accent); }
+
+  .los { display: inline-block; min-width: 24px; text-align: center; font-weight: 700; padding: 2px 7px;
+    border-radius: 6px; color: #fff; font-size: .85rem; line-height: 1.3; }
+  .result-item .value .los { font-size: 1.1rem; padding: 2px 10px; }
+  .los-A { background: #1f7a2a; } .los-B { background: #4f9e2f; } .los-C { background: #b58a00; }
+  .los-D { background: #d97a00; } .los-E { background: #cc5500; } .los-F { background: #c02b2b; }
+
+  .warrant-panel { margin-top: 8px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--field); padding: 8px 12px; }
+  .warrant-line { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--line-2);
+    font-size: .85rem; color: var(--ink-2); line-height: 1.6; }
+  .warrant-line:last-child { border-bottom: none; }
+  .flag { flex: 0 0 auto; font-weight: 700; font-size: .72rem; padding: 2px 8px; border-radius: 20px; }
+  .flag.met, .flag.warn { background: rgba(243,91,91,.15); color: #f7a3a3; }
+  .flag.not, .flag.ok { background: rgba(74,222,128,.15); color: #a6efc0; }
+
+  .footnote { margin-top: 16px; font-size: .8rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 12px; line-height: 1.6; }
+  .footnote a { color: var(--accent); text-decoration: none; }
+  .footnote a:hover { text-decoration: underline; }
+  footer { text-align: center; color: var(--ink-3); font-size: .85rem; margin-top: 1.5rem; padding-bottom: 1rem; }
+
+  #approachTable { font-size: .82rem; min-width: 960px; }
+  #approachTable th, #approachTable td { padding: 6px 6px; }
+  #approachTable td:first-child { font-weight: 700; color: var(--accent); white-space: nowrap; }
+  #approachTable input, #approachTable select { padding: .3rem .45rem; font-size: .9rem; min-width: 74px; }
+  .unit-cell { font-variant-numeric: tabular-nums; direction: ltr; }
+  /* diagram – dark version */
+  .diagram-box { text-align: center; }
+  .diagram-box svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .road-fill { fill: #2c2c46; }
+  .curb-line { stroke: #9A96AB; stroke-width: 2; fill: none; }
+  .dashed-red-line { stroke: #F35B5B; stroke-width: 1.8; stroke-dasharray: 3, 3; fill: none; }
+  .center-line { stroke: #6B6780; stroke-width: 1.5; }
+  .label-text { font-family: 'Georgia', 'Times New Roman', serif; font-style: italic; font-size: 18px;
+    text-anchor: middle; dominant-baseline: middle; fill: #EDEBF2; }
+  .diagram-box svg marker path { fill: #E8A33D; }
+  .diagram-box svg [stroke="#000000"] { stroke: #EDEBF2; }
+  .diagram-box svg rect[fill="#ffffff"] { fill: #1a1a2e; }
+  .diagram-box svg circle[fill^="url"] { stroke: #0f0f1a; }
+  .diagram-box svg path[marker-end] { stroke: #E8A33D; }
+  .diagram-caption { font-size: .8rem; color: var(--ink-3); margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1><i class="bi bi-arrow-repeat"></i>ניתוח מעגל תנועה <span class="badge">מטרי</span></h1>
+  <p class="subhead">
+    קיבולת כניסה, יחס v/c, עיכוב בקרה, תור באחוזון 95 ורמת שירות (LOS) עבור מעגלי תנועה חד- ודו-נתיביים, כולל עיכוב הולכי-רגל ואופניים ובדיקת סף-איתות.
+    <br>שיטת HCM מהדורה 6/7, פרק 22 – מחושב כולו בדפדפן, ללא שרת. יחידות: מטרים, רכב/שעה, שניות.
+  </p>
+
+  <!-- ====== תרשים הממחיש מעגל תנועה ====== -->
+  <div class="card"><div class="card-header"><i class="bi bi-diagram-3"></i>תרשים מעגל התנועה</div><div class="card-body diagram-box">
+    <svg width="700" height="700" viewBox="0 0 700 700">
+        <defs>
+            <!-- Pattern for central island green texture -->
+            <pattern id="greenTexture" width="6" height="6" patternUnits="userSpaceOnUse">
+                <rect width="6" height="6" fill="#8cc63f" />
+                <circle cx="1.5" cy="1.5" r="0.7" fill="#6ba428" />
+                <circle cx="4.5" cy="4.5" r="0.7" fill="#6ba428" />
+            </pattern>
+
+            <!-- Marker for movement direction arrows -->
+            <marker id="flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#000000"/>
+            </marker>
+
+            <!-- Marker for dimension line arrows -->
+            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#000000"/>
+            </marker>
+        </defs>
+
+        <!-- Main Road Surface (Gray Background Layer) -->
+        <path d="
+            M 310,0 L 390,0 L 390,130 
+            A 200,200 0 0,0 570,310 
+            L 700,310 L 700,390 L 570,390 
+            A 200,200 0 0,0 390,570 
+            L 390,700 L 310,700 L 310,570 
+            A 200,200 0 0,0 130,390 
+            L 0,390 L 0,310 L 130,310 
+            A 200,200 0 0,0 310,130 
+            Z" 
+            class="road-fill" />
+
+        <!-- Outer Edge Curbs -->
+        <path d="
+            M 310,0 L 310,130 
+            A 200,200 0 0,1 130,310 
+            L 0,310 
+            M 0,390 L 130,390 
+            A 200,200 0 0,1 310,570 
+            L 310,700 
+            M 390,700 L 390,570 
+            A 200,200 0 0,1 570,390 
+            L 700,390 
+            M 700,310 L 570,310 
+            A 200,200 0 0,1 390,130 
+            L 390,0" 
+            class="curb-line" />
+
+        <!-- Red Dashed Boundary Lines -->
+        <path d="M 318,0 L 318,125 A 190,190 0 0,1 135,318 L 0,318" class="dashed-red-line" />
+        <path d="M 0,382 L 135,382 A 190,190 0 0,1 318,565 L 318,700" class="dashed-red-line" />
+        <path d="M 382,700 L 382,565 A 190,190 0 0,1 565,382 L 700,382" class="dashed-red-line" />
+        <path d="M 700,318 L 565,318 A 190,190 0 0,1 382,125 L 382,0" class="dashed-red-line" />
+
+        <!-- Road Center Division Lines -->
+        <line x1="350" y1="0" x2="350" y2="700" class="center-line" />
+        <line x1="0" y1="350" x2="700" y2="350" class="center-line" />
+
+        <!-- Shortened Splitter Islands (Medians) -->
+        <!-- Top Island -->
+        <g>
+            <rect x="342" y="140" width="16" height="60" fill="#ffffff" stroke="#000000" stroke-width="2" rx="2"/>
+            <rect x="345" y="145" width="10" height="50" fill="#b0bec5" stroke="#424242" stroke-width="1.5" rx="1"/>
+        </g>
+        <!-- Bottom Island -->
+        <g>
+            <rect x="342" y="500" width="16" height="60" fill="#ffffff" stroke="#000000" stroke-width="2" rx="2"/>
+            <rect x="345" y="505" width="10" height="50" fill="#b0bec5" stroke="#424242" stroke-width="1.5" rx="1"/>
+        </g>
+        <!-- Left Island -->
+        <g>
+            <rect x="140" y="342" width="60" height="16" fill="#ffffff" stroke="#000000" stroke-width="2" rx="2"/>
+            <rect x="145" y="345" width="50" height="10" fill="#b0bec5" stroke="#424242" stroke-width="1.5" rx="1"/>
+        </g>
+        <!-- Right Island -->
+        <g>
+            <rect x="500" y="342" width="60" height="16" fill="#ffffff" stroke="#000000" stroke-width="2" rx="2"/>
+            <rect x="505" y="345" width="50" height="10" fill="#b0bec5" stroke="#424242" stroke-width="1.5" rx="1"/>
+        </g>
+
+        <!-- Central Green Island (r = 100) -->
+        <circle cx="350" cy="350" r="100" fill="url(#greenTexture)" stroke="#000000" stroke-width="2" />
+
+        <!-- Dimension Line for Dc (Exactly measuring Green Island Diameter: r = 100) -->
+        <!-- Start: (350 - 100*cos(45°), 350 + 100*sin(45°)) = (279.3, 420.7) -->
+        <!-- End:   (350 + 100*cos(45°), 350 - 100*sin(45°)) = (420.7, 279.3) -->
+        <g>
+            <line x1="279.3" y1="420.7" x2="420.7" y2="279.3" stroke="#000000" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+            
+            <!-- Central Label Badge (Dc) -->
+            <rect x="337" y="337" width="26" height="26" fill="#ffffff" stroke="#cccccc" stroke-width="1" rx="3"/>
+            <text x="350" y="350" class="label-text">D<tspan font-size="13px" dy="4">c</tspan></text>
+        </g>
+
+        <!-- Flow Vectors and Labels -->
+        <!-- Circulating Flow Arrow (Vc) -->
+        <g>
+            <path d="M 330,480 A 130,130 0 0,0 380,480" fill="none" stroke="#000000" stroke-width="1.8" marker-end="url(#flow-arrow)" />
+            <text x="350" y="468" class="label-text">V<tspan font-size="13px" dy="4">c</tspan></text>
+        </g>
+
+        <!-- Entry Flow Arrow (Ve) -->
+        <g>
+            <path d="M 373,620 C 373,560 385,525 405,495" fill="none" stroke="#000000" stroke-width="1.8" marker-end="url(#flow-arrow)" />
+            <text x="372" y="560" class="label-text">V<tspan font-size="13px" dy="4">e</tspan></text>
+        </g>
+
+    </svg>
+    <div class="diagram-caption">תרשים 1 — סכימת מעגל תנועה ומדדי נפח (D<sub>c</sub>, V<sub>c</sub>, V<sub>e</sub>)</div>
+  </div></div>
+
+  <form id="rbtForm" novalidate>
+
+    <div class="card"><div class="card-header"><i class="bi bi-rulers"></i>גיאומטריית המעגל והפרויקט</div><div class="card-body">
+    <div class="row-3">
+      <div class="form-group">
+        <label for="rbtId">מזהה מעגל</label>
+        <input type="text" id="rbtId" value="RBT-01">
+      </div>
+      <div class="form-group">
+        <label for="periodLabel">תקופת ניתוח</label>
+        <input type="text" id="periodLabel" value="שעת שיא בוקר 07:30–08:30">
+      </div>
+      <div class="form-group">
+        <label for="phf">מקדם שעת שיא (PHF)</label>
+        <input type="number" id="phf" value="0.92" step="0.01" min="0.25" max="1" required>
+      </div>
+    </div>
+    <div class="row-3">
+      <div class="form-group">
+        <label for="inscribedD">קוטר חיצוני <span class="unit">(מ')</span></label>
+        <input type="number" id="inscribedD" value="45" step="0.1" min="15" required>
+      </div>
+      <div class="form-group">
+        <label for="islandD">קוטר האי המרכזי <span class="unit">(מ')</span></label>
+        <input type="number" id="islandD" value="33" step="0.1" min="1" required>
+      </div>
+      <div class="form-group">
+        <label for="entryWidth">רוחב כניסה <span class="unit">(מ')</span></label>
+        <input type="number" id="entryWidth" value="4.60" step="0.05" min="2.5" required>
+      </div>
+    </div>
+    <div class="row-2">
+      <div class="form-group">
+        <label for="circWidth">רוחב מסלול מעגלי <span class="unit">(מ')</span></label>
+        <input type="number" id="circWidth" value="6.00" step="0.05" min="2.5" required>
+      </div>
+      <div class="form-group">
+        <label for="periodHours">משך תקופת ניתוח <span class="unit">(שעות)</span></label>
+        <input type="number" id="periodHours" value="0.25" step="0.05" min="0.05" max="1" required>
+      </div>
+    </div>
+    </div></div>
+
+    
+
+    <div class="card"><div class="card-header"><i class="bi bi-sliders"></i>פרמטרי כיול</div><div class="card-body">
+    <p class="section-note">השאר מרווח ופער קריטי בערך 0 כדי להשתמש בברירות-המחדל של HCM. הזנת ערכים משלך מפעילה את הצורה המכוילת: c = (3600/t<sub>f</sub>)·exp[−(t<sub>c</sub> − t<sub>f</sub>/2)·v<sub>c</sub>/3600].</p>
+    <div class="row-3">
+      <div class="form-group">
+        <label for="hvPct">רכב כבד <span class="unit">(%)</span></label>
+        <input type="number" id="hvPct" value="3" step="0.1" min="0" max="100" required>
+      </div>
+      <div class="form-group">
+        <label for="driverPop">מקדם אוכלוסיית נהגים</label>
+        <input type="number" id="driverPop" value="1.00" step="0.01" min="0.5" max="1.2" required>
+      </div>
+      <div class="form-group">
+        <label for="pedFactor">מקדם זרימת הולכי-רגל</label>
+        <input type="number" id="pedFactor" value="1.00" step="0.01" min="0.5" max="1.2" required>
+      </div>
+    </div>
+    <div class="row-3">
+      <div class="form-group">
+        <label for="bikeFactor">מקדם זרימת אופניים</label>
+        <input type="number" id="bikeFactor" value="1.00" step="0.01" min="0" max="2" required>
+      </div>
+      <div class="form-group">
+        <label for="followUp">מרווח עוקב <span class="unit">(שנ', 0 = ברירת מחדל)</span></label>
+        <input type="number" id="followUp" value="0" step="0.01" min="0" max="6" required>
+      </div>
+      <div class="form-group">
+        <label for="criticalGap">פער קריטי <span class="unit">(שנ', 0 = ברירת מחדל)</span></label>
+        <input type="number" id="criticalGap" value="0" step="0.01" min="0" max="9" required>
+      </div>
+    </div>
+    </div></div>
+
+    
+
+    <div class="card"><div class="card-header"><i class="bi bi-signpost-split"></i>זרועות</div><div class="card-body">
+    <p class="section-note">הזן ביקוש זרוע ותצורת נתיבים. זרימות אופניים והולכי-רגל משפיעות על קיבולת הכניסה ועל עיכוב משתמשי דרך לא-ממונעים. השאר זרוע עם נפח כניסה 0 כדי להוציאה מניתוח (מעגלי 3 זרועות).</p>
+    <div class="table-scroll">
+      <table id="approachTable">
+        <thead>
+          <tr>
+            <th>זרוע</th>
+            <th>נתיבי כניסה</th>
+            <th>נתיבים במעגל</th>
+            <th>נפח נכנס<br>(רכב/ש')</th>
+            <th>נפח סובב<br>(רכב/ש')</th>
+            <th>נפח יוצא<br>(רכב/ש')</th>
+            <th>פנייה ימינה</th>
+            <th>פנייה שמאלה</th>
+            <th>ישר</th>
+            <th>אופניים<br>(אוכ/ש')</th>
+            <th>הולכי-רגל<br>(רגל/ש')</th>
+          </tr>
+        </thead>
+        <tbody id="approachBody"></tbody>
+      </table>
+    </div>
+
+    
+    </div></div>
+
+    <div class="actions">
+      <button type="submit" id="submitBtn">חשב ניתוח מעגל תנועה</button>
+      <button type="button" class="reset-btn" id="resetBtn">איפוס</button>
+    </div>
+  </form>
+
+  <div id="statusMsg" class="status-msg"></div>
+
+  <div id="results" class="results-box">
+    <h2><i class="bi bi-table"></i> תוצאות <span>(יחידות מטריות)</span></h2>
+
+    <div class="result-grid">
+      <div class="result-item"><span class="label">מעגל תנועה</span><span class="value" id="outId">--</span></div>
+      <div class="result-item"><span class="label">תקופת ניתוח</span><span class="value" id="outPeriod">--</span></div>
+      <div class="result-item"><span class="label">סך נפח נכנס</span><span class="value" id="outTotalFlow">--</span></div>
+      <div class="result-item"><span class="label">v/c הגרוע ביותר</span><span class="value highlight" id="outWorstVC">--</span></div>
+      <div class="result-item"><span class="label">עיכוב בקרה בצומת</span><span class="value" id="outIntDelay">--</span></div>
+      <div class="result-item"><span class="label">רמת שירות בצומת</span><span class="value highlight" id="outIntLos">--</span></div>
+    </div>
+
+    <h4>תפעול נתיבי כניסה</h4>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>זרוע</th><th>נתיב</th><th>ביקוש<br>(רכב/ש')</th><th>מתנגש<br>(pc/h)</th>
+            <th>קיבולת<br>(רכב/ש')</th><th>v/c</th><th>עיכוב<br>(שנ'/רכב)</th><th>רמת שירות</th>
+            <th>Q<sub>95</sub><br>(רכב)</th><th>Q<sub>95</sub><br>(מ')</th>
+          </tr>
+        </thead>
+        <tbody id="laneBody"></tbody>
+      </table>
+    </div>
+
+    <h4>סיכום לפי זרוע</h4>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>זרוע</th><th>ביקוש (רכב/ש')</th><th>קיבולת (רכב/ש')</th><th>v/c</th><th>עיכוב בקרה (שנ'/רכב)</th><th>רמת שירות</th><th>Q<sub>95</sub> (מ')</th></tr>
+        </thead>
+        <tbody id="approachSummaryBody"></tbody>
+      </table>
+    </div>
+
+    <h4>הולכי-רגל ואופניים</h4>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>זרוע</th><th>הולכי-רגל (רגל/ש')</th><th>עימות חציה (רכב/ש')</th><th>עיכוב רגל (שנ')</th><th>רמת שירות רגל</th><th>אופניים (אוכ/ש')</th><th>עיכוב אופניים (שנ')</th><th>רמת שירות אופניים</th></tr>
+        </thead>
+        <tbody id="nonMotorBody"></tbody>
+      </table>
+    </div>
+
+    <h4>בדיקת סף לאיתות</h4>
+    <div class="warrant-panel" id="warrantPanel"></div>
+
+    <h4>בדיקות גיאומטריה וישימות</h4>
+    <div class="warrant-panel" id="geometryPanel"></div>
+
+    <div class="footnote">
+      <i class="bi bi-lightning-charge"></i> הקיבולת משתמשת במודלי קבלת-פער אקספוננציאליים של HCM פרק 22; עיכוב ותור משתמשים במשוואות HCM 22-17 ו-22-20; רמת שירות לפי Exhibit 22-8 (A ≤ 10 שנ', B ≤ 15, C ≤ 25, D ≤ 35, E ≤ 50, F > 50 שנ' או v/c > 1.0).
+      שורות הסף הן סינון בלבד — קביעת איתות רשמית דורשת ספירות 8 ו-4 שעות, ועמידה בסף אינה מחייבת איתות כשלעצמה.
+      יש לאמת תכן סופי עם ניתוח תפעולי מלא (HCS, SIDRA, VISSIM) ועל ידי מהנדס מוסמך.
+      <a href="#" id="clearMsgLink">נקה הודעה</a>
+    </div>
+  </div>
+  <footer>MAHALCO – ניתוח מעגל תנועה (מטרי)</footer>
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/roundabout.js?v=2"></script>
+</body>
+</html>

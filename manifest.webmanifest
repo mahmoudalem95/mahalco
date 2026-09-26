@@ -1,0 +1,71 @@
+{
+  "name": "מהאלco — הנדסת תנועה ותחבורה",
+  "short_name": "מהאלco",
+  "description": "כלי חישוב להנדסת תנועה ותחבורה: רמת שירות ונפח קריטי, תקן חניה, מרחקי ראות, אורכי תור וחתכים טיפוסיים — לפי HCM, AASHTO ו-HSM.",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "he",
+  "background_color": "#23272C",
+  "theme_color": "#23272C",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "רמת שירות ונפח קריטי",
+      "short_name": "נפח קריטי",
+      "url": "he/critical-lane-volume.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "תקן חניה לפי יישוב",
+      "short_name": "תקן חניה",
+      "url": "he/parking-regulations.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "משולשי ראות על תכנית",
+      "short_name": "משולשי ראות",
+      "url": "he/sd-tool.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "חתך טיפוסי",
+      "short_name": "חתך טיפוסי",
+      "url": "he/typical-section.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "חיפוש ערכי תכן",
+      "short_name": "ערכי תכן",
+      "url": "he/calculator-dark-ui.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "יומן עבודה לאתר",
+      "short_name": "יומן עבודה",
+      "url": "he/worklog.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<title>MAHALCO — משולשי ראות על מפה</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2151829492004511" crossorigin="anonymous"></script>
+<meta name="description" content="בדיקת משולשי ראות ומרחקי ראות בצמתים ובמעגלי תנועה, עירוניים ובין-עירוניים, ישירות על צילום אוויר בקואורדינטות ITM – עם פלט PDF ו-DWG בקנה מידה.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#141a2b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap">
+<style>
+  :root{--bg:#121624;--panel:#1b2236;--panel2:#222b42;--line:#2e3a55;--line2:#42517a;
+        --txt:#e8ecf5;--dim:#9aa6bf;--amber:#f5b82e;--amber2:#ffd166;--bad:#ff7d6a;--ok:#2dd4a0;--rail:372px;--hdr:52px;
+        color-scheme:dark}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 Heebo,ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif}
+  header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:#141a2b;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center;padding:8px 16px;min-height:var(--hdr)}
+  .mark{display:flex;flex-direction:column;line-height:1.15;margin-left:8px}
+  .mark b{font-size:15px;letter-spacing:.14em}
+  .mark span{font-size:11.5px;color:var(--dim)}
+  #steps{display:flex;gap:4px;margin-inline-start:10px;margin-inline-end:auto;flex-wrap:nowrap}
+  #steps button{display:flex;align-items:center;gap:6px;background:transparent;border-color:transparent;color:var(--dim);padding:5px 10px}
+  #steps button i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11.5px;font-weight:700;background:var(--panel2);border:1px solid var(--line2);font-variant-numeric:tabular-nums}
+  #steps button.on{color:var(--txt);background:var(--panel2);border-color:var(--line2)}
+  #steps button.on i{background:var(--amber);color:#161b2b;border-color:var(--amber)}
+  #steps button.done i{background:#1f5e4c;color:#9defcd;border-color:#1f5e4c}
+  button{background:#28314a;color:var(--txt);border:1px solid var(--line2);border-radius:6px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+  button:hover{background:#313c5a}
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+  button:disabled{opacity:.6;cursor:progress}
+  button.key,button.on{background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700}
+  button.mini{padding:2px 8px;font-size:12px}
+  input,select{background:#131a2c;color:var(--txt);border:1px solid var(--line2);border-radius:5px;padding:5px 7px;font:inherit;font-size:13px}
+  .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-items:start}
+  aside{position:sticky;top:calc(var(--hdr) + env(safe-area-inset-top,0px));max-height:calc(100vh - var(--hdr));overflow:auto;background:var(--panel);border-left:1px solid var(--line);padding:12px 14px 40px}
+  aside h2{font-size:11px;letter-spacing:.12em;color:var(--dim);margin:16px 0 7px;font-weight:700}
+  aside h2:first-child{margin-top:4px}
+  .lead{font-size:13px;color:#cdd6e6;margin:4px 0 10px}
+  .row{display:grid;grid-template-columns:1fr 128px;gap:8px;align-items:center;padding:3px 0}
+  .row label{font-size:13px;color:#cdd6e6}
+  .row input,.row select{width:100%}
+  .row.chk2{grid-template-columns:1fr}
+  .row.chk2 label{display:flex;gap:8px;align-items:center}
+  input[type=checkbox]{width:auto!important;accent-color:var(--amber);flex:none}
+  #hint[hidden],#sres[hidden]{display:none!important}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .seg{display:flex;gap:0;border:1px solid var(--line2);border-radius:8px;overflow:hidden;margin:4px 0 8px}
+  .seg button{flex:1;border:0;border-radius:0;background:transparent;padding:9px 6px;font-size:13.5px}
+  .seg button+button{border-inline-start:1px solid var(--line2)}
+  .seg button.on{background:var(--amber);color:#161b2b}
+  .src{font-size:12px;color:var(--dim);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 9px}
+  .place{display:flex;flex-direction:column;gap:2px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px}
+  .place span{font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums;text-align:right}
+  .toolrow{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .toolrow button{flex:none}
+  .toolrow .dim{font-size:12px}
+  .dim{color:var(--dim)}
+  .arm{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 8px;margin-bottom:6px}
+  .arm.sel{border-color:var(--amber)}
+  .arm .hd{display:flex;gap:6px;align-items:center;font-size:12.5px;margin-bottom:5px}
+  .arm .hd b{flex:none}
+  .arm .hd .dim{flex:1;font-size:11.5px}
+  .arm .g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .arm .g label{font-size:11px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+  .arm select,.arm input{width:100%;padding:3px 5px;font-size:12px}
+  .next{display:flex;gap:6px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+  .next .key{flex:1}
+  main{padding:12px 14px 20px;min-width:0}
+  .stage{position:relative;height:calc(100vh - var(--hdr) - 24px);min-height:460px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#0b101c}
+  #map{display:block;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
+  #search{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:6;width:min(430px,calc(100% - 150px))}
+  #search .bar{display:flex;gap:0;box-shadow:0 6px 22px #0007;border-radius:8px}
+  #q{flex:1;min-width:0;height:40px;border-radius:0 8px 8px 0;border:1px solid var(--line2);background:var(--panel);font-size:14px;padding:0 12px}
+  #qGo{height:40px;border-radius:8px 0 0 8px;border-inline-start:0;background:var(--amber);color:#161b2b;border-color:var(--amber);font-weight:700;padding:0 14px}
+  #sres{margin-top:6px;background:var(--panel);border:1px solid var(--line2);border-radius:8px;overflow:hidden;box-shadow:0 10px 30px #0008;max-height:320px;overflow-y:auto}
+  .sr{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;text-align:right;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;padding:8px 12px}
+  .sr span{font-size:11.5px;color:var(--dim)}
+  .sr:hover{background:var(--panel2)}
+  .sr-m{padding:10px 12px;font-size:12.5px;color:var(--dim)}
+  .mctl{position:absolute;top:10px;left:10px;z-index:5;display:flex;flex-direction:column;gap:6px}
+  .mctl button{width:40px;height:40px;padding:0;font-size:17px;background:var(--panel);box-shadow:0 4px 14px #0006}
+  .mctl button.wide{width:auto;padding:0 10px;font-size:12.5px}
+  #hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:10px;align-items:center;
+    background:rgba(20,26,43,.94);border:1px solid var(--amber);border-radius:22px;padding:7px 8px 7px 16px;max-width:calc(100% - 24px);box-shadow:0 8px 24px #0008}
+  #hintT{font-size:13px;color:#fff}
+  #hint button{flex:none;padding:5px 12px;border-radius:16px}
+  #coords{position:absolute;bottom:8px;right:10px;z-index:4;font:11.5px/1.2 ui-monospace,Menlo,Consolas,monospace;color:#e8ecf5;background:rgba(11,16,28,.62);padding:3px 7px;border-radius:4px;direction:ltr;font-variant-numeric:tabular-nums}
+  #attr{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:4;font:10px Arial;color:#dfe4ec;background:rgba(11,16,28,.5);padding:2px 6px;border-radius:3px;pointer-events:none;white-space:nowrap}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#cfd8e9;margin-top:9px}
+  .legend span{display:flex;gap:5px;align-items:center}
+  .sw{width:14px;height:10px;border-radius:2px;display:inline-block}
+  .out{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;margin-top:12px}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px;min-width:0}
+  .box h3{margin:0 0 9px;font-size:12px;letter-spacing:.08em;color:var(--dim)}
+  .tw{overflow-x:auto}
+  table.t{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+  table.t th{color:var(--dim);font-weight:600;text-align:right;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+  table.t td{padding:5px 6px;border-bottom:1px solid #243149;color:#cfd8e9;white-space:nowrap}
+  table.t td b{color:var(--amber2)}
+  .chk{border-right:3px solid var(--ok);background:var(--panel2);padding:7px 10px;border-radius:4px 0 0 4px;margin-bottom:6px;font-size:12.5px}
+  .chk.warn{border-color:var(--amber)} .chk.bad{border-color:var(--bad)}
+  .chk b{display:block;font-size:11px;color:#b9c3d6}
+  .hint{font-size:12px;color:var(--dim);margin:5px 0}
+  .outbig{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px}
+  .outbig button{padding:12px 8px;font-size:14px}
+  #oInfo{font-size:12.5px;color:#cdd6e6;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin:8px 0}
+  #toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--amber);color:#161b2b;font-weight:700;padding:8px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .18s;pointer-events:none;z-index:90;max-width:calc(100vw - 32px);text-align:center}
+  @media(max-width:1180px){.out{grid-template-columns:1fr}}
+  @media(max-width:980px){
+    header{flex-wrap:wrap;padding:8px 12px;gap:6px}
+    .mark span{display:none}
+    #steps{order:3;width:100%;margin:0;overflow-x:auto}
+    #steps button{flex:1;justify-content:center;padding:6px 4px;font-size:12.5px}
+    .shell{display:flex;flex-direction:column}
+    main{display:contents}
+    .stage{order:1;margin:8px 10px 0;height:64vh;min-height:360px}
+    aside{order:2;position:static;max-height:none;border-left:0;border-top:1px solid var(--line);width:100%;margin-top:10px}
+    .legend{order:3;margin:10px 12px 0}
+    .out{order:4;margin:10px 10px 16px}
+    #search{width:calc(100% - 64px);left:auto;right:8px;transform:none}
+    .mctl{top:58px}
+    input,select{font-size:16px}
+    .row{grid-template-columns:1fr 150px}
+    #hint{bottom:34px}
+    #hintT{font-size:12.5px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
+<script src="../js/inline/f3de506a60.js" data-light="#FFFFFF" data-dark="#141a2b" data-slot="header"></script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+/* ---- backdrop for glass ---- */
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+/* ---- look button ---- */
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+/* ---- popover ---- */
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+</style>
+<style>
+/* ---- התאמות לעמוד הזה (בהיר / זכוכית) ---- */
+:root[data-theme="light"]{--bg:#EEF1F6;--panel:#FFFFFF;--panel2:#F3F5F9;--line:#D6DDE8;--line2:#BFC9D8;--txt:#172033;--dim:#5C6880;
+  --amber:#E0A21C;--amber2:#A86F00;--bad:#C8372D;--ok:#128A68;color-scheme:light}
+:root[data-theme="light"] header{background:rgba(255,255,255,.95)}
+:root[data-theme="light"] button{background:#F1F4F8} :root[data-theme="light"] button:hover{background:#E5EAF1}
+:root[data-theme="light"] :is(button.key,button.on,#qGo,.seg button.on){background:var(--amber)}
+:root[data-theme="light"] .seg button{background:transparent}
+:root[data-theme="light"] #steps button{background:transparent}
+:root[data-theme="light"] #steps button.on{background:var(--panel2)}
+:root[data-theme="light"] :is(input,select){background:#fff}
+:root[data-theme="light"] :is(.row label,.lead){color:#34405A}
+:root[data-theme="light"] .stage{background:#dfe4ec}
+:root[data-theme="light"] table.t td{border-bottom-color:#E3E8EF;color:#26324A}
+:root[data-theme="light"] .chk b{color:#56627A}
+:root[data-theme="light"] .legend{color:#26324A}
+:root[data-theme="light"] #oInfo{color:#26324A}
+:root[data-theme="light"] .mctl button{background:#fff}
+header .mh-look{margin-inline-start:6px}
+html[data-glass="on"] aside,html[data-glass="on"] .box{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] header{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark"><b>MAHALCO</b><span>משולשי ראות על מפה · צמתים ומעגלי תנועה</span></div>
+  <nav id="steps" aria-label="שלבי העבודה">
+    <button type="button" data-step="1"><i>1</i>מיקום</button>
+    <button type="button" data-step="2"><i>2</i>צירים</button>
+    <button type="button" data-step="3"><i>3</i>משולשים</button>
+    <button type="button" data-step="4"><i>4</i>פלט</button>
+  </nav>
+  <button type="button" id="bUndo" title="ביטול הנקודה האחרונה (Backspace)">↶ בטל נקודה</button>
+  <button type="button" id="bSave" title="שמירת הפרויקט כקובץ">שמור</button>
+  <button type="button" id="bLoad" title="פתיחת פרויקט שמור">פתח</button>
+  <input type="file" id="fLoad" accept=".json,application/json" hidden>
+</header>
+
+<div class="shell">
+<aside>
+  <!-- ============ שלב 1 ============ -->
+  <section class="stepP" data-step="1">
+    <h2>1 · מיקום וסוג הבדיקה</h2>
+    <p class="lead">חפשו את הצומת בשורת החיפוש שמעל המפה – כתובת, שם צומת או קואורדינטות ITM. העבודה נעשית על צילום האוויר במטרים אמיתיים, בלי כיול.</p>
+    <div class="place" id="placeInfo"><b>טרם נבחר מיקום</b><span>E — · N —</span></div>
+    <h2>סביבה</h2>
+    <div class="seg" role="group" aria-label="סביבה"><button type="button" data-env="urban">עירוני</button><button type="button" data-env="rural">בין-עירוני</button></div>
+    <h2>סוג הצומת</h2>
+    <div class="seg" role="group" aria-label="סוג הצומת"><button type="button" data-type="jct">צומת (T / +)</button><button type="button" data-type="rab">מעגל תנועה</button></div>
+    <p class="src" id="modeSrc"></p>
+    <div class="next"><button type="button" class="key" data-next="2">המשך לציור הצירים ←</button><button type="button" id="bDemo" title="טעינת גיאומטריה לדוגמה סביב מרכז המפה">דוגמה</button></div>
+  </section>
+
+  <!-- ============ שלב 2 ============ -->
+  <section class="stepP" data-step="2" hidden>
+    <h2>2 · ציור הצירים</h2>
+    <div id="pJ">
+      <p class="lead">לחצו נקודות לאורך ציר הדרך הראשית, ואחר כך לאורך כל זרוע משנית מהצומת החוצה. הצירים מוחלקים לעקומה רציפה, ומשולשי הראות מצטיירים מיד.</p>
+      <div class="toolrow"><button type="button" id="tMain">✎ ציר הדרך הראשית</button><span class="dim" id="mainInfo"></span></div>
+      <div class="toolrow"><button type="button" id="tArm">+ זרוע משנית</button></div>
+      <div id="arms"></div>
+      <h2>חתך הדרך הראשית</h2>
+      <div class="row"><label for="jCarr">סוג הדרך</label><select id="jCarr"><option value="single">חד-מסלולית</option><option value="dual">דו-מסלולית (מפרדה)</option></select></div>
+      <div class="row"><label for="jLanes">נתיבים לכיוון</label><input id="jLanes" type="number" min="1" max="4" value="1"></div>
+      <div class="row"><label for="jLaneW">רוחב נתיב (מ׳)</label><input id="jLaneW" type="number" step="0.05" value="3.5"></div>
+      <div class="row" id="jMedRow" hidden><label for="jMedian">רוחב מפרדה (מ׳)</label><input id="jMedian" type="number" step="0.5" value="0"></div>
+      <div class="row"><label for="jShoulder">שול / מרווח לאבן השפה (מ׳)</label><input id="jShoulder" type="number" step="0.25" value="0"></div>
+      <p class="hint" id="jUrbanNote">בעירוני L2 נמדד מקו אבן השפה של הרחוב הראשי (טבלאות 5.13–5.14).</p>
+    </div>
+    <div id="pR" hidden>
+      <p class="lead">לחצו על מרכז המעגל ואז על השפה החיצונית של המיסעה הסובבת. אחר כך ציירו כל זרוע גישה מהמעגל החוצה.</p>
+      <div class="toolrow"><button type="button" id="tRab">◎ סמן מעגל</button><span class="dim" id="rabInfo"></span></div>
+      <div class="row"><label for="rDc">קוטר חיצוני Dc (מ׳)</label><input id="rDc" type="number" step="0.5" value=""></div>
+      <div class="row"><label for="rLanes">טיפוס המעגל</label><select id="rLanes"><option value="1">חד-נתיבי</option><option value="2">דו-נתיבי</option></select></div>
+      <div class="row"><label for="rWc">רוחב המיסעה הסובבת (מ׳)</label><input id="rWc" type="number" step="0.5" value="7"></div>
+      <div class="toolrow"><button type="button" id="tRArm">+ זרוע גישה</button></div>
+      <div id="rArms"></div>
+    </div>
+    <div class="next"><button type="button" class="key" data-next="3">המשך לערכי התכן ←</button><button type="button" id="bReset">נקה שרטוט</button></div>
+  </section>
+
+  <!-- ============ שלב 3 ============ -->
+  <section class="stepP" data-step="3" hidden>
+    <h2>3 · ערכי תכן ומשולשי ראות</h2>
+    <div id="pJparams">
+      <div class="row"><label for="jSpeed">מהירות בדרך הראשית</label><select id="jSpeed"></select></div>
+      <div class="row chk2"><label><input type="checkbox" id="jLM" checked> ראות לפנייה שמאלה מהדרך הראשית</label></div>
+      <p class="hint">תמרור, רכב תכן, שיפוע ומיקום קו העצירה – בכרטיס של כל זרוע (שלב 2).</p>
+    </div>
+    <div id="pRparams" hidden>
+      <div id="rUrbanOnly">
+        <div class="row"><label for="rVapp">מהירות בגישה (קמ״ש)</label><input id="rVapp" type="number" step="5" value="50"></div>
+        <div class="row"><label for="rVR2">מהירות ההסט VR2 (קמ״ש)</label><input id="rVR2" type="number" step="1" value="30"></div>
+        <p class="hint">V לרכב הנכנס משמאל = ממוצע VR1 (טבלה 2.7) ו-VR2 (איור 2.2). הזינו את VR2 לפי מסלול ההסט בתכנון.</p>
+      </div>
+      <div id="rRuralOnly">
+        <p class="hint">מהירויות נגזרות מרדיוסי הנסיעה (טבלה 11.10). רדיוס הכניסה R1 מוזן בכרטיס כל זרוע.</p>
+      </div>
+      <div class="row"><label for="rRt">רדיוס נסיעה במעגל (מ׳)</label><input id="rRt" type="number" step="0.5" placeholder="אוטומטי"></div>
+    </div>
+    <h2>תצוגה</h2>
+    <div class="row chk2"><label><input type="checkbox" id="sLeft" checked> משולש שמאלה (חצייה / ימינה · d1)</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sRight" checked> משולש ימינה (פנייה שמאלה · d2 סובב)</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sLM" checked> פנייה שמאלה מהראשי</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sSSD" checked> ראות לעצירה ואזור נקי (מעגל)</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sEdges" checked> שפות המיסעה הראשית</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sLbl" checked> תוויות מידה</label></div>
+    <div class="row"><label for="sOp">שקיפות המשולשים</label><input id="sOp" type="range" min="10" max="70" value="30"></div>
+    <div class="next"><button type="button" class="key" data-next="4">המשך לפלט ←</button></div>
+  </section>
+
+  <!-- ============ שלב 4 ============ -->
+  <section class="stepP" data-step="4" hidden>
+    <h2>4 · פלט – PDF / DWG</h2>
+    <p class="lead">קנה המידה נקבע רק כאן. ה-DWG נשמר בקואורדינטות ITM אמיתיות (מודל) ובגיליון מוכן להדפסה (Layout).</p>
+    <div class="row"><label for="oScale">קנה מידה</label><select id="oScale"><option value="250">1:250</option><option value="500" selected>1:500</option><option value="1000">1:1000</option><option value="1250">1:1250</option><option value="2000">1:2000</option></select></div>
+    <div class="row"><label for="oPaper">גיליון</label><select id="oPaper"><option value="auto" selected>אוטומטי – הקטן שמתאים</option><option value="A3">A3</option><option value="A2">A2</option><option value="A1">A1</option><option value="A0">A0</option></select></div>
+    <div id="oInfo">—</div>
+    <h2>לכלול בפלט</h2>
+    <div class="row chk2"><label><input type="checkbox" id="oPhoto" checked> צילום אוויר ברקע (PDF)</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="oTable" checked> טבלת ערכי תכן</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="oLegend" checked> מקרא</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="oFill" checked> מילוי המשולשים (DWG – בשכבות ‎-F נפרדות)</label></div>
+    <div class="row"><label for="oDpi">רזולוציית PDF</label><select id="oDpi"><option value="150">150 dpi</option><option value="200" selected>200 dpi</option><option value="300">300 dpi</option></select></div>
+    <h2>חותמת</h2>
+    <div class="row"><label for="prProj">פרויקט</label><input id="prProj" value=""></div>
+    <div class="row"><label for="prDwg">מס׳ גיליון</label><input id="prDwg" value="SD-01"></div>
+    <div class="row"><label for="prBy">שרטט</label><input id="prBy" value=""></div>
+    <div class="outbig"><button type="button" class="key" id="bPdf">⤓ הורד PDF</button><button type="button" class="key" id="bDwg">⤓ הורד DWG</button></div>
+    <p class="hint" id="outReady"></p>
+    <p class="hint">ה-DWG כולל שכבות SD-* (צירים, משולשים, קווי עצירה, תוויות), גובה כיתוב לפי קנה המידה, וגיליון עם מסגרת וחותמת. אם שירות ההמרה אינו זמין יורד DXF.</p>
+  </section>
+</aside>
+
+<main>
+  <div class="stage" id="stage">
+    <canvas id="map" aria-label="מפת העבודה"></canvas>
+    <div id="search">
+      <div class="bar"><input id="q" type="search" placeholder="חיפוש מקום, כתובת או ITM (E, N)…" autocomplete="off" aria-label="חיפוש מקום"><button type="button" id="qGo" aria-label="חיפוש">חפש</button></div>
+      <div id="sres" hidden></div>
+    </div>
+    <div class="mctl">
+      <button type="button" id="zIn" title="התקרבות" aria-label="התקרבות">+</button>
+      <button type="button" id="zOut" title="התרחקות" aria-label="התרחקות">−</button>
+      <button type="button" id="zFit" title="התאמה לשרטוט" aria-label="התאמה לשרטוט">⤢</button>
+      <button type="button" id="mStyle" class="wide" title="צילום אוויר / מפה">🗺 מפה</button>
+      <button type="button" id="mOn" class="wide" title="הסתרת מפת הרקע">רקע</button>
+    </div>
+    <div id="hint" hidden><span id="hintT"></span><button type="button" id="hintDone" class="key">סיום ✓</button></div>
+    <div id="coords">E — · N —</div>
+    <div id="attr"></div>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="out">
+    <div class="box"><h3>ערכי התכן לפי זרוע</h3><div id="res"></div></div>
+    <div class="box"><h3>בדיקות והערות</h3><div id="checks"></div></div>
+  </div>
+</main>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../js/inline/25ed631521.js"></script>
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/sd-tool.js?v=2"></script>
+</body>
+</html>

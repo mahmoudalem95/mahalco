@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="description" content="Parking regulations and design guidance covering parking supply, layout, access, dimensions, and policy requirements.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#12121e">
+  <meta name="color-scheme" content="dark">
+  <title>תקנות חניה בישראל – מחשבון לפי התקנות והנחיות מינהל התכנון</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --bg: #12121e;
+      --card: #1a1a2e;
+      --card-2: #22223a;
+      --field: #0f0f1a;
+      --line: rgba(255, 255, 255, .09);
+      --line-2: rgba(255, 255, 255, .05);
+      --accent: #E8A33D;
+      --accent-dim: rgba(232, 163, 61, .16);
+      --green: #4ADE80;
+      --ink: #EDEBF2;
+      --ink-2: #9A96AB;
+      --ink-3: #6B6780;
+      --danger: #F35B5B;
+      --warn: #F5C451;
+      --info: #7AB8F5;
+    }
+    body { background: var(--bg); color: var(--ink); padding: 20px; font-family: Arial, sans-serif; }
+    .container { max-width: 1400px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.3); margin-bottom: 20px; }
+    .card-header { background: var(--accent); color: #1a1a2e; border-radius: 12px 12px 0 0; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,.1); }
+    .result-number { font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+    .result-label { font-size: .85rem; color: var(--ink-2); }
+    .result-sub { font-size: .75rem; color: var(--ink-3); }
+    .land-use-item { background: var(--card-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .land-use-item .btn-close { filter: invert(1); }
+    .land-use-item .ref { font-size: .75rem; color: var(--ink-3); }
+    .rule-hint { font-size: .78rem; color: var(--ink-2); background: var(--field); border: 1px solid var(--line-2); border-radius: 6px; padding: 6px 8px; margin-top: 8px; }
+    .rule-hint b { color: var(--accent); font-weight: 600; }
+    .form-control, .form-select { background-color: var(--field); border: 1px solid var(--line); color: var(--ink); }
+    .form-control:focus, .form-select:focus { background-color: var(--field); border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(232,163,61,.2); color: var(--ink); }
+    .form-control:disabled { background-color: #15151f; color: var(--ink-3); }
+    .form-label { color: var(--ink-2); }
+    .form-text { color: var(--ink-3); font-size: .75rem; }
+    .form-control::placeholder { color: var(--ink-3); }
+    .form-check-input { background-color: var(--field); border-color: var(--ink-3); }
+    .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+    .form-range::-webkit-slider-thumb { background: var(--accent); }
+    .form-range::-moz-range-thumb { background: var(--accent); }
+    .table { --bs-table-bg: transparent; --bs-table-color: var(--ink); --bs-table-border-color: var(--line); font-size: .82rem; }
+    .table thead th { color: var(--ink-3); border-color: var(--line); font-weight: 600; white-space: nowrap; }
+    .table td, .table th { border-color: var(--line-2); vertical-align: top; }
+    .table-hover tbody tr:hover { --bs-table-hover-bg: rgba(255,255,255,.03); --bs-table-hover-color: var(--ink); }
+    .table tfoot td { font-weight: 700; color: var(--accent); border-top: 1px solid var(--line); }
+    .bg-success { background-color: var(--green) !important; color: #04150E !important; }
+    .bg-secondary { background-color: var(--card-2) !important; color: var(--ink-2) !important; }
+    .result-box { background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: 1rem !important; height: 100%; }
+    .btn-primary { background-color: var(--accent); border-color: var(--accent); color: #1a1a2e; }
+    .btn-primary:hover { background-color: #c9862f; border-color: #c9862f; color: #1a1a2e; }
+    .btn-outline-secondary { color: var(--ink-2); border-color: var(--line); }
+    .btn-outline-secondary:hover { background-color: rgba(255,255,255,.06); color: var(--ink); border-color: var(--ink-2); }
+    .alert-danger { background-color: rgba(243,91,91,.15); color: var(--danger); border-color: rgba(243,91,91,.3); }
+    h1.display-6 { color: var(--ink); }
+    .text-muted { color: var(--ink-3) !important; }
+    footer { color: var(--ink-3); }
+    .zone-info { background: var(--accent-dim); border: 1px solid rgba(232,163,61,.35); border-radius: 8px; padding: 8px 10px; font-size: .85rem; }
+    .zone-info b { color: var(--accent); }
+    .notes { list-style: none; padding: 0; margin: 0; font-size: .8rem; }
+    .notes li { padding: 6px 8px; border-right: 3px solid var(--ink-3); margin-bottom: 6px; background: var(--field); border-radius: 4px; color: var(--ink-2); }
+    .notes li.danger { border-color: var(--danger); color: #f7a3a3; }
+    .notes li.warn { border-color: var(--warn); color: #f2dca2; }
+    .notes li.info { border-color: var(--info); }
+    .sticky-results { position: sticky; top: 16px; }
+    .small-muted { font-size: .75rem; color: var(--ink-3); }
+    @media (max-width: 991px) { .sticky-results { position: static; } }
+  
+    /* ---- locality resolver ---- */
+    .city-badge{border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:9px 12px;
+      font-size:.88rem;line-height:1.45;background:rgba(255,255,255,.03)}
+    .city-badge.ok{border-color:rgba(232,163,61,.55);background:rgba(232,163,61,.10)}
+    .city-badge.miss{border-color:rgba(243,91,91,.5);background:rgba(243,91,91,.10)}
+    .city-badge b{color:#E8A33D}
+    .city-badge .vf{display:block;margin-top:4px;font-size:.79rem;opacity:.75}
+    .manual-sum{cursor:pointer;font-size:.9rem;opacity:.85}
+
+    /* ==================== MOBILE LAYER — מהאלco (phone / tablet) ==================== */
+    #mNav,#mBar,#mSheet,.card-header .mchev{display:none}
+    @media (max-width: 991px) {
+      body{padding:0 0 calc(86px + env(safe-area-inset-bottom))}
+      .container{padding:0 12px}
+      h1.display-6{font-size:1.32rem;line-height:1.35;margin-top:14px}
+      h1.display-6 .bi{font-size:1.1rem}
+      body > .container > p.text-muted{font-size:.8rem;line-height:1.55}
+
+      /* ניווט מהיר בין מקטעים */
+      #mNav{display:flex;position:sticky;top:0;z-index:40;gap:6px;overflow-x:auto;
+        margin:0 -12px 12px;padding:9px 12px;background:rgba(18,18,30,.97);
+        -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+        border-bottom:1px solid var(--line);scrollbar-width:none}
+      #mNav::-webkit-scrollbar{display:none}
+      #mNav button{flex:0 0 auto;white-space:nowrap;min-height:40px;font-size:12.5px;
+        padding:6px 13px;border-radius:99px;background:var(--card-2);color:var(--ink-2);
+        border:1px solid var(--line)}
+      #mNav button.on{background:var(--accent);color:#1a1a2e;border-color:var(--accent);font-weight:700}
+
+      .card{margin-bottom:14px;border-radius:12px;scroll-margin-top:62px}
+      .card-header{font-size:.95rem;padding:11px 14px;display:flex;align-items:center;
+        gap:8px;cursor:pointer;min-height:48px}
+      .card-header .mchev{margin-inline-start:auto;transition:transform .2s;font-size:.8rem}
+      .card.mclosed .card-body{display:none}
+      .card.mclosed .card-header .mchev{transform:rotate(-90deg)}
+      .card-body{padding:14px}
+      .form-control,.form-select{font-size:16px;min-height:46px}
+      .form-control-sm,.form-select-sm{font-size:15px;min-height:42px}
+      .form-label{font-size:.82rem;margin-bottom:3px}
+      .form-text{font-size:.72rem;line-height:1.45}
+      .btn{min-height:46px}
+      .btn-sm{min-height:38px}
+      .form-range{height:34px}
+      .land-use-item{padding:12px 12px 10px}
+      .land-use-item .row > [class^="col-"]{margin-bottom:2px}
+      .table{font-size:.78rem}
+      .table td,.table th{padding:.4rem .35rem}
+      #calcBtn{margin-bottom:10px!important}
+
+      /* --- שורת תוצאה קבועה: רואים את המספר תוך כדי הזנה --- */
+      #mBar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:center;
+        gap:10px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+        background:rgba(26,26,46,.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+        border-top:1px solid rgba(255,255,255,.12);box-shadow:0 -6px 18px rgba(0,0,0,.4)}
+      #mBarVals{display:flex;gap:14px;overflow-x:auto;flex:1;scrollbar-width:none}
+      #mBarVals::-webkit-scrollbar{display:none}
+      #mBarVals .v{flex:0 0 auto}
+      #mBarVals .k{display:block;font-size:.66rem;color:var(--ink-3);line-height:1.25}
+      #mBarVals .n{font-size:1.3rem;font-weight:700;color:var(--accent);line-height:1.1}
+      #mBar .open{flex:0 0 auto;min-height:44px;font-size:.8rem;padding:8px 13px;border-radius:9px;
+        background:var(--accent);color:#1a1a2e;border:0;font-weight:700}
+
+      /* --- גיליון התוצאות המלא --- */
+      #mSheet{display:block;position:fixed;left:0;right:0;bottom:0;top:auto;z-index:70;
+        height:88vh;background:var(--bg);border-top:1px solid var(--line);
+        border-radius:16px 16px 0 0;box-shadow:0 -14px 44px rgba(0,0,0,.6);
+        transform:translateY(102%);transition:transform .26s ease;overflow:auto;
+        padding:0 12px calc(22px + env(safe-area-inset-bottom));overscroll-behavior:contain}
+      body.msheet #mSheet{transform:translateY(0)}
+      #mSheetHead{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:9px;
+        background:var(--bg);padding:12px 0 10px;border-bottom:1px solid var(--line)}
+      #mSheetHead b{flex:1;font-size:.98rem}
+      #mSheetHead button{min-height:40px;padding:5px 13px;border-radius:9px;border:1px solid var(--line);
+        background:var(--card-2);color:var(--ink);font-size:.82rem}
+      #mSheet .sticky-results{position:static!important}
+      #mSheet .card{margin-top:12px}
+      body.msheet{overflow:hidden}
+    }
+    @media print{#mNav,#mBar,#mSheet{display:none!important}}
+</style>
+
+<!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
+<script src="../js/inline/f3de506a60.js" data-light="#F2F2F7" data-dark="#12121e"></script>
+<style id="mh-look-kit">
+:root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
+  --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(30,40,60,.10);
+  --mh-blob-a:rgba(233,177,47,.42);--mh-blob-b:rgba(64,128,214,.34);--mh-blob-c:rgba(52,170,110,.24);--mh-glass-base:#E9ECF1;
+  --mh-ui-bg:rgba(250,250,252,.90);--mh-ui-ink:#1C1C1E;--mh-ui-ink2:#6C6C70;--mh-ui-fill:rgba(118,118,128,.14);
+  --mh-ui-knob:#fff;--mh-ui-line:rgba(60,60,67,.16);--mh-ui-on:#34C759}
+:root[data-theme="dark"]{--mh-glass-fill:rgba(30,32,38,.52);--mh-glass-fill-2:rgba(255,255,255,.055);--mh-glass-bar:rgba(20,22,26,.62);
+  --mh-glass-line:rgba(255,255,255,.13);--mh-glass-edge:rgba(255,255,255,.06);
+  --mh-glass-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.38);
+  --mh-blob-a:rgba(233,177,47,.24);--mh-blob-b:rgba(70,120,230,.30);--mh-blob-c:rgba(150,90,220,.20);--mh-glass-base:#0B0D11;
+  --mh-ui-bg:rgba(38,40,46,.90);--mh-ui-ink:#F2F2F7;--mh-ui-ink2:#AEAEB2;--mh-ui-fill:rgba(118,118,128,.30);
+  --mh-ui-knob:#636366;--mh-ui-line:rgba(255,255,255,.12);--mh-ui-on:#30D158}
+html.mh-anim, html.mh-anim body, html.mh-anim body *{transition:background-color .3s ease,border-color .3s ease,color .3s ease,fill .3s ease!important}
+
+/* ---- backdrop for glass ---- */
+#mh-bg{display:none}
+html[data-glass="on"]{background:var(--mh-glass-base)!important}
+html[data-glass="on"] body{background:transparent!important}
+html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 34% at 88% 6%,var(--mh-blob-a),transparent 72%),
+  radial-gradient(44% 40% at 6% 38%,var(--mh-blob-b),transparent 72%),
+  radial-gradient(42% 38% at 72% 94%,var(--mh-blob-c),transparent 72%),
+  var(--mh-glass-base)}
+
+/* ---- look button ---- */
+.mh-look{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:50%;
+  border:.5px solid var(--mh-ui-line);background:var(--mh-ui-bg);color:var(--mh-ui-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}
+.mh-look:active{transform:scale(.92)}
+.mh-look:focus-visible{outline:3px solid #E9A21F;outline-offset:2px}
+.mh-look.mh-inline{margin-inline-start:8px}
+.mh-look.mh-float{position:fixed;z-index:45;width:46px;height:46px;inset-inline-end:max(14px,env(safe-area-inset-left,0px));
+  bottom:calc(var(--mh-fab-b,16px) + env(safe-area-inset-bottom,0px));box-shadow:0 6px 22px rgba(0,0,0,.20)}
+@media print{.mh-look,.mh-pop,#mh-bg{display:none!important}}
+
+/* ---- popover ---- */
+.mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
+  opacity:0;transform:scale(.96) translateY(-4px);transform-origin:top left;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.mh-pop.on{opacity:1;transform:none}
+.mh-pop[hidden]{display:none!important}
+.mh-pop *{box-sizing:border-box}
+.mh-pop-h{font-size:13px;font-weight:600;color:var(--mh-ui-ink2);margin:2px 4px 9px}
+.mh-seg{position:relative;display:flex;gap:2px;padding:2px;border-radius:11px;background:var(--mh-ui-fill);isolation:isolate}
+.mh-seg button{position:relative;z-index:1;flex:1;min-width:0;min-height:54px;border:0;border-radius:9px;background:none;color:var(--mh-ui-ink);
+  font:inherit;font-size:12.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:4px 2px}
+.mh-seg button[aria-checked="true"]{font-weight:700}
+.mh-seg button:focus-visible{outline:2px solid #E9A21F;outline-offset:-2px}
+.mh-knob{position:absolute;z-index:0;top:2px;bottom:2px;left:2px;width:0;border-radius:9px;background:var(--mh-ui-knob);
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:left .3s cubic-bezier(.2,.8,.2,1),width .3s cubic-bezier(.2,.8,.2,1)}
+.mh-row{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--mh-ui-fill);cursor:pointer}
+.mh-row-t{flex:1;min-width:0}
+.mh-row-t b{display:block;font-size:15px;font-weight:600}
+.mh-row-t small{display:block;font-size:12px;color:var(--mh-ui-ink2)}
+.mh-sw{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;margin:0;border-radius:16px;background:rgba(120,120,128,.32);position:relative;cursor:pointer;transition:background .25s}
+.mh-sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.mh-sw:checked{background:var(--mh-ui-on)}
+.mh-sw:checked::after{transform:translateX(-20px)}
+.mh-sw:focus-visible{outline:2px solid #E9A21F;outline-offset:2px}
+.mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
+@media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
+
+/* ---- התאמות לעמוד הזה ---- */
+:root[data-theme="light"]{--bg:#F2F2F7;--card:#FFFFFF;--card-2:#F5F5F9;--field:#FFFFFF;--line:rgba(20,20,40,.13);--line-2:rgba(20,20,40,.08);
+  --accent:#E8A33D;--accent-dim:rgba(232,163,61,.14);--green:#1F9D55;--ink:#1C1B26;--ink-2:#55536A;--ink-3:#807E93;
+  --danger:#C8372D;--warn:#A86B0C;--info:#1F5FA8}
+:root[data-theme="light"] .card{box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(20,20,40,.07)}
+:root[data-theme="light"] :is(.result-number,.zone-info b,.rule-hint b,.city-badge b,#mBarVals .n){color:#9A5B00}
+:root[data-theme="light"] .table tfoot td{color:#9A5B00}
+:root[data-theme="light"] .form-control:disabled{background-color:#EEEEF3}
+:root[data-theme="light"] .land-use-item .btn-close{filter:none}
+:root[data-theme="light"] .table-hover tbody tr:hover{--bs-table-hover-bg:rgba(0,0,0,.03)}
+:root[data-theme="light"] .btn-outline-secondary:hover{background-color:rgba(0,0,0,.05)}
+:root[data-theme="light"] .notes li.danger{color:#A52A20} :root[data-theme="light"] .notes li.warn{color:#7A5200}
+:root[data-theme="light"] .city-badge{border-color:rgba(0,0,0,.14);background:rgba(0,0,0,.02)}
+:root[data-theme="light"] .bg-success{color:#fff!important}
+@media (max-width:991px){
+  :root[data-theme="light"] #mNav{background:rgba(242,242,247,.94)}
+  :root[data-theme="light"] #mBar{background:rgba(255,255,255,.96);border-top-color:rgba(0,0,0,.1);box-shadow:0 -6px 18px rgba(0,0,0,.08)}
+  :root[data-theme="light"] #mSheet{box-shadow:0 -14px 44px rgba(0,0,0,.18)}
+  .mh-look.mh-float{--mh-fab-b:96px}
+}
+html[data-glass="on"] .card{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] .land-use-item,
+html[data-glass="on"] .result-box,
+html[data-glass="on"] .form-control,
+html[data-glass="on"] .form-select,
+html[data-glass="on"] .rule-hint,
+html[data-glass="on"] .notes li{background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] #mNav,
+html[data-glass="on"] #mBar{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .card{border-radius:20px}
+html[data-glass="on"] .card-header{border-radius:20px 20px 0 0}
+
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 class="display-6 fw-bold mb-2"><i class="bi bi-car-front-fill text-warning ms-2"></i>תקנות חניה בישראל – מחשבון לפי התקנות והנחיות מינהל התכנון</h1>
+  <p class="text-muted mb-4">מבוסס על תקנות התכנון והבנייה (התקנת מקומות חניה), התשמ"ג–1983 כתיקונן ב־2016, על הנחיות מינהל התכנון לתקנות החניה (4.7.2016) ועל המדריך המקצועי לחניות אופניים (אוקטובר 2020). כלי עזר בלבד: אינו מחליף את הוראות הדין, את מדיניות הוועדה המקומית ואת שיקול דעת רשות הרישוי.</p>
+
+  <div class="row">
+    <div class="col-lg-7">
+
+      <!-- Project & Zone -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-geo-alt ms-2"></i>פרויקט, יישוב ואזור מתע"ן</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">שם הפרויקט</label>
+              <input type="text" class="form-control" id="projectName" value="פרויקט מעורב שימושים">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="cityInput">עיר / יישוב</label>
+              <input type="text" class="form-control" id="cityInput" list="cityList"
+                     placeholder="הקלידו שם יישוב — למשל חיפה, קריית אתא, באר שבע" autocomplete="off">
+              <datalist id="cityList"></datalist>
+              <div class="form-text" id="cityHint">סוג היישוב ומצב המתע"ן ייקבעו אוטומטית. אם היישוב אינו ברשימה, קבעו אותם ידנית למטה.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">קביעת היישוב</label>
+              <div class="city-badge" id="cityBadge">טרם הוזן יישוב — החישוב לפי הקביעה הידנית</div>
+            </div>
+            <div class="col-12">
+              <details id="manualSettle">
+                <summary class="manual-sum">קביעה ידנית של סוג היישוב ומצב המתע"ן</summary>
+                <div class="row g-3 mt-1">
+                  <div class="col-md-6">
+                    <label class="form-label">סוג היישוב</label>
+                    <select class="form-select" id="settle">
+                      <option value="mts" selected>יישוב עם מתע"ן</option>
+                      <option value="rail">יישוב שבו המתע"ן הוא רק רכבת שאינה עירונית</option>
+                      <option value="none">יישוב בלא מתע"ן</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mts-only">
+                    <label class="form-label">מצב המתע"ן (הוראות מעבר)</label>
+                    <select class="form-select" id="mtsStatus">
+                      <option value="operating" selected>המתע"ן פועל (לאחר מועד ההפעלה)</option>
+                      <option value="planned">חלה תוכנית מפורטת לקו – טרם הופעל</option>
+                      <option value="statutory">רק תמ"א / תמ"מ – טרם אושרה תוכנית מפורטת</option>
+                    </select>
+                  </div>
+                  <div class="col-12"><div class="form-text">שינוי ידני גובר על קביעת היישוב עד להקלדת שם יישוב אחר.</div></div>
+                </div>
+              </details>
+            </div>
+            <div class="col-md-6 zone-field">
+              <label class="form-label">קביעת אזור</label>
+              <select class="form-select" id="zoneMode">
+                <option value="auto" selected>לפי מרחק אווירי</option>
+                <option value="A">אזור א' (לפי תשריט הוועדה)</option>
+                <option value="B">אזור ב' (לפי תשריט הוועדה)</option>
+                <option value="C">אזור ג' (לפי תשריט הוועדה)</option>
+              </select>
+            </div>
+            <div class="col-md-6 zone-field">
+              <label class="form-label">מרחק אווירי (מ')</label>
+              <input type="number" class="form-control" id="distance" value="250" min="0">
+              <div class="form-text">מציר המתע"ן עד גבול המגרש; ברכבת שאינה עירונית – מכל יציאת הולכי רגל מהתחנה.</div>
+            </div>
+            <div class="col-md-6 zone-field">
+              <label class="form-label">הקטנת תחום אזורים א' ו־ב' (%)</label>
+              <input type="number" class="form-control" id="zoneReduce" value="0" min="0" max="40" step="5">
+              <div class="form-text">רק כשהוכחו קשיי טופוגרפיה או נגישות להולכי רגל (תוספת, חלק א' 2א). ככלל עד 20%; עד 40% במקרים חריגים (הנחיות 6).</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">אחוזי בנייה (שטח עיקרי מתוך שטח המגרש, %)</label>
+              <input type="number" class="form-control" id="rightsPct" value="100" min="0">
+              <div class="form-text">קובע את התקן למסחר, משרדים ותעשייה ביישוב בלא מתע"ן.</div>
+            </div>
+            <div class="col-md-6 none-only">
+              <label class="form-label">תוספת במחוזות הצפון והדרום (%)</label>
+              <input type="number" class="form-control" id="plus25" value="0" min="0" max="25">
+              <div class="form-text" id="plusHint">ביישוב בצפון או בדרום שאין בו תוכנית למתע"ן רשות הרישוי רשאית להוסיף עד 25% (תקנה 2א(ג)).</div>
+            </div>
+            <div class="col-12"><div class="zone-info" id="zoneInfo"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Policy -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-sliders ms-2"></i>מדיניות הוועדה המקומית</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">מיקום בתוך "מספר טווח": <b id="posVal" class="text-warning">50%</b></label>
+              <input type="range" class="form-range" id="pos" min="0" max="100" step="5" value="50">
+              <div class="form-text">0% = מינימום חניות בטווח, 100% = מקסימום. יש לקבוע לשכונה או לאזור ולא לבניין בודד, בהתחשב באופי השכונה, ברמת התחבורה הציבורית, בטופוגרפיה ובעודף או מחסור בחניה (הנחיות 4.2–4.3). ב"מספר מרבי" מוצג המרבי; ניתן להזין תקן ידני נמוך יותר בכל ייעוד.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">חניית אורחים במגורים (% מיח"ד)</label>
+              <input type="number" class="form-control" id="guestPct" value="20" min="10" max="30" step="5">
+              <div class="form-text">נורמה מקובלת 10%–30%, כחלק מסך המקומות המותרים – לא תוספת (הנחיות 9).</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">הגדלת תקן האופניים מעבר למזערי (%)</label>
+              <input type="number" class="form-control" id="bikeExtra" value="0" min="0" step="10">
+              <div class="form-text">התקן לאופניים מזערי בלבד; הוועדה רשאית להגדיל (מדריך האופניים 1.2, 1.6).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Land Uses -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-building ms-2"></i>ייעודי ושימושי קרקע</div>
+        <div class="card-body">
+          <div id="landUseContainer"></div>
+          <div class="row g-2 align-items-end mt-1">
+            <div class="col-md-8">
+              <label class="form-label small">הוספת שימוש לפי התוספת לתקנות</label>
+              <select class="form-select" id="usePicker"></select>
+            </div>
+            <div class="col-md-4">
+              <button type="button" class="btn btn-outline-secondary w-100" id="addLandUseBtn"><i class="bi bi-plus-circle"></i> הוסף שימוש</button>
+            </div>
+          </div>
+          <div class="form-text mt-2">הזינו שטחים עיקריים בלבד – שטחי שירות אינם נכללים (הנחיות 3.1). שימוש שאינו בתקנות: בחרו את השימוש הדומה ביותר או שילוב שימושים (הנחיות 5).</div>
+        </div>
+      </div>
+
+      <!-- Mixed use -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-intersect ms-2"></i>שימושים מעורבים – חפיפת חניה</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">החלת חפיפת חניה</label>
+              <select class="form-select" id="shareOn">
+                <option value="false" selected>לא</option>
+                <option value="true">כן – חניון משותף</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">מרחק הליכה מרבי לכניסה (מ')</label>
+              <input type="number" class="form-control" id="shareWalk" value="150" min="0">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="sharePublic" checked>
+                <label class="form-check-label small" for="sharePublic">החניון ציבורי ואינו מוצמד לשימוש מסוים</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-text mt-2">לפי תוספת, חלק א' פרט 5 וטבלת העזר בהנחיות 13.1: החישוב לפי ההצטברות המרבית בעת ובעונה אחת (לפני הצהריים / אחרי הצהריים / ערב ולילה). חניה המוצמדת ליח"ד אינה נכללת בחפיפה; מרחק ההליכה המרבי 250 מ'. יש לבחון מקרים חריגים כגון מסחר ומגורים בימי שישי (13.2).</div>
+        </div>
+      </div>
+
+      <!-- Bicycle access -->
+      <div class="card">
+        <div class="card-header"><i class="bi bi-bicycle ms-2"></i>גישה לחניית האופניים</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">אופן הגישה</label>
+              <select class="form-select" id="bikeAccess">
+                <option value="street" selected>ישירה ממפלס הרחוב / שביל אופניים</option>
+                <option value="ramp">דרך רמפת החניון לרכב</option>
+                <option value="lift">במעלית</option>
+              </select>
+            </div>
+            <div class="col-md-4 access-ramp">
+              <label class="form-label">חניות רכב המשתמשות ברמפה</label>
+              <input type="number" class="form-control" id="rampCars" value="30" min="0">
+            </div>
+            <div class="col-md-4 access-ramp">
+              <label class="form-label">שיפוע אורכי של הרמפה (%)</label>
+              <input type="number" class="form-control" id="rampSlope" value="10" min="0" step="0.5">
+            </div>
+            <div class="col-md-4 access-lift">
+              <label class="form-label">אורך תא המעלית (מ')</label>
+              <input type="number" class="form-control" id="liftLen" value="2.1" min="0" step="0.1">
+            </div>
+          </div>
+          <div class="form-text mt-2">מדריך האופניים 4.2–4.3: ככלל אין להשתמש ברמפת רכב; מותר רק כשהיא משרתת עד 40 חניות ושיפועה קטן מ־11%. בגישה במעלית – לפחות מעלית אחת באורך 2 מ' לפחות.</div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-lg w-100 mt-1 mb-4" id="calcBtn"><i class="bi bi-calculator"></i> חשב דרישות חניה</button>
+    </div>
+
+    <!-- Results -->
+    <div class="col-lg-5">
+      <div class="sticky-results">
+        <div class="card">
+          <div class="card-header"><i class="bi bi-table ms-2"></i>תוצאות החישוב</div>
+          <div class="card-body" id="resultsArea">
+            <div class="text-center text-muted py-5">
+              <i class="bi bi-clipboard-data fs-1"></i>
+              <p class="mt-3">הוסיפו שימושי קרקע ולחצו על <strong>חשב דרישות חניה</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center small mt-4 pb-3">
+    מחשבון תקנות חניה בישראל – תקנות 2016, הנחיות מינהל התכנון (פרק 3) ומדריך חניות אופניים 2020
+  </footer>
+</div>
+
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/parking-regulations.js?v=2"></script>
+
+<!-- ============ MOBILE LAYER — מהאלco ============ -->
+<script src="../js/inline/71cf238e26.js"></script>
+</body>
+</html>

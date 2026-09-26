@@ -1,0 +1,712 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.sheetjs.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#12121e">
+<meta name="description" content="מחשבון אורך תור ואחסנה בנתיבים — הזנה מנתוני נפח קריטי, פתרון אורך תור לימין/שמאל/ישר בתנאי עירוני ובין-עירוני, לפי הנחיות לתכן גיאומטרי של דרכים בין-עירוניות כרך 2 (נובמבר 2023).">
+<title>אורך תור ואחסנה בנתיבים — עירוני ובין-עירוני</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="../js/xlsx-fallback.js?v=2"></script>
+<style>
+:root{
+  --bg:#12121e; --surface:#1a1a2e; --sunk:#22223a;
+  --ink:#EDEBF2; --ink2:#9A96AB; --ink3:#6B6780;
+  --rule:rgba(255,255,255,.09); --rule2:rgba(255,255,255,.05);
+  --pick:#E8A33D; --pick-bg:rgba(232,163,61,.16);
+  --warn:#F35B5B; --warn-bg:rgba(243,91,91,.15);
+  --ok:#4ADE80; --ok-bg:rgba(74,222,128,.14);
+  --mid:#E8A33D; --mid-bg:rgba(232,163,61,.14);
+  --info:#22D3EE; --info-bg:rgba(34,211,238,.14);
+  --dir-n:#4ADE80; --dir-s:#22D3EE; --dir-e:#E8A33D; --dir-w:#A78BFA;
+  --rural:#A78BFA; --urban:#22D3EE;
+  --r:8px;
+  --shadow:0 1px 2px rgba(0,0,0,.24), 0 4px 10px rgba(0,0,0,.16);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Assistant',system-ui,'Segoe UI','Arial Hebrew',Tahoma,sans-serif;
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1240px;margin:0 auto;padding:32px 20px 96px}
+h1{font-size:29px;font-weight:700;margin:0 0 8px;letter-spacing:-.015em}
+h2{font-size:20px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em;display:flex;align-items:center;gap:9px}
+h2::before{content:'';flex:none;width:4px;height:15px;background:var(--pick);border-radius:2px}
+h3{font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:-.005em}
+p{margin:0 0 12px}
+.lede{color:var(--ink2);max-width:82ch;margin:0 0 26px;font-size:15.5px}
+section{margin-bottom:44px;scroll-margin-top:16px}
+.sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px;
+  border-bottom:1px solid var(--rule);padding-bottom:10px}
+.sec-head .num{font-family:var(--mono);color:var(--pick);font-size:13px;letter-spacing:.06em}
+.sec-head .hint{color:var(--ink3);font-size:13px;margin-inline-start:auto}
+.note{color:var(--ink2);font-size:13.5px;margin:10px 0 0}
+.note strong{color:var(--ink)}
+.tiny{font-size:12px;color:var(--ink3)}
+code,.kbd{font-family:var(--mono);font-size:.88em;background:var(--sunk);border:1px solid var(--rule2);
+  border-radius:4px;padding:1px 5px;color:#D8D4E4;direction:ltr;unicode-bidi:embed}
+pre{background:var(--sunk);border:1px solid var(--rule2);border-radius:var(--r);padding:14px;
+  overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:#D8D4E4;margin:0}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(18,18,30,.94);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--rule);margin:0 -20px 26px;padding:10px 20px;
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.topbar .sp{margin-inline-start:auto}
+.brandmark{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14.5px}
+.brandmark svg{flex:none}
+
+/* ---------- controls ---------- */
+button,select,input,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+button{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);
+  padding:7px 13px;cursor:pointer;font-weight:500;transition:background .15s,border-color .15s}
+button:hover{background:#23233b;border-color:rgba(255,255,255,.18)}
+button:active{transform:translateY(1px)}
+button.pri{background:var(--pick-bg);border-color:rgba(232,163,61,.45);color:#F6CE8C}
+button.pri:hover{background:rgba(232,163,61,.26)}
+button.gh{background:transparent;border-color:var(--rule);color:var(--ink2)}
+button.sm{padding:4px 9px;font-size:12.5px;border-radius:6px}
+input[type=number],input[type=text],select,textarea{background:var(--sunk);border:1px solid var(--rule);
+  border-radius:6px;padding:6px 9px;min-width:0}
+input[type=number]{width:82px;text-align:center;font-family:var(--mono);font-size:13px}
+input[type=number].w{width:104px}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid rgba(232,163,61,.55);outline-offset:1px}
+input:disabled{opacity:.4}
+textarea{width:100%;min-height:118px;direction:ltr;text-align:left;font-family:var(--mono);font-size:12px;line-height:1.5;resize:vertical}
+label.chk{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13.5px;color:var(--ink2)}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--pick)}
+
+/* ---------- cards / grids ---------- */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.card.rural{border-color:rgba(167,139,250,.35)}
+.card.urban{border-color:rgba(34,211,238,.32)}
+.card h3{display:flex;align-items:center;gap:8px}
+.tag{font-size:11px;font-weight:600;letter-spacing:.03em;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.tag.rural{background:rgba(167,139,250,.16);color:#C4B5FD;border:1px solid rgba(167,139,250,.35)}
+.tag.urban{background:rgba(34,211,238,.14);color:#7DD9EC;border:1px solid rgba(34,211,238,.32)}
+.tag.guide{background:rgba(232,163,61,.14);color:#F0C078;border:1px solid rgba(232,163,61,.32)}
+.tag.hcm{background:rgba(74,222,128,.12);color:#86E7AC;border:1px solid rgba(74,222,128,.28)}
+.frow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.frow:last-child{margin-bottom:0}
+.frow .lbl{flex:1 1 190px;min-width:150px;color:var(--ink2);font-size:13.5px}
+.frow .lbl small{display:block;color:var(--ink3);font-size:11.5px;line-height:1.4}
+.frow .unit{color:var(--ink3);font-size:12px;min-width:34px}
+
+/* ---------- chips / status ---------- */
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:3px 10px;border-radius:999px;
+  border:1px solid var(--rule);background:var(--sunk);color:var(--ink2);white-space:nowrap}
+.chip.ok{color:#86E7AC;background:var(--ok-bg);border-color:rgba(74,222,128,.3)}
+.chip.warn{color:#F5A3A3;background:var(--warn-bg);border-color:rgba(243,91,91,.3)}
+.chip.mid{color:#F0C078;background:var(--mid-bg);border-color:rgba(232,163,61,.3)}
+.chip.info{color:#7DD9EC;background:var(--info-bg);border-color:rgba(34,211,238,.3)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+
+/* ---------- metric cards ---------- */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;margin-bottom:14px}
+.metric{background:var(--sunk);border:1px solid var(--rule2);border-radius:10px;padding:11px 13px}
+.metric .k{color:var(--ink3);font-size:11.5px;margin-bottom:3px;line-height:1.35}
+.metric .v{font-family:var(--mono);font-size:21px;font-weight:500;letter-spacing:-.02em}
+.metric .v small{font-size:11.5px;color:var(--ink2);font-weight:400;margin-inline-start:4px}
+.metric .sub{color:var(--ink2);font-size:11.5px;margin-top:2px}
+.metric.hl{border-color:rgba(232,163,61,.4);background:var(--pick-bg)}
+.metric.bad{border-color:rgba(243,91,91,.42);background:var(--warn-bg)}
+.metric.good{border-color:rgba(74,222,128,.35);background:var(--ok-bg)}
+
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+caption{text-align:start;padding:11px 14px;color:var(--ink2);font-size:12.5px;border-bottom:1px solid var(--rule2);
+  background:rgba(255,255,255,.015);line-height:1.55}
+th,td{padding:8px 10px;border-bottom:1px solid var(--rule2);text-align:start;vertical-align:middle}
+thead th{background:var(--sunk);color:var(--ink2);font-weight:600;font-size:12px;white-space:nowrap;
+  position:sticky;top:0;z-index:2}
+thead tr.grp th{top:0;background:#262640;color:var(--ink2);border-inline:1px solid var(--rule2);text-align:center;font-size:11.5px}
+thead tr.sub th{top:29px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.022)}
+td.val,th.val{text-align:center;font-family:var(--mono);font-size:12.8px;white-space:nowrap}
+td.name{white-space:nowrap}
+.sub{display:block;color:var(--ink3);font-size:11px;line-height:1.4}
+tr.armhead td{background:rgba(255,255,255,.03);font-weight:600;font-size:13px;border-top:1px solid var(--rule)}
+tr.armhead td .dirbar{display:inline-block;width:8px;height:8px;border-radius:2px;margin-inline-end:7px}
+.dN{background:var(--dir-n)} .dS{background:var(--dir-s)} .dE{background:var(--dir-e)} .dW{background:var(--dir-w)}
+td.st{text-align:center}
+.st .chip{font-size:11.5px;padding:2px 8px}
+td.big{font-family:var(--mono);font-size:14px;font-weight:500}
+td.rul{border-inline-start:1px dashed var(--rule)}
+.los{display:inline-block;min-width:20px;text-align:center;font-family:var(--mono);font-weight:600;
+  border-radius:5px;padding:1px 6px;font-size:12px}
+.los-A,.los-B{background:var(--ok-bg);color:#86E7AC}
+.los-C{background:rgba(34,211,238,.14);color:#7DD9EC}
+.los-D{background:var(--mid-bg);color:#F0C078}
+.los-E,.los-F{background:var(--warn-bg);color:#F5A3A3}
+
+/* ---------- warnings ---------- */
+.warnbox{background:var(--warn-bg);border:1px solid rgba(243,91,91,.32);border-radius:10px;padding:12px 14px;
+  color:#F7C9C9;font-size:13.5px;margin-bottom:12px}
+.infobox{background:var(--info-bg);border:1px solid rgba(34,211,238,.28);border-radius:10px;padding:12px 14px;
+  color:#B9EAF5;font-size:13.5px;margin-bottom:12px}
+.okbox{background:var(--ok-bg);border:1px solid rgba(74,222,128,.28);border-radius:10px;padding:12px 14px;
+  color:#B4EEC9;font-size:13.5px;margin-bottom:12px}
+ul.tight{margin:6px 0 0;padding-inline-start:20px}
+ul.tight li{margin-bottom:5px}
+.wlist{list-style:none;margin:0;padding:0}
+.wlist li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--rule2);font-size:13.5px}
+.wlist li:last-child{border-bottom:none}
+.wlist .ic{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;
+  font-weight:700;margin-top:2px}
+.wlist .ic.e{background:var(--warn-bg);color:#F5A3A3}
+.wlist .ic.w{background:var(--mid-bg);color:#F0C078}
+.wlist .ic.i{background:var(--info-bg);color:#7DD9EC}
+.wlist .ic.g{background:var(--ok-bg);color:#86E7AC}
+.wlist .src{color:var(--ink3);font-size:11.5px;display:block;margin-top:1px}
+
+/* ---------- schematic ---------- */
+.sch{background:var(--sunk);border:1px solid var(--rule2);border-radius:10px;padding:12px;margin-bottom:12px}
+.sch .schhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.sch .schhead .t{font-weight:600;font-size:13.5px}
+.sch svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:9px;border-radius:2px;display:inline-block}
+
+/* ---------- segmented ---------- */
+.seg{display:inline-flex;background:var(--sunk);border:1px solid var(--rule);border-radius:9px;padding:3px;gap:3px}
+.seg button{background:transparent;border:none;padding:5px 13px;border-radius:6px;color:var(--ink2);font-size:13px}
+.seg button[aria-pressed=true]{background:var(--pick-bg);color:#F6CE8C;box-shadow:inset 0 0 0 1px rgba(232,163,61,.35)}
+
+/* ---------- arm editor ---------- */
+.armgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:12px}
+.arm{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:14px;position:relative}
+.arm.off{opacity:.5}
+.arm .ahead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.arm .ahead .dirbar{width:9px;height:9px;border-radius:2px;flex:none}
+.arm .ahead .nm{font-weight:600;font-size:14.5px}
+.arm .ahead .sp{margin-inline-start:auto}
+.mvrow{display:grid;grid-template-columns:52px 1fr 1fr;gap:7px;align-items:center;margin-bottom:7px}
+.mvrow .mv{font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:5px}
+.mvrow input{width:100%}
+.mvhead{display:grid;grid-template-columns:52px 1fr 1fr;gap:7px;font-size:11px;color:var(--ink3);margin-bottom:4px}
+.armopts{border-top:1px solid var(--rule2);margin-top:10px;padding-top:9px;display:flex;flex-direction:column;gap:7px}
+.geo{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px;margin-top:9px;border-top:1px solid var(--rule2);padding-top:9px}
+.geo .f{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)}
+.geo .f input{width:100%}
+.geo .f .cap{min-width:76px}
+
+/* ---------- misc ---------- */
+.hr{height:1px;background:var(--rule);margin:18px 0}
+.pill{font-family:var(--mono);font-size:11.5px;background:var(--sunk);border:1px solid var(--rule2);
+  border-radius:6px;padding:2px 7px;color:var(--ink2)}
+.scroll{max-height:340px;overflow:auto}
+details{border:1px solid var(--rule);border-radius:10px;background:var(--surface);padding:0;margin-bottom:10px}
+details>summary{cursor:pointer;padding:12px 14px;font-weight:600;font-size:14px;list-style:none;display:flex;align-items:center;gap:9px}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▸';color:var(--pick);font-size:12px;transition:transform .15s}
+details[open]>summary::before{transform:rotate(90deg)}
+details .dbody{padding:0 14px 14px}
+.cite{color:var(--ink3);font-size:12px}
+.tocbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:26px}
+.tocbar a{font-size:12.5px;color:var(--ink2);text-decoration:none;border:1px solid var(--rule);
+  background:var(--surface);padding:4px 10px;border-radius:999px}
+.tocbar a:hover{color:#F6CE8C;border-color:rgba(232,163,61,.4)}
+#toast{position:fixed;bottom:22px;inset-inline-start:50%;transform:translateX(50%) translateY(20px);
+  background:#2A2A45;border:1px solid var(--rule);color:var(--ink);padding:10px 18px;border-radius:10px;
+  font-size:13.5px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:99;box-shadow:var(--shadow)}
+#toast.on{opacity:1;transform:translateX(50%) translateY(0)}
+.hidden{display:none !important}
+
+@media (max-width:880px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  h1{font-size:24px}
+  .topbar{position:static;margin-bottom:18px}
+}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--sunk:#f4f4f7;--ink:#111;--ink2:#444;--ink3:#666;
+    --rule:#ccc;--rule2:#e4e4ea;--pick:#8a5b00;--warn:#a11;--ok:#060;--info:#067}
+  body{background:#fff;color:#111;font-size:11.5pt}
+  .topbar,.tocbar,#toast,.noprint,button,textarea,#feedFile{display:none !important}
+  .wrap{max-width:none;padding:0}
+  section{page-break-inside:avoid;margin-bottom:22px}
+  .card,.tblwrap,.sch,.arm{box-shadow:none;border-color:#bbb;background:#fff}
+  thead th{background:#eee;color:#111;position:static}
+  a{color:#111;text-decoration:none}
+  .metric{background:#f6f6f9}
+  pre{background:#f6f6f9;color:#111}
+}
+
+/* ==== ported from critical-lane-volume.html so both tools look identical ==== */
+.cross{direction:ltr;display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr;
+  grid-template-areas:". n ." "w c e" ". s ."}
+.cell-n{grid-area:n}.cell-s{grid-area:s}.cell-e{grid-area:e}.cell-w{grid-area:w}.cell-c{grid-area:c}
+.cell-c{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px;min-height:220px}
+.cell-c .cap{direction:rtl;font-size:12px;color:var(--ink3);margin-top:6px;text-align:center}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+button.solid{background:var(--pick);color:#12121e;border-color:var(--pick);font-weight:600}
+button.solid:hover{background:#c9862f;border-color:#c9862f}
+.drop{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);
+  transition:border-color .15s,background .15s}
+.drop.over{border-color:var(--pick);background:var(--pick-bg)}
+.drop .meta{color:var(--ink3);font-size:13px}
+.imp-status{margin-top:10px;font-size:13px;color:var(--ink2);min-height:20px}
+.imp-status.err{color:var(--warn)}
+.imp-status.ok{color:var(--ok)}
+.kv{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:13px;color:var(--ink2);margin:14px 0 0}
+.kv b{color:var(--ink);font-weight:600}
+.imp-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+.imp-ctl label{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.chartwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:4px 0 14px}
+svg.hist{display:block}
+svg.hist g{cursor:pointer}
+svg.hist g:hover rect{opacity:.85}
+.imp-grid{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+.imp-scheme{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px;text-align:center}
+.imp-scheme .cap{font-size:12px;color:var(--ink3);margin-top:6px}
+.paste{margin-top:12px}
+.paste ol{margin:8px 0 10px;padding-inline-start:20px;font-size:13.5px;color:var(--ink2)}
+.paste li{margin-bottom:5px}
+.copyguide{display:flex;flex-direction:column;gap:16px;margin:14px 0 18px;background:var(--sunk);
+  border:1px solid var(--rule2);border-radius:var(--r);padding:16px}
+.cg-step{display:flex;gap:12px;align-items:flex-start}
+.cg-num{flex:none;width:22px;height:22px;border-radius:50%;background:var(--pick);color:#12121e;
+  display:grid;place-items:center;font-size:12px;font-weight:700}
+.cg-body{flex:1;min-width:0}
+.cg-label{font-size:13.5px;color:var(--ink);margin:0 0 8px;font-weight:600}
+.tabs-mock{display:flex;gap:3px;flex-wrap:wrap;background:var(--bg);padding:6px 6px 0;border-radius:5px 5px 0 0}
+.tabs-mock .tm{font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:3px 3px 0 0;
+  background:var(--sunk);color:var(--ink3);border:1px solid var(--rule2);border-bottom:none}
+.tabs-mock .tm.hl{background:var(--pick);color:#12121e;font-weight:700;border-color:var(--pick)}
+.tabs-mock .tm.hl2{background:var(--surface);color:var(--ink);font-weight:600}
+.cg-caption{font-size:12.5px;color:var(--ink2);margin:8px 0 0}
+.cg-caption b{color:var(--ink)}
+.table-mock-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.table-mock{border-collapse:collapse;font-size:11px;min-width:560px;direction:rtl}
+table.table-mock td{border:1px solid var(--rule);padding:5px 7px;white-space:nowrap;color:var(--ink2)}
+table.table-mock tr.tm-title td{background:var(--bg);font-weight:600;color:var(--ink)}
+table.table-mock tr.tm-hl td{background:var(--pick-bg);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(232,163,61,.3)}
+table.table-mock tr.tm-data td{background:var(--surface);font-family:var(--mono)}
+table.table-mock tr.tm-data.dim td{opacity:.4}
+.tm-flag{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--ink2)}
+.tm-flag svg{flex:none}
+svg.ph{display:block;background:transparent;border-radius:4px;margin:0 auto}
+svg.ph .vlab{font-family:var(--mono);font-size:5px;font-weight:600;text-anchor:middle;
+  paint-order:stroke;stroke:#12121e;stroke-width:1.6px;stroke-linejoin:round}
+svg.ph .vlab.hl{font-size:5.5px;font-weight:700}
+.schematic-cell{width:104px;min-width:104px;text-align:center}
+.schematic-cell svg.ph{width:92px;height:92px;margin:0 auto}
+.direction-key{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 14px;color:var(--ink2);font-size:12.5px}
+.direction-key span{display:inline-flex;align-items:center;gap:5px}
+.direction-key i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.phase-row.dir-N{border-inline-start:4px solid var(--dir-n)}
+.phase-row.dir-S{border-inline-start:4px solid var(--dir-s)}
+.phase-row.dir-E{border-inline-start:4px solid var(--dir-e)}
+.phase-row.dir-W{border-inline-start:4px solid var(--dir-w)}
+td.val,th.val{direction:ltr;unicode-bidi:isolate}
+.imp-map{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 0}
+.imp-map .m{display:flex;align-items:center;gap:7px;background:var(--sunk);border:1px solid var(--rule2);
+  border-radius:8px;padding:6px 10px;font-size:12.5px}
+.imp-map .m select{padding:3px 6px;font-size:12.5px}
+.imp-map .m.none{border-color:rgba(232,163,61,.4);background:var(--pick-bg)}
+.qcmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:10px}
+.qcmp .q{background:var(--sunk);border:1px solid var(--rule2);border-radius:10px;padding:11px 13px}
+.qcmp .q .t{font-size:12.5px;color:var(--ink2);margin-bottom:5px}
+.qcmp .q .n{font-family:var(--mono);font-size:19px}
+.qcmp .q .d{font-size:11.5px;color:var(--ink3);margin-top:3px}
+@media (max-width:880px){.imp-grid{grid-template-columns:1fr}.cross{grid-template-columns:1fr;
+  grid-template-areas:"n" "c" "w" "e" "s"}}
+@media print{.drop,.copyguide,.paste,.chartwrap,.imp-ctl{display:none !important}}
+
+/* ==== context chooser + headline cards ==== */
+.choose{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.choosecard{background:var(--surface);border:2px solid var(--rule);border-radius:14px;padding:15px 17px;
+  cursor:pointer;transition:border-color .15s,background .15s,transform .12s;text-align:start;font:inherit;color:inherit}
+.choosecard:hover{border-color:rgba(255,255,255,.24);transform:translateY(-1px)}
+.choosecard:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.choosecard[aria-pressed=true]{border-color:var(--pick);background:var(--pick-bg)}
+.choosecard .t{font-size:16.5px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:1px}
+.choosecard .t i{width:9px;height:9px;border-radius:2px;flex:none}
+.choosecard .g{font-size:11.8px;color:var(--ink3);margin-bottom:9px;line-height:1.45}
+.choosecard ul{margin:0;padding-inline-start:17px;font-size:12.6px;color:var(--ink2);line-height:1.65}
+.choosecard .tick{margin-inline-start:auto;flex:none;width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--rule);display:grid;place-items:center;font-size:12px;color:transparent}
+.choosecard[aria-pressed=true] .tick{background:var(--pick);border-color:var(--pick);color:#12121e;font-weight:700}
+.hlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px;margin-bottom:16px}
+.hl{background:var(--surface);border:1px solid var(--rule);border-inline-start:4px solid var(--ink3);
+  border-radius:10px;padding:11px 13px}
+.hl .t{font-size:13px;font-weight:600;margin-bottom:4px}
+.hl .n{font-family:var(--mono);font-size:24px;line-height:1.1;letter-spacing:-.02em}
+.hl .n small{font-size:11.5px;color:var(--ink2);font-family:'Assistant',sans-serif;margin-inline-start:4px}
+.hl .d{font-size:11.5px;color:var(--ink2);margin-top:3px}
+.hl .a{font-size:11.5px;margin-top:5px;font-weight:600}
+.hl.ok{border-inline-start-color:var(--ok)} .hl.ok .a{color:#86E7AC}
+.hl.mid{border-inline-start-color:var(--mid)} .hl.mid .a{color:#F0C078}
+.hl.err{border-inline-start-color:var(--warn)} .hl.err .a{color:#F5A3A3;background:var(--warn-bg);
+  border-radius:5px;padding:1px 6px;display:inline-block}
+.hl.na{border-inline-start-color:var(--info)}
+</style>
+<style>
+.wrap{max-width:1100px;padding-top:16px}section{margin-bottom:24px}.lede{margin-bottom:14px}.choose{grid-template-columns:1fr 1fr!important}.choosecard{padding:12px!important}.choosecard .g,.choosecard ul,#schSeg,#schCtxSeg,#ctxQuick,[data-ctx="both"],#deploy,.tocbar,#btnJson,#btnLink{display:none!important}.card{padding:12px}.sec-head{margin-bottom:10px}.report-only{display:none}.forecast-table{overflow:auto}.compact-panel>summary{font-size:17px}#report svg{max-height:240px}#report table{font-size:10px}#report th:first-child{width:22%}#report td,#report th{padding:5px}#report h2{margin:18px 0 8px}#report p{margin:6px 0}#report .calc{break-inside:avoid;border-top:1px solid #ccc;padding:6px 0}
+@media print{html,body{color-scheme:light!important;background:white!important;width:auto!important;min-width:0!important}#report{width:100%;max-width:100%;overflow-wrap:anywhere}#report svg{width:100%;height:auto}#report table{table-layout:fixed;width:100%}#report th,#report td{white-space:normal!important} @page{size:A4;margin:14mm}body>.wrap,body>#toast{display:none!important}#report{display:block!important;color:#111;background:white;direction:rtl;font:11px Arial,sans-serif}#report *{color:#111!important;box-shadow:none!important}#report th{position:static}#report tr,#report svg{break-inside:avoid}#report details{display:block}#report .report-page{break-before:page}#report .tblwrap{overflow:visible}#report pre{white-space:pre-wrap}#report .scroll{max-height:none;overflow:visible}}
+</style></head>
+<body>
+<div class="wrap">
+
+  <div class="topbar noprint">
+    <span class="brandmark">
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="17" height="17" rx="4" fill="none" stroke="#E8A33D" stroke-width="1.4"/>
+        <rect x="4" y="8.2" width="12" height="3.6" rx="1.2" fill="#E8A33D" opacity=".85"/>
+        <rect x="11" y="5" width="2" height="10" rx="1" fill="#22D3EE" opacity=".8"/>
+      </svg>
+      אורך תור ואחסנה
+    </span>
+    <span id="feedChip" class="chip"><span class="dot"></span><span id="feedChipTxt">ללא הזנה</span></span>
+    <span class="seg" id="ctxQuick" style="margin-inline-start:6px">
+      <button type="button" data-ctx="rural" aria-pressed="true">בין־עירוני</button>
+      <button type="button" data-ctx="urban" aria-pressed="false">עירוני</button>
+      <button type="button" data-ctx="both" aria-pressed="false">השוואה</button>
+    </span>
+    <span class="sp"></span>
+    <button id="btnExample" class="gh sm" title="טעינת צומת לדוגמה">דוגמה</button>
+    <button id="btnLink" class="gh sm" title="העתקת קישור הכולל את כל הנתונים">🔗 קישור</button>
+    <button id="btnJson" class="gh sm" title="הורדת כל התרחיש כ־JSON">JSON</button>
+    <button id="btnCsv" class="gh sm" title="הורדת התוצאות כ־CSV">CSV</button>
+    <button id="btnPrint" class="gh sm" title="הדפסה / שמירה ל־PDF">דוח PDF מלא</button>
+    <button id="btnReset" class="gh sm" title="איפוס כל הנתונים">אפס</button>
+  </div>
+
+  <h1>אורך תור ואחסנה בנתיבים</h1>
+  <p class="lede">
+    בוחרים <strong>בין־עירוני או עירוני</strong>, מייבאים את הספירה (קובץ אקסל או הדבקה), ומקבלים את
+    <strong>אורך התור ואורך האחסנה הנדרש</strong> לכל נתיב — ימינה, שמאלה וישר — עם סכמת הצומת,
+    בדיקות ופתרון הפוך. כל מדריך מחשב לפי הכללים שלו בלבד, וההגדרות שאינן רלוונטיות מוסתרות.
+  </p>
+
+  <nav class="tocbar noprint" aria-label="תוכן">
+    <a href="#context">1 · סוג הצומת</a>
+    <a href="#import">2 · ייבוא נפחים</a>
+    <a href="#arms">3 · נתיבים ואורכים</a>
+    <a href="#results">4 · תוצאות התור</a>
+    <a href="#solve">5 · פתרון הפוך</a>
+    <a href="#checks">6 · בדיקות</a>
+    <a href="#method">7 · שיטה ומקורות</a>
+    <a href="#deploy">8 · פריסה ו־API</a>
+  </nav>
+  <!-- ================= 1. CONTEXT ================= -->
+  <section id="context">
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2>איזה צומת אתם מתכננים?</h2>
+      <span class="hint">הבחירה קובעת את המדריך, את הנוסחאות ואת מה שיוצג — שאר ההגדרות מוסתרות</span>
+    </div>
+
+    <div class="choose" id="ctxCards"></div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>בקרה ומאפייני הצומת</h3>
+        <div class="frow">
+          <span class="lbl">סוג הבקרה
+            <small id="ctlHint">מרומזר — אחסנה לפי תור הממתין לאור ירוק</small></span>
+          <select id="ctlMode">
+            <option value="signal">צומת מרומזר</option>
+            <option value="unsignal">הסתעפות לא מרומזרת</option>
+          </select>
+        </div>
+        <div class="frow">
+          <span class="lbl">שיטת פאזות
+            <small>כמו במחשבון הנפח הקריטי; <code>הטובה משלוש</code> בוחרת את המינימום</small></span>
+          <select id="sgMethod">
+            <option value="best">הטובה משלוש השיטות</option>
+            <option value="1">שיטה 1 — פאזה לכל זרוע</option>
+            <option value="2">שיטה 2 — הפרדת שמאלות לפי צירים</option>
+            <option value="3">שיטה 3 — פאזה מתמשכת</option>
+          </select>
+        </div>
+        <div id="ctxSummary" class="note"></div>
+      </div>
+      <div id="presetCards"></div>
+    </div>
+
+    <details id="advTiming" style="margin-top:14px">
+      <summary>הגדרות תזמון וקיבולת <span class="tiny">ברירות מחדל תקינות — לפתוח רק אם צריך לשנות</span></summary>
+      <div class="dbody">
+        <div class="grid g2">
+          <div>
+            <div class="frow"><span class="lbl">זרימת רוויה <small>ית״ן/שעה לנתיב</small></span>
+              <input type="number" id="sgSat" value="1900" min="1000" max="2400" step="50" class="w"><span class="unit">pcu/h</span></div>
+            <div class="frow"><span class="lbl">זמן אבוד למופע</span>
+              <input type="number" id="sgLost" value="4" min="0" max="12" step="0.5"><span class="unit">שנ׳</span></div>
+            <div class="frow"><span class="lbl">ירוק מינימלי למופע</span>
+              <input type="number" id="sgGmin" value="7" min="0" max="40" step="1"><span class="unit">שנ׳</span></div>
+            <div class="frow"><span class="lbl">מחזור קבוע <small>ריק = Webster אופטימלי</small></span>
+              <input type="number" id="sgCycle" placeholder="Webster" min="20" max="250" step="5"><span class="unit">שנ׳</span></div>
+          </div>
+          <div>
+            <div class="frow"><span class="lbl">רכב כבד בתנועה <small>להמרה לית״ן בקיבולת בלבד</small></span>
+              <input type="number" id="sgHV" value="0" min="0" max="60" step="0.5"><span class="unit">%</span>
+              <input type="number" id="sgET" value="2.0" min="1" max="6" step="0.1" title="מקדם שקילות E_T"><span class="unit">E<sub>T</sub></span></div>
+            <div class="frow"><span class="lbl">בסיס צבירת התור
+              <small id="basisHint">אדום (C − g) — התור שנצבר בזמן האדום של התנועה</small></span>
+              <select id="sgBasis">
+                <option value="red">אדום (C − g) — מומלץ</option>
+                <option value="cycle">מחזור שלם (C) — שמרני</option>
+              </select></div>
+            <div class="frow"><label class="chk"><input type="checkbox" id="sgPCU"> הנפחים שהוזנו כבר בית״ן — לא להמיר</label></div>
+            <div class="frow"><label class="chk"><input type="checkbox" id="sgQueueVeh" checked> אורך התור לפי רכבים בפועל (לא לפי ית״ן)</label></div>
+          </div>
+        </div>
+        <div id="sigSummary" class="note"></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= 2. IMPORT ================= -->
+  <section id="import">
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2>הנפחים — מקובץ ספירה או מהדבקה</h2>
+      <span class="hint">xls / xlsx / csv, או תאים שהועתקו מאקסל</span>
+    </div>
+
+    <div class="drop" id="dropZone" tabindex="0" role="button" aria-label="בחירת קובץ ספירה או גרירתו לכאן">
+      <button id="btnFile" class="solid" type="button">בחר קובץ ספירה</button>
+      <input id="impFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" class="hidden">
+      <span class="meta"> xls / xlsx / csv · או גררו את הקובץ לכאן</span>
+      <span style="margin-inline-start:auto" class="meta" id="impFileMeta"></span>
+    </div>
+    <div id="impStatus" class="imp-status"></div>
+
+    <div id="impPanel" class="hidden">
+      <div class="kv" id="impMeta"></div>
+      <div class="imp-ctl">
+        <label>טבלה <select id="impTable"></select></label>
+        <label>בסיס הנפח <select id="impBasis"></select></label>
+        <button id="btnApply" class="solid" type="button">החל על הצומת</button>
+        <button id="btnImpClear" class="gh" type="button">נקה ייבוא</button>
+        <span class="tiny" id="impBasisNote"></span>
+      </div>
+      <div id="impArmMap" class="imp-map"></div>
+      <div class="imp-grid">
+        <div class="imp-scheme" id="impScheme"></div>
+        <div>
+          <div class="chartwrap" id="impHist"></div>
+          <div id="impVolTable"></div>
+        </div>
+      </div>
+    </div>
+
+    <details class="paste" id="pasteHelp">
+      <summary>העתקת תאים מאקסל במקום קובץ</summary>
+      <div class="dbody">
+        <div class="copyguide">
+          <div class="cg-step">
+            <div class="cg-num">1</div>
+            <div class="cg-body">
+              <p class="cg-label">פתחו את הגיליון שבו טבלת ההתפלגות (לוח 2.1 / 2.2, או גיליון רבע-שעתי)</p>
+              <div class="tabs-mock">
+                <span class="tm">מפה</span><span class="tm">סיכום יומי</span>
+                <span class="tm hl">לוח 2.1-2.2</span><span class="tm hl2">סיכום רש׳</span><span class="tm">DATA</span>
+              </div>
+              <p class="cg-caption">מזוהה כל גיליון שיש בו <b>שורת תנועות</b> (ימינה / ישר / שמאלה או ‎&lt; ^ &gt;‎),
+                מעליה <b>שורת כיוונים</b> (צפון / דרום / מזרח / מערב, או כתובת כמו "מ531 ממזרח"), ומתחתן שורות שעה או רבע שעה.</p>
+            </div>
+          </div>
+          <div class="cg-step">
+            <div class="cg-num">2</div>
+            <div class="cg-body">
+              <p class="cg-label">סמנו רק את הבלוק הזה — שורות הכותרת ושורות השעות שמתחתן</p>
+              <div class="table-mock-wrap">
+                <table class="table-mock" aria-hidden="true">
+                  <tbody>
+                    <tr class="tm-title"><td colspan="6">התפלגות התנועה לפי זרועות — לוח מס' 2.1</td></tr>
+                    <tr class="tm-hl"><td>מס' הדרך/רחוב</td><td colspan="2">כביש 4 — מצפון</td><td colspan="2">כביש 4 — מדרום</td><td>סה״כ בצומת</td></tr>
+                    <tr class="tm-hl"><td>כיוון מ -</td><td>צפון</td><td>צפון</td><td>דרום</td><td>דרום</td><td></td></tr>
+                    <tr class="tm-hl"><td>שעה</td><td>ימינה</td><td>ישר ^</td><td>ישר ^</td><td>שמאלה</td><td></td></tr>
+                    <tr class="tm-data"><td>06:00-07:00</td><td>61</td><td>485</td><td>514</td><td>141</td><td>1,518</td></tr>
+                    <tr class="tm-data dim"><td>07:00-08:00</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="tm-flag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                ‎Ctrl+C‎ באקסל, ואז ‎Ctrl+V‎ בתיבה שלמטה ולחיצה על "קרא נתונים מודבקים".
+              </p>
+            </div>
+          </div>
+        </div>
+        <p class="note">עמודות "סה״כ" ו"פרסה" נבלעות אוטומטית; רבעי שעה מצטברים לשעות שלמות.
+          כתובת זרוע ללא כיוון ("מא", "רמפה ב׳") תקבל בחירה ידנית של הזרוע.</p>
+        <textarea id="pasteBox" spellcheck="false" placeholder="הדביקו כאן את התאים שהועתקו מאקסל…" aria-label="הדבקת תאים מאקסל"></textarea>
+        <div class="bar">
+          <button class="solid" id="btnPaste" type="button">קרא נתונים מודבקים</button>
+          <button id="btnPasteClear" class="gh" type="button">נקה</button>
+        </div>
+      </div>
+    </details>
+
+    <div id="queueImport" class="hidden" style="margin-top:14px"></div>
+  </section>
+
+  <!-- ================= 3. LANES & GEOMETRY ================= -->
+  <section id="arms">
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2>נתיבים ואורכים זמינים</h2>
+      <span class="hint">מספר הנתיבים לכל תנועה, והאורך הקיים בשטח לבדיקת התור</span>
+    </div>
+    <div id="armsNote" class="infobox"></div>
+    <div class="armgrid" id="armGrid"></div>
+  </section>
+
+  <!-- ================= 4. RESULTS ================= -->
+  <section id="results">
+    <div class="sec-head">
+      <span class="num">04</span>
+      <h2>אורך התור והאחסנה הנדרשת</h2>
+      <span class="hint" id="resHint">ימינה · שמאלה · ישר, לכל זרוע</span>
+    </div>
+    <div id="resHeadline"></div>
+    <div class="card" id="schCard" style="margin-bottom:16px">
+      <div class="frow" style="margin-bottom:6px">
+        <h3 style="margin:0">סכמת הצומת</h3>
+        <span class="seg" id="schMode">
+          <button type="button" data-mode="vol" aria-pressed="true">נפחים</button>
+          <button type="button" data-mode="queue" aria-pressed="false">אורכי תור</button>
+        </span>
+        <span class="tiny" style="margin-inline-start:auto">אותה סכמה כמו במחשבון הנפח הקריטי</span>
+      </div>
+      <div id="junctionSch"></div>
+      <div class="direction-key">
+        <span><i style="background:var(--dir-n)"></i>צפון</span><span><i style="background:var(--dir-s)"></i>דרום</span>
+        <span><i style="background:var(--dir-e)"></i>מזרח</span><span><i style="background:var(--dir-w)"></i>מערב</span>
+        <span><i style="background:#E8A33D"></i>ימין חופשית (קו מקווקו)</span>
+      </div>
+    </div>
+    <div id="resTop"></div>
+    <div id="resBody"></div>
+    <div id="measuredCmp"></div>
+  </section>
+
+  <!-- ================= 5. SOLVE ================= -->
+  <section id="solve">
+    <div class="sec-head">
+      <span class="num">05</span>
+      <h2>פתרון הפוך — מהמגבלה חזרה לנתונים</h2>
+      <span class="hint">בהינתן אורך זמין: המחזור המרבי, הנפח המרבי או מספר הנתיבים המזערי</span>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="frow">
+          <span class="lbl">נתיב / קבוצת נתיבים</span>
+          <select id="svTarget" style="max-width:280px"></select>
+        </div>
+        <div class="frow" id="svCtxRow">
+          <span class="lbl">מדריך</span>
+          <select id="svCtx">
+            <option value="rural">בין־עירוני</option>
+            <option value="urban">עירוני</option>
+            <option value="both">שתיהן (המחמיר)</option>
+          </select>
+        </div>
+        <div class="frow">
+          <span class="lbl">אורך אחסנה זמין <small>בקטע המקביל, מקו העצירה ומעלה</small></span>
+          <input type="number" id="svAvail" value="60" min="0" max="400" step="5" class="w"><span class="unit">מ׳</span>
+        </div>
+        <div class="frow">
+          <span class="lbl">אורך כולל זמין <small>כולל לוכסן — ריק אם אין מגבלה</small></span>
+          <input type="number" id="svTotalAvail" placeholder="—" min="0" max="600" step="5" class="w"><span class="unit">מ׳</span>
+        </div>
+        <div class="frow">
+          <span class="lbl">טווח מחזורים לסריקה</span>
+          <input type="number" id="svCmin" value="40" min="15" max="200" step="5"><span class="unit">עד</span>
+          <input type="number" id="svCmax" value="180" min="30" max="300" step="5"><span class="unit">שנ׳</span>
+        </div>
+        <div class="frow"><label class="chk"><input type="checkbox" id="svRetiming" checked> תזמון מחדש (Webster) לכל מחזור נבדק</label></div>
+        <div class="frow">
+          <button id="btnSolve" class="solid pri" type="button">פתור</button>
+          <span class="tiny">סורק את טווח המחזורים בשניות ומדווח גם את נקודת השבירה.</span>
+        </div>
+      </div>
+      <div class="card" id="svOut"><p class="note">בחרו נתיב ולחצו <strong>פתור</strong>.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= 6. CHECKS ================= -->
+  <section id="checks">
+    <div class="sec-head">
+      <span class="num">06</span>
+      <h2>בדיקות והמלצות</h2>
+      <span class="hint">מגבלות הטבלאות, גלישת תור, הצדקה לנתיב נוסף או לרימזור</span>
+    </div>
+    <div id="checksBody"></div>
+  </section>
+
+  <!-- ================= 7. METHOD ================= -->
+  <section id="method">
+    <div class="sec-head">
+      <span class="num">07</span>
+      <h2>שיטת החישוב והמקורות</h2>
+      <span class="hint" id="methodHint">מותאם למדריך שנבחר</span>
+    </div>
+    <div id="methodBody"></div>
+  </section>
+
+  <!-- ================= 8. DEPLOY ================= -->
+  <section id="deploy">
+    <div class="sec-head">
+      <span class="num">08</span>
+      <h2>פריסה והפעלה מתסריט</h2>
+      <span class="hint">קובץ אחד, ללא שרת</span>
+    </div>
+    <details>
+      <summary>פרטי פריסה, ממשק תכנות ומבנה הפלט</summary>
+      <div class="dbody">
+        <div class="grid g2">
+          <div>
+            <ul class="tight note">
+              <li><strong>פתיחה מקומית</strong> — שמרו את הקובץ ולחצו עליו פעמיים; הכל עובד מ־<code>file://</code>.</li>
+              <li><strong>שרת סטטי</strong> — העתיקו את הקובץ לתיקיית השרת. אין build ואין npm.</li>
+              <li><strong>ספריית האקסל</strong> — SheetJS מ־CDN עם גיבוי; בלי רשת <strong>ההדבקה עדיין עובדת</strong>.</li>
+              <li><strong>שיתוף</strong> — כפתור <span class="pill">🔗 קישור</span> מייצר URL עם כל התרחיש (base64url).</li>
+              <li><strong>הדפסה</strong> — גיליון הדפסה מובנה (רקע לבן, ללא פקדים) לשמירה כ־PDF.</li>
+            </ul>
+            <h3 style="margin-top:14px">מבנה הפלט</h3>
+            <pre id="outdoc" style="direction:ltr;text-align:left"></pre>
+          </div>
+          <div>
+            <h3>ממשק תכנות</h3>
+            <pre id="apidoc" style="direction:ltr;text-align:left"></pre>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <p class="tiny" style="margin-top:34px;border-top:1px solid var(--rule);padding-top:14px">
+    הכלי מיישם את השיטות המופיעות ב"הנחיות לתכן גיאומטרי של דרכים בין־עירוניות — כרך 2: צמתים", מהדורה שנייה,
+    נובמבר 2023 (משרד התחבורה / אמי מתום מהנדסים), בצירוף פרקטיקה עירונית ורכיבי HCM לבקרה צולבת.
+    הוא אינו מחליף שיקול דעת תכנוני, ואינו מכסה תיאום בין צמתים, העדפת תח״צ, מעגלי תנועה או בדיקת ראות.
+    גרסה <span id="verTxt"></span>.
+  </p>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="../js/calc-client.js?v=2"></script>
+<script src="../js/tools/queue-storage-length.js?v=2"></script>
+</body>
+</html>

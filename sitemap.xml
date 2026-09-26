@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://mahmoudalem95.github.io/mahalco/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+
+  <!-- Product and API catalogues -->
+  <url><loc>https://mahmoudalem95.github.io/mahalco/index.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/index.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/ar/index.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/dashboard.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/project-hub.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/project-hub.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+
+  <!-- Capacity and intersection analysis -->
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/aadt.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/bca.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/capacity-factor-library.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/critical-lane-volume.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/critical-lane-volume.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/ar/critical-lane-volume.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/interchange-los.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/interchange-ramp-terminal-analysis.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/lane-queue-analysis.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/lane-queue-metric.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/los-nat.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/calculator-dark-ui.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/crossing-high-demand.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/roundabout-analysis-metric.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/optimizes-signal-timing-plans-metric.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Road and geometric design -->
+  <url><loc>https://mahmoudalem95.github.io/mahalco/ar/alignment-builder.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/design-vehicle-swept-path-analysis.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/frontage-road-design.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/horizontal.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/vertical.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/vertical-alignment.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/rural.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/roadside-design-guide.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/clear-zone-design.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/urban-interchange-design.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/urban-street-segment-analysis-metric.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Safety, transit, and parking -->
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/intersection-safety-performance-functions.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/urban-roadside-safety.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/transit-level-of-service.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/transit-lanes-stations-safety.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/urban-bus-lane-justification.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/intercity-bus-lane-justification.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/bike-design.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/parking-regulations.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Drawing and report tools -->
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/htool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/sd-tool.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/sd.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/ar/sd-tool.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/temporary-section.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/ar/temporary-section.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/typical-section.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/typical-section.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/ar/typical-section.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/typical-sections/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/traffic-impact.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Reference and legal pages -->
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/mepdg-methodologies.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/legal/policy.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/he/policy-sec.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/legal/policy.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/ar/legal/policy.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/legal/return-refund-policy.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://mahmoudalem95.github.io/mahalco/en/legal/shipping-policy.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+</urlset>

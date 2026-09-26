@@ -26,3 +26,4 @@ html[dir="ltr"] .junction-world{mask-image:linear-gradient(270deg,#000 0%,#000 2
 html[dir="ltr"] .junction-world svg{left:auto;right:calc(23vw - max(380px,32.5vw))}
 html[dir="ltr"] .junction-controls{left:auto;right:24px}
 @media(max-width:899px){html[dir="ltr"] .junction-world{mask-image:linear-gradient(0deg,#000,transparent 300px);-webkit-mask-image:linear-gradient(0deg,#000,transparent 300px)}html[dir="ltr"] .junction-world svg{right:-70px}html[dir="ltr"] .junction-controls{right:20px}}
+:root[data-theme="dark"] .motion-hero + .strip{background:#171f25;color:#e6e8e3;border-color:#2d333b}

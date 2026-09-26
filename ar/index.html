@@ -862,7 +862,7 @@ a.leaf.leaf-temp::before{display:none}
   var ui=null;
   function apply(){
     var pref=rd(K,'auto'); if(!/^(light|dark|auto)$/.test(pref)) pref='auto';
-    var t=pref==='auto'?(mq.matches?'dark':'light'):pref, gl=rd(G,'off')==='on'?'on':'off';
+    var t=pref==='auto'?(mq.matches?'dark':'light'):pref, gl=rd(G,'on')==='on'?'on':'off';
     d.setAttribute('data-theme',t); d.setAttribute('data-theme-pref',pref); d.setAttribute('data-glass',gl);
     d.style.colorScheme=t;
     var ms=document.querySelectorAll('meta[name="theme-color"]');
@@ -878,7 +878,7 @@ a.leaf.leaf-temp::before{display:none}
   window.MHTheme={
     set:function(p){wr(K,p);soft();apply();},
     glass:function(on){wr(G,on?'on':'off');soft();apply();},
-    get:function(){return {theme:d.getAttribute('data-theme'),pref:rd(K,'auto'),glass:rd(G,'off')};}
+    get:function(){return {theme:d.getAttribute('data-theme'),pref:rd(K,'auto'),glass:rd(G,'on')};}
   };
   apply();
   if(mq.addEventListener) mq.addEventListener('change',function(){if(rd(K,'auto')==='auto'){soft();apply();}});
@@ -1130,8 +1130,41 @@ html[data-glass="on"] .branch[open]{background:var(--mh-glass-fill)!important}
 .get-note{margin:-8px 0 16px;font-size:13px;color:var(--alert-ink)}
 :root[data-theme="dark"] .get-opt{background:#1C2126}
 </style>
-    <link rel="stylesheet" href="../css/junction.css">
-    <script defer src="../js/junction.js"></script>
+<style id="mh-bgv-css">
+/* רקע חי: צומת ישראלי מונפש מאחורי כל הדף (במצב זכוכית) */
+#mh-bgv,#mh-bgv-ctl{display:none}
+html[data-glass="on"] #mh-bg{display:none!important}
+html[data-glass="on"] #mh-bgv{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#0b0e12}
+#mh-bgv .bgv-stage{position:absolute;inset:-3% -3% auto -3%;height:112lvh;height:112vh;transform:translate3d(var(--dx,0px),var(--dy,0px),0);will-change:transform}
+#mh-bgv canvas{display:block;width:100%;height:100%}
+@supports(height:1lvh){#mh-bgv .bgv-stage{height:112lvh}}
+#mh-bgv .bgv-veil{position:absolute;inset:0;background-color:rgba(246,245,240,.30);
+  box-shadow:inset 0 0 18vmax rgba(0,0,0,.10);transition:background-color .9s cubic-bezier(.32,.72,0,1),box-shadow .9s cubic-bezier(.32,.72,0,1)}
+html[data-theme="dark"] #mh-bgv .bgv-veil{background-color:rgba(6,8,11,.28);box-shadow:inset 0 0 22vmax rgba(0,0,0,.55)}
+html.mh-anim body #mh-bgv .bgv-veil{transition:background-color .9s cubic-bezier(.32,.72,0,1),box-shadow .9s cubic-bezier(.32,.72,0,1)!important}
+#mh-bgv.bgv-breathe .bgv-stage{animation:mhBgvBreathe .9s cubic-bezier(.32,.72,0,1)}
+@keyframes mhBgvBreathe{0%{transform:translate3d(var(--dx,0px),var(--dy,0px),0) scale(1)}
+  45%{transform:translate3d(var(--dx,0px),var(--dy,0px),0) scale(1.03)}100%{transform:translate3d(var(--dx,0px),var(--dy,0px),0) scale(1)}}
+html[data-glass="on"] .hero .plan{display:none}
+html[data-glass="on"] .hero,html[data-glass="on"] .hero + .strip{background:transparent!important;border-color:transparent!important}
+html[data-glass="on"][data-theme="dark"] .hero .wrap>div:first-child{text-shadow:0 1px 14px rgba(0,0,0,.65)}
+html[data-glass="on"][data-theme="light"] .hero .wrap>div:first-child{text-shadow:0 1px 14px rgba(255,255,255,.8)}
+#mh-bgv-ctl .bgv-sep{width:1px;margin:6px 3px;background:currentColor;opacity:.2}
+#mh-bgv-ctl .bgv-lab{align-self:center;padding:0 10px 0 6px;font:500 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;opacity:.75;white-space:nowrap}
+@media(max-width:600px){#mh-bgv-ctl .bgv-lab,#mh-bgv-ctl .bgv-r,#mh-bgv-ctl .bgv-sep{display:none}#mh-bgv-ctl button{min-width:32px;height:32px}}
+html[data-glass="on"] .hero :is(a.hq,.hq-dropdown,.duo,.btn:not(.btn-primary)){-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%)}
+html[data-glass="on"][data-theme="light"] .hero :is(a.hq,.hq-dropdown){background:rgba(255,255,255,.72)!important}
+html[data-glass="on"][data-theme="dark"] .hero :is(a.hq,.hq-dropdown){background:rgba(18,22,28,.62)!important}
+html[data-glass="on"] #mh-bgv-ctl{display:flex;position:fixed;z-index:44;inset-inline-start:max(14px,env(safe-area-inset-right,0px));
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));gap:2px;padding:3px;border-radius:999px;
+  background:var(--mh-ui-bg,rgba(250,250,252,.9));border:.5px solid var(--mh-ui-line,rgba(0,0,0,.12));color:var(--mh-ui-ink,#1c1c1e);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);box-shadow:0 6px 22px rgba(0,0,0,.18);direction:ltr}
+#mh-bgv-ctl button{min-width:34px;height:30px;padding:0 8px;border:0;border-radius:999px;background:none;color:inherit;
+  font:600 12.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;cursor:pointer;display:grid;place-items:center}
+#mh-bgv-ctl button[aria-pressed="true"]{background:var(--mh-ui-knob,#fff);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+#mh-bgv-ctl button:focus-visible{outline:2px solid #E9A21F;outline-offset:1px}
+@media print{#mh-bgv,#mh-bgv-ctl{display:none!important}}
+</style>
 </head>
 <body>
 
@@ -2358,5 +2391,6 @@ document.querySelectorAll('a.share-cta').forEach(function (a) {
   select(start, false);
 })();
 </script>
+<script src="../js/bg-junction.js?v=1" defer></script>
 </body>
 </html>

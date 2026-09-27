@@ -848,8 +848,6 @@ html[data-glass="on"][data-theme="light"] .hero .wrap>div:first-child{text-shado
 #mh-bgv-ctl .bgv-lab{align-self:center;padding:0 10px 0 6px;font:500 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;opacity:.75;white-space:nowrap}
 @media(max-width:600px){#mh-bgv-ctl .bgv-lab,#mh-bgv-ctl .bgv-r,#mh-bgv-ctl .bgv-sep{display:none}#mh-bgv-ctl button{min-width:32px;height:32px}}
 html[data-glass="on"] .hero :is(a.hq,.hq-dropdown,.duo,.btn:not(.btn-primary)){-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%)}
-html[data-glass="on"][data-theme="light"] .hero :is(a.hq,.hq-dropdown){background:rgba(255,255,255,.72)!important}
-html[data-glass="on"][data-theme="dark"] .hero :is(a.hq,.hq-dropdown){background:rgba(18,22,28,.62)!important}
 html[data-glass="on"] #mh-bgv-ctl{display:flex;position:fixed;z-index:44;inset-inline-start:max(14px,env(safe-area-inset-right,0px));
   bottom:calc(16px + env(safe-area-inset-bottom,0px));gap:2px;padding:3px;border-radius:999px;
   background:var(--mh-ui-bg,rgba(250,250,252,.9));border:.5px solid var(--mh-ui-line,rgba(0,0,0,.12));color:var(--mh-ui-ink,#1c1c1e);
@@ -859,6 +857,21 @@ html[data-glass="on"] #mh-bgv-ctl{display:flex;position:fixed;z-index:44;inset-i
 #mh-bgv-ctl button[aria-pressed="true"]{background:var(--mh-ui-knob,#fff);box-shadow:0 1px 4px rgba(0,0,0,.15)}
 #mh-bgv-ctl button:focus-visible{outline:2px solid #E9A21F;outline-offset:1px}
 @media print{#mh-bgv,#mh-bgv-ctl{display:none!important}}
+
+/* מעבר רציף: הצומת נמוג בהדרגה לכיוון עמודת הכלים (בלי קו חיתוך) */
+#mh-bgv .bgv-veil::before,#mh-bgv .bgv-veil::after{content:"";position:absolute;inset:0;pointer-events:none;
+  transition:opacity .9s cubic-bezier(.32,.72,0,1)}
+#mh-bgv .bgv-veil::before{--c:244,245,241;opacity:1}
+#mh-bgv .bgv-veil::after{--c:14,17,20;opacity:0}
+html[data-theme="dark"] #mh-bgv .bgv-veil::before{opacity:0}
+html[data-theme="dark"] #mh-bgv .bgv-veil::after{opacity:1}
+#mh-bgv .bgv-veil::before,#mh-bgv .bgv-veil::after{background:linear-gradient(var(--fade-dir,to right),
+  rgba(var(--c),0) 0%,rgba(var(--c),0) 26%,rgba(var(--c),.06) 32%,rgba(var(--c),.16) 38%,rgba(var(--c),.30) 44%,
+  rgba(var(--c),.46) 50%,rgba(var(--c),.60) 56%,rgba(var(--c),.72) 62%,rgba(var(--c),.80) 69%,rgba(var(--c),.85) 78%,rgba(var(--c),.87) 100%)}
+html[dir="ltr"] #mh-bgv .bgv-veil{--fade-dir:to left}
+@media(max-width:899px){#mh-bgv .bgv-veil{--fade-dir:to top}}
+html[data-glass="on"][data-theme="light"] .hero :is(a.hq,.hq-dropdown){background:rgba(255,255,255,.88)!important}
+html[data-glass="on"][data-theme="dark"] .hero :is(a.hq,.hq-dropdown){background:rgba(18,22,28,.84)!important}
 </style>
 </head>
 <body>
@@ -2088,6 +2101,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script src="https://mahmoudalem95.github.io/mahalco/js/bg-junction.js?v=4" defer></script>
+<script src="https://mahmoudalem95.github.io/mahalco/js/bg-junction.js?v=5" defer></script>
 </body>
 </html>

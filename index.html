@@ -2287,6 +2287,50 @@ document.addEventListener('DOMContentLoaded', function() {
   select(start, false);
 })();
 </script>
+<script>
+/* Hidden link: tapping the red-marked signal head of the background junction opens the pre-signal simulation. */
+(function(){
+  var TARGET = 'pre-signal-pacing.html';
+  var cur = [], last = [], isBg = new WeakMap();
+  var arc = CanvasRenderingContext2D.prototype.arc;
+  var buf = [];
+  CanvasRenderingContext2D.prototype.arc = function(x, y, r){
+    try {
+      var cv = this.canvas, bg = isBg.get(cv);
+      if (bg === undefined) { bg = !!(cv.closest && cv.closest('#mh-bgv')); if (cv.isConnected) isBg.set(cv, bg); }
+      if (bg) {
+        var m = this.getTransform(), X = m.a*x + m.c*y + m.e, Y = m.b*x + m.d*y + m.f, R = r*Math.hypot(m.a, m.b);
+        buf.push([X, Y, R]); if (buf.length > 3) buf.shift();
+        // a signal head = three equal lamps in a column; lamps stacked upwards = the head of the northern approach
+        if (buf.length === 3) {
+          var a = buf[0], b = buf[1], c = buf[2];
+          if (Math.abs(a[2]-b[2]) < .01 && Math.abs(b[2]-c[2]) < .01 && Math.abs(a[0]-b[0]) < .5 && Math.abs(b[0]-c[0]) < .5
+              && b[1] < a[1] && c[1] < b[1] && Math.abs((a[1]-b[1]) - (b[1]-c[1])) < .5 && (a[1]-b[1]) > 2*a[2] && (a[1]-b[1]) < 5*a[2]) {
+            cur.push({ cv: cv, x: a[0], y1: c[1] - a[2], y2: a[1] + a[2], r: a[2] });
+            buf = [];
+          }
+        }
+      }
+    } catch (e) {}
+    return arc.apply(this, arguments);
+  };
+  (function loop(){ if (cur.length) last = cur; cur = []; requestAnimationFrame(loop); })();
+  function target(){
+    var t = null;
+    for (var i = 0; i < last.length; i++) if (!t || last[i].x > t.x) t = last[i];   // the right-hand head of the pair
+    return t;
+  }
+  document.addEventListener('click', function(ev){
+    if (document.documentElement.dataset.glass !== 'on') return;
+    if (ev.target.closest && ev.target.closest('a,button,input,select,textarea,label,[role="button"],[role="menu"],.hq-dropdown,dialog')) return;
+    var t = target(); if (!t || !t.cv.isConnected) return;
+    var rc = t.cv.getBoundingClientRect(); if (!rc.width) return;
+    var k = rc.width / t.cv.width, pad = 14;
+    var x = rc.left + t.x * k, y1 = rc.top + t.y1 * k, y2 = rc.top + t.y2 * k, hw = t.r * k * 1.8;
+    if (ev.clientX > x - hw - pad && ev.clientX < x + hw + pad && ev.clientY > y1 - pad && ev.clientY < y2 + pad) location.href = TARGET;
+  }, true);
+})();
+</script>
 <script src="https://mahmoudalem95.github.io/mahalco/js/bg-junction.js?v=5" defer></script>
 </body>
 </html>

@@ -6,46 +6,62 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>לוח ניהול · MAHALCO</title>
 <style>
-:root{--bg:#F4F5F1;--card:#FFFFFF;--ink:#141A1F;--muted:#5C6570;--line:#D9DCD4;--gold:#E8A33D;--gold-ink:#1a1204;--go:#2FA35B;--bad:#D5483F;--term:#0b0e12;--term-ink:#7CFC9A}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#101316;--card:#171B20;--ink:#EEF1F3;--muted:#98A2AB;--line:#262C33;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#101316;--card:#171B20;--ink:#EEF1F3;--muted:#98A2AB;--line:#262C33;color-scheme:dark}
+:root{--bg:#F4F5F1;--card:#FFFFFF;--ink:#141A1F;--muted:#5C6570;--faint:#8A929A;--line:#E1E4DD;--grid:#ECEEE8;--gold:#E8A33D;--gold-ink:#1a1204;
+  --s1:#C98612;--s2:#2A6FBB;--s3:#2E8F57;--bad:#C9443B;--term:#0b0e12;--term-ink:#7CFC9A;--term-dim:#5f7a66;--warn:#E3A21A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#101316;--card:#171B20;--ink:#EEF1F3;--muted:#A3ACB4;--faint:#6F7880;--line:#262C33;--grid:#20252B;--s1:#F0B24A;--s2:#6FA8E8;--s3:#5CC48A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101316;--card:#171B20;--ink:#EEF1F3;--muted:#A3ACB4;--faint:#6F7880;--line:#262C33;--grid:#20252B;--s1:#F0B24A;--s2:#6FA8E8;--s3:#5CC48A;color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;padding:0 16px}
-.wrap{max-width:1100px;margin:0 auto;padding-block:24px 60px;display:grid;gap:18px}
+.wrap{max-width:1160px;margin:0 auto;padding-block:24px 60px;display:grid;gap:18px}
 header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-h1{margin:0;font-size:26px;letter-spacing:-.01em}
-h2{margin:0 0 10px;font-size:17px}
+h1{margin:0;font-size:26px;letter-spacing:-.01em;text-wrap:balance}
+h2{margin:0 0 12px;font-size:17px}
 .muted{color:var(--muted);font-size:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 input[type=password],select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-width:0}
-button{font:600 14px inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+button,a.btn{font:600 14px inherit;padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-block}
 button.gold{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+button:disabled{opacity:.6;cursor:default}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:2px}
 .kpi span{font-size:12px;color:var(--muted)}
 .kpi b{font:600 24px ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
-.chart{display:flex;align-items:flex-end;gap:3px;height:140px;direction:ltr;padding-top:6px}
-.chart div{flex:1;min-width:3px;background:var(--gold);border-radius:3px 3px 0 0;position:relative}
-.chart div i{position:absolute;left:0;right:0;bottom:0;background:var(--go);border-radius:3px 3px 0 0}
+.kpi.alert b{color:var(--bad)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:8px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-inline-end:6px;vertical-align:middle}
+.chartbox{position:relative;direction:ltr}
+.chartbox svg{display:block;width:100%;height:auto;overflow:visible}
+.tip{position:absolute;pointer-events:none;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.14);white-space:nowrap;direction:rtl;opacity:0;transition:opacity .12s}
+.tip b{font-variant-numeric:tabular-nums}
 .tw{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
 th{font-size:12px;color:var(--muted);font-weight:600}
-td.n,th.n{text-align:left;font-family:ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
-td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;word-break:break-all}
-.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
-@media (max-width:820px){.grid2{grid-template-columns:1fr}}
-.term{background:var(--term);color:var(--term-ink);font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace;border-radius:10px;padding:10px 12px;direction:ltr;text-align:left;white-space:pre-wrap}
+td.n,th.n{text-align:left;font-family:ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all}
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+@media (max-width:860px){.grid2{grid-template-columns:1fr}}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 56px;gap:8px;align-items:center;font-size:13px}
+.bar .lab{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .track{grid-column:1/-1;height:8px;background:var(--grid);border-radius:4px;overflow:hidden;direction:ltr}
+.bar .fill{height:100%;background:var(--s1);border-radius:0 4px 4px 0}
+.bar .val{text-align:left;font-family:ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.term{background:var(--term);color:var(--term-ink);font:12.5px/1.6 ui-monospace,Menlo,Consolas,monospace;border-radius:10px;padding:10px 12px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto}
+.term .dim{color:var(--term-dim)}.term .r{color:#FF8A80}.term .y{color:#FFD27A}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{font-size:12.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}
+.chip b{font-family:ui-monospace,Menlo,monospace;margin-inline-start:6px}
 .err{color:var(--bad)}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline:8px 4px;vertical-align:-1px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div><h1>לוח ניהול — כניסות לאתר</h1><div class="muted">MAHALCO · נתונים מהמונה של השרת שלך. הדפדפן הזה לא נספר.</div></div>
+    <div><h1>לוח ניהול — כניסות, עותקים ובקשות חריגות</h1><div class="muted">MAHALCO · מהשרת שלך. הדפדפן הזה לא נספר.</div></div>
     <div class="row">
       <select id="range" aria-label="טווח">
         <option value="1">היום</option><option value="7">7 ימים</option><option value="30" selected>30 יום</option><option value="90">90 יום</option><option value="365">שנה</option>
@@ -58,89 +74,214 @@ td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monos
   <section class="card" id="login">
     <h2>כניסה</h2>
     <form id="lf" class="row">
-      <input type="password" id="key" autocomplete="current-password" placeholder="מפתח מנהל (VISITS_ADMIN_KEY)" style="flex:1;min-width:220px">
+      <input type="password" id="key" aria-label="מפתח מנהל" autocomplete="current-password" placeholder="מפתח מנהל (VISITS_ADMIN_KEY)" style="flex:1;min-width:220px">
       <button class="gold" type="submit">כניסה</button>
     </form>
     <p class="muted" id="lmsg">המפתח נשמר רק בדפדפן הזה. הכניסה גם מסמנת את הדפדפן כשלך, כך שהביקורים שלך לא נספרים.</p>
   </section>
 
-  <div id="app" hidden>
+  <div id="app" hidden style="display:grid;gap:18px">
     <div class="kpis">
       <div class="kpi"><span>צפיות בדפים</span><b id="k1">–</b></div>
-      <div class="kpi"><span>אנשים</span><b id="k2">–</b></div>
+      <div class="kpi"><span>מבקרים לפי דפדפן</span><b id="k2">–</b></div>
       <div class="kpi"><span>חוזרים</span><b id="k3">–</b></div>
-      <div class="kpi"><span>חדשים</span><b id="k4">–</b></div>
       <div class="kpi"><span>אחוז חוזרים</span><b id="k5">–</b></div>
+      <div class="kpi" id="kc"><span>דיווחי עותקים שהתקבלו</span><b id="k6">–</b></div>
+      <div class="kpi" id="kb"><span>בקשות שנדחו / חריגות</span><b id="k7">–</b></div>
     </div>
 
     <section class="card">
-      <h2>לפי יום</h2>
-      <div class="chart" id="chart" role="img" aria-label="מבקרים לפי יום"></div>
-      <div class="muted legend"><i style="background:var(--gold)"></i>מבקרים ביום<i style="background:var(--go)"></i>מתוכם חוזרים</div>
+      <h2>צפיות לפי יום</h2>
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>צפיות</span>
+        <span><i style="background:var(--s2)"></i>מבקרים</span>
+        <span><i style="background:var(--s3)"></i>מתוכם חוזרים</span>
+      </div>
+      <div class="chartbox" id="chartbox"><svg id="chart" viewBox="0 0 900 260" role="img" aria-label="צפיות, מבקרים וחוזרים לפי יום"></svg><div class="tip" id="tip"></div></div>
     </section>
 
     <div class="grid2">
       <section class="card">
-        <h2>דפים</h2>
-        <div class="tw"><table><thead><tr><th>דף</th><th class="n">צפיות</th><th class="n">מבקרים</th><th class="n">חוזרים</th></tr></thead><tbody id="pages"></tbody></table></div>
+        <h2>הדפים הנצפים ביותר</h2>
+        <div class="bars" id="topbars"></div>
+        <details style="margin-top:12px"><summary class="muted">כל הדפים</summary>
+          <div class="tw"><table><thead><tr><th>דף</th><th class="n">צפיות</th><th class="n">מבקרים</th><th class="n">חוזרים</th></tr></thead><tbody id="pages"></tbody></table></div>
+        </details>
       </section>
       <section class="card">
-        <h2>אנשים חוזרים</h2>
-        <div class="tw"><table><thead><tr><th>מזהה</th><th class="n">ימים</th><th class="n">צפיות</th><th>נראה לאחרונה</th></tr></thead><tbody id="people"></tbody></table></div>
-        <p class="muted">מזהה אנונימי לכל דפדפן. בלי שם, בלי IP.</p>
+        <h2>דפדפנים חוזרים</h2>
+        <div class="tw"><table><thead><tr><th>מזהה</th><th class="n">ימים</th><th class="n">צפיות</th><th>לאחרונה</th></tr></thead><tbody id="people"></tbody></table></div>
+        <p class="muted">מזהה אנונימי לכל דפדפן. בלי שם ובלי IP. העבר את העכבר על שורה כדי לראות את הדפים שלו.</p>
         <h2 style="margin-top:14px">מאיפה הגיעו</h2>
         <div class="tw"><table><tbody id="refs"></tbody></table></div>
       </section>
     </div>
 
     <section class="card">
-      <h2>שורת הכניסות בתחתית הדפים</h2>
-      <div class="row"><button id="bar" type="button"></button><span class="muted">מופיעה רק בדפדפן שלך, רק באתר העברי.</span></div>
-      <div class="term" id="status" style="margin-top:12px"></div>
+      <h2>שומרי הדפים — עותקים של האתר</h2>
+      <p class="muted" style="margin-top:-6px">דפים שנשמרו למחשב או הועלו לאתר אחר ונפתחו שם. הנתונים מדוח העותקים של שרת המחשבונים (mahalco-calc).</p>
+      <div class="row" id="ckrow" hidden style="margin-bottom:10px">
+        <input type="password" id="ckey" placeholder="מפתח דוח העותקים (ADMIN_KEY של mahalco-calc)" style="flex:1;min-width:220px">
+        <button type="button" id="cksave">שמירה</button>
+      </div>
+      <p class="muted" id="copyNote" role="status"></p>
+      <div class="tw"><table><thead><tr><th>זמן</th><th>איפה רץ</th><th>הדף שהועתק</th><th>IP</th><th>דפדפן</th></tr></thead><tbody id="copies"></tbody></table></div>
     </section>
+
+    <section class="card">
+      <h2>לוג בקשות שנדחו / חריגות</h2>
+      <div class="chips" id="reasons"></div>
+      <div class="term" id="invlog"></div>
+      <p class="muted">זהו לוג טכני של בקשות שנדחו או סומנו כחריגות; אינו קביעה שהתרחשה פעילות בלתי חוקית. נשמרות עד 500 הבקשות האחרונות, לא בהכרח רק בטווח הימים שנבחר. כתובות IP מוצגות לפי הדיווח מהשרת.</p>
+    </section>
+
+    <div class="grid2">
+      <section class="card">
+        <h2>אינדוקס במנועי חיפוש</h2>
+        <div class="row"><button class="gold" type="button" id="indexnow">שלח את כל הדפים ל-Bing ו-Yandex</button></div>
+        <p class="muted">שולח את כל הכתובות מ-sitemap.xml דרך IndexNow. גוגל לא משתתף ב-IndexNow: שלח את המפה פעם אחת ב-<a href="https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2F" target="_blank" rel="noopener">Google Search Console</a>, וגוגל יחזור אליה לבד.</p>
+        <div class="term" id="ixlog" hidden></div>
+      </section>
+      <section class="card">
+        <h2>שורת הכניסות בתחתית הדפים</h2>
+        <div class="row"><button id="bar" type="button"></button><span class="muted">רק בדפדפן שלך, רק באתר העברי.</span></div>
+        <div class="term" id="status" style="margin-top:12px"></div>
+      </section>
+    </div>
   </div>
 </div>
 <script>
 (function(){
   var API = 'https://junction-los-api.onrender.com/api/v1/visits';
+  var CALC = 'https://mahalco-calc.onrender.com/v1/copy-report?n=300';
   var $ = function(id){ return document.getElementById(id); };
+  if (location.protocol === 'file:') {
+    $('app').hidden = true;
+    $('key').disabled = true;
+    $('lf').querySelector('button').disabled = true;
+    $('lmsg').innerHTML = 'הקובץ פתוח מהמחשב. שרת הנתונים מאפשר חיבור רק מהאתר. <a href="https://mahmoudalem95.github.io/mahalco/admin.html">פתיחת לוח המנהל באתר</a>. יש להזין את המפתח שם; הוא לא מועבר בקישור.';
+    $('reload').disabled = true;
+    $('logout').disabled = true;
+    return;
+  }
   var ls = { get:function(k){try{return localStorage.getItem(k)}catch(e){return null}}, set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}, del:function(k){try{localStorage.removeItem(k)}catch(e){}} };
-  // this browser is the owner's: never count it
-  ls.set('mh-owner','1');
+  ls.set('mh-owner','1');                                   // this browser is the owner's: never counted
   function vid(){ var v = ls.get('mh-vid'); if(!v){ var a=new Uint8Array(12); crypto.getRandomValues(a); v=Array.from(a,function(b){return ('0'+b.toString(16)).slice(-2)}).join(''); ls.set('mh-vid',v); } return v; }
   var fmt = function(n){ return (n||0).toLocaleString('he-IL'); };
-  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
-  function status(t, bad){ var s=$('status'); s.textContent = 'mahalco:~$ ' + t; s.className = 'term' + (bad?' err':''); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
+  function status(t, bad){ var s=$('status'); s.textContent = 'mahalco:~$ ' + t; s.style.color = bad ? '#FF8A80' : ''; }
+  function post(path, body){ return fetch(API + path, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(body) }).then(function(r){ if(r.status===403) throw new Error('wrong key'); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }); }
+  var css = function(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); };
+
+  // ---------- daily chart: one axis, three counts ----------
+  var lastDaily = [];
+  function drawChart(daily){
+    lastDaily = daily;
+    var svg = $('chart'), W = 900, H = 260, L = 44, R = 12, T = 12, B = 30;
+    if (!daily.length){ svg.innerHTML = '<text x="450" y="130" text-anchor="middle" fill="'+css('--muted')+'" font-size="14">אין עדיין נתונים בטווח הזה</text>'; return; }
+    var n = daily.length, max = Math.max(1, ...daily.map(function(d){return d.views}));
+    var step = Math.pow(10, Math.floor(Math.log10(max))), nice = Math.ceil(max/step)*step; if (nice/step > 6) step *= 2; nice = Math.ceil(max/step)*step;
+    var x = function(i){ return n===1 ? (L+W-R)/2 : L + i*(W-L-R)/(n-1); }, y = function(v){ return T + (H-T-B)*(1 - v/nice); };
+    var g = '', ink = css('--muted'), grid = css('--grid');
+    for (var v = 0; v <= nice + 1e-9; v += step){ g += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="'+grid+'" stroke-width="1"/><text x="'+(L-8)+'" y="'+(y(v)+4)+'" text-anchor="end" font-size="11" fill="'+ink+'">'+v+'</text>'; }
+    var every = Math.max(1, Math.ceil(n/8));
+    daily.forEach(function(d,i){ if (i % every === 0 || i === n-1) g += '<text x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="'+ink+'">'+d.day.slice(8,10)+'/'+d.day.slice(5,7)+'</text>'; });
+    [['views','--s1'],['visitors','--s2'],['returning','--s3']].forEach(function(s){
+      var col = css(s[1]), pts = daily.map(function(d,i){ return x(i)+','+y(d[s[0]]); }).join(' ');
+      if (s[0]==='views') g += '<polygon points="'+L+','+y(0)+' '+pts+' '+x(n-1)+','+y(0)+'" fill="'+col+'" fill-opacity=".10"/>';
+      g += '<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+      var last = daily[n-1]; g += '<circle cx="'+x(n-1)+'" cy="'+y(last[s[0]])+'" r="4" fill="'+col+'" stroke="'+css('--card')+'" stroke-width="2"/>';
+    });
+    g += '<line id="xh" x1="0" x2="0" y1="'+T+'" y2="'+(H-B)+'" stroke="'+ink+'" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>';
+    g += '<rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'" fill="transparent" id="hit"/>';
+    svg.innerHTML = g;
+    var tip = $('tip'), xh = svg.querySelector('#xh');
+    svg.querySelector('#hit').addEventListener('pointermove', function(ev){
+      var r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+      var i = Math.max(0, Math.min(n-1, Math.round(n===1 ? 0 : (px-L)/((W-L-R)/(n-1))))), d = daily[i];
+      xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('opacity', '.6');
+      tip.innerHTML = '<div class="muted">'+d.day+'</div>צפיות <b>'+d.views+'</b><br>מבקרים <b>'+d.visitors+'</b><br>חוזרים <b>'+d.returning+'</b>';
+      var bx = x(i) * r.width / W; tip.style.left = Math.min(r.width - tip.offsetWidth - 4, Math.max(4, bx + 12)) + 'px'; tip.style.top = '10px'; tip.style.opacity = 1;
+    });
+    svg.querySelector('#hit').addEventListener('pointerleave', function(){ tip.style.opacity = 0; xh.setAttribute('opacity','0'); });
+  }
 
   function load(){
     var key = ls.get('mh-admin-key'); if(!key) return;
     status('loading… (the server may take ~50 s to wake up)');
-    fetch(API + '/admin', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ key:key, days:+$('range').value, owner: vid() }) })
-      .then(function(r){ if(r.status===403) throw new Error('wrong key'); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-      .then(function(d){
-        $('login').hidden = true; $('app').hidden = false;
-        var t = d.totals;
-        $('k1').textContent = fmt(t.views); $('k2').textContent = fmt(t.people); $('k3').textContent = fmt(t.returning_people);
-        $('k4').textContent = fmt(t.new_people); $('k5').textContent = t.people ? Math.round(100*t.returning_people/t.people)+'%' : '–';
-        var max = Math.max(1, ...d.daily.map(function(x){return x.visitors}));
-        $('chart').innerHTML = d.daily.length ? d.daily.map(function(x){
-          return '<div title="'+x.day+': '+x.visitors+' מבקרים, '+x.returning+' חוזרים, '+x.views+' צפיות" style="height:'+(100*x.visitors/max)+'%"><i style="height:'+(x.visitors?100*x.returning/x.visitors:0)+'%"></i></div>';
-        }).join('') : '<span class="muted">אין עדיין נתונים בטווח הזה.</span>';
-        $('pages').innerHTML = d.pages.map(function(p){ return '<tr><td class="p">'+esc(p.path.replace(/^\/mahalco/,''))+'</td><td class="n">'+fmt(p.views)+'</td><td class="n">'+fmt(p.visitors)+'</td><td class="n">'+fmt(p.returning)+'</td></tr>'; }).join('') || '<tr><td colspan="4" class="muted">אין נתונים</td></tr>';
-        $('people').innerHTML = d.returning_people.map(function(p){ return '<tr title="'+esc(p.top.join('  ·  '))+'"><td class="p">'+esc(p.id)+'</td><td class="n">'+p.days+'</td><td class="n">'+p.views+'</td><td>'+esc(p.last)+'</td></tr>'; }).join('') || '<tr><td colspan="4" class="muted">עוד אין אנשים חוזרים</td></tr>';
-        $('refs').innerHTML = d.referrers.map(function(r){ return '<tr><td class="p">'+esc(r.host)+'</td><td class="n">'+fmt(r.views)+'</td></tr>'; }).join('') || '<tr><td class="muted">אין</td></tr>';
-        status(d.range.start+' → '+d.range.end+'  ·  storage: '+d.storage+'  ·  your browser excluded');
-      })
+    post('/admin', { key:key, days:+$('range').value, owner: vid() }).then(function(d){
+      $('login').hidden = true; $('app').hidden = false;
+      var t = d.totals;
+      $('k1').textContent = fmt(t.views); $('k2').textContent = fmt(t.people); $('k3').textContent = fmt(t.returning_people);
+      $('k5').textContent = t.people ? Math.round(100*t.returning_people/t.people)+'%' : '–';
+      var inv = d.invalid || {recent:[],by_reason:[],dropped:0}, invN = inv.by_reason.reduce(function(a,b){return a+b.count},0);
+      $('k7').textContent = fmt(invN); $('kb').classList.toggle('alert', invN > 0);
+      drawChart(d.daily);
+      var top = d.pages.slice(0,10), pmax = Math.max(1, ...top.map(function(p){return p.views}));
+      $('topbars').innerHTML = top.map(function(p){ return '<div class="bar" title="'+fmt(p.visitors)+' מבקרים · '+fmt(p.returning)+' חוזרים"><span class="lab">'+esc(p.path.replace(/^\/mahalco/,''))+'</span><span class="val">'+fmt(p.views)+'</span><div class="track"><div class="fill" style="width:'+(100*p.views/pmax)+'%"></div></div></div>'; }).join('') || '<span class="muted">אין נתונים</span>';
+      $('pages').innerHTML = d.pages.map(function(p){ return '<tr><td class="p">'+esc(p.path.replace(/^\/mahalco/,''))+'</td><td class="n">'+fmt(p.views)+'</td><td class="n">'+fmt(p.visitors)+'</td><td class="n">'+fmt(p.returning)+'</td></tr>'; }).join('') || '<tr><td colspan="4" class="muted">אין נתונים</td></tr>';
+      $('people').innerHTML = d.returning_people.map(function(p){ return '<tr title="'+esc(p.top.join('  ·  '))+'"><td class="p">'+esc(p.id)+'</td><td class="n">'+p.days+'</td><td class="n">'+p.views+'</td><td>'+esc(p.last)+'</td></tr>'; }).join('') || '<tr><td colspan="4" class="muted">עוד אין דפדפנים חוזרים</td></tr>';
+      $('refs').innerHTML = d.referrers.map(function(r){ return '<tr><td class="p">'+esc(r.host)+'</td><td class="n">'+fmt(r.views)+'</td></tr>'; }).join('') || '<tr><td class="muted">אין</td></tr>';
+      $('reasons').innerHTML = inv.by_reason.map(function(r){ return '<span class="chip">'+esc(r.reason)+'<b>'+r.count+'</b></span>'; }).join('') + (inv.dropped ? '<span class="chip">הוצפו ולא נרשמו<b>'+inv.dropped+'</b></span>' : '');
+      $('invlog').innerHTML = inv.recent.length ? inv.recent.map(function(e){
+        var cls = /wrong admin key/.test(e.reason) ? 'r' : /copy/.test(e.reason) ? 'y' : '';
+        return '<span class="dim">'+esc(e.t)+'</span>  '+esc(e.ep.padEnd(6))+' <span class="'+cls+'">'+esc(e.reason)+'</span>  '+esc(e.detail)+'\n<span class="dim">    ip '+esc(e.ip)+(e.origin?'  origin '+esc(e.origin):'')+'  '+esc(e.ua)+'</span>';
+      }).join('\n') : '<span class="dim">mahalco:~$ no invalid requests</span>';
+      status(d.range.start+' → '+d.range.end+'  ·  storage: '+d.storage+'  ·  your browser excluded');
+      loadCopies(d.copies || []);
+    }).catch(function(e){
+      if (e.message==='wrong key'){ ls.del('mh-admin-key'); $('app').hidden = true; $('login').hidden = false; $('lmsg').textContent = 'המפתח שגוי. נסה שוב.'; $('lmsg').className='err'; }
+      else {
+        var message = e.message === 'Failed to fetch' ? 'לא התקבלה תשובה מהשרת. ייתכן עיכוב בהתעוררות השרת, חיבור רשת או חסימת דפדפן. נסו לרענן; אין בכך הוכחה שהמפתח שגוי.' : e.message;
+        status(message, true);
+        if (!$('login').hidden) { $('lmsg').textContent = message; $('lmsg').className = 'err'; }
+      }
+    });
+  }
+
+  // ---------- saved / copied pages (mahalco-calc copy report) ----------
+  function loadCopies(fallback){
+    var key = ls.get('mh-copy-key');
+    $('k6').textContent = '…';
+    $('copyNote').textContent = 'טוען דוח עותקים…';
+    function showFallback(note){
+      showCopies(fallback.map(function(e){ return { t:e.t, where:e.origin==='null'?'קובץ שמור במחשב':e.origin, page:e.detail, ip:e.ip, ua:e.ua }; }), note);
+      if (!fallback.length) $('k6').textContent = 'לא זמין';
+    }
+    if (!key) {
+      $('ckrow').hidden = false;
+      showFallback('דוח העותקים המלא טרם חובר. הזינו את מפתח ADMIN_KEY של שרת המחשבונים. מוצגים רק דיווחים זמינים ממונה הביקורים.');
+      return;
+    }
+    fetch(CALC, { headers:{ 'X-Admin-Key': key } }).then(function(r){ if(r.status===403) throw new Error('403'); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(function(d){ $('ckrow').hidden = true; showCopies((d.reports || []).map(function(r){ return { t:r.time, where:(r.proto==='file:'?'קובץ שמור במחשב':r.where)+(r.framed?' [iframe]':''), page:(r.route||r.page||'').replace(/\.html$/,''), ip:r.ip, ua:r.browser, ref:r.referrer }; }), 'עד 300 הדיווחים האחרונים משרת המחשבונים; בחירת טווח הימים אינה מסננת דוח זה. דיווח אינו בהכרח עותק ייחודי.'); })
       .catch(function(e){
-        if (e.message==='wrong key'){ ls.del('mh-admin-key'); $('app').hidden = true; $('login').hidden = false; $('lmsg').textContent = 'המפתח שגוי. נסה שוב.'; $('lmsg').className='err'; }
-        else status(e.message + ' — try again in a minute', true);
+        if (e.message==='403') $('ckrow').hidden = false;
+        showFallback(e.message==='403' ? 'מפתח דוח העותקים לא התקבל. עדכנו אותו למעלה; מוצגים רק דיווחים זמינים ממונה הביקורים.' : 'דוח העותקים המלא לא זמין כרגע. מוצגים רק דיווחים זמינים ממונה הביקורים.');
       });
   }
+  function showCopies(rows, note){
+    $('copyNote').textContent = note || '';
+    $('k6').textContent = fmt(rows.length); $('kc').classList.toggle('alert', rows.length > 0);
+    $('copies').innerHTML = rows.map(function(r){ return '<tr'+(r.ref?' title="הגיעו מ: '+esc(r.ref)+'"':'')+'><td class="n">'+esc(r.t)+'</td><td class="p">'+esc(r.where)+'</td><td class="p">'+esc(r.page)+'</td><td class="n">'+esc(r.ip)+'</td><td class="p">'+esc((r.ua||'').slice(0,60))+'</td></tr>'; }).join('')
+      || '<tr><td colspan="5" class="muted">'+(note ? 'אין דיווחים זמינים להצגה ממקור זה' : 'לא דווחו עותקים')+'</td></tr>';
+  }
+  $('cksave').onclick = function(){ var k = $('ckey').value.trim(); if (k){ ls.set('mh-copy-key', k); loadCopies([]); } };
+
+  // ---------- IndexNow ----------
+  $('indexnow').onclick = function(){
+    var b = this, log = $('ixlog'); b.disabled = true; log.hidden = false; log.textContent = 'mahalco:~$ indexnow submit sitemap.xml …';
+    post('/indexnow', { key: ls.get('mh-admin-key') }).then(function(d){
+      log.textContent = 'mahalco:~$ indexnow → ' + (d.ok ? 'accepted' : 'rejected') + '  ·  HTTP ' + d.status + '  ·  ' + d.urls + ' urls' + (d.ok ? '' : '\n' + d.message);
+    }).catch(function(e){ log.textContent = 'mahalco:~$ indexnow → ' + e.message; }).finally(function(){ b.disabled = false; });
+  };
+
   function barLabel(){ $('bar').textContent = ls.get('mh-visits')==='0' ? 'הצג את השורה' : 'הסתר את השורה'; }
   $('lf').addEventListener('submit', function(e){ e.preventDefault(); var k=$('key').value.trim(); if(!k) return; ls.set('mh-admin-key',k); ls.set('mh-visits','1'); $('app').hidden=false; barLabel(); load(); });
   $('reload').onclick = load; $('range').onchange = load;
-  $('logout').onclick = function(){ ls.del('mh-admin-key'); location.reload(); };
+  $('logout').onclick = function(){ ls.del('mh-admin-key'); ls.del('mh-copy-key'); location.reload(); };
   $('bar').onclick = function(){ ls.set('mh-visits', ls.get('mh-visits')==='0' ? '1' : '0'); barLabel(); };
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ if (lastDaily.length) drawChart(lastDaily); });
   barLabel();
   if (ls.get('mh-admin-key')) { $('login').hidden = true; $('app').hidden = false; load(); }
 })();

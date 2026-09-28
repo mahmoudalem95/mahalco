@@ -41,7 +41,7 @@
     }
     return { property: property, client: client };
   }
-  $('ga-property').value = saved('mh-ga-property') || '553070001'; $('ga-client').value = saved('mh-ga-client');
+  $('ga-property').value = saved('mh-ga-property') || '553070001'; $('ga-client').value = saved('mh-ga-client') || '1004675395061-hjrdjkpqpvahjp3me7q025tdvb4dbr9u.apps.googleusercontent.com';
   $('ga-settings').open = !$('ga-property').value || !$('ga-client').value;
   ['ga-property', 'ga-client'].forEach(function (id) { $(id).addEventListener('change', function () { disconnect(false); }); });
   $('ga-connect').addEventListener('click', function () {

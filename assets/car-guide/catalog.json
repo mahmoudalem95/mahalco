@@ -1,0 +1,164 @@
+[
+  {
+    "url": "he/crossing-high-demand.html",
+    "title": "הנחיות ובדיקות מעברי חצייה עתירי ביקוש",
+    "description": "בדיקת מעבר חצייה בביקוש גבוה: נפח חוצים, מרווחים בתנועה, אי מפלט, זמני חצייה, הצדקה לרמזור ולמעבר מוגבה.",
+    "keywords": ""
+  },
+  {
+    "url": "he/bike-design.html",
+    "title": "שיקולים והנחיות לתכנון שבילי אופניים",
+    "description": "בחירת טיפוס השביל לפי מהירות ונפח, רוחב, הפרדה מתנועה ומהולכי רגל, שיפועים, ריצוף ורדיוסים, ומעבר השביל בצומת.",
+    "keywords": "אופניים אופנים שביל"
+  },
+  {
+    "url": "he/urban-bus-lane-justification.html",
+    "title": "הצדקת נת״צ עירוני",
+    "description": "קריטריוני הצדקה לנתיב תחבורה ציבורית עירוני: נפח נוסעים בשעת שיא, תדירות הקווים, זמן הנסיעה שנחסך והרוחב הזמין בחתך.",
+    "keywords": ""
+  },
+  {
+    "url": "he/intercity-bus-lane-justification.html",
+    "title": "הצדקת מת״צ ונת״צ בין-עירוני",
+    "description": "מסלול תחבורה ציבורית מופרד ונתיב בין-עירוני: הצדקה תפעולית, חתך רוחב והשתלבות בצמתים ובמחלפים.",
+    "keywords": ""
+  },
+  {
+    "url": "he/transit-lanes-stations-safety.html",
+    "title": "ניתוח נתיבי תחבורה ציבורית",
+    "description": "תכנון נת\"צ, תחנות, אמצעי בטיחות ושדרוג.",
+    "keywords": ""
+  },
+  {
+    "url": "he/transit-level-of-service.html",
+    "title": "רמת שירות לתחבורה ציבורית",
+    "description": "תדירות שירות, מתקני תחנה ואמינות לאורך הקו.",
+    "keywords": ""
+  },
+  {
+    "url": "https://junction-los-api.onrender.com/api/v1/pages/transit-los",
+    "title": "רמת שירות לתחבורה ציבורית",
+    "description": "תדירות שירות, מתקני תחנה ואמינות לאורך הקו.",
+    "keywords": ""
+  },
+  {
+    "url": "he/parking-regulations.html",
+    "title": "תכנון חניונים, מסופים וחנה-וסע",
+    "description": "חניוני צד, חניוני קומות, מסופים, תקני חניה ונגישות.",
+    "keywords": "חניה חניון חניות תקן חניה"
+  },
+  {
+    "url": "https://junction-los-api.onrender.com/api/v1/pages/multimodal-los",
+    "title": "רמת שירות רב-אמצעית",
+    "description": "שילוב ציוני הולכי רגל, אופניים ותחבורה ציבורית לתוצאה אחת למסדרון.",
+    "keywords": ""
+  },
+  {
+    "url": "he/typical-section.html",
+    "title": "חתך רוחב עירוני",
+    "description": "רוחבי נתיב, אבן שפה, מדרכה ושוליים לרחוב מקומי, מאסף ועורק.",
+    "keywords": "חתך חתכים כביש מדרכה נתיבים"
+  },
+  {
+    "url": "he/temporary-section.html",
+    "title": "חתך זמני – הסדרי תנועה באתר עבודה",
+    "description": "תת-קטגוריה של חתך הרוחב: בוחרים תרשים מספר ההנחיות, סוגרים נתיבים ובודקים רוחבי מעבר, רצועת התקנים ומעבר הולכי רגל זמני.",
+    "keywords": "חתך חתכים כביש מדרכה נתיבים"
+  },
+  {
+    "url": "he/calculator-dark-ui.html",
+    "title": "ערכי תכן לפי ההנחיות הישראליות",
+    "description": "רוחבי נתיבים, רדיוסי פנייה, נתיבי האטה והאצה, מפרצי אוטובוס והסדרי תנועה זמניים – ישר מספרי ההנחיות.",
+    "keywords": ""
+  },
+  {
+    "url": "he/sd-tool.html",
+    "title": "משולשי ראות על תכנית",
+    "description": "מסמנים צומת על גבי תכנית מכוילת ומפיקים גיליון A0 בקנה מידה.",
+    "keywords": "ראייה ראיה ראות מרחק ראייה"
+  },
+  {
+    "url": "he/critical-lane-volume.html",
+    "title": "נפח נתיב קריטי",
+    "description": "חישוב נפח קריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלה וטבעת כפולה.",
+    "keywords": "ספירה תנועה נפחים קיבולת"
+  },
+  {
+    "url": "en/tool.html",
+    "title": "כלי ניתוח צמתים",
+    "description": "ממשק אינטראקטיבי לחישוב וניתוח צומת מרומזר דרך ה-API.",
+    "keywords": "צומת צמתים רמזור רמזורים"
+  },
+  {
+    "url": "https://junction-los-api.onrender.com/api/v1/pages/signalized-intersection",
+    "title": "ניתוח צומת מרומזר",
+    "description": "עיכוב בקרה, אורך תור, יחס נפח-קיבולת ורמת שירות לכל זרוע ולצומת כולו.",
+    "keywords": "צומת צמתים רמזור רמזורים"
+  },
+  {
+    "url": "https://junction-los-api.onrender.com/api/v1/pages/unsignalized-intersection",
+    "title": "ניתוח צומת לא מרומזר",
+    "description": "בקרת עצור בשני כיוונים ובכל הכיוונים, עם קבלת מרווחים לפי תנועה.",
+    "keywords": "צומת צמתים רמזור רמזורים"
+  },
+  {
+    "url": "he/roundabout-analysis-metric.html",
+    "title": "ניתוח כיכר תנועה",
+    "description": "קיבולת כניסה, יחס נפח-קיבולת, עיכוב בקרה ותור באחוזון 95 לכל זרוע.",
+    "keywords": "כיכרות מעגל תנועה"
+  },
+  {
+    "url": "he/lane-queue-metric.html",
+    "title": "ניתוח נתיבים ותורים",
+    "description": "יחס נפח-קיבולת, עיכוב ותור באחוזון 95 לכל נתיב, מול אורך מפרץ הפנייה.",
+    "keywords": "תורים עומס פקק תור"
+  },
+  {
+    "url": "he/optimizes-signal-timing-plans-metric.html",
+    "title": "תיאום ותזמון רמזורים",
+    "description": "היסטים, חלוקת זמנים ואורך מחזור לקבוצת רמזורים מתואמת.",
+    "keywords": ""
+  },
+  {
+    "url": "he/urban-street-segment-analysis-metric.html",
+    "title": "ניתוח מקטע רחוב עירוני",
+    "description": "מהירות נסיעה ורמת שירות במקטע שבין שני רמזורים.",
+    "keywords": ""
+  },
+  {
+    "url": "he/horizontal.html",
+    "title": "תכנון עקומה אופקית",
+    "description": "רדיוס מזערי לפי מהירות תכן, שיפוע רוחבי ומקדם חיכוך צדי.",
+    "keywords": ""
+  },
+  {
+    "url": "he/vertical.html",
+    "title": "תכנון עקומה אנכית",
+    "description": "אורכי עקומות קמורות וקעורות לפי מרחק ראייה ונוחות נסיעה.",
+    "keywords": ""
+  },
+  {
+    "url": "he/sd.html",
+    "title": "חישוב מרחק ראייה",
+    "description": "מרחק ראיית עצירה, עקיפה והחלטה עבור תוואי נתון.",
+    "keywords": ""
+  },
+  {
+    "url": "he/policy-sec.html",
+    "title": "מדיניות וחתך",
+    "description": "מדיניות תכנון וחתכים רוחביים לכבישים בין-עירוניים.",
+    "keywords": "חתך חתכים כביש מדרכה נתיבים"
+  },
+  {
+    "url": "he/los-nat.html",
+    "title": "ניתוח רמת שרות",
+    "description": "רמת שירות, מהירות נסיעה ותנאי זרימה במקטעים בין-עירוניים.",
+    "keywords": ""
+  },
+  {
+    "url": "he/traffic-impact.html",
+    "title": "תסקיר השפעה תחבורתית",
+    "description": "מייצור הנסיעות של הייזום ועד לחוות דעת מלאה, בתהליך אחד.",
+    "keywords": ""
+  }
+]

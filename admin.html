@@ -56,6 +56,18 @@ td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monos
 .chip{font-size:12.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}
 .chip b{font-family:ui-monospace,Menlo,monospace;margin-inline-start:6px}
 .err{color:var(--bad)}
+.ga-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,1fr);gap:20px}
+.ga-map{display:block;width:100%;height:560px;background:var(--grid);margin:12px 0}
+.ga-list{max-height:420px;overflow:auto;margin-top:12px}
+.ga-city{display:flex;justify-content:space-between;gap:12px;width:100%;text-align:right;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent}
+.ga-city[aria-pressed=true]{background:var(--grid);font-weight:700}
+.ga-settings label{display:grid;gap:4px;flex:1;min-width:200px}
+.ga-settings input{font:inherit;width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);direction:ltr}
+.ga-detail{border-bottom:1px solid var(--line);padding-bottom:12px;min-height:135px}
+.ga-detail p{margin:6px 0}.ga-detail h3{margin:0 0 8px}
+.ga-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.ga-legend span{display:inline-flex;align-items:center;gap:5px}.ga-legend i{display:inline-block;background:var(--s2);border-radius:50%;opacity:.6}
+@media(max-width:650px){.ga-layout{grid-template-columns:1fr}.ga-map{height:480px}.ga-list{max-height:320px}}
 </style>
 </head>
 <body>
@@ -80,6 +92,37 @@ td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monos
     <p class="muted" id="lmsg">המפתח נשמר רק בדפדפן הזה. הכניסה גם מסמנת את הדפדפן כשלך, כך שהביקורים שלך לא נספרים.</p>
   </section>
 
+  <section class="card" id="ga-section" aria-labelledby="ga-title">
+      <h2 id="ga-title">Google Analytics · משתמשים פעילים לפי עיר</h2>
+      <div class="row">
+        <button id="ga-connect" type="button" class="gold">חיבור ל־Google Analytics</button>
+        <button id="ga-disconnect" type="button" hidden>ניתוק Google</button>
+        <span class="muted">טווח הימים והרענון בראש הדף חלים גם על המפה.</span>
+      </div>
+      <details id="ga-settings" style="margin-top:12px">
+        <summary>הגדרת החיבור</summary>
+        <div class="row ga-settings" style="margin:12px 0">
+          <label>מזהה נכס GA4 (מספרי)<input id="ga-property" inputmode="numeric" autocomplete="off" placeholder="123456789"></label>
+          <label>Google OAuth Client ID<input id="ga-client" autocomplete="off" placeholder="….apps.googleusercontent.com"></label>
+        </div>
+        <p class="muted">מזהה הנכס נמצא בהגדרות הנכס ב־Analytics, והוא שונה ממזהה המדידה שמתחיל ב־G-. נדרש Client ID מסוג Web application, עם כתובת האתר כמקור JavaScript מורשה והפעלת Google Analytics Data API. <a href="docs/google-analytics-map.md" target="_blank" rel="noopener">הוראות חיבור</a></p>
+      </details>
+      <p id="ga-status" class="muted" role="status">חברו חשבון Google בעל הרשאת קריאה לנכס כדי להציג נתונים.</p>
+      <div id="ga-content" hidden>
+        <p id="ga-summary"></p>
+        <div class="ga-layout">
+          <div>
+            <div class="row"><button id="ga-full" type="button" aria-pressed="true">כל הארץ</button><button id="ga-zoom" type="button" aria-pressed="false">הגדלת אזור הערים</button></div>
+            <svg id="ga-map" class="ga-map" viewBox="0 0 430 765" role="img" aria-label="משתמשים פעילים לפי עיר על מפת ישראל"></svg>
+            <div class="ga-legend"><span>משתמשים פעילים · שטח העיגול</span><span><i style="width:5px;height:5px"></i>1</span><span><i style="width:11.18px;height:11.18px"></i>5</span><span><i style="width:24.49px;height:24.49px"></i>24</span></div>
+          </div>
+          <div><div id="ga-detail" class="ga-detail" aria-live="polite"></div><div id="ga-list" class="ga-list" aria-label="בחירת עיר"></div></div>
+        </div>
+        <p id="ga-unmapped" class="muted"></p>
+        <p id="ga-quality" class="muted"></p>
+        <p class="muted">מקור: Google Analytics Data API. נתוני התקופה עשויים להתעדכן בעיכוב. משתמש יכול להיספר ביותר מעיר אחת; הסך הכולל נשלף בנפרד ואינו סכום הערים. הנקודות הן מרכזי ערים בקירוב, ולא מיקומי משתמשים. גבולות: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> · מיקומי ערים: <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a>.</p>
+      </div>
+    </section>
   <div id="app" hidden style="display:grid;gap:18px">
     <div class="kpis">
       <div class="kpi"><span>צפיות בדפים</span><b id="k1">–</b></div>
@@ -150,6 +193,8 @@ td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monos
     </div>
   </div>
 </div>
+<script src="js/analytics-geography.js?v=1"></script>
+<script src="js/analytics-map.js?v=2"></script>
 <script>
 (function(){
   var API = 'https://junction-los-api.onrender.com/api/v1/visits';

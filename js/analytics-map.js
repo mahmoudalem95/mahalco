@@ -102,7 +102,15 @@
     try { config = settings(); } catch (e) { message(e.message, true); return; }
     controller = new AbortController(); var signal = controller.signal, accessToken = token;
     var days = Number($('range').value), start = days === 1 ? 'today' : (days - 1) + 'daysAgo';
-    var base = { dateRanges: [{ startDate: start, endDate: 'today' }], metrics: metrics.map(function (name) { return { name: name }; }) };
+    // Apply the same exclusion to city rows and the separate unique-user total.
+    var base = {
+      dateRanges: [{ startDate: start, endDate: 'today' }],
+      metrics: metrics.map(function (name) { return { name: name }; }),
+      dimensionFilter: { notExpression: { filter: {
+        fieldName: 'city',
+        inListFilter: { values: ['Kafr Manda', 'Shefa-Amr'], caseSensitive: false }
+      } } }
+    };
     message('טוען נתוני Google Analytics לטווח שנבחר…');
     try {
       var cityBody = Object.assign({}, base, { dimensions: [{ name: 'countryId' }, { name: 'region' }, { name: 'city' }], limit: '10000', offset: '0', orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }] });
@@ -119,7 +127,7 @@
       current = rows.map(function (r, i) { r.id = String(i); r.point = r.countryId === 'IL' ? geo.cities[normalize(r.city || '')] : null; return r; });
       current.sort(function (a, b) { return b.activeUsers - a.activeUsers; });
       render();
-      $('ga-summary').textContent = fmt(totals) + ' משתמשים פעילים בכל המדינות · ' + $('range').selectedOptions[0].textContent + ' · נכס ' + config.property;
+      $('ga-summary').textContent = fmt(totals) + ' משתמשים פעילים בכל המדינות · ללא כפר מנדא ושפרעם · ' + $('range').selectedOptions[0].textContent + ' · נכס ' + config.property;
       var notes = [];
       if (metadata.some(function (m) { return m.subjectToThresholding; })) notes.push('Google עשויה להסתיר נתונים עקב ספי פרטיות.');
       if (metadata.some(function (m) { return m.dataLossFromOtherRow; })) notes.push('חלק מהנתונים אוחדו על ידי Google לשורת other.');

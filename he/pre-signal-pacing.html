@@ -1,9 +1,6 @@
 <!doctype html><html lang="en" dir="ltr"><head>
-<script src="../js/ga.js" async></script>
-<script src="../js/clarity.js" async></script>
 <meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><!-- seo -->
 <meta name="description" content="Experimental micro-simulation of the Jabotinsky Road (Route 481) junction in Petah Tikva: today&#x27;s signal vs pre-signal pacing with GM car-following.">
-<link rel="canonical" href="https://mahmoudalem95.github.io/mahalco/he/pre-signal-pacing.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MAHALCO">
 <meta property="og:locale" content="en_US">
@@ -12,7 +9,7 @@
 <meta property="og:url" content="https://mahmoudalem95.github.io/mahalco/he/pre-signal-pacing.html">
 <meta property="og:image" content="https://mahmoudalem95.github.io/mahalco/icon-512.png">
 </head><body>
-<title>Jabotinsky Pre-Signal Pacing</title>
+<title>Yosftal–Nisenbaum Pre-Signal Pacing (real counts)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -113,9 +110,9 @@ ul.assume{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:g
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Experimental · Jabotinsky Road (Route 481), Petah Tikva, Israel · GM car-following (m=0, l=1)</div>
-    <h1>Pre-Signal Pacing at Jabotinsky Road</h1>
-    <p class="lede">The real junction: the divided NE arterial, the W and S legs with red-marked median BRT lanes that turn through the junction, the channelised free right behind the triangle island, and every crosswalk. Left: today's signal. Drivers queue at the stop line and the free right looks for gaps. Right: pre-signal pacing, upstream pre-signals with platoon speed guidance in the spirit of GLOSA and pacemaker lights. Pre-lights on the last 250 m set the <b>platoon head's</b> acceleration so it reaches the stop line as the green opens, already moving. Everyone behind forms up by ordinary GM car-following. The stop-line signal still guards the conflict zone. Both sides get identical arrivals.</p>
+    <div class="eyebrow">Experimental · Yosftal St. × Rav Nisenbaum St. (Junction #2891), Bat Yam, Israel · GM car-following (m=0, l=1)</div>
+    <h1>Pre-Signal Pacing at Yosftal – Rav Nisenbaum</h1>
+    <p class="lede">The real junction: divided Yosftal Street running east↔west (labelled <b>NE</b> = the east approach, <b>W</b> = the west approach below) meeting Rav Nisenbaum Street from the south (<b>S</b>), with red-marked median bus lanes that turn through the junction, the channelised free right behind the triangle island, and every crosswalk. Left: today's signal. Drivers queue at the stop line and the free right looks for gaps. Right: pre-signal pacing, upstream pre-signals with platoon speed guidance in the spirit of GLOSA and pacemaker lights. Pre-lights on the last 250 m set the <b>platoon head's</b> acceleration so it reaches the stop line as the green opens, already moving. Everyone behind forms up by ordinary GM car-following. The stop-line signal still guards the conflict zone. Both sides get identical arrivals, now drawn from the real manual traffic count (survey #2526, Monday 03/03/2025) instead of an assumed uniform demand.</p>
   </header>
 
   <div class="controls" role="group" aria-label="Simulation controls">
@@ -125,9 +122,9 @@ ul.assume{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:g
         <button type="button" data-v="all" aria-pressed="false">Every car</button>
       </div>
     </div>
-    <div class="ctl"><label for="demand">Car demand</label>
-      <input type="range" id="demand" min="100" max="1500" step="50" value="1500">
-      <span class="num" id="demandOut">1500 veh/h/lane</span>
+    <div class="ctl"><label for="demand">Demand (% of measured peak)</label>
+      <input type="range" id="demand" min="50" max="150" step="5" value="100">
+      <span class="num" id="demandOut">100% · PM peak counts</span>
     </div>
     <div class="ctl">Speed
       <div class="seg" id="speed">
@@ -180,13 +177,23 @@ ul.assume{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:g
 
   <section class="block">
     <h2>What was read from the photo</h2>
-    <p class="muted">Experimental model of the Jabotinsky Road (Route 481) junction in Petah Tikva. Geometry traced from an aerial photo; not calibrated against counts or the operating signal plan.</p>
+    <p class="muted">Geometry (lane count, turn radii, the triangle island, the crosswalks) traced from an aerial photo of Junction #2891, Yosftal St. × Rav Nisenbaum St., Bat Yam. The turning percentages and bus/BRT split below are still photo-based, not counted.</p>
     <ul class="assume">
-      <li>NE approach: 4 lanes, two lefts (the ↙ arrow and the red bus sit in the inner lanes) and two throughs. NE exit: 3 lanes, joined by the free right.</li>
-      <li>W approach (road B): 4 lanes, three through and a right turn beside the painted chevron. W exit (road A): 3 lanes.</li>
-      <li>S approach: 2 lanes turning left to road A; the free right S→NE runs behind the triangle island and gives way to W through traffic. S exit: 3 lanes.</li>
-      <li>Median BRT on W and S, red where it meets the junction, turning W↔S through the centre (30/h each way). Buses mixed into the NE left lanes (15/h each).</li>
-      <li>Lane use, bus volumes and the phase plan are read from the image, not from a count or a signal plan. Edit <code>LANES</code> and <code>PLAN</code> at the top of the script to correct them.</li>
+      <li>NE approach (Yosftal St., east side): 4 lanes, two lefts to Rav Nisenbaum (the ↙ arrow and the red bus sit in the inner lanes) and two throughs continuing west on Yosftal. NE exit: 3 lanes, joined by the free right.</li>
+      <li>W approach (Yosftal St., west side): 4 lanes, three through (continuing east on Yosftal) and a right turn beside the painted chevron. W exit: 3 lanes.</li>
+      <li>S approach (Rav Nisenbaum St.): 2 lanes turning left onto Yosftal westbound; the free right S→NE runs behind the triangle island and gives way to W through traffic. S exit: 3 lanes.</li>
+      <li>Median bus lanes on the W and S legs, red where they meet the junction, turning W↔S through the centre. The phase plan (which movements share a green) is read from the image, not from the operating signal plan. Edit <code>PLAN</code> at the top of the script to correct it.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2>What was read from the counts</h2>
+    <p class="muted">Manual classified turning-movement count, Sheeran Surveys, survey #2526, junction #2891 (“יוספטל - ניסנבאום”), counted Monday 03/03/2025, 06:00-20:00, processed with Maatz report producer v0.92.4. The <code>q</code> (car, veh/h) and <code>bus</code> (veh/h) fields on every car lane in <code>LANES</code> now come from this count's PM peak hour (17:00-18:00); the “Demand” slider scales them together. Observed queue lengths (vehicles stopped at the end of red, from the survey's manual queue-length log) are shown for comparison with what each simulation produces on its own.</p>
+    <ul class="assume">
+      <li><b>NE / Yosftal east</b> (4 lanes): counted 542.6 veh/h turning left to Rav Nisenbaum + 146.8 veh/h through to Yosftal west, plus 36 buses/h. Observed queue at end of red: AM peak avg ≈4-9 veh/lane (max 18), PM peak avg ≈7-14 veh/lane (max 18) — this arm is the more congested one in the evening.</li>
+      <li><b>W / Yosftal west</b> (3 through lanes + 1 free-right lane): counted 282.6 veh/h through to Yosftal east + 589.4 veh/h on the free right to Rav Nisenbaum, plus 30 buses/h. Observed queue on the 3 signalled through lanes: AM peak avg ≈4-10 veh/lane (max 24), PM peak avg ≈3-8 veh/lane (max 10).</li>
+      <li><b>S / Rav Nisenbaum</b> (2 lanes + 1 free-right lane): counted 617 veh/h turning left to Yosftal west + 626.2 veh/h on the free right to Yosftal east, plus 28 buses/h. Observed queue: AM peak avg ≈2 veh/lane, PM peak avg ≈2 veh/lane (max 3) — short queues, consistent with the free right absorbing most of this arm's traffic.</li>
+      <li>A second, related count (survey #109, junction #24061605, “יוספטל / יוספטל”) covers a nearby self-intersecting loop of Yosftal St. and was not used here — this page models junction #2891 only.</li>
     </ul>
   </section>
 
@@ -235,21 +242,27 @@ ul.assume{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:g
     FRX: [[1150, 632], [1250, 610], [1402, 578]],                          // free right joins E3
   };
   // approach lanes: movement, green group, class, buses/h mixed in, approach polyline (ends at stop line), exit
+  // Per-lane car volumes (q, veh/h) and bus-mixed rates (bus, veh/h) below are the PM peak-hour
+  // (17:00-18:00) manual counts for Junction #2891, Yosftal – Rav Nisenbaum, Bat Yam
+  // (Sheeran Surveys, survey #2526, counted Monday 03/03/2025; arm totals split evenly across
+  // that arm's lanes): East arm (NE, "ממזרח יוספטל") 542.6 veh/h left + 146.8 veh/h through,
+  // 36 buses/h; West arm (W, "ממערב יוספטל") 282.6 veh/h through + 589.4 veh/h free right,
+  // 30 buses/h; South arm (S, "הרב ניסנבאום") 617 veh/h left + 626.2 veh/h free right, 28 buses/h.
   const LANES = [
-    // NE approach, median → curb
-    { key: 'NE.L1', app: 'NE', mv: 'L', grp: 'NE.L', cls: 'car', bus: 15, ap: [[1402, 420], [1100, 466], [960, 505], [900, 525], [866, 542]], ex: 'O1' },
-    { key: 'NE.L2', app: 'NE', mv: 'L', grp: 'NE.L', cls: 'car', bus: 15, ap: [[1402, 373], [1100, 418], [950, 450], [880, 470], [839, 497]], ex: 'O2' },
-    { key: 'NE.T3', app: 'NE', mv: 'T', grp: 'NE.T', cls: 'car', ap: [[1402, 327], [1100, 369], [950, 400], [860, 425], [811, 452]], ex: 'A2' },
-    { key: 'NE.T4', app: 'NE', mv: 'T', grp: 'NE.T', cls: 'car', ap: [[1402, 281], [1100, 321], [950, 350], [850, 378], [784, 407]], ex: 'A3' },
-    // W approach (road B), median → curb
-    { key: 'W.T1', app: 'W', mv: 'T', grp: 'W.T', cls: 'car', ap: [[0, 675], [321, 798]], ex: 'E1' },
-    { key: 'W.T2', app: 'W', mv: 'T', grp: 'W.T', cls: 'car', ap: [[0, 733], [293, 844]], ex: 'E2' },
-    { key: 'W.T3', app: 'W', mv: 'T', grp: 'W.T', cls: 'car', ap: [[0, 791], [265, 889]], ex: 'E3' },
-    { key: 'W.R4', app: 'W', mv: 'R', grp: 'W.R', cls: 'car', ap: [[0, 849], [237, 935]], ex: 'O3' },
-    // S approach, median → curb, plus the free right behind the island
-    { key: 'S.L1', app: 'S', mv: 'L', grp: 'S.L', cls: 'car', ap: [[930, 1384], [930, 1150], [915, 1030], [885, 950], [858, 905]], ex: 'A1' },
-    { key: 'S.L2', app: 'S', mv: 'L', grp: 'S.L', cls: 'car', ap: [[975, 1384], [973, 1150], [958, 1030], [925, 940], [898, 888]], ex: 'A2' },
-    { key: 'S.FR', app: 'S', mv: 'FR', grp: null, cls: 'car', ap: [[1032, 1384], [1033, 1100], [1040, 900], [1058, 800], [1088, 722]], ex: 'FRX' },
+    // NE approach (Yosftal St., east side), median → curb
+    { key: 'NE.L1', app: 'NE', mv: 'L', grp: 'NE.L', cls: 'car', q: 271, bus: 18, ap: [[1402, 420], [1100, 466], [960, 505], [900, 525], [866, 542]], ex: 'O1' },
+    { key: 'NE.L2', app: 'NE', mv: 'L', grp: 'NE.L', cls: 'car', q: 271, bus: 18, ap: [[1402, 373], [1100, 418], [950, 450], [880, 470], [839, 497]], ex: 'O2' },
+    { key: 'NE.T3', app: 'NE', mv: 'T', grp: 'NE.T', cls: 'car', q: 73, ap: [[1402, 327], [1100, 369], [950, 400], [860, 425], [811, 452]], ex: 'A2' },
+    { key: 'NE.T4', app: 'NE', mv: 'T', grp: 'NE.T', cls: 'car', q: 73, ap: [[1402, 281], [1100, 321], [950, 350], [850, 378], [784, 407]], ex: 'A3' },
+    // W approach (Yosftal St., west side / road B), median → curb
+    { key: 'W.T1', app: 'W', mv: 'T', grp: 'W.T', cls: 'car', q: 94, bus: 10, ap: [[0, 675], [321, 798]], ex: 'E1' },
+    { key: 'W.T2', app: 'W', mv: 'T', grp: 'W.T', cls: 'car', q: 94, bus: 10, ap: [[0, 733], [293, 844]], ex: 'E2' },
+    { key: 'W.T3', app: 'W', mv: 'T', grp: 'W.T', cls: 'car', q: 94, bus: 10, ap: [[0, 791], [265, 889]], ex: 'E3' },
+    { key: 'W.R4', app: 'W', mv: 'R', grp: 'W.R', cls: 'car', q: 589, ap: [[0, 849], [237, 935]], ex: 'O3' },
+    // S approach (Rav Nisenbaum St.), median → curb, plus the free right behind the island
+    { key: 'S.L1', app: 'S', mv: 'L', grp: 'S.L', cls: 'car', q: 308, bus: 14, ap: [[930, 1384], [930, 1150], [915, 1030], [885, 950], [858, 905]], ex: 'A1' },
+    { key: 'S.L2', app: 'S', mv: 'L', grp: 'S.L', cls: 'car', q: 308, bus: 14, ap: [[975, 1384], [973, 1150], [958, 1030], [925, 940], [898, 888]], ex: 'A2' },
+    { key: 'S.FR', app: 'S', mv: 'FR', grp: null, cls: 'car', q: 626, ap: [[1032, 1384], [1033, 1100], [1040, 900], [1058, 800], [1088, 722]], ex: 'FRX' },
     // median BRT, W ↔ S
     { key: 'W.PT', app: 'W', mv: 'PT', grp: 'PT', cls: 'brt', ap: [[0, 581], [200, 665], [360, 732]], ex: 'PT_SB' },
     { key: 'S.PT', app: 'S', mv: 'PT', grp: 'PT', cls: 'brt', ap: [[865, 1384], [858, 1290], [845, 1180], [815, 1050], [790, 935]], ex: 'PT_WB' },
@@ -404,7 +417,8 @@ ul.assume{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:g
       this.rc = rng((opt.seed || 1) * 7919 + 13);
       this.plan = PLAN;
       this.C = opt.cycle || PLAN.cycle;
-      this.q = opt.q;                                   // car veh/h per car lane
+      this.q = opt.q;                                   // fallback car veh/h per car lane (unused once every lane has its own q)
+      this.scale = opt.scale ?? 1;                       // multiplier on each lane's measured q (the "Demand" slider)
       this.brtQ = opt.brtQ ?? P.BRT_Q; this.busF = opt.busF ?? P.BUS_F;
       this.warm = opt.warm ?? 300;
       const np = PLAN.phases.length;
@@ -416,7 +430,7 @@ ul.assume{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:g
       const r = rng(opt.seed || 1);
       for (const d of LANES) {
         const path = PATHS[d.key], free = d.mv === 'FR';
-        const q = d.cls === 'brt' ? this.brtQ : this.q, bq = d.cls === 'car' ? (d.bus || 0) * this.busF : 0;
+        const q = d.cls === 'brt' ? this.brtQ : (d.q != null ? d.q * this.scale : this.q), bq = d.cls === 'car' ? (d.bus || 0) * this.busF : 0;
         const lane = { ...d, path, free, q, bq, veh: [], pend: [], lastSlot: -1e9, lastCls: 'car',
                        xExit: path.after, turnLen: path.turnLen,
                        r: rng(Math.floor(r() * 1e9)), crossings: [], exits: [] };
@@ -811,10 +825,10 @@ ul.assume{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:g
 (function(){
 const {P, Sim, draw, THEMES} = window.GMJ;
 const $ = id => document.getElementById(id);
-const state = { demand:1500, speed:5, playing:true, lead:'head' };
+const state = { demand:100, speed:5, playing:true, lead:'head' };
 let simA, simB;
 function build(){
-  const o = { q: state.demand, seed: 7, warm: 0 };
+  const o = { scale: state.demand/100, seed: 7, warm: 0 };
   simA = new Sim({...o, managed:false});
   const H = state.lead === 'head' ? {T:1.7, L:1.9, R:1.9, FR:2.1} : {T:1.9, L:2.1, R:2.1, FR:2.1};
   simB = new Sim({...o, managed:true, headOnly: state.lead === 'head', H});
@@ -853,7 +867,7 @@ function frame(now){
 function setPressed(id, v){ for (const b of $(id).querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.v === String(v))); }
 $('speed').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; state.speed = +b.dataset.v; setPressed('speed', state.speed); });
 $('lead').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; state.lead = b.dataset.v; setPressed('lead', state.lead); build(); });
-$('demand').addEventListener('input', e => { state.demand = +e.target.value; $('demandOut').textContent = `${state.demand} veh/h/lane`; });
+$('demand').addEventListener('input', e => { state.demand = +e.target.value; $('demandOut').textContent = `${state.demand}% · PM peak counts`; });
 $('demand').addEventListener('change', () => build());
 $('play').addEventListener('click', () => { state.playing = !state.playing; $('play').textContent = state.playing ? 'Pause' : 'Play'; });
 $('reset').addEventListener('click', () => build());
@@ -863,5 +877,4 @@ requestAnimationFrame(frame);
 })();
 </script>
 
-<script src="../js/visits-bar.js?v=2" defer></script>
 </body></html>

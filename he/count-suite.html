@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<script src="../js/ga.js" async></script>
+<script src="../js/clarity.js" async></script>
+<link rel="canonical" href="https://mahmoudalem95.github.io/mahalco/he/count-suite.html">
+<meta charset="utf-8">
+<meta name="mahalco-origin" content="MahAlCo | https://mahmoudalem95.github.io/mahalco/he/count-suite.html | all rights reserved">
+<script src="../js/geo-he.js?v=1" data-en="../index.html"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://mahmoudalem95.github.io https://cdn.sheetjs.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com https://junction-los-api.onrender.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#12121e">
+<meta name="description" content="ניתוח ספירת צומת בכלי אחד: קלט ספירות משותף לנפח נתיב קריטי, אורך תור ואחסנה בנתיבים ונתוני תנועה לתכן מסעה — עם השרטוט מהקובץ ולוחות 2.1 / 2.2.">
+<title>ניתוח ספירת צומת — נפח קריטי · אורך תור · תכן מסעה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="../js/xlsx-fallback.js?v=2"></script>
+<style>
+:root{
+  --bg:#12121e; --surface:#1a1a2e; --sunk:#22223a;
+  --ink:#EDEBF2; --ink2:#9A96AB; --ink3:#6B6780;
+  --rule:rgba(255,255,255,.09); --rule2:rgba(255,255,255,.05);
+  --pick:#E8A33D; --pick-bg:rgba(232,163,61,.16);
+  --warn:#F35B5B; --warn-bg:rgba(243,91,91,.15);
+  --ok:#4ADE80; --ok-bg:rgba(74,222,128,.14);
+  --dir-n:#4ADE80; --dir-s:#22D3EE; --dir-e:#E8A33D; --dir-w:#A78BFA;
+  --r:10px; --shadow:0 1px 2px rgba(0,0,0,.24), 0 4px 10px rgba(0,0,0,.16);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Assistant',system-ui,'Segoe UI',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 16px 80px}
+h1{font-size:28px;font-weight:700;margin:0 0 6px;letter-spacing:-.015em}
+h2{font-size:19px;font-weight:600;margin:0;display:flex;align-items:center;gap:9px}
+h2::before{content:'';flex:none;width:4px;height:15px;background:var(--pick);border-radius:2px}
+.lede{color:var(--ink2);max-width:72ch;margin:0 0 26px;font-size:15.5px}
+section{margin-bottom:34px}
+.sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px;border-bottom:1px solid var(--rule2);padding-bottom:8px}
+.sec-head .meta{color:var(--ink3);font-size:13px}
+.drop{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);border:1px dashed var(--rule);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);cursor:pointer}
+.drop.over{border-color:var(--pick);background:var(--pick-bg)}
+.drop .meta{color:var(--ink3);font-size:13px}
+button{font-family:inherit;font-size:14px;padding:8px 16px;border-radius:6px;cursor:pointer;border:1px solid var(--rule2);background:var(--surface);color:var(--ink)}
+button:hover{border-color:var(--ink3);background:var(--sunk)}
+button.solid{background:var(--pick);color:#12121e;border-color:var(--pick);font-weight:600}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.status{margin-top:12px;font-size:14px;color:var(--ink2)}
+.status.ok{color:var(--ok)} .status.err{color:var(--warn)}
+.msg{font-size:14px;color:var(--ink2);margin:10px 0 0}
+.msg.ok{color:var(--ok)} .msg.err{color:var(--warn)}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:16px;align-items:start}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+#csMeta{font-size:14px;color:var(--ink2);margin-bottom:12px}
+#csFigures img{max-width:100%;border-radius:6px;background:#fff}
+.tblwrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);margin-top:10px}
+table.cnt{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mono)}
+table.cnt caption{caption-side:top;text-align:start;padding:10px 12px;font-family:'Assistant',sans-serif;font-size:13.5px;color:var(--ink2)}
+table.cnt th,table.cnt td{padding:4px 7px;text-align:center;border-bottom:1px solid var(--rule2);white-space:nowrap}
+table.cnt th{font-family:'Assistant',sans-serif;font-weight:600;color:var(--ink2);background:var(--sunk)}
+table.cnt th.mv{font-weight:500;font-size:11.5px;color:var(--ink3)}
+table.cnt td.hr{direction:ltr;color:var(--ink2)}
+table.cnt td.tot{font-weight:600}
+table.cnt tr.hit td{background:rgba(232,163,61,.07)}
+table.cnt tr.max td{background:rgba(232,163,61,.18)}
+table.cnt tr.day td{font-weight:700;border-top:1px solid var(--rule)}
+th.arm-N{color:var(--dir-n)!important}th.arm-S{color:var(--dir-s)!important}th.arm-E{color:var(--dir-e)!important}th.arm-W{color:var(--dir-w)!important}
+.tag{display:inline-block;font-family:'Assistant',sans-serif;font-size:11px;font-weight:600;padding:1px 6px;border-radius:9px;margin:0 2px;border:1px solid}
+.tag.max{color:var(--pick);border-color:var(--pick)}
+.tag.am{color:var(--dir-s);border-color:var(--dir-s)}
+.tag.pm{color:var(--dir-w);border-color:var(--dir-w)}
+.tag.p3{color:var(--dir-n);border-color:var(--dir-n)}
+.tag.all{color:var(--ink2);border-color:var(--ink3)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink2)}
+details.sub{margin-top:10px}
+details.sub summary{cursor:pointer;color:var(--ink2);font-size:14px}
+.warn{margin-top:10px;background:var(--warn-bg);border:1px solid rgba(243,91,91,.35);border-radius:8px;padding:8px 12px;font-size:13px}
+.note{background:var(--pick-bg);border:1px solid rgba(232,163,61,.35);border-radius:8px;padding:10px 12px;font-size:14px;margin-bottom:12px}
+.lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.lane-arm{background:var(--sunk);border:1px solid var(--rule);border-radius:8px;padding:10px 12px}
+.lane-h{font-weight:600;margin-bottom:6px}
+.lane-arm.arm-N .lane-h{color:var(--dir-n)}.lane-arm.arm-S .lane-h{color:var(--dir-s)}.lane-arm.arm-E .lane-h{color:var(--dir-e)}.lane-arm.arm-W .lane-h{color:var(--dir-w)}
+label.lane{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:8px;font-size:13.5px;color:var(--ink2);margin:4px 0}
+label.lane.off{opacity:.45}
+label.lane input{width:100%;font-family:var(--mono);font-size:14px;padding:6px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--bg);color:var(--ink);min-height:36px}
+label.lane input.bad{border-color:var(--warn);background:var(--warn-bg)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+details.tool{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);margin-bottom:12px;box-shadow:var(--shadow)}
+details.tool>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px;min-height:56px}
+details.tool>summary::-webkit-details-marker{display:none}
+details.tool>summary::after{content:'▾';margin-inline-start:auto;color:var(--ink3);transition:transform .2s}
+details.tool[open]>summary::after{transform:rotate(180deg)}
+details.tool>summary .t{font-weight:600;font-size:17px}
+details.tool>summary .d{color:var(--ink3);font-size:13px}
+details.tool[open]>summary{border-bottom:1px solid var(--rule2)}
+.tool-body{padding:0 4px 8px}
+iframe.tool-frame{width:100%;border:0;min-height:600px;display:block;background:var(--bg)}
+.foot{color:var(--ink3);font-size:13px;margin-top:30px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ניתוח ספירת צומת</h1>
+  <p class="lede">כלי אחד לשלושה חישובים מאותה ספירה: נפח נתיב קריטי, אורך תור ואחסנה בנתיבים ונתוני תנועה לתכן מסעה. טוענים את קובץ הספירה פעם אחת, רואים בדיוק אילו נתונים נלקחו ממנו, קובעים את מספר הנתיבים לפי השרטוט, ופותחים את הכלי הדרוש.</p>
+
+  <section>
+    <div class="sec-head"><h2>1 · קובץ הספירה</h2><span class="meta">xlsx / xls — קובץ הספירה של חברת המדידה</span></div>
+    <div class="drop" id="csDrop" role="button" tabindex="0" aria-label="טעינת קובץ ספירה">
+      <button type="button" class="solid" id="csPick">בחירת קובץ ספירה</button>
+      <span class="meta">או גררו את הקובץ לכאן. הקובץ נקרא בדפדפן בלבד.</span>
+      <input type="file" id="csFile" accept=".xlsx,.xls,.xlsm" hidden>
+    </div>
+    <div id="csStatus" class="status" role="status" aria-live="polite">ממתינים לקובץ ספירה. כל הכלים מאופסים עד לטעינה.</div>
+  </section>
+
+  <section id="csData" hidden>
+    <div class="sec-head"><h2>2 · מה נלקח מהקובץ</h2><span class="meta">השרטוט מהקובץ ולוחות 2.1 / 2.2 — כדי לראות שהנתונים נלקחו משם</span></div>
+    <div id="csMeta"></div>
+    <div class="grid2">
+      <div class="card"><h3 style="margin:0 0 8px;font-size:15px">שרטוט / תצלום מהקובץ</h3><div id="csFigures"></div></div>
+      <div id="csTables"></div>
+    </div>
+  </section>
+
+  <section id="csLanesSec" hidden>
+    <div class="sec-head"><h2>3 · מספר הנתיבים</h2><span class="meta">קביעה ידנית — משותף לנפח נתיב קריטי ולאורך התור</span></div>
+    <div class="note">מספר הנתיבים אינו מופיע כמספר בקובץ הספירה. קבעו אותו ידנית לפי השרטוט או תצלום הרחפן שבקובץ האקסל (מוצג למעלה). השדות המסומנים הם תנועות שנספרו.</div>
+    <div id="csLanes"></div>
+    <div class="bar"><button type="button" class="solid" id="csApplyLanes">קביעת הנתיבים</button><span id="csLanesMsg" class="msg" role="status"></span></div>
+  </section>
+
+  <section id="csToolsSec" hidden>
+    <div class="sec-head"><h2>4 · הכלים</h2><span class="meta">פתחו את הכלי הדרוש — הספירה והנתיבים מוזנים אליו</span></div>
+    <details class="tool" data-tool="clv"><summary><span class="t">נפח נתיב קריטי</span><span class="d">שלוש שיטות פאזה · שעת השיא מלוח 2.1</span></summary><div class="tool-body"></div></details>
+    <details class="tool" data-tool="queue"><summary><span class="t">אורך תור ואחסנה בנתיבים</span><span class="d">תכנון מוקדם (שיא בוקר/ערב) · תכנון מפורט (ממוצע 3 שעות)</span></summary><div class="tool-body"></div></details>
+    <details class="tool" data-tool="aadt"><summary><span class="t">נתוני תנועה לתכן מסעה</span><span class="d">AADT · K · D · T מכל שעות הספירה</span></summary><div class="tool-body"></div></details>
+  </section>
+
+  <p class="foot">הקובץ נקרא בדפדפן; החישובים רצים בשירות החישוב של MAHALCO. את מספר הנתיבים ואת התוצאות יש לבדוק מול שרטוט הצומת.</p>
+</div>
+<script src="../js/count-figures.js?v=1"></script>
+<script src="../js/count-parser.js?v=4"></script>
+<script src="../js/tools/count-suite.js?v=1"></script>
+<script src="../js/visits-bar.js?v=2" defer></script>
+</body>
+</html>

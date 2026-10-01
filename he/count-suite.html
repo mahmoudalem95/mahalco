@@ -82,14 +82,33 @@ details.sub{margin-top:10px}
 details.sub summary{cursor:pointer;color:var(--ink2);font-size:14px}
 .warn{margin-top:10px;background:var(--warn-bg);border:1px solid rgba(243,91,91,.35);border-radius:8px;padding:8px 12px;font-size:13px}
 .note{background:var(--pick-bg);border:1px solid rgba(232,163,61,.35);border-radius:8px;padding:10px 12px;font-size:14px;margin-bottom:12px}
-.lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.lane-arm{background:var(--sunk);border:1px solid var(--rule);border-radius:8px;padding:10px 12px}
-.lane-h{font-weight:600;margin-bottom:6px}
-.lane-arm.arm-N .lane-h{color:var(--dir-n)}.lane-arm.arm-S .lane-h{color:var(--dir-s)}.lane-arm.arm-E .lane-h{color:var(--dir-e)}.lane-arm.arm-W .lane-h{color:var(--dir-w)}
-label.lane{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:8px;font-size:13.5px;color:var(--ink2);margin:4px 0}
-label.lane.off{opacity:.45}
-label.lane input{width:100%;font-family:var(--mono);font-size:14px;padding:6px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--bg);color:var(--ink);min-height:36px}
-label.lane input.bad{border-color:var(--warn);background:var(--warn-bg)}
+/* ---- נתוני הצומת: אותו פריסה כמו בכלי נפח נתיב קריטי ---- */
+.cross{direction:ltr;display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr;grid-template-areas:". n ." "w c e" ". s ."}
+.cell-n{grid-area:n}.cell-s{grid-area:s}.cell-e{grid-area:e}.cell-w{grid-area:w}.cell-c{grid-area:c}
+.arm{direction:rtl;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);transition:opacity .2s,border-color .2s}
+.arm.off{background:var(--sunk);border-style:dashed}
+.arm.off .fields,.arm.off .toggles{opacity:.35;pointer-events:none}
+.arm-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.arm-name{font-weight:600;font-size:15px}
+.arm-name i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-left:6px;vertical-align:baseline}
+.fields{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 8px;align-items:center;font-size:13px}
+.fields .lbl{color:var(--ink2)}
+.fields .hd{color:var(--ink3);font-size:11.5px}
+.cross input[type="number"]{width:100%;font-family:var(--mono);font-size:13px;padding:5px 7px;border:1px solid var(--rule2);border-radius:4px;background:var(--sunk);color:var(--ink);min-height:32px}
+.cross input[type="number"]:disabled{opacity:.45;background:var(--bg);cursor:not-allowed}
+.cross input.dashed{border:1px dashed var(--pick)}
+.cross input.bad{border-color:var(--warn);background:var(--warn-bg)}
+.toggles{margin-top:10px;display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--ink2)}
+label.chk{display:flex;align-items:center;gap:6px;cursor:pointer}
+input[type="checkbox"]{accent-color:var(--pick);width:15px;height:15px;cursor:pointer;margin:0;flex:none}
+.cell-c{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px;min-height:220px}
+.cell-c .cap{direction:rtl;font-size:12px;color:var(--ink3);margin-top:6px;text-align:center}
+svg.ph{display:block;background:transparent;border-radius:4px;max-width:100%;height:auto}
+svg.ph .vlab{font-family:var(--mono);font-size:5px;font-weight:600;text-anchor:middle;dominant-baseline:central;pointer-events:none;paint-order:stroke;stroke:rgba(18,18,30,.9);stroke-width:.45px}
+.jhour{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 12px;font-size:14px;color:var(--ink2)}
+.jhour select{font-family:inherit;font-size:14px;padding:6px 10px;border-radius:6px;border:1px solid var(--rule);background:var(--sunk);color:var(--ink);min-height:36px}
+@media (max-width:820px){.cross{grid-template-columns:1fr;grid-template-areas:"c" "n" "s" "e" "w"}.cell-c{min-height:180px}.cross input[type="number"]{font-size:16px;min-height:44px;text-align:center}}
+.tool-warn{margin:12px 14px 0;background:var(--warn-bg);border:1px solid rgba(243,91,91,.35);border-radius:8px;padding:8px 12px;font-size:13.5px}
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
 details.tool{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);margin-bottom:12px;box-shadow:var(--shadow)}
 details.tool>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px;min-height:56px}
@@ -108,7 +127,7 @@ iframe.tool-frame{width:100%;border:0;min-height:600px;display:block;background:
 <body>
 <div class="wrap">
   <h1>ניתוח ספירת צומת</h1>
-  <p class="lede">כלי אחד לשלושה חישובים מאותה ספירה: נפח נתיב קריטי, אורך תור ואחסנה בנתיבים ונתוני תנועה לתכן מסעה. טוענים את קובץ הספירה פעם אחת, רואים בדיוק אילו נתונים נלקחו ממנו, קובעים את מספר הנתיבים לפי השרטוט, ופותחים את הכלי הדרוש.</p>
+  <p class="lede">כלי אחד לשלושה חישובים מאותה ספירה: נפח נתיב קריטי, אורך תור ואחסנה בנתיבים ונתוני תנועה לתכן מסעה. טוענים את קובץ הספירה פעם אחת, רואים בדיוק אילו נתונים נלקחו ממנו, קובעים פעם אחת את הנפחים והנתיבים בנתוני הצומת, ופותחים את הכלי הדרוש.</p>
 
   <section>
     <div class="sec-head"><h2>1 · קובץ הספירה</h2><span class="meta">xlsx / xls — קובץ הספירה של חברת המדידה</span></div>
@@ -130,14 +149,21 @@ iframe.tool-frame{width:100%;border:0;min-height:600px;display:block;background:
   </section>
 
   <section id="csLanesSec" hidden>
-    <div class="sec-head"><h2>3 · מספר הנתיבים</h2><span class="meta">קביעה ידנית — משותף לנפח נתיב קריטי ולאורך התור</span></div>
-    <div class="note">מספר הנתיבים אינו מופיע כמספר בקובץ הספירה. קבעו אותו ידנית לפי השרטוט או תצלום הרחפן שבקובץ האקסל (מוצג למעלה). השדות המסומנים הם תנועות שנספרו.</div>
-    <div id="csLanes"></div>
-    <div class="bar"><button type="button" class="solid" id="csApplyLanes">קביעת הנתיבים</button><span id="csLanesMsg" class="msg" role="status"></span></div>
+    <div class="sec-head"><h2>3 · נתוני הצומת</h2><span class="meta">נפחים ונתיבים — קלט אחד לנפח נתיב קריטי ולאורך התור</span></div>
+    <div class="note">הנפחים נלקחו מלוח 2.1 בשעה שנבחרה. מספר הנתיבים אינו מופיע בקובץ הספירה: קבעו אותו כאן לפי השרטוט או תצלום הרחפן (למעלה). שדות באדום — תנועות שנספרו וחסר להן מספר נתיבים. כל שינוי כאן מועבר מיד לכלים הפתוחים.</div>
+    <div class="jhour"><label>שעת הנפחים <select id="csHour"></select></label><span id="csHourNote"></span></div>
+    <div class="cross" id="csCross">
+      <div class="arm cell-n" data-arm="N"></div>
+      <div class="arm cell-w" data-arm="W"></div>
+      <div class="cell-c"><div id="csSchematic"></div><div class="cap" id="csCap"></div></div>
+      <div class="arm cell-e" data-arm="E"></div>
+      <div class="arm cell-s" data-arm="S"></div>
+    </div>
+    <p id="csLanesMsg" class="msg" role="status"></p>
   </section>
 
   <section id="csToolsSec" hidden>
-    <div class="sec-head"><h2>4 · הכלים</h2><span class="meta">פתחו את הכלי הדרוש — הספירה והנתיבים מוזנים אליו</span></div>
+    <div class="sec-head"><h2>4 · הכלים</h2><span class="meta">פתחו את הכלי הדרוש — נתוני הצומת מסעיף 3 מוזנים אליו</span></div>
     <details class="tool" data-tool="clv"><summary><span class="t">נפח נתיב קריטי</span><span class="d">שלוש שיטות פאזה · שעת השיא מלוח 2.1</span></summary><div class="tool-body"></div></details>
     <details class="tool" data-tool="queue"><summary><span class="t">אורך תור ואחסנה בנתיבים</span><span class="d">תכנון מוקדם (שיא בוקר/ערב) · תכנון מפורט (ממוצע 3 שעות)</span></summary><div class="tool-body"></div></details>
     <details class="tool" data-tool="aadt"><summary><span class="t">נתוני תנועה לתכן מסעה</span><span class="d">AADT · K · D · T מכל שעות הספירה</span></summary><div class="tool-body"></div></details>
@@ -147,7 +173,7 @@ iframe.tool-frame{width:100%;border:0;min-height:600px;display:block;background:
 </div>
 <script src="../js/count-figures.js?v=1"></script>
 <script src="../js/count-parser.js?v=4"></script>
-<script src="../js/tools/count-suite.js?v=1"></script>
+<script src="../js/tools/count-suite.js?v=2"></script>
 <script src="../js/visits-bar.js?v=2" defer></script>
 </body>
 </html>

@@ -1,276 +1,362 @@
 <!DOCTYPE html>
-
-<html dir="rtl" lang="he">
+<html lang="he" dir="rtl">
 <head>
 <script src="../js/ga.js" async></script>
 <script src="../js/clarity.js" async></script>
 
   <link rel="canonical" href="https://mahmoudalem95.github.io/mahalco/he/temporary-section.html">
-<meta charset="utf-8"/>
+<meta charset="utf-8">
 <meta name="mahalco-origin" content="MahAlCo | https://mahmoudalem95.github.io/mahalco/he/temporary-section.html | all rights reserved">
 <script src="../js/geo-he.js?v=1" data-en="../en/index.html"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mahalco-calc-api" content="https://mahalco-calc.onrender.com">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://mahmoudalem95.github.io https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com https://mahalco-cad.onrender.com https://junction-los-api.onrender.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://mahmoudalem95.github.io https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://mahalco-calc.onrender.com https://mahalco-cad.onrender.com https://mahalco-dwg.onrender.com https://junction-los-api.onrender.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="yes" name="mobile-web-app-capable"/>
-<meta content="#EDEFF1" name="theme-color"/>
-<title>MAHALCO — חתכים זמניים עירוניים ובין־עירוניים</title>
+<meta name="description" content="חתך זמני לאתרי עבודה בדרך עירונית, בין-עירונית ומהירה – בניית החתך, סגירת נתיבים, רצועת התקנים ומעבר הולכי רגל, בדיקות חיות מול הנחיות משרד התחבורה 2020, גיליון A0 וייצוא DWG.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>MAHALCO — חתך זמני · הסדרי תנועה באתרי עבודה</title>
 <style>
 :root{
-  --bg:#EDEFF1; --card:#FFFFFF; --fill:#EEF0F2; --fill-2:#E1E4E8; --ink:#1D2126; --ink-2:#5F6770; --ink-3:#8C939B;
-  --line:rgba(29,33,38,.12); --work:#E8710A; --work-ink:#9A4A00; --work-soft:rgba(232,113,10,.12);
-  --ok:#2E8B57; --ok-soft:rgba(46,139,87,.12); --bad:#C8372D; --bad-soft:rgba(200,55,45,.10); --warn:#A86B0C; --warn-soft:rgba(232,162,31,.16);
-  --focus:#1F5FA8; --r:12px; --insp:392px; --paper:#FFFFFF;
+  --bg:#F2F2F7; --card:#FFFFFF; --fill:#EFEFF4; --fill-2:#E4E4EA; --label:#1C1C1E; --label-2:#6C6C70; --label-3:#9A9AA0;
+  --sep:rgba(60,60,67,.16); --tint:#1F5FA8; --tint-soft:rgba(31,95,168,.12); --hi:#E9A21F; --hi-soft:rgba(233,162,31,.18);
+  --red:#D93A2B; --red-soft:rgba(217,58,43,.10); --amber:#B97A08; --amber-soft:rgba(233,162,31,.14); --green:#2E9D55; --green-soft:rgba(46,157,85,.12);
+  --paper:#fbfaf6; --bar:rgba(242,242,247,.82); --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06);
+  --r-l:14px; --r-m:10px; --r-s:8px; --insp:420px; --ease:cubic-bezier(.2,.8,.2,1);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){ --bg:#0F1113; --card:#1A1D21; --fill:#24282D; --fill-2:#30353B; --ink:#EEF0F2; --ink-2:#AEB5BC; --ink-3:#7D848B;
-    --line:rgba(255,255,255,.12); --work:#FF8A2B; --work-ink:#FFB070; --work-soft:rgba(255,138,43,.16);
-    --ok:#4CC787; --ok-soft:rgba(76,199,135,.14); --bad:#FF6B5E; --bad-soft:rgba(255,107,94,.14); --warn:#F2B53A; --warn-soft:rgba(242,181,58,.16); --focus:#6AA8F2; --paper:#F4F5F6 }
-}
-:root[data-theme="dark"]{ --bg:#0F1113; --card:#1A1D21; --fill:#24282D; --fill-2:#30353B; --ink:#EEF0F2; --ink-2:#AEB5BC; --ink-3:#7D848B;
-  --line:rgba(255,255,255,.12); --work:#FF8A2B; --work-ink:#FFB070; --work-soft:rgba(255,138,43,.16);
-  --ok:#4CC787; --ok-soft:rgba(76,199,135,.14); --bad:#FF6B5E; --bad-soft:rgba(255,107,94,.14); --warn:#F2B53A; --warn-soft:rgba(242,181,58,.16); --focus:#6AA8F2; --paper:#F4F5F6 }
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Heebo,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
-button,input,select{font:inherit;color:inherit}
-button{cursor:pointer}
-:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
-@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
-
-.nav{position:sticky;top:0;z-index:30;background:var(--card);border-bottom:1px solid var(--line)}
-.tape{height:6px;background:repeating-linear-gradient(-45deg,var(--work) 0 12px,#fff 12px 24px)}
-.nav-in{display:flex;align-items:center;gap:14px;min-height:58px;padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));max-width:1560px;margin:0 auto}
-.brand{font-weight:800;letter-spacing:.02em;font-size:15px;color:var(--ink-2)}
-.nav h1{margin:0;font-size:18px;font-weight:700;line-height:1.2}
-.nav .sp{flex:1}
-.pill{white-space:nowrap;height:32px;padding:0 13px;border-radius:16px;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:7px}
-.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
-.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
-
-.shell{display:grid;grid-template-columns:var(--insp) minmax(0,1fr);gap:18px;max-width:1560px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left));align-items:start}
-.insp{display:flex;flex-direction:column;gap:14px;min-width:0}
-.stage{display:flex;flex-direction:column;gap:14px;min-width:0}
-@media (max-width:1023px){ .shell{grid-template-columns:1fr} .stage{order:-1} }
-@media (max-width:560px){ .brand{display:none} .nav h1{font-size:16px} .hero-h{flex-direction:column;gap:8px} .hero-h h2{font-size:20px} .draw svg{min-width:640px} }
-
-.panel{background:var(--card);border-radius:var(--r);border:1px solid var(--line);overflow:hidden}
-.panel > h2{margin:0;padding:12px 16px 10px;font-size:15px;font-weight:700;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
-.panel > h2 .step{width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--card);font-size:12px;display:inline-grid;place-items:center;flex:none}
-.pb{padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px}
-.row{display:flex;align-items:center;gap:10px;justify-content:space-between;min-height:36px}
-.row > label, .row > .lb{font-size:14px;color:var(--ink);flex:none;max-width:48%}
-.row > label small{display:block;color:var(--ink-3);font-size:12px}
-select{appearance:none;background:var(--fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235F6770' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat left 10px center;border:1px solid transparent;border-radius:9px;min-height:36px;padding:0 12px 0 30px;width:100%;min-width:0}
-.row select{width:auto;flex:1;max-width:62%}
-input[type=number]{width:74px;min-height:34px;border-radius:8px;border:1px solid var(--line);background:var(--fill);padding:0 8px;text-align:center;font-variant-numeric:tabular-nums}
-.u{color:var(--ink-3);font-size:13px}
-.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;gap:2px;flex-wrap:wrap}
-.seg button{border:0;background:none;min-height:32px;padding:0 11px;border-radius:7px;font-size:13.5px;color:var(--ink-2)}
-.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.12)}
-.muted{color:var(--ink-3);font-size:12.5px;margin:0}
-.btn-link{border:0;background:none;color:var(--focus);padding:0;font-size:13px;font-weight:600}
-
-.cells{display:flex;flex-direction:column;gap:2px;max-height:250px;overflow:auto;border-radius:9px;background:var(--fill);padding:4px}
-.crow{display:flex;align-items:center;gap:8px;padding:3px 6px;border-radius:7px;background:var(--card)}
-.crow .cn{flex:1;font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.crow em{font-style:normal;color:var(--ink-3)}
-.crow input{width:64px;min-height:28px}
-.sw{width:12px;height:12px;border-radius:3px;flex:none;display:inline-block;border:1px solid rgba(0,0,0,.15);vertical-align:-1px;margin-inline-end:6px}
-.crow .sw{margin:0}
-
-.cases{display:flex;flex-direction:column;gap:2px;max-height:420px;overflow:auto;padding:4px 8px 10px}
-.cgroup{font-size:12px;color:var(--ink-3);padding:10px 8px 4px;font-weight:600}
-.case{display:flex;align-items:center;gap:10px;border:0;background:none;text-align:right;padding:7px 8px;border-radius:9px;font-size:14px;color:var(--ink)}
-.case:hover{background:var(--fill)}
-.case .cnum{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--ink-3);display:grid;place-items:center;font-size:12.5px;font-weight:700;flex:none;color:var(--ink-2)}
-.case[aria-pressed="true"]{background:var(--work-soft);font-weight:700}
-.case[aria-pressed="true"] .cnum{background:var(--work);border-color:var(--work);color:#fff}
-
-.hero{background:var(--card);border-radius:var(--r);border:1px solid var(--line);overflow:hidden}
-.hero .tape{height:10px}
-.hero-h{display:flex;gap:16px;align-items:flex-start;padding:16px 20px 6px}
-.plate{flex:none;background:var(--work);color:#fff;border-radius:8px;padding:6px 12px;font-weight:800;font-size:15px}
-.hero-h h2{margin:0;font-size:24px;line-height:1.2;font-weight:800;letter-spacing:-.01em}
-.hero-h p{margin:6px 0 0;color:var(--ink-2);max-width:72ch;font-size:14.5px}
-.draw{padding:4px 12px 8px;overflow-x:auto}
-.draw svg{display:block;width:100%;height:auto;min-width:760px;background:var(--paper);border-radius:8px}
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 20px 14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-2)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend .sw{margin:0}
-.mk{display:inline-block;width:26px;height:6px;border-radius:2px;vertical-align:middle;margin-inline-end:6px;border:1px solid #1d2126}
-.mk.orange{background:#f28a00} .mk.white{background:#fff}
-
-.grid2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px}
-@media (max-width:1200px){ .grid2{grid-template-columns:1fr} }
-
-.base-h{display:flex;align-items:center;gap:10px;padding:10px 16px}
-.base-h h3{margin:0;font-size:14.5px;font-weight:700;flex:1}
-.base-h h3 small{color:var(--ink-3);font-weight:400;margin-inline-start:6px}
-#baseCard .draw{display:none}
-#baseCard.open .draw{display:block}
-
-.cg{padding:4px 16px 10px}
-.cg h4{margin:10px 0 4px;font-size:12.5px;color:var(--ink-3);font-weight:600}
-.ck{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
-.ck:first-of-type{border-top:0}
-.ci{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:1px}
-.ck.ok .ci{background:var(--ok-soft);color:var(--ok)} .ck.bad .ci{background:var(--bad);color:#fff} .ck.warn .ci{background:var(--warn-soft);color:var(--warn)}
-.ct b{display:block;font-size:14px;font-weight:600}
-.ct small{display:block;color:var(--ink-2);font-size:12.5px;line-height:1.45}
-.cv{text-align:left;white-space:nowrap;font-variant-numeric:tabular-nums}
-.cv b{display:block;font-size:15px}
-.ck.bad .cv b{color:var(--bad)}
-.cv small{color:var(--ink-3);font-size:12px}
-
-.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
-.facts div{background:var(--card);padding:10px 16px}
-.facts dt{font-size:12.5px;color:var(--ink-3)}
-.facts dd{margin:2px 0 0;font-size:15.5px;font-weight:700}
-.why{padding:8px 16px 0;margin:0;font-size:12.5px;color:var(--ink-2)}
-.notes{margin:8px 0 14px;padding:0 34px 0 16px;font-size:13.5px;color:var(--ink-2)}
-.notes li{margin:3px 0}
-table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-th,td{padding:6px 10px;border-top:1px solid var(--line);text-align:right}
-th{font-size:12px;color:var(--ink-3);font-weight:600;border-top:0}
-td:nth-child(3),td:nth-child(4),th:nth-child(3),th:nth-child(4){text-align:left}
-tr.tmp td:nth-child(2){font-weight:600}
-td.nar{color:var(--warn);font-weight:700} td.fail{color:var(--bad);font-weight:800}
-tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
-.tw{max-height:360px;overflow:auto;padding:0 6px 8px}
-.src{padding:12px 16px 16px;font-size:12px;color:var(--ink-3);line-height:1.6}
-
-/* === Reference book diagrams (scoped to .book-view) === */
-.book-view{background:#fff;color:#111;font-family:"Arial","Segoe UI",sans-serif;line-height:1.45;border-radius:var(--r-sm);overflow:hidden;direction:rtl}
-.book-view .card{background:#fff;border:1.5px solid #222;margin:0;overflow:hidden}
-.book-view .doc-header{display:none!important}
-.book-view .card-header{background:#fff;border-bottom:2px solid #111;padding:12px 18px}
-.book-view .card-header h2{margin:0 0 8px;color:#111;font-size:17px;font-weight:800;line-height:1.3}
-.book-view .meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12.5px;color:#222}
-.book-view .meta b{font-weight:800}
-.book-view .meta .badge{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#111;border:2px solid #111;border-radius:50%;width:26px;height:26px;font-weight:800;font-size:12px;vertical-align:middle}
-.book-view .svg-wrap{position:relative;padding:10px;background:#fff;border-bottom:1px solid #777;overflow:auto;-webkit-overflow-scrolling:touch}
-.book-view .svg-wrap svg{display:block;margin:0 auto;width:100%;height:auto;min-width:760px}
-.book-view .notes{margin:0 18px 14px;background:#fff;border:1px solid #555;border-right:5px solid #111;padding:10px 13px;font-size:12.5px;line-height:1.85;color:#222}
-.book-view .notes b{color:#111;display:block;margin-bottom:4px}
-.book-view .notes ol{margin:0;padding-inline-start:20px}
-.book-view .legend{display:flex;flex-wrap:wrap;gap:9px 20px;padding:10px 18px 12px;font-size:12px;border-top:1px solid #777;background:#fafafa;color:#222}
-.book-view .legend-item{display:flex;align-items:center;gap:7px}
-.book-view .swatch{width:24px;height:14px;border:1px solid #333;display:inline-block}
-
-/* ==================== טאבלט / iPad וטלפון ==================== */
+:root[data-theme="dark"]{ --bg:#000; --card:#1C1C1E; --fill:#2C2C2E; --fill-2:#3A3A3C; --label:#F2F2F7; --label-2:#AEAEB2; --label-3:#7C7C80;
+    --sep:rgba(84,84,88,.55); --tint:#5AA0F2; --tint-soft:rgba(90,160,242,.16); --bar:rgba(18,18,20,.8);
+    --red:#FF6B5E; --red-soft:rgba(255,107,94,.14); --amber:#F2B53A; --green:#4CD27B; --shadow:none }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent}
-.nav{padding-top:env(safe-area-inset-top)}
-.nav{background:color-mix(in srgb,var(--card) 84%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px)}
-.nav .back{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 10px 0 4px;border-radius:20px;color:var(--focus);font-weight:600;font-size:15px;text-decoration:none;flex:none}
-.nav .back::before{content:"";width:9px;height:9px;border-top:2.2px solid currentColor;border-right:2.2px solid currentColor;transform:rotate(45deg);margin-inline-end:2px}
-button,select,input,.case{touch-action:manipulation}
+body{margin:0;background:var(--bg);color:var(--label);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Heebo",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--tint);outline-offset:2px;border-radius:6px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-@media (min-width:1024px) and (max-width:1366px){
-  :root{--insp:344px}
-  .shell{gap:14px}
-  .hero-h h2{font-size:21px}
-}
+.nav{position:sticky;top:0;z-index:40;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--sep);padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+.nav-in{display:flex;align-items:center;gap:10px;min-height:56px}
+.nav h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.nav h1 small{display:block;font-size:12.5px;font-weight:500;color:var(--label-2);letter-spacing:0}
+.nav .sp{flex:1}
+.nbtn{min-width:44px;height:40px;padding:0 12px;border:0;border-radius:20px;background:var(--fill);color:var(--tint);font-size:15px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.nbtn:disabled{color:var(--label-3);cursor:default}
+.nbtn.primary{background:var(--tint);color:#fff}
+.nbtn svg{width:19px;height:19px}
+.pill{white-space:nowrap;flex:none;height:32px;padding:0 12px;border:0;border-radius:16px;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:background .3s,color .3s}
+.pill.ok{background:var(--green-soft);color:var(--green)}
+.pill.bad{background:var(--red-soft);color:var(--red)}
+.pill.warn{background:var(--amber-soft);color:var(--amber)}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
 
+.shell{display:grid;grid-template-columns:minmax(0,1fr) var(--insp);gap:18px;padding:16px max(16px,env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  max-width:1500px;margin:0 auto;align-items:start}
+.stage{grid-column:1;grid-row:1;position:sticky;top:74px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.insp{grid-column:2;grid-row:1;min-width:0}
 @media (max-width:1023px){
-  .shell{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
-  .stage{display:contents}
-  .shell > *,.stage > *{min-width:0;max-width:100%}
-  .stage > .hero{order:0;position:sticky;top:calc(64px + env(safe-area-inset-top));z-index:20;box-shadow:0 10px 26px rgba(0,0,0,.14)}
-  .insp{order:1;scroll-margin-top:calc(var(--heroH,300px) + 76px)}
-  #bookPanel{order:2} #baseCard{order:3} .stage > .grid2{order:4} .stage > .src{order:5}
-  #bookPanel,#baseCard,.stage > .grid2{scroll-margin-top:calc(var(--heroH,300px) + 76px)}
-  .hero .tape{height:6px}
-  .hero-h{padding:10px 14px 4px;gap:10px;align-items:center}
-  .hero-h h2{font-size:17px}
-  .hero-h p{display:none}
-  .plate{font-size:13px;padding:4px 9px}
-  .draw{max-height:32vh;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:2px 10px 6px}
-  .hero .legend{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:7px 14px 9px;white-space:nowrap;gap:6px 14px}
-  .hero .legend::-webkit-scrollbar{display:none}
-  .insp{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
-  .cases{max-height:300px}
-  .row{flex-wrap:wrap;gap:6px 10px;min-height:44px}
-  .row > label,.row > .lb{max-width:none;flex:1 1 100%}
-  .row select{max-width:none;flex:1 1 100%}
-  .row > span:has(input){flex:1 1 100%;display:flex;align-items:center;gap:8px}
-  .row > span:has(input) input{flex:1}
-  .row .seg{flex:1 1 100%;display:flex}
-  .row .seg button{flex:1 1 auto}
-
-  .shell{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
-  .insp{display:block}
-  .insp > .panel + .panel{margin-top:0}
-  .ttabs{display:flex;order:1;position:relative;isolation:isolate;background:var(--fill);border-radius:11px;padding:2px;gap:2px;
-    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .ttabs::-webkit-scrollbar{display:none}
-  .ttabs button{flex:1 0 auto;border:0;background:none;min-height:40px;padding:0 14px;border-radius:9px;font-size:15px;font-weight:500;color:var(--ink);white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-  .ttabs button[aria-selected="true"]{background:var(--card);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  :root[data-theme="dark"] .ttabs button[aria-selected="true"]{background:#3A3F46}
-  .ttabs .jn{font-size:11px;font-weight:800;min-width:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;line-height:17px}
-  .ttabs .jn:empty{display:none}
-  [data-pane]:not(.pane-on){display:none!important}
-  [data-pane].pane-on{animation:panein .28s cubic-bezier(.2,.8,.2,1)}
-  .insp,#bookPanel,#baseCard,.stage > .grid2{scroll-margin-top:0}
-  .stage > .grid2{grid-template-columns:1fr}
-  .cbar{display:flex;align-items:center;gap:6px;padding:0 12px 6px}
-  .cbar .zoom{margin-inline-start:auto;display:flex;align-items:center;gap:4px;direction:ltr}
-  .cbar .zoom button{width:40px;height:34px;border:0;border-radius:9px;background:var(--fill);color:var(--focus);font-size:19px;font-weight:600}
-  .cbar output{min-width:52px;text-align:center;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
-  .cbar .fit{border:0;background:var(--fill);color:var(--ink);border-radius:9px;min-height:34px;padding:0 12px;font-size:13.5px;font-weight:600}
-  .draw svg,.book-view .svg-wrap svg{min-width:0!important;width:calc(100% * var(--tz,1))!important;max-width:none}
-}
-@media (max-width:760px){
-  .insp{grid-template-columns:1fr}
+  .shell{grid-template-columns:1fr;gap:12px}
+  .stage{grid-column:1;grid-row:1;top:62px;z-index:20}
+  .insp{grid-column:1;grid-row:2}
 }
 
-@media (max-width:600px){
-  .stage > .hero{position:relative;top:auto;box-shadow:none}
-  .insp,#bookPanel,#baseCard,.stage > .grid2{scroll-margin-top:72px}
-  .nav-in{gap:8px;min-height:54px}
-  .nav h1{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-  .nav .back span{display:none}
-  .pill{height:30px;padding:0 10px;font-size:12.5px}
-  .hero-h p{display:block;font-size:13.5px}
-  .draw{max-height:46vh}
-  .ttabs button{padding:0 12px;font-size:14.5px}
-  .pb{padding:10px 14px 14px}
-  .facts{grid-template-columns:1fr}
-  .notes{padding:0 28px 0 12px}
-  .legend{font-size:12px}
-}
+.canvas{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);overflow:hidden}
+.canvas-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:.5px solid var(--sep)}
+.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;position:relative;isolation:isolate}
+.seg button{position:relative;z-index:1;border:0;background:none;min-height:32px;padding:0 13px;border-radius:7px;font-size:14px;font-weight:500;color:var(--label);white-space:nowrap}
+.seg .knob{position:absolute;z-index:0;top:2px;bottom:2px;border-radius:7px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);transition:left .32s var(--ease),width .32s var(--ease)}
+:root[data-theme="dark"] .seg .knob{background:#636366}
+.seg button[aria-pressed="true"]{font-weight:600}
+.seg.full{display:flex}
+.seg.full button{flex:1;padding:0 6px}
+.zoom{margin-inline-start:auto;display:flex;gap:4px}
+.zoom button{width:36px;height:32px;border:0;border-radius:8px;background:var(--fill);color:var(--tint);font-size:17px;font-weight:600}
+.zoom output{min-width:48px;text-align:center;font-size:13px;color:var(--label-2);align-self:center;font-variant-numeric:tabular-nums}
+.sheetwrap{background:var(--paper);overflow:auto;touch-action:pan-x pan-y;max-height:58vh;-webkit-overflow-scrolling:touch}
+@media (max-width:1023px){ .sheetwrap{max-height:34vh} }
+#drawing{padding:8px;min-width:100%;transition:width .25s var(--ease)}
+#drawing svg{direction:ltr;display:block;width:100%;height:auto;background:var(--paper)}
+#drawing .selrect{fill:var(--hi-soft);stroke:var(--hi);stroke-width:.6;transition:x .25s var(--ease),width .25s var(--ease)}
 
-@media (hover:none) and (pointer:coarse), (max-width:1023px){
-  select{min-height:44px;font-size:16px}
-  input[type=number]{min-height:44px;font-size:16px;width:84px;border-radius:10px}
-  .crow input{min-height:38px;width:72px}
-  .seg{border-radius:11px}
-  .seg button{min-height:40px;padding:0 13px;font-size:14.5px;border-radius:9px}
-  .case{min-height:46px;font-size:15px}
-  .btn-link{min-height:40px;font-size:14.5px}
-  .crow{padding:5px 8px;min-height:44px}
-  .crow .cn{font-size:14px}
-  .case:hover{background:none}
-  .case:active{background:var(--fill)}
-}
+.ribbon-wrap{padding:10px 12px 12px;border-top:.5px solid var(--sep)}
+.ribbon-head{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;font-size:13px;color:var(--label-2)}
+.ribbon-head b{color:var(--label);font-size:15px;font-variant-numeric:tabular-nums}
+.ribbon-head .gap{margin-inline-start:auto;font-weight:600}
+.ribbon-head .gap.bad{color:var(--red)} .ribbon-head .gap.ok{color:var(--green)}
+.ribbon{direction:ltr;display:flex;height:46px;border-radius:9px;overflow:hidden;background:var(--fill);position:relative;user-select:none;-webkit-user-select:none;touch-action:none}
+.rb{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:rgba(0,0,0,.72);
+  transition:flex-grow .28s var(--ease),box-shadow .2s;overflow:hidden;white-space:nowrap;cursor:pointer;border-right:1px solid rgba(255,255,255,.7)}
+.rb:last-child{border-right:0}
+.rb span{pointer-events:none;padding:0 2px;text-overflow:clip;overflow:hidden}
+.rb.sel{box-shadow:inset 0 0 0 3px var(--hi)}
+.rb.bad::after,.rb.warn::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.rb.warn::after{background:var(--hi)}
+.ribbon.dragging .rb{transition:none}
+.grip{position:absolute;top:0;bottom:0;width:26px;margin-left:-13px;z-index:2;cursor:ew-resize;display:flex;align-items:center;justify-content:center}
+.grip::before{content:"";width:4px;height:22px;border-radius:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.22),0 1px 4px rgba(0,0,0,.25);transition:transform .15s,height .15s}
+.grip.on::before{height:34px;transform:scaleX(1.4);background:var(--hi)}
+.ribbon-hint{font-size:12px;color:var(--label-3);margin-top:6px}
+.tip{position:fixed;z-index:80;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;font-size:13px;font-weight:600;padding:6px 10px;border-radius:9px;transform:translate(-50%,-120%);direction:ltr;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.readouts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:1023px){ .readouts{grid-template-columns:1fr} }
+.box{background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:14px 16px}
+.box h3{margin:0 0 10px;font-size:15px;font-weight:700}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--fill);border-radius:var(--r-m);padding:9px 11px}
+.stat span{display:block;font-size:12px;color:var(--label-2);line-height:1.25}
+.stat b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap}
+.stat b small{font-size:12px;font-weight:500;color:var(--label-2)}
+.stat.pulse{animation:pulse .5s var(--ease)}
+@keyframes pulse{40%{background:var(--tint-soft)}}
+.chk{position:relative;padding:9px 12px 9px 12px;padding-inline-start:34px;border-radius:var(--r-m);background:var(--green-soft);margin-bottom:6px;font-size:14px;line-height:1.4}
+.chk::before{content:"✓";position:absolute;inset-inline-start:10px;top:9px;width:17px;height:17px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.chk.warn{background:var(--amber-soft)} .chk.warn::before{content:"!";background:var(--hi)}
+.chk.bad{background:var(--red-soft)} .chk.bad::before{content:"!";background:var(--red)}
+.chk b{display:block;font-size:12.5px;color:var(--label-2)}
+.chk.new{animation:chkin .4s var(--ease)}
+@keyframes chkin{from{opacity:0;transform:translateY(-4px)}}
+.sheetlist{display:flex;flex-direction:column;gap:6px}
+.sheetlist div{display:flex;gap:8px;align-items:center;background:var(--fill);border-radius:var(--r-m);padding:6px 6px 6px 12px;padding-inline-start:12px;font-size:14px}
+.sheetlist div span{flex:1}
+.sheetlist button{border:0;min-height:36px;padding:0 12px;border-radius:9px;background:var(--card);color:var(--tint);font-weight:600;font-size:14px}
+.sheetlist button[data-a="rm"]{color:var(--red)}
+.hint{font-size:13px;color:var(--label-2);margin:6px 0 0;line-height:1.45}
+
+.tabs{position:sticky;top:74px;z-index:15;background:var(--bg);padding:0 0 10px}
+@media (max-width:1023px){ .tabs{position:static} }
+.pane{display:none}
+.pane.on{display:block;animation:panein .28s var(--ease)}
 @keyframes panein{from{opacity:0;transform:translateY(6px)}}
-.cbar,.ttabs{display:none}
-@media (max-width:1023px){.cbar{display:flex}.ttabs{display:flex}}
-@media print{.ttabs,.cbar,.nav{display:none!important} [data-pane]{display:block!important} .stage > .hero{position:static}}
+.gh{margin:18px 16px 6px;font-size:13px;color:var(--label-2)}
+.gh:first-child{margin-top:4px}
+.gf{margin:6px 16px 0;font-size:12.5px;color:var(--label-2);line-height:1.45}
+.group{background:var(--card);border-radius:var(--r-l);overflow:hidden;box-shadow:var(--shadow)}
+.li{display:flex;align-items:center;gap:12px;min-height:50px;padding:6px 16px;position:relative}
+.li+.li::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:0;border-top:.5px solid var(--sep)}
+.li>label,.li>.lb{flex:1;min-width:0;font-size:16px}
+.li input[type=text],.li input:not([type]){flex:1.2;min-width:0;border:0;background:none;text-align:left;direction:rtl;text-align:end;color:var(--label-2);font-size:16px;padding:8px 0}
+.li input:not([type]):focus{color:var(--label);outline:none}
+.li .sel-wrap{position:relative}
+select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;color:var(--label-2);font-size:16px;padding:8px 18px 8px 0;text-align:end;max-width:100%}
+.chev{pointer-events:none;position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--label-3);font-size:13px}
+
+.stp{display:inline-flex;align-items:center;background:var(--fill);border-radius:9px;height:34px;direction:ltr;flex:none}
+.stp button{width:38px;height:34px;border:0;background:none;color:var(--label);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;border-radius:9px}
+.stp button:active{background:var(--fill-2)}
+.stp input{width:62px;height:34px;border:0;border-left:.5px solid var(--sep);border-right:.5px solid var(--sep);background:none;text-align:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;padding:0;-moz-appearance:textfield}
+.stp input::-webkit-outer-spin-button,.stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stp input:disabled{color:var(--label-3)}
+.stp.off{opacity:.45;pointer-events:none}
+.unit{font-size:13px;color:var(--label-2);margin-inline-start:-6px}
+
+.sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--fill-2);position:relative;flex:none;cursor:pointer;transition:background .25s;margin:0}
+.sw::after{content:"";position:absolute;top:2px;right:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16);transition:transform .25s var(--ease)}
+.sw:checked{background:var(--green)}
+.sw:checked::after{transform:translateX(-20px)}
+
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:10px}
+.pcard{border:0;text-align:start;background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow);padding:10px;display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s,box-shadow .2s}
+.pcard:active{transform:scale(.97)}
+.pcard[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--tint),var(--shadow)}
+.pcard .thumb{direction:ltr;display:flex;height:30px;border-radius:6px;overflow:hidden;background:var(--fill)}
+.pcard .thumb i{display:block;height:100%}
+.pcard b{font-size:14px;font-weight:600;line-height:1.3}
+.pcard small{font-size:12px;color:var(--label-2)}
+.pcard .ck{position:absolute;top:8px;inset-inline-start:8px;width:20px;height:20px;border-radius:50%;background:var(--tint);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center}
+.pcard[aria-pressed="true"] .ck{display:flex}
+#presetSrc{margin:10px 4px 0}
+#presetFilter{overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+#presetFilter::-webkit-scrollbar{display:none}
+#presetFilter button{flex:0 0 auto;padding:0 12px}
+
+.cells{display:flex;flex-direction:column}
+.cell{position:relative;padding:10px 12px 10px 12px;padding-inline-start:16px;background:var(--card);transition:background .25s}
+.cell+.cell{border-top:.5px solid var(--sep)}
+.cell::after{content:"";position:absolute;top:8px;bottom:8px;inset-inline-start:0;width:4px;border-radius:0 3px 3px 0;background:transparent;transition:background .25s}
+[dir=rtl] .cell::after{border-radius:3px 0 0 3px}
+.cell.bad::after{background:var(--red)} .cell.warn::after{background:var(--hi)}
+.cell.sel{background:var(--hi-soft)}
+.cell.flash{animation:flash .9s var(--ease)}
+@keyframes flash{0%{background:var(--tint-soft)}100%{background:var(--card)}}
+.cell.drag{z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.22);border-radius:12px;transform:scale(1.02);background:var(--card)}
+.c-top{display:flex;align-items:center;gap:10px}
+.c-sw{width:26px;height:26px;border-radius:7px;flex:none;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.15)}
+.c-name{flex:1;min-width:0;position:relative}
+.c-name select{width:100%;font-weight:600;color:var(--label);padding:6px 18px 6px 0;text-align:start}
+.c-name .chev{left:0}
+.c-more,.c-handle{width:36px;height:36px;border:0;border-radius:18px;background:var(--fill);color:var(--label-2);font-size:18px;display:flex;align-items:center;justify-content:center;flex:none}
+.c-handle{background:none;cursor:grab;touch-action:none;font-size:20px;color:var(--label-3)}
+.c-bot{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;padding-inline-start:36px}
+.c-bot .seg button{min-height:30px;padding:0 11px;font-size:16px}
+.c-msg{margin:7px 0 0;padding-inline-start:36px;font-size:12.5px;line-height:1.4;color:var(--red);display:none}
+.cell.bad .c-msg,.cell.warn .c-msg{display:block}
+.cell.warn .c-msg{color:var(--amber)}
+.c-idx{font-size:12px;color:var(--label-3);font-variant-numeric:tabular-nums;min-width:18px;text-align:center}
+.empty{padding:26px 16px;text-align:center;color:var(--label-2);font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.tile{border:0;background:var(--card);border-radius:12px;box-shadow:var(--shadow);min-height:52px;padding:8px 10px;display:flex;align-items:center;gap:8px;text-align:start;font-size:13.5px;font-weight:500;line-height:1.2;transition:transform .12s}
+.tile:active{transform:scale(.95)}
+.tile i{width:16px;height:28px;border-radius:4px;flex:none}
+.rowbtns{display:flex;gap:8px;margin-top:10px}
+.rowbtns button{flex:1;min-height:44px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--shadow);color:var(--tint);font-weight:600;font-size:15px}
+.rowbtns button.danger{color:var(--red)}
+
+.edgecard .li.sub{transition:opacity .2s}
+.edgecard .li.sub[hidden]{display:none}
+
+.scrim{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:91;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));width:min(420px,calc(100% - 24px));transform:translate(-50%,120%);transition:transform .35s var(--ease)}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .grp{background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.sheet .ttl{padding:12px 16px;text-align:center;font-size:13px;color:var(--label-2);border-bottom:.5px solid var(--sep)}
+.sheet button,.sheet label.act{display:flex;width:100%;min-height:56px;align-items:center;justify-content:center;border:0;background:none;font-size:18px;color:var(--tint);cursor:pointer}
+.sheet .grp>*+*{border-top:.5px solid var(--sep)}
+.sheet button.danger{color:var(--red)}
+.sheet button.cancel{background:var(--card);border-radius:14px;font-weight:600}
+.sheet button:disabled{color:var(--label-3)}
+
+.toast{position:fixed;z-index:95;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;background:rgba(28,28,30,.92);color:#fff;border-radius:22px;padding:10px 8px 10px 18px;padding-inline-start:18px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;transition:transform .35s var(--ease),opacity .25s;max-width:calc(100% - 32px)}
+.toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.toast button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:14px;min-height:30px;padding:0 12px;font-weight:600;font-size:14px}
+.toast button[hidden]{display:none}
 
 /* ===== DXF export kit ===== */
-.btn-primary{width:100%;min-height:42px;border:0;border-radius:11px;background:var(--work);color:#fff;font-size:15px;font-weight:700;cursor:pointer}
-.btn-primary:active{filter:brightness(.93)}
+.btn-primary{width:100%;min-height:44px;border:0;border-radius:12px;background:var(--tint);color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:10px}
+.btn-primary:active{filter:brightness(.92)}
 .btn-primary[disabled]{opacity:.5;cursor:default}
-#dxfInfo{font-size:12px;line-height:1.55;margin:0}
-#dxfPanel input[type=checkbox]{width:20px;height:20px;accent-color:var(--work);flex:none;margin:0}
-@media (max-width:1023px){ #dxfPanel{order:6} }
+#dxfInfo{font-size:12.5px;color:var(--label-2);line-height:1.5;margin:10px 0 0}
+
+@media (max-width:600px){
+  .stage{position:static}
+  .nav h1 small{display:none}
+  .nav h1{white-space:nowrap;font-size:17px}
+  .nav-in{gap:6px}
+  .nbtn{min-width:40px;padding:0 9px}
+  .nbtn .t{display:none}
+  .grid3{grid-template-columns:1fr 1fr}
+  .stp input{width:54px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{.nav,.insp,.canvas-bar,.ribbon-wrap,.guide-ov{display:none}}
+
+.guide-ov{position:fixed;inset:0;z-index:200;background:var(--bg);opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .28s var(--ease),transform .28s var(--ease)}
+.guide-ov.on{opacity:1;pointer-events:auto;transform:none}
+.guide-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;min-height:56px;padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));
+  background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--sep)}
+.guide-bar b{font-size:16px;font-weight:700}
+.guide-bar small{display:block;font-size:12px;font-weight:500;color:var(--label-2)}
+.guide-ov iframe{display:block;width:100%;height:calc(100% - 56px - env(safe-area-inset-top));border:0;background:var(--bg)}
+@media (max-width:600px){.guide-bar b{font-size:15px}.guide-bar small{display:none}}
+
+/* ===== חתך זמני – תוספות על שפת העיצוב של כלי החתך הסופי ===== */
+:root{ --work:#E8710A; --work-soft:rgba(232,113,10,.13); --work-ink:#9A4A00 }
+:root[data-theme="dark"]{ --work:#FF8A2B; --work-soft:rgba(255,138,43,.16); --work-ink:#FFB070 }
+.tape{height:4px;background:repeating-linear-gradient(-45deg,var(--work) 0 10px,#fff 10px 20px);
+  margin:0 calc(-1 * max(16px,env(safe-area-inset-right))) 0 calc(-1 * max(16px,env(safe-area-inset-left)))}
+.stage{top:78px}
+.tabs{top:60px;padding-top:18px}
+@media (max-width:1023px){ .stage{top:66px} }
+
+.case-head{display:flex;align-items:center;gap:10px;padding:10px 14px 8px;border-bottom:.5px solid var(--sep)}
+.plate{flex:none;background:var(--work);color:#fff;border-radius:8px;padding:4px 10px;font-weight:800;font-size:13.5px;white-space:nowrap}
+.case-head b{display:block;font-size:15.5px;font-weight:700;line-height:1.25}
+.case-head small{display:block;font-size:12.5px;color:var(--label-2);line-height:1.4;margin-top:2px}
+@media (max-width:1023px){ .case-head small{display:none} .case-head{padding:8px 12px 6px} }
+
+.ribbon.ro{height:30px;margin-top:6px}
+.ribbon.ro .rb{font-size:10px;color:rgba(0,0,0,.78)}
+.ribbon.ro .rb.tmp{background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.0) 0 6px,rgba(255,255,255,.28) 6px 12px)}
+.ribbon-head.t{margin:10px 0 0}
+.ribbon-head .k{display:inline-flex;align-items:center;gap:6px}
+.ribbon-head .k i{width:10px;height:10px;border-radius:3px;background:var(--work)}
+@media (max-width:1023px){ .ribbon-hint{display:none} }
+
+.chk .cv{float:left;margin-inline-start:10px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+[dir=rtl] .chk .cv{float:left}
+.chk .cv small{display:block;font-weight:500;font-size:11.5px;color:var(--label-2);text-align:left}
+.chk .rf{display:block;font-size:12px;color:var(--label-2);margin-top:2px}
+.chk.ok{background:var(--green-soft)}
+.chk-g{font-size:12px;font-weight:700;color:var(--label-3);margin:10px 2px 5px}
+.chk-g:first-child{margin-top:0}
+
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
+.facts div{background:var(--fill);border-radius:var(--r-m);padding:9px 11px}
+.facts dt{font-size:12px;color:var(--label-2)}
+.facts dd{margin:2px 0 0;font-size:15px;font-weight:700}
+.mk{display:inline-block;width:24px;height:6px;border-radius:2px;vertical-align:middle;margin-inline-end:6px;border:1px solid #1d2126}
+.mk.orange{background:#f28a00} .mk.white{background:#fff}
+.notes{margin:10px 0 0;padding-inline-start:20px;font-size:13.5px;color:var(--label-2);line-height:1.5}
+.notes li{margin:3px 0}
+.why{font-size:12.5px;color:var(--label-2);margin:8px 0 0}
+.tw{max-height:340px;overflow:auto;margin:0 -4px}
+.alloc{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+.alloc th,.alloc td{padding:7px 8px;border-top:.5px solid var(--sep);text-align:start}
+.alloc th{font-size:12px;color:var(--label-2);font-weight:600;border-top:0}
+.alloc td:nth-child(3),.alloc td:nth-child(4),.alloc th:nth-child(3),.alloc th:nth-child(4){text-align:left}
+.alloc tr.tmp td:nth-child(2){font-weight:600}
+.alloc td.nar{color:var(--amber);font-weight:700} .alloc td.fail{color:var(--red);font-weight:800}
+.alloc tr.tot td{font-weight:800;border-top:1.5px solid var(--label)}
+.alloc .sw-i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-inline-end:7px;vertical-align:-1px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.2)}
+.src{font-size:12px;color:var(--label-3);line-height:1.6;margin:4px 4px 0}
+.readouts .wide{grid-column:1 / -1}
+
+button.li.case{width:100%;border:0;background:var(--card);text-align:start;color:var(--label);font-size:15px;min-height:50px}
+button.li.case:active{background:var(--fill)}
+.case .cnum{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--label-3);display:grid;place-items:center;font-size:12.5px;font-weight:700;flex:none;color:var(--label-2)}
+.case span.cn{flex:1;min-width:0}
+.case .ck2{color:var(--work);font-weight:800;visibility:hidden}
+.case[aria-pressed="true"]{background:var(--work-soft)}
+.case[aria-pressed="true"] .cnum{background:var(--work);border-color:var(--work);color:#fff}
+.case[aria-pressed="true"] .ck2{visibility:visible}
+.li .seg{flex:none}
+.li .seg.grow{flex:1;display:flex}
+.li .seg.grow button{flex:1;padding:0 6px}
+.li.stack{flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.li.stack>.lb,.li.stack>label{flex:1 1 100%}
+.li.stack>.seg{flex:1 1 100%;display:flex;overflow-x:auto;scrollbar-width:none}
+.li.stack>.seg::-webkit-scrollbar{display:none}
+.li.stack>.seg button{flex:1 0 auto;padding:0 8px}
+.li label small,.li .lb small{display:block;font-size:12px;color:var(--label-2)}
+.li[hidden]{display:none}
+.sel-wrap{flex:1.3;min-width:0;text-align:end}
+.sel-wrap select.plain{width:100%}
+#addWhere{color:var(--label-3)}
+
+.guide-ov iframe{background:#fff}
+
+@media print{
+  @page{size:A4;margin:12mm}
+  .nav,.insp,.canvas-bar,.ribbon-wrap,.guide-ov,.mh-look,.toast,.sheet,.scrim,#mh-bg{display:none!important}
+  .shell{display:block;padding:0}
+  .stage{position:static}
+  .sheetwrap{max-height:none;overflow:visible}
+  #drawing{width:100%!important}
+  .readouts{grid-template-columns:1fr 1fr}
+  .box,.canvas{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+  body{background:#fff;color:#000}
+  .print-project{display:block!important;font-size:18px;font-weight:700;margin:0 0 8px}
+}
+.print-project{display:none}
+.rowbtns button:disabled{opacity:.45;cursor:default}
+/* טלפון: סרגל עליון צפוף יותר כדי שלא יגלוש לרוחב */
+@media (max-width:600px){
+  .nav-in{gap:4px}
+  .nav .nbtn{min-width:36px;height:36px;padding:0 6px}
+  .nav .nbtn svg{width:18px;height:18px}
+  .nav .mh-look.mh-inline{width:36px;height:36px;margin-inline-start:2px}
+  .pill{height:30px;padding:0 10px;font-size:12.5px}
+}
+@media (max-width:430px){ #btnGuide{display:none} .nav h1{font-size:16px} }
 </style>
-<!-- ===== MAHALCO · מראה התצוגה ===== -->
-<script src="../js/inline/f3de506a60.js" data-dark="#0F1113" data-light="#EDEFF1" data-slot=".nav-in"></script>
+
+<script src="../js/inline/f3de506a60.js" data-light="#F2F2F7" data-dark="#000000" data-slot=".nav-in"></script>
 <style id="mh-look-kit">
 :root{--mh-glass-fill:rgba(255,255,255,.56);--mh-glass-fill-2:rgba(255,255,255,.40);--mh-glass-bar:rgba(248,248,250,.66);
   --mh-glass-line:rgba(255,255,255,.72);--mh-glass-edge:rgba(0,0,0,.06);
@@ -335,206 +421,235 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
 .mh-foot{margin:9px 4px 0;font-size:11.5px;color:var(--mh-ui-ink2)}
 @media (prefers-reduced-motion:reduce){.mh-pop,.mh-knob,.mh-sw,.mh-sw::after{transition:none!important}}
 
-:root[data-theme="dark"] .nav .back{color:var(--focus)}
-html[data-glass="on"] .panel,
-html[data-glass="on"] .stage > .hero,
-html[data-glass="on"] .hero{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
-html[data-glass="on"] .ttabs,
-html[data-glass="on"] .cbar button,
-html[data-glass="on"] .seg,
-html[data-glass="on"] select,
-html[data-glass="on"] input[type=number],
-html[data-glass="on"] .cells,
-html[data-glass="on"] .crow,
-html[data-glass="on"] .facts div,
-html[data-glass="on"] .case[aria-pressed="true"]{background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
-html[data-glass="on"] .nav{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
-html[data-glass="on"] .panel,html[data-glass="on"] .hero{border-radius:18px}
-html[data-glass="on"] .facts{background:transparent}
-@media (min-width:601px) and (max-width:1023px){html[data-glass="on"] .stage > .hero{background:color-mix(in srgb,var(--card) 90%,transparent)!important}}
-html[data-glass="on"] .draw svg{border-radius:12px}
-html[data-glass="on"] .seg button[aria-pressed="true"]{background:var(--card)}
+html[data-glass="on"] .canvas,
+html[data-glass="on"] .box,
+html[data-glass="on"] .group,
+html[data-glass="on"] .pcard,
+html[data-glass="on"] .tile,
+html[data-glass="on"] .rowbtns button{background:var(--mh-glass-fill)!important;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-color:var(--mh-glass-line)!important;box-shadow:var(--mh-glass-shadow)!important}
+html[data-glass="on"] .stat,
+html[data-glass="on"] .stp,
+html[data-glass="on"] .sheetlist div,
+html[data-glass="on"] .seg:not(.full){background:var(--mh-glass-fill-2)!important;border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .nav,
+html[data-glass="on"] .tabs{background:var(--mh-glass-bar)!important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-color:var(--mh-glass-edge)!important}
+html[data-glass="on"] .cell:not(.sel):not(.drag){background:transparent!important}
+html[data-glass="on"] .sheetwrap{background:color-mix(in srgb,var(--paper) 92%,transparent)}
+html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
 </style>
-<style>:root{--insp:380px;font-family:Arial,sans-serif}.nav-in{max-width:1800px}.shell{max-width:1800px;grid-template-columns:var(--insp) minmax(0,1fr)}.stage>.hero{position:static!important}.project-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--line)}.project-bar input{min-width:180px;max-width:350px;flex:1}.project-bar button,.tool-actions button,.road-switch button,#componentEditor button{border:1px solid var(--line);border-radius:8px;background:var(--fill);color:var(--ink);padding:8px 12px;min-height:38px;font:inherit;cursor:pointer}.project-bar input,#componentEditor input,#componentEditor select{border:1px solid var(--line);border-radius:7px;padding:8px;background:var(--card);color:var(--ink)}#saveStatus{font-size:12px;color:var(--ink-2)}.grow{flex:1}.tool-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:10px 16px}.tool-actions select{max-width:220px}.tool-actions button:disabled{opacity:.35;cursor:default}.road-switch{display:flex;padding:12px 16px;gap:8px}.road-switch button{flex:1;font-weight:700}.road-switch button[aria-pressed=true]{background:var(--work);color:white;border-color:var(--work)}.cases{max-height:310px;overflow:auto}.draw{max-height:none!important;overflow:auto;background:var(--paper)}.draw svg{min-width:0!important;max-width:none!important;display:block}#svgTemp svg{width:calc(100% * var(--zoom,1))!important}.metrics{display:flex;gap:22px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--line)}.metrics span{color:var(--ink-2);font-size:12px}.metrics b{display:block;font-size:21px;color:var(--ink);font-variant-numeric:tabular-nums}.width-ribbon{display:flex;height:70px;margin:12px 0 18px;position:relative;touch-action:none}.width-ribbon .band{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;color:#17202c;border-right:1px solid white;cursor:pointer;overflow:visible}.band span{font-size:10px;line-height:1.5;writing-mode:vertical-rl;white-space:nowrap;pointer-events:none}.band.selected{outline:3px solid var(--work);outline-offset:-3px;z-index:1}.grip{position:absolute;right:-6px;top:0;height:100%;width:12px;cursor:ew-resize;z-index:3;touch-action:none;background:transparent}.grip:hover{background:#e8710a66}#componentEditor{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px}#componentEditor .editrow{display:flex;align-items:center;gap:8px;margin-top:8px}#componentEditor label{flex:1}#componentEditor input{width:90px}#componentEditor select{min-width:0;max-width:180px}details summary{cursor:pointer;padding:10px 0;color:var(--ink-2)}#ruralLaneRow input{width:85px}#referencesPanel small{font-size:12px;color:var(--ink-2)}dialog{padding:0;width:min(1200px,96vw);height:92vh;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}dialog::backdrop{background:#0009}dialog iframe{width:100%;height:calc(100% - 60px);border:0;background:white}#notice{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#17202c;color:white;padding:12px 20px;border-radius:10px;z-index:300;display:none}.grid2{grid-template-columns:1fr!important}#bookView svg{max-height:640px;width:100%}#speed{flex-wrap:wrap}#speed button{min-width:35px}.src{font-size:12px}body{overflow:auto!important}.insp,.stage{min-width:0}
-@media(min-width:1250px){.stage{position:sticky;top:84px}.grid2{grid-template-columns:1.1fr 1fr!important}}
-@media(max-width:1023px){.shell{display:flex!important;flex-direction:column;gap:14px}.stage{order:0!important;width:100%;position:static}.insp{width:100%}.insp .panel{display:block!important}.stage>.hero{max-height:none!important}.nav h1{font-size:15px}.nav-in{gap:8px}.project-bar{padding:10px 16px}.project-bar #saveStatus{display:none}.grid2{display:grid!important}.draw{max-height:none!important}.shell{padding:12px}.panel,.hero{width:100%}}
-@media print{.insp,.project-bar,.tool-actions,#referencesPanel,#referenceDialog,#notice,.nav{display:none!important}.shell,.stage,.grid2{display:block!important;position:static!important;padding:0;margin:0}.draw{overflow:visible!important}.draw svg{width:100%!important;min-width:0!important}.hero,.panel{break-inside:avoid;box-shadow:none}.base-h button{display:none}#svgBase{display:block!important}.src{color:#333}body{background:white;color:black}}
-@media(max-width:1023px){#referencesPanel{order:2}#bookPanel{order:3}#baseCard{order:4}.stage>.grid2{order:5}.stage>.src{order:6}.insp>.panel+.panel{margin-top:14px}}
-@media print{@page{size:A4;margin:12mm}.hero .legend{flex-wrap:wrap!important;white-space:normal!important;overflow:visible!important}.hero{box-shadow:none!important}.hero-h p{display:block!important}.metrics{gap:18px}.print-project{display:block!important;padding:0 0 12px;font-size:18px;font-weight:700}.draw{padding:0!important}}
-.print-project{display:none}
-</style><!-- seo -->
-<meta name="description" content="חתכים זמניים לאתרי עבודה בדרך עירונית, בין-עירונית ומהירה, לפי הנחיות משרד התחבורה להסדרי תנועה זמניים.">
+<!-- seo -->
 <link rel="alternate" hreflang="he" href="https://mahmoudalem95.github.io/mahalco/he/temporary-section.html">
 <link rel="alternate" hreflang="ar-AE" href="https://mahmoudalem95.github.io/mahalco/ar/temporary-section.html">
 <link rel="alternate" hreflang="x-default" href="https://mahmoudalem95.github.io/mahalco/he/temporary-section.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MAHALCO">
 <meta property="og:locale" content="he_IL">
-<meta property="og:title" content="MAHALCO — חתכים זמניים עירוניים ובין־עירוניים">
-<meta property="og:description" content="חתכים זמניים לאתרי עבודה בדרך עירונית, בין-עירונית ומהירה, לפי הנחיות משרד התחבורה להסדרי תנועה זמניים.">
+<meta property="og:title" content="MAHALCO — חתך זמני · הסדרי תנועה באתרי עבודה">
+<meta property="og:description" content="חתך זמני לאתרי עבודה בדרך עירונית, בין-עירונית ומהירה – בניית החתך, סגירת נתיבים, רצועת התקנים ומעבר הולכי רגל, בדיקות חיות מול הנחיות משרד התחבורה 2020, גיליון A0 וייצוא DWG.">
 <meta property="og:url" content="https://mahmoudalem95.github.io/mahalco/he/temporary-section.html">
 <meta property="og:image" content="https://mahmoudalem95.github.io/mahalco/icon-512.png">
 </head>
 <body>
 <header class="nav">
-<div aria-hidden="true" class="tape"></div>
-<div class="nav-in">
-<span class="brand">MAHALCO</span>
-<h1>חתכים זמניים · עירוני, בין־עירוני ודרך מהירה</h1>
-<span class="sp"></span>
-<span class="pill ok" id="status" role="status"><i></i>ללא חריגות בבדיקות הכלי</span>
-</div>
+  <div class="nav-in">
+    <div><h1>חתך זמני<small>הסדרי תנועה באתר עבודה · גיליון A0 וייצוא DWG</small></h1></div>
+    <span class="sp"></span>
+    <button class="pill ok" id="statusPill" type="button" aria-live="polite"><i></i><span>תקין</span></button>
+    <button class="nbtn" id="btnGuide" type="button" title="ספר התרשימים – הסדרי תנועה זמניים"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="t">מדריך</span></button>
+    <button class="nbtn" id="btnUndo" type="button" aria-label="ביטול" title="ביטול (Ctrl/Cmd+Z)" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h-7a5 5 0 0 0 0 10h3"/><path d="M12 4l3 3-3 3"/></svg></button>
+    <button class="nbtn" id="btnRedo" type="button" aria-label="חזרה" title="חזרה" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h7a5 5 0 0 1 0 10h-3"/><path d="M12 4L9 7l3 3"/></svg></button>
+    <button class="nbtn" id="btnAddSheet" type="button" title="הוספת החתך לגיליון A0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg><span class="t">לגיליון</span></button>
+    <button class="nbtn primary" id="btnShare" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="t">ייצוא</span></button>
+  </div>
+  <div class="tape" aria-hidden="true"></div>
 </header>
-<div class="project-bar">
-  <label for="projectName">פרויקט</label>
-  <input id="projectName" maxlength="120" placeholder="שם הפרויקט / שלב הביצוע"/>
-  <span id="saveStatus" role="status">נשמר בדפדפן</span>
-  <span class="grow"></span>
-  <button id="saveProject">שמירת פרויקט</button>
-  <button id="loadProject">פתיחת פרויקט</button>
-  <input accept=".json,application/json" hidden="" id="projectFile" type="file"/>
-  <button id="exportSVG">SVG</button>
-  <button id="printTool">הדפסה / PDF</button>
-  <button id="bookCity" type="button" data-on-click="0">תרשימם עירוני</button>
-</div>
-<main class="shell">
-  <aside aria-label="הגדרות" class="insp">
-<section class="panel">
-<h2><span class="step">1</span>סוג הסדר</h2>
-<div class="road-switch" id="roadSwitch"><button data-road="city">עירוני · City</button><button data-road="rural">בין־עירוני · Rural</button></div><div class="cases" id="cases"></div>
-<div class="pb" style="border-top:1px solid var(--line)">
-<div class="row" hidden="" id="stageRow"><span class="lb">שלב ביצוע</span><div class="seg" id="stage"></div></div>
-<div class="row" hidden="" id="closeRow"><label>נתיבים לסגירה<small>«צמצום» – ללא סגירת נתיב</small></label><div class="seg" id="close"></div></div>
-<div class="row"><span class="lb">צד העבודה</span><div class="seg" id="side"></div></div>
-</div>
+
+<div class="shell">
+<section class="stage" aria-label="שרטוט">
+  <div class="print-project" id="printProject"></div>
+  <div class="canvas">
+    <div class="canvas-bar">
+      <div class="seg" id="viewSeg" role="tablist">
+        <button class="tab" type="button" role="tab" aria-pressed="true" data-v="temp">חתך זמני</button>
+        <button class="tab" type="button" role="tab" aria-pressed="false" data-v="base">קיים</button>
+        <button class="tab" type="button" role="tab" aria-pressed="false" data-v="sheet">גיליון A0</button>
+      </div>
+      <div class="zoom"><button type="button" id="zOut" aria-label="הקטנה">−</button><output id="zVal">100%</output><button type="button" id="zIn" aria-label="הגדלה">+</button></div>
+    </div>
+    <div class="case-head"><span class="plate" id="caseNo">תרשים 1</span><div><b id="caseTitle"></b><small id="caseDesc"></small></div></div>
+    <div class="sheetwrap" id="sheetwrap"><div id="drawing"></div></div>
+    <div class="ribbon-wrap">
+      <div class="ribbon-head"><span>חתך קיים</span><b id="rbTot">0.00 מ׳</b><span class="gap" id="rbGap"></span></div>
+      <div class="ribbon" id="ribbon" aria-label="פס רוחבי החתך הקיים – גררו את המפרידים לשינוי רוחב"></div>
+      <div class="ribbon-head t"><span class="k"><i></i>חתך זמני</span><b id="rbTotT">0.00 מ׳</b><span class="gap" id="rbGapT"></span></div>
+      <div class="ribbon ro" id="ribbonT" aria-label="פס החתך הזמני – הקישו על רכיב לפרטים"></div>
+      <div class="ribbon-hint">הקישו על רכיב לבחירה. גררו מפריד בין שני רכיבים בחתך הקיים כדי להעביר רוחב ביניהם – הרוחב הכולל נשמר. בפס הזמני: כתום – מוצר ביחס לקיים, אדום – מתחת למזערי.</div>
+    </div>
+  </div>
+  <div class="readouts" id="readouts">
+    <div class="box"><h3>נתוני ההסדר</h3><div class="grid3" id="stats"></div></div>
+    <div class="box" id="checksBox"><h3>בדיקות מול ההנחיות</h3><div id="checks"></div></div>
+    <div class="box"><h3>סיכום ההסדר</h3>
+      <dl class="facts">
+        <div><dt>רוחב אזור העבודה</dt><dd id="sumWork"></dd></div>
+        <div><dt>גוון הסימון</dt><dd id="sumMark"></dd></div>
+        <div><dt>התקן הפרדה</dt><dd id="sumDev"></dd></div>
+        <div><dt>מרחק עצירה לפריסת תמרורים</dt><dd id="sumStop"></dd></div>
+      </dl>
+      <p class="why" id="sumMarkWhy"></p>
+      <ul class="notes" id="notes"></ul>
+    </div>
+    <div class="box"><h3>רכיבי החתך הזמני</h3><div class="tw"><table class="alloc" id="alloc"></table></div></div>
+    <p class="src wide">מבוסס על "הנחיות לתכנון הסדרי תנועה זמניים באתרי עבודה עירוניים" (משרד התחבורה, אפריל 2020) – טבלאות 2.3.1–2.3.7, 2.9.1 וסעיפים 2.3.4, 2.3.5; ועל מכתב המפקח הארצי על התעבורה בנושא גוון הסימון באתרי עבודה (13.3.2023). תבניות הרחוב – מתוך כלי החתך הטיפוסי (מרחב הרחוב 2020). הכלי עקרוני ואינו מחליף תכנון מפורט ואישור רשות התמרור.</p>
+  </div>
 </section>
-<section class="panel">
-<h2><span class="step">2</span>החתך הקיים</h2>
-<div class="pb">
-<select aria-label="תבנית חתך" id="preset"></select>
-<p class="muted" id="presetSrc"></p>
-<p class="muted">בחרו רכיב ברצועה. גררו גבול לשינוי רוחב תוך שמירת הרוחב הכולל.</p><div class="width-ribbon" dir="ltr" id="widthRibbon"></div><div id="componentEditor"></div><div class="tool-actions"><select aria-label="סוג רכיב להוספה" id="newType"></select><button id="addComponent">+ הוספה</button></div><details><summary>כל רוחבי החתך</summary><div class="cells" id="cellsEd"></div></details>
-<button class="btn-link" hidden="" id="resetCells" type="button">שחזור רוחבי התבנית</button>
-</div>
-</section>
-<section class="panel">
-<h2><span class="step">3</span>תנאי האתר</h2>
-<div class="pb">
-<div class="row"><label>מהירות מרבית מותרת<small>לפני העבודות (מ.מ.מ), קמ״ש</small></label><div class="seg" id="speed"></div></div>
-<div class="row" hidden="" id="ruralLaneRow"><label for="ruralLane">רוחב נתיב לתכנון<small>ערך פרויקט מוצע, אינו מינימום תקני</small></label><input id="ruralLane" max="10" min="0.5" step="0.05" type="number"/></div><div class="row"><label for="tc">הרכב התנועה</label><select id="tc"></select></div>
-<div class="row"><span class="lb">משך העבודה</span><div class="seg" id="dur"></div></div>
-<div class="row"><span class="lb">סיכון העבודה</span><div class="seg" id="risk"></div></div>
-<div class="row"><label for="st">סוג הרחוב<small>לרוחב מעבר הולכי רגל</small></label><select id="st"></select></div>
-<div class="row"><label>חזית מסחרית<small>תוספת 0.5 מ׳ מומלצת</small></label><div class="seg" id="shop"></div></div>
-<div id="bikeRows" style="display:contents">
-<div class="row"><label for="bv">היקף אופניים</label><select id="bv"></select></div>
-<div class="row"><span class="lb">אופניים בסגירה</span><div class="seg" id="bikeMode"></div></div>
-</div>
-<div class="row" id="ptRow"><label for="pt">נתיב תחבורה ציבורית</label><select id="pt"></select></div>
-<div class="row"><span class="lb">שעות העבודה</span><div class="seg" id="night"></div></div>
-</div>
-</section>
-<section class="panel">
-<h2><span class="step">4</span>התקנים ורוחבים</h2>
-<div class="pb">
-<div class="row"><label for="devSel">התקן הפרדה</label><select id="devSel"></select></div>
-<div class="row"><label for="d">רצועת התקנים d<small>כולל סימון 807</small></label><span><input id="d" inputmode="decimal" step="0.05" type="number"/> <span class="u">מ׳</span></span></div>
-<div class="row" id="wbarRow"><label for="wbar">רוחב פעיל W של המעקה<small>ללא מעקה – 0.60 לפחות</small></label><span><input id="wbar" inputmode="decimal" step="0.05" type="number"/> <span class="u">מ׳</span></span></div>
-<div class="row"><span class="lb">אזור העבודה</span><div class="seg" id="wzMode"></div></div>
-<div class="row" id="wzRow"><label for="wz">רוחב אזור העבודה</label><span><input id="wz" inputmode="decimal" step="0.05" type="number"/> <span class="u">מ׳</span></span></div>
-<div class="row" hidden="" id="emRow"><label for="emW">נתיב לרכב חירום<small>ערך מוצע – לתאם</small></label><span><input id="emW" inputmode="decimal" step="0.05" type="number"/> <span class="u">מ׳</span></span></div>
-<div class="row"><label>גוון הסימון<small>מכתב המפקח הארצי, 13.3.2023</small></label><div class="seg" id="mark"></div></div>
-</div>
-</section>
-<section class="panel" id="dxfPanel">
-<h2><span class="step">5</span>ייצוא ל-CAD (DXF / DWG)</h2>
-<div class="pb">
-<div class="row"><label for="dxfScale">קנה מידה<small>אוטומטי — מתאים לגיליון A0</small></label>
-<select id="dxfScale">
-<option value="auto">אוטומטי</option>
-<option value="50">1:50</option>
-<option value="100">1:100</option>
-<option value="150">1:150</option>
-<option value="200">1:200</option>
-<option value="250">1:250</option>
-<option value="500">1:500</option>
-</select></div>
-<div class="row"><span class="lb">מה לכלול בגיליון</span>
-<div class="seg" id="dxfWhat">
-<button data-v="temp" type="button">זמני</button>
-<button data-v="both" type="button">קיים + זמני</button>
-<button data-v="base" type="button">קיים</button>
-</div></div>
-<div class="row"><label for="dxfRtl">היפוך רצפי עברית<small>אם הכיתוב מופיע הפוך ב-AutoCAD</small></label>
-<input id="dxfRtl" type="checkbox"/></div>
-<div class="row"><label for="dxfFill">מילוי צבעוני<small>שכבות ‎-F‎; הקפאתן נותנת שרטוט קווי</small></label>
-<input checked="" id="dxfFill" type="checkbox"/></div>
-<div class="row"><label for="dwgSvc">שירות המרה ל-DWG<small>כתובת השירות שממיר DXF ל-DWG. ריק = הורדת DXF</small></label>
-<input id="dwgSvc" placeholder="https://…/dxf2dwg" style="direction:ltr;text-align:left;min-width:0" type="url"/></div>
-<button class="btn-primary" id="dxfBtn" type="button">הורדת קובץ CAD</button>
-<p class="muted" id="dxfInfo">קובץ ה-CAD מתורגם מאותו שרטוט שמוצג כאן – אותן צורות, אותם מיקומים ואותם צבעים. המודל במטרים 1:1, מסודר בשכבות ‎TS-*‎ (אזור הפעילות, ההתקנים והסימון הזמני בנפרד).</p>
-</div>
-</section>
+
+<aside class="insp" aria-label="הגדרות">
+  <div class="tabs"><div class="seg full" id="paneSeg">
+    <button type="button" data-p="p-case" aria-pressed="true">הסדר</button>
+    <button type="button" data-p="p-cells" aria-pressed="false">קיים</button>
+    <button type="button" data-p="p-site" aria-pressed="false">אתר</button>
+    <button type="button" data-p="p-dev" aria-pressed="false">התקנים</button>
+    <button type="button" data-p="p-sheet" aria-pressed="false">גיליון</button>
+  </div></div>
+
+  <div class="pane on" id="p-case">
+    <p class="gh">סוג הדרך</p>
+    <div class="seg full" id="roadSeg"></div>
+    <div id="cases"></div>
+    <p class="gh">פרטי ההסדר</p>
+    <div class="group">
+      <div class="li" id="stageRow" hidden><span class="lb">שלב ביצוע</span><div class="seg" id="stage"></div></div>
+      <div class="li" id="closeRow" hidden><span class="lb">נתיבים לסגירה<small>«צמצום» – ללא סגירת נתיב</small></span><div class="seg" id="close"></div></div>
+      <div class="li"><span class="lb">צד העבודה</span><div class="seg" id="side"></div></div>
+    </div>
+  </div>
+
+  <div class="pane" id="p-cells">
+    <p class="gh">תבנית החתך הקיים</p>
+    <div class="seg full" id="presetFilter"></div>
+    <div class="pgrid" id="presetGrid"></div>
+    <p class="hint" id="presetSrc"></p>
+    <p class="gh">רכיבים, משמאל לימין בשרטוט</p>
+    <div class="group"><div class="cells" id="cells"></div></div>
+    <div class="rowbtns"><button id="btnMirror" type="button">היפוך החתך</button><button id="btnReset" type="button" class="danger">שחזור התבנית</button></div>
+    <p class="gh">הוספת רכיב <span id="addWhere"></span></p>
+    <div class="tiles" id="tiles"></div>
+  </div>
+
+  <div class="pane" id="p-site">
+    <p class="gh">תנועה ומהירות</p>
+    <div class="group">
+      <div class="li stack"><span class="lb">מהירות מרבית מותרת<small>לפני העבודות (מ.מ.מ), קמ״ש</small></span><div class="seg" id="speed"></div></div>
+      <div class="li" id="ruralLaneRow" hidden><label for="ruralLane">רוחב נתיב לתכנון<small>ערך פרויקט מוצע, אינו מינימום תקני</small></label><div class="stp" data-step="0.05"><input id="ruralLane" type="number" step="0.05" min="0.5" max="10" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li" id="tcRow"><label for="tc">הרכב התנועה</label><div class="sel-wrap"><select id="tc" class="plain"></select><span class="chev">⌄</span></div></div>
+      <div class="li" id="ptRow"><label for="pt">נתיב תחבורה ציבורית</label><div class="sel-wrap"><select id="pt" class="plain"></select><span class="chev">⌄</span></div></div>
+    </div>
+    <p class="gh">העבודה</p>
+    <div class="group">
+      <div class="li stack"><span class="lb">משך העבודה</span><div class="seg" id="dur"></div></div>
+      <div class="li" id="riskRow"><span class="lb">סיכון העבודה</span><div class="seg" id="risk"></div></div>
+      <div class="li"><span class="lb">שעות העבודה</span><div class="seg" id="night"></div></div>
+    </div>
+    <p class="gh" id="pedHead">הולכי רגל ואופניים</p>
+    <div class="group" id="pedGroup">
+      <div class="li" id="stRow"><label for="st">סוג הרחוב<small>לרוחב מעבר הולכי רגל</small></label><div class="sel-wrap"><select id="st" class="plain"></select><span class="chev">⌄</span></div></div>
+      <div class="li" id="shopRow"><label for="shop">חזית מסחרית<small>תוספת 0.5 מ׳ מומלצת</small></label><input type="checkbox" class="sw" id="shop"></div>
+      <div class="li" id="bvRow"><label for="bv">היקף אופניים</label><div class="sel-wrap"><select id="bv" class="plain"></select><span class="chev">⌄</span></div></div>
+      <div class="li" id="bikeModeRow"><span class="lb">אופניים בסגירה</span><div class="seg" id="bikeMode"></div></div>
+    </div>
+  </div>
+
+  <div class="pane" id="p-dev">
+    <p class="gh">התקני הפרדה</p>
+    <div class="group">
+      <div class="li"><label for="devSel">התקן הפרדה</label><div class="sel-wrap"><select id="devSel" class="plain"></select><span class="chev">⌄</span></div></div>
+      <div class="li"><label for="d">רצועת התקנים d<small>כולל סימון 807</small></label><div class="stp" data-step="0.05"><input id="d" type="number" step="0.05" min="0" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li"><label for="wbar">רוחב פעיל W של המעקה<small>ללא מעקה – 0.60 לפחות</small></label><div class="stp" data-step="0.05"><input id="wbar" type="number" step="0.05" min="0" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+    </div>
+    <p class="gh">אזור העבודה</p>
+    <div class="group">
+      <div class="li"><span class="lb">רוחב אזור העבודה</span><div class="seg" id="wzMode"></div></div>
+      <div class="li" id="wzRow"><label for="wz">רוחב קבוע</label><div class="stp" data-step="0.25"><input id="wz" type="number" step="0.05" min="0" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+      <div class="li" id="emRow" hidden><label for="emW">נתיב לרכב חירום<small>ערך מוצע – לתאם עם כבאות והצלה</small></label><div class="stp" data-step="0.05"><input id="emW" type="number" step="0.05" min="0" inputmode="decimal"></div><span class="unit">מ׳</span></div>
+    </div>
+    <p class="gh">סימון זמני</p>
+    <div class="group">
+      <div class="li"><span class="lb">גוון הסימון<small>מכתב המפקח הארצי, 13.3.2023</small></span><div class="seg" id="mark"></div></div>
+    </div>
+  </div>
+
+  <div class="pane" id="p-sheet">
+    <p class="gh">קנה מידה</p>
+    <select id="dxfScale" class="vh" tabindex="-1" aria-hidden="true">
+      <option value="auto">אוטומטי</option>
+      <option value="50">1:50</option>
+      <option value="100">1:100</option>
+      <option value="150">1:150</option>
+      <option value="200">1:200</option>
+      <option value="250">1:250</option>
+      <option value="500">1:500</option>
+    </select>
+    <div class="seg full" data-bind="dxfScale"></div>
+    <p class="gh">מה לכלול בגיליון</p>
+    <div class="seg full" id="dxfWhat">
+      <button data-v="temp" type="button">זמני</button>
+      <button data-v="both" type="button">קיים + זמני</button>
+      <button data-v="base" type="button">קיים</button>
+    </div>
+    <p class="gf" id="whatHint">כשיש חתכים ברשימת הגיליון (למטה) – הגיליון כולל אותם.</p>
+    <p class="gh">כותרת הגיליון</p>
+    <div class="group">
+      <div class="li"><label for="projectName">פרויקט</label><input id="projectName" maxlength="120" placeholder="שם הפרויקט / שלב הביצוע"></div>
+      <div class="li"><label for="drawn">שורטט ע״י</label><input id="drawn" maxlength="60" placeholder="שם"></div>
+      <div class="li"><label for="dwg">מס׳ גיליון</label><input id="dwg" maxlength="30" placeholder="TS-01"></div>
+    </div>
+    <p class="gh">מה מופיע בשרטוט</p>
+    <div class="group">
+      <div class="li"><label for="tIcons">כלי רכב, אנשים ועובדים</label><input type="checkbox" class="sw" id="tIcons" checked></div>
+      <div class="li"><label for="tTrees">עצים</label><input type="checkbox" class="sw" id="tTrees" checked></div>
+      <div class="li"><label for="tNames">שמות רכיבים</label><input type="checkbox" class="sw" id="tNames" checked></div>
+    </div>
+    <p class="gh">חתכים בגיליון (עד שלושה ב-A0)</p>
+    <div class="box"><div class="sheetlist" id="sheetList"></div>
+      <p class="hint">«לגיליון» שבסרגל העליון מוסיף את החתך הנוכחי – למשל קיים, שלב 1 ושלב 2 על אותו גיליון. ייצוא ה-HTML מפיק דף A0 לרוחב (1189×841 מ״מ): מדפיסים ב-100% בלי התאמה לדף.</p></div>
+
+    <p class="gh">ייצוא ל-CAD (DWG)</p>
+    <div class="group">
+      <div class="li"><label for="dxfRtl">היפוך רצפי עברית<small>אם הכיתוב מופיע הפוך ב-AutoCAD</small></label><input type="checkbox" class="sw" id="dxfRtl"></div>
+      <div class="li"><label for="dxfFill">מילוי צבעוני<small>שכבות ‎-F‎; הקפאתן נותנת שרטוט קווי</small></label><input type="checkbox" class="sw" id="dxfFill" checked></div>
+      <div class="li"><label for="dwgSvc">שירות המרה ל-DWG<small>כתובת השירות שממיר DXF ל-DWG. ריק = הורדת DXF</small></label></div>
+      <div class="li"><input id="dwgSvc" type="url" placeholder="https://…/dxf2dwg" style="direction:ltr;text-align:left"></div>
+    </div>
+    <button class="btn-primary" id="dxfBtn" type="button">הורדת קובץ DWG</button>
+    <p id="dxfInfo">קובץ ה-CAD מתורגם מאותו שרטוט שמוצג כאן – אותן צורות, אותם מיקומים ואותם צבעים. המודל במטרים 1:1, מסודר בשכבות ‎TS-*‎ (אזור הפעילות, ההתקנים והסימון הזמני בנפרד).</p>
+  </div>
 </aside>
-<div class="stage" id="stageView"><div class="print-project" id="printProject"></div>
-<article class="hero">
-<div aria-hidden="true" class="tape"></div>
-<div class="hero-h">
-<span class="plate" id="caseNo">תרשים 1</span>
-<div><h2 id="caseTitle"></h2><p id="caseDesc"></p></div>
 </div>
-<div class="tool-actions"><button id="undoEdit" title="Ctrl / Cmd + Z">ביטול</button><button id="redoEdit">ביצוע חוזר</button><span class="grow"></span><button aria-label="הקטנה" id="zoomOut">−</button><output id="zoomValue">100%</output><button aria-label="הגדלה" id="zoomIn">+</button><button id="fitView">התאמה</button></div>
-<div class="draw" id="svgTemp"></div><div class="metrics" id="metrics"></div>
-<div class="legend">
-<span><span class="sw" style="background:#f07f1e"></span>אזור פעילות</span>
-<span><span class="sw" style="background:#ffc978"></span>רצועת התקנים d</span>
-<span><span class="sw" style="background:#ffe3b8"></span>רוחב פעיל W</span>
-<span><span class="sw" style="background:#f1e3a0"></span>מעבר הולכי רגל זמני</span>
-<span><span class="sw" style="background:#f7cf9f"></span>שטח חסום נוסף</span>
-<span>מידה <b style="color:#b15d00">כתומה</b> – מוצר ביחס לקיים; <b style="color:#c8372d">אדומה</b> – מתחת למזערי</span>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grp" id="sheetGrp"></div><button class="cancel" type="button" id="sheetCancel">ביטול</button></div>
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><button type="button" id="toastAct" hidden>בטל</button></div>
+
+<div class="guide-ov" id="guideOv" role="dialog" aria-modal="true" aria-label="ספר התרשימים">
+  <div class="guide-bar">
+    <button class="nbtn" id="btnGuideClose" type="button" aria-label="סגירת המדריך" title="סגירה"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div><b>ספר התרשימים</b><small>הנחיות לתכנון הסדרי תנועה זמניים באתרי עבודה עירוניים · 2020</small></div>
+  </div>
+  <iframe id="guideFrame" title="ספר התרשימים – הסדרי תנועה זמניים"></iframe>
 </div>
-</article>
-<</section>
-<section class="panel" id="baseCard">
-  <section class="panel" id="baseCard">
-<div class="base-h"><h3>החתך הקיים<small id="baseName"></small></h3><button aria-controls="svgBase" aria-expanded="false" class="btn-link" id="toggleBase" type="button">הצגה</button></div>
-<div class="draw" id="svgBase"></div>
-</section>
-<div class="grid2">
-<section class="panel">
-<h2>בדיקות מול ההנחיות</h2>
-<div id="checks"></div>
-</section>
-<div style="display:flex;flex-direction:column;gap:14px;min-width:0">
-<section class="panel">
-<h2>סיכום ההסדר</h2>
-<dl class="facts" style="margin:0">
-<div><dt>רוחב אזור העבודה</dt><dd id="sumWork"></dd></div>
-<div><dt>גוון הסימון</dt><dd id="sumMark"></dd></div>
-<div><dt>התקן הפרדה</dt><dd id="sumDev"></dd></div>
-<div><dt>מרחק עצירה לפריסת תמרורים</dt><dd id="sumStop"></dd></div>
-</dl>
-<p class="why" id="sumMarkWhy"></p>
-<ul class="notes" id="notes"></ul>
-</section>
-<section class="panel">
-<h2>רכיבי החתך הזמני</h2>
-<div class="tw"><table id="alloc"></table></div>
-</section>
-</div>
-</div>
-<p class="src">מבוסס על "הנחיות לתכנון הסדרי תנועה זמניים באתרי עבודה עירוניים" (משרד התחבורה, אפריל 2020) – טבלאות 2.3.1–2.3.7, 2.9.1 וסעיפים 2.3.4, 2.3.5; ועל מכתב המפקח הארצי על התעבורה בנושא גוון הסימון באתרי עבודה (13.3.2023). תבניות הרחוב – מתוך כלי החתך הטיפוסי (מרחב הרחוב 2020). הכלי עקרוני ואינו מחליף תכנון מפורט ואישור רשות התמרור.</p>
-</div>
-</main>
+
+<input type="file" id="projectFile" accept=".json,application/json" hidden>
+
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=4"></script>
-<script src="../js/tools/temporary-section.js?v=2"></script>
+<script src="../js/tools/temporary-section.js?v=3"></script>
 <!-- ==================================================================
-     מודול ייצוא DXF + ממשק
+     גיליון A0 + מודול ייצוא DXF/DWG
      ================================================================== -->
-<script src="../js/inline/fe379da06d.js"></script>
-<dialog id="referenceDialog"><div class="tool-actions"><strong id="referenceTitle"></strong><span class="grow"></span><button id="closeReference">סגירה ×</button></div><iframe id="referenceFrame" title="מסמך מקור" loading="lazy"></iframe></dialog><div id="notice" role="status"></div><script src="../js/inline/ccdde1014a.js"></script><script src="../js/inline/11abe71000.js"></script>
-<script src="../js/tour.js?v=4"></script>
+<script src="../js/inline/fe379da06d.js?v=2"></script>
+<script src="../js/tour.js?v=5"></script>
 <script src="../js/pdf-export.js?v=1"></script>
 <script src="../js/visits-bar.js?v=2" defer></script>
 <script defer src="../js/car-guide.js?v=3"></script>
-</body></html>
+</body>
+</html>

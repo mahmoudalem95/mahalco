@@ -804,6 +804,25 @@ a.hq small{font-size:12px}
 :root[data-theme="light"] .hq-split .hq-caret{border-inline-start-color:#D3D6CF}
 :root[data-theme="light"] .hq-split .hq-caret:is(:hover,:focus-visible),:root[data-theme="light"] .hq-split.open .hq-caret{color:#8a5a00}
 @media (max-width:599px){.hq-split .hq-main b{font-size:13.5px}.hq-split .hq-caret{flex-basis:46px}}
+/* «הכלים המבוקשים» – מרווחי פיבונאצי 8/13/21/34/55/89 */
+.hero-quick .hq-label{display:block;margin-bottom:13px}
+.hq-list{gap:13px;grid-auto-rows:minmax(89px,auto)}
+.hq-list > *{height:100%;box-sizing:border-box}
+.hero a.hq{padding:13px 21px;min-height:89px;justify-content:center;gap:5px}
+.hq-dropdown.hq-split{min-height:89px}
+.hq-split .hq-main{padding:13px 21px;gap:5px}
+.hq-split .hq-caret{flex-basis:55px}
+.hero a.hq::before,.hq-split .hq-main::before{top:21px;bottom:21px}
+.hero-quick + .tally{margin-top:34px}
+@media (max-width:599px){
+  .hq-list{gap:8px;grid-auto-rows:minmax(55px,auto)}
+  .hero a.hq{padding:8px 13px;min-height:55px;gap:2px}
+  .hq-dropdown.hq-split{min-height:55px}
+  .hq-split .hq-main{padding:8px 13px;gap:2px}
+  .hq-split .hq-caret{flex-basis:34px}
+  .hero a.hq::before,.hq-split .hq-main::before{top:13px;bottom:13px}
+  .hero-quick + .tally{margin-top:21px}
+}
 </style>
 <!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
 <script data-light="#F4F5F1" data-dark="#15181C" data-slot=".masthead .wrap">

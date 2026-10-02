@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
+<style id="he-font">button,input,select,textarea,optgroup{font-family:inherit}</style>
     <meta name="google-adsense-account" content="ca-pub-2151829492004511">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2151829492004511"
@@ -81,7 +82,7 @@
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --asphalt: #23272C;
@@ -927,7 +928,7 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
 
 /* ---- popover ---- */
 .mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  font-family:'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:15px;line-height:1.35;
   color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
   -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
   box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
@@ -1100,7 +1101,7 @@ html[data-glass="on"] .hero,html[data-glass="on"] .hero + .strip{background:tran
 html[data-glass="on"][data-theme="dark"] .hero .wrap>div:first-child{text-shadow:0 1px 14px rgba(0,0,0,.65)}
 html[data-glass="on"][data-theme="light"] .hero .wrap>div:first-child{text-shadow:0 1px 14px rgba(255,255,255,.8)}
 #mh-bgv-ctl .bgv-sep{width:1px;margin:6px 3px;background:currentColor;opacity:.2}
-#mh-bgv-ctl .bgv-lab{align-self:center;padding:0 10px 0 6px;font:500 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;opacity:.75;white-space:nowrap}
+#mh-bgv-ctl .bgv-lab{align-self:center;padding:0 10px 0 6px;font:500 12px/1 'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;opacity:.75;white-space:nowrap}
 @media(max-width:600px){#mh-bgv-ctl .bgv-lab,#mh-bgv-ctl .bgv-r,#mh-bgv-ctl .bgv-sep{display:none}#mh-bgv-ctl button{min-width:32px;height:32px}}
 html[data-glass="on"] .hero :is(a.hq,.hq-dropdown,.duo,.btn:not(.btn-primary)){-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%)}
 html[data-glass="on"] #mh-bgv-ctl{display:flex;position:fixed;z-index:44;inset-inline-start:max(14px,env(safe-area-inset-right,0px));
@@ -1108,7 +1109,7 @@ html[data-glass="on"] #mh-bgv-ctl{display:flex;position:fixed;z-index:44;inset-i
   background:var(--mh-ui-bg,rgba(250,250,252,.9));border:.5px solid var(--mh-ui-line,rgba(0,0,0,.12));color:var(--mh-ui-ink,#1c1c1e);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);box-shadow:0 6px 22px rgba(0,0,0,.18);direction:ltr}
 #mh-bgv-ctl button{min-width:34px;height:30px;padding:0 8px;border:0;border-radius:999px;background:none;color:inherit;
-  font:600 12.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;cursor:pointer;display:grid;place-items:center}
+  font:600 12.5px/1 'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;cursor:pointer;display:grid;place-items:center}
 #mh-bgv-ctl button[aria-pressed="true"]{background:var(--mh-ui-knob,#fff);box-shadow:0 1px 4px rgba(0,0,0,.15)}
 #mh-bgv-ctl button:focus-visible{outline:2px solid #E9A21F;outline-offset:1px}
 @media print{#mh-bgv,#mh-bgv-ctl{display:none!important}}

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
+<style id="he-font">button,input,select,textarea,optgroup{font-family:inherit}</style>
 <script src="../js/ga.js" async></script>
 <script src="../js/clarity.js" async></script>
 
@@ -17,14 +18,14 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#141a2b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap">
 <style>
   :root{--bg:#121624;--panel:#1b2236;--panel2:#222b42;--line:#2e3a55;--line2:#42517a;
         --txt:#e8ecf5;--dim:#9aa6bf;--amber:#f5b82e;--amber2:#ffd166;--bad:#ff7d6a;--ok:#2dd4a0;--rail:372px;--hdr:52px;
         color-scheme:dark}
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 Heebo,ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif}
+  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif}
   header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:#141a2b;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center;padding:8px 16px;min-height:var(--hdr)}
   .mark{display:flex;flex-direction:column;line-height:1.15;margin-left:8px}
   .mark b{font-size:15px;letter-spacing:.14em}
@@ -96,7 +97,7 @@
   #hintT{font-size:13px;color:#fff}
   #hint button{flex:none;padding:5px 12px;border-radius:16px}
   #coords{position:absolute;bottom:8px;right:10px;z-index:4;font:11.5px/1.2 ui-monospace,Menlo,Consolas,monospace;color:#e8ecf5;background:rgba(11,16,28,.62);padding:3px 7px;border-radius:4px;direction:ltr;font-variant-numeric:tabular-nums}
-  #attr{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:4;font:10px Arial;color:#dfe4ec;background:rgba(11,16,28,.5);padding:2px 6px;border-radius:3px;pointer-events:none;white-space:nowrap}
+  #attr{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:4;font:10px 'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;color:#dfe4ec;background:rgba(11,16,28,.5);padding:2px 6px;border-radius:3px;pointer-events:none;white-space:nowrap}
   .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#cfd8e9;margin-top:9px}
   .legend span{display:flex;gap:5px;align-items:center}
   .sw{width:14px;height:10px;border-radius:2px;display:inline-block}
@@ -178,7 +179,7 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
 
 /* ---- popover ---- */
 .mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  font-family:'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:15px;line-height:1.35;
   color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
   -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
   box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);

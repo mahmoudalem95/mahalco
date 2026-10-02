@@ -100,7 +100,7 @@
         * { box-sizing: border-box }
         html { scroll-behavior: smooth }
         @media (prefers-reduced-motion:reduce) { html { scroll-behavior: auto } * { transition: none !important; animation: none !important } }
-        body { margin:0; background: var(--paper); color: var(--ink); font-family: 'Heebo', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased }
+        body { margin:0; background: var(--paper); color: var(--ink); font-family: "Segoe UI", "Arial", sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased }
         a { color: inherit }
         :focus-visible { outline: 2px solid var(--marking); outline-offset: 3px }
         .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px }
@@ -1130,6 +1130,93 @@ html[data-glass="on"][data-theme="dark"] .hero :is(a.hq,.hq-dropdown){background
 </style>
 <!-- seo -->
 <link rel="alternate" hreflang="ar-AE" href="https://mahmoudalem95.github.io/mahalco/ar/index.html">
+<style id="hero-tidy">
+/* ===== Hero מסודר: אייקוני הורדה/שיתוף בסרגל העליון ===== */
+.masthead nav{align-items:center}
+.mh-ic-group{display:inline-flex;align-items:center;gap:8px;flex:none}
+.masthead nav .mh-ic{display:inline-grid;place-items:center;width:36px;height:36px;padding:0;border-radius:50%;border:0;cursor:pointer;flex:none;
+  transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .15s,filter .15s;box-shadow:0 1px 4px rgba(0,0,0,.14)}
+.masthead nav .mh-ic:hover,.masthead nav .mh-ic:focus-visible{filter:brightness(1.06);box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.masthead nav .mh-ic:active{transform:scale(.92)}
+.masthead nav .mh-ic:focus-visible{outline:2px solid var(--marking);outline-offset:2px}
+.mh-ic-get{background:var(--marking);color:#141A1F}
+.masthead nav a.mh-ic-share{background:#25D366;color:#fff;padding:0}
+.mh-ic-share svg{display:block}
+
+/* ===== MahAlCad: כפתור מפוצל עם תת־קטגוריות ===== */
+.cad-split{position:relative;display:inline-flex;align-items:stretch;z-index:5}
+.cad-split .cad-main{border-start-end-radius:0!important;border-end-end-radius:0!important}
+.cad-split .cad-caret{display:grid;place-items:center;padding:0 12px;border:0;cursor:pointer;margin-inline-start:1px;
+  border-start-start-radius:0!important;border-end-start-radius:0!important;box-shadow:inset 1px 0 0 rgba(20,26,31,.18)}
+.cad-split .cad-caret svg{transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.cad-split.open .cad-caret svg{transform:rotate(180deg)}
+.cad-menu{display:none;position:absolute;top:calc(100% + 8px);inset-inline-start:0;min-width:240px;padding:6px;border-radius:14px;
+  background:#1B2126;border:1px solid var(--rule-dark);box-shadow:0 14px 34px rgba(0,0,0,.28);z-index:999999}
+.cad-split.open .cad-menu{display:block}
+.cad-menu a{display:flex;flex-direction:column;gap:1px;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--paper);
+  border-inline-start:3px solid transparent}
+.cad-menu a + a{margin-top:2px}
+.cad-menu a:hover,.cad-menu a:focus-visible{background:rgba(233,177,47,.14);border-inline-start-color:var(--marking);outline:0}
+.cad-menu small{font-size:11.5px;font-weight:600;color:var(--muted-dark)}
+.cad-menu b{font-size:14.5px;font-weight:800}
+:root[data-theme="light"] .cad-menu{background:rgba(255,255,255,.97)}
+html[data-glass="on"] .cad-menu{-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}
+
+/* ===== הכלים המבוקשים: «הדרכות» ראשון, חיפוש בסוף וממורכז ===== */
+.hq-list > .hq-search{grid-column:span 2}
+html .hero a.hq.hq-search,html[data-glass][data-theme] .hero a.hq.hq-search{flex-direction:row;align-items:center;justify-content:center;gap:10px;text-align:center;
+  background:var(--marking)!important;color:#141A1F;border-color:var(--marking)}
+.hero a.hq.hq-search::before{display:none}
+.hero a.hq.hq-search b{font-size:15.5px;font-weight:800}
+html[data-glass][data-theme] .hero a.hq.hq-search:hover,html .hero a.hq.hq-search:hover,html .hero a.hq.hq-search:focus-visible{background:#F3C455!important}
+.hero a.hq.hq-soon{cursor:default;pointer-events:none;opacity:.92}
+.hero a.hq.hq-soon::before{background:var(--muted-dark);opacity:.5}
+.hero a.hq.hq-soon b{color:var(--muted-dark)}
+.soon-tag{position:absolute;top:9px;inset-inline-end:10px;font-size:11px;font-weight:800;letter-spacing:.02em;
+  padding:3px 9px;border-radius:999px;background:rgba(233,177,47,.2);color:#8a5a00}
+[data-theme="dark"] .soon-tag{color:var(--marking)}
+
+/* ===== סרגל השליטה בצומת: מצומצם עם חץ ===== */
+html[data-glass="on"] #mh-bgv-ctl{inset-inline-start:max(92px,env(safe-area-inset-left,0px))}
+#mh-bgv-ctl .bgv-fold svg{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+#mh-bgv-ctl.is-folded .bgv-fold svg{transform:rotate(180deg)}
+#mh-bgv-ctl.is-folded > :not(.bgv-fold){display:none!important}
+#mh-bgv-ctl.is-folded{padding:3px}
+@media(max-width:600px){html[data-glass="on"] #mh-bgv-ctl{inset-inline-start:max(80px,env(safe-area-inset-left,0px))}}
+/* פונט אחיד כמו בכלי ההנחיות */
+body,button,input,select,textarea,#mh-bgv-ctl button,#mh-bgv-ctl .bgv-lab,.mh-pop{font-family:"Segoe UI","Arial",sans-serif!important}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  /* MahAlCad – תפריט תת־קטגוריות */
+  var sp=document.querySelector('.cad-split');
+  if(sp){
+    var c=sp.querySelector('.cad-caret');
+    var set=function(o){sp.classList.toggle('open',o);c.setAttribute('aria-expanded',o?'true':'false')};
+    c.addEventListener('click',function(e){e.stopPropagation();set(!sp.classList.contains('open'))});
+    document.addEventListener('click',function(e){if(!sp.contains(e.target))set(false)});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
+  }
+  /* סרגל השליטה בצומת – ברירת מחדל מצומצם, נפתח בחץ */
+  var K='mh-bgv-fold';
+  function rd(){try{return localStorage.getItem(K)}catch(e){return null}}
+  function wr(v){try{localStorage.setItem(K,v)}catch(e){}}
+  function wire(bar){
+    if(bar.querySelector('.bgv-fold'))return;
+    var b=document.createElement('button');b.type='button';b.className='bgv-fold';
+    b.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+    var apply=function(f){bar.classList.toggle('is-folded',f);b.setAttribute('aria-expanded',f?'false':'true');
+      b.setAttribute('aria-label',f?'פתיחת סרגל השליטה בצומת':'צמצום הסרגל');b.title=b.getAttribute('aria-label')};
+    b.addEventListener('click',function(e){e.stopPropagation();var f=!bar.classList.contains('is-folded');apply(f);wr(f?'1':'0')});
+    bar.insertBefore(b,bar.firstChild);
+    apply(rd()!=='0');
+  }
+  var bar=document.getElementById('mh-bgv-ctl');
+  if(bar)wire(bar);
+  else{var mo=new MutationObserver(function(){var x=document.getElementById('mh-bgv-ctl');if(x){mo.disconnect();wire(x)}});
+    mo.observe(document.body,{childList:true,subtree:true});setTimeout(function(){mo.disconnect()},20000)}
+});
+</script>
 </head>
 <body>
 
@@ -1139,6 +1226,10 @@ html[data-glass="on"][data-theme="dark"] .hero :is(a.hq,.hq-dropdown){background
         <div class="wrap">
             <a class="mark" href="index.html"><span aria-hidden="true"></span>MahAlCo</a>
             <nav>
+                <span class="mh-ic-group">
+                    <button type="button" class="mh-ic mh-ic-get" data-install onclick="openGetApp()" aria-haspopup="dialog" aria-label="הורדת האפליקציה – אנדרואיד, אייפון ומחשב" title="הורדת האפליקציה"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg></button>
+                    <a class="mh-ic mh-ic-share share-cta" href="https://wa.me/?text=%D7%94%D7%99%D7%99%2C%20%D7%AA%D7%9B%D7%99%D7%A8%20%D7%90%D7%AA%20%D7%9E%D7%94%D7%90%D7%9Cco%20%E2%80%93%20%D7%9B%D7%9C%D7%99%20%D7%97%D7%99%D7%A9%D7%95%D7%91%20%D7%9C%D7%94%D7%A0%D7%93%D7%A1%D7%AA%20%D7%AA%D7%A0%D7%95%D7%A2%D7%94%20%D7%91%D7%A2%D7%91%D7%A8%D7%99%D7%AA%3A%20%D7%A8%D7%9E%D7%AA%20%D7%A9%D7%99%D7%A8%D7%95%D7%AA%20%D7%9C%D7%A6%D7%95%D7%9E%D7%AA%2C%20%D7%AA%D7%A7%D7%9F%20%D7%97%D7%A0%D7%99%D7%94%2C%20%D7%97%D7%AA%D7%9B%D7%99%D7%9D%20%D7%95%D7%9E%D7%A8%D7%97%D7%A7%D7%99%20%D7%A8%D7%90%D7%95%D7%AA.%20%D7%91%D7%97%D7%99%D7%A0%D7%9D%20%D7%95%D7%91%D7%93%D7%A4%D7%93%D7%A4%D7%9F%2C%20%D7%A9%D7%95%D7%95%D7%94%20%D7%94%D7%A6%D7%A6%D7%94%20https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2Fapis-he.html" target="_blank" rel="noopener" data-share-text="היי, תכיר את מהאלco – כלי חישוב להנדסת תנועה בעברית: רמת שירות לצומת, תקן חניה, חתכים ומרחקי ראות. בחינם ובדפדפן, שווה הצצה" data-share-url="https://mahmoudalem95.github.io/mahalco/index.html" aria-label="שליחת הכלים לחבר מהנדס" title="מכירים מהנדס? שלחו לו את הכלים"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><path d="M12.6 11.3c-.25-.56-.5-.57-.74-.58h-.63c-.22 0-.57.08-.87.4-.3.33-1.14 1.11-1.14 2.7 0 1.6 1.17 3.14 1.33 3.36.16.22 2.26 3.6 5.58 4.91 2.76 1.09 3.32.87 3.92.82.6-.06 1.94-.79 2.21-1.56.27-.76.27-1.42.19-1.56-.08-.13-.3-.22-.63-.38-.33-.17-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.25-.71.08-.33-.16-1.39-.51-2.64-1.63-.98-.87-1.63-1.94-1.83-2.27-.19-.33-.02-.5.14-.67.15-.15.33-.38.49-.57.16-.19.22-.33.33-.55.11-.22.05-.41-.03-.57-.08-.16-.72-1.76-1-2.4z" fill="#fff"/><path d="M16 5.2C10 5.2 5.2 10 5.2 16c0 1.9.5 3.7 1.4 5.3L5.2 26.8l5.6-1.4c1.5.8 3.3 1.3 5.2 1.3 6 0 10.8-4.8 10.8-10.8S22 5.2 16 5.2z" fill="none" stroke="#fff" stroke-width="1.8"/></svg></a>
+                </span>
                 <a class="btn btn-solid" href="he/worklog.html">יומן עבודה</a>
                 <a href="index.html">דף הבית</a>
                 <a href="#flows">מסלולי עבודה</a>
@@ -1156,16 +1247,22 @@ html[data-glass="on"][data-theme="dark"] .hero :is(a.hq,.hq-dropdown){background
                 <p>ניתוח צמתים, רמת שירות, בטיחות, תכנון גיאומטרי, תחבורה ציבורית וחניה — לפי HCM, AASHTO ו‑HSM ולפי ההנחיות הישראליות. כל נוהל זמין להרצה בדפדפן, ואותם נתונים נשלחים ל‑API כשהשאלה גדלה לכדי מסדרון או רשת שלמה.</p>
 
                 <div class="hero-actions hero-primary">
-                   <a class="btn btn-solid" href="he/project-hub.html" dir="rtl">MahAlCad</a>
+                    <div class="cad-split">
+                        <a class="btn btn-solid cad-main" href="he/project-hub.html">MahAlCad</a>
+                        <button type="button" class="btn btn-solid cad-caret" aria-haspopup="true" aria-expanded="false" aria-controls="cad-menu" aria-label="כלים בתוך MahAlCad"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+                        <div class="cad-menu" id="cad-menu" role="menu">
+                            <a role="menuitem" href="he/project-hub.html"><small>מרכז הפרויקט</small><b>MahAlCad</b></a>
+                            <a role="menuitem" href="he/sd-tool.html"><small>ראות</small><b>משולשי ראות על תכנית</b></a>
+                        </div>
+                    </div>
                     <a class="btn btn-line" href="#catalog">כל הקטלוג</a>
                 </div>
                 <div class="hero-quick">
                     <span class="hq-label">הכלים המבוקשים</span>
                     <nav class="hq-list" aria-label="הכלים המבוקשים">
-                            <a class="btn btn-solid" href="he/calculator-dark-ui.html#search">חיפוש לפי ההנחיות</a>
+                        <a class="hq hq-soon" aria-disabled="true" tabindex="-1"><small>למידה</small><b>הדרכות מקוונות</b><span class="soon-tag">בקרוב</span></a>
                         <a class="hq" href="he/count-suite.html"><small>ניתוח ספירות</small><b>נפח קריטי · אורך תור · תכן מסעה</b></a>
                         <a class="hq" href="he/parking-regulations.html"><small>חניה</small><b>תקן חניה לפי יישוב</b></a>
-                        <a class="hq" href="he/sd-tool.html"><small>ראות</small><b>משולשי ראות על תכנית</b></a>
                         <div class="hq-dropdown" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
                             <small>גיאומטריה</small>
                             <b>חתך רוחב</b>
@@ -1174,24 +1271,11 @@ html[data-glass="on"][data-theme="dark"] .hero :is(a.hq,.hq-dropdown){background
                                 <a href="he/temporary-section.html" class="hq-opt gold" role="menuitem"> עבודה זמנית </a>
                             </div>
                         </div>
-                       
+                        <a class="hq hq-search" href="he/calculator-dark-ui.html#search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><b>חיפוש לפי ההנחיות</b></a>
                     </nav>
                 
                 </div>
-<!-- הורדה ושיתוף: כפתור הורדה אחד (אנדרואיד / אייפון / מחשב) ליד שיתוף -->
-                <div class="app-actions app-duo">
-                    <button type="button" class="duo duo-get" data-install onclick="openGetApp()" aria-haspopup="dialog">
-                        <span class="duo-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg></span>
-                        <span class="duo-txt"><b>הורדת האפליקציה</b><small>לאנדרואיד, לאייפון ולמחשב</small></span>
-                    </button>
-                    <a class="duo duo-share share-cta" href="https://wa.me/?text=%D7%94%D7%99%D7%99%2C%20%D7%AA%D7%9B%D7%99%D7%A8%20%D7%90%D7%AA%20%D7%9E%D7%94%D7%90%D7%9Cco%20%E2%80%93%20%D7%9B%D7%9C%D7%99%20%D7%97%D7%99%D7%A9%D7%95%D7%91%20%D7%9C%D7%94%D7%A0%D7%93%D7%A1%D7%AA%20%D7%AA%D7%A0%D7%95%D7%A2%D7%94%20%D7%91%D7%A2%D7%91%D7%A8%D7%99%D7%AA%3A%20%D7%A8%D7%9E%D7%AA%20%D7%A9%D7%99%D7%A8%D7%95%D7%AA%20%D7%9C%D7%A6%D7%95%D7%9E%D7%AA%2C%20%D7%AA%D7%A7%D7%9F%20%D7%97%D7%A0%D7%99%D7%94%2C%20%D7%97%D7%AA%D7%9B%D7%99%D7%9D%20%D7%95%D7%9E%D7%A8%D7%97%D7%A7%D7%99%20%D7%A8%D7%90%D7%95%D7%AA.%20%D7%91%D7%97%D7%99%D7%A0%D7%9D%20%D7%95%D7%91%D7%93%D7%A4%D7%93%D7%A4%D7%9F%2C%20%D7%A9%D7%95%D7%95%D7%94%20%D7%94%D7%A6%D7%A6%D7%94%20https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2Fapis-he.html" target="_blank" rel="noopener"
-                       data-share-text="היי, תכיר את מהאלco – כלי חישוב להנדסת תנועה בעברית: רמת שירות לצומת, תקן חניה, חתכים ומרחקי ראות. בחינם ובדפדפן, שווה הצצה" data-share-url="https://mahmoudalem95.github.io/mahalco/index.html">
-                        <span class="duo-ico"><svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><path d="M12.6 11.3c-.25-.56-.5-.57-.74-.58h-.63c-.22 0-.57.08-.87.4-.3.33-1.14 1.11-1.14 2.7 0 1.6 1.17 3.14 1.33 3.36.16.22 2.26 3.6 5.58 4.91 2.76 1.09 3.32.87 3.92.82.6-.06 1.94-.79 2.21-1.56.27-.76.27-1.42.19-1.56-.08-.13-.3-.22-.63-.38-.33-.17-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.25-.71.08-.33-.16-1.39-.51-2.64-1.63-.98-.87-1.63-1.94-1.83-2.27-.19-.33-.02-.5.14-.67.15-.15.33-.38.49-.57.16-.19.22-.33.33-.55.11-.22.05-.41-.03-.57-.08-.16-.72-1.76-1-2.4z" fill="#fff"/><path d="M16 5.2C10 5.2 5.2 10 5.2 16c0 1.9.5 3.7 1.4 5.3L5.2 26.8l5.6-1.4c1.5.8 3.3 1.3 5.2 1.3 6 0 10.8-4.8 10.8-10.8S22 5.2 16 5.2z" fill="none" stroke="#fff" stroke-width="1.8"/></svg></span>
-                        <span class="duo-txt"><b>מכירים מהנדס שעוד מחשב ביד?</b><small>שלחו לו את הכלים – לוקח שנייה</small></span>
-                        <span class="duo-go">שליחה</span>
-                    </a>
-                </div>
-                <div class="tally">
+<div class="tally">
                     <div><b>16</b>תחבורה נכונה</div>
                     <div><b>17</b>רחובות עירוניים</div>
                     <div><b>15</b>כבישים בין-עירוניים</div>

@@ -1850,6 +1850,7 @@ details.tool>.mount{padding:18px 16px 8px}
     <ul>
       <li><b>K Factor</b> — K = DHV / AADT × 100. בקובץ ספירה שעת השיא הבוקר/ערב משמשת כקירוב ל‑DHV.</li>
       <li><b>D Factor</b> — D = max(dir1, dir2) / (dir1 + dir2) × 100. טווח טיפוסי: 50%–70%.</li>
+      <li><b>AADT לפי מסלול וכיוון</b> — לכל מסלול (צפון–דרום, מזרח–מערב) ולכל כיוון (לכיוון צפון/דרום/מזרח/מערב) לפי הספירה המיוחסת: נכנסים מזרוע הגישה + יוצאים בזרוע היציאה, מכל שעות הספירה (למשל לכיוון צפון = נכנסים מדרום + יוצאים לצפון). AADT הכיוון = AADT הצומת × חלקו בסך הספירה המיוחסת. בלי נפחי יציאה — לפי הנכנסים בלבד.</li>
       <li><b>T Factor</b> — T = (Single Truck + Combo Truck) / AADT × 100. טווח טיפוסי: 0%–15%.</li>
       <li><b>AADT מספירה</b> — V14 × EF × מקדם התאמה. כאשר קיימות 24 שעות מדודות, סכומן מחליף את V14 × EF.</li>
       <li><b>14/24</b> — 14 הוא מספר השעות המדודות בחלון 06:00–20:00; עשר השעות הנותרות הן השלמה. היחס עצמו אינו מקדם חישוב.</li>
@@ -1941,7 +1942,7 @@ details.tool>.mount{padding:18px 16px 8px}
 <script src="../js/mount.js?v=1"></script>
 <script src="../js/tools/critical-lane-volume.js?v=13" data-mount="clv"></script>
 <script src="../js/tools/queue-storage-length.js?v=13" data-mount="queue"></script>
-<script src="../js/tools/aadt.js?v=8" data-mount="aadt"></script>
+<script src="../js/tools/aadt.js?v=9" data-mount="aadt"></script>
 <script src="../js/tools/count-suite.js?v=5"></script>
 <script src="../js/visits-bar.js?v=2" defer></script>
 </body>

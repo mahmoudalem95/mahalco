@@ -617,6 +617,14 @@ html[data-theme="light"] .pv-mnav{background:rgba(255,255,255,.96)}
 </style>
 <script src="../js/site-bg.js?v=1" data-remap="1"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="one-page">
+/* מחשבון + חיפוש בעמוד אחד */
+body.one-page .tabs{display:none}
+body.one-page #calcView.hidden,body.one-page #searchView.hidden{display:block}
+body.one-page #searchView{margin-top:34px;padding-top:21px;border-top:1px solid var(--border);scroll-margin-top:12px}
+.op-head{margin:0 0 13px;font-size:18px;font-weight:800;color:var(--primary-bright)}
+@media (max-width:860px){body.one-page #searchView .toolbar{top:0}}
+</style>
 </head>
 <body>
 <header>
@@ -687,6 +695,7 @@ html[data-theme="light"] .pv-mnav{background:rgba(255,255,255,.96)}
 
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=4"></script>
 <script src="../js/tools/calculator-ui.js?v=3"></script>
+<script src="../js/tools/calc-onepage.js?v=1"></script>
 
 <!-- ============ MOBILE LAYER — מהאלco ============ -->
 <script src="../js/inline/ed476ccef5.js"></script>

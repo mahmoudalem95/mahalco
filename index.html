@@ -100,7 +100,7 @@
         * { box-sizing: border-box }
         html { scroll-behavior: smooth }
         @media (prefers-reduced-motion:reduce) { html { scroll-behavior: auto } * { transition: none !important; animation: none !important } }
-        body { margin:0; background: var(--paper); color: var(--ink); font-family: "Segoe UI", "Arial", sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased }
+        body { margin:0; background: var(--paper); color: var(--ink); font-family: 'Heebo', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased }
         a { color: inherit }
         :focus-visible { outline: 2px solid var(--marking); outline-offset: 3px }
         .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px }
@@ -1183,8 +1183,6 @@ html[data-glass="on"] #mh-bgv-ctl{inset-inline-start:max(92px,env(safe-area-inse
 #mh-bgv-ctl.is-folded > :not(.bgv-fold){display:none!important}
 #mh-bgv-ctl.is-folded{padding:3px}
 @media(max-width:600px){html[data-glass="on"] #mh-bgv-ctl{inset-inline-start:max(80px,env(safe-area-inset-left,0px))}}
-/* פונט אחיד כמו בכלי ההנחיות */
-body,button,input,select,textarea,#mh-bgv-ctl button,#mh-bgv-ctl .bgv-lab,.mh-pop{font-family:"Segoe UI","Arial",sans-serif!important}
 </style>
 <script>
 document.addEventListener('DOMContentLoaded',function(){

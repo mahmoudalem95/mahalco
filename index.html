@@ -785,6 +785,25 @@ a.hq small{font-size:12px}
 .hq-list > * { position: relative; z-index: 1; }
 .hq-list > .hq-dropdown.open { z-index: 999999 !important; }
 .hq-list, .hero-quick, .hero .wrap { overflow: visible !important; }
+/* «חתך רוחב» – כרטיס מפוצל כמו MahAlCad: גוף + קו הפרדה + חץ */
+.hq-dropdown.hq-split{flex-direction:row;align-items:stretch;padding:0;cursor:default}
+.hq-split .hq-main{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:10px 14px;
+  color:inherit;text-decoration:none;position:relative}
+.hq-split .hq-main::before{content:"";position:absolute;inset-inline-start:0;top:10px;bottom:10px;width:4px;border-radius:0 3px 3px 0;background:var(--marking);opacity:.85}
+.hq-split .hq-main small{font-size:12px;color:var(--muted-dark);font-weight:600}
+.hq-split .hq-main b{font-size:14.5px;font-weight:700;line-height:1.35}
+.hq-split .hq-caret{flex:0 0 52px;display:grid;place-items:center;border:0;margin:0;padding:0;background:transparent;color:inherit;cursor:pointer;
+  border-inline-start:1px solid var(--rule-dark);border-radius:0;border-start-end-radius:13px;border-end-end-radius:13px;font:inherit;-webkit-tap-highlight-color:transparent}
+.hq-split .hq-caret:hover,.hq-split .hq-caret:focus-visible,.hq-split.open .hq-caret{background:rgba(233,177,47,.16);color:var(--marking);outline:0}
+.hq-split .hq-caret svg{transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.hq-split.open .hq-caret svg{transform:rotate(180deg)}
+.hq-split .hq-main:active{transform:scale(.98)}
+.hq-split .hq-opt{display:flex;flex-direction:column;gap:1px}
+.hq-split .hq-opt small{font-size:11.5px;font-weight:600;opacity:.75}
+.hq-split .hq-opt b{font-size:14px;font-weight:800}
+:root[data-theme="light"] .hq-split .hq-caret{border-inline-start-color:#D3D6CF}
+:root[data-theme="light"] .hq-split .hq-caret:is(:hover,:focus-visible),:root[data-theme="light"] .hq-split.open .hq-caret{color:#8a5a00}
+@media (max-width:599px){.hq-split .hq-main b{font-size:13.5px}.hq-split .hq-caret{flex-basis:46px}}
 </style>
 <!-- ===== MAHALCO · מראה התצוגה: בהיר / לילה / לפי המכשיר + זכוכית iOS (משותף לכל העמודים) ===== -->
 <script data-light="#F4F5F1" data-dark="#15181C" data-slot=".masthead .wrap">
@@ -1262,12 +1281,12 @@ document.addEventListener('DOMContentLoaded',function(){
                         <a class="hq hq-soon" aria-disabled="true" tabindex="-1"><small>למידה</small><b>הדרכות מקוונות</b><span class="soon-tag">בקרוב</span></a>
                         <a class="hq" href="he/count-suite.html"><small>ניתוח ספירות</small><b>נפח קריטי · אורך תור · תכן מסעה</b></a>
                         <a class="hq" href="he/parking-regulations.html"><small>חניה</small><b>תקן חניה לפי יישוב</b></a>
-                        <div class="hq-dropdown" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
-                            <small>גיאומטריה</small>
-                            <b>חתך רוחב</b>
-                            <div class="hq-options" role="menu">
-                                <a href="he/typical-section.html" class="hq-opt gray" role="menuitem">חתך סופי</a>
-                                <a href="he/temporary-section.html" class="hq-opt gold" role="menuitem"> עבודה זמנית </a>
+                        <div class="hq-dropdown hq-split">
+                            <a class="hq-main" href="he/typical-section.html"><small>גיאומטריה</small><b>חתך רוחב</b></a>
+                            <button type="button" class="hq-caret" aria-haspopup="true" aria-expanded="false" aria-controls="hq-sec-menu" aria-label="בחירת חתך: סופי או זמני"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+                            <div class="hq-options" id="hq-sec-menu" role="menu">
+                                <a href="he/typical-section.html" class="hq-opt gray" role="menuitem"><small>תכנון קבוע</small><b>חתך סופי</b></a>
+                                <a href="he/temporary-section.html" class="hq-opt gold" role="menuitem"><small>הסדרי תנועה באתר עבודה</small><b>חתך זמני</b></a>
                             </div>
                         </div>
                         <a class="hq hq-search" href="he/calculator-dark-ui.html#search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><b>חיפוש לפי ההנחיות</b></a>
@@ -2234,35 +2253,29 @@ document.querySelectorAll('a.share-cta').forEach(function (a) {
 </script>
 
 <script>
-/* Dropdown לתפריט הנפתח של "חתך רוחב" */
+/* «חתך רוחב» – כרטיס מפוצל: הגוף פותח חתך סופי, החץ פותח בחירה סופי/זמני */
 document.addEventListener('DOMContentLoaded', function() {
     const dropdowns = document.querySelectorAll('.hq-dropdown');
-    dropdowns.forEach(dropdown => {
-        const toggle = function(e) {
-            // אם לוחצים על אחת מהאופציות, תן לקישור לעבוד
-            if (e.target.closest('.hq-opt')) return;
-            e.stopPropagation();
-            const isOpen = dropdown.classList.toggle('open');
-            dropdown.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        };
-        dropdown.addEventListener('click', toggle);
-        dropdown.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggle(e);
-            } else if (e.key === 'Escape') {
-                dropdown.classList.remove('open');
-                dropdown.setAttribute('aria-expanded', 'false');
-            }
+    const set = function(d, o) {
+        d.classList.toggle('open', o);
+        const c = d.querySelector('.hq-caret');
+        if (c) c.setAttribute('aria-expanded', o ? 'true' : 'false');
+    };
+    dropdowns.forEach(d => {
+        const c = d.querySelector('.hq-caret');
+        if (!c) return;
+        c.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            const o = !d.classList.contains('open');
+            dropdowns.forEach(x => set(x, false));
+            set(d, o);
         });
     });
-
-    // סגירת כל התפריטים כאשר לוחצים מחוץ להם
-    document.addEventListener('click', function() {
-        dropdowns.forEach(d => {
-            d.classList.remove('open');
-            d.setAttribute('aria-expanded', 'false');
-        });
+    document.addEventListener('click', function(e) {
+        dropdowns.forEach(d => { if (!d.contains(e.target)) set(d, false); });
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') dropdowns.forEach(d => set(d, false));
     });
 });
 </script>

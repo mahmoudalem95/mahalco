@@ -266,9 +266,14 @@
 
   const origFor = MH_PROF.sheetsFor;
   MH_PROF.sheetsFor = function (ai, first = 1) {
-    const prof = origFor.apply(this, arguments) || [];
+    let prof = [], err = null;
+    try { prof = origFor.apply(this, arguments) || []; } catch (e) { err = e; }
     let xs = [];
     try { xs = sectionSheets(ai, first + prof.length); } catch (e) { console.error(e); }
+    if (err) {
+      if (!xs.length) throw err;
+      xs[0].note = (S.axes[ai] ? S.axes[ai].name + ': ' : '') + (err.message || err);
+    }
     return [...prof, ...xs];
   };
 

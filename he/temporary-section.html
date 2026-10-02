@@ -82,6 +82,9 @@ button{cursor:pointer;touch-action:manipulation}
 #drawing{padding:8px;min-width:100%;transition:width .25s var(--ease)}
 #drawing svg{direction:ltr;display:block;width:100%;height:auto;background:var(--paper)}
 #drawing .selrect{fill:var(--hi-soft);stroke:var(--hi);stroke-width:.6;transition:x .25s var(--ease),width .25s var(--ease)}
+/* תצוגה מקדימה: ב-100% השרטוט כולו נכנס למסגרת (רוחב וגובה); בזום – גלילה כרגיל */
+#drawing:not(.zoomed) svg{max-height:calc(58vh - 16px)}
+@media (max-width:1023px){ .sheetwrap{max-height:max(34vh,210px)} #drawing:not(.zoomed) svg{max-height:calc(max(34vh,210px) - 16px)} }
 
 .ribbon-wrap{padding:10px 12px 12px;border-top:.5px solid var(--sep)}
 .ribbon-head{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;font-size:13px;color:var(--label-2)}
@@ -642,7 +645,7 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
 <input type="file" id="projectFile" accept=".json,application/json" hidden>
 
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=4"></script>
-<script src="../js/tools/temporary-section.js?v=3"></script>
+<script src="../js/tools/temporary-section.js?v=4"></script>
 <!-- ==================================================================
      גיליון A0 + מודול ייצוא DXF/DWG
      ================================================================== -->

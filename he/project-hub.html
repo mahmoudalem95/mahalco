@@ -1001,6 +1001,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
         <div id="vSurveyDrop" class="cell" role="button" tabindex="0" style="justify-content:center;border:1px dashed var(--line2);border-radius:4px;margin-top:6px;color:var(--dim);cursor:pointer">גררו לכאן קובץ/י מדידה או לחצו לבחירה</div>
         <div id="vSurveyFiles" class="hint" style="padding:6px 4px 0"></div>
         <div class="cell"><span class="lbl">רוחב מסדרון מהציר</span><input id="vCorridorW" type="number" value="60" step="5" style="width:58px"><span style="color:var(--dim)">מ׳</span></div>
+        <div class="cell"><span class="lbl">סף קפיצה בקרקע</span><input id="vSpikePct" type="number" value="30" min="0" step="5" style="width:58px"><span style="color:var(--dim)">%</span></div>
         <button class="cell btn" id="vBuildGround">בניית קו קרקע מהמדידה</button>
       </div>
       <p class="hint" id="vSurveyInfo"></p>
@@ -1234,7 +1235,8 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
 
 <script src="../js/inline/3c42aa4034.js"></script>
 
-<script src="../js/inline/91948705e8.js?v=3"></script>
+<script src="../js/tools/ground-spike-filter.js?v=1"></script>
+<script src="../js/inline/91948705e8.js?v=4"></script>
 
 <!-- ================= LEFT TOOL PALETTE WIRING ================= -->
 <script src="../js/inline/76a8e2a96a.js"></script>

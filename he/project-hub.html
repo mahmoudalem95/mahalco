@@ -753,6 +753,16 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
   #sdWork .row{grid-template-columns:1fr 150px}
 }
 </style><!-- sd:end -->
+<style id="hub-corner">
+/* פינה שמאלית-תחתונה מסודרת: הכפתורים הצפים יושבים מעל שורת המצב ומימין לסרגל הכלים, אחד מעל השני,
+   והודעת שירות החישוב מופיעה במרכז ולא מעליהם. סרגל השליטה של רקע הצומת לא שייך לכלי שרטוט. */
+#mh-bgv-ctl{display:none!important}
+.mt-btn{left:calc(var(--tools-w) + 12px)!important;bottom:calc(var(--status-h) + 12px)!important}
+.mh-pdf-btn{left:calc(var(--tools-w) + 12px)!important;bottom:calc(var(--status-h) + 60px)!important}
+#abApiStatus{left:50%!important;right:auto!important;bottom:calc(var(--status-h) + 12px)!important;transform:translateX(-50%);
+  width:max-content;max-width:min(440px,calc(100vw - 32px))!important;z-index:2147483001!important;padding:2px 4px;border:1px solid var(--line2)}
+html.sd-open .mt-btn{bottom:12px!important} html.sd-open .mh-pdf-btn{bottom:60px!important} html.sd-open #abApiStatus{bottom:12px!important}
+</style>
 </head>
 <body>
 

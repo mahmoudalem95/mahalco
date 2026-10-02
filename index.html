@@ -1988,7 +1988,7 @@ document.addEventListener('DOMContentLoaded',function(){
 /* מכסת שימוש יומית — 10 פתיחות של נהלים ליום, וסימון נהלים שטרם הושלמו */
 (function() {
     let LIMIT = 10;                     /* לשינוי המכסה: שנו את המספר הזה */
-    const KEY = 'mahalco_daily_use_v1';
+    const KEY = 'mahalco_daily_use_v2';   /* v2: ספירה לפי דפדפן (vid) – מבטל את הנעילה המשותפת של 2.10 */
     /* נספרים נהלים שונים ביום, לא לחיצות: חזרה לאותו נוהל באותו יום אינה נספרת שוב.
        לחזרה לספירת לחיצות: החזירו את בדיקת ה‑30 שניות שהייתה כאן. */
     const PENDING = /(^|\/)apis(-he)?\.html([?#].*)?$/i;
@@ -2083,12 +2083,24 @@ document.addEventListener('DOMContentLoaded',function(){
     }, true);
 
     /* המכסה האמיתית נספרת בשרת החישוב (לפי מבקר, ביום לפי שעון ישראל); כאן רק מציגים אותה */
+    /* מזהה דפדפן אקראי: המכסה בשרת נספרת לפי IP + מזהה זה, כדי שמשתמשים מאחורי אותו IP
+       (סלולר, משרד) לא יחלקו מכסה אחת. אותו מפתח משמש את calc-client.js בדפי הכלים. */
+    function visitorId() {
+        let v = '';
+        try { v = localStorage.getItem('mahalco_vid_v1') || ''; } catch (e) {}
+        if (!/^[A-Za-z0-9_-]{16,64}$/.test(v)) {
+            const b = new Uint8Array(16); crypto.getRandomValues(b);
+            v = Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
+            try { localStorage.setItem('mahalco_vid_v1', v); } catch (e) {}
+        }
+        return v;
+    }
     (function syncServer() {
         let key = '';
         try { key = localStorage.getItem('mahalco_api_key_v1') || sessionStorage.getItem('mahalco_api_key') || ''; } catch (e) {}
         fetch('https://mahalco-calc.onrender.com/v1/quota', {
             method: 'POST', mode: 'cors', credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer',
-            headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(key ? { key: key.trim() } : {})
+            headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ vid: visitorId() }, key ? { key: key.trim() } : {}))
         }).then(r => r.ok ? r.json() : null).then(d => {
             if (!d || !d.ok || d.tier === 'key') return;
             if (typeof d.limit === 'number') LIMIT = d.limit;

@@ -244,6 +244,15 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
   .grid3{grid-template-columns:1fr 1fr}
   .stp input{width:54px}
 }
+/* טלפון: סרגל עליון צפוף יותר כדי שלא יגלוש לרוחב */
+@media (max-width:600px){
+  .nav .nbtn{min-width:36px;height:36px;padding:0 6px}
+  .nav .nbtn svg{width:18px;height:18px}
+  .nav .mh-look.mh-inline{width:36px;height:36px;margin-inline-start:2px}
+  .nav-in{gap:4px}
+  .pill{height:30px;padding:0 10px;font-size:12.5px}
+}
+@media (max-width:430px){ #btnGuide{display:none} .nav h1{font-size:16px} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media print{.nav,.insp,.canvas-bar,.ribbon-wrap,.guide-ov{display:none}}
 

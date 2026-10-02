@@ -101,6 +101,40 @@
     return null;
   }
 
+  // שרטוט החתך הטיפוסי המלא ממנוע ההנחיות (רכבים, אנשים, מדרכות, שכבות מבנה, שיפועים, מידות)
+  function engineFor(ax) {
+    const t = ax.tsSect;
+    if (!t || !t.sect || !t.sect.g || typeof tsSectionOps !== 'function') return null;
+    if (t._xsEng && t._xsEngG === t.sect.g) return t._xsEng;
+    let ops;
+    try { ops = tsSectionOps(ax); } catch (e) { return null; }
+    if (!ops || !ops.length) return null;
+    const D = t.sect.D || 100, f = D / 1000;
+    const box = document.createElement('div');
+    box.style.cssText = 'position:absolute;left:-99999px;top:0;width:10px;height:10px;overflow:hidden';
+    box.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + t.sect.w + ' ' + t.sect.h + '">' + t.sect.g + '</svg>';
+    document.body.appendChild(box);
+    let surf = [];
+    try {
+      const svg = box.querySelector('svg'), path = svg.querySelector('[data-lay="TS-SURFACE"]');
+      if (path && path.getTotalLength) {
+        const M = svg.getCTM().inverse().multiply(path.getCTM()), L = path.getTotalLength();
+        for (let i = 0; i <= 60; i++) { const q = path.getPointAtLength(L * i / 60), r = new DOMPoint(q.x, q.y).matrixTransform(M); surf.push([r.x * f, -r.y * f]); }
+      }
+    } finally { box.remove(); }
+    if (surf.length < 2) return null;
+    const sec = ax.sec || {};
+    const x0 = Math.min(...surf.map(p => p[0]));
+    const axX = x0 + (+sec.median || 0) / 2 + (sec.left || []).reduce((a, e) => a + (+e.w || 0), 0);
+    const near = surf.reduce((b, p) => Math.abs(p[0] - axX) < Math.abs(b[0] - axX) ? p : b, surf[0]);
+    const res = {
+      ops: ops.filter(o => !(o.k === 'text' && /^(חתך טיפוסי|קנה מידה)/.test(String(o.s || '')))),
+      axX, axY: near[1], textK: SCALE / D
+    };
+    t._xsEng = res; t._xsEngG = t.sect.g;
+    return res;
+  }
+
   function sectionData(geom, ax, sta, ef, survey) {
     const f = frameAt(geom.els, sta);
     const zD = ef ? ef.design(sta) : null;
@@ -114,13 +148,25 @@
     const design = tpl.map(([o, dz]) => [o, base + dz]);
     const dl = daylight(design[0], -1, g), dr = daylight(design[design.length - 1], 1, g);
     const full = [...(dl ? [dl] : []), ...design, ...(dr ? [dr] : [])];
-    return { sta, zD, zE: zE != null ? zE : (g ? interp(g, 0) : null), g, design: full, hasDesign: zD != null };
+    return { sta, zD, zE: zE != null ? zE : (g ? interp(g, 0) : null), g, design: full, hasDesign: zD != null, base, eng: engineFor(ax) };
   }
 
   // שרטוט חתך בודד במערכת "מטרים בשרטוט" (1 יח' = 1 מ׳ בקנ"מ 1:200)
   function drawSection(d, ox, oy, w) {
     const ops = [];
-    const zs = [...d.design.map(p => p[1]), ...(d.g || []).map(p => p[1])];
+    // הצבת שרטוט המנוע: ציר המנוע → היסט 0, פני הכביש בציר → רום הקו האדום
+    const E = d.eng;
+    const eo = E ? E.ops.map(o => {
+      const tp = p => [p[0] - E.axX, d.base + (p[1] - E.axY)];
+      if (o.k === 'text') { const q = tp([o.x, o.y]); return { ...o, x: q[0], y: q[1], h: o.h * E.textK }; }
+      if (o.k === 'circle') { const q = tp([o.cx, o.cy]); return { ...o, cx: q[0], cy: q[1] }; }
+      if (o.k === 'solid') return { ...o, poly: o.poly.map(tp) };
+      if (o.pts) return { ...o, pts: o.pts.map(tp) };
+      return null;
+    }).filter(Boolean) : [];
+    const ez = [];
+    eo.forEach(o => (o.k === 'text' ? [[o.x, o.y]] : o.k === 'circle' ? [[o.cx, o.cy - o.r], [o.cx, o.cy + o.r]] : (o.pts || o.poly)).forEach(p => ez.push(p[1])));
+    const zs = [...d.design.map(p => p[1]), ...(d.g || []).map(p => p[1]), ...ez];
     const datum = Math.floor(Math.min(...zs) - 1);
     const zTop = Math.max(...zs);
     const tableH = mm(20);
@@ -142,6 +188,13 @@
       const pts = d.g.filter(p => X(p[0]) >= xL && X(p[0]) <= xR).map(p => [X(p[0]), Y(p[1])]);
       if (pts.length > 1) ops.push({ k: 'poly', lay: 'HW-EW-EX', pts, col: '#8a5a2b', lw: 0.35, lt: [mm(2.5), mm(1.2)] });
     }
+    // שרטוט החתך הטיפוסי המלא
+    eo.forEach(o => {
+      if (o.k === 'text') ops.push({ ...o, x: X(o.x), y: Y(o.y) });
+      else if (o.k === 'circle') ops.push({ ...o, cx: X(o.cx), cy: Y(o.cy) });
+      else if (o.k === 'solid') ops.push({ ...o, poly: o.poly.map(p => [X(p[0]), Y(p[1])]) });
+      else ops.push({ ...o, pts: o.pts.map(p => [X(p[0]), Y(p[1])]) });
+    });
     // קו מתוכנן
     const dp = d.design.map(p => [X(clipX(p[0])), Y(p[1])]);
     ops.push({ k: 'poly', lay: 'HW-CURB', pts: dp, col: '#c0392b', lw: 0.5 });
@@ -185,7 +238,8 @@
     const data = stas.map(s => { try { return sectionData(geom, ax, s, ef, survey); } catch (e) { return null; } }).filter(Boolean);
     if (!data.length) return [];
     // רוחב תא אחיד לפי החתך הרחב
-    const wNeed = Math.max(...data.map(d => Math.max(...d.design.map(p => Math.abs(p[0]))))) * 2 + 10 + mm(22);
+    const engX = d => d.eng ? d.eng.ops.flatMap(o => o.k === 'text' ? [o.x] : o.k === 'circle' ? [o.cx] : (o.pts || o.poly || []).map(p => p[0])).map(x => Math.abs(x - d.eng.axX)) : [];
+    const wNeed = Math.max(...data.map(d => Math.max(...d.design.map(p => Math.abs(p[0])), ...engX(d)))) * 2 + 10 + mm(30);
     const cellW = Math.min(PW, Math.max(mm(150), wNeed));
     const cols = Math.max(1, Math.floor(PW / cellW));
     const colW = PW / cols;

@@ -625,6 +625,16 @@ table.psheet th.psheet-pvi{
 <meta property="og:url" content="https://mahmoudalem95.github.io/mahalco/he/project-hub.html">
 <meta property="og:image" content="https://mahmoudalem95.github.io/mahalco/icon-512.png">
 <script src="../js/site-bg.js?v=1" data-own="1"></script>
+<style id="hub-corner">
+/* פינה שמאלית-תחתונה מסודרת: הכפתורים הצפים יושבים מעל שורת המצב ומימין לסרגל הכלים, אחד מעל השני,
+   והודעת שירות החישוב מופיעה במרכז ולא מעליהם. סרגל השליטה של רקע הצומת לא שייך לכלי שרטוט. */
+#mh-bgv-ctl{display:none!important}
+.mt-btn{left:calc(var(--tools-w) + 12px)!important;bottom:calc(var(--status-h) + 12px)!important}
+.mh-pdf-btn{left:calc(var(--tools-w) + 12px)!important;bottom:calc(var(--status-h) + 60px)!important}
+#abApiStatus{left:50%!important;right:auto!important;bottom:calc(var(--status-h) + 12px)!important;transform:translateX(-50%);
+  width:max-content;max-width:min(440px,calc(100vw - 32px))!important;z-index:2147483001!important;padding:2px 4px;border:1px solid var(--line2)}
+html.sd-open .mt-btn{bottom:12px!important} html.sd-open .mh-pdf-btn{bottom:60px!important} html.sd-open #abApiStatus{bottom:12px!important}
+</style>
 <!-- sd:begin --><style id="sd-css">
 #sdWork{position:fixed;top:var(--ribbon-h);bottom:0;inset-inline:0;z-index:21;display:flex;flex-direction:column;
   background:var(--bg);color:var(--ink);font-size:13px;line-height:1.45;
@@ -753,16 +763,6 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
   #sdWork .row{grid-template-columns:1fr 150px}
 }
 </style><!-- sd:end -->
-<style id="hub-corner">
-/* פינה שמאלית-תחתונה מסודרת: הכפתורים הצפים יושבים מעל שורת המצב ומימין לסרגל הכלים, אחד מעל השני,
-   והודעת שירות החישוב מופיעה במרכז ולא מעליהם. סרגל השליטה של רקע הצומת לא שייך לכלי שרטוט. */
-#mh-bgv-ctl{display:none!important}
-.mt-btn{left:calc(var(--tools-w) + 12px)!important;bottom:calc(var(--status-h) + 12px)!important}
-.mh-pdf-btn{left:calc(var(--tools-w) + 12px)!important;bottom:calc(var(--status-h) + 60px)!important}
-#abApiStatus{left:50%!important;right:auto!important;bottom:calc(var(--status-h) + 12px)!important;transform:translateX(-50%);
-  width:max-content;max-width:min(440px,calc(100vw - 32px))!important;z-index:2147483001!important;padding:2px 4px;border:1px solid var(--line2)}
-html.sd-open .mt-btn{bottom:12px!important} html.sd-open .mh-pdf-btn{bottom:60px!important} html.sd-open #abApiStatus{bottom:12px!important}
-</style>
 </head>
 <body>
 
@@ -965,7 +965,7 @@ html.sd-open .mt-btn{bottom:12px!important} html.sd-open .mh-pdf-btn{bottom:60px
         <button class="cell btn" id="bDxfSheet">ייצוא DWG ל-CAD (AutoCAD)</button>
         <div class="cell"><span class="lbl">שירות המרה ל-DWG</span><input id="dwgSvc" type="url" placeholder="https://…/dxf2dwg" style="width:150px;text-align:left;direction:ltr;font:inherit;height:24px;border:1px solid var(--line);border-radius:3px;background:var(--bg3);color:var(--ink);padding:0 8px"></div>
         <div class="cell"><span class="lbl">מילוי צבעוני בייצוא</span><input id="dwgFill" type="checkbox" checked style="width:18px;height:18px;accent-color:var(--accent)"></div>
-        <div class="cell"><span class="lbl">גודל כיתוב לפי קנה מידה</span><select id="dwgScale" style="width:150px;font:inherit;height:24px;border:1px solid var(--line);border-radius:3px;background:var(--bg3);color:var(--ink);padding:0 8px"><option value="200">1:200</option><option value="500" selected>1:500</option><option value="1000">1:1000</option><option value="2000">1:2000</option></select></div>
+        <div class="cell"><span class="lbl">גודל כיתוב לפי קנה מידה</span><select id="dwgScale" style="width:150px;font:inherit;height:24px;border:1px solid var(--line);border-radius:3px;background:var(--bg3);color:var(--ink);padding:0 8px"><option value="500" selected>1:500</option><option value="1000">1:1000</option><option value="2500">1:2500</option></select></div>
         <button class="cell btn danger" id="bClear">ניקוי הציר הזה</button>
         <button class="cell btn danger" id="bDelAxis">מחיקת הציר הזה</button>
       </div>
@@ -1183,7 +1183,7 @@ html.sd-open .mt-btn{bottom:12px!important} html.sd-open .mh-pdf-btn{bottom:60px
   <section class="stepP" data-step="4" hidden>
     <h2>4 · פלט – PDF / DWG</h2>
     <p class="lead">קנה המידה נקבע רק כאן. ה-DWG נשמר בקואורדינטות ITM אמיתיות (מודל) ובגיליון מוכן להדפסה (Layout).</p>
-    <div class="row"><label for="oScale">קנה מידה</label><select id="oScale"><option value="250">1:250</option><option value="500" selected>1:500</option><option value="1000">1:1000</option><option value="1250">1:1250</option><option value="2000">1:2000</option></select></div>
+    <div class="row"><label for="oScale">קנה מידה</label><select id="oScale"><option value="500" selected>1:500</option><option value="1000">1:1000</option><option value="2500">1:2500</option></select></div>
     <div class="row"><label for="oPaper">גיליון</label><select id="oPaper"><option value="auto" selected>אוטומטי – הקטן שמתאים</option><option value="A3">A3</option><option value="A2">A2</option><option value="A1">A1</option><option value="A0">A0</option></select></div>
     <div id="oInfo">—</div>
     <h2>לכלול בפלט</h2>
@@ -1244,7 +1244,7 @@ html.sd-open .mt-btn{bottom:12px!important} html.sd-open .mh-pdf-btn{bottom:60px
 
 <script src="../js/inline/3c42aa4034.js"></script>
 
-<script src="../js/inline/91948705e8.js"></script>
+<script src="../js/inline/91948705e8.js?v=2"></script>
 
 <!-- ================= LEFT TOOL PALETTE WIRING ================= -->
 <script src="../js/inline/76a8e2a96a.js"></script>
@@ -1253,14 +1253,14 @@ html.sd-open .mt-btn{bottom:12px!important} html.sd-open .mh-pdf-btn{bottom:60px
 <script src="../js/inline/32d3b84681.js" id='profile-nav-js'></script>
 <!-- MH_UPGRADE -->
 <script src="../js/inline/9071e1ce46.js"></script>
-<script src="../js/inline/96051e7c2d.js"></script>
+<script src="../js/inline/96051e7c2d.js?v=2"></script>
 <script src="../js/inline/ad12f68bd6.js"></script>
 <script src="../js/inline/24c8d17b63.js"></script>
 <!-- sd:begin -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" async></script>
 <script src="../js/mount.js?v=1"></script>
-<script src="../js/tools/sd-tool.js?v=3" data-mount="sd"></script>
-<script src="../js/tools/project-hub-sd.js?v=2"></script>
+<script src="../js/tools/sd-tool.js?v=4" data-mount="sd"></script>
+<script src="../js/tools/project-hub-sd.js?v=3"></script>
 <!-- sd:end -->
 <script src="../js/tour.js?v=6"></script>
 <script src="../js/pdf-export.js?v=1"></script>

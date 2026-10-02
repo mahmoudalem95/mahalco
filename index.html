@@ -1224,6 +1224,8 @@ html[data-glass="on"] #mh-bgv-ctl{inset-inline-start:max(92px,env(safe-area-inse
 @media(max-width:600px){html[data-glass="on"] #mh-bgv-ctl{inset-inline-start:max(80px,env(safe-area-inset-left,0px))}}
 </style>
 <style id="hero-phi">
+.hero .nobr{white-space:nowrap}
+.hero .wrap > div > p{text-wrap:pretty}
 /* ===== Hero לפי יחס הזהב (φ ≈ 1.618) וסדרת פיבונאצי 8·13·21·34·55·89 =====
    • עמודת התוכן = 61.8% מרוחב ה-Hero, הצומת המונפש = 38.2%
    • כותרת 44px ≈ 17·φ², טקסט 17px, רווח שורות φ
@@ -1329,7 +1331,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="wrap">
             <div>
                 <h1>כלי API להנדסת תחבורה</h1>
-                <p>ניתוח צמתים, רמת שירות, בטיחות, תכנון גיאומטרי, תחבורה ציבורית וחניה — לפי HCM, AASHTO ו‑HSM ולפי ההנחיות הישראליות. כל נוהל זמין להרצה בדפדפן, ואותם נתונים נשלחים ל‑API כשהשאלה גדלה לכדי מסדרון או רשת שלמה.</p>
+                <p>ניתוח צמתים, רמת שירות, בטיחות, תכנון גיאומטרי, תחבורה ציבורית וחניה — <span class="nobr">לפי HCM, AASHTO ו‑HSM</span> ולפי ההנחיות הישראליות. כל נוהל זמין להרצה בדפדפן, ואותם נתונים נשלחים <span class="nobr">ל‑API</span> כשהשאלה גדלה לכדי מסדרון או רשת שלמה.</p>
 
                 <div class="hero-actions hero-primary">
                     <div class="cad-split">

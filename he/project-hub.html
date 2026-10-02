@@ -625,6 +625,134 @@ table.psheet th.psheet-pvi{
 <meta property="og:url" content="https://mahmoudalem95.github.io/mahalco/he/project-hub.html">
 <meta property="og:image" content="https://mahmoudalem95.github.io/mahalco/icon-512.png">
 <script src="../js/site-bg.js?v=1" data-own="1"></script>
+<!-- sd:begin --><style id="sd-css">
+#sdWork{position:fixed;top:var(--ribbon-h);bottom:0;inset-inline:0;z-index:21;display:flex;flex-direction:column;
+  background:var(--bg);color:var(--ink);font-size:13px;line-height:1.45;
+  --panel:var(--bg2);--panel2:var(--bg3);--txt:var(--ink);--amber:var(--gold1);--amber2:var(--gold1);--ink2:var(--ink)}
+#sdWork[hidden]{display:none!important}
+html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
+#sdWork *{box-sizing:border-box}
+#sdWork button{background:var(--bg3);color:var(--ink);border:1px solid var(--line2);border-radius:5px;padding:6px 11px;font:inherit;font-size:12.5px;cursor:pointer;line-height:1.3}
+#sdWork button:hover{background:var(--bg4)}
+#sdWork button:disabled{opacity:.5;cursor:default}
+#sdWork button.key,#sdWork button.on{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk);border-color:var(--gold2);font-weight:700}
+#sdWork button.mini{padding:2px 8px;font-size:11.5px}
+#sdWork :is(input,select){background:var(--bg);color:var(--ink);border:1px solid var(--line2);border-radius:4px;padding:5px 7px;font:inherit;font-size:12.5px;height:auto;width:auto}
+#sdWork :is(button,input,select):focus-visible{outline:2px solid var(--gold1);outline-offset:1px}
+#sdWork input[type=checkbox]{width:auto!important;accent-color:var(--gold1);flex:none}
+#sdWork input[type=range]{accent-color:var(--gold1);padding:0;border:0;background:none}
+
+/* ---- סרגל עליון ---- */
+#sdWork .sdbar{flex:none;display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg2);border-bottom:1px solid var(--line);min-height:46px;overflow-x:auto}
+#sdWork .sdbar .sdttl{display:flex;flex-direction:column;line-height:1.15;padding-inline:4px 8px;border-inline-end:1px solid var(--line);margin-inline-end:4px;white-space:nowrap}
+#sdWork .sdbar .sdttl b{font-size:13px}
+#sdWork .sdbar .sdttl span{font-size:10.5px;color:var(--dim)}
+#sdWork #sdBack{white-space:nowrap}
+#sdWork #steps{display:flex;gap:3px;flex-wrap:nowrap}
+#sdWork #steps button{display:flex;align-items:center;gap:6px;background:transparent;border-color:transparent;color:var(--dim);padding:5px 9px;white-space:nowrap}
+#sdWork #steps button i{font-style:normal;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;background:var(--bg3);border:1px solid var(--line2);font-variant-numeric:tabular-nums}
+#sdWork #steps button.on{color:var(--ink);background:var(--bg3);border-color:var(--line2);font-weight:600}
+#sdWork #steps button.on i{background:var(--gold1);color:var(--goldInk);border-color:var(--gold1)}
+#sdWork #steps button.done i{background:var(--ok);color:#fff;border-color:var(--ok)}
+#sdWork .sdpick{display:flex;align-items:center;gap:5px;margin-inline-start:auto;white-space:nowrap}
+#sdWork .sdpick label{font-size:11.5px;color:var(--dim)}
+#sdWork .sdpick select{max-width:260px}
+
+/* ---- פריסה: לוח מימין, מפה משמאל (כמו MahAlCad) ---- */
+#sdWork .shell{flex:1;min-height:0;display:grid;grid-template-columns:var(--props-w) minmax(0,1fr)}
+#sdWork aside{position:static;max-height:none;overflow:auto;background:var(--bg2);border-inline-end:1px solid var(--line);padding:10px 12px 40px;overscroll-behavior:contain}
+#sdWork aside h2{font-size:10.5px;letter-spacing:.08em;color:var(--dim);margin:14px 0 6px;font-weight:700;text-transform:uppercase}
+#sdWork aside h2:first-child{margin-top:2px}
+#sdWork .lead{font-size:12.5px;color:var(--ink);opacity:.86;margin:4px 0 10px}
+#sdWork .row{display:grid;grid-template-columns:1fr 128px;gap:8px;align-items:center;padding:3px 0}
+#sdWork .row label{font-size:12.5px;color:var(--ink)}
+#sdWork .row :is(input,select){width:100%}
+#sdWork .row.chk2{grid-template-columns:1fr}
+#sdWork .row.chk2 label{display:flex;gap:8px;align-items:center}
+#sdWork .seg{display:flex;border:1px solid var(--line2);border-radius:6px;overflow:hidden;margin:4px 0 8px}
+#sdWork .seg button{flex:1;border:0;border-radius:0;background:transparent;padding:8px 6px;font-size:13px}
+#sdWork .seg button+button{border-inline-start:1px solid var(--line2)}
+#sdWork .src{font-size:11.5px;color:var(--dim);background:var(--bg3);border:1px solid var(--line);border-radius:4px;padding:7px 9px}
+#sdWork .place{display:flex;flex-direction:column;gap:2px;background:var(--bg3);border:1px solid var(--line);border-radius:4px;padding:8px 10px;font-size:12.5px}
+#sdWork .place span{font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums;text-align:right}
+#sdWork .toolrow{display:flex;align-items:center;gap:8px;margin:6px 0}
+#sdWork .dim{color:var(--dim)} #sdWork .toolrow .dim{font-size:11.5px}
+#sdWork .arm{background:var(--bg3);border:1px solid var(--line);border-radius:4px;padding:7px 8px;margin-bottom:6px;display:block}
+#sdWork .arm.sel{border-color:var(--gold1)}
+#sdWork .arm .hd{display:flex;gap:6px;align-items:center;font-size:12px;margin-bottom:5px}
+#sdWork .arm .hd .dim{flex:1;font-size:11px}
+#sdWork .arm .g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#sdWork .arm .g label{font-size:10.5px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+#sdWork .arm :is(select,input){width:100%;padding:3px 5px;font-size:12px}
+#sdWork .next{display:flex;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+#sdWork .next .key{flex:1}
+#sdWork .hint{font-size:11.5px;color:var(--dim);margin:5px 0;padding:0}
+#sdWork .outbig{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px}
+#sdWork .outbig button{padding:11px 8px;font-size:13.5px}
+#sdWork #oInfo{font-size:12px;background:var(--bg3);border:1px solid var(--line);border-radius:4px;padding:8px 10px;margin:8px 0}
+
+/* ---- מפה ותוצאות ---- */
+#sdWork main{min-width:0;overflow:auto;padding:10px 12px 18px;background:var(--bg)}
+#sdWork .stage{position:relative;inset:auto;top:auto;bottom:auto;display:block;
+  height:max(360px,calc(100dvh - var(--ribbon-h) - 46px - 64px));border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--map)}
+#sdWork #map{display:block;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
+#sdWork #search{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:6;width:min(430px,calc(100% - 150px))}
+#sdWork #search .bar{display:flex;box-shadow:var(--shadow);border-radius:6px}
+#sdWork #q{flex:1;min-width:0;height:38px;border-radius:0 6px 6px 0;background:var(--bg2);font-size:13.5px;padding:0 12px}
+#sdWork #qGo{height:38px;border-radius:6px 0 0 6px;border-inline-start:0;background:linear-gradient(180deg,var(--gold1),var(--gold2));color:var(--goldInk);font-weight:700;padding:0 14px}
+#sdWork #sres{margin-top:6px;background:var(--bg2);border:1px solid var(--line2);border-radius:6px;box-shadow:var(--shadow-lg);max-height:320px;overflow-y:auto}
+#sdWork .sr{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;text-align:right;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;padding:8px 12px}
+#sdWork .sr span{font-size:11px;color:var(--dim)}
+#sdWork .sr:hover{background:var(--bg3)}
+#sdWork .sr-m{padding:10px 12px;font-size:12px;color:var(--dim)}
+#sdWork .mctl{position:absolute;top:10px;left:10px;z-index:5;display:flex;flex-direction:column;gap:6px}
+#sdWork .mctl button{width:38px;height:38px;padding:0;font-size:16px;background:var(--bg2);box-shadow:var(--shadow)}
+#sdWork .mctl button.wide{width:auto;padding:0 10px;font-size:12px}
+#sdWork .mctl button.on{background:linear-gradient(180deg,var(--gold1),var(--gold2))}
+#sdWork #hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:10px;align-items:center;
+  background:var(--glass2);border:1px solid var(--gold1);border-radius:22px;padding:7px 8px 7px 16px;max-width:calc(100% - 24px);box-shadow:var(--shadow-lg)}
+#sdWork #hint[hidden],#sdWork #sres[hidden]{display:none!important}
+#sdWork #hintT{font-size:12.5px;color:var(--ink)}
+#sdWork #hint button{flex:none;padding:5px 12px;border-radius:16px}
+#sdWork #coords{position:absolute;bottom:8px;right:10px;z-index:4;font:11px/1.2 ui-monospace,Menlo,Consolas,monospace;color:#e8ecf5;background:rgba(11,16,28,.62);padding:3px 7px;border-radius:4px;direction:ltr}
+#sdWork #attr{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:4;font-size:10px;color:#dfe4ec;background:rgba(11,16,28,.5);padding:2px 6px;border-radius:3px;pointer-events:none;white-space:nowrap}
+#sdWork .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--ink);margin-top:9px}
+#sdWork .legend span{display:flex;gap:5px;align-items:center}
+#sdWork .sw{width:14px;height:10px;border-radius:2px;display:inline-block;padding:0;border:0}
+#sdWork .out{display:grid;grid-template-columns:1.25fr 1fr;gap:12px;margin-top:12px}
+#sdWork .box{background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:12px;min-width:0}
+#sdWork .box h3{margin:0 0 9px;font-size:11px;letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
+#sdWork .tw{overflow-x:auto}
+#sdWork table.t{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+#sdWork table.t th{color:var(--dim);font-weight:600;text-align:right;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+#sdWork table.t td{padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+#sdWork table.t td b{color:var(--gold1)}
+:root[data-theme="light"] #sdWork table.t td b{color:var(--gold2)}
+#sdWork .chk{border-right:3px solid var(--ok);background:var(--bg3);padding:7px 10px;border-radius:4px 0 0 4px;margin-bottom:6px;font-size:12px}
+#sdWork .chk.warn{border-color:var(--warn)} #sdWork .chk.bad{border-color:var(--bad)}
+#sdWork .chk b{display:block;font-size:10.5px;color:var(--dim)}
+#sdWork #toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--gold1);color:var(--goldInk);font-weight:700;padding:8px 16px;border-radius:20px;font-size:12.5px;opacity:0;transition:opacity .18s;pointer-events:none;z-index:90;max-width:calc(100vw - 32px);text-align:center}
+@media(max-width:1180px){#sdWork .out{grid-template-columns:1fr}}
+/* טאבלט לאורך / טלפון: מפה למעלה, לוח מתחת, גלילה אחת */
+@media(max-width:980px){
+  #sdWork .sdbar{flex-wrap:wrap;overflow:visible}
+  #sdWork .sdbar .sdttl span{display:none}
+  #sdWork #steps{order:3;width:100%;overflow-x:auto}
+  #sdWork #steps button{flex:1;justify-content:center;padding:6px 4px}
+  #sdWork .sdpick{margin-inline-start:0;order:4;width:100%}
+  #sdWork .sdpick select{flex:1;max-width:none}
+  #sdWork .shell{display:flex;flex-direction:column;overflow:auto}
+  #sdWork main{display:contents}
+  #sdWork .stage{order:1;margin:8px 10px 0;height:60vh;min-height:340px;flex:none}
+  #sdWork aside{order:2;overflow:visible;border-inline-end:0;border-top:1px solid var(--line);margin-top:10px;flex:none}
+  #sdWork .legend{order:3;margin:10px 12px 0}
+  #sdWork .out{order:4;margin:10px 10px 16px}
+  #sdWork #search{width:calc(100% - 64px);left:auto;right:8px;transform:none}
+  #sdWork .mctl{top:58px}
+  #sdWork :is(input,select){font-size:16px}
+  #sdWork .row{grid-template-columns:1fr 150px}
+}
+</style><!-- sd:end -->
 </head>
 <body>
 
@@ -951,7 +1079,147 @@ table.psheet th.psheet-pvi{
     <button id="bNewAxis" class="go">＋ ציר חדש</button>
   </div>
 </footer>
+<!-- sd:begin -->
+<section id="sdWork" data-mount="sd" hidden aria-label="משולשי ראות">
+<div class="sdbar">
+  <button type="button" id="sdBack" title="חזרה לשרטוט הצירים (Esc)">→ חזרה לשרטוט</button>
+  <div class="sdttl"><b>משולשי ראות</b><span>צמתים ומעגלי תנועה · לפי ההנחיות</span></div>
+  <nav id="steps" aria-label="שלבי העבודה">
+    <button type="button" data-step="1"><i>1</i>מיקום</button>
+    <button type="button" data-step="2"><i>2</i>צירים</button>
+    <button type="button" data-step="3"><i>3</i>משולשים</button>
+    <button type="button" data-step="4"><i>4</i>פלט</button>
+  </nav>
+  <button type="button" id="bUndo" title="ביטול הנקודה האחרונה (Backspace)">↶ בטל נקודה</button>
+  <button type="button" id="bSave" title="שמירת הפרויקט כקובץ">שמור</button>
+  <button type="button" id="bLoad" title="פתיחת פרויקט שמור">פתח</button>
+  <input type="file" id="fLoad" accept=".json,application/json" hidden>
+  <div class="sdpick"><label for="sdJPick">צומת מהשרטוט</label><select id="sdJPick"></select><button type="button" id="sdJLoad" title="טעינה מחדש של הצומת מהשרטוט">⟳ טעינה</button></div>
+</div>
+<div class="shell">
+<aside>
+  <!-- ============ שלב 1 ============ -->
+  <section class="stepP" data-step="1">
+    <h2>1 · מיקום וסוג הבדיקה</h2>
+    <p class="lead">חפשו את הצומת בשורת החיפוש שמעל המפה – כתובת, שם צומת או קואורדינטות ITM. העבודה נעשית על צילום האוויר במטרים אמיתיים, בלי כיול.</p>
+    <div class="place" id="placeInfo"><b>טרם נבחר מיקום</b><span>E — · N —</span></div>
+    <h2>סביבה</h2>
+    <div class="seg" role="group" aria-label="סביבה"><button type="button" data-env="urban">עירוני</button><button type="button" data-env="rural">בין-עירוני</button></div>
+    <h2>סוג הצומת</h2>
+    <div class="seg" role="group" aria-label="סוג הצומת"><button type="button" data-type="jct">צומת (T / +)</button><button type="button" data-type="rab">מעגל תנועה</button></div>
+    <p class="src" id="modeSrc"></p>
+    <div class="next"><button type="button" class="key" data-next="2">המשך לציור הצירים ←</button><button type="button" id="bDemo" title="טעינת גיאומטריה לדוגמה סביב מרכז המפה">דוגמה</button></div>
+  </section>
 
+  <!-- ============ שלב 2 ============ -->
+  <section class="stepP" data-step="2" hidden>
+    <h2>2 · ציור הצירים</h2>
+    <div id="pJ">
+      <p class="lead">לחצו נקודות לאורך ציר הדרך הראשית, ואחר כך לאורך כל זרוע משנית מהצומת החוצה. הצירים מוחלקים לעקומה רציפה, ומשולשי הראות מצטיירים מיד.</p>
+      <div class="toolrow"><button type="button" id="tMain">✎ ציר הדרך הראשית</button><span class="dim" id="mainInfo"></span></div>
+      <div class="toolrow"><button type="button" id="tArm">+ זרוע משנית</button></div>
+      <div id="arms"></div>
+      <h2>חתך הדרך הראשית</h2>
+      <div class="row"><label for="jCarr">סוג הדרך</label><select id="jCarr"><option value="single">חד-מסלולית</option><option value="dual">דו-מסלולית (מפרדה)</option></select></div>
+      <div class="row"><label for="jLanes">נתיבים לכיוון</label><input id="jLanes" type="number" min="1" max="4" value="1"></div>
+      <div class="row"><label for="jLaneW">רוחב נתיב (מ׳)</label><input id="jLaneW" type="number" step="0.05" value="3.5"></div>
+      <div class="row" id="jMedRow" hidden><label for="jMedian">רוחב מפרדה (מ׳)</label><input id="jMedian" type="number" step="0.5" value="0"></div>
+      <div class="row"><label for="jShoulder">שול / מרווח לאבן השפה (מ׳)</label><input id="jShoulder" type="number" step="0.25" value="0"></div>
+      <p class="hint" id="jUrbanNote">בעירוני L2 נמדד מקו אבן השפה של הרחוב הראשי (טבלאות 5.13–5.14).</p>
+    </div>
+    <div id="pR" hidden>
+      <p class="lead">לחצו על מרכז המעגל ואז על השפה החיצונית של המיסעה הסובבת. אחר כך ציירו כל זרוע גישה מהמעגל החוצה.</p>
+      <div class="toolrow"><button type="button" id="tRab">◎ סמן מעגל</button><span class="dim" id="rabInfo"></span></div>
+      <div class="row"><label for="rDc">קוטר חיצוני Dc (מ׳)</label><input id="rDc" type="number" step="0.5" value=""></div>
+      <div class="row"><label for="rLanes">טיפוס המעגל</label><select id="rLanes"><option value="1">חד-נתיבי</option><option value="2">דו-נתיבי</option></select></div>
+      <div class="row"><label for="rWc">רוחב המיסעה הסובבת (מ׳)</label><input id="rWc" type="number" step="0.5" value="7"></div>
+      <div class="toolrow"><button type="button" id="tRArm">+ זרוע גישה</button></div>
+      <div id="rArms"></div>
+    </div>
+    <div class="next"><button type="button" class="key" data-next="3">המשך לערכי התכן ←</button><button type="button" id="bReset">נקה שרטוט</button></div>
+  </section>
+
+  <!-- ============ שלב 3 ============ -->
+  <section class="stepP" data-step="3" hidden>
+    <h2>3 · ערכי תכן ומשולשי ראות</h2>
+    <div id="pJparams">
+      <div class="row"><label for="jSpeed">מהירות בדרך הראשית</label><select id="jSpeed"></select></div>
+      <div class="row chk2"><label><input type="checkbox" id="jLM" checked> ראות לפנייה שמאלה מהדרך הראשית</label></div>
+      <p class="hint">תמרור, רכב תכן, שיפוע ומיקום קו העצירה – בכרטיס של כל זרוע (שלב 2).</p>
+    </div>
+    <div id="pRparams" hidden>
+      <div id="rUrbanOnly">
+        <div class="row"><label for="rVapp">מהירות בגישה (קמ״ש)</label><input id="rVapp" type="number" step="5" value="50"></div>
+        <div class="row"><label for="rVR2">מהירות ההסט VR2 (קמ״ש)</label><input id="rVR2" type="number" step="1" value="30"></div>
+        <p class="hint">V לרכב הנכנס משמאל = ממוצע VR1 (טבלה 2.7) ו-VR2 (איור 2.2). הזינו את VR2 לפי מסלול ההסט בתכנון.</p>
+      </div>
+      <div id="rRuralOnly">
+        <p class="hint">מהירויות נגזרות מרדיוסי הנסיעה (טבלה 11.10). רדיוס הכניסה R1 מוזן בכרטיס כל זרוע.</p>
+      </div>
+      <div class="row"><label for="rRt">רדיוס נסיעה במעגל (מ׳)</label><input id="rRt" type="number" step="0.5" placeholder="אוטומטי"></div>
+    </div>
+    <h2>תצוגה</h2>
+    <div class="row chk2"><label><input type="checkbox" id="sLeft" checked> משולש שמאלה (חצייה / ימינה · d1)</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sRight" checked> משולש ימינה (פנייה שמאלה · d2 סובב)</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sLM" checked> פנייה שמאלה מהראשי</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sSSD" checked> ראות לעצירה ואזור נקי (מעגל)</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sEdges" checked> שפות המיסעה הראשית</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="sLbl" checked> תוויות מידה</label></div>
+    <div class="row"><label for="sOp">שקיפות המשולשים</label><input id="sOp" type="range" min="10" max="70" value="30"></div>
+    <div class="next"><button type="button" class="key" data-next="4">המשך לפלט ←</button></div>
+  </section>
+
+  <!-- ============ שלב 4 ============ -->
+  <section class="stepP" data-step="4" hidden>
+    <h2>4 · פלט – PDF / DWG</h2>
+    <p class="lead">קנה המידה נקבע רק כאן. ה-DWG נשמר בקואורדינטות ITM אמיתיות (מודל) ובגיליון מוכן להדפסה (Layout).</p>
+    <div class="row"><label for="oScale">קנה מידה</label><select id="oScale"><option value="250">1:250</option><option value="500" selected>1:500</option><option value="1000">1:1000</option><option value="1250">1:1250</option><option value="2000">1:2000</option></select></div>
+    <div class="row"><label for="oPaper">גיליון</label><select id="oPaper"><option value="auto" selected>אוטומטי – הקטן שמתאים</option><option value="A3">A3</option><option value="A2">A2</option><option value="A1">A1</option><option value="A0">A0</option></select></div>
+    <div id="oInfo">—</div>
+    <h2>לכלול בפלט</h2>
+    <div class="row chk2"><label><input type="checkbox" id="oPhoto" checked> צילום אוויר ברקע (PDF)</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="oTable" checked> טבלת ערכי תכן</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="oLegend" checked> מקרא</label></div>
+    <div class="row chk2"><label><input type="checkbox" id="oFill" checked> מילוי המשולשים (DWG – בשכבות ‎-F נפרדות)</label></div>
+    <div class="row"><label for="oDpi">רזולוציית PDF</label><select id="oDpi"><option value="150">150 dpi</option><option value="200" selected>200 dpi</option><option value="300">300 dpi</option></select></div>
+    <h2>חותמת</h2>
+    <div class="row"><label for="prProj">פרויקט</label><input id="prProj" value=""></div>
+    <div class="row"><label for="prDwg">מס׳ גיליון</label><input id="prDwg" value="SD-01"></div>
+    <div class="row"><label for="prBy">שרטט</label><input id="prBy" value=""></div>
+    <div class="outbig"><button type="button" class="key" id="bPdf">⤓ הורד PDF</button><button type="button" class="key" id="bDwg">⤓ הורד DWG</button></div>
+    <p class="hint" id="outReady"></p>
+    <p class="hint">ה-DWG כולל שכבות SD-* (צירים, משולשים, קווי עצירה, תוויות), גובה כיתוב לפי קנה המידה, וגיליון עם מסגרת וחותמת. אם שירות ההמרה אינו זמין יורד DXF.</p>
+  </section>
+</aside>
+
+<main>
+  <div class="stage" id="stage">
+    <canvas id="map" aria-label="מפת העבודה"></canvas>
+    <div id="search">
+      <div class="bar"><input id="q" type="search" placeholder="חיפוש מקום, כתובת או ITM (E, N)…" autocomplete="off" aria-label="חיפוש מקום"><button type="button" id="qGo" aria-label="חיפוש">חפש</button></div>
+      <div id="sres" hidden></div>
+    </div>
+    <div class="mctl">
+      <button type="button" id="zIn" title="התקרבות" aria-label="התקרבות">+</button>
+      <button type="button" id="zOut" title="התרחקות" aria-label="התרחקות">−</button>
+      <button type="button" id="zFit" title="התאמה לשרטוט" aria-label="התאמה לשרטוט">⤢</button>
+      <button type="button" id="mStyle" class="wide" title="צילום אוויר / מפה">🗺 מפה</button>
+      <button type="button" id="mOn" class="wide" title="הסתרת מפת הרקע">רקע</button>
+    </div>
+    <div id="hint" hidden><span id="hintT"></span><button type="button" id="hintDone" class="key">סיום ✓</button></div>
+    <div id="coords">E — · N —</div>
+    <div id="attr"></div>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="out">
+    <div class="box"><h3>ערכי התכן לפי זרוע</h3><div id="res"></div></div>
+    <div class="box"><h3>בדיקות והערות</h3><div id="checks"></div></div>
+  </div>
+</main>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+</section>
+<!-- sd:end -->
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=4"></script>
 <script src="../js/tools/alignment-builder-he.js?v=2"></script>
 
@@ -978,7 +1246,13 @@ table.psheet th.psheet-pvi{
 <script src="../js/inline/96051e7c2d.js"></script>
 <script src="../js/inline/ad12f68bd6.js"></script>
 <script src="../js/inline/24c8d17b63.js"></script>
-<script src="../js/tour.js?v=5"></script>
+<!-- sd:begin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" async></script>
+<script src="../js/mount.js?v=1"></script>
+<script src="../js/tools/sd-tool.js?v=3" data-mount="sd"></script>
+<script src="../js/tools/project-hub-sd.js?v=1"></script>
+<!-- sd:end -->
+<script src="../js/tour.js?v=6"></script>
 <script src="../js/pdf-export.js?v=1"></script>
 <script src="../js/visits-bar.js?v=2" defer></script>
 <script defer src="../js/car-guide.js?v=3"></script>

@@ -1223,6 +1223,54 @@ html[data-glass="on"] #mh-bgv-ctl{inset-inline-start:max(92px,env(safe-area-inse
 #mh-bgv-ctl.is-folded{padding:3px}
 @media(max-width:600px){html[data-glass="on"] #mh-bgv-ctl{inset-inline-start:max(80px,env(safe-area-inset-left,0px))}}
 </style>
+<style id="hero-phi">
+/* ===== Hero לפי יחס הזהב (φ ≈ 1.618) וסדרת פיבונאצי 8·13·21·34·55·89 =====
+   • עמודת התוכן = 61.8% מרוחב ה-Hero, הצומת המונפש = 38.2%
+   • כותרת 44px ≈ 17·φ², טקסט 17px, רווח שורות φ
+   • מרווחים אנכיים: 21 → 34 → 34 → 13 → 34 → 21
+   • כרטיסים בזיגזג φ:1 / 1:φ, גובה 89; כפתורים וחיפוש בגובה 55 (55:89 = 1:φ) */
+@media (min-width:861px){
+  .hero .wrap{grid-template-columns:minmax(0,1.618fr) minmax(0,1fr);gap:34px}
+}
+.hero{padding:55px 0 89px}
+.hero h1{margin:0 0 21px;font-size:clamp(2.1rem,4.2vw,2.75rem);line-height:1.15}
+.hero .wrap > div > p{margin:0 0 34px;max-width:none;font-size:17px;line-height:1.618}
+.hero-primary{margin-bottom:34px;gap:13px}
+.hero-primary .btn{min-height:55px;display:inline-flex;align-items:center;justify-content:center;padding:0 21px}
+.hero-primary .cad-split .cad-caret{padding:0 13px}
+.hero-quick{margin:0}
+.hero-quick .hq-label{margin-bottom:13px}
+
+/* שלוש עמודות 1 : 0.618 : 1 → כל שורה מתחלקת φ:1 בזיגזג */
+.hero .hq-list{grid-template-columns:minmax(0,1fr) minmax(0,.618fr) minmax(0,1fr);grid-auto-rows:auto;gap:13px}
+.hero .hq-list > *{min-height:89px}
+.hero .hq-list > :nth-child(1){grid-column:1}            /* הדרכות      1 */
+.hero .hq-list > :nth-child(2){grid-column:2 / span 2}   /* ספירות      φ */
+.hero .hq-list > :nth-child(3){grid-column:1 / span 2}   /* חניה        φ */
+.hero .hq-list > :nth-child(4){grid-column:3}            /* חתך רוחב   1 */
+.hero .hq-list > .hq-search{grid-column:1 / -1;min-height:55px}
+.hero .hq-list a.hq b,.hero .hq-split .hq-main b{text-wrap:balance}
+
+.hero-quick + .tally{margin-top:34px;padding-top:21px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+
+@media (max-width:860px){
+  .hero{padding:34px 0 55px}
+}
+@media (max-width:599px){
+  .hero{padding:34px 0 34px}
+  .hero h1{margin-bottom:13px}
+  .hero .wrap > div > p{margin-bottom:21px;font-size:16px}
+  .hero-primary{margin-bottom:21px;gap:8px}
+  .hero-primary .btn{min-height:55px}
+  .hero-quick .hq-label{margin-bottom:8px}
+  .hero .hq-list{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-flow:row dense;gap:8px}
+  .hero .hq-list > *{min-height:55px}
+  .hero .hq-list > :nth-child(1),.hero .hq-list > :nth-child(3){grid-column:auto}
+  .hero .hq-list > :nth-child(2),.hero .hq-list > :nth-child(4){grid-column:1 / -1}
+  .hero .hq-list > .hq-search{grid-column:1 / -1}
+  .hero-quick + .tally{margin-top:21px;padding-top:13px;grid-template-columns:1fr 1fr;gap:13px 21px}
+}
+</style>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
   /* MahAlCad – תפריט תת־קטגוריות */

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
+<style id="he-font">button,input,select,textarea,optgroup{font-family:inherit}</style>
 <script src="../js/ga.js" async></script>
 <script src="../js/clarity.js" async></script>
 
@@ -34,7 +35,7 @@
     --bar:rgba(18,18,20,.82); --shadow:none }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{background:var(--bg);color:var(--label);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Heebo",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--label);font:16px/1.4 'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;touch-action:manipulation}
 :focus-visible{outline:3px solid var(--tint);outline-offset:2px;border-radius:6px}
@@ -270,7 +271,7 @@ textarea:focus{outline:none}
 @media print{
   body{background:#fff;color:#000}
   .nav,.tabbar,main,.toast,.sheet,.scrim,.modal{display:none!important}
-  #report{display:block;font:11pt/1.45 Arial,sans-serif;color:#000;padding:0}
+  #report{display:block;font:11pt/1.45 'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;color:#000;padding:0}
   #report h1{font-size:17pt;margin-bottom:2pt}
   #report .meta{font-size:10pt;color:#333;margin-bottom:10pt}
   #report h2{font-size:12pt;margin:12pt 0 4pt;border-bottom:1pt solid #000;padding-bottom:2pt}
@@ -326,7 +327,7 @@ html[data-glass="on"] #mh-bg{display:block;position:fixed;inset:0;z-index:-1;poi
 
 /* ---- popover ---- */
 .mh-pop{position:fixed;z-index:9991;width:292px;max-width:calc(100vw - 16px);padding:12px;border-radius:18px;direction:rtl;text-align:right;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Heebo","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.35;
+  font-family:'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:15px;line-height:1.35;
   color:var(--mh-ui-ink);background:var(--mh-ui-bg);border:.5px solid var(--mh-ui-line);
   -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
   box-shadow:0 18px 50px rgba(0,0,0,.26),0 2px 6px rgba(0,0,0,.08);
@@ -391,6 +392,7 @@ html[data-glass="on"] :is(.canvas,.box,.group,.welcome){border-radius:20px}
 <meta property="og:url" content="https://mahmoudalem95.github.io/mahalco/he/worklog.html">
 <meta property="og:image" content="https://mahmoudalem95.github.io/mahalco/icon-512.png">
 <script src="../js/site-bg.js?v=1"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <header class="nav">

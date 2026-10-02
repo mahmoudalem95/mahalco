@@ -1,7 +1,7 @@
 // מהאלco — Service Worker
 // גרסת המטמון: מעלים ב-1 בכל פעם שמפרסמים גרסה חדשה של האתר,
 // כדי לאלץ דפדפנים לרענן את הקבצים השמורים.
-const CACHE_VERSION = "mahalco-v41";
+const CACHE_VERSION = "mahalco-v42";
 
 // נשמרים מראש (זמינים גם ללא אינטרנט) רק כפתורי ה-hero בעמוד הבית.
 // כדי להוסיף כלי נוסף לרשימה — פשוט מוסיפים שורה נוספת כאן.
@@ -15,7 +15,7 @@ const PRECACHE_URLS = [
   "manifest.webmanifest",
   "he/critical-lane-volume.html",
   "he/parking-regulations.html",
-  "he/sd-tool.html",
+  "he/project-hub.html",
   "he/typical-section.html",
   "he/calculator-dark-ui.html",
   "he/worklog.html",

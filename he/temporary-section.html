@@ -85,6 +85,7 @@ button{cursor:pointer;touch-action:manipulation}
 #drawing .selrect{fill:var(--hi-soft);stroke:var(--hi);stroke-width:.6;transition:x .25s var(--ease),width .25s var(--ease)}
 /* תצוגה מקדימה: ב-100% השרטוט כולו נכנס למסגרת (רוחב וגובה); בזום – גלילה כרגיל */
 #drawing:not(.zoomed) svg{max-height:calc(58vh - 16px)}
+#drawing.stack svg{max-height:none!important;margin:0 auto}
 @media (max-width:1023px){ .sheetwrap{max-height:max(34vh,210px)} #drawing:not(.zoomed) svg{max-height:calc(max(34vh,210px) - 16px)} }
 
 .ribbon-wrap{padding:10px 12px 12px;border-top:.5px solid var(--sep)}
@@ -485,7 +486,8 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
   <div class="canvas">
     <div class="canvas-bar">
       <div class="seg" id="viewSeg" role="tablist">
-        <button class="tab" type="button" role="tab" aria-pressed="true" data-v="temp">חתך זמני</button>
+        <button class="tab" type="button" role="tab" aria-pressed="true" data-v="all">הכול</button>
+        <button class="tab" type="button" role="tab" aria-pressed="false" data-v="temp">חתך זמני</button>
         <button class="tab" type="button" role="tab" aria-pressed="false" data-v="base">קיים</button>
         <button class="tab" type="button" role="tab" aria-pressed="false" data-v="fin">סופי</button>
         <button class="tab" type="button" role="tab" aria-pressed="false" data-v="sheet">גיליון A0</button>
@@ -663,7 +665,7 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
 <input type="file" id="projectFile" accept=".json,application/json" hidden>
 
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=6"></script>
-<script src="../js/tools/temporary-section.js?v=7"></script>
+<script src="../js/tools/temporary-section.js?v=8"></script>
 <!-- ==================================================================
      גיליון A0 + מודול ייצוא DXF/DWG
      ================================================================== -->

@@ -86,6 +86,8 @@ button{cursor:pointer;touch-action:manipulation}
 /* תצוגה מקדימה: ב-100% השרטוט כולו נכנס למסגרת (רוחב וגובה); בזום – גלילה כרגיל */
 #drawing:not(.zoomed) svg{max-height:calc(58vh - 16px)}
 #drawing.stack svg{max-height:none!important;margin:0 auto}
+.sheetwrap:has(#drawing.stack){max-height:76vh}
+@media (max-width:1023px){ .sheetwrap:has(#drawing.stack){max-height:max(60vh,320px)} }
 @media (max-width:1023px){ .sheetwrap{max-height:max(34vh,210px)} #drawing:not(.zoomed) svg{max-height:calc(max(34vh,210px) - 16px)} }
 
 .ribbon-wrap{padding:10px 12px 12px;border-top:.5px solid var(--sep)}
@@ -665,7 +667,7 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
 <input type="file" id="projectFile" accept=".json,application/json" hidden>
 
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=6"></script>
-<script src="../js/tools/temporary-section.js?v=8"></script>
+<script src="../js/tools/temporary-section.js?v=9"></script>
 <!-- ==================================================================
      גיליון A0 + מודול ייצוא DXF/DWG
      ================================================================== -->

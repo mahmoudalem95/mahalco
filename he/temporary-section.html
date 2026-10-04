@@ -281,6 +281,8 @@ select.plain{appearance:none;-webkit-appearance:none;border:0;background:none;co
 .alloc input.aw{width:68px;font:inherit;font-variant-numeric:tabular-nums;text-align:left;direction:ltr;padding:4px 6px;border:.5px solid var(--sep);border-radius:7px;background:transparent;color:inherit}
 .alloc td.nar input.aw{color:var(--amber);font-weight:700} .alloc td.fail input.aw{color:var(--red);font-weight:800}
 .alloc td.mv{white-space:nowrap;text-align:left} .alloc td.mv button{font:inherit;font-size:16px;line-height:1;width:30px;height:30px;border:0;border-radius:8px;background:var(--fill);color:var(--label);margin-inline-start:4px;cursor:pointer} .alloc td.mv button:disabled{opacity:.3} .alloc td.mv button.del{color:var(--red)}
+.ribbon-head.f .k i{background:var(--green)} .ribbon-head .man.same{color:var(--label-2);background:var(--fill)}
+.alloc td.fmsg{font-size:12px;color:var(--label-2);max-width:180px}
 .alloc tr.sel td{background:var(--hi-soft)}
 .ribbon.ro .rb{font-size:10px;color:rgba(0,0,0,.78)}
 .ribbon.ro .rb.tmp{background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.0) 0 6px,rgba(255,255,255,.28) 6px 12px)}
@@ -485,6 +487,7 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
       <div class="seg" id="viewSeg" role="tablist">
         <button class="tab" type="button" role="tab" aria-pressed="true" data-v="temp">חתך זמני</button>
         <button class="tab" type="button" role="tab" aria-pressed="false" data-v="base">קיים</button>
+        <button class="tab" type="button" role="tab" aria-pressed="false" data-v="fin">סופי</button>
         <button class="tab" type="button" role="tab" aria-pressed="false" data-v="sheet">גיליון A0</button>
       </div>
       <div class="zoom"><button type="button" id="zOut" aria-label="הקטנה">−</button><output id="zVal">100%</output><button type="button" id="zIn" aria-label="הגדלה">+</button></div>
@@ -496,7 +499,9 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
       <div class="ribbon" id="ribbon" aria-label="פס רוחבי החתך הקיים – גררו את המפרידים לשינוי רוחב"></div>
       <div class="ribbon-head t"><span class="k"><i></i>חתך זמני</span><b id="rbTotT">0.00 מ׳</b><span class="man" id="rbManT" hidden>ערוך ידנית</span><span class="gap" id="rbGapT"></span><button type="button" class="rb-reset" id="rbResetT" hidden aria-label="חזרה לחתך הזמני המחושב">↺ מחושב</button></div>
       <div class="ribbon ro" id="ribbonT" aria-label="פס החתך הזמני – גררו מפריד לשינוי רוחב, גררו רכיב לשינוי מיקומו"></div>
-      <div class="ribbon-hint">הקישו על רכיב לבחירה. גררו מפריד בין שני רכיבים – בחתך הקיים או בחתך הזמני – כדי להעביר רוחב ביניהם (הרוחב הכולל נשמר). גררו רכיב לאורך הפס (או לחיצה ארוכה) כדי לשנות את מיקומו. למחיקת רכיב זמני – הקישו עליו ← «מחיקה» ובחרו לאיזה שכן יעבור הרוחב. בפס הזמני: כתום – צר מהקיים/מהמחושב, אדום – מתחת למזערי; «↺ מחושב» מחזיר לחתך המחושב.</div>
+      <div class="ribbon-head t f"><span class="k"><i></i>חתך סופי</span><b id="rbTotF">0.00 מ׳</b><span class="man same" id="rbSameF">כמו הקיים</span><span class="gap" id="rbGapF"></span><button type="button" class="rb-reset" id="rbAddF" aria-label="הוספת רכיב לחתך הסופי">＋ רכיב</button><button type="button" class="rb-reset" id="rbResetF" hidden aria-label="החתך הסופי יחזור להיות זהה לקיים">↺ כמו הקיים</button></div>
+      <div class="ribbon ro" id="ribbonF" aria-label="פס החתך הסופי – גררו מפריד לשינוי רוחב, גררו רכיב לשינוי מיקומו, הקישו למחיקה"></div>
+      <div class="ribbon-hint">הקישו על רכיב לבחירה. גררו מפריד בין שני רכיבים – בחתך הקיים או בחתך הזמני – כדי להעביר רוחב ביניהם (הרוחב הכולל נשמר). גררו רכיב לאורך הפס (או לחיצה ארוכה) כדי לשנות את מיקומו. למחיקת רכיב בפס הזמני או הסופי – הקישו עליו ← «מחיקה» ובחרו לאיזה שכן יעבור הרוחב. החתך הסופי מתחיל כמו הקיים; «＋ רכיב» מוסיף אחרי הרכיב הנבחר. בפס הזמני: כתום – צר מהקיים/מהמחושב, אדום – מתחת למזערי; «↺ מחושב» מחזיר לחתך המחושב.</div>
     </div>
   </div>
   <div class="readouts" id="readouts">
@@ -513,6 +518,7 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
       <ul class="notes" id="notes"></ul>
     </div>
     <div class="box"><h3>רכיבי החתך הזמני</h3><div class="tw"><table class="alloc" id="alloc"></table></div></div>
+    <div class="box"><h3>רכיבי החתך הסופי</h3><div class="tw"><table class="alloc" id="allocF"></table></div></div>
     <p class="src wide">מבוסס על "הנחיות לתכנון הסדרי תנועה זמניים באתרי עבודה עירוניים" (משרד התחבורה, אפריל 2020) – טבלאות 2.3.1–2.3.7, 2.9.1 וסעיפים 2.3.4, 2.3.5; ועל מכתב המפקח הארצי על התעבורה בנושא גוון הסימון באתרי עבודה (13.3.2023). תבניות הרחוב – מתוך כלי החתך הטיפוסי (מרחב הרחוב 2020). הכלי עקרוני ואינו מחליף תכנון מפורט ואישור רשות התמרור.</p>
   </div>
 </section>
@@ -609,6 +615,8 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
       <button data-v="temp" type="button">זמני</button>
       <button data-v="both" type="button">קיים + זמני</button>
       <button data-v="base" type="button">קיים</button>
+      <button data-v="fin" type="button">סופי</button>
+      <button data-v="all" type="button">הכול</button>
     </div>
     <p class="gf" id="whatHint">כשיש חתכים ברשימת הגיליון (למטה) – הגיליון כולל אותם.</p>
     <p class="gh">כותרת הגיליון</p>
@@ -655,7 +663,7 @@ html[data-glass="on"] :is(.canvas,.box,.group){border-radius:20px}
 <input type="file" id="projectFile" accept=".json,application/json" hidden>
 
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=6"></script>
-<script src="../js/tools/temporary-section.js?v=6"></script>
+<script src="../js/tools/temporary-section.js?v=7"></script>
 <!-- ==================================================================
      גיליון A0 + מודול ייצוא DXF/DWG
      ================================================================== -->

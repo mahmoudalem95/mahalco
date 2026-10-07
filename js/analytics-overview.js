@@ -15,7 +15,9 @@
 
   function load(ctx) {
     var range = [{ startDate: ctx.start, endDate: 'today' }];
-    var q = function (body) { body.dateRanges = range; return ctx.run(body); };
+    // Same exclusion as the city map: the owner's own towns are not real visitors.
+    var EXCLUDE = { notExpression: { filter: { fieldName: 'city', inListFilter: { values: ['Kafr Manda', 'Shefa-Amr'], caseSensitive: false } } } };
+    var q = function (body) { body.dateRanges = range; body.dimensionFilter = EXCLUDE; return ctx.run(body); };
     Promise.all([
       q({ metrics: m(['activeUsers', 'newUsers', 'sessions', 'screenPageViews', 'engagementRate', 'averageSessionDuration']) }),
       q({ dimensions: d(['date']), metrics: m(['activeUsers', 'sessions', 'screenPageViews']), orderBys: [{ dimension: { dimensionName: 'date' } }], limit: '400' }),

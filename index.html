@@ -286,9 +286,6 @@
         .usage.low .u-msg { color: var(--alert-ink); font-weight: 600 }
         @media (max-width:640px) { .usage .u-contact { margin-inline-start: 0; flex: 1 1 100% } }
 
-        #limit-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(20,26,31,.97); padding: 24px; display: none; align-items: center; justify-content: center }
-        #limit-overlay[data-on="1"] { display: flex }
-        body.locked { overflow: hidden }
         .limit-card { max-width: 540px; width: 100%; background: var(--paper); border-radius: 5px; border-top: 5px solid var(--alert); padding: 30px 32px 26px }
         .limit-card h2 { margin: 0 0 12px; font-size: 1.5rem; font-weight: 800; letter-spacing: -.01em }
         .limit-card p { margin: 0 0 12px; font-size: 15px; line-height: 1.65; color: #33393F }
@@ -1417,11 +1414,6 @@ document.addEventListener('DOMContentLoaded',function(){
             </div>
             <p class="count" id="count" aria-live="polite">57 נהלים</p>
 
-            <div class="usage" id="usage" hidden>
-                <span class="meter" aria-hidden="true"><i id="usage-fill"></i></span>
-                <span class="u-msg" id="usage-msg">נהלים שנפתחו היום: <b>0</b> מתוך 10</span>
-                <span class="u-contact">מכסה גדולה יותר: <a href="mailto:mahmoudalem95@icloud.com?subject=%D7%94%D7%92%D7%93%D7%9C%D7%AA%20%D7%9E%D7%9B%D7%A1%D7%94%20%D7%99%D7%95%D7%9E%D7%99%D7%AA">mahmoudalem95@icloud.com</a> · <a href="tel:+972546528572">‎+972-546-528572</a></span>
-            </div>
         </div>
     </div>
 
@@ -1982,140 +1974,7 @@ document.addEventListener('DOMContentLoaded',function(){
     </footer>
 </div>
 
-<div id="limit-overlay" role="dialog" aria-modal="true" aria-labelledby="limit-title" data-on="0">
-    <div class="limit-card">
-        <h2 id="limit-title">הגעתם למכסת השימוש היומית</h2>
-        <p>נפתחו היום <b>10</b> נהלים מהאתר, וזו המכסה היומית לגישה חופשית. הגישה נפתחת מחדש בחצות לפי השעון המקומי שלכם.</p>
-        <p class="reset">הגישה תיפתח בעוד <b id="limit-countdown">—</b></p>
-        <ul>
-            <li>למכסה גדולה יותר או למפתח API: <a href="mailto:mahmoudalem95@icloud.com?subject=%D7%94%D7%92%D7%93%D7%9C%D7%AA%20%D7%9E%D7%9B%D7%A1%D7%94%20%D7%99%D7%95%D7%9E%D7%99%D7%AA">mahmoudalem95@icloud.com</a></li>
-            <li>טלפון: <a href="tel:+972546528572">‎+972-546-528572</a></li>
-            <li>המסלולים והמחירים מפורטים בעמוד — פתחו אותו מחר או פנו אלינו במייל.</li>
-        </ul>
-        <p class="card-foot">המכסה נספרת בשרת לכל מבקר ומתאפסת בחצות (שעון ישראל).</p>
-    </div>
-</div>
-
 <script>
-/* מכסת שימוש יומית — 10 פתיחות של נהלים ליום, וסימון נהלים שטרם הושלמו */
-(function() {
-    let LIMIT = 10;                     /* לשינוי המכסה: שנו את המספר הזה */
-    const KEY = 'mahalco_daily_use_v2';   /* v2: ספירה לפי דפדפן (vid) – מבטל את הנעילה המשותפת של 2.10 */
-    /* נספרים נהלים שונים ביום, לא לחיצות: חזרה לאותו נוהל באותו יום אינה נספרת שוב.
-       לחזרה לספירת לחיצות: החזירו את בדיקת ה‑30 שניות שהייתה כאן. */
-    const PENDING = /(^|\/)apis(-he)?\.html([?#].*)?$/i;
-
-    let mem = null;
-    const stamp = () => {
-        const d = new Date();
-        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    };
-    const fresh = () => ({ date: stamp(), count: 0, last: {} });
-    function readState() {
-        let raw = null;
-        try { raw = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { raw = mem; }
-        if (!raw) raw = mem;
-        if (!raw || raw.date !== stamp() || typeof raw.count !== 'number') return fresh();
-        if (!raw.last) raw.last = {};
-        return raw;
-    }
-    function writeState(s) {
-        mem = s;
-        try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
-    }
-
-    const usage = document.getElementById('usage');
-    const usageMsg = document.getElementById('usage-msg');
-    const usageFill = document.getElementById('usage-fill');
-    const overlay = document.getElementById('limit-overlay');
-    const countdown = document.getElementById('limit-countdown');
-
-    function render() {
-        const s = readState();
-        const left = Math.max(0, LIMIT - s.count);
-        usage.hidden = false;
-        usageMsg.innerHTML = left > 0
-            ? 'נהלים שנפתחו היום: <b>' + s.count + '</b> מתוך ' + LIMIT + ' · נותרו <b>' + left + '</b>'
-            : 'המכסה היומית נוצלה — <b>' + LIMIT + '</b> נהלים שונים';
-        usageFill.style.width = Math.min(100, (s.count / LIMIT) * 100) + '%';
-        usage.classList.toggle('low', left <= 2);
-        return s;
-    }
-
-    function tickCountdown() {
-        const end = new Date(); end.setHours(24, 0, 0, 0);
-        let mins = Math.max(0, Math.round((end - Date.now()) / 60000));
-        const h = Math.floor(mins / 60); mins = mins % 60;
-        countdown.textContent = h > 0 ? h + ' שעות ו‑' + mins + ' דקות' : mins + ' דקות';
-    }
-
-    let locked = false;
-    function lock() {
-        if (locked) return;
-        locked = true;
-        overlay.setAttribute('data-on', '1');
-        document.body.classList.add('locked');
-        tickCountdown();
-        setInterval(tickCountdown, 60000);
-    }
-
-    /* סימון קישורי שירות פעילים */
-    document.querySelectorAll('a.leaf').forEach(a => { a.dataset.service = '1'; });
-
-    const SERVICE = /(tool|critical-lane-volume|parking-regulations|roundabout-analysis-metric|typical-section|rural|lane-queue-metric|optimizes-signal-timing[^"']*metric)\.html|junction-los-api\.onrender\.com/i;
-    document.querySelectorAll('a[href]').forEach(a => {
-        if (a.dataset.service || a.classList.contains('leaf')) return;
-        if (SERVICE.test(a.getAttribute('href') || '')) a.dataset.service = '1';
-    });
-
-    /* ספירה בלחיצה: רק נהלים פעילים נספרים, נהלים שטרם הושלמו לא */
-    document.addEventListener('click', function(ev) {
-        const a = ev.target.closest('a[data-service]');
-        if (!a) return;
-        const s = readState();
-        if (s.count >= LIMIT) { ev.preventDefault(); lock(); return; }
-        const id = a.getAttribute('href');
-        const now = Date.now();
-        if (s.last[id]) { s.last[id] = now; writeState(s); return; }
-        s.last[id] = now;
-        s.count += 1;
-        writeState(s);
-        render();
-    }, true);
-
-    /* המכסה האמיתית נספרת בשרת החישוב (לפי מבקר, ביום לפי שעון ישראל); כאן רק מציגים אותה */
-    /* מזהה דפדפן אקראי: המכסה בשרת נספרת לפי IP + מזהה זה, כדי שמשתמשים מאחורי אותו IP
-       (סלולר, משרד) לא יחלקו מכסה אחת. אותו מפתח משמש את calc-client.js בדפי הכלים. */
-    function visitorId() {
-        let v = '';
-        try { v = localStorage.getItem('mahalco_vid_v1') || ''; } catch (e) {}
-        if (!/^[A-Za-z0-9_-]{16,64}$/.test(v)) {
-            const b = new Uint8Array(16); crypto.getRandomValues(b);
-            v = Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
-            try { localStorage.setItem('mahalco_vid_v1', v); } catch (e) {}
-        }
-        return v;
-    }
-    (function syncServer() {
-        let key = '';
-        try { key = localStorage.getItem('mahalco_api_key_v1') || sessionStorage.getItem('mahalco_api_key') || ''; } catch (e) {}
-        fetch('https://mahalco-calc.onrender.com/v1/quota', {
-            method: 'POST', mode: 'cors', credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer',
-            headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ vid: visitorId() }, key ? { key: key.trim() } : {}))
-        }).then(r => r.ok ? r.json() : null).then(d => {
-            if (!d || !d.ok || d.tier === 'key') return;
-            if (typeof d.limit === 'number') LIMIT = d.limit;
-            const s = readState();
-            s.count = Math.max(s.count, d.used || 0);
-            writeState(s);
-            if (render().count >= LIMIT) lock();
-        }).catch(() => {});
-    })();
-    const start = render();
-    if (start.count >= LIMIT) lock();
-    window.addEventListener('pageshow', () => { const s = render(); if (s.count >= LIMIT) lock(); });
-})();
-
 (function() {
     const q = document.getElementById('q');
     const countEl = document.getElementById('count');

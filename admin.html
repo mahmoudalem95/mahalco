@@ -56,6 +56,12 @@ td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monos
 .chip{font-size:12.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}
 .chip b{font-family:ui-monospace,Menlo,monospace;margin-inline-start:6px}
 .err{color:var(--bad)}
+.err:empty{display:none}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.clar{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.clar .card{background:var(--bg)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.ok{color:var(--s3);font-weight:600}
 .ga-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,1fr);gap:20px}
 .ga-map{display:block;width:100%;height:560px;background:var(--grid);margin:12px 0}
 .ga-list{max-height:420px;overflow:auto;margin-top:12px}
@@ -73,31 +79,22 @@ td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monos
 <body>
 <div class="wrap">
   <header>
-    <div><h1>לוח ניהול — כניסות, עותקים ובקשות חריגות</h1><div class="muted">MAHALCO · מהשרת שלך. הדפדפן הזה לא נספר.</div></div>
+    <div><h1>לוח ניהול — Google Analytics ו־Clarity</h1><div class="muted">MAHALCO · כל הכלים, בעברית, באנגלית ובערבית, ובשרת הכלים. הדפדפן הזה לא נספר.</div></div>
     <div class="row">
       <select id="range" aria-label="טווח">
         <option value="1">היום</option><option value="7">7 ימים</option><option value="30" selected>30 יום</option><option value="90">90 יום</option><option value="365">שנה</option>
       </select>
       <button id="reload" type="button">רענון</button>
-      <button id="logout" type="button">יציאה</button>
     </div>
   </header>
 
-  <section class="card" id="login">
-    <h2>כניסה</h2>
-    <form id="lf" class="row">
-      <input type="password" id="key" aria-label="מפתח מנהל" autocomplete="current-password" placeholder="מפתח מנהל (VISITS_ADMIN_KEY)" style="flex:1;min-width:220px">
-      <button class="gold" type="submit">כניסה</button>
-    </form>
-    <p class="muted" id="lmsg">המפתח נשמר רק בדפדפן הזה. הכניסה גם מסמנת את הדפדפן כשלך, כך שהביקורים שלך לא נספרים.</p>
-  </section>
-
   <section class="card" id="ga-section" aria-labelledby="ga-title">
-      <h2 id="ga-title">Google Analytics · משתמשים פעילים לפי עיר</h2>
+      <h2 id="ga-title">Google Analytics</h2>
       <div class="row">
         <button id="ga-connect" type="button" class="gold">חיבור ל־Google Analytics</button>
         <button id="ga-disconnect" type="button" hidden>ניתוק Google</button>
-        <span class="muted">טווח הימים והרענון בראש הדף חלים גם על המפה.</span>
+        <a class="btn" href="https://analytics.google.com/analytics/web/#/p553070001/reports/intelligenthome" target="_blank" rel="noopener">פתיחת Analytics</a>
+        <span class="muted">טווח הימים והרענון בראש הדף חלים על כל הנתונים.</span>
       </div>
       <details id="ga-settings" style="margin-top:12px">
         <summary>הגדרת החיבור</summary>
@@ -108,6 +105,48 @@ td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monos
         <p class="muted">מזהה הנכס נמצא בהגדרות הנכס ב־Analytics, והוא שונה ממזהה המדידה שמתחיל ב־G-. נדרש Client ID מסוג Web application, עם כתובת האתר כמקור JavaScript מורשה והפעלת Google Analytics Data API. <a href="docs/google-analytics-map.md" target="_blank" rel="noopener">הוראות חיבור</a></p>
       </details>
       <p id="ga-status" class="muted" role="status">חברו חשבון Google בעל הרשאת קריאה לנכס כדי להציג נתונים.</p>
+  </section>
+
+  <div id="ga-overview" hidden style="display:grid;gap:18px">
+    <div class="kpis">
+      <div class="kpi"><span>משתמשים פעילים</span><b id="o-users">–</b></div>
+      <div class="kpi"><span>משתמשים חדשים</span><b id="o-new">–</b></div>
+      <div class="kpi"><span>ביקורים</span><b id="o-sessions">–</b></div>
+      <div class="kpi"><span>צפיות בדפים</span><b id="o-views">–</b></div>
+      <div class="kpi"><span>שיעור מעורבות</span><b id="o-eng">–</b></div>
+      <div class="kpi"><span>משך ביקור ממוצע</span><b id="o-dur">–</b></div>
+    </div>
+    <p id="o-error" class="err" role="status"></p>
+    <section class="card">
+      <h2>לפי יום</h2>
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>צפיות</span>
+        <span><i style="background:var(--s3)"></i>ביקורים</span>
+        <span><i style="background:var(--s2)"></i>משתמשים</span>
+      </div>
+      <div class="chartbox"><svg id="o-chart" viewBox="0 0 900 260" role="img" aria-label="צפיות, ביקורים ומשתמשים לפי יום"></svg><div class="tip" id="o-tip"></div></div>
+    </section>
+    <div class="grid2">
+      <section class="card">
+        <h2>הדפים הנצפים ביותר</h2>
+        <div class="bars" id="o-pages"></div>
+        <p class="muted">⧉ = כלי שרץ בשרת הכלים (Render).</p>
+      </section>
+      <section class="card">
+        <h2>מאיפה הגיעו</h2>
+        <div class="tw"><table><thead><tr><th>מקור / ערוץ</th><th class="n">ביקורים</th><th class="n">משתמשים</th></tr></thead><tbody id="o-sources"></tbody></table></div>
+      </section>
+    </div>
+    <div class="grid3">
+      <section class="card"><h2>שפת האתר</h2><div class="tw"><table><thead><tr><th>חלק</th><th class="n">צפיות</th></tr></thead><tbody id="o-langs"></tbody></table></div></section>
+      <section class="card"><h2>מדינות</h2><div class="tw"><table><thead><tr><th>מדינה</th><th class="n">משתמשים</th></tr></thead><tbody id="o-countries"></tbody></table></div></section>
+      <section class="card"><h2>מכשירים</h2><div class="tw"><table><thead><tr><th>סוג</th><th class="n">משתמשים</th></tr></thead><tbody id="o-devices"></tbody></table></div></section>
+    </div>
+  </div>
+
+  <section class="card" id="ga-map-section" aria-labelledby="ga-map-title">
+      <h2 id="ga-map-title">משתמשים פעילים לפי עיר</h2>
+      <p class="muted" id="ga-map-hint">יוצג אחרי החיבור ל־Google Analytics.</p>
       <div id="ga-content" hidden>
         <p id="ga-summary"></p>
         <div class="ga-layout">
@@ -122,213 +161,71 @@ td.p{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monos
         <p id="ga-quality" class="muted"></p>
         <p class="muted">מקור: Google Analytics Data API. נתוני התקופה עשויים להתעדכן בעיכוב. משתמש יכול להיספר ביותר מעיר אחת; הסך הכולל נשלף בנפרד ואינו סכום הערים. הנקודות הן מרכזי ערים בקירוב, ולא מיקומי משתמשים. גבולות: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> · מיקומי ערים: <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a>.</p>
       </div>
-    </section>
-  <div id="app" hidden style="display:grid;gap:18px">
-    <div class="kpis">
-      <div class="kpi"><span>צפיות בדפים</span><b id="k1">–</b></div>
-      <div class="kpi"><span>מבקרים לפי דפדפן</span><b id="k2">–</b></div>
-      <div class="kpi"><span>חוזרים</span><b id="k3">–</b></div>
-      <div class="kpi"><span>אחוז חוזרים</span><b id="k5">–</b></div>
-      <div class="kpi" id="kc"><span>דיווחי עותקים שהתקבלו</span><b id="k6">–</b></div>
-      <div class="kpi" id="kb"><span>בקשות שנדחו / חריגות</span><b id="k7">–</b></div>
+  </section>
+
+  <section class="card" aria-labelledby="cl-title">
+    <h2 id="cl-title">Microsoft Clarity · הקלטות ומפות חום</h2>
+    <div class="clar">
+      <div class="card"><h2>האתר העברי + כלי השרת</h2><p class="muted">פרויקט ylemrb1ou7</p><div class="links">
+        <a class="btn" href="https://clarity.microsoft.com/projects/view/ylemrb1ou7/dashboard" target="_blank" rel="noopener">לוח</a>
+        <a class="btn" href="https://clarity.microsoft.com/projects/view/ylemrb1ou7/impressions" target="_blank" rel="noopener">הקלטות</a>
+        <a class="btn" href="https://clarity.microsoft.com/projects/view/ylemrb1ou7/heatmaps" target="_blank" rel="noopener">מפות חום</a></div></div>
+      <div class="card"><h2>אנגלית וערבית</h2><p class="muted">פרויקט yhq6a92ouj</p><div class="links">
+        <a class="btn" href="https://clarity.microsoft.com/projects/view/yhq6a92ouj/dashboard" target="_blank" rel="noopener">לוח</a>
+        <a class="btn" href="https://clarity.microsoft.com/projects/view/yhq6a92ouj/impressions" target="_blank" rel="noopener">הקלטות</a>
+        <a class="btn" href="https://clarity.microsoft.com/projects/view/yhq6a92ouj/heatmaps" target="_blank" rel="noopener">מפות חום</a></div></div>
     </div>
+    <p class="muted">כלי השרת נרשמים בפרויקט האנגלי/ערבי כשנכנסים אליהם מהאתר האנגלי או הערבי, ובפרויקט העברי בכל מקרה אחר.</p>
+  </section>
 
+  <div class="grid2">
     <section class="card">
-      <h2>צפיות לפי יום</h2>
-      <div class="legend">
-        <span><i style="background:var(--s1)"></i>צפיות</span>
-        <span><i style="background:var(--s2)"></i>מבקרים</span>
-        <span><i style="background:var(--s3)"></i>מתוכם חוזרים</span>
-      </div>
-      <div class="chartbox" id="chartbox"><svg id="chart" viewBox="0 0 900 260" role="img" aria-label="צפיות, מבקרים וחוזרים לפי יום"></svg><div class="tip" id="tip"></div></div>
+      <h2>הדפדפן הזה לא נספר</h2>
+      <p>אתר: <span id="own-site"></span></p>
+      <div class="row"><a class="btn" href="https://junction-los-api.onrender.com/api/v1/tool?mh-owner=1" target="_blank" rel="noopener">סימון גם בשרת הכלים</a><button type="button" id="own-toggle"></button></div>
+      <p class="muted">Analytics ו־Clarity מדלגים על דפדפן שמסומן כשלך. שרת הכלים נמצא בכתובת אחרת, ולכן צריך לסמן אותו פעם אחת בנפרד בכל דפדפן.</p>
     </section>
-
-    <div class="grid2">
-      <section class="card">
-        <h2>הדפים הנצפים ביותר</h2>
-        <div class="bars" id="topbars"></div>
-        <details style="margin-top:12px"><summary class="muted">כל הדפים</summary>
-          <div class="tw"><table><thead><tr><th>דף</th><th class="n">צפיות</th><th class="n">מבקרים</th><th class="n">חוזרים</th></tr></thead><tbody id="pages"></tbody></table></div>
-        </details>
-      </section>
-      <section class="card">
-        <h2>דפדפנים חוזרים</h2>
-        <div class="tw"><table><thead><tr><th>מזהה</th><th class="n">ימים</th><th class="n">צפיות</th><th>לאחרונה</th></tr></thead><tbody id="people"></tbody></table></div>
-        <p class="muted">מזהה אנונימי לכל דפדפן. בלי שם ובלי IP. העבר את העכבר על שורה כדי לראות את הדפים שלו.</p>
-        <h2 style="margin-top:14px">מאיפה הגיעו</h2>
-        <div class="tw"><table><tbody id="refs"></tbody></table></div>
-      </section>
-    </div>
-
     <section class="card">
-      <h2>שומרי הדפים — עותקים של האתר</h2>
-      <p class="muted" style="margin-top:-6px">דפים שנשמרו למחשב או הועלו לאתר אחר ונפתחו שם. הנתונים מדוח העותקים של שרת המחשבונים (mahalco-calc).</p>
-      <div class="row" id="ckrow" hidden style="margin-bottom:10px">
-        <input type="password" id="ckey" placeholder="מפתח דוח העותקים (ADMIN_KEY של mahalco-calc)" style="flex:1;min-width:220px">
-        <button type="button" id="cksave">שמירה</button>
-      </div>
-      <p class="muted" id="copyNote" role="status"></p>
-      <div class="tw"><table><thead><tr><th>זמן</th><th>איפה רץ</th><th>הדף שהועתק</th><th>IP</th><th>דפדפן</th></tr></thead><tbody id="copies"></tbody></table></div>
+      <h2>אינדוקס במנועי חיפוש</h2>
+      <div class="row"><input type="password" id="ixkey" aria-label="מפתח IndexNow" autocomplete="off" placeholder="מפתח מנהל של השרת" style="flex:1;min-width:180px"><button class="gold" type="button" id="indexnow">שלח ל-Bing ו-Yandex</button></div>
+      <p class="muted">שולח את כל הכתובות מ-sitemap.xml דרך IndexNow. גוגל לא משתתף ב-IndexNow: שלח את המפה פעם אחת ב-<a href="https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2F" target="_blank" rel="noopener">Google Search Console</a>.</p>
+      <div class="term" id="ixlog" hidden></div>
     </section>
-
-    <section class="card">
-      <h2>לוג בקשות שנדחו / חריגות</h2>
-      <div class="chips" id="reasons"></div>
-      <div class="term" id="invlog"></div>
-      <p class="muted">זהו לוג טכני של בקשות שנדחו או סומנו כחריגות; אינו קביעה שהתרחשה פעילות בלתי חוקית. נשמרות עד 500 הבקשות האחרונות, לא בהכרח רק בטווח הימים שנבחר. כתובות IP מוצגות לפי הדיווח מהשרת.</p>
-    </section>
-
-    <div class="grid2">
-      <section class="card">
-        <h2>אינדוקס במנועי חיפוש</h2>
-        <div class="row"><button class="gold" type="button" id="indexnow">שלח את כל הדפים ל-Bing ו-Yandex</button></div>
-        <p class="muted">שולח את כל הכתובות מ-sitemap.xml דרך IndexNow. גוגל לא משתתף ב-IndexNow: שלח את המפה פעם אחת ב-<a href="https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fmahmoudalem95.github.io%2Fmahalco%2F" target="_blank" rel="noopener">Google Search Console</a>, וגוגל יחזור אליה לבד.</p>
-        <div class="term" id="ixlog" hidden></div>
-      </section>
-      <section class="card">
-        <h2>שורת הכניסות בתחתית הדפים</h2>
-        <div class="row"><button id="bar" type="button"></button><span class="muted">רק בדפדפן שלך, רק באתר העברי.</span></div>
-        <div class="term" id="status" style="margin-top:12px"></div>
-      </section>
-    </div>
   </div>
 </div>
 <script src="js/analytics-geography.js?v=1"></script>
-<script src="js/analytics-map.js?v=5"></script>
+<script src="js/analytics-overview.js?v=1"></script>
+<script src="js/analytics-map.js?v=6"></script>
 <script>
 (function(){
-  var API = 'https://junction-los-api.onrender.com/api/v1/visits';
-  var CALC = 'https://mahalco-calc.onrender.com/v1/copy-report?n=300';
   var $ = function(id){ return document.getElementById(id); };
-  if (location.protocol === 'file:') {
-    $('app').hidden = true;
-    $('key').disabled = true;
-    $('lf').querySelector('button').disabled = true;
-    $('lmsg').innerHTML = 'הקובץ פתוח מהמחשב. שרת הנתונים מאפשר חיבור רק מהאתר. <a href="https://mahmoudalem95.github.io/mahalco/admin.html">פתיחת לוח המנהל באתר</a>. יש להזין את המפתח שם; הוא לא מועבר בקישור.';
-    $('reload').disabled = true;
-    $('logout').disabled = true;
-    return;
-  }
   var ls = { get:function(k){try{return localStorage.getItem(k)}catch(e){return null}}, set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}, del:function(k){try{localStorage.removeItem(k)}catch(e){}} };
-  ls.set('mh-owner','1');                                   // this browser is the owner's: never counted
-  function vid(){ var v = ls.get('mh-vid'); if(!v){ var a=new Uint8Array(12); crypto.getRandomValues(a); v=Array.from(a,function(b){return ('0'+b.toString(16)).slice(-2)}).join(''); ls.set('mh-vid',v); } return v; }
-  var fmt = function(n){ return (n||0).toLocaleString('he-IL'); };
-  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
-  function status(t, bad){ var s=$('status'); s.textContent = 'mahalco:~$ ' + t; s.style.color = bad ? '#FF8A80' : ''; }
-  function post(path, body){ return fetch(API + path, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(body) }).then(function(r){ if(r.status===403) throw new Error('wrong key'); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }); }
-  var css = function(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); };
-
-  // ---------- daily chart: one axis, three counts ----------
-  var lastDaily = [];
-  function drawChart(daily){
-    lastDaily = daily;
-    var svg = $('chart'), W = 900, H = 260, L = 44, R = 12, T = 12, B = 30;
-    if (!daily.length){ svg.innerHTML = '<text x="450" y="130" text-anchor="middle" fill="'+css('--muted')+'" font-size="14">אין עדיין נתונים בטווח הזה</text>'; return; }
-    var n = daily.length, max = Math.max(1, ...daily.map(function(d){return d.views}));
-    var step = Math.pow(10, Math.floor(Math.log10(max))), nice = Math.ceil(max/step)*step; if (nice/step > 6) step *= 2; nice = Math.ceil(max/step)*step;
-    var x = function(i){ return n===1 ? (L+W-R)/2 : L + i*(W-L-R)/(n-1); }, y = function(v){ return T + (H-T-B)*(1 - v/nice); };
-    var g = '', ink = css('--muted'), grid = css('--grid');
-    for (var v = 0; v <= nice + 1e-9; v += step){ g += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="'+grid+'" stroke-width="1"/><text x="'+(L-8)+'" y="'+(y(v)+4)+'" text-anchor="end" font-size="11" fill="'+ink+'">'+v+'</text>'; }
-    var every = Math.max(1, Math.ceil(n/8));
-    daily.forEach(function(d,i){ if (i % every === 0 || i === n-1) g += '<text x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="'+ink+'">'+d.day.slice(8,10)+'/'+d.day.slice(5,7)+'</text>'; });
-    [['views','--s1'],['visitors','--s2'],['returning','--s3']].forEach(function(s){
-      var col = css(s[1]), pts = daily.map(function(d,i){ return x(i)+','+y(d[s[0]]); }).join(' ');
-      if (s[0]==='views') g += '<polygon points="'+L+','+y(0)+' '+pts+' '+x(n-1)+','+y(0)+'" fill="'+col+'" fill-opacity=".10"/>';
-      g += '<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
-      var last = daily[n-1]; g += '<circle cx="'+x(n-1)+'" cy="'+y(last[s[0]])+'" r="4" fill="'+col+'" stroke="'+css('--card')+'" stroke-width="2"/>';
-    });
-    g += '<line id="xh" x1="0" x2="0" y1="'+T+'" y2="'+(H-B)+'" stroke="'+ink+'" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>';
-    g += '<rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'" fill="transparent" id="hit"/>';
-    svg.innerHTML = g;
-    var tip = $('tip'), xh = svg.querySelector('#xh');
-    svg.querySelector('#hit').addEventListener('pointermove', function(ev){
-      var r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
-      var i = Math.max(0, Math.min(n-1, Math.round(n===1 ? 0 : (px-L)/((W-L-R)/(n-1))))), d = daily[i];
-      xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('opacity', '.6');
-      tip.innerHTML = '<div class="muted">'+d.day+'</div>צפיות <b>'+d.views+'</b><br>מבקרים <b>'+d.visitors+'</b><br>חוזרים <b>'+d.returning+'</b>';
-      var bx = x(i) * r.width / W; tip.style.left = Math.min(r.width - tip.offsetWidth - 4, Math.max(4, bx + 12)) + 'px'; tip.style.top = '10px'; tip.style.opacity = 1;
-    });
-    svg.querySelector('#hit').addEventListener('pointerleave', function(){ tip.style.opacity = 0; xh.setAttribute('opacity','0'); });
+  ['mh-admin-key','mh-copy-key','mh-visits','mh-vid'].forEach(ls.del);   // left over from the old visit counter
+  if (ls.get('mh-owner') === null && !sessionStorage.getItem('mh-owner-off')) ls.set('mh-owner','1');
+  function own(){
+    var on = ls.get('mh-owner') === '1';
+    $('own-site').innerHTML = on ? '<span class="ok">לא נספר ✓</span>' : '<span class="err">נספר</span>';
+    $('own-toggle').textContent = on ? 'להתחיל לספור אותו' : 'להפסיק לספור אותו';
   }
-
-  function load(){
-    var key = ls.get('mh-admin-key'); if(!key) return;
-    status('loading… (the server may take ~50 s to wake up)');
-    post('/admin', { key:key, days:+$('range').value, owner: vid() }).then(function(d){
-      $('login').hidden = true; $('app').hidden = false;
-      var t = d.totals;
-      $('k1').textContent = fmt(t.views); $('k2').textContent = fmt(t.people); $('k3').textContent = fmt(t.returning_people);
-      $('k5').textContent = t.people ? Math.round(100*t.returning_people/t.people)+'%' : '–';
-      var inv = d.invalid || {recent:[],by_reason:[],dropped:0}, invN = inv.by_reason.reduce(function(a,b){return a+b.count},0);
-      $('k7').textContent = fmt(invN); $('kb').classList.toggle('alert', invN > 0);
-      drawChart(d.daily);
-      var top = d.pages.slice(0,10), pmax = Math.max(1, ...top.map(function(p){return p.views}));
-      $('topbars').innerHTML = top.map(function(p){ return '<div class="bar" title="'+fmt(p.visitors)+' מבקרים · '+fmt(p.returning)+' חוזרים"><span class="lab">'+esc(p.path.replace(/^\/mahalco/,''))+'</span><span class="val">'+fmt(p.views)+'</span><div class="track"><div class="fill" style="width:'+(100*p.views/pmax)+'%"></div></div></div>'; }).join('') || '<span class="muted">אין נתונים</span>';
-      $('pages').innerHTML = d.pages.map(function(p){ return '<tr><td class="p">'+esc(p.path.replace(/^\/mahalco/,''))+'</td><td class="n">'+fmt(p.views)+'</td><td class="n">'+fmt(p.visitors)+'</td><td class="n">'+fmt(p.returning)+'</td></tr>'; }).join('') || '<tr><td colspan="4" class="muted">אין נתונים</td></tr>';
-      $('people').innerHTML = d.returning_people.map(function(p){ return '<tr title="'+esc(p.top.join('  ·  '))+'"><td class="p">'+esc(p.id)+'</td><td class="n">'+p.days+'</td><td class="n">'+p.views+'</td><td>'+esc(p.last)+'</td></tr>'; }).join('') || '<tr><td colspan="4" class="muted">עוד אין דפדפנים חוזרים</td></tr>';
-      $('refs').innerHTML = d.referrers.map(function(r){ return '<tr><td class="p">'+esc(r.host)+'</td><td class="n">'+fmt(r.views)+'</td></tr>'; }).join('') || '<tr><td class="muted">אין</td></tr>';
-      $('reasons').innerHTML = inv.by_reason.map(function(r){ return '<span class="chip">'+esc(r.reason)+'<b>'+r.count+'</b></span>'; }).join('') + (inv.dropped ? '<span class="chip">הוצפו ולא נרשמו<b>'+inv.dropped+'</b></span>' : '');
-      $('invlog').innerHTML = inv.recent.length ? inv.recent.map(function(e){
-        var cls = /wrong admin key/.test(e.reason) ? 'r' : /copy/.test(e.reason) ? 'y' : '';
-        return '<span class="dim">'+esc(e.t)+'</span>  '+esc(e.ep.padEnd(6))+' <span class="'+cls+'">'+esc(e.reason)+'</span>  '+esc(e.detail)+'\n<span class="dim">    ip '+esc(e.ip)+(e.origin?'  origin '+esc(e.origin):'')+'  '+esc(e.ua)+'</span>';
-      }).join('\n') : '<span class="dim">mahalco:~$ no invalid requests</span>';
-      status(d.range.start+' → '+d.range.end+'  ·  storage: '+d.storage+'  ·  your browser excluded');
-      loadCopies(d.copies || []);
-    }).catch(function(e){
-      if (e.message==='wrong key'){ ls.del('mh-admin-key'); $('app').hidden = true; $('login').hidden = false; $('lmsg').textContent = 'המפתח שגוי. נסה שוב.'; $('lmsg').className='err'; }
-      else {
-        var message = e.message === 'Failed to fetch' ? 'לא התקבלה תשובה מהשרת. ייתכן עיכוב בהתעוררות השרת, חיבור רשת או חסימת דפדפן. נסו לרענן; אין בכך הוכחה שהמפתח שגוי.' : e.message;
-        status(message, true);
-        if (!$('login').hidden) { $('lmsg').textContent = message; $('lmsg').className = 'err'; }
-      }
-    });
-  }
-
-  // ---------- saved / copied pages (mahalco-calc copy report) ----------
-  function loadCopies(fallback){
-    var key = ls.get('mh-copy-key');
-    $('k6').textContent = '…';
-    $('copyNote').textContent = 'טוען דוח עותקים…';
-    function showFallback(note){
-      showCopies(fallback.map(function(e){ return { t:e.t, where:e.origin==='null'?'קובץ שמור במחשב':e.origin, page:e.detail, ip:e.ip, ua:e.ua }; }), note);
-      if (!fallback.length) $('k6').textContent = 'לא זמין';
-    }
-    if (!key) {
-      $('ckrow').hidden = false;
-      showFallback('דוח העותקים המלא טרם חובר. הזינו את מפתח ADMIN_KEY של שרת המחשבונים. מוצגים רק דיווחים זמינים ממונה הביקורים.');
-      return;
-    }
-    fetch(CALC, { headers:{ 'X-Admin-Key': key } }).then(function(r){ if(r.status===403) throw new Error('403'); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-      .then(function(d){ $('ckrow').hidden = true; showCopies((d.reports || []).map(function(r){ return { t:r.time, where:(r.proto==='file:'?'קובץ שמור במחשב':r.where)+(r.framed?' [iframe]':''), page:(r.route||r.page||'').replace(/\.html$/,''), ip:r.ip, ua:r.browser, ref:r.referrer }; }), 'עד 300 הדיווחים האחרונים משרת המחשבונים; בחירת טווח הימים אינה מסננת דוח זה. דיווח אינו בהכרח עותק ייחודי.'); })
-      .catch(function(e){
-        if (e.message==='403') $('ckrow').hidden = false;
-        showFallback(e.message==='403' ? 'מפתח דוח העותקים לא התקבל. עדכנו אותו למעלה; מוצגים רק דיווחים זמינים ממונה הביקורים.' : 'דוח העותקים המלא לא זמין כרגע. מוצגים רק דיווחים זמינים ממונה הביקורים.');
-      });
-  }
-  function showCopies(rows, note){
-    $('copyNote').textContent = note || '';
-    $('k6').textContent = fmt(rows.length); $('kc').classList.toggle('alert', rows.length > 0);
-    $('copies').innerHTML = rows.map(function(r){ return '<tr'+(r.ref?' title="הגיעו מ: '+esc(r.ref)+'"':'')+'><td class="n">'+esc(r.t)+'</td><td class="p">'+esc(r.where)+'</td><td class="p">'+esc(r.page)+'</td><td class="n">'+esc(r.ip)+'</td><td class="p">'+esc((r.ua||'').slice(0,60))+'</td></tr>'; }).join('')
-      || '<tr><td colspan="5" class="muted">'+(note ? 'אין דיווחים זמינים להצגה ממקור זה' : 'לא דווחו עותקים')+'</td></tr>';
-  }
-  $('cksave').onclick = function(){ var k = $('ckey').value.trim(); if (k){ ls.set('mh-copy-key', k); loadCopies([]); } };
-
-  // ---------- IndexNow ----------
-  $('indexnow').onclick = function(){
-    var b = this, log = $('ixlog'); b.disabled = true; log.hidden = false; log.textContent = 'mahalco:~$ indexnow submit sitemap.xml …';
-    post('/indexnow', { key: ls.get('mh-admin-key') }).then(function(d){
-      log.textContent = 'mahalco:~$ indexnow → ' + (d.ok ? 'accepted' : 'rejected') + '  ·  HTTP ' + d.status + '  ·  ' + d.urls + ' urls' + (d.ok ? '' : '\n' + d.message);
-    }).catch(function(e){ log.textContent = 'mahalco:~$ indexnow → ' + e.message; }).finally(function(){ b.disabled = false; });
+  $('own-toggle').onclick = function(){
+    if (ls.get('mh-owner') === '1'){ ls.del('mh-owner'); try{sessionStorage.setItem('mh-owner-off','1')}catch(e){} } else ls.set('mh-owner','1');
+    own();
   };
+  own();
+  new MutationObserver(function(){ $('ga-map-hint').hidden = !$('ga-content').hidden; }).observe($('ga-content'), { attributes:true });
 
-  function barLabel(){ $('bar').textContent = ls.get('mh-visits')==='0' ? 'הצג את השורה' : 'הסתר את השורה'; }
-  $('lf').addEventListener('submit', function(e){ e.preventDefault(); var k=$('key').value.trim(); if(!k) return; ls.set('mh-admin-key',k); ls.set('mh-visits','1'); $('app').hidden=false; barLabel(); load(); });
-  $('reload').onclick = load; $('range').onchange = load;
-  $('logout').onclick = function(){ ls.del('mh-admin-key'); ls.del('mh-copy-key'); location.reload(); };
-  $('bar').onclick = function(){ ls.set('mh-visits', ls.get('mh-visits')==='0' ? '1' : '0'); barLabel(); };
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ if (lastDaily.length) drawChart(lastDaily); });
-  barLabel();
-  if (ls.get('mh-admin-key')) { $('login').hidden = true; $('app').hidden = false; load(); }
+  $('ixkey').value = ls.get('mh-ix-key') || '';
+  $('indexnow').onclick = function(){
+    var b = this, log = $('ixlog'), key = $('ixkey').value.trim();
+    if (!key){ $('ixkey').focus(); return; }
+    ls.set('mh-ix-key', key);
+    b.disabled = true; log.hidden = false; log.textContent = 'mahalco:~$ indexnow submit sitemap.xml … (the server may take ~50 s to wake up)';
+    fetch('https://junction-los-api.onrender.com/api/v1/visits/indexnow', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ key:key }) })
+      .then(function(r){ if(r.status===403) throw new Error('wrong key'); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(function(d){ log.textContent = 'mahalco:~$ indexnow → ' + (d.ok ? 'accepted' : 'rejected') + '  ·  HTTP ' + d.status + '  ·  ' + d.urls + ' urls' + (d.ok ? '' : '\n' + d.message); })
+      .catch(function(e){ log.textContent = 'mahalco:~$ indexnow → ' + e.message; if (e.message==='wrong key') ls.del('mh-ix-key'); })
+      .finally(function(){ b.disabled = false; });
+  };
 })();
 </script>
 </body>

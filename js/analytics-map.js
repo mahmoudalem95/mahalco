@@ -15,7 +15,7 @@
   function fmt(n) { return n.toLocaleString('he-IL', { maximumFractionDigits: 2 }); }
   function el(tag, text) { var e = document.createElement(tag); if (text !== undefined) e.textContent = text; return e; }
   function svg(tag, attrs) { var e = document.createElementNS('http://www.w3.org/2000/svg', tag); Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); }); return e; }
-  function clear() { generation++; if (controller) controller.abort(); $('ga-content').hidden = true; $('ga-list').replaceChildren(); $('ga-detail').replaceChildren(); $('ga-map').replaceChildren(); current = []; }
+  function clear() { generation++; if (controller) controller.abort(); if (window.MHGAOverview) window.MHGAOverview.clear(); $('ga-content').hidden = true; $('ga-list').replaceChildren(); $('ga-detail').replaceChildren(); $('ga-map').replaceChildren(); current = []; }
   function disconnect(revoke) {
     var old = token; token = ''; expires = 0; clearTimeout(timer); clear();
     $('ga-disconnect').hidden = true; $('ga-connect').textContent = 'חיבור ל־Google Analytics';
@@ -70,8 +70,6 @@
     client.requestAccessToken({ prompt: 'select_account' });
   });
   $('ga-disconnect').addEventListener('click', function () { disconnect(true); });
-  $('logout').addEventListener('click', function () { disconnect(false); });
-  // Google authorizes this report independently of the visits-server admin key.
   if (ready) loadOAuth().catch(function (e) { message(e.message, true); });
 
   async function report(config, body, signal, accessToken) {
@@ -115,6 +113,11 @@
       ] } }
     };
     message('טוען נתוני Google Analytics לטווח שנבחר…');
+    if (window.MHGAOverview) window.MHGAOverview.load({
+      start: start,
+      run: function (body) { return report(config, body, signal, accessToken).then(unpack); },
+      live: function () { return id === generation; }
+    });
     try {
       var cityBody = Object.assign({}, base, { dimensions: [{ name: 'countryId' }, { name: 'region' }, { name: 'city' }], limit: '10000', offset: '0', orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }] });
       var first = await Promise.all([report(config, cityBody, signal, accessToken), report(config, base, signal, accessToken)]);

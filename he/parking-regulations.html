@@ -302,6 +302,25 @@ html[data-glass="on"] .card-header{border-radius:20px 20px 0 0}
   .guide .faq details > div { margin-top: 8px; color: var(--ink-2, inherit); line-height: 1.7; }
   .guide-sources a, .guide-link a { color: var(--accent, inherit); }
   .guide-link { margin: -12px 0 18px; font-size: .9rem; }
+  /* self-contained guide layout (pages without Bootstrap cards) */
+  .g { max-width: 1180px; margin: 32px auto 48px; padding: 0 16px; line-height: 1.7; }
+  .g .guide-lead { max-width: none; }
+  .g .g-card { border: 1px solid rgba(127,127,127,.24); border-radius: 12px; margin: 0 0 16px; overflow: hidden; background: rgba(127,127,127,.06); }
+  .g .g-head { margin: 0; padding: 10px 16px; font-size: 1rem; font-weight: 700; border-bottom: 1px solid rgba(127,127,127,.22);
+               border-inline-start: 4px solid var(--accent, var(--amber, var(--marking, #E9B12F))); }
+  .g .g-body { padding: 12px 16px; }
+  .g .g-body > :last-child { margin-bottom: 0; }
+  .g ul, .g ol { padding-inline-start: 1.2rem; }
+  .g li { margin-bottom: 6px; }
+  .g .g-scroll { overflow-x: auto; }
+  .g table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 6px 0 12px; }
+  .g th, .g td { padding: 6px 8px; border-bottom: 1px solid rgba(127,127,127,.2); text-align: start; vertical-align: top; }
+  .g th { font-weight: 600; opacity: .75; white-space: nowrap; }
+  .g tfoot td { font-weight: 700; }
+  .g .g-muted, .g .g-src { opacity: .75; font-size: .85rem; }
+  .g .g-formula { direction: ltr; unicode-bidi: isolate; display: inline-block; font-family: ui-monospace, Menlo, Consolas, monospace;
+                  font-size: .9em; padding: 1px 6px; border-radius: 4px; background: rgba(127,127,127,.14); }
+  .g a { color: var(--accent, var(--amber, var(--marking, inherit))); }
 </style>
 <!-- mahalco:faq -->
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "כמה מקומות חניה צריך לדירה?", "acceptedAnswer": {"@type": "Answer", "text": "תלוי באזור ובסוג הבניין. בבניין מגורים: 0.5–1 לדירה באזור א', 1–1.5 באזור ב', ו־1–2 באזור ג' וביישוב בלא מתע\"ן. בבית צמוד קרקע: 1–2 לדירה באזורים א' וב', ולפחות 2 באזור ג' וביישוב בלא מתע\"ן. בבניין שכל דירותיו 30–80 מ\"ר התקן נמוך יותר."}}, {"@type": "Question", "name": "מה זה מתע\"ן, ואיך יודעים באיזה אזור הנכס?", "acceptedAnswer": {"@type": "Answer", "text": "מתע\"ן היא מערכת תחבורה ציבורית להסעת המונים, למשל רכבת קלה. האזור נקבע לפי המרחק מיציאת התחנה: עד 300 מ' – אזור א', עד 600 מ' – אזור ב', ומעבר לזה – אזור ג'. אם לוועדה המקומית יש תשריט אזורים, הוא קובע."}}, {"@type": "Question", "name": "התקן הוא מינימום או מקסימום?", "acceptedAnswer": {"@type": "Answer", "text": "תלוי בשימוש ובאזור. \"מספר טווח\" הוא בין מספר נמוך לגבוה; מתחת לטווח אפשר רק בתוכנית, ומעליו אסור בהיתר. \"מספר מרבי\" הוא תקרה, ו\"מספר מזערי\" הוא רצפה. ליד כל שימוש המחשבון מציין את סוג התקן."}}, {"@type": "Question", "name": "כמה חניות נכים צריך?", "acceptedAnswer": {"@type": "Answer", "text": "חניות נגישות נדרשות בנוסף לסך החניות, לפי פרטים 8.110 ו־8.271 בתקנות הבקשה להיתר, ומחושבות על בסיס יישוב בלא מתע\"ן (חלק א' 8 בתוספת). המחשבון מציג את הבסיס הזה."}}, {"@type": "Question", "name": "כמה חניות אופניים נדרשות?", "acceptedAnswer": {"@type": "Answer", "text": "במגורים – 1 לכל דירה, ומחסן דירתי של 6 מ\"ר ומעלה נחשב חניית אופניים. במשרדים 1 לכל 250 מ\"ר ובמסחר 1 לכל 300 מ\"ר. עד מחצית המקומות במגורים מותר מחוץ לבניין, בתחום המגרש, וכל מקום דורש 2 מ\"ר שטח שירות."}}, {"@type": "Question", "name": "אפשר לחלוק חניון בין כמה שימושים?", "acceptedAnswer": {"@type": "Answer", "text": "כן, בחפיפת חניה: החניון המשותף ציבורי ולא מוצמד לשימוש מסוים, מרחק ההליכה עד 250 מ', ונדרשים לפחות שני שימושים מטבלת העזר בהנחיות (13.1). החפיפה היא הקלה שבשיקול דעת הוועדה המקומית. המחשבון מחשב את השיא לפי חלקי היממה."}}, {"@type": "Question", "name": "האם התוצאה מחייבת את הוועדה?", "acceptedAnswer": {"@type": "Answer", "text": "לא. המחשבון הוא כלי עזר לפי התקנות וההנחיות. הוא אינו מחליף את הוראות הדין, את מדיניות הוועדה המקומית ואת שיקול דעת רשות הרישוי."}}]}</script>

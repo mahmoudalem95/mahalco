@@ -1078,12 +1078,50 @@ details.tool>.mount{padding:18px 16px 8px}
 <script src="../js/site-bg.js?v=1" data-remap="1"></script>
 <!-- mahalco:jsonld -->
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://mahmoudalem95.github.io/mahalco/he/count-suite.html#app", "name": "ניתוח ספירות — נפח קריטי · אורך תור · תכן מסעה", "description": "ניתוח ספירות בכלי אחד: קלט ספירות משותף לנפח נתיב קריטי, אורך תור ואחסנה בנתיבים ונתוני תנועה לתכן מסעה — עם השרטוט מהקובץ ולוחות 2.1 / 2.2.", "url": "https://mahmoudalem95.github.io/mahalco/he/count-suite.html", "inLanguage": "he", "applicationCategory": "UtilitiesApplication", "applicationSubCategory": "Transportation engineering", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "image": "https://mahmoudalem95.github.io/mahalco/assets/share/share-he.png", "author": {"@type": "Person", "name": "Mahmoud Alem", "email": "mailto:mahmoudalem95@icloud.com"}, "isPartOf": {"@type": "WebSite", "name": "מהאלco", "url": "https://mahmoudalem95.github.io/mahalco/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "דף הבית", "item": "https://mahmoudalem95.github.io/mahalco/"}, {"@type": "ListItem", "position": 2, "name": "ניתוח ספירות — נפח קריטי · אורך תור · תכן מסעה", "item": "https://mahmoudalem95.github.io/mahalco/he/count-suite.html"}]}]}</script>
+<!-- guide:css -->
+<style>
+  .guide-title { font-size: 1.35rem; font-weight: 800; margin: 8px 0 6px; color: var(--ink, inherit); }
+  .guide-lead { color: var(--ink-2, inherit); max-width: 62rem; margin-bottom: 16px; line-height: 1.7; }
+  .guide .card-body p, .guide-list { line-height: 1.7; }
+  .guide-list { padding-inline-start: 1.1rem; margin-bottom: 0; }
+  .guide-list li { margin-bottom: 6px; }
+  #guide { scroll-margin-top: 72px; }
+  .guide .table td:first-child { min-width: 9rem; }
+  .guide .faq details { border-bottom: 1px solid var(--line, rgba(127,127,127,.2)); padding: 10px 0; }
+  .guide .faq details:last-child { border-bottom: 0; }
+  .guide .faq summary { cursor: pointer; font-weight: 600; list-style-position: inside; }
+  .guide .faq details > div { margin-top: 8px; color: var(--ink-2, inherit); line-height: 1.7; }
+  .guide-sources a, .guide-link a { color: var(--accent, inherit); }
+  .guide-link { margin: -12px 0 18px; font-size: .9rem; }
+  /* self-contained guide layout (pages without Bootstrap cards) */
+  .g { max-width: 1180px; margin: 32px auto 48px; padding: 0 16px; line-height: 1.7; }
+  .g .guide-lead { max-width: none; }
+  .g .g-card { border: 1px solid rgba(127,127,127,.24); border-radius: 12px; margin: 0 0 16px; overflow: hidden; background: rgba(127,127,127,.06); }
+  .g .g-head { margin: 0; padding: 10px 16px; font-size: 1rem; font-weight: 700; border-bottom: 1px solid rgba(127,127,127,.22);
+               border-inline-start: 4px solid var(--accent, var(--amber, var(--marking, #E9B12F))); }
+  .g .g-body { padding: 12px 16px; }
+  .g .g-body > :last-child { margin-bottom: 0; }
+  .g ul, .g ol { padding-inline-start: 1.2rem; }
+  .g li { margin-bottom: 6px; }
+  .g .g-scroll { overflow-x: auto; }
+  .g table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 6px 0 12px; }
+  .g th, .g td { padding: 6px 8px; border-bottom: 1px solid rgba(127,127,127,.2); text-align: start; vertical-align: top; }
+  .g th { font-weight: 600; opacity: .75; white-space: nowrap; }
+  .g tfoot td { font-weight: 700; }
+  .g .g-muted, .g .g-src { opacity: .75; font-size: .85rem; }
+  .g .g-formula { direction: ltr; unicode-bidi: isolate; display: inline-block; font-family: ui-monospace, Menlo, Consolas, monospace;
+                  font-size: .9em; padding: 1px 6px; border-radius: 4px; background: rgba(127,127,127,.14); }
+  .g a { color: var(--accent, var(--amber, var(--marking, inherit))); }
+</style>
+<!-- mahalco:faq -->
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "אילו קובצי ספירה הכלי קורא?", "acceptedAnswer": {"@type": "Answer", "text": "קובצי XLSX ו־XLS של ספירות צמתים בפורמט המקובל בישראל, עם לוחות ההתפלגות לפי זרועות ותנועות. כשמבנה הקובץ שונה, מעתיקים מהאקסל את שורות הכותרת (דרכים, כיוונים ותנועות) ואת שורות השעות, ומדביקים בדף."}}, {"@type": "Question", "name": "למה צריך להזין את מספר הנתיבים ידנית?", "acceptedAnswer": {"@type": "Answer", "text": "קובצי ספירה כוללים נפחים בלבד. הנתיבים מופיעים לכל היותר כסכמה, צילום רחפן או מפה בתוך הקובץ, ולכן המתכנן קובע אותם ובודק אותם מול השרטוט."}}, {"@type": "Question", "name": "מה ההבדל בין תכנון מוקדם לתכנון מפורט באורך התור?", "acceptedAnswer": {"@type": "Answer", "text": "בתכנון מוקדם האורך מחושב לשעת השיא הגבוהה מבין שיא הבוקר ושיא הערב. בתכנון מפורט הוא מחושב לפי הממוצע של שלוש שעות השיא."}}, {"@type": "Question", "name": "איך מחשבים AADT מספירה של 14 שעות?", "acceptedAnswer": {"@type": "Answer", "text": "הנפח של 14 השעות (06:00–20:00) מוכפל במקדם המרה ליממה, K 14→24 = N 24 / N 14 , המחושב מלוח שעתי של מקטע ייחוס בלמ\"ס (בדרך כלל 1.10–1.25), ובמקדמי ההתאמה של הפרויקט. כשיש ספירה מלאה של 24 שעות, משתמשים בה במקום המקדם."}}, {"@type": "Question", "name": "האם קובץ הספירה נשלח לשרת?", "acceptedAnswer": {"@type": "Answer", "text": "לא. הקובץ נקרא בדפדפן. החישובים עצמם רצים בשירות החישוב של MAHALCO, ואת מספר הנתיבים והתוצאות יש לבדוק מול שרטוט הצומת."}}]}</script>
 </head>
 <body>
 <div class="wrap">
 <div class="cs">
   <h1>ניתוח ספירות</h1>
   <p class="lede">כלי אחד לשלושה חישובים מאותה ספירה: נפח נתיב קריטי, אורך תור ואחסנה בנתיבים ונתוני תנועה לתכן מסעה. טוענים את קובץ הספירה פעם אחת, רואים בדיוק אילו נתונים נלקחו ממנו, קובעים פעם אחת את הנפחים והנתיבים בנתוני הצומת, ופותחים את הכלי הדרוש.</p>
+<!-- guide:link --><p class="guide-link"><a href="#guide">איך זה מחושב? שלבים, טבלת תקנים, דוגמה ושאלות נפוצות ↓</a></p>
 
   <section>
     <div class="sec-head"><h2>1 · קובץ הספירה</h2><span class="meta">xlsx / xls — קובץ הספירה של חברת המדידה</span></div>
@@ -1940,6 +1978,67 @@ details.tool>.mount{padding:18px 16px 8px}
 </div>
   <p class="foot">הקובץ נקרא בדפדפן; החישובים רצים בשירות החישוב של MAHALCO. את מספר הנתיבים ואת התוצאות יש לבדוק מול שרטוט הצומת.</p>
 </div>
+<!-- guide:begin -->
+<section id="guide" class="guide g" aria-labelledby="guideTitle">
+  <h2 id="guideTitle" class="guide-title">ניתוח ספירות: מקובץ הספירה לשלושה חישובים</h2>
+  <p class="guide-lead">קובץ ספירה אחד מזין שלושה כלים: נפח נתיב קריטי ורמת שירות, אורך תור ואחסנה בנתיבים, ונתוני תנועה לתכן מיסעה (AADT). טוענים את הקובץ פעם אחת, בודקים מה נלקח ממנו, קובעים את הנתיבים פעם אחת – ופותחים את הכלי הדרוש.</p>
+
+  <div class="g-card">
+    <h3 class="g-head">ארבעה שלבים</h3>
+    <div class="g-body">
+      <ol>
+        <li><b>טוענים את קובץ הספירה</b> (XLSX / XLS) כפי שהתקבל מחברת הסקרים. הדף מאתר את לוחות ההתפלגות ובונה את הפרופיל השעתי. אם המבנה שונה, מדביקים את תאי הלוח מהאקסל.</li>
+        <li><b>בודקים מה נלקח</b> – השרטוט מהקובץ והלוחות שנקראו מוצגים לצד הנתונים, כך שאפשר לוודא שכל מספר הגיע מהמקום הנכון.</li>
+        <li><b>קובעים את הנתיבים</b> – מספר הנתיבים אינו נמצא בקובצי הספירה, ולכן נקבע ידנית לפי הסכמה או צילום הרחפן שבקובץ: נתיב משותף ישר+שמאלה, ישר+ימינה, נתיב לכל התנועות וימין חופשית.</li>
+        <li><b>פותחים את הכלי</b> המתאים לשאלה. כל הכלים משתמשים באותם נפחים ונתיבים, בלי להזין שוב.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">איזה כלי עונה על איזו שאלה</h3>
+    <div class="g-body g-scroll">
+      <table>
+        <thead><tr><th>השאלה</th><th>הכלי</th><th>מה מתקבל</th></tr></thead>
+        <tbody>
+          <tr><td>האם הצומת עומד בקיבולת, ובאיזו שיטת פאזות?</td><td>נפח נתיב קריטי</td><td>נפח קריטי בשלוש שיטות, זמני רמזור, עיכוב, רמת שירות ותחזית לשנות יעד</td></tr>
+          <tr><td>כמה אורך צריך מפרץ הפנייה?</td><td>אורך תור ואחסנה</td><td>אורך תור ואחסנה לכל נתיב. תכנון מוקדם – לפי שיא הבוקר או הערב, הגבוה מביניהם; תכנון מפורט – לפי ממוצע שלוש שעות השיא</td></tr>
+          <tr><td>מה נתוני התנועה לתכן המיסעה?</td><td>AADT</td><td>AADT ומקדמי K, D, T מכל שעות הספירה, לפי מסלול ולפי כיוון</td></tr>
+        </tbody>
+      </table>
+      <p class="g-muted">דוגמה מחושבת של הנפח הקריטי, הזמנים והתחזית נמצאת ב<a href="critical-lane-volume.html#guide">דף נפח נתיב קריטי</a>.</p>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">שאלות נפוצות</h3>
+    <div class="g-body faq">
+      <details>
+        <summary>אילו קובצי ספירה הכלי קורא?</summary>
+        <div>קובצי XLSX ו־XLS של ספירות צמתים בפורמט המקובל בישראל, עם לוחות ההתפלגות לפי זרועות ותנועות. כשמבנה הקובץ שונה, מעתיקים מהאקסל את שורות הכותרת (דרכים, כיוונים ותנועות) ואת שורות השעות, ומדביקים בדף.</div>
+      </details>
+      <details>
+        <summary>למה צריך להזין את מספר הנתיבים ידנית?</summary>
+        <div>קובצי ספירה כוללים נפחים בלבד. הנתיבים מופיעים לכל היותר כסכמה, צילום רחפן או מפה בתוך הקובץ, ולכן המתכנן קובע אותם ובודק אותם מול השרטוט.</div>
+      </details>
+      <details>
+        <summary>מה ההבדל בין תכנון מוקדם לתכנון מפורט באורך התור?</summary>
+        <div>בתכנון מוקדם האורך מחושב לשעת השיא הגבוהה מבין שיא הבוקר ושיא הערב. בתכנון מפורט הוא מחושב לפי הממוצע של שלוש שעות השיא.</div>
+      </details>
+      <details>
+        <summary>איך מחשבים AADT מספירה של 14 שעות?</summary>
+        <div>הנפח של 14 השעות (06:00–20:00) מוכפל במקדם המרה ליממה, K<sub>14→24</sub> = N<sub>24</sub> / N<sub>14</sub>, המחושב מלוח שעתי של מקטע ייחוס בלמ"ס (בדרך כלל 1.10–1.25), ובמקדמי ההתאמה של הפרויקט. כשיש ספירה מלאה של 24 שעות, משתמשים בה במקום המקדם.</div>
+      </details>
+      <details>
+        <summary>האם קובץ הספירה נשלח לשרת?</summary>
+        <div>לא. הקובץ נקרא בדפדפן. החישובים עצמם רצים בשירות החישוב של MAHALCO, ואת מספר הנתיבים והתוצאות יש לבדוק מול שרטוט הצומת.</div>
+      </details>
+    </div>
+  </div>
+
+  <p class="g-src">מקורות: הנחיות לתכן גיאומטרי של דרכים בין־עירוניות, כרך 2: צמתים (נובמבר 2023) לאורכי התור; Highway Capacity Manual לרמת השירות; נוהל נתיבי ישראל PITUAH‑20‑38181 ל־AADT. כלי עזר בלבד – אינו מחליף בדיקה של מהנדס תנועה.</p>
+</section>
+<!-- guide:end -->
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=7"></script>
 <script src="../js/count-figures.js?v=1"></script>
 <script src="../js/count-parser.js?v=4"></script>

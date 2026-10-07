@@ -305,6 +305,43 @@ svg.flow-scheme .flow-factor{font-family:var(--mono);font-size:9px;font-weight:7
 <meta name="twitter:card" content="summary_large_image">
 <!-- mahalco:jsonld -->
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://mahmoudalem95.github.io/mahalco/he/aadt.html#app", "name": "כלי AADT למתכנן מיסעה בישראל", "description": "ניתוח AADT לתכן מיסעה: קריאת קובצי ספירות, פרופיל שעתי ופילוג כלי רכב, השלמת חלון 06:00–20:00 ליממה ודוח AADT שקוף.", "url": "https://mahmoudalem95.github.io/mahalco/he/aadt.html", "inLanguage": "he", "applicationCategory": "UtilitiesApplication", "applicationSubCategory": "Transportation engineering", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "image": "https://mahmoudalem95.github.io/mahalco/assets/share/share-he.png", "author": {"@type": "Person", "name": "Mahmoud Alem", "email": "mailto:mahmoudalem95@icloud.com"}, "isPartOf": {"@type": "WebSite", "name": "מהאלco", "url": "https://mahmoudalem95.github.io/mahalco/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "דף הבית", "item": "https://mahmoudalem95.github.io/mahalco/"}, {"@type": "ListItem", "position": 2, "name": "כלי AADT למתכנן מיסעה בישראל", "item": "https://mahmoudalem95.github.io/mahalco/he/aadt.html"}]}]}</script>
+<!-- guide:css -->
+<style>
+  .guide-title { font-size: 1.35rem; font-weight: 800; margin: 8px 0 6px; color: var(--ink, inherit); }
+  .guide-lead { color: var(--ink-2, inherit); max-width: 62rem; margin-bottom: 16px; line-height: 1.7; }
+  .guide .card-body p, .guide-list { line-height: 1.7; }
+  .guide-list { padding-inline-start: 1.1rem; margin-bottom: 0; }
+  .guide-list li { margin-bottom: 6px; }
+  #guide { scroll-margin-top: 72px; }
+  .guide .table td:first-child { min-width: 9rem; }
+  .guide .faq details { border-bottom: 1px solid var(--line, rgba(127,127,127,.2)); padding: 10px 0; }
+  .guide .faq details:last-child { border-bottom: 0; }
+  .guide .faq summary { cursor: pointer; font-weight: 600; list-style-position: inside; }
+  .guide .faq details > div { margin-top: 8px; color: var(--ink-2, inherit); line-height: 1.7; }
+  .guide-sources a, .guide-link a { color: var(--accent, inherit); }
+  .guide-link { margin: -12px 0 18px; font-size: .9rem; }
+  /* self-contained guide layout (pages without Bootstrap cards) */
+  .g { max-width: 1180px; margin: 32px auto 48px; padding: 0 16px; line-height: 1.7; }
+  .g .guide-lead { max-width: none; }
+  .g .g-card { border: 1px solid rgba(127,127,127,.24); border-radius: 12px; margin: 0 0 16px; overflow: hidden; background: rgba(127,127,127,.06); }
+  .g .g-head { margin: 0; padding: 10px 16px; font-size: 1rem; font-weight: 700; border-bottom: 1px solid rgba(127,127,127,.22);
+               border-inline-start: 4px solid var(--accent, var(--amber, var(--marking, #E9B12F))); }
+  .g .g-body { padding: 12px 16px; }
+  .g .g-body > :last-child { margin-bottom: 0; }
+  .g ul, .g ol { padding-inline-start: 1.2rem; }
+  .g li { margin-bottom: 6px; }
+  .g .g-scroll { overflow-x: auto; }
+  .g table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 6px 0 12px; }
+  .g th, .g td { padding: 6px 8px; border-bottom: 1px solid rgba(127,127,127,.2); text-align: start; vertical-align: top; }
+  .g th { font-weight: 600; opacity: .75; white-space: nowrap; }
+  .g tfoot td { font-weight: 700; }
+  .g .g-muted, .g .g-src { opacity: .75; font-size: .85rem; }
+  .g .g-formula { direction: ltr; unicode-bidi: isolate; display: inline-block; font-family: ui-monospace, Menlo, Consolas, monospace;
+                  font-size: .9em; padding: 1px 6px; border-radius: 4px; background: rgba(127,127,127,.14); }
+  .g a { color: var(--accent, var(--amber, var(--marking, inherit))); }
+</style>
+<!-- mahalco:faq -->
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "אילו קבצים הכלי קורא?", "acceptedAnswer": {"@type": "Answer", "text": "XLSX, XLSM, XLS, CSV ו־TSV. ספירת צומת ישראלית בפורמט 31150 מזוהה במפורש (לוחות 1.3, 2.1–2.2, 2.3–2.4 ופילוח סוגי הרכב), וכך גם דוח AADT בפורמט ADOT. קבצים אחרים נקראים במנתח כללי, והדוח מציג איזה גיליון ואיזו עמודה נבחרו."}}, {"@type": "Question", "name": "מה ההבדל בין K14→24 ל־EF?", "acceptedAnswer": {"@type": "Answer", "text": "K14→24 משלים את 14 השעות ליממה, לפי מקטע ייחוס בלמ\"ס. EF ומקדם ההתאמה העונתי הם מקדמים נפרדים, וצריכים להגיע ממקור פרויקט מאושר."}}, {"@type": "Question", "name": "האם הכלי ממיר ל־ESAL?", "acceptedAnswer": {"@type": "Answer", "text": "לא. אין המרה אוטומטית ל־EAL או ל־ESAL; מקדמי שקילות הסרנים חייבים להגיע ממקור פרויקט מאושר. הדוח מציג AADT, רכב כבד ואוטובוסים ליום, ולשנת תכן של 300 ימים כברירת מחדל."}}, {"@type": "Question", "name": "על איזה נוהל החישוב מבוסס?", "acceptedAnswer": {"@type": "Answer", "text": "על נוהל נתיבי ישראל PITUAH‑20‑38181, עם מבנה דיווח K, D, T ו־Derivation Code לפי ADOT 2011 AADT Publication."}}]}</script>
 </head>
 <body>
 <div class="wrap">
@@ -312,6 +349,7 @@ svg.flow-scheme .flow-factor{font-family:var(--mono);font-size:9px;font-weight:7
 <h1>ניתוח AADT למתכנן מיסעה בישראל</h1>
 <p class="lede">הכלי קורא קובצי ספירות, מזהה פרופיל שעתי ופילוג כלי רכב, משלים את חלון
 06:00–20:00 ליממה ומפיק דוח AADT שקוף לתכן מיסעה. כל תוצאה מסומנת כמדידה, השלמה או התאמה.</p>
+<!-- guide:link --><p class="guide-link"><a href="#guide">איך זה מחושב? שלבים, טבלת תקנים, דוגמה ושאלות נפוצות ↓</a></p>
 <p class="src">בסיס מתודולוגי: נוהל נתיבי ישראל PITUAH‑20‑38181 · מבנה דיווח K/D/T ו‑Derivation Code לפי ADOT 2011 AADT Publication</p>
 
 <!-- =============== 1. Import =============== -->
@@ -540,6 +578,83 @@ svg.flow-scheme .flow-factor{font-family:var(--mono);font-size:9px;font-weight:7
 <p class="foot">הנתונים נשמרים מקומית בדפדפן בלבד ואינם נשלחים לשרת.</p>
 </div>
 
+<!-- guide:begin -->
+<section id="guide" class="guide g" aria-labelledby="guideTitle">
+  <h2 id="guideTitle" class="guide-title">איך מחשבים AADT ומקדמי K, D, T לתכן מיסעה</h2>
+  <p class="guide-lead">הכלי קורא את קובץ הספירה, משלים את חלון 06:00–20:00 ליממה מלאה, ומפיק AADT ומקדמי K, D, T לפי מסלול ולפי כיוון. כל תוצאה מסומנת כמדידה, השלמה או התאמה, כדי שמתכנן המיסעה יראה מה נמדד ומה הונח.</p>
+
+  <div class="g-card">
+    <h3 class="g-head">ההגדרות</h3>
+    <div class="g-body g-scroll">
+      <table>
+        <thead><tr><th>מדד</th><th>החישוב</th><th>טווח השוואה *</th></tr></thead>
+        <tbody>
+          <tr><td>AADT מספירה של 14 שעות</td><td><span class="g-formula">V14 × K14→24 × EF × מקדם התאמה</span></td><td>–</td></tr>
+          <tr><td>K – שעת התכן</td><td><span class="g-formula">K = DHV / AADT × 100</span>; שעת השיא בבוקר או בערב משמשת קירוב ל־DHV</td><td>8%–13%</td></tr>
+          <tr><td>D – פיצול כיווני</td><td><span class="g-formula">D = max(כיוון 1, כיוון 2) / (כיוון 1 + כיוון 2) × 100</span></td><td>51%–64%</td></tr>
+          <tr><td>T – רכב כבד</td><td><span class="g-formula">T = (משאית בודדת + משאית מורכבת) / AADT × 100</span></td><td>5%–31%</td></tr>
+        </tbody>
+      </table>
+      <p class="g-muted">* טווחי P10–P90 מנתוני ADOT 2011 – להשוואה בלבד, לא ספים ישראליים. כשאין די נתונים לחישוב, הכלי משתמש בברירות מחדל (K 9%, D 55%, T 5%, אוטובוסים 1%) ומסמן זאת.</p>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">מקדם ההמרה מ־14 ל־24 שעות</h3>
+    <div class="g-body">
+      <ol>
+        <li>סוכמים את נפח 14 השעות שנספרו בשטח (בדרך כלל 06:00–20:00).</li>
+        <li>בוחרים מקטע ייחוס במערכת ספירות התנועה בדרכים לא־עירוניות של הלמ"ס – קרוב גיאוגרפית או בעל אופי תנועה דומה – את השנה העדכנית ואת הכיוון המתאים.</li>
+        <li>מהלוח השעתי של המקטע: N<sub>14</sub> – סכום אותן 14 שעות, N<sub>24</sub> – סך היממה.</li>
+        <li><span class="g-formula">K14→24 = N24 / N14</span> – בדרך כלל 1.10–1.25, לפי אופי הדרך.</li>
+      </ol>
+      <p class="g-muted">כשיש ספירה מלאה של 24 שעות באותו קטע, סכום 24 השעות מחליף את המכפלה ואין צורך במקדם.</p>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">דוגמה להמחשת החישוב</h3>
+    <div class="g-body g-scroll">
+      <table>
+        <thead><tr><th>נתון</th><th>ערך</th></tr></thead>
+        <tbody>
+          <tr><td>נפח 14 שעות בספירה (V14)</td><td>12,000 כלי רכב</td></tr>
+          <tr><td>מקטע ייחוס בלמ"ס: N14 / N24</td><td>20,000 / 23,600 → K14→24 = 1.18</td></tr>
+          <tr><td>AADT (EF ומקדם התאמה = 1)</td><td>12,000 × 1.18 = <b>14,160</b></td></tr>
+          <tr><td>שעת שיא (DHV)</td><td>1,250 → K = 8.8%</td></tr>
+          <tr><td>שעת השיא לפי כיוונים</td><td>720 / 530 → D = 57.6%</td></tr>
+          <tr><td>משאיות ביממה</td><td>1,130 → T = 8.0%</td></tr>
+        </tbody>
+      </table>
+      <p class="g-muted">המספרים להמחשת הנוסחאות בלבד. בכלי הנתונים נלקחים מהקובץ, ולכל ערך מצוין מאיזה גיליון ועמודה הוא הגיע.</p>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">שאלות נפוצות</h3>
+    <div class="g-body faq">
+      <details>
+        <summary>אילו קבצים הכלי קורא?</summary>
+        <div>XLSX, XLSM, XLS, CSV ו־TSV. ספירת צומת ישראלית בפורמט 31150 מזוהה במפורש (לוחות 1.3, 2.1–2.2, 2.3–2.4 ופילוח סוגי הרכב), וכך גם דוח AADT בפורמט ADOT. קבצים אחרים נקראים במנתח כללי, והדוח מציג איזה גיליון ואיזו עמודה נבחרו.</div>
+      </details>
+      <details>
+        <summary>מה ההבדל בין K14→24 ל־EF?</summary>
+        <div>K14→24 משלים את 14 השעות ליממה, לפי מקטע ייחוס בלמ"ס. EF ומקדם ההתאמה העונתי הם מקדמים נפרדים, וצריכים להגיע ממקור פרויקט מאושר.</div>
+      </details>
+      <details>
+        <summary>האם הכלי ממיר ל־ESAL?</summary>
+        <div>לא. אין המרה אוטומטית ל־EAL או ל־ESAL; מקדמי שקילות הסרנים חייבים להגיע ממקור פרויקט מאושר. הדוח מציג AADT, רכב כבד ואוטובוסים ליום, ולשנת תכן של 300 ימים כברירת מחדל.</div>
+      </details>
+      <details>
+        <summary>על איזה נוהל החישוב מבוסס?</summary>
+        <div>על נוהל נתיבי ישראל PITUAH‑20‑38181, עם מבנה דיווח K, D, T ו־Derivation Code לפי ADOT 2011 AADT Publication.</div>
+      </details>
+    </div>
+  </div>
+
+  <p class="g-src">מקורות: נוהל נתיבי ישראל PITUAH‑20‑38181; ADOT 2011 AADT Publication; הלמ"ס – ספירות תנועה בדרכים לא־עירוניות. כלי עזר בלבד – אינו מחליף אישור של מתכנן המיסעה.</p>
+</section>
+<!-- guide:end -->
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=7"></script>
 <script src="../js/count-parser.js?v=4"></script>
 <script src="../js/tools/aadt.js?v=9"></script>

@@ -476,6 +476,43 @@ html[data-glass="on"] :is(.arm,.cell-c,details){border-radius:16px}
 <meta name="twitter:card" content="summary_large_image">
 <!-- mahalco:jsonld -->
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://mahmoudalem95.github.io/mahalco/he/critical-lane-volume.html#app", "name": "נפח נתיב קריטי — מחשבון פאזות לצומת מרומזר", "description": "מחשבון נפח נתיב קריטי (Critical Lane Volume) לצומת מרומזר — שלוש שיטות פאזה, תמיכה בצומת T, נתיב משותף ישר+ימינה וימין חופשית.", "url": "https://mahmoudalem95.github.io/mahalco/he/critical-lane-volume.html", "inLanguage": "he", "applicationCategory": "UtilitiesApplication", "applicationSubCategory": "Transportation engineering", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "image": "https://mahmoudalem95.github.io/mahalco/assets/share/share-he.png", "author": {"@type": "Person", "name": "Mahmoud Alem", "email": "mailto:mahmoudalem95@icloud.com"}, "isPartOf": {"@type": "WebSite", "name": "מהאלco", "url": "https://mahmoudalem95.github.io/mahalco/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "דף הבית", "item": "https://mahmoudalem95.github.io/mahalco/"}, {"@type": "ListItem", "position": 2, "name": "נפח נתיב קריטי — מחשבון פאזות לצומת מרומזר", "item": "https://mahmoudalem95.github.io/mahalco/he/critical-lane-volume.html"}]}]}</script>
+<!-- guide:css -->
+<style>
+  .guide-title { font-size: 1.35rem; font-weight: 800; margin: 8px 0 6px; color: var(--ink, inherit); }
+  .guide-lead { color: var(--ink-2, inherit); max-width: 62rem; margin-bottom: 16px; line-height: 1.7; }
+  .guide .card-body p, .guide-list { line-height: 1.7; }
+  .guide-list { padding-inline-start: 1.1rem; margin-bottom: 0; }
+  .guide-list li { margin-bottom: 6px; }
+  #guide { scroll-margin-top: 72px; }
+  .guide .table td:first-child { min-width: 9rem; }
+  .guide .faq details { border-bottom: 1px solid var(--line, rgba(127,127,127,.2)); padding: 10px 0; }
+  .guide .faq details:last-child { border-bottom: 0; }
+  .guide .faq summary { cursor: pointer; font-weight: 600; list-style-position: inside; }
+  .guide .faq details > div { margin-top: 8px; color: var(--ink-2, inherit); line-height: 1.7; }
+  .guide-sources a, .guide-link a { color: var(--accent, inherit); }
+  .guide-link { margin: -12px 0 18px; font-size: .9rem; }
+  /* self-contained guide layout (pages without Bootstrap cards) */
+  .g { max-width: 1180px; margin: 32px auto 48px; padding: 0 16px; line-height: 1.7; }
+  .g .guide-lead { max-width: none; }
+  .g .g-card { border: 1px solid rgba(127,127,127,.24); border-radius: 12px; margin: 0 0 16px; overflow: hidden; background: rgba(127,127,127,.06); }
+  .g .g-head { margin: 0; padding: 10px 16px; font-size: 1rem; font-weight: 700; border-bottom: 1px solid rgba(127,127,127,.22);
+               border-inline-start: 4px solid var(--accent, var(--amber, var(--marking, #E9B12F))); }
+  .g .g-body { padding: 12px 16px; }
+  .g .g-body > :last-child { margin-bottom: 0; }
+  .g ul, .g ol { padding-inline-start: 1.2rem; }
+  .g li { margin-bottom: 6px; }
+  .g .g-scroll { overflow-x: auto; }
+  .g table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 6px 0 12px; }
+  .g th, .g td { padding: 6px 8px; border-bottom: 1px solid rgba(127,127,127,.2); text-align: start; vertical-align: top; }
+  .g th { font-weight: 600; opacity: .75; white-space: nowrap; }
+  .g tfoot td { font-weight: 700; }
+  .g .g-muted, .g .g-src { opacity: .75; font-size: .85rem; }
+  .g .g-formula { direction: ltr; unicode-bidi: isolate; display: inline-block; font-family: ui-monospace, Menlo, Consolas, monospace;
+                  font-size: .9em; padding: 1px 6px; border-radius: 4px; background: rgba(127,127,127,.14); }
+  .g a { color: var(--accent, var(--amber, var(--marking, inherit))); }
+</style>
+<!-- mahalco:faq -->
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "מה זה נפח נתיב קריטי?", "acceptedAnswer": {"@type": "Answer", "text": "זה סכום הנפח לנתיב הגבוה ביותר בכל מופע של הרמזור. הוא מראה כמה תנועה הצומת צריך לשרת בנתיב אחד במחזור, ולכן משמש לבדיקה מהירה של הקיבולת ולבחירת שיטת הפאזות."}}, {"@type": "Question", "name": "מה סף הנפח הקריטי?", "acceptedAnswer": {"@type": "Answer", "text": "במחשבון ברירת המחדל היא 1,500 רכ\"ש לנתיב, ערך אצבע נפוץ, והיא ניתנת לשינוי לפי דרישות המזמין. עד 85% מהסף התוצאה מתחת לסף, 85%–100% גבולית, ומעל 100% חורגת."}}, {"@type": "Question", "name": "איך מזינים נתונים מקובץ ספירה?", "acceptedAnswer": {"@type": "Answer", "text": "טוענים את קובץ ה־XLSX של מבצע הספירה. הדף מאתר את לוח 2.4 (או 2.2, 2.3, 2.1), בונה את הפרופיל השעתי, בוחר את שעת השיא ומציג את הנפחים על סכמת הצומת. אם הקובץ אינו נקרא, אפשר להדביק את תאי הלוח מהאקסל או להזין 12 תנועות ידנית."}}, {"@type": "Question", "name": "האם זמני הרמזור שהמחשבון מציג הם התוכנית בשטח?", "acceptedAnswer": {"@type": "Answer", "text": "לא. הירוק מחולק ביחס לזרימות הקריטיות, ולכן כל המופעים מגיעים לאותו יחס ביקוש לקיבולת – זה תכנון אופטימלי לבדיקה. לא נכללים תיאום בין צמתים, הולכי רגל, תחבורה ציבורית, חסימת מפרצים ושמאלה מותנית."}}, {"@type": "Question", "name": "האם המחשבון מתאים לצומת T?", "acceptedAnswer": {"@type": "Answer", "text": "כן. בשיטת הפאזה המתמשכת הציר בעל הזרוע האחת משמש תמיד כציר המפוצל, והטיפול המשולב חל על הציר בעל שתי הזרועות. בפחות משלוש זרועות פעילות התוצאה להמחשה בלבד."}}]}</script>
 </head>
 <body>
 <a class="skip" href="#results">דלג לתוצאות</a>
@@ -483,6 +520,7 @@ html[data-glass="on"] :is(.arm,.cell-c,details){border-radius:16px}
 
   <h1>נפח נתיב קריטי</h1>
   <p class="lede">מחשבון פאזות לצומת מרומזר. הזן נפחים ומספרי נתיבים לכל זרוע וקבל את הנפח הקריטי בשלוש שיטות פאזה: זרועות מפוצלות, הפרדת שמאלות, ופאזה מתמשכת (שילוב שתי השיטות). עובד גם על צומת T ועל זרועות רב־נתיביות, ומטפל בנתיב משותף ישר+ימינה ובימין חופשית לכל זרוע בנפרד. <strong>החישוב והסכמה מתעדכנים בזמן אמת — אין צורך ללחוץ "חשב".</strong></p>
+<!-- guide:link --><p class="guide-link"><a href="#guide">איך זה מחושב? שלבים, טבלת תקנים, דוגמה ושאלות נפוצות ↓</a></p>
 
   <section>
     <div class="sec-head"><h2>ייבוא נפחים מקובץ ספירה</h2>
@@ -691,6 +729,120 @@ html[data-glass="on"] :is(.arm,.cell-c,details){border-radius:16px}
   <p class="foot">הנתונים נשמרים מקומית בדפדפן בלבד ואינם נשלחים לשרת.</p>
 </div>
 
+<!-- guide:begin -->
+<section id="guide" class="guide g" aria-labelledby="guideTitle">
+  <h2 id="guideTitle" class="guide-title">איך מחשבים נפח נתיב קריטי ורמת שירות לצומת מרומזר</h2>
+  <p class="guide-lead">הנפח הקריטי V<sub>c</sub> הוא סכום הנפח לנתיב הגבוה ביותר בכל מופע של הרמזור. המחשבון מחשב אותו בשלוש שיטות פאזה ובוחר את הנמוכה, ואז מתכנן זמני רמזור, מחשב עיכוב ורמת שירות, ומריץ את הכול שוב לשנות התחזית.</p>
+
+  <div class="g-card">
+    <h3 class="g-head">שלב 1 – נפח לנתיב בכל קבוצת נתיבים</h3>
+    <div class="g-body">
+      <p>לכל תנועה (שמאלה, ישר, ימינה) מחלקים את הנפח במספר הנתיבים שלה: <span class="g-formula">q = V / n</span>. הנתיבים נקבעים לכל זרוע:</p>
+      <ul>
+        <li><b>נתיב משותף ישר+ימינה</b> – שתי התנועות נספרות יחד ומתחלקות בנתיבי הישר.</li>
+        <li><b>נתיב משותף ישר+שמאלה</b> – השמאלה נוסעת בנתיבי הישר ואינה יכולה לקבל מופע מוגן, ולכן הזרוע מקבלת מופע משלה בכל השיטות.</li>
+        <li><b>ימין חופשית</b> – הימינה אינה נספרת בנפח הקריטי.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">שלב 2 – שלוש שיטות פאזה, והנמוכה נבחרת</h3>
+    <div class="g-body g-scroll">
+      <table>
+        <thead><tr><th>שיטה</th><th>איך בנויים המופעים</th><th>הנפח הקריטי</th></tr></thead>
+        <tbody>
+          <tr><td>1 · זרועות מפוצלות</td><td>מופע נפרד לכל זרוע</td><td>סכום ה־q הגבוה בכל זרוע</td></tr>
+          <tr><td>2 · הפרדת שמאלות</td><td>לכל ציר: מופע לשמאלות שתי הזרועות ומופע לישר ולימינה, או פיצול הציר – הזול מבין השניים</td><td>סכום המופעים בשני הצירים</td></tr>
+          <tr><td>3 · פאזה מתמשכת</td><td>בציר אחד כל זרוע שומרת מופע משלה, והשמאלה "רוכבת" עליו; רק עודף שמאלות עובר למופע ביניים משותף. הציר השני מפוצל</td><td>נבחר הציר שנותן סכום נמוך יותר</td></tr>
+        </tbody>
+      </table>
+      <p class="g-muted">את הנפח הקריטי משווים לסף התכנון – ברירת המחדל 1,500 רכ"ש לנתיב, וניתן לשנותה. עד 85% מהסף – מתחת לסף, 85%–100% – גבולי, מעל 100% – חורג.</p>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">שלב 3 – זמני רמזור, עיכוב ורמת שירות</h3>
+    <div class="g-body">
+      <ul>
+        <li><b>זרימת רוויה</b> – 1,900 רכ"ש לנתיב ירוק כברירת מחדל, עם מקדם רכב כבד לפי אחוז הרכב הכבד (או בלי מקדם, כשהנפחים כבר ביר"מ).</li>
+        <li><b>אורך מחזור לפי Webster</b>: <span class="g-formula">C = (1.5·L + 5) / (1 − Y)</span>, כאשר L הוא הזמן האבוד (4 שנ' לכל מופע כברירת מחדל) ו־Y סכום יחסי הזרימה. המחזור מעוגל ל־5 שניות, בין 40 ל־150 שנ'.</li>
+        <li><b>חלוקת ירוק</b> ביחס לזרימות הקריטיות, עם ירוק מזערי של 7 שנ'.</li>
+        <li><b>עיכוב בקרה לפי HCM</b> – רכיב אחיד ורכיב תוספתי, לתקופה של 15 דקות.</li>
+      </ul>
+      <div class="g-scroll">
+        <table>
+          <thead><tr><th>רמת שירות</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr></thead>
+          <tbody><tr><td>עיכוב (שנ' לרכב)</td><td>עד 10</td><td>10–20</td><td>20–35</td><td>35–55</td><td>55–80</td><td>מעל 80</td></tr></tbody>
+        </table>
+      </div>
+      <p><b>תחזית:</b> כל התנועות גדלות בריבית דריבית לפי שיעור הצמיחה, והחישוב כולו – נפח קריטי, מחזור, זמנים ועיכוב – מבוצע מחדש לכל שנת יעד. המחשבון מציין את השנה שבה הצומת יורד לרמת שירות E ואת השנה שבה יחס הביקוש לקיבולת מגיע ל־1.00.</p>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">דוגמה: צומת ארבע זרועות</h3>
+    <div class="g-body g-scroll">
+      <p>בכל זרוע: נתיב שמאלה אחד, שני נתיבי ישר ונתיב ימינה אחד. הנפחים ברכ"ש:</p>
+      <table>
+        <thead><tr><th>זרוע</th><th>שמאלה</th><th>ישר</th><th>ימינה</th></tr></thead>
+        <tbody>
+          <tr><td>צפון</td><td>180</td><td>620</td><td>120</td></tr>
+          <tr><td>דרום</td><td>150</td><td>540</td><td>100</td></tr>
+          <tr><td>מזרח</td><td>220</td><td>480</td><td>90</td></tr>
+          <tr><td>מערב</td><td>160</td><td>520</td><td>140</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>שיטה</th><th>החישוב</th><th>V<sub>c</sub></th></tr></thead>
+        <tbody>
+          <tr><td>1 · זרועות מפוצלות</td><td>310 + 270 + 240 + 260</td><td>1,080</td></tr>
+          <tr><td>2 · הפרדת שמאלות</td><td>צפון–דרום: 180 + 310 · מזרח–מערב: 220 + 260</td><td><b>970</b></td></tr>
+          <tr><td>3 · פאזה מתמשכת</td><td>השמאלות נכנסות כולן במופעי הזרועות</td><td>1,080</td></tr>
+        </tbody>
+      </table>
+      <p>שיטה 2 נבחרת: 970 רכ"ש לנתיב, 65% מהסף. עם ברירות המחדל: מחזור 60 שנ' בארבעה מופעים, יחס ביקוש לקיבולת 0.70, עיכוב ממוצע 32.4 שנ' לרכב – <b>רמת שירות C</b>.</p>
+      <table>
+        <thead><tr><th>צמיחה 3% לשנה</th><th>2026</th><th>2031</th><th>2036</th><th>2041</th></tr></thead>
+        <tbody>
+          <tr><td>V<sub>c</sub></td><td>970</td><td>1,125</td><td>1,304</td><td>1,511</td></tr>
+          <tr><td>עיכוב (שנ')</td><td>32</td><td>39</td><td>51</td><td>74</td></tr>
+          <tr><td>רמת שירות</td><td>C</td><td>D</td><td>D</td><td>E</td></tr>
+        </tbody>
+      </table>
+      <p class="g-muted">הצומת יורד לרמת שירות E בשנת 2038, ויחס הביקוש לקיבולת מגיע ל־1.00 בשנת 2045.</p>
+    </div>
+  </div>
+
+  <div class="g-card">
+    <h3 class="g-head">שאלות נפוצות</h3>
+    <div class="g-body faq">
+      <details>
+        <summary>מה זה נפח נתיב קריטי?</summary>
+        <div>זה סכום הנפח לנתיב הגבוה ביותר בכל מופע של הרמזור. הוא מראה כמה תנועה הצומת צריך לשרת בנתיב אחד במחזור, ולכן משמש לבדיקה מהירה של הקיבולת ולבחירת שיטת הפאזות.</div>
+      </details>
+      <details>
+        <summary>מה סף הנפח הקריטי?</summary>
+        <div>במחשבון ברירת המחדל היא 1,500 רכ"ש לנתיב, ערך אצבע נפוץ, והיא ניתנת לשינוי לפי דרישות המזמין. עד 85% מהסף התוצאה מתחת לסף, 85%–100% גבולית, ומעל 100% חורגת.</div>
+      </details>
+      <details>
+        <summary>איך מזינים נתונים מקובץ ספירה?</summary>
+        <div>טוענים את קובץ ה־XLSX של מבצע הספירה. הדף מאתר את לוח 2.4 (או 2.2, 2.3, 2.1), בונה את הפרופיל השעתי, בוחר את שעת השיא ומציג את הנפחים על סכמת הצומת. אם הקובץ אינו נקרא, אפשר להדביק את תאי הלוח מהאקסל או להזין 12 תנועות ידנית.</div>
+      </details>
+      <details>
+        <summary>האם זמני הרמזור שהמחשבון מציג הם התוכנית בשטח?</summary>
+        <div>לא. הירוק מחולק ביחס לזרימות הקריטיות, ולכן כל המופעים מגיעים לאותו יחס ביקוש לקיבולת – זה תכנון אופטימלי לבדיקה. לא נכללים תיאום בין צמתים, הולכי רגל, תחבורה ציבורית, חסימת מפרצים ושמאלה מותנית.</div>
+      </details>
+      <details>
+        <summary>האם המחשבון מתאים לצומת T?</summary>
+        <div>כן. בשיטת הפאזה המתמשכת הציר בעל הזרוע האחת משמש תמיד כציר המפוצל, והטיפול המשולב חל על הציר בעל שתי הזרועות. בפחות משלוש זרועות פעילות התוצאה להמחשה בלבד.</div>
+      </details>
+    </div>
+  </div>
+
+  <p class="g-src">מקורות: Highway Capacity Manual (עיכוב בקרה ורמות שירות בצומת מרומזר); שיטת Webster לאורך מחזור. כלי עזר בלבד – אינו מחליף בדיקה של מהנדס תנועה.</p>
+</section>
+<!-- guide:end -->
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=7"></script>
 <script src="../js/count-figures.js?v=1"></script>
 <script src="../js/count-parser.js?v=4"></script>

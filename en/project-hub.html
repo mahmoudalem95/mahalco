@@ -640,7 +640,7 @@ table.psheet th.psheet-pvi{
     <div class="ribbon-groups">
       <div class="rg">
         <div class="rg-tools">
-          <button class="tool-btn" id="bMap" title="Import background map (GovMap)"><span>🗺</span><small>Background</small></button>
+          <button class="tool-btn" id="bMap" title="Import DWG/DXF background"><span>🗺</span><small>DWG bg</small></button>
           <button class="tool-btn" id="bPlan" title="Engineering plan view"><span>📐</span><small>View</small></button>
         </div>
         <div class="rg-label">View</div>
@@ -657,7 +657,7 @@ table.psheet th.psheet-pvi{
     <button class="icon" id="bTheme" aria-label="Display mode" title="Display mode"></button>
   </div>
 </header>
-<input type="file" id="fMap" accept="image/*,.pgw,.jgw,.tfw,.wld,.png,.jpg,.jpeg,.dwg,.dxf" multiple hidden>
+<input type="file" id="fMap" accept=".dwg,.dxf" multiple hidden>
 
 <!-- ================= LEFT TOOL PALETTE ================= -->
 <aside class="tool-palette" aria-label="Quick tools">
@@ -797,7 +797,7 @@ table.psheet th.psheet-pvi{
     </section>
 
     <section class="grp" id="mapBox" hidden>
-      <h3>Background map</h3>
+      <h3>DWG/DXF background</h3>
       <div class="list">
         <div class="cell"><span class="lbl">Status</span><span id="mapGeo" style="color:var(--dim)"></span></div>
         <div class="cell"><span class="lbl">Opacity</span><input id="mapOp" type="range" min="10" max="100" style="flex:1"></div>
@@ -805,7 +805,7 @@ table.psheet th.psheet-pvi{
         <button class="cell btn" id="bMapHide">Hide / Show</button>
         <button class="cell btn danger" id="bMapDel">Remove map</button>
       </div>
-      <p class="hint" style="margin-top:6px">From GovMap: save a map/aerial image, and if possible a world file (pgw/jgw). Direct GovMap connection — next stage.</p>
+      <p class="hint" style="margin-top:6px">Background from a DWG/DXF file only (survey or existing plan). Orthophoto / aerial images are not used in this tool.</p>
     </section>
 
     <section class="grp">
@@ -945,6 +945,7 @@ table.psheet th.psheet-pvi{
 
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=7"></script>
 <script src="../js/tools/alignment-builder-en.js?v=4"></script>
+<script src="../js/tools/no-ortho.js?v=1"></script>
 
 <!-- ==================================================================
      DXF export to CAD (AutoCAD) – exports all alignments without selection

@@ -266,8 +266,8 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
   <div class="title"><b>منشئ المحور</b><small>محور · أقواس · مقطع على طول الطريق</small></div>
   <div class="grow"></div>
   <div class="pill" id="pill"><i></i><span id="pillTxt">لا يوجد محور</span></div>
-  <button class="icon" id="bMap" aria-label="خريطة خلفية" title="استيراد خريطة خلفية (GovMap)">🗺</button>
-  <input type="file" id="fMap" accept="image/*,.pgw,.jgw,.tfw,.wld,.png,.jpg,.jpeg" multiple hidden>
+  <button class="icon" id="bMap" hidden style="display:none" aria-hidden="true">🗺</button>
+  <input type="file" id="fMap" accept=".none" hidden disabled>
   <button class="icon" id="bPlan" aria-label="عرض المخطط" title="عرض مخطط هندسي">📐</button>
   <button class="icon" id="bTheme" aria-label="وضع العرض" title="وضع العرض"></button>
 </header>
@@ -402,5 +402,6 @@ select{font:inherit;font-size:15px;height:34px;padding:0 8px;border:0;border-rad
 
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=7"></script>
 <script src="../js/tools/alignment-builder-ar.js?v=3"></script>
+<script src="../js/tools/no-ortho.js?v=1"></script>
 </body>
 </html>

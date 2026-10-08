@@ -784,7 +784,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
     <div class="ribbon-groups">
       <div class="rg">
         <div class="rg-tools">
-          <button class="tool-btn" id="bMap" title="ייבוא מפת רקע (GovMap)"><span>🗺</span><small>מפת רקע</small></button>
+          <button class="tool-btn" id="bMap" title="ייבוא רקע DWG/DXF"><span>🗺</span><small>רקע DWG</small></button>
           <button class="tool-btn" id="bPlan" title="תצוגת תכנית הנדסית"><span>📐</span><small>תצוגה</small></button>
         </div>
         <div class="rg-label">תצוגה</div>
@@ -801,7 +801,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
     <button class="icon" id="bTheme" aria-label="מצב תצוגה" title="מצב תצוגה"></button>
   </div>
 </header>
-<input type="file" id="fMap" accept="image/*,.pgw,.jgw,.tfw,.wld,.png,.jpg,.jpeg,.dwg,.dxf" multiple hidden>
+<input type="file" id="fMap" accept=".dwg,.dxf" multiple hidden>
 
 <!-- ================= LEFT TOOL PALETTE ================= -->
 <aside class="tool-palette" aria-label="סרגל כלים מהיר">
@@ -941,7 +941,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
     </section>
 
     <section class="grp" id="mapBox" hidden>
-      <h3>מפת רקע</h3>
+      <h3>רקע DWG/DXF</h3>
       <div class="list">
         <div class="cell"><span class="lbl">מצב</span><span id="mapGeo" style="color:var(--dim)"></span></div>
         <div class="cell"><span class="lbl">שקיפות</span><input id="mapOp" type="range" min="10" max="100" style="flex:1"></div>
@@ -949,7 +949,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
         <button class="cell btn" id="bMapHide">הסתרה / הצגה</button>
         <button class="cell btn danger" id="bMapDel">הסרת המפה</button>
       </div>
-      <p class="hint" style="margin-top:6px">מ-GovMap: שמירת תמונת מפה/תצ״א, ואם אפשר גם קובץ עולם (pgw/jgw). חיבור ישיר ל-GovMap – בשלב הבא.</p>
+      <p class="hint" style="margin-top:6px">רקע מקובץ DWG/DXF בלבד (מדידה או תכנית קיימת). אורתופוטו/צילום אוויר אינו בשימוש בכלי.</p>
     </section>
 
     <section class="grp">
@@ -1109,7 +1109,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
   <!-- ============ שלב 1 ============ -->
   <section class="stepP" data-step="1">
     <h2>1 · מיקום וסוג הבדיקה</h2>
-    <p class="lead">חפשו את הצומת בשורת החיפוש שמעל המפה – כתובת, שם צומת או קואורדינטות ITM. העבודה נעשית על צילום האוויר במטרים אמיתיים, בלי כיול.</p>
+    <p class="lead">חפשו את הצומת בשורת החיפוש שמעל המפה – כתובת, שם צומת או קואורדינטות ITM. העבודה נעשית על המפה במטרים אמיתיים, בלי כיול.</p>
     <div class="place" id="placeInfo"><b>טרם נבחר מיקום</b><span>E — · N —</span></div>
     <h2>סביבה</h2>
     <div class="seg" role="group" aria-label="סביבה"><button type="button" data-env="urban">עירוני</button><button type="button" data-env="rural">בין-עירוני</button></div>
@@ -1185,7 +1185,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
     <div class="row"><label for="oPaper">גיליון</label><select id="oPaper"><option value="auto" selected>אוטומטי – הקטן שמתאים</option><option value="A3">A3</option><option value="A2">A2</option><option value="A1">A1</option><option value="A0">A0</option></select></div>
     <div id="oInfo">—</div>
     <h2>לכלול בפלט</h2>
-    <div class="row chk2"><label><input type="checkbox" id="oPhoto" checked> אורתופוטו של הפרויקט ברקע (PDF)</label></div>
+    <div class="row chk2" hidden><label><input type="checkbox" id="oPhoto" disabled></label></div>
     <div class="row chk2"><label><input type="checkbox" id="oTable" checked> טבלת ערכי תכן</label></div>
     <div class="row chk2"><label><input type="checkbox" id="oLegend" checked> מקרא</label></div>
     <div class="row chk2"><label><input type="checkbox" id="oFill" checked> מילוי המשולשים (DWG – בשכבות ‎-F נפרדות)</label></div>
@@ -1211,7 +1211,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
       <button type="button" id="zIn" title="התקרבות" aria-label="התקרבות">+</button>
       <button type="button" id="zOut" title="התרחקות" aria-label="התרחקות">−</button>
       <button type="button" id="zFit" title="התאמה לשרטוט" aria-label="התאמה לשרטוט">⤢</button>
-      <button type="button" id="mStyle" class="wide" title="צילום אוויר / מפה">🗺 מפה</button>
+      <button type="button" id="mStyle" class="wide" hidden style="display:none">🗺 מפה</button>
       <button type="button" id="mOn" class="wide" title="הסתרת מפת הרקע">רקע</button>
     </div>
     <div id="hint" hidden><span id="hintT"></span><button type="button" id="hintDone" class="key">סיום ✓</button></div>
@@ -1230,6 +1230,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
 <!-- sd:end -->
 <script src="https://mahmoudalem95.github.io/mahalco/js/calc-client.js?v=7"></script>
 <script src="../js/tools/alignment-builder-he.js?v=9"></script>
+<script src="../js/tools/no-ortho.js?v=1"></script>
 
 <!-- ==================================================================
      ייצוא DXF ל-CAD (AutoCAD) – מייצא את כל הצירים ללא בחירה

@@ -25,7 +25,6 @@ https://mahmoudalem95.github.io/mahalco/he/htool.html
 https://mahmoudalem95.github.io/mahalco/he/sd.html
 https://mahmoudalem95.github.io/mahalco/he/temporary-section.html
 https://mahmoudalem95.github.io/mahalco/he/typical-section.html
-https://mahmoudalem95.github.io/mahalco/typical-sections/
 https://mahmoudalem95.github.io/mahalco/he/traffic-impact.html
 https://mahmoudalem95.github.io/mahalco/he/legal/policy.html
 https://mahmoudalem95.github.io/mahalco/he/policy-sec.html

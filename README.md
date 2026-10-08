@@ -7,7 +7,6 @@ Static site served by GitHub Pages at https://mahmoudalem95.github.io/mahalco/
 | `/` (root) | Hebrew landing (`index.html`), PWA files (`manifest.webmanifest`, `sw.js`, icons), SEO/verification files, `app-release-signed.apk` |
 | `he/` | Hebrew tools (local calculators) · `he/legal/` policy |
 | `en/` | English landing (`en/index.html`, tools use the Render API) and English pages · `en/legal/` policies |
-| `ar/` | Arabic landing and tools (UAE-oriented) · `ar/legal/` policy |
 | `js/` | `calc-client.js` (talks to the `mahalco-calc` API and renders results safely) and `js/tools/*.js` (per-page field lists) |
 | `assets/`, `typical-sections/`, `tool/` | Built app bundle and its entry pages (paths are root-absolute – do not move) |
 

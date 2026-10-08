@@ -42,6 +42,26 @@
     }
   }, true);
 
+  // Safety net: any Esri World Imagery tile is swapped for the same OpenStreetMap tile.
+  var SAT = /^https?:\/\/[^/]*arcgisonline\.com\/ArcGIS\/rest\/services\/World_Imagery\/MapServer\/tile\/(\d+)\/(\d+)\/(\d+)/i;
+  function street(u) { var m = SAT.exec(String(u)); return m ? 'https://tile.openstreetmap.org/' + m[1] + '/' + m[3] + '/' + m[2] + '.png' : u; }
+  try {
+    var d = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    Object.defineProperty(HTMLImageElement.prototype, 'src', { configurable: true, enumerable: d.enumerable,
+      get: function () { return d.get.call(this); }, set: function (v) { d.set.call(this, street(v)); } });
+    var sa = Element.prototype.setAttribute;
+    Element.prototype.setAttribute = function (n, v) { return sa.call(this, n, (this instanceof HTMLImageElement && String(n).toLowerCase() === 'src') ? street(v) : v); };
+  } catch (e) {}
+
+  // Main drawing map: switch off the satellite basemap and drop its toggle.
+  function mainStreetMap() {
+    var b = document.getElementById('mapStyle');
+    if (!b) return;
+    var at = document.getElementById('mapAttr');
+    if (b.onclick && at && /Earthstar|Esri|Maxar/i.test(at.textContent)) { try { b.click(); } catch (e) {} }
+    b.hidden = true; b.style.display = 'none';
+  }
+
   function lockOrtho() {
     try {
       Object.defineProperty(window, 'MH_ORTHO', { configurable: true, get: function () { return function () { return null; }; }, set: function () {} });
@@ -50,6 +70,7 @@
   lockOrtho();
 
   function sdStreetMap() {
+    mainStreetMap();
     var fm = document.getElementById('fMap');
     if (fm && fm.accept !== '.none') fm.accept = '.dwg,.dxf';
     var ph = document.getElementById('oPhoto');

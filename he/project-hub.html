@@ -6,7 +6,7 @@
 <style id="he-font">button,input,select,textarea,optgroup{font-family:inherit}</style>
 <script src="../js/ga.js" async></script>
 <script src="../js/clarity.js" async></script>
-<script src="../js/tools/no-ortho.js?v=2"></script>
+<script src="../js/tools/no-ortho.js?v=3"></script>
 
   <link rel="canonical" href="https://mahmoudalem95.github.io/mahalco/he/project-hub.html">
    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2151829492004511"
@@ -1110,7 +1110,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
   <!-- ============ שלב 1 ============ -->
   <section class="stepP" data-step="1">
     <h2>1 · מיקום וסוג הבדיקה</h2>
-    <p class="lead">חפשו את הצומת בשורת החיפוש שמעל המפה – כתובת, שם צומת או קואורדינטות ITM. העבודה נעשית על המפה במטרים אמיתיים, בלי כיול.</p>
+    <p class="lead">בחרו את הצומת מהשרטוט ("צומת מהשרטוט" למעלה). העבודה נעשית בקואורדינטות ITM אמיתיות, בלי מפת רקע ובלי כיול.</p>
     <div class="place" id="placeInfo"><b>טרם נבחר מיקום</b><span>E — · N —</span></div>
     <h2>סביבה</h2>
     <div class="seg" role="group" aria-label="סביבה"><button type="button" data-env="urban">עירוני</button><button type="button" data-env="rural">בין-עירוני</button></div>
@@ -1205,7 +1205,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
   <div class="stage" id="stage">
     <canvas id="map" aria-label="מפת העבודה"></canvas>
     <div id="search">
-      <div class="bar"><input id="q" type="search" placeholder="חיפוש מקום, כתובת או ITM (E, N)…" autocomplete="off" aria-label="חיפוש מקום"><button type="button" id="qGo" aria-label="חיפוש">חפש</button></div>
+      <div class="bar" hidden style="display:none"><input id="q" type="search" placeholder="חיפוש מקום, כתובת או ITM (E, N)…" autocomplete="off" aria-label="חיפוש מקום"><button type="button" id="qGo" aria-label="חיפוש">חפש</button></div>
       <div id="sres" hidden></div>
     </div>
     <div class="mctl">
@@ -1213,7 +1213,7 @@ html.sd-open .tool-palette,html.sd-open .statusbar{visibility:hidden}
       <button type="button" id="zOut" title="התרחקות" aria-label="התרחקות">−</button>
       <button type="button" id="zFit" title="התאמה לשרטוט" aria-label="התאמה לשרטוט">⤢</button>
       <button type="button" id="mStyle" class="wide" hidden style="display:none">🗺 מפה</button>
-      <button type="button" id="mOn" class="wide" title="הסתרת מפת הרקע">רקע</button>
+      <button type="button" id="mOn" class="wide" hidden style="display:none">רקע</button>
     </div>
     <div id="hint" hidden><span id="hintT"></span><button type="button" id="hintDone" class="key">סיום ✓</button></div>
     <div id="coords">E — · N —</div>

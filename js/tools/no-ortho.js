@@ -44,7 +44,10 @@
 
   // Safety net: any Esri World Imagery tile is swapped for the same OpenStreetMap tile.
   var SAT = /^https?:\/\/[^/]*arcgisonline\.com\/ArcGIS\/rest\/services\/World_Imagery\/MapServer\/tile\/(\d+)\/(\d+)\/(\d+)/i;
-  function street(u) { var m = SAT.exec(String(u)); return m ? 'https://tile.openstreetmap.org/' + m[1] + '/' + m[3] + '/' + m[2] + '.png' : u; }
+  // No basemap at all: every web-map tile (satellite or street) becomes a transparent pixel.
+  var TILE = /^https?:\/\/([^/]*\.)?(arcgisonline\.com|openstreetmap\.org|tile\.[^/]+)\/(?:.*\/)?\d+\/\d+\/\d+/i;
+  var BLANK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+  function street(u) { return (SAT.test(String(u)) || TILE.test(String(u))) ? BLANK : u; }
   try {
     var d = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
     Object.defineProperty(HTMLImageElement.prototype, 'src', { configurable: true, enumerable: d.enumerable,
@@ -54,7 +57,10 @@
   } catch (e) {}
 
   // Main drawing map: switch off the satellite basemap and drop its toggle.
+  function hide(id) { var e = document.getElementById(id); if (e && e.style.display !== 'none') { e.hidden = true; e.style.display = 'none'; } }
   function mainStreetMap() {
+    // no world map and no place search in the drawing workspace or the SD workspace
+    ['mapSearch', 'mapGo', 'mapTgl', 'mapAttr', 'search', 'mOn', 'attr'].forEach(hide);
     var b = document.getElementById('mapStyle');
     if (!b) return;
     var at = document.getElementById('mapAttr');
